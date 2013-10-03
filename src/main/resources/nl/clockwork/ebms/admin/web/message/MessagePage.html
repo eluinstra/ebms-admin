@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
+<body>
+<wicket:extend>
+	<table class="vertical">
+		<caption><wicket:message key="message">EbMS Message</wicket:message></caption>
+		<tbody>
+			<tr>
+				<th><wicket:message key="lbl.messageId">Message Id</wicket:message></th>
+				<td><span wicket:id="messageId">[messageId]</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.messageNr">Message Nr</wicket:message></th>
+				<td><span wicket:id="messageNr">[messageNr]</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.conversationId">Conversation Id</wicket:message></th>
+				<td><span wicket:id="conversationId">[conversationId]</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.refToMessageId">Ref To Message Id</wicket:message></th>
+				<td><a href="#" wicket:id="viewRef"><span wicket:id="refToMessageId">[refToMessageId]</span></a></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.timestamp">Timestamp</wicket:message></th>
+				<td><span wicket:id="timestamp">[timestamp]</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.cpaId">CPA Id</wicket:message></th>
+				<td><span wicket:id="cpaId">[cpaId]</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.fromRole">From Role</wicket:message></th>
+				<td><span wicket:id="fromRole">[fromRole]</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.toRole">To Role</wicket:message></th>
+				<td><span wicket:id="toRole">[toRole]</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.serviceType">Service Type</wicket:message></th>
+				<td><span wicket:id="serviceType">[serviceType]</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.service">Service</wicket:message></th>
+				<td><span wicket:id="service">[service]</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.action">Action</wicket:message></th>
+				<td><span wicket:id="action">[action]</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.status">Status</wicket:message></th>
+				<td><span wicket:id="status">[status]</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.statusTime">Status Time</wicket:message></th>
+				<td><span wicket:id="statusTime">[statusTime]</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.message">Message</wicket:message></th>
+				<td><textarea wicket:id="message" rows="60" cols="120" readonly="readonly" style="white-space: pre; word-wrap: normal; overflow-x: scroll;">[message]</textarea></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.attachments">Attachments</wicket:message></th>
+				<td>
+					<table>
+						<tr>
+							<th><wicket:message key="lbl.name"/></th>
+							<th><wicket:message key="lbl.contentId"/></th>
+							<th><wicket:message key="lbl.contentType"/></th>
+						</tr>
+						<tr wicket:id="attachments">
+							<td wicket:id="name"/>
+							<td wicket:id="contentId"/>
+							<td wicket:id="contentType"/>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.events">Events</wicket:message></th>
+				<td>
+					<table>
+						<tr>
+							<th><wicket:message key="lbl.time"/></th>
+							<th><wicket:message key="lbl.type"/></th>
+							<th><wicket:message key="lbl.status"/></th>
+							<th><wicket:message key="lbl.statusTime"/></th>
+							<th><wicket:message key="lbl.uri"/></th>
+						</tr>
+						<tr wicket:id="events">
+							<td wicket:id="time"/>
+							<td wicket:id="type"/>
+							<td wicket:id="status"/>
+							<td wicket:id="statusTime"/>
+							<td wicket:id="uri"/>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="2"><a href="#" wicket:id="edit"><wicket:message key="cmd.edit">Edit</wicket:message></a>&nbsp;<a href="#" wicket:id="back"><wicket:message key="cmd.back">Back</wicket:message></a></td>
+			</tr>
+		</tfoot>
+	</table>
+</wicket:extend>
+</body>
+</html>

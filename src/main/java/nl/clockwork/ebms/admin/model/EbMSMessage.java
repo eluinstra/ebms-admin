@@ -1,0 +1,227 @@
+/**
+ * Copyright 2013 Clockwork
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package nl.clockwork.ebms.admin.model;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import nl.clockwork.ebms.Constants.EbMSMessageStatus;
+
+import org.apache.wicket.util.io.IClusterable;
+
+public class EbMSMessage implements IClusterable
+{
+	private static final long serialVersionUID = 1L;
+	private Date timestamp;
+	private String cpaId;
+	private String conversationId;
+	private Long sequenceNr;
+	private String messageId;
+	private int messageNr;
+	private String refToMessageId;
+	private Date timeToLive;
+	private String fromRole;
+	private String toRole;
+	private String serviceType;
+	private String service;
+	private String action;
+	private String content;
+	private EbMSMessageStatus status;
+	private Date statusTime;
+	private List<EbMSAttachment> attachments = new ArrayList<EbMSAttachment>();
+	private List<EbMSEvent> events = new ArrayList<EbMSEvent>();
+
+	public Date getTimestamp()
+	{
+		return timestamp;
+	}
+
+	public void setTimestamp(Date timestamp)
+	{
+		this.timestamp = timestamp;
+	}
+
+	public String getCpaId()
+	{
+		return cpaId;
+	}
+
+	public void setCpaId(String cpaId)
+	{
+		this.cpaId = cpaId;
+	}
+
+	public String getConversationId()
+	{
+		return conversationId;
+	}
+
+	public void setConversationId(String conversationId)
+	{
+		this.conversationId = conversationId;
+	}
+
+	public Long getSequenceNr()
+	{
+		return sequenceNr;
+	}
+
+	public void setSequenceNr(Long sequenceNr)
+	{
+		this.sequenceNr = sequenceNr;
+	}
+
+	public String getMessageId()
+	{
+		return messageId;
+	}
+
+	public void setMessageId(String messageId)
+	{
+		this.messageId = messageId;
+	}
+
+	public int getMessageNr()
+	{
+		return messageNr;
+	}
+
+	public void setMessageNr(int messageNr)
+	{
+		this.messageNr = messageNr;
+	}
+
+	public String getRefToMessageId()
+	{
+		return refToMessageId;
+	}
+
+	public void setRefToMessageId(String refToMessageId)
+	{
+		this.refToMessageId = refToMessageId;
+	}
+
+	public Date getTimeToLive()
+	{
+		return timeToLive;
+	}
+
+	public void setTimeToLive(Date timeToLive)
+	{
+		this.timeToLive = timeToLive;
+	}
+
+	public String getFromRole()
+	{
+		return fromRole;
+	}
+
+	public void setFromRole(String fromRole)
+	{
+		this.fromRole = fromRole;
+	}
+
+	public String getToRole()
+	{
+		return toRole;
+	}
+
+	public void setToRole(String toRole)
+	{
+		this.toRole = toRole;
+	}
+
+	public String getServiceType()
+	{
+		return serviceType;
+	}
+
+	public void setServiceType(String serviceType)
+	{
+		this.serviceType = serviceType;
+	}
+
+	public String getService()
+	{
+		return service;
+	}
+
+	public void setService(String service)
+	{
+		this.service = service;
+	}
+
+	public String getAction()
+	{
+		return action;
+	}
+
+	public void setAction(String action)
+	{
+		this.action = action;
+	}
+
+	public String getContent()
+	{
+		return content;
+	}
+
+	public void setContent(String content)
+	{
+		this.content = content;
+	}
+
+	public EbMSMessageStatus getStatus()
+	{
+		return status;
+	}
+
+	public void setStatus(EbMSMessageStatus status)
+	{
+		this.status = status;
+	}
+
+	public Date getStatusTime()
+	{
+		return statusTime;
+	}
+
+	public void setStatusTime(Date statusTime)
+	{
+		this.statusTime = statusTime;
+	}
+	
+	public List<EbMSAttachment> getAttachments()
+	{
+		return attachments;
+	}
+	
+	public void setAttachments(List<EbMSAttachment> attachments)
+	{
+		this.attachments = attachments;
+	}
+
+	public List<EbMSEvent> getEvents()
+	{
+		return events;
+	}
+	
+	public void setEvents(List<EbMSEvent> events)
+	{
+		this.events = events;
+	}
+}

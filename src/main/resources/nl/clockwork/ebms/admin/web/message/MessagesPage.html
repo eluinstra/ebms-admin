@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
+<body>
+<wicket:extend>
+	<span wicket:id="navigator">[navigator]</span>
+	<table class="horizontal">
+		<caption><wicket:message key="messages">EbMS Messages</wicket:message></caption>
+		<thead>
+			<tr>
+				<th><wicket:message key="lbl.messageId">Message Id</wicket:message></th>
+				<th><wicket:message key="lbl.messageNr">Message Nr</wicket:message></th>
+				<th><wicket:message key="lbl.conversationId">Conversation Id</wicket:message></th>
+				<th><wicket:message key="lbl.refToMessageId">Ref To Message Id</wicket:message></th>
+				<th><wicket:message key="lbl.timestamp">Timestamp</wicket:message></th>
+				<th><wicket:message key="lbl.cpaId">CPA Id</wicket:message></th>
+				<th><wicket:message key="lbl.fromRole">From Role</wicket:message></th>
+				<th><wicket:message key="lbl.toRole">To Role</wicket:message></th>
+				<th><wicket:message key="lbl.service">Service</wicket:message></th>
+				<th><wicket:message key="lbl.action">Action</wicket:message></th>
+				<th><wicket:message key="lbl.status">Status</wicket:message></th>
+				<th><wicket:message key="lbl.statusTime">Status Time</wicket:message></th>
+			</tr>
+		</thead>
+		<tbody wicket:id="container">
+			<tr wicket:id="messages">
+				<td><a href="#" wicket:id="view"><span wicket:id="messageId">[messageId]</span></a></td>
+				<td><span wicket:id="messageNr">[messageNr]</span></td>
+				<td><span wicket:id="conversationId">[conversationId]</span></td>
+				<td><a href="#" wicket:id="viewRef"><span wicket:id="refToMessageId">[refToMessageId]</span></a></td>
+				<td><span wicket:id="timestamp">[timestamp]</span></td>
+				<td><span wicket:id="cpaId">[cpaId]</span></td>
+				<td><span wicket:id="fromRole">[fromRole]</span></td>
+				<td><span wicket:id="toRole">[toRole]</span></td>
+				<td><span wicket:id="service">[service]</span></td>
+				<td><span wicket:id="action">[action]</span></td>
+				<td><span wicket:id="status">[status]</span></td>
+				<td><span wicket:id="statusTime">[statusTime]</span></td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="12"><a href="#" wicket:id="new"><wicket:message key="cmd.new">New</wicket:message></a></td>
+			</tr>
+		</tfoot>
+	</table>
+</wicket:extend>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
+<body>
+<wicket:extend>
+	<table class="vertical">
+		<caption><wicket:message key="cpa">Collaboration Protocol Agreement</wicket:message></caption>
+		<tbody>
+			<tr>
+				<th><wicket:message key="lbl.cpaId">CPA Id</wicket:message></th>
+				<td><span wicket:id="cpaId">[cpaId]</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.cpa">CPA</wicket:message></th>
+				<!--td><span wicket:id="cpa">[cpa]</span></td-->
+				<td><textarea wicket:id="cpa" rows="60" cols="120" readonly="readonly" style="white-space: pre; word-wrap: normal; overflow-x: scroll;">[cpa]</textarea></td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="2"><a href="#" wicket:id="edit"><wicket:message key="cmd.edit">Edit</wicket:message></a>&nbsp;<a href="#" wicket:id="back"><wicket:message key="cmd.back">Back</wicket:message></a></td>
+			</tr>
+		</tfoot>
+	</table>
+</wicket:extend>
+</body>
+</html>
