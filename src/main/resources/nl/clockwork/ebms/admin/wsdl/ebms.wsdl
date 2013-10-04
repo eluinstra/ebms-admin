@@ -1,6 +1,6 @@
-<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions name="EbMSMessageServiceService" targetNamespace="http://www.clockwork.nl/ebms/2.0" xmlns:ns1="http://www.clockwork.nl/ebms/1.0" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.clockwork.nl/ebms/2.0" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions name="EbMSMessageServiceService" targetNamespace="http://www.clockwork.nl/ebms/2.0" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.clockwork.nl/ebms/2.0" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <wsdl:types>
-<xs:schema elementFormDefault="unqualified" targetNamespace="http://www.clockwork.nl/ebms/2.0" version="1.0" xmlns:tns="http://www.clockwork.nl/ebms/2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://www.clockwork.nl/ebms/2.0" xmlns:tns="http://www.clockwork.nl/ebms/2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 <xs:element name="GetMessage" type="tns:GetMessage"/>
 <xs:element name="GetMessageIds" type="tns:GetMessageIds"/>
 <xs:element name="GetMessageIdsResponse" type="tns:GetMessageIdsResponse"/>
@@ -133,16 +133,14 @@
 <xs:enumeration value="NOT_ACKNOWLEDGED"/>
 </xs:restriction>
 </xs:simpleType>
+<xs:element name="EbMSMessageServiceException" type="tns:EbMSMessageServiceException"/>
+<xs:complexType name="EbMSMessageServiceException">
+<xs:sequence/>
+</xs:complexType>
 </xs:schema>
-<xsd:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://www.clockwork.nl/ebms/1.0" xmlns:tns="http://www.clockwork.nl/ebms/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-<xsd:element name="EbMSMessageServiceException" type="tns:EbMSMessageServiceException"/>
-<xsd:complexType name="EbMSMessageServiceException">
-<xsd:sequence/>
-</xsd:complexType>
-</xsd:schema>
   </wsdl:types>
   <wsdl:message name="EbMSMessageServiceException">
-    <wsdl:part element="ns1:EbMSMessageServiceException" name="EbMSMessageServiceException">
+    <wsdl:part element="tns:EbMSMessageServiceException" name="EbMSMessageServiceException">
     </wsdl:part>
   </wsdl:message>
   <wsdl:message name="ProcessMessages">
