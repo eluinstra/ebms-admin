@@ -98,7 +98,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			result.setService(rs.getString("service"));
 			result.setAction(rs.getString("action"));
 			result.setContent(rs.getString("content"));
-			result.setStatus(EbMSMessageStatus.get(rs.getInt("status")));
+			result.setStatus(rs.getObject("status") == null ? null : EbMSMessageStatus.get(rs.getInt("status")));
 			result.setStatusTime(rs.getTimestamp("status_time"));
 			return result;
 		}
