@@ -4,8 +4,3 @@
 - add: create properties file
 - use jdo for standard crud functionality
 - add breadcrumbs
-
-- check correct style:
-<textarea wicket:id="cpa" rows="60" cols="120" style="white-space: pre; word-wrap: normal; overflow-x: scroll;">[cpa]</textarea>
-or
-<textarea wicket:id="cpa" rows="60" cols="120" wrap="off">[cpa]</textarea>
