@@ -18,17 +18,23 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jaxws="http://cxf.apache.org/jaxws"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
  
 	<import resource="classpath:applicationConfig.xml"/>
 	<import resource="classpath:datasource.xml"/>
 	<import resource="classpath:dao.xml"/>
 
+	<context:component-scan base-package="nl.clockwork.ebms.admin" />
+
 	<bean id="maxItemsPerPage" class="java.lang.Integer">
 		<constructor-arg value="${maxItemsPerPage}"/>
 	</bean>
 
-	<context:component-scan base-package="nl.clockwork.ebms.admin" />
- 
+	<jaxws:client id="cpaClient" serviceClass="nl.clockwork.ebms.service.CPAService" address="${service.cpa.url}"/>
+
+	<jaxws:client id="ebmsClient" serviceClass="nl.clockwork.ebms.service.EbMSMessageService" address="${service.ebms.url}"/>
+
 </beans>
