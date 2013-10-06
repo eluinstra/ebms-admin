@@ -7,7 +7,7 @@ public class Utils
 	public static String getFileExtension(String contentType)
 	{
 		if (StringUtils.isEmpty(contentType))
-			return null;
+			return "";
 		return "." + (contentType.contains("text") ? "txt" : contentType.split("/")[1]);
 	}
 }
