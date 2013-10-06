@@ -4,3 +4,5 @@
 - add: create properties file
 - use jdo for standard crud functionality
 - add breadcrumbs
+
+- replace current menu with dropdown menu
