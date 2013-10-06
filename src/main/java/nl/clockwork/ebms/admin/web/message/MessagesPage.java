@@ -86,10 +86,10 @@ public class MessagesPage extends BasePage
 				item.add(new Label("cpaId",message.getCpaId()));
 				item.add(new Label("fromRole",message.getFromRole()));
 				item.add(new Label("toRole",message.getToRole()));
-				item.add(new Label("service",(message.getServiceType() == null ? "" : message.getServiceType() + ":") + message.getService()));
+				item.add(new Label("service",message.getService()));
 				item.add(new Label("action",message.getAction()));
 				item.add(new Label("status",message.getStatus()));
-				item.add(new Label("statusTime",message.getStatusTime()));
+				item.add(DateLabel.forDatePattern("statusTime",new Model<Date>(message.getStatusTime()),Constants.DATETIME_FORMAT));
 				item.add(AttributeModifier.replace("class",new AbstractReadOnlyModel<String>()
 				{
 					private static final long serialVersionUID = 1L;
@@ -108,16 +108,6 @@ public class MessagesPage extends BasePage
 		container.add(messages);
 		add(container);
 		add(new AjaxPagingNavigator("navigator",messages));
-		add(new Link<Void>("new")
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void onClick()
-			{
-				setResponsePage(new MessageEditPage(MessagesPage.this));
-			}
-		});
 	}
 
 	@Override

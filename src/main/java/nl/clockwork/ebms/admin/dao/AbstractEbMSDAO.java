@@ -71,7 +71,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				" time_to_live," +
 				" from_role," +
 				" to_role," +
-				" service_type," +
 				" service," +
 				" action," +
 				" content," +
@@ -94,7 +93,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			result.setTimeToLive(rs.getTimestamp("time_to_live"));
 			result.setFromRole(rs.getString("from_role"));
 			result.setToRole(rs.getString("to_role"));
-			result.setServiceType(rs.getString("service_type"));
 			result.setService(rs.getString("service"));
 			result.setAction(rs.getString("action"));
 			result.setContent(rs.getString("content"));
@@ -302,7 +300,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 										"time_to_live," +
 										"from_role," +
 										"to_role," +
-										"service_type," +
 										"service," +
 										"action," +
 										"content," +
@@ -324,7 +321,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 								ps.setTimestamp(7,message.getTimeToLive() == null ? null : new Timestamp(message.getTimeToLive().getTime()));
 								ps.setString(8,message.getFromRole());
 								ps.setString(9,message.getToRole());
-								ps.setString(10,message.getServiceType());
 								ps.setString(11,message.getService());
 								ps.setString(12,message.getAction());
 								ps.setString(18,message.getContent());
@@ -365,7 +361,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 							" time_to_live = ?," +
 							" from_role = ?," +
 							" to_role = ?," +
-							" service_type = ?," +
 							" service = ?," +
 							" action = ?," +
 							" content = ?," +
@@ -381,7 +376,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 						message.getTimeToLive(),
 						message.getFromRole(),
 						message.getToRole(),
-						message.getServiceType(),
 						message.getService(),
 						message.getAction(),
 						message.getContent(),

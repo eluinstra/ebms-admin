@@ -36,7 +36,6 @@ public class EbMSMessage implements IClusterable
 	private Date timeToLive;
 	private String fromRole;
 	private String toRole;
-	private String serviceType;
 	private String service;
 	private String action;
 	private String content;
@@ -143,16 +142,6 @@ public class EbMSMessage implements IClusterable
 	public void setToRole(String toRole)
 	{
 		this.toRole = toRole;
-	}
-
-	public String getServiceType()
-	{
-		return serviceType;
-	}
-
-	public void setServiceType(String serviceType)
-	{
-		this.serviceType = serviceType;
 	}
 
 	public String getService()

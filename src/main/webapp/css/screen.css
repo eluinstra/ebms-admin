@@ -22,12 +22,6 @@ textarea {
 	overflow-x: scroll;
 }
 
-.frameTop {
-	width: 970px;		
-	height: 100px;
-	margin: 0 auto;
-}
-
 a.logo {
 	background: transparent url(../images/ebms_logo.gif) no-repeat scroll 0%;
 	float: left;
@@ -39,7 +33,7 @@ a.logo {
 }
 
 .frame {
-	width: 970px;
+	width: 1280px;
 	margin: 0 auto;
 	overflow: auto;
 }
@@ -50,8 +44,14 @@ a.logo {
 	font-size: 1.5em;
 }
 			
+.frameTop {
+	/*width: 970px;*/
+	height: 80px;
+	margin: 0 auto;
+}
+
 .frameLeft {
-	width: 150px;
+	/*width: 150px;*/
 	margin: 0 12px 0 10px;
 	float: left;
 	font-size: 1.2em;
@@ -59,7 +59,7 @@ a.logo {
 
 .frameMiddle {
 	float: left;
-	width: 590px;
+	/*width: 590px;*/
 	margin: 0 14px 0 0;
 }
 
@@ -68,14 +68,7 @@ a.logo {
 	color: black;
 	font-size: 1.2em;
 }
-
-.frameBottom {
-	width: 970px;
-	clear: both;
-	margin: 0 auto;
-	padding: 20px 0 0 0;
-}
-
+/*
 .frameRight {
 	float: left;
 	width: 168px;
@@ -110,11 +103,11 @@ a.logo {
 	margin: 0 auto;
 	padding: 20px 0 0 0;
 } 
-
+*/
 table.horizontal,
 table.vertical {
 	border-collapse: collapse;
-	width: 562px;
+	width: 1024px;
 	font-size: 1em;
 	border: 1px solid #cccccc;
 }	

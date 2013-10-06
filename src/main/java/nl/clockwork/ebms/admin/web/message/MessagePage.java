@@ -23,6 +23,7 @@ import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSEvent;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.DownloadEbMSAttachmentLink;
 
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.WebPage;
@@ -61,12 +62,10 @@ public class MessagePage extends BasePage
 		add(new Label("cpaId",message.getCpaId()));
 		add(new Label("fromRole",message.getFromRole()));
 		add(new Label("toRole",message.getToRole()));
-		add(new Label("serviceType",message.getServiceType()));
 		add(new Label("service",message.getService()));
 		add(new Label("action",message.getAction()));
 		add(new Label("status",message.getStatus()));
 		add(new Label("statusTime",message.getStatusTime()));
-		add(new TextArea<String>("message",Model.of(message.getContent())));
 		
 		PropertyListView<EbMSAttachment> attachments = 
 			new PropertyListView<EbMSAttachment>("attachments",message.getAttachments())
@@ -77,7 +76,9 @@ public class MessagePage extends BasePage
 				protected void populateItem(ListItem<EbMSAttachment> item)
 				{
 					item.add(new Label("name"));
-					item.add(new Label("contentId"));
+					DownloadEbMSAttachmentLink link = new DownloadEbMSAttachmentLink("download",item.getModelObject());
+					link.add(new Label("contentId"));
+					item.add(link);
 					item.add(new Label("contentType"));
 				}
 			}
@@ -101,18 +102,9 @@ public class MessagePage extends BasePage
 			}
 		;
 		add(events);
-		
-		add(new Link<Void>("edit")
-		{
-			private static final long serialVersionUID = 1L;
 
-			@Override
-			public void onClick()
-			{
-				//setResponsePage(new MessageEditPage(ebMSDAO.getMessage(message.getId())));
-				setResponsePage(new MessageEditPage(message,MessagePage.this));
-			}
-		});
+		add(new TextArea<String>("content",Model.of(message.getContent())));
+
 		add(new Link<Object>("back")
 		{
 			private static final long serialVersionUID = 1L;

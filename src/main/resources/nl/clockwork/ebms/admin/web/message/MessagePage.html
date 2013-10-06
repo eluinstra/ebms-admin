@@ -38,10 +38,6 @@
 				<td><span wicket:id="toRole">[toRole]</span></td>
 			</tr>
 			<tr>
-				<th><wicket:message key="lbl.serviceType">Service Type</wicket:message></th>
-				<td><span wicket:id="serviceType">[serviceType]</span></td>
-			</tr>
-			<tr>
 				<th><wicket:message key="lbl.service">Service</wicket:message></th>
 				<td><span wicket:id="service">[service]</span></td>
 			</tr>
@@ -58,22 +54,18 @@
 				<td><span wicket:id="statusTime">[statusTime]</span></td>
 			</tr>
 			<tr>
-				<th><wicket:message key="lbl.message">Message</wicket:message></th>
-				<td><textarea wicket:id="message" rows="60" cols="120" readonly="readonly" style="white-space: pre; word-wrap: normal; overflow-x: scroll;">[message]</textarea></td>
-			</tr>
-			<tr>
 				<th><wicket:message key="lbl.attachments">Attachments</wicket:message></th>
 				<td>
 					<table>
 						<tr>
-							<th><wicket:message key="lbl.name"/></th>
-							<th><wicket:message key="lbl.contentId"/></th>
-							<th><wicket:message key="lbl.contentType"/></th>
+							<th><wicket:message key="lbl.name">Name</wicket:message></th>
+							<th><wicket:message key="lbl.contentId">Content Id</wicket:message></th>
+							<th><wicket:message key="lbl.contentType">Content Type</wicket:message></th>
 						</tr>
 						<tr wicket:id="attachments">
-							<td wicket:id="name"/>
-							<td wicket:id="contentId"/>
-							<td wicket:id="contentType"/>
+							<td wicket:id="name">[name]</td>
+							<td><a href="#" wicket:id="download"><span wicket:id="contentId">[contentId]</span></a></td>
+							<td wicket:id="contentType">[contentType]</td>
 						</tr>
 					</table>
 				</td>
@@ -83,26 +75,29 @@
 				<td>
 					<table>
 						<tr>
-							<th><wicket:message key="lbl.time"/></th>
-							<th><wicket:message key="lbl.type"/></th>
-							<th><wicket:message key="lbl.status"/></th>
-							<th><wicket:message key="lbl.statusTime"/></th>
-							<th><wicket:message key="lbl.uri"/></th>
+							<th><wicket:message key="lbl.time">Time</wicket:message></th>
+							<th><wicket:message key="lbl.type">Type</wicket:message></th>
+							<th><wicket:message key="lbl.status">Status</wicket:message></th>
+							<th><wicket:message key="lbl.statusTime">Status Time</wicket:message></th>
+							<th><wicket:message key="lbl.uri">Uri</wicket:message></th>
 						</tr>
 						<tr wicket:id="events">
-							<td wicket:id="time"/>
-							<td wicket:id="type"/>
-							<td wicket:id="status"/>
-							<td wicket:id="statusTime"/>
-							<td wicket:id="uri"/>
+							<td wicket:id="time">[time]</td>
+							<td wicket:id="type">[type]</td>
+							<td wicket:id="status">[status]</td>
+							<td wicket:id="statusTime">[statusTime]</td>
+							<td wicket:id="uri">[uri]</td>
 						</tr>
 					</table>
 				</td>
 			</tr>
+			<tr>
+				<td colspan="2"><textarea wicket:id="content" rows="64" cols="192" readonly="readonly" style="white-space: pre; word-wrap: normal; overflow-x: scroll;">[content]</textarea></td>
+			</tr>
 		</tbody>
 		<tfoot>
 			<tr>
-				<td colspan="2"><a href="#" wicket:id="edit"><wicket:message key="cmd.edit">Edit</wicket:message></a>&nbsp;<a href="#" wicket:id="back"><wicket:message key="cmd.back">Back</wicket:message></a></td>
+				<td colspan="2"><a href="#" wicket:id="back"><wicket:message key="cmd.back">Back</wicket:message></a></td>
 			</tr>
 		</tfoot>
 	</table>
