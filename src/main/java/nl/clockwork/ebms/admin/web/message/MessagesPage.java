@@ -41,13 +41,20 @@ public class MessagesPage extends BasePage
 	private EbMSDAO ebMSDAO;
 	@SpringBean(name="maxItemsPerPage")
 	private Integer maxItemsPerPage;
+	private EbMSMessageFilter filter;
 
 	public MessagesPage()
 	{
+		this(new EbMSMessageFilter());
+	}
+
+	public MessagesPage(EbMSMessageFilter filter)
+	{
+		this.filter = filter;
 		WebMarkupContainer container = new WebMarkupContainer("container");
 		container.setOutputMarkupId(true);
 
-		DataView<EbMSMessage> messages = new DataView<EbMSMessage>("messages",new MessageDataProvider(ebMSDAO))
+		DataView<EbMSMessage> messages = new DataView<EbMSMessage>("messages",new MessageDataProvider(ebMSDAO,this.filter))
 		{
 			private static final long serialVersionUID = 1L;
 
@@ -69,8 +76,22 @@ public class MessagesPage extends BasePage
 				link.add(new Label("messageId",message.getMessageId()));
 				item.add(link);
 				item.add(new Label("messageNr",message.getMessageNr()));
-				item.add(new Label("conversationId",message.getConversationId()));
-				link = new Link<Void>("viewRef")
+				link = new Link<Void>("filterConversationId")
+				{
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					public void onClick()
+					{
+						EbMSMessageFilter filter = new EbMSMessageFilter();
+						filter.setConversationId(message.getConversationId());
+						setResponsePage(new MessagesPage(filter)); //,MessagesPage.this
+					}
+				};
+				link.add(new Label("conversationId",message.getConversationId()));
+				link.setEnabled(MessagesPage.this.filter.getConversationId() == null);
+				item.add(link);
+				link = new Link<Void>("viewRefToMessageId")
 				{
 					private static final long serialVersionUID = 1L;
 

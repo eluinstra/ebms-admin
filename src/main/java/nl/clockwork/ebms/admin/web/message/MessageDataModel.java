@@ -31,6 +31,7 @@ public class MessageDataModel extends LoadableDetachableModel<EbMSMessage>
 	{
 		this(ebMSDAO,message.getMessageId(),message.getMessageNr());
 	}
+
 	public MessageDataModel(EbMSDAO ebMSDAO, String messageId, int messageNr)
 	{
 		if (messageId == null)

@@ -17,8 +17,11 @@ package nl.clockwork.ebms.admin.dao;
 
 import java.util.List;
 
+import org.apache.commons.csv.CSVPrinter;
+
 import nl.clockwork.ebms.admin.model.CPA;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
+import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
 
 public interface EbMSDAO
 {
@@ -32,7 +35,10 @@ public interface EbMSDAO
 	EbMSMessage getMessage(String messageId);
 	EbMSMessage getMessage(String messageId, int messageNr);
 	int getMessageCount();
+	int getMessageCount(EbMSMessageFilter filter);
 	List<EbMSMessage> getMessages(long first, long count);
+	List<EbMSMessage> getMessages(EbMSMessageFilter filter, long first, long count);
+	void printMessagesToCSV(CSVPrinter printer, EbMSMessageFilter filter);
 	void insert(EbMSMessage message);
 	void update(EbMSMessage message);
 	void delete(EbMSMessage message);

@@ -46,7 +46,7 @@ public class MessagePage extends BasePage
 		add(new Label("messageId",message.getMessageId()));
 		add(new Label("messageNr",message.getMessageNr()));
 		add(new Label("conversationId",message.getConversationId()));
-		Link<Void> link = new Link<Void>("viewRef")
+		Link<Void> link = new Link<Void>("viewRefToMessageId")
 		{
 			private static final long serialVersionUID = 1L;
 
@@ -93,10 +93,10 @@ public class MessagePage extends BasePage
 				@Override
 				protected void populateItem(ListItem<EbMSEvent> item)
 				{
-					item.add(DateLabel.forDatePattern("time",new Model<Date>(message.getTimestamp()),Constants.DATETIME_FORMAT));
+					item.add(DateLabel.forDatePattern("time",new Model<Date>(item.getModelObject().getTime()),Constants.DATETIME_FORMAT));
 					item.add(new Label("type"));
 					item.add(new Label("status"));
-					item.add(DateLabel.forDatePattern("statusTime",new Model<Date>(message.getTimestamp()),Constants.DATETIME_FORMAT));
+					item.add(DateLabel.forDatePattern("statusTime",new Model<Date>(item.getModelObject().getStatusTime()),Constants.DATETIME_FORMAT));
 					item.add(new Label("uri"));
 				}
 			}

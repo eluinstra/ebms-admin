@@ -28,16 +28,18 @@ public class MessageDataProvider implements IDataProvider<EbMSMessage>
 {
 	private static final long serialVersionUID = 1L;
 	private EbMSDAO ebMSDAO;
+	private EbMSMessageFilter filter;
 
-	public MessageDataProvider(EbMSDAO ebMSDAO)
+	public MessageDataProvider(EbMSDAO ebMSDAO, EbMSMessageFilter filter)
 	{
 		this.ebMSDAO = ebMSDAO;
+		this.filter = filter;
 	}
 	
 	@Override
 	public Iterator<? extends EbMSMessage> iterator(long first, long count)
 	{
-		return ebMSDAO.getMessages(first,count).iterator();
+		return ebMSDAO.getMessages(filter,first,count).iterator();
 	}
 
 	@Override
@@ -60,7 +62,7 @@ public class MessageDataProvider implements IDataProvider<EbMSMessage>
 	@Override
 	public long size()
 	{
-		return (int)ebMSDAO.getMessageCount();
+		return (int)ebMSDAO.getMessageCount(filter);
 	}
 
 	@Override
