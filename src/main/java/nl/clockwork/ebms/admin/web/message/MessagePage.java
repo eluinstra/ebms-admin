@@ -76,7 +76,7 @@ public class MessagePage extends BasePage
 				protected void populateItem(ListItem<EbMSAttachment> item)
 				{
 					item.add(new Label("name"));
-					DownloadEbMSAttachmentLink link = new DownloadEbMSAttachmentLink("download",item.getModelObject());
+					DownloadEbMSAttachmentLink link = new DownloadEbMSAttachmentLink("downloadAttachment",item.getModelObject());
 					link.add(new Label("contentId"));
 					item.add(link);
 					item.add(new Label("contentType"));
