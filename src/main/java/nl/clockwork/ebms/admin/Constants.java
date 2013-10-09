@@ -17,5 +17,5 @@ package nl.clockwork.ebms.admin;
 
 public class Constants
 {
-	public final static String DATETIME_FORMAT = "hh:mm:ss dd-MM-yyyy";
+	public final static String DATETIME_FORMAT = "dd-MM-yyyy hh:mm:ss";
 }
