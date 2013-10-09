@@ -51,50 +51,58 @@ public class DownloadEbMSMessagesCSVLink extends Link<Void>
 	@Override
 	public void onClick()
 	{
-		final ByteArrayOutputStream output = new ByteArrayOutputStream();
-		CSVPrinter printer = new CSVPrinter(new OutputStreamWriter(output),CSVFormat.DEFAULT);
-		ebMSDAO.printMessagesToCSV(printer,filter);
-
-		IResourceStream resourceStream = new AbstractResourceStream()
+		try
 		{
-			private static final long serialVersionUID = 1L;
+			final ByteArrayOutputStream output = new ByteArrayOutputStream();
+			CSVPrinter printer = new CSVPrinter(new OutputStreamWriter(output),CSVFormat.DEFAULT);
+			ebMSDAO.printMessagesToCSV(printer,filter);
+			printer.close();
 
-			@Override
-			public String getContentType()
+			IResourceStream resourceStream = new AbstractResourceStream()
 			{
-				return "text/csv";
-			}
-			
-			@Override
-			public Bytes length()
-			{
-				return Bytes.bytes(output.size());
-			}
-			
-			@Override
-			public InputStream getInputStream() throws ResourceStreamNotFoundException
-			{
-				return new ByteArrayInputStream(output.toByteArray());
-			}
-			
-			@Override
-			public void close() throws IOException
-			{
-			}
-		}; 
+				private static final long serialVersionUID = 1L;
 
-		getRequestCycle().scheduleRequestHandlerAfterCurrent(
-			new ResourceStreamRequestHandler(resourceStream)
-			{
 				@Override
-				public void respond(IRequestCycle requestCycle)
+				public String getContentType()
 				{
-					super.respond(requestCycle);
+					return "text/csv";
 				}
-			}
-			.setFileName("EbMSMessages.csv")
-			.setContentDisposition(ContentDisposition.ATTACHMENT)
-		);
+				
+				@Override
+				public Bytes length()
+				{
+					return Bytes.bytes(output.size());
+				}
+				
+				@Override
+				public InputStream getInputStream() throws ResourceStreamNotFoundException
+				{
+					return new ByteArrayInputStream(output.toByteArray());
+				}
+				
+				@Override
+				public void close() throws IOException
+				{
+				}
+			}; 
+
+			getRequestCycle().scheduleRequestHandlerAfterCurrent(
+				new ResourceStreamRequestHandler(resourceStream)
+				{
+					@Override
+					public void respond(IRequestCycle requestCycle)
+					{
+						super.respond(requestCycle);
+					}
+				}
+				.setFileName("EbMSMessages.csv")
+				.setContentDisposition(ContentDisposition.ATTACHMENT)
+			);
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
 }
