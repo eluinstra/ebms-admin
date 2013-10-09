@@ -23,6 +23,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import nl.clockwork.ebms.Constants;
 import nl.clockwork.ebms.Constants.EbMSEventStatus;
@@ -32,9 +34,12 @@ import nl.clockwork.ebms.admin.model.CPA;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSEvent;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
+import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
+import nl.clockwork.ebms.dao.DAOException;
 
 import org.apache.commons.csv.CSVPrinter;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -298,50 +303,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 	
 	@Override
-	public void printMessagesToCSV(final CSVPrinter printer, EbMSMessageFilter filter)
-	{
-		List<Object> parameters = new ArrayList<Object>();
-		jdbcTemplate.query(
-			EbMSMessageRowMapper.getBaseQuery() +
-			" where 1 = 1" +
-			getMessageFilter(filter,parameters) +
-			" order by time_stamp desc",
-			parameters.toArray(new Object[0]),
-			new ParameterizedRowMapper<Object>()
-			{
-				@Override
-				public Object mapRow(ResultSet rs, int rowNum) throws SQLException
-				{
-					try
-					{
-						printer.print(rs.getString("message_id"));
-						printer.print(rs.getInt("message_nr"));
-						printer.print(rs.getLong("sequence_nr"));
-						printer.print(rs.getString("ref_to_message_id"));
-						printer.print(rs.getString("conversation_id"));
-						printer.print(rs.getTimestamp("time_stamp"));
-						printer.print(rs.getTimestamp("time_to_live"));
-						printer.print(rs.getString("cpa_id"));
-						printer.print(rs.getString("from_role"));
-						printer.print(rs.getString("to_role"));
-						printer.print(rs.getString("service"));
-						printer.print(rs.getString("action"));
-						printer.print(rs.getObject("status") == null ? null : EbMSMessageStatus.get(rs.getInt("status")));
-						printer.print(rs.getTimestamp("status_time"));
-						printer.println();
-						return null;
-					}
-					catch (IOException e)
-					{
-						throw new SQLException(e);
-					}
-				}
-				
-			}
-		);
-	}
-
-	@Override
 	public void insert(final EbMSMessage message)
 	{
 		transactionTemplate.execute(
@@ -571,6 +532,123 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			);
 	}
 
+	@Override
+	public void printMessagesToCSV(final CSVPrinter printer, EbMSMessageFilter filter)
+	{
+		List<Object> parameters = new ArrayList<Object>();
+		jdbcTemplate.query(
+			EbMSMessageRowMapper.getBaseQuery() +
+			" where 1 = 1" +
+			getMessageFilter(filter,parameters) +
+			" order by time_stamp desc",
+			parameters.toArray(new Object[0]),
+			new ParameterizedRowMapper<Object>()
+			{
+				@Override
+				public Object mapRow(ResultSet rs, int rowNum) throws SQLException
+				{
+					try
+					{
+						printer.print(rs.getString("message_id"));
+						printer.print(rs.getInt("message_nr"));
+						printer.print(rs.getLong("sequence_nr"));
+						printer.print(rs.getString("ref_to_message_id"));
+						printer.print(rs.getString("conversation_id"));
+						printer.print(rs.getTimestamp("time_stamp"));
+						printer.print(rs.getTimestamp("time_to_live"));
+						printer.print(rs.getString("cpa_id"));
+						printer.print(rs.getString("from_role"));
+						printer.print(rs.getString("to_role"));
+						printer.print(rs.getString("service"));
+						printer.print(rs.getString("action"));
+						printer.print(rs.getObject("status") == null ? null : EbMSMessageStatus.get(rs.getInt("status")));
+						printer.print(rs.getTimestamp("status_time"));
+						printer.println();
+						return null;
+					}
+					catch (IOException e)
+					{
+						throw new SQLException(e);
+					}
+				}
+				
+			}
+		);
+	}
+
+	@Override
+	public void writeMessageToZip(String messageId, int messageNr, final ZipOutputStream zip)
+	{
+		try
+		{
+			jdbcTemplate.queryForObject(
+				"select content" + 
+				" from ebms_message" + 
+				" where message_id = ?" +
+				" and message_nr = ?",
+				new ParameterizedRowMapper<Object>()
+				{
+					@Override
+					public Object mapRow(ResultSet rs, int rowNum) throws SQLException
+					{
+						try
+						{
+							ZipEntry entry = new ZipEntry("message.xml");
+							zip.putNextEntry(entry);
+							zip.write(rs.getString("content").getBytes());
+							zip.closeEntry();
+							return null;
+						}
+						catch (IOException e)
+						{
+							throw new SQLException(e);
+						}
+					}
+				},
+				messageId,
+				messageNr
+			);
+
+			jdbcTemplate.query(
+				"select name, content_id, content_type, content" + 
+				" from ebms_attachment" + 
+				" where message_id = ?" +
+				" and message_nr = ?",
+				new ParameterizedRowMapper<Object>()
+				{
+					@Override
+					public Object mapRow(ResultSet rs, int rowNum) throws SQLException
+					{
+						try
+						{
+							ZipEntry entry = new ZipEntry(rs.getString("name") == null ? rs.getString("content_id") + Utils.getFileExtension(rs.getString("content_type")) : rs.getString("name"));
+							entry.setComment("Content-Type: " + rs.getString("content_type"));
+							zip.putNextEntry(entry);
+							zip.write(rs.getBytes("content"));
+							zip.closeEntry();
+							return null;
+						}
+						catch (IOException e)
+						{
+							throw new SQLException(e);
+						}
+					}
+				},
+				messageId,
+				messageNr
+			);
+			zip.close();
+		}
+		catch (DataAccessException e)
+		{
+			throw new DAOException(e);
+		}
+		catch (IOException e)
+		{
+			throw new DAOException(e);
+		}
+	}
+	
 	protected String getMessageFilter(EbMSMessageFilter messageFilter, List<Object> parameters)
 	{
 		StringBuffer result = new StringBuffer();

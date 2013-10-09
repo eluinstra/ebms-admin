@@ -24,6 +24,7 @@ import nl.clockwork.ebms.admin.model.EbMSEvent;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.DownloadEbMSAttachmentLink;
+import nl.clockwork.ebms.admin.web.DownloadEbMSMessageLink;
 
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.WebPage;
@@ -115,6 +116,7 @@ public class MessagePage extends BasePage
 				setResponsePage(responsePage);
 			}
 		});
+		add(new DownloadEbMSMessageLink("download",message));
 	}
 	
 	@Override

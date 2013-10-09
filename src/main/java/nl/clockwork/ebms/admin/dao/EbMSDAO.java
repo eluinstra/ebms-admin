@@ -16,6 +16,7 @@
 package nl.clockwork.ebms.admin.dao;
 
 import java.util.List;
+import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.csv.CSVPrinter;
 
@@ -38,8 +39,10 @@ public interface EbMSDAO
 	int getMessageCount(EbMSMessageFilter filter);
 	List<EbMSMessage> getMessages(long first, long count);
 	List<EbMSMessage> getMessages(EbMSMessageFilter filter, long first, long count);
-	void printMessagesToCSV(CSVPrinter printer, EbMSMessageFilter filter);
 	void insert(EbMSMessage message);
 	void update(EbMSMessage message);
 	void delete(EbMSMessage message);
+
+	void writeMessageToZip(String messageId, int messageNr, ZipOutputStream stream);
+	void printMessagesToCSV(CSVPrinter printer, EbMSMessageFilter filter);
 }
