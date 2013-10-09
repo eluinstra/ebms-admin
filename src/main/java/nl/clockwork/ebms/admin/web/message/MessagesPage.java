@@ -27,6 +27,7 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.repeater.Item;
@@ -50,6 +51,11 @@ public class MessagesPage extends BasePage
 	}
 
 	public MessagesPage(EbMSMessageFilter filter)
+	{
+		this(filter,null);
+	}
+
+	public MessagesPage(EbMSMessageFilter filter, final WebPage responsePage)
 	{
 		this.filter = filter;
 		WebMarkupContainer container = new WebMarkupContainer("container");
@@ -86,7 +92,7 @@ public class MessagesPage extends BasePage
 					{
 						EbMSMessageFilter filter = new EbMSMessageFilter();
 						filter.setConversationId(message.getConversationId());
-						setResponsePage(new MessagesPage(filter)); //,MessagesPage.this
+						setResponsePage(new MessagesPage(filter,MessagesPage.this));
 					}
 				};
 				link.add(new Label("conversationId",message.getConversationId()));
@@ -130,7 +136,17 @@ public class MessagesPage extends BasePage
 		container.add(messages);
 		add(container);
 		add(new AjaxPagingNavigator("navigator",messages));
-		add(new DownloadEbMSMessagesCSVLink("downloadCSV",ebMSDAO,filter));
+		add(new Link<Object>("back")
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick()
+			{
+				setResponsePage(responsePage);
+			}
+		}.setVisible(responsePage != null));
+		add(new DownloadEbMSMessagesCSVLink("download",ebMSDAO,filter));
 	}
 
 	@Override
