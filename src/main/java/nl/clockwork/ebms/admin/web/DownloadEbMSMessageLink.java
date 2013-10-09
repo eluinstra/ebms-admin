@@ -79,7 +79,7 @@ public class DownloadEbMSMessageLink extends Link<Void>
 						super.respond(requestCycle);
 					}
 				}
-				.setFileName("EbMSMessages.zip")
+				.setFileName("EbMSMessage.zip")
 				.setContentDisposition(ContentDisposition.ATTACHMENT)
 			);
 		}
