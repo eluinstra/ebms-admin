@@ -637,13 +637,8 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				messageId,
 				messageNr
 			);
-			zip.close();
 		}
 		catch (DataAccessException e)
-		{
-			throw new DAOException(e);
-		}
-		catch (IOException e)
 		{
 			throw new DAOException(e);
 		}

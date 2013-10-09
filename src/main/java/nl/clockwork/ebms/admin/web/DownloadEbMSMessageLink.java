@@ -25,8 +25,6 @@ import java.util.zip.ZipOutputStream;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
@@ -38,7 +36,6 @@ import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 
 public class DownloadEbMSMessageLink extends Link<Void>
 {
-	protected transient Log logger = LogFactory.getLog(this.getClass());
 	private static final long serialVersionUID = 1L;
 	private EbMSMessage message;
 
@@ -56,6 +53,7 @@ public class DownloadEbMSMessageLink extends Link<Void>
 			final ByteArrayOutputStream output = new ByteArrayOutputStream();
 			ZipOutputStream zip = new ZipOutputStream(output);
 			writeMessageToZip(message,zip);
+			zip.close();
 
 			IResourceStream resourceStream = new AbstractResourceStream()
 			{
@@ -100,7 +98,7 @@ public class DownloadEbMSMessageLink extends Link<Void>
 		}
 		catch (IOException e)
 		{
-			logger.error("",e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -118,7 +116,6 @@ public class DownloadEbMSMessageLink extends Link<Void>
 			zip.write(attachment.getContent());
 			zip.closeEntry();
 		}
-		zip.close();
 	}
 
 }
