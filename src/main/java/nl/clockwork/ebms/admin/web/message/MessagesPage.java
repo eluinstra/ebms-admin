@@ -21,6 +21,7 @@ import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.DownloadEbMSMessagesCSVLink;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
@@ -129,6 +130,7 @@ public class MessagesPage extends BasePage
 		container.add(messages);
 		add(container);
 		add(new AjaxPagingNavigator("navigator",messages));
+		add(new DownloadEbMSMessagesCSVLink("downloadCSV",ebMSDAO,filter));
 	}
 
 	@Override

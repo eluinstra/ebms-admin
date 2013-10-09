@@ -305,7 +305,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			EbMSMessageRowMapper.getBaseQuery() +
 			" where 1 = 1" +
 			getMessageFilter(filter,parameters) +
-			" order by time_stamp desc" +
+			" order by time_stamp desc",
 			parameters.toArray(new Object[0]),
 			new ParameterizedRowMapper<Object>()
 			{
@@ -376,7 +376,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 										"status," +
 										"status_time" +
 									") values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-									//new String[]{"id"}
 									new int[]{5,6}
 								);
 								ps.setTimestamp(1,new Timestamp(message.getTimestamp().getTime()));
