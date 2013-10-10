@@ -26,23 +26,23 @@ import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
+import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 
-public class DownloadEbMSMessageLinkX extends Link<Void>
+public class DownloadEbMSMessageLinkX extends Link<EbMSMessage>
 {
 	private static final long serialVersionUID = 1L;
-	private EbMSMessage message;
 
 	public DownloadEbMSMessageLinkX(String id, EbMSMessage message)
 	{
-		super(id,null);
-		this.message = message;
+		super(id,Model.of(Args.notNull(message,"message")));
 	}
 
 	@Override
@@ -50,6 +50,7 @@ public class DownloadEbMSMessageLinkX extends Link<Void>
 	{
 		try
 		{
+			EbMSMessage message = getModelObject();
 			final ByteArrayOutputStream output = new ByteArrayOutputStream();
 			ZipOutputStream zip = new ZipOutputStream(output);
 			writeMessageToZip(message,zip);

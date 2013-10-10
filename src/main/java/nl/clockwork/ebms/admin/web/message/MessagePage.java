@@ -77,7 +77,7 @@ public class MessagePage extends BasePage
 				protected void populateItem(ListItem<EbMSAttachment> item)
 				{
 					item.add(new Label("name"));
-					DownloadEbMSAttachmentLink link = new DownloadEbMSAttachmentLink("downloadAttachment",item.getModelObject());
+					DownloadEbMSAttachmentLink link = new DownloadEbMSAttachmentLink("downloadAttachment",ebMSDAO,item.getModelObject());
 					link.add(new Label("contentId"));
 					item.add(link);
 					item.add(new Label("contentType"));
@@ -116,7 +116,7 @@ public class MessagePage extends BasePage
 				setResponsePage(responsePage);
 			}
 		});
-		add(new DownloadEbMSMessageLink("download",ebMSDAO,message.getMessageId(),message.getMessageNr()));
+		add(new DownloadEbMSMessageLink("download",ebMSDAO,message));
 	}
 	
 	@Override

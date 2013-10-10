@@ -21,6 +21,7 @@ import java.util.zip.ZipOutputStream;
 import org.apache.commons.csv.CSVPrinter;
 
 import nl.clockwork.ebms.admin.model.CPA;
+import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
 
@@ -43,6 +44,8 @@ public interface EbMSDAO
 	void update(EbMSMessage message);
 	void delete(EbMSMessage message);
 
+	EbMSAttachment getAttachment(String messageId, int messageNr, String contentId);
+	
 	void writeMessageToZip(String messageId, int messageNr, ZipOutputStream stream);
 	void printMessagesToCSV(CSVPrinter printer, EbMSMessageFilter filter);
 }

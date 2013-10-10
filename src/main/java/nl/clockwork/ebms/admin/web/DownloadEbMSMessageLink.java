@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.util.zip.ZipOutputStream;
 
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
+import nl.clockwork.ebms.admin.model.EbMSMessage;
 
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.request.IRequestCycle;
@@ -38,6 +39,11 @@ public class DownloadEbMSMessageLink extends Link<Void>
 	private EbMSDAO ebMSDAO;
 	private String messageId;
 	private int messageNr;
+
+	public DownloadEbMSMessageLink(String id, EbMSDAO ebMSDAO, EbMSMessage message)
+	{
+		this(id,ebMSDAO,message.getMessageId(),message.getMessageNr());
+	}
 
 	public DownloadEbMSMessageLink(String id, EbMSDAO ebMSDAO, String messageId, int messageNr)
 	{
