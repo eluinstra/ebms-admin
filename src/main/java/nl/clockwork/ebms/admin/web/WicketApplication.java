@@ -18,10 +18,8 @@ package nl.clockwork.ebms.admin.web;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.clockwork.ebms.admin.web.cpa.CPAsPage;
 import nl.clockwork.ebms.admin.web.menu.MenuItem;
 import nl.clockwork.ebms.admin.web.menu.MenuLinkItem;
-import nl.clockwork.ebms.admin.web.message.MessagesPage;
 
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.protocol.http.WebApplication;
@@ -42,7 +40,7 @@ public class WicketApplication extends WebApplication
 		//menu.add(home);
 		
 		MenuItem cpa = new MenuItem("1","cpaService");
-		new MenuLinkItem(cpa,"1","cpas",HomePage.class);
+		new MenuLinkItem(cpa,"1","cpas",nl.clockwork.ebms.admin.web.service.cpa.CPAsPage.class);
 		menu.add(cpa);
 
 		MenuItem message = new MenuItem("2","messageService");
@@ -51,8 +49,8 @@ public class WicketApplication extends WebApplication
 		menu.add(message);
 
 		MenuItem advanced = new MenuItem("3","advanced");
-		new MenuLinkItem(advanced,"1","cpas",CPAsPage.class);
-		new MenuLinkItem(advanced,"2","messages",MessagesPage.class);
+		new MenuLinkItem(advanced,"1","cpas",nl.clockwork.ebms.admin.web.cpa.CPAsPage.class);
+		new MenuLinkItem(advanced,"2","messages",nl.clockwork.ebms.admin.web.message.MessagesPage.class);
 		menu.add(advanced);
 	}
 	
