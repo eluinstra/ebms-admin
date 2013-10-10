@@ -116,7 +116,7 @@ public class MessagePage extends BasePage
 				setResponsePage(responsePage);
 			}
 		});
-		add(new DownloadEbMSMessageLink("download",message));
+		add(new DownloadEbMSMessageLink("download",ebMSDAO,message.getMessageId(),message.getMessageNr()));
 	}
 	
 	@Override
