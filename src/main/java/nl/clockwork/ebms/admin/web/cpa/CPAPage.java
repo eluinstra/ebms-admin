@@ -40,7 +40,7 @@ public class CPAPage extends BasePage
 			@Override
 			public void onClick()
 			{
-				//setResponsePage(new MessageEditPage(ebMSDAO.getCPA(cpa.getId()),CPAPage.this));
+				//setResponsePage(new CPAEditPage(ebMSDAO.getCPA(cpa.getId()),CPAPage.this));
 				setResponsePage(new CPAEditPage(cpa,CPAPage.this));
 			}
 		});

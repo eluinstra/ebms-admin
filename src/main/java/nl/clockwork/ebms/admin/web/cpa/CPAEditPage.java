@@ -47,12 +47,12 @@ public class CPAEditPage extends BasePage
 		this(new CPA(),true,responsePage);
 	}
 	
-	public CPAEditPage(final CPA cpa, WebPage responsePage)
+	public CPAEditPage(CPA cpa, WebPage responsePage)
 	{
 		this(cpa,false,responsePage);
 	}	
 	
-	protected CPAEditPage(final CPA cpa, boolean isNew, WebPage responsePage)
+	protected CPAEditPage(CPA cpa, boolean isNew, WebPage responsePage)
 	{
 		add(new FeedbackPanel("feedback"));
 		add(new EditCPAForm("editCPAForm",cpa,isNew,responsePage));
@@ -123,8 +123,8 @@ public class CPAEditPage extends BasePage
 				{
 					try
 					{
-						CPA service = (CPA)getParent().getDefaultModelObject();
-						ebMSDAO.delete(service);
+						CPA cpa = (CPA)getParent().getDefaultModelObject();
+						ebMSDAO.delete(cpa);
 						setResponsePage(new CPAsPage());
 					}
 					catch (Exception e)
