@@ -1,12 +1,9 @@
-- cpa and message services
+- message services
 - traffic overview
-- message conversation overview
 - add: create properties file
-- use jdo for standard crud functionality
 - add breadcrumbs
 - add about
 - add help
 
-- check DataModel and DataProviders
-
 - replace current menu with dropdown menu
+	- for nested panels see: nested - Trees and nested lists.
