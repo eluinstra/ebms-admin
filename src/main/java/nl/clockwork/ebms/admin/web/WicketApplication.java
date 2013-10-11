@@ -36,9 +36,13 @@ public class WicketApplication extends WebApplication
 	
 	public WicketApplication()
 	{
-		//MenuItem home = new MenuLinkItem("0","Home",HomePage.class);
-		//menu.add(home);
+		MenuItem home = new MenuLinkItem("0","Home",HomePage.class);
+		menu.add(home);
 		
+		MenuItem ebms = new MenuItem("1","ebmsService");
+		new MenuLinkItem(ebms,"1","ping",nl.clockwork.ebms.admin.web.service.ebms.PingPage.class);
+		menu.add(ebms);
+
 		MenuItem cpa = new MenuItem("1","cpaService");
 		new MenuLinkItem(cpa,"1","cpas",nl.clockwork.ebms.admin.web.service.cpa.CPAsPage.class);
 		new MenuLinkItem(cpa,"2","cpa",nl.clockwork.ebms.admin.web.service.cpa.CPAUploadPage.class);
