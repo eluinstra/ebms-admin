@@ -89,16 +89,6 @@ public class CPAsPage extends BasePage
 		container.add(cpas);
 		add(container);
 		add(new AjaxPagingNavigator("navigator",cpas));
-		add(new Link<Void>("new")
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void onClick()
-			{
-				setResponsePage(new CPAEditPage(CPAsPage.this));
-			}
-		});
 	}
 
 	@Override

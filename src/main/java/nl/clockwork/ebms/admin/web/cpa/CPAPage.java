@@ -33,17 +33,6 @@ public class CPAPage extends BasePage
 		add(new Label("cpaId",cpa.getCpaId()));
 		//add(new MultiLineLabel("cpa",cpa.getCpa()));
 		add(new TextArea<String>("cpa",Model.of(cpa.getCpa())));
-		add(new Link<Void>("edit")
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void onClick()
-			{
-				//setResponsePage(new CPAEditPage(ebMSDAO.getCPA(cpa.getId()),CPAPage.this));
-				setResponsePage(new CPAEditPage(cpa,CPAPage.this));
-			}
-		});
 		add(new Link<Object>("back")
 		{
 			private static final long serialVersionUID = 1L;
