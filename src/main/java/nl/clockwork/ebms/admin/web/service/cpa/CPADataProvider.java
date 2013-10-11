@@ -21,7 +21,7 @@ import nl.clockwork.ebms.service.CPAService;
 
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.Model;
 
 public class CPADataProvider implements IDataProvider<String>
 {
@@ -42,17 +42,7 @@ public class CPADataProvider implements IDataProvider<String>
 	@Override
 	public IModel<String> model(final String cpaId)
 	{
-		return
-			new LoadableDetachableModel<String>()
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected String load()
-				{
-					return cpaId;
-				}
-			};
+		return Model.of(cpaId);
 	}
 
 	@Override
