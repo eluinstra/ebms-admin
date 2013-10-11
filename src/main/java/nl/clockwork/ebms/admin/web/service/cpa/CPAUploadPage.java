@@ -30,9 +30,11 @@ import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.io.IClusterable;
 
 public class CPAUploadPage extends BasePage
 {
@@ -50,27 +52,26 @@ public class CPAUploadPage extends BasePage
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("cpaEdit",this);
+		return getLocalizer().getString("cpaUpload",this);
 	}
 
-	public class EditUploadForm extends Form<Void>
+	public class EditUploadForm extends Form<EditUploadFormModel>
 	{
 		private static final long serialVersionUID = 1L;
-		private boolean overwrite;
 
 		public EditUploadForm(String id)
 		{
-			super(id);
+			super(id,new CompoundPropertyModel<EditUploadFormModel>(new EditUploadFormModel()));
 			setMultiPart(true);
 
-			final FileUploadField cpaFile = new FileUploadField("cpaFile");
+			FileUploadField cpaFile = new FileUploadField("cpaFile");
 			cpaFile.setLabel(Model.of(getLocalizer().getString("lbl.cpa",this)));
 			cpaFile.setRequired(true);
 			MarkupContainer cpaFeedback = new FormComponentFeedbackBorder("cpaFeedback");
 			add(cpaFeedback);
 			cpaFeedback.add(cpaFile);
 			
-			final CheckBox overwrite = new CheckBox("overwrite",Model.of(this.overwrite));
+			CheckBox overwrite = new CheckBox("overwrite");
 			overwrite.setLabel(Model.of(getLocalizer().getString("lbl.overwrite",this)));
 			add(overwrite);
 
@@ -83,7 +84,7 @@ public class CPAUploadPage extends BasePage
 				{
 					try
 					{
-						final List<FileUpload> files = cpaFile.getFileUploads();
+						final List<FileUpload> files = EditUploadForm.this.getModelObject().cpaFile;
 						if (files != null && files.size() == 1)
 						{
 							FileUpload file = files.get(0);
@@ -111,13 +112,13 @@ public class CPAUploadPage extends BasePage
 				{
 					try
 					{
-						final List<FileUpload> files = cpaFile.getFileUploads();
+						final List<FileUpload> files = EditUploadForm.this.getModelObject().cpaFile;
 						if (files != null && files.size() == 1)
 						{
 							FileUpload file = files.get(0);
 							//String contentType = file.getContentType();
 							//FIXME char encoding
-							cpaClient.insertCPA(new String(file.getBytes()),overwrite.getModelObject());
+							cpaClient.insertCPA(new String(file.getBytes()),EditUploadForm.this.getModelObject().isOverwrite());
 						}
 						setResponsePage(new CPAsPage());
 					}
@@ -130,6 +131,33 @@ public class CPAUploadPage extends BasePage
 			};
 			setDefaultButton(upload);
 			add(upload);
+		}
+	}
+	
+	public class EditUploadFormModel implements IClusterable
+	{
+		private static final long serialVersionUID = 1L;
+		private List<FileUpload> cpaFile;
+		private boolean overwrite;
+		
+		public List<FileUpload> getCpaFile()
+		{
+			return cpaFile;
+		}
+		
+		public void setCpaFile(List<FileUpload> cpaFile)
+		{
+			this.cpaFile = cpaFile;
+		}
+		
+		public boolean isOverwrite()
+		{
+			return overwrite;
+		}
+		
+		public void setOverwrite(boolean overwrite)
+		{
+			this.overwrite = overwrite;
 		}
 	}
 
