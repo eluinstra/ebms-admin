@@ -4,6 +4,8 @@
 - add: create properties file
 - use jdo for standard crud functionality
 - add breadcrumbs
+- add about
+- add help
 
 - check DataModel and DataProviders
 
