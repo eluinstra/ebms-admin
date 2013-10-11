@@ -5,4 +5,6 @@
 - use jdo for standard crud functionality
 - add breadcrumbs
 
+- check DataModel and DataProviders
+
 - replace current menu with dropdown menu
