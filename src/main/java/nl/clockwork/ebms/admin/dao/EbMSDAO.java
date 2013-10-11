@@ -29,6 +29,7 @@ public interface EbMSDAO
 {
 	CPA getCPA(String cpaId);
 	int getCPACount();
+	List<String> getCPAIds();
 	List<CPA> getCPAs(long first, long count);
 	void insert(CPA cpa);
 	void update(CPA cpa);

@@ -160,6 +160,17 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 	
 	@Override
+	public List<String> getCPAIds()
+	{
+		return jdbcTemplate.queryForList(
+			"select cpa_id" +
+			" from cpa" +
+			" order by cpa_id",
+			String.class
+		);
+	}
+	
+	@Override
 	public List<CPA> getCPAs(long first, long count)
 	{
 		return jdbcTemplate.query(
