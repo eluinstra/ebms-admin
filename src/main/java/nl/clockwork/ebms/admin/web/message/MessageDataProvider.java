@@ -22,7 +22,6 @@ import nl.clockwork.ebms.admin.model.EbMSMessage;
 
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
 
 public class MessageDataProvider implements IDataProvider<EbMSMessage>
 {
@@ -45,18 +44,7 @@ public class MessageDataProvider implements IDataProvider<EbMSMessage>
 	@Override
 	public IModel<EbMSMessage> model(EbMSMessage message)
 	{
-		final String messageId = message.getMessageId();
-		final int messageNr = message.getMessageNr();
-		return new LoadableDetachableModel<EbMSMessage>()
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected EbMSMessage load()
-			{
-				return ebMSDAO.getMessage(messageId,messageNr);
-			}
-		};
+		return new MessageDataModel(ebMSDAO,message);
 	}
 
 	@Override
