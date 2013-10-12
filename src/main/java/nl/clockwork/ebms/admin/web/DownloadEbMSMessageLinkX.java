@@ -93,7 +93,7 @@ public class DownloadEbMSMessageLinkX extends Link<EbMSMessage>
 						super.respond(requestCycle);
 					}
 				}
-				.setFileName("EbMSMessage.zip")
+				.setFileName("message." + message.getMessageId() + "." + message.getMessageNr() + ".zip")
 				.setContentDisposition(ContentDisposition.ATTACHMENT)
 			);
 		}
