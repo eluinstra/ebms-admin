@@ -16,7 +16,6 @@
 package nl.clockwork.ebms.admin.web;
 
 
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 public class HomePage extends BasePage
@@ -26,7 +25,6 @@ public class HomePage extends BasePage
 	public HomePage(final PageParameters parameters)
 	{
 		super(parameters);
-		add(new Label("message",getLocalizer().getString("home.message",this)));
 	}
 
 	@Override
