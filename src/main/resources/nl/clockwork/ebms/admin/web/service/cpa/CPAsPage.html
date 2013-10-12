@@ -10,17 +10,19 @@
 				<tr>
 					<th><wicket:message key="lbl.cpaId">Collaboration Protocol Agreement Id</wicket:message></th>
 					<th></th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody wicket:id="container">
 				<tr wicket:id="cpaIds">
 					<td><a href="#" wicket:id="view"><span wicket:id="cpaId">[cpaId]</span></a></td>
 					<td><input type="submit" wicket:id="delete" value="Delete"/></td>
+					<td><a href="#" wicket:id="downloadCPA"><wicket:message key="cmd.download">Download</wicket:message></a></td>
 				</tr>
 			</tbody>
 			<tfoot>
 				<tr>
-					<td colspan="2"><a href="#" wicket:id="new"><wicket:message key="cmd.new">New</wicket:message></a></td>
+					<td colspan="3"><a href="#" wicket:id="new"><wicket:message key="cmd.new">New</wicket:message></a></td>
 				</tr>
 			</tfoot>
 		</table>

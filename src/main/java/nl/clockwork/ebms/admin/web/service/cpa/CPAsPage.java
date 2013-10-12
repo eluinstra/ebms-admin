@@ -16,6 +16,7 @@
 package nl.clockwork.ebms.admin.web.service.cpa;
 
 import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.DownloadCPALink;
 import nl.clockwork.ebms.service.CPAService;
 
 import org.apache.commons.logging.Log;
@@ -109,6 +110,7 @@ public class CPAsPage extends BasePage
 							return (item.getIndex() % 2 == 0) ? "even" : "odd";
 						}
 					}));
+					item.add(new DownloadCPALink("downloadCPA",cpaClient,cpaId));
 				}
 			};
 			cpaIds.setOutputMarkupId(true);
