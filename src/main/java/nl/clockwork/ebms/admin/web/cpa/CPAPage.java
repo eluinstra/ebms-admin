@@ -31,7 +31,6 @@ public class CPAPage extends BasePage
 	public CPAPage(final CPA cpa, final WebPage responsePage)
 	{
 		add(new Label("cpaId",cpa.getCpaId()));
-		//add(new MultiLineLabel("cpa",cpa.getCpa()));
 		add(new TextArea<String>("cpa",Model.of(cpa.getCpa())));
 		add(new Link<Object>("back")
 		{
