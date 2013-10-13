@@ -17,6 +17,7 @@ package nl.clockwork.ebms.admin.web.message;
 
 import java.util.Date;
 
+import nl.clockwork.ebms.Constants.EbMSEventStatus;
 import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
@@ -26,7 +27,10 @@ import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.DownloadEbMSAttachmentLink;
 import nl.clockwork.ebms.admin.web.DownloadEbMSMessageLink;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -94,9 +98,23 @@ public class MessagePage extends BasePage
 				@Override
 				protected void populateItem(ListItem<EbMSEvent> item)
 				{
+					final ModalWindow errorMessageModalWindow = new ErrorMessageModalWindow("errorMessageWindow",item.getModelObject().getErrorMessage());
+					item.add(errorMessageModalWindow);
 					item.add(DateLabel.forDatePattern("time",new Model<Date>(item.getModelObject().getTime()),Constants.DATETIME_FORMAT));
 					item.add(new Label("type"));
-					item.add(new Label("status"));
+					AjaxLink<Void> link = new AjaxLink<Void>("showErrorMessageWindow")
+					{
+						private static final long serialVersionUID = 1L;
+
+						@Override
+						public void onClick(AjaxRequestTarget target)
+						{
+							errorMessageModalWindow.show(target);
+						}
+					};
+					link.setEnabled(EbMSEventStatus.FAILED.equals(item.getModelObject().getStatus()));
+					link.add(new Label("status"));
+					item.add(link);
 					item.add(DateLabel.forDatePattern("statusTime",new Model<Date>(item.getModelObject().getStatusTime()),Constants.DATETIME_FORMAT));
 					item.add(new Label("uri"));
 				}
@@ -125,4 +143,26 @@ public class MessagePage extends BasePage
 		return getLocalizer().getString("message",this);
 	}
 
+	public class ErrorMessageModalWindow extends ModalWindow
+	{
+		private static final long serialVersionUID = 1L;
+
+		public ErrorMessageModalWindow(String id, String errorMessage)
+		{
+			super(id);
+			setContent(new ErrorMessagePanel(this,Model.of(errorMessage)));
+			setTitle(getLocalizer().getString("eventError",this));
+			setCookieName("eventError");
+			setCloseButtonCallback(new ModalWindow.CloseButtonCallback()
+			{
+				private static final long serialVersionUID = 1L;
+
+				public boolean onCloseButtonClicked(AjaxRequestTarget target)
+				{
+					return true;
+				}
+			});
+		}
+	}
+	
 }
