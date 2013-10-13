@@ -28,7 +28,7 @@ import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 /**
  * Application object for your web application. If you want to run this application without deploying, run the Start class.
  * 
- * @see nl.clockwork.ebms.Start#main(String[])
+ * @see nl.clockwork.ebms.admin.Start#main(String[])
  */
 public class WicketApplication extends WebApplication
 {
@@ -39,23 +39,21 @@ public class WicketApplication extends WebApplication
 		MenuItem home = new MenuLinkItem("0","Home",HomePage.class);
 		menu.add(home);
 		
-		MenuItem ebms = new MenuItem("1","ebmsService");
-		new MenuLinkItem(ebms,"1","ping",nl.clockwork.ebms.admin.web.service.ebms.PingPage.class);
-		menu.add(ebms);
-
 		MenuItem cpa = new MenuItem("1","cpaService");
 		new MenuLinkItem(cpa,"1","cpas",nl.clockwork.ebms.admin.web.service.cpa.CPAsPage.class);
 		new MenuLinkItem(cpa,"2","cpa",nl.clockwork.ebms.admin.web.service.cpa.CPAUploadPage.class);
 		menu.add(cpa);
 
 		MenuItem message = new MenuItem("2","messageService");
-		new MenuLinkItem(message,"1","traffic",HomePage.class);
+		new MenuLinkItem(message,"1","ping",nl.clockwork.ebms.admin.web.service.ebms.PingPage.class);
 		new MenuLinkItem(message,"2","messages",nl.clockwork.ebms.admin.web.service.message.MessagesPage.class);
+		new MenuLinkItem(message,"3","message",HomePage.class);
 		menu.add(message);
 
 		MenuItem advanced = new MenuItem("3","advanced");
-		new MenuLinkItem(advanced,"1","cpas",nl.clockwork.ebms.admin.web.cpa.CPAsPage.class);
-		new MenuLinkItem(advanced,"2","messages",nl.clockwork.ebms.admin.web.message.MessagesPage.class);
+		new MenuLinkItem(advanced,"1","traffic",HomePage.class);
+		new MenuLinkItem(advanced,"2","cpas",nl.clockwork.ebms.admin.web.cpa.CPAsPage.class);
+		new MenuLinkItem(advanced,"3","messages",nl.clockwork.ebms.admin.web.message.MessagesPage.class);
 		menu.add(advanced);
 	}
 	
