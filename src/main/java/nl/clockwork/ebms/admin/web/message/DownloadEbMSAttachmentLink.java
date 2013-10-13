@@ -59,7 +59,7 @@ public class DownloadEbMSAttachmentLink extends Link<Void>
 	public void onClick()
 	{
 		final EbMSAttachment attachment = ebMSDAO.getAttachment(messageId,messageNr,contentId);
-		String fileName = UrlEncoder.QUERY_INSTANCE.encode(attachment.getName() == null ? "attachment" + Utils.getFileExtension(attachment.getContentType()) : attachment.getName(),getRequest().getCharset());
+		String fileName = UrlEncoder.QUERY_INSTANCE.encode(attachment.getName() == null ? attachment.getContentId() + Utils.getFileExtension(attachment.getContentType()) : attachment.getName(),getRequest().getCharset());
 		IResourceStream resourceStream = new AbstractResourceStream()
 		{
 			private static final long serialVersionUID = 1L;
