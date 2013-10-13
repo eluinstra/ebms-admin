@@ -48,7 +48,7 @@ public class CPADataProvider implements IDataProvider<String>
 	@Override
 	public long size()
 	{
-		return (int)cpaClient.getCPAIds().size();
+		return cpaClient.getCPAIds().size();
 	}
 
 	@Override
