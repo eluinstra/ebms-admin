@@ -13,44 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.clockwork.ebms.admin.web;
+package nl.clockwork.ebms.admin.web.message;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import nl.clockwork.ebms.admin.dao.EbMSDAO;
+import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
+import nl.clockwork.ebms.admin.web.Utils;
 
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
+import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 
-public class DownloadEbMSMessageLink extends Link<Void>
+public class DownloadEbMSMessageLinkX extends Link<EbMSMessage>
 {
 	private static final long serialVersionUID = 1L;
-	private EbMSDAO ebMSDAO;
-	private String messageId;
-	private int messageNr;
 
-	public DownloadEbMSMessageLink(String id, EbMSDAO ebMSDAO, EbMSMessage message)
+	public DownloadEbMSMessageLinkX(String id, EbMSMessage message)
 	{
-		this(id,ebMSDAO,message.getMessageId(),message.getMessageNr());
-	}
-
-	public DownloadEbMSMessageLink(String id, EbMSDAO ebMSDAO, String messageId, int messageNr)
-	{
-		super(id,null);
-		this.ebMSDAO = ebMSDAO;
-		this.messageId = messageId;
-		this.messageNr = messageNr;
+		super(id,Model.of(Args.notNull(message,"message")));
 	}
 
 	@Override
@@ -58,9 +51,10 @@ public class DownloadEbMSMessageLink extends Link<Void>
 	{
 		try
 		{
+			EbMSMessage message = getModelObject();
 			final ByteArrayOutputStream output = new ByteArrayOutputStream();
 			ZipOutputStream zip = new ZipOutputStream(output);
-			ebMSDAO.writeMessageToZip(messageId, messageNr,zip);
+			writeMessageToZip(message,zip);
 			zip.close();
 
 			IResourceStream resourceStream = new AbstractResourceStream()
@@ -100,13 +94,29 @@ public class DownloadEbMSMessageLink extends Link<Void>
 						super.respond(requestCycle);
 					}
 				}
-				.setFileName("message." + messageId + "." + messageNr + ".zip")
+				.setFileName("message." + message.getMessageId() + "." + message.getMessageNr() + ".zip")
 				.setContentDisposition(ContentDisposition.ATTACHMENT)
 			);
 		}
 		catch (IOException e)
 		{
 			throw new RuntimeException(e);
+		}
+	}
+
+	private void writeMessageToZip(EbMSMessage message, ZipOutputStream zip) throws IOException
+	{
+		ZipEntry entry = new ZipEntry("message.xml");
+		zip.putNextEntry(entry);
+		zip.write(message.getContent().getBytes());
+		zip.closeEntry();
+		for (EbMSAttachment attachment : message.getAttachments())
+		{
+			entry = new ZipEntry("attachments/" + (attachment.getName() == null ? attachment.getContentId() + Utils.getFileExtension(attachment.getContentType()) : attachment.getName()));
+			entry.setComment("Content-Type: " + attachment.getContentType());
+			zip.putNextEntry(entry);
+			zip.write(attachment.getContent());
+			zip.closeEntry();
 		}
 	}
 
