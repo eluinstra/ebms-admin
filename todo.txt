@@ -1,10 +1,11 @@
 - message services
+- improve message filters
 - traffic overview
 - add properties file creator (for ebms-core and ebms-admin)
 - add about
 - add help
-- add viewer for 'known'/common content types
-- add viewer for ebms message format???
+- add attachment viewers for 'known'/common content types
+- add viewers for ebms message format???
 - make menu extension point to add new pages??? 
 - add breadcrumbs???
 
