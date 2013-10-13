@@ -1,9 +1,13 @@
 - message services
 - traffic overview
-- add: create properties file
-- add breadcrumbs
+- add properties file creator (for ebms-core and ebms-admin)
 - add about
 - add help
+- add viewer for 'known'/common content types
+- add viewer for ebms message format???
+- make menu extension point to add new pages??? 
+- add breadcrumbs???
 
 - replace current menu with dropdown menu
 	- for nested panels see: nested - Trees and nested lists.
+- update ui by using bootstrap
