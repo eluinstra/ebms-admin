@@ -13,39 +13,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.clockwork.ebms.admin.web;
+package nl.clockwork.ebms.admin.web.message;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
+import nl.clockwork.ebms.admin.web.Utils;
 
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.encoding.UrlEncoder;
-import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 
-public class DownloadEbMSAttachmentLinkX extends Link<EbMSAttachment>
+public class DownloadEbMSAttachmentLink extends Link<Void>
 {
 	private static final long serialVersionUID = 1L;
+	private EbMSDAO ebMSDAO;
+	private String messageId;
+	private int messageNr;
+	private String contentId;
 
-	public DownloadEbMSAttachmentLinkX(String id, EbMSAttachment attachment)
+	public DownloadEbMSAttachmentLink(String id, EbMSDAO ebMSDAO, EbMSAttachment attachment)
 	{
-		super(id,Model.of(Args.notNull(attachment,"attachment")));
+		this(id,ebMSDAO,attachment.getMessage().getMessageId(),attachment.getMessage().getMessageNr(),attachment.getContentId());
+	}
+	
+	public DownloadEbMSAttachmentLink(String id, EbMSDAO ebMSDAO, String messageId, int messageNr, String contentId)
+	{
+		super(id,null);
+		this.ebMSDAO = ebMSDAO;
+		this.messageId = messageId;
+		this.messageNr = messageNr;
+		this.contentId = contentId;
 	}
 
 	@Override
 	public void onClick()
 	{
-		final EbMSAttachment attachment = getModelObject();
+		final EbMSAttachment attachment = ebMSDAO.getAttachment(messageId,messageNr,contentId);
 		String fileName = UrlEncoder.QUERY_INSTANCE.encode(attachment.getName() == null ? "attachment" + Utils.getFileExtension(attachment.getContentType()) : attachment.getName(),getRequest().getCharset());
 		IResourceStream resourceStream = new AbstractResourceStream()
 		{
