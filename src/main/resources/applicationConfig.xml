@@ -25,7 +25,6 @@
 		<property name="locations"> 
 			<list>
 				<value>classpath:default.properties</value>   
-				<value>file:${user.home}/.ebms/ebms-admin.properties</value>
 				<value>file:ebms-admin.properties</value>
 			</list>
 		</property>
