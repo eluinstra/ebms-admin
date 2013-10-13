@@ -42,7 +42,7 @@ public class DownloadEbMSMessagesCSVLink extends Link<Void>
 
 	public DownloadEbMSMessagesCSVLink(String id, EbMSDAO ebMSDAO, EbMSMessageFilter filter)
 	{
-		super(id,null);
+		super(id);
 		this.ebMSDAO = ebMSDAO;
 		this.filter = filter;
 	}
@@ -94,7 +94,7 @@ public class DownloadEbMSMessagesCSVLink extends Link<Void>
 						super.respond(requestCycle);
 					}
 				}
-				.setFileName("EbMSMessages.csv")
+				.setFileName("messages.csv")
 				.setContentDisposition(ContentDisposition.ATTACHMENT)
 			);
 		}
