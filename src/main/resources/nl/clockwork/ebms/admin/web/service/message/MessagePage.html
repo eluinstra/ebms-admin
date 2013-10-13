@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
+<body>
+<wicket:extend>
+	<table class="vertical">
+		<caption><wicket:message key="message">EbMS Message</wicket:message></caption>
+		<tbody>
+			<tr>
+				<th><wicket:message key="lbl.messageId">Message Id</wicket:message></th>
+				<td><span wicket:id="messageId">[messageId]</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.conversationId">Conversation Id</wicket:message></th>
+				<td><span wicket:id="conversationId">[conversationId]</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.refToMessageId">Ref To Message Id</wicket:message></th>
+				<td><a href="#" wicket:id="viewRefToMessageId"><span wicket:id="refToMessageId">[refToMessageId]</span></a></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.timestamp">Timestamp</wicket:message></th>
+				<td><span wicket:id="timestamp">[timestamp]</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.cpaId">CPA Id</wicket:message></th>
+				<td><span wicket:id="cpaId">[cpaId]</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.fromRole">From Role</wicket:message></th>
+				<td><span wicket:id="fromRole">[fromRole]</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.toRole">To Role</wicket:message></th>
+				<td><span wicket:id="toRole">[toRole]</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.service">Service</wicket:message></th>
+				<td><span wicket:id="service">[service]</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.action">Action</wicket:message></th>
+				<td><span wicket:id="action">[action]</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="lbl.dataSources">Data Sources</wicket:message></th>
+				<td>
+					<table>
+						<tr>
+							<th><wicket:message key="lbl.name">Name</wicket:message></th>
+							<th><wicket:message key="lbl.contentId">Content Id</wicket:message></th>
+							<th><wicket:message key="lbl.contentType">Content Type</wicket:message></th>
+						</tr>
+						<tr wicket:id="dataSources">
+							<td wicket:id="name">[name]</td>
+							<td><a href="#" wicket:id="downloadDataSource"><span wicket:id="contentId">[contentId]</span></a></td>
+							<td wicket:id="contentType">[contentType]</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="2"><a href="#" wicket:id="back"><wicket:message key="cmd.back">Back</wicket:message></a>&nbsp;<a href="#" wicket:id="download"><wicket:message key="cmd.download">Download</wicket:message></a></td>
+			</tr>
+		</tfoot>
+	</table>
+</wicket:extend>
+</body>
+</html>

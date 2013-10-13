@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
+<body>
+<wicket:extend>
+	<span wicket:id="navigator">[navigator]</span>
+	<table class="horizontal">
+		<caption><wicket:message key="messages">EbMS Messages</wicket:message></caption>
+		<thead>
+			<tr>
+				<th><wicket:message key="lbl.messageId">Message Id</wicket:message></th>
+			</tr>
+		</thead>
+		<tbody wicket:id="container">
+			<tr wicket:id="messages">
+				<td><a href="#" wicket:id="view"><span wicket:id="messageId">[messageId]</span></a></td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="12"><a href="#" wicket:id="back"><wicket:message key="cmd.back">Back</wicket:message></a>&nbsp;<a href="#" wicket:id="download"><wicket:message key="cmd.download">Download</wicket:message></a></td>
+			</tr>
+		</tfoot>
+	</table>
+</wicket:extend>
+</body>
+</html>

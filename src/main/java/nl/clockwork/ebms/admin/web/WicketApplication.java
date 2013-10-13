@@ -50,7 +50,7 @@ public class WicketApplication extends WebApplication
 
 		MenuItem message = new MenuItem("2","messageService");
 		new MenuLinkItem(message,"1","traffic",HomePage.class);
-		new MenuLinkItem(message,"2","new",HomePage.class);
+		new MenuLinkItem(message,"2","messages",nl.clockwork.ebms.admin.web.service.message.MessagesPage.class);
 		menu.add(message);
 
 		MenuItem advanced = new MenuItem("3","advanced");
