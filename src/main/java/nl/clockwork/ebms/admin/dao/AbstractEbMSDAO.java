@@ -16,11 +16,8 @@
 package nl.clockwork.ebms.admin.dao;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -42,12 +39,7 @@ import org.apache.commons.csv.CSVPrinter;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
 public abstract class AbstractEbMSDAO implements EbMSDAO
@@ -184,44 +176,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 
 	@Override
-	public void insert(CPA cpa)
-	{
-		jdbcTemplate.update
-		(
-			"insert into cpa (" +
-				"cpa_id," +
-				"cpa" +
-			") values (?,?)",
-			cpa.getCpaId(),
-			cpa.getCpa()
-		);
-	}
-
-	@Override
-	public void update(CPA cpa)
-	{
-		jdbcTemplate.update
-		(
-			"update cpa set" +
-			" cpa = ?" +
-			" where cpa_id = ?",
-			cpa.getCpa(),
-			cpa.getCpaId()
-		);
-	}
-
-	@Override
-	public void delete(CPA cpa)
-	{
-		jdbcTemplate.update
-		(
-			"delete from cpa" +
-			" where cpa_id = ?",
-			cpa.getCpaId()
-		);
-	}
-
-	@Override
 	public EbMSMessage getMessage(String messageId)
 	{
 		return getMessage(messageId,0);
@@ -249,12 +203,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 
 	@Override
-	public int getMessageCount()
-	{
-		return getMessageCount(null);
-	}
-
-	@Override
 	public int getMessageCount(EbMSMessageFilter filter)
 	{
 		List<Object> parameters = new ArrayList<Object>();
@@ -268,12 +216,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 	
 	@Override
-	public List<EbMSMessage> getMessages(long first, long count)
-	{
-		return getMessages(null,first,count);
-	}
-
-	@Override
 	public List<EbMSMessage> getMessages(EbMSMessageFilter filter, long first, long count)
 	{
 		List<Object> parameters = new ArrayList<Object>();
@@ -285,166 +227,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			" limit " + (first + count) + " offset " + first,
 			parameters.toArray(new Object[0]),
 			new EbMSMessageRowMapper()
-		);
-	}
-	
-	@Override
-	public void insert(final EbMSMessage message)
-	{
-		transactionTemplate.execute(
-			new TransactionCallbackWithoutResult()
-			{
-				@Override
-				public void doInTransactionWithoutResult(TransactionStatus status)
-				{
-					KeyHolder keyHolder = new GeneratedKeyHolder();
-					jdbcTemplate.update(
-						new PreparedStatementCreator()
-						{
-							
-							@Override
-							public PreparedStatement createPreparedStatement(Connection connection) throws SQLException
-							{
-								PreparedStatement ps = connection.prepareStatement
-								(
-									"insert into ebms_message (" +
-										"time_stamp," +
-										"cpa_id," +
-										"conversation_id," +
-										"sequence_nr," +
-										"message_id," +
-										"ref_to_message_id," +
-										"time_to_live," +
-										"from_role," +
-										"to_role," +
-										"service," +
-										"action," +
-										"content," +
-										"status," +
-										"status_time" +
-									") values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-									new int[]{5,6}
-								);
-								ps.setTimestamp(1,new Timestamp(message.getTimestamp().getTime()));
-								ps.setString(2,message.getCpaId());
-								ps.setString(3,message.getConversationId());
-								if (message.getSequenceNr() == null)
-									ps.setNull(4,java.sql.Types.BIGINT);
-								else
-									ps.setLong(4,message.getSequenceNr().longValue());
-								ps.setString(5,message.getMessageId());
-								ps.setString(6,message.getRefToMessageId());
-								ps.setTimestamp(7,message.getTimeToLive() == null ? null : new Timestamp(message.getTimeToLive().getTime()));
-								ps.setString(8,message.getFromRole());
-								ps.setString(9,message.getToRole());
-								ps.setString(11,message.getService());
-								ps.setString(12,message.getAction());
-								ps.setString(18,message.getContent());
-								if (message.getStatus() == null)
-									ps.setNull(19,java.sql.Types.INTEGER);
-								else
-									ps.setInt(19,message.getStatus().id());
-								ps.setTimestamp(20,message.getStatusTime() == null ? null : new Timestamp(message.getStatusTime().getTime()));
-								return ps;
-							}
-						},
-						keyHolder
-					);
-					message.setMessageNr((Integer)keyHolder.getKeys().get("message_nr"));
-					insertAttachments(message);
-					insertEvents(message);
-				}
-			}
-		);
-	}
-
-	@Override
-	public void update(final EbMSMessage message)
-	{
-		transactionTemplate.execute(
-			new TransactionCallbackWithoutResult()
-			{
-				@Override
-				public void doInTransactionWithoutResult(TransactionStatus status)
-				{
-					jdbcTemplate.update(
-						"update ebms_message set (" +
-							" time_stamp = ?," +
-							" cpa_id = ?," +
-							" conversation_id = ?," +
-							" sequence_nr = ?," +
-							" ref_to_message_id = ?," +
-							" time_to_live = ?," +
-							" from_role = ?," +
-							" to_role = ?," +
-							" service = ?," +
-							" action = ?," +
-							" content = ?," +
-							" status = ?," +
-							" status_time = ?" +
-							" where message_id = ?",
-							" and message_nr = ?",
-						message.getTimestamp(),
-						message.getCpaId(),
-						message.getConversationId(),
-						message.getSequenceNr(),
-						message.getRefToMessageId(),
-						message.getTimeToLive(),
-						message.getFromRole(),
-						message.getToRole(),
-						message.getService(),
-						message.getAction(),
-						message.getContent(),
-						message.getStatus(),
-						message.getStatusTime(),
-						message.getMessageId(),
-						message.getMessageNr()
-					);
-					deleteAttachments(message);
-					insertAttachments(message);
-					deleteEvents(message);
-					insertEvents(message);
-				}
-			}
-		);
-	}
-
-	@Override
-	public void delete(final EbMSMessage message)
-	{
-		transactionTemplate.execute(
-			new TransactionCallbackWithoutResult()
-			{
-				
-				@Override
-				protected void doInTransactionWithoutResult(TransactionStatus status)
-				{
-					jdbcTemplate.update
-					(
-						"delete from ebms_send_event" +
-						" where message_id = ?",
-						message.getMessageId()
-					);
-
-					jdbcTemplate.update
-					(
-						"delete from ebms_attachment" +
-						" where message_id = ?" +
-						" and message_nr = ?",
-						message.getMessageId(),
-						message.getMessageNr()
-					);
-
-					jdbcTemplate.update
-					(
-						"delete from ebms_message" +
-						" where message_id = ?" +
-						" and message_nr = ?",
-						message.getMessageId(),
-						message.getMessageNr()
-					);
-				}
-			}
 		);
 	}
 	

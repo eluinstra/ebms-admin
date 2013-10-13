@@ -31,19 +31,11 @@ public interface EbMSDAO
 	int getCPACount();
 	List<String> getCPAIds();
 	List<CPA> getCPAs(long first, long count);
-	void insert(CPA cpa);
-	void update(CPA cpa);
-	void delete(CPA cpa);
 
 	EbMSMessage getMessage(String messageId);
 	EbMSMessage getMessage(String messageId, int messageNr);
-	int getMessageCount();
 	int getMessageCount(EbMSMessageFilter filter);
-	List<EbMSMessage> getMessages(long first, long count);
 	List<EbMSMessage> getMessages(EbMSMessageFilter filter, long first, long count);
-	void insert(EbMSMessage message);
-	void update(EbMSMessage message);
-	void delete(EbMSMessage message);
 
 	EbMSAttachment getAttachment(String messageId, int messageNr, String contentId);
 	
