@@ -21,7 +21,6 @@ import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.DownloadEbMSMessagesCSVLink;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
