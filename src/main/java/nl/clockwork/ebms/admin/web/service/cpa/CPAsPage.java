@@ -16,7 +16,6 @@
 package nl.clockwork.ebms.admin.web.service.cpa;
 
 import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.DownloadCPALink;
 import nl.clockwork.ebms.service.CPAService;
 
 import org.apache.commons.logging.Log;
