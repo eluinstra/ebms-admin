@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
 <body>
 <wicket:extend>
+	<span wicket:id="feedback">[feedback]</span>
 	<table class="vertical">
 		<caption><wicket:message key="message">EbMS Message</wicket:message></caption>
 		<tbody>
@@ -47,12 +48,10 @@
 					<table>
 						<tr>
 							<th><wicket:message key="lbl.name">Name</wicket:message></th>
-							<th><wicket:message key="lbl.contentId">Content Id</wicket:message></th>
 							<th><wicket:message key="lbl.contentType">Content Type</wicket:message></th>
 						</tr>
 						<tr wicket:id="dataSources">
-							<td wicket:id="name">[name]</td>
-							<td><a href="#" wicket:id="downloadDataSource"><span wicket:id="contentId">[contentId]</span></a></td>
+							<td><a href="#" wicket:id="downloadDataSource"><span wicket:id="name">[name]</span></a></td>
 							<td wicket:id="contentType">[contentType]</td>
 						</tr>
 					</table>
@@ -61,7 +60,7 @@
 		</tbody>
 		<tfoot>
 			<tr>
-				<td colspan="2"><a href="#" wicket:id="back"><wicket:message key="cmd.back">Back</wicket:message></a>&nbsp;<a href="#" wicket:id="download"><wicket:message key="cmd.download">Download</wicket:message></a></td>
+				<td colspan="2"><a href="#" wicket:id="back"><wicket:message key="cmd.back">Back</wicket:message></a>&nbsp;<a href="#" wicket:id="process"><wicket:message key="cmd.process">Process</wicket:message></a>&nbsp;<a href="#" wicket:id="download"><wicket:message key="cmd.download">Download</wicket:message></a></td>
 			</tr>
 		</tfoot>
 	</table>

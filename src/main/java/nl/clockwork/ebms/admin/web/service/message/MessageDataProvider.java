@@ -41,8 +41,8 @@ public class MessageDataProvider implements IDataProvider<String>
 	@Override
 	public Iterator<? extends String> iterator(long first, long count)
 	{
-		List<String> messageIds = ebMSClient.getMessageIds(filter,(int)(first+count)-1);
-		return messageIds == null ? new ArrayList<String>().iterator() : messageIds.listIterator((int)first-1);
+		List<String> messageIds = ebMSClient.getMessageIds(filter,(int)(first+count));
+		return messageIds == null ? new ArrayList<String>().iterator() : messageIds.listIterator((int)first);
 	}
 
 	@Override

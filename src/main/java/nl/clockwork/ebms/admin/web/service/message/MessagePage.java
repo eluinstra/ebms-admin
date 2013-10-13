@@ -23,23 +23,30 @@ import nl.clockwork.ebms.model.EbMSDataSource;
 import nl.clockwork.ebms.model.EbMSMessageContent;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PropertyListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 public class MessagePage extends BasePage
 {
+	protected transient Log logger = LogFactory.getLog(this.getClass());
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="ebMSClient")
 	private EbMSMessageService ebMSClient;
 
 	public MessagePage(final EbMSMessageContent messageContent, final WebPage responsePage)
 	{
+		add(new FeedbackPanel("feedback"));
 		add(new Label("messageId",messageContent.getContext().getMessageId()));
 		add(new Label("conversationId",messageContent.getContext().getConversationId()));
 		Link<Void> link = new Link<Void>("viewRefToMessageId")
@@ -65,13 +72,16 @@ public class MessagePage extends BasePage
 			new PropertyListView<EbMSDataSource>("dataSources",messageContent.getDataSources())
 			{
 				private static final long serialVersionUID = 1L;
+				private int i = 1;
 
 				@Override
 				protected void populateItem(ListItem<EbMSDataSource> item)
 				{
-					item.add(new Label("name"));
-					DownloadEbMSDataSourceLink link = new DownloadEbMSDataSourceLink("downloadDataSource",item.getModelObject());
-					link.add(new Label("contentId"));
+					EbMSDataSource dataSource = item.getModelObject();
+					if (StringUtils.isEmpty(dataSource.getName()))
+						dataSource.setName("dataSource." + i++);
+					DownloadEbMSDataSourceLink link = new DownloadEbMSDataSourceLink("downloadDataSource",dataSource);
+					link.add(new Label("name"));
 					item.add(link);
 					item.add(new Label("contentType"));
 				}
@@ -89,6 +99,27 @@ public class MessagePage extends BasePage
 				setResponsePage(responsePage);
 			}
 		});
+		link = new Link<Void>("process")
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick()
+			{
+				try
+				{
+					ebMSClient.processMessage(messageContent.getContext().getMessageId());
+					setResponsePage(responsePage);
+				}
+				catch (Exception e)
+				{
+					logger.error("",e);
+					error(e.getMessage());
+				}
+			}
+		};
+		link.add(AttributeModifier.replace("onclick","return confirm('" + getLocalizer().getString("confirm",this) + "');"));
+		add(link);
 		add(new DownloadEbMSMessageContentLink("download",messageContent));
 	}
 	
