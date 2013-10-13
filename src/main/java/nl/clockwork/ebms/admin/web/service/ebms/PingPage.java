@@ -16,10 +16,12 @@
 package nl.clockwork.ebms.admin.web.service.ebms;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
+import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
@@ -42,8 +44,6 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IClusterable;
 import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement;
-import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.PartyId;
-import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.PartyInfo;
 
 public class PingPage extends BasePage
 {
@@ -100,13 +100,8 @@ public class PingPage extends BasePage
 					{
 						PingFormModel model = PingForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(ebMSDAO.getCPA(model.getCpaId()).getCpa());
-						ArrayList<String> parties = new ArrayList<String>();
-						for (PartyInfo partyInfo : cpa.getPartyInfo())
-						{
-							PartyId partyId = partyInfo.getPartyId().get(0);
-							parties.add((partyId.getType() == null ? "" : partyId.getType() + ":" ) + partyId.getValue());
-						}
-						model.setFromParties(parties);
+						ArrayList<String> partyNames = CPAUtils.getPartyNames(cpa);
+						model.setFromParties(partyNames);
 						target.add(fromParties);
 					}
 					catch (JAXBException e)
@@ -136,19 +131,9 @@ public class PingPage extends BasePage
 					{
 						PingFormModel model = PingForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(ebMSDAO.getCPA(model.getCpaId()).getCpa());
-						ArrayList<String> parties = new ArrayList<String>();
-						for (PartyInfo partyInfo : cpa.getPartyInfo())
-						{
-							PartyId partyId = partyInfo.getPartyId().get(0);
-							String party = (partyId.getType() == null ? "" : partyId.getType() + ":" ) + partyId.getValue();
-							if (!party.equals(model.getFromParty()))
-							{
-								parties.add(party);
-								model.setToParty(party);
-								break;
-							}
-						}
-						model.setToParties(parties);
+						String otherPartyName = CPAUtils.getOtherPartyName(cpa,model.getFromParty());
+						model.setToParties(Arrays.asList(otherPartyName));
+						model.setToParty(otherPartyName);
 						target.add(toParties);
 					}
 					catch (JAXBException e)
@@ -168,8 +153,9 @@ public class PingPage extends BasePage
 				{
 					try
 					{
-						PingFormModel pingForm = PingForm.this.getModelObject();
-						ebMSClient.ping(pingForm.getCpaId(),pingForm.getFromParty(),pingForm.getToParty());
+						PingFormModel model = PingForm.this.getModelObject();
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(ebMSDAO.getCPA(model.getCpaId()).getCpa());
+						ebMSClient.ping(model.getCpaId(),CPAUtils.getPartyIdbyPartyName(cpa,model.getFromParty()),CPAUtils.getPartyIdbyPartyName(cpa,model.getToParty()));
 						info("Ping succesful");
 					}
 					catch (Exception e)
