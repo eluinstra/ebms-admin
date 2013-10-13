@@ -15,7 +15,9 @@
  */
 package nl.clockwork.ebms.admin.web.service.cpa;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import nl.clockwork.ebms.service.CPAService;
 
@@ -36,7 +38,8 @@ public class CPADataProvider implements IDataProvider<String>
 	@Override
 	public Iterator<? extends String> iterator(long first, long count)
 	{
-		return cpaClient.getCPAIds().iterator();
+		List<String> cpaIds = cpaClient.getCPAIds();
+		return cpaIds == null ? new ArrayList<String>().iterator() : cpaIds.iterator();
 	}
 
 	@Override
@@ -48,7 +51,8 @@ public class CPADataProvider implements IDataProvider<String>
 	@Override
 	public long size()
 	{
-		return cpaClient.getCPAIds().size();
+		List<String> cpaIds = cpaClient.getCPAIds();
+		return cpaIds == null ? 0 : cpaIds.size();
 	}
 
 	@Override
