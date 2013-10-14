@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
+<body>
+<wicket:extend>
+	<span wicket:id="feedback">[feedback]</span>
+	<form wicket:id="messageForm">
+		<table class="vertical">
+			<caption><wicket:message key="message">Message</wicket:message></caption>
+			<tbody>
+				<tr>
+					<th><wicket:message key="lbl.cpaId">CPA Id</wicket:message></th>
+					<td wicket:id="cpaIdFeedback"><select wicket:id="cpaIds"/></td>
+				</tr>
+				<tr>
+					<th><wicket:message key="lbl.fromRole">From Role</wicket:message></th>
+					<td wicket:id="fromRoleFeedback"><select wicket:id="fromRoles"/></td>
+				</tr>
+				<tr>
+					<th><wicket:message key="lbl.service">Service</wicket:message></th>
+					<td wicket:id="serviceFeedback"><select wicket:id="services"/></td>
+				</tr>
+				<tr>
+					<th><wicket:message key="lbl.action">Action</wicket:message></th>
+					<td wicket:id="actionFeedback"><select wicket:id="actions"/></td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="4">
+						<input type="submit" wicket:id="send" value="Send"/>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</form>
+</wicket:extend>
+</body>
+</html>
