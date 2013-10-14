@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
-import nl.clockwork.ebms.admin.web.service.ebms.EbMSMessageContextFilter;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
 import org.apache.commons.csv.CSVFormat;

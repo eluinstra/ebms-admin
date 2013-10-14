@@ -16,7 +16,6 @@
 package nl.clockwork.ebms.admin.web.service.message;
 
 import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.service.ebms.EbMSMessageContextFilter;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
 import org.apache.wicket.AttributeModifier;

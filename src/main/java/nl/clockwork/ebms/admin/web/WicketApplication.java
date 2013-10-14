@@ -45,7 +45,7 @@ public class WicketApplication extends WebApplication
 		menu.add(cpa);
 
 		MenuItem message = new MenuItem("2","messageService");
-		new MenuLinkItem(message,"1","ping",nl.clockwork.ebms.admin.web.service.ebms.PingPage.class);
+		new MenuLinkItem(message,"1","ping",nl.clockwork.ebms.admin.web.service.message.PingPage.class);
 		new MenuLinkItem(message,"2","messages",nl.clockwork.ebms.admin.web.service.message.MessagesPage.class);
 		new MenuLinkItem(message,"3","message",HomePage.class);
 		menu.add(message);

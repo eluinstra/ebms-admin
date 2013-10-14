@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import nl.clockwork.ebms.admin.web.service.ebms.EbMSMessageContextFilter;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
 import org.apache.wicket.markup.repeater.data.IDataProvider;
