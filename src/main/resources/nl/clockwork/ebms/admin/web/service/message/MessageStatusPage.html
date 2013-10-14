@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
+<body>
+<wicket:extend>
+	<span wicket:id="feedback">[feedback]</span>
+	<form wicket:id="pingForm">
+		<table class="vertical">
+			<caption><wicket:message key="ping">Ping</wicket:message></caption>
+			<tbody>
+				<tr>
+					<th><wicket:message key="lbl.cpaId">CPA Id</wicket:message></th>
+					<td wicket:id="cpaIdFeedback"><select wicket:id="cpaIds"/></td>
+				</tr>
+				<tr>
+					<th><wicket:message key="lbl.fromParty">From Party</wicket:message></th>
+					<td wicket:id="fromPartyFeedback"><select wicket:id="fromParties"/></td>
+				</tr>
+				<tr>
+					<th><wicket:message key="lbl.toParty">To Party</wicket:message></th>
+					<td wicket:id="toPartyFeedback"><select wicket:id="toParties"/></td>
+				</tr>
+				<tr>
+					<th><wicket:message key="lbl.messageId">Message Id</wicket:message></th>
+					<!--td wicket:id="messageIdFeedback"><input type="text" wicket:id="messageId"/></td-->
+					<td wicket:id="messageIdFeedback"><select wicket:id="messageIds"/></td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="3">
+						<input type="submit" wicket:id="check" value="Check"/>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</form>
+</wicket:extend>
+</body>
+</html>

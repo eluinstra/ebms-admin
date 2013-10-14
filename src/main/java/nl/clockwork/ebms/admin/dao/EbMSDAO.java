@@ -18,12 +18,12 @@ package nl.clockwork.ebms.admin.dao;
 import java.util.List;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.commons.csv.CSVPrinter;
-
 import nl.clockwork.ebms.admin.model.CPA;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
+
+import org.apache.commons.csv.CSVPrinter;
 
 public interface EbMSDAO
 {
@@ -38,6 +38,8 @@ public interface EbMSDAO
 	List<EbMSMessage> getMessages(EbMSMessageFilter filter, long first, long count);
 
 	EbMSAttachment getAttachment(String messageId, int messageNr, String contentId);
+	
+	List<String> getPendingMessageIds(String cpaId, String fromParty, String toParty);
 	
 	void writeMessageToZip(String messageId, int messageNr, ZipOutputStream stream);
 	void printMessagesToCSV(CSVPrinter printer, EbMSMessageFilter filter);
