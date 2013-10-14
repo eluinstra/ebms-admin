@@ -3,6 +3,8 @@ package nl.clockwork.ebms.admin.web.message;
 import java.awt.Color;
 import java.util.Arrays;
 
+import nl.clockwork.ebms.admin.web.BasePage;
+
 import com.googlecode.wickedcharts.highcharts.options.Axis;
 import com.googlecode.wickedcharts.highcharts.options.ChartOptions;
 import com.googlecode.wickedcharts.highcharts.options.HorizontalAlignment;
@@ -14,8 +16,6 @@ import com.googlecode.wickedcharts.highcharts.options.Title;
 import com.googlecode.wickedcharts.highcharts.options.VerticalAlignment;
 import com.googlecode.wickedcharts.highcharts.options.series.SimpleSeries;
 import com.googlecode.wickedcharts.wicket6.highcharts.Chart;
-
-import nl.clockwork.ebms.admin.web.BasePage;
 
 public class TrafficChartPage extends BasePage
 {

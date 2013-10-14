@@ -183,47 +183,38 @@ public class PingPage extends BasePage
 		{
 			return cpaId;
 		}
-		
 		public void setCpaId(String cpaId)
 		{
 			this.cpaId = cpaId;
 		}
-		
 		public String getFromParty()
 		{
 			return fromParty;
 		}
-		
 		public void setFromParties(List<String> fromParties)
 		{
 			this.fromParties = fromParties;
 		}
-		
 		public String getToParty()
 		{
 			return toParty;
 		}
-		
 		public void setFromParty(String fromParty)
 		{
 			this.fromParty = fromParty;
 		}
-		
 		public List<String> getFromParties()
 		{
 			return fromParties;
 		}
-
 		public void setToParties(List<String> toParties)
 		{
 			this.toParties = toParties;
 		}
-
 		public void setToParty(String toParty)
 		{
 			this.toParty = toParty;
 		}
-		
 		public List<String> getToParties()
 		{
 			return toParties;
