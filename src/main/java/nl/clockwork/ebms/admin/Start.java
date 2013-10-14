@@ -23,7 +23,6 @@ import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
-import org.apache.wicket.util.time.Duration;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.bio.SocketConnector;
@@ -42,14 +41,14 @@ public class Start
 		createOptions();
 		cmd = new BasicParser().parse(options,args);
 
-		int timeout = (int)Duration.MAXIMUM.getMilliseconds();
+		if (cmd.hasOption("h"))
+			printUsage();
 
+		int timeout = Integer.MAX_VALUE;
 		Server server = new Server();
 		SocketConnector connector = new SocketConnector();
 
-		if (cmd.hasOption("h"))
-			printUsage();
-		else if (!cmd.hasOption("ssl"))
+		if (!cmd.hasOption("ssl"))
 		{
 			connector.setMaxIdleTime(timeout);
 			connector.setSoLingerTime(-1);
