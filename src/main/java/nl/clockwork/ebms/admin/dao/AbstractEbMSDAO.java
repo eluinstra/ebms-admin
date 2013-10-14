@@ -458,6 +458,11 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				parameters.add(messageFilter.getMessageId());
 				result.append(" and message_id = ?");
 			}
+			if (messageFilter.getMessageNr() != null)
+			{
+				parameters.add(messageFilter.getMessageNr());
+				result.append(" and message_nr = ?");
+			}
 			if (messageFilter.getRefToMessageId() != null)
 			{
 				parameters.add(messageFilter.getRefToMessageId());
@@ -468,10 +473,10 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				parameters.add(messageFilter.getSequenceNr());
 				result.append(" and sequence_nr = ?");
 			}
-			if (messageFilter.getMshMessage() != null)
+			if (messageFilter.getServiceMessage() != null)
 			{
 				parameters.add(Constants.EBMS_SERVICE_URI);
-				if (messageFilter.getMshMessage())
+				if (messageFilter.getServiceMessage())
 					result.append(" and service = ?");
 				else
 					result.append(" and service <> ?");

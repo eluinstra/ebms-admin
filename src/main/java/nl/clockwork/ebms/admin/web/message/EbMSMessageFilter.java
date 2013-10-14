@@ -23,22 +23,41 @@ import nl.clockwork.ebms.model.EbMSMessageContext;
 public class EbMSMessageFilter extends EbMSMessageContext implements Serializable
 {
 	private static final long serialVersionUID = 1L;
-	private Boolean mshMessage;
+	private Integer messageNr;
+	private Boolean serviceMessage;
 	private Date from;
 	private Date to;
-	
-	public Boolean getMshMessage()
+
+	public Integer getMessageNr()
 	{
-		return mshMessage;
+		return messageNr;
 	}
-	
+	public void setMessageNr(Integer messageNr)
+	{
+		this.messageNr = messageNr;
+	}
+	public Boolean getServiceMessage()
+	{
+		return serviceMessage;
+	}
+	public void setServiceMessage(Boolean serviceMessage)
+	{
+		this.serviceMessage = serviceMessage;
+	}
 	public Date getFrom()
 	{
 		return from;
 	}
-	
+	public void setFrom(Date from)
+	{
+		this.from = from;
+	}
 	public Date getTo()
 	{
 		return to;
+	}
+	public void setTo(Date to)
+	{
+		this.to = to;
 	}
 }
