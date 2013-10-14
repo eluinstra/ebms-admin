@@ -99,6 +99,7 @@ public class MessagePage extends BasePage
 				setResponsePage(responsePage);
 			}
 		});
+		add(new DownloadEbMSMessageContentLink("download",messageContent));
 		link = new Link<Void>("process")
 		{
 			private static final long serialVersionUID = 1L;
@@ -120,7 +121,6 @@ public class MessagePage extends BasePage
 		};
 		link.add(AttributeModifier.replace("onclick","return confirm('" + getLocalizer().getString("confirm",this) + "');"));
 		add(link);
-		add(new DownloadEbMSMessageContentLink("download",messageContent));
 	}
 	
 	@Override
