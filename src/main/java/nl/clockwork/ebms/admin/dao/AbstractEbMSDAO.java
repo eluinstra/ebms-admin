@@ -273,42 +273,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		);
 	}
 
-	protected void insertAttachments(EbMSMessage message)
-	{
-		for (EbMSAttachment attachment : message.getAttachments())
-		{
-			jdbcTemplate.update
-			(
-				"insert into ebms_attachment (" +
-					"message_id," +
-					"message_nr," +
-					"name," +
-					"content_id," +
-					"content_type," +
-					"content" +
-				") values (?,?,?,?,?,?)",
-				message.getMessageId(),
-				message.getMessageNr(),
-				attachment.getName(),
-				attachment.getContentId(),
-				attachment.getContentType(),
-				attachment.getContent()
-			);
-		}
-	}
-
-	protected void deleteAttachments(EbMSMessage message)
-	{
-		jdbcTemplate.update
-		(
-			"delete from ebms_attachment" +
-			" where message_id = ?",
-			" and message_nr = ?",
-			message.getMessageId(),
-			message.getMessageNr()
-		);
-	}
-
 	private List<EbMSEvent> getEvents(String messageId)
 	{
 		return jdbcTemplate.query(
@@ -326,41 +290,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			messageId
 		);
 	}
-
-	protected void insertEvents(EbMSMessage message)
-	{
-		if (message.getMessageNr() == 0)
-			for (EbMSEvent event : message.getEvents())
-				jdbcTemplate.update
-				(
-					"insert into ebms_event (" +
-						"message_id," +
-						"time," +
-						"status," +
-						"status_time," +
-						"uri," +
-						"error_message" +
-					") values (?,?,?,?,?,?)",
-					message.getMessageId(),
-					event.getTime(),
-					event.getStatus().id(),
-					event.getStatusTime(),
-					event.getUri(),
-					event.getErrorMessage()
-				);
-	}
-
-	protected void deleteEvents(EbMSMessage message)
-	{
-		if (message.getMessageNr() == 0)
-			jdbcTemplate.update
-			(
-				"delete from ebms_event" +
-				" where message_id = ?",
-				message.getMessageId()
-			);
-	}
-
+	
 	@Override
 	public void printMessagesToCSV(final CSVPrinter printer, EbMSMessageFilter filter)
 	{
