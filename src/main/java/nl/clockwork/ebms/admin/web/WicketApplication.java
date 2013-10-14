@@ -51,9 +51,10 @@ public class WicketApplication extends WebApplication
 		menu.add(message);
 
 		MenuItem advanced = new MenuItem("3","advanced");
-		new MenuLinkItem(advanced,"1","traffic",nl.clockwork.ebms.admin.web.HomePage.class);
-		new MenuLinkItem(advanced,"2","cpas",nl.clockwork.ebms.admin.web.cpa.CPAsPage.class);
-		new MenuLinkItem(advanced,"3","messages",nl.clockwork.ebms.admin.web.message.MessagesPage.class);
+		new MenuLinkItem(advanced,"1","traffic",nl.clockwork.ebms.admin.web.message.TrafficPage.class);
+		new MenuLinkItem(advanced,"2","trafficChart",nl.clockwork.ebms.admin.web.message.TrafficChartPage.class);
+		new MenuLinkItem(advanced,"3","cpas",nl.clockwork.ebms.admin.web.cpa.CPAsPage.class);
+		new MenuLinkItem(advanced,"4","messages",nl.clockwork.ebms.admin.web.message.MessagesPage.class);
 		menu.add(advanced);
 	}
 	
