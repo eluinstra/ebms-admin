@@ -27,7 +27,7 @@ public class Start
 {
 	public static void main(String[] args) throws Exception
 	{
-		int timeout = (int)Duration.ONE_HOUR.getMilliseconds();
+		int timeout = (int)Duration.MAXIMUM.getMilliseconds();
 
 		Server server = new Server();
 		SocketConnector connector = new SocketConnector();
