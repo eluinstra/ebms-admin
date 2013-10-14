@@ -8,6 +8,8 @@
 - add viewers for ebms message format???
 - make menu extension point to add new pages??? 
 - add breadcrumbs???
+- improve Start class (add more options)
+- implement Start class to start ebms-adapter embedded
 
 - replace current menu with dropdown menu
 	- for nested panels see: nested - Trees and nested lists.
