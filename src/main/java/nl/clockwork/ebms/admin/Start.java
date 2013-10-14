@@ -15,7 +15,16 @@
  */
 package nl.clockwork.ebms.admin;
 
+import java.lang.management.ManagementFactory;
+
+import javax.management.MBeanServer;
+
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
 import org.apache.wicket.util.time.Duration;
+import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.bio.SocketConnector;
 import org.eclipse.jetty.server.ssl.SslSocketConnector;
@@ -25,60 +34,68 @@ import org.eclipse.jetty.webapp.WebAppContext;
 
 public class Start
 {
+	private static Options options;
+	private static CommandLine cmd;
+
 	public static void main(String[] args) throws Exception
 	{
+		createOptions();
+		cmd = new BasicParser().parse(options,args);
+
 		int timeout = (int)Duration.MAXIMUM.getMilliseconds();
 
 		Server server = new Server();
 		SocketConnector connector = new SocketConnector();
 
-		if (args.length == 1 && "-help".equals(args[0]))
-		{
+		if (cmd.hasOption("h"))
 			printUsage();
-			return;
-		}
-		if (args.length == 0)
+		else if (!cmd.hasOption("ssl"))
 		{
 			connector.setMaxIdleTime(timeout);
 			connector.setSoLingerTime(-1);
-			connector.setPort(8080);
+			connector.setPort(cmd.getOptionValue("p") == null ? 8080 : Integer.parseInt(cmd.getOptionValue("p")));
 			server.addConnector(connector);
-			System.out.println("Application available on http://localhost:8080");
+			System.out.println("Application available on http://localhost:" + connector.getPort());
 		}
-		else if (args.length == 2)
+		else
 		{
-			Resource keystore = Resource.newClassPathResource(args[0]);
+			String keyStore = getRequiredArg("keystore");
+			String password = getRequiredArg("password");
+			Resource keystore = Resource.newClassPathResource(keyStore);
 			if (keystore != null && keystore.exists())
 			{
-				connector.setConfidentialPort(8443);
+				connector.setConfidentialPort(cmd.getOptionValue("p") == null ? 8080 : Integer.parseInt(cmd.getOptionValue("p")));
 				SslContextFactory factory = new SslContextFactory();
 				factory.setKeyStoreResource(keystore);
-				factory.setKeyStorePassword(args[1]);
+				factory.setKeyStorePassword(password);
 				factory.setTrustStoreResource(keystore);
-				factory.setKeyManagerPassword(args[1]);
+				factory.setKeyManagerPassword(password);
 				SslSocketConnector sslConnector = new SslSocketConnector(factory);
 				sslConnector.setMaxIdleTime(timeout);
-				sslConnector.setPort(8443);
+				sslConnector.setPort(connector.getConfidentialPort());
 				sslConnector.setAcceptors(4);
 				server.addConnector(sslConnector);
-				System.out.println("Application available on https://localhost:8443");
+				System.out.println("Application available on https://localhost:" + connector.getPort());
 			}
 			else
 				System.out.println("Application not available: keystore" + args[0] + " not found!");
 		}
 		System.out.println();
 
-		WebAppContext bb = new WebAppContext();
-		bb.setServer(server);
-		bb.setContextPath("/");
-		bb.setWar("src/main/webapp");
+		WebAppContext context = new WebAppContext();
+		context.setServer(server);
+		context.setContextPath("/");
+		context.setWar("src/main/webapp");
 
-		// MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-		// MBeanContainer mBeanContainer = new MBeanContainer(mBeanServer);
-		// server.getContainer().addEventListener(mBeanContainer);
-		// mBeanContainer.start();
+		if (cmd.hasOption("jmx"))
+		{
+			MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+			MBeanContainer mBeanContainer = new MBeanContainer(mBeanServer);
+			server.getContainer().addEventListener(mBeanContainer);
+			mBeanContainer.start();
+		}
 
-		server.setHandler(bb);
+		server.setHandler(context);
 
 		try
 		{
@@ -96,10 +113,34 @@ public class Start
 		}
 	}
 
+	private static Options createOptions()
+	{
+		options = new Options();
+		options.addOption("h",false,"print this message");
+		options.addOption("p",true,"set port");
+		options.addOption("ssl",false,"use ssl");
+		options.addOption("keystore",true,"set keystore");
+		options.addOption("password",true,"set keystore password");
+		options.addOption("jmx",false,"start mbean server");
+		return options;
+	}
+	
+	private static String getRequiredArg(String arg)
+	{
+		String result = cmd.getOptionValue("keystore");
+		if (result == null)
+		{
+			System.out.println(arg + " is not set!");
+			System.out.println();
+			printUsage();
+		}
+		return result;
+	}
+	
 	private static void printUsage()
 	{
-		System.out.println("Usage: nl.clockwork.ebms.admin.Start -help");
-		System.out.println("       nl.clockwork.ebms.admin.Start");
-		System.out.println("       nl.clockwork.ebms.admin.Start <keystore> <password>");
+		HelpFormatter formatter = new HelpFormatter();
+		formatter.printHelp("Start",options,true);
+		System.exit(0);
 	}
 }
