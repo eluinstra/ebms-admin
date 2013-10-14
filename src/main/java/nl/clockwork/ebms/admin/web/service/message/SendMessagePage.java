@@ -66,7 +66,7 @@ public class SendMessagePage extends BasePage
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("ping",this);
+		return getLocalizer().getString("message",this);
 	}
 
 	public class MessageForm extends Form<EbMSMessageContextModel>
@@ -198,8 +198,8 @@ public class SendMessagePage extends BasePage
 							dataSources.add(new EbMSDataSource(dataSource.getClientFileName(),URLConnection.guessContentTypeFromName(dataSource.getClientFileName()),dataSource.getBytes()));
 							//dataSources.add(new EbMSDataSource(dataSource.getClientFileName(),new MimetypesFileTypeMap().getContentType(dataSource.getClientFileName()),dataSource.getBytes()));
 						EbMSMessageContent messageContent = new EbMSMessageContent(model,dataSources);
-						ebMSClient.sendMessage(messageContent );
-						info("Send message succesful");
+						String messageId = ebMSClient.sendMessage(messageContent );
+						info("Send message succesful. MessageId is " + messageId);
 					}
 					catch (Exception e)
 					{
