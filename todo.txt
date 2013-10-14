@@ -8,6 +8,8 @@
 - add viewers for ebms message format???
 - make menu extension point to add new pages??? 
 - add breadcrumbs???
+- improve uploading dataSources:
+	- create dataSource Form with fields name, content-type and file
 - improve Start class (add more options)
 - implement Start class to start ebms-adapter embedded
 

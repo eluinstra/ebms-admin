@@ -15,6 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,8 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.markup.html.form.upload.MultiFileUploadField;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -73,6 +76,7 @@ public class SendMessagePage extends BasePage
 		public MessageForm(String id)
 		{
 			super(id,new CompoundPropertyModel<EbMSMessageContextModel>(new EbMSMessageContextModel()));
+			setMultiPart(true);
 
 			DropDownChoice<String> cpaIds = new DropDownChoice<String>("cpaIds",new PropertyModel<String>(this.getModelObject(),"cpaId"),Model.ofList(ebMSDAO.getCPAIds()));
 			cpaIds.setLabel(Model.of(getLocalizer().getString("lbl.cpaId",this)));
@@ -173,6 +177,11 @@ public class SendMessagePage extends BasePage
 					}
 				}
       });
+			
+			MultiFileUploadField dataSources = new MultiFileUploadField("dataSources");
+			dataSources.setLabel(Model.of(getLocalizer().getString("lbl.dataSources",this)));
+			dataSources.setRequired(true);
+			add(dataSources);
 
 			Button ping = new Button("send",new ResourceModel("cmd.send"))
 			{
@@ -185,6 +194,9 @@ public class SendMessagePage extends BasePage
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
 						List<EbMSDataSource> dataSources = new ArrayList<EbMSDataSource>();
+						for (FileUpload dataSource : model.getDataSources())
+							dataSources.add(new EbMSDataSource(dataSource.getClientFileName(),URLConnection.guessContentTypeFromName(dataSource.getClientFileName()),dataSource.getBytes()));
+							//dataSources.add(new EbMSDataSource(dataSource.getClientFileName(),new MimetypesFileTypeMap().getContentType(dataSource.getClientFileName()),dataSource.getBytes()));
 						EbMSMessageContent messageContent = new EbMSMessageContent(model,dataSources);
 						ebMSClient.sendMessage(messageContent );
 						info("Send message succesful");
