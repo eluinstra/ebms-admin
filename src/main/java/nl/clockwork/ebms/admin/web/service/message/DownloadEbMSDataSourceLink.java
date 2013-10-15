@@ -21,6 +21,7 @@ import java.io.InputStream;
 
 import nl.clockwork.ebms.admin.web.Utils;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
@@ -46,7 +47,7 @@ public class DownloadEbMSDataSourceLink extends Link<Void>
 	public void onClick()
 	{
 		//final EbMSDataSource ebMSDataSource = getModelObject();
-		String fileName = UrlEncoder.QUERY_INSTANCE.encode(ebMSDataSource.getName() == null ? "ebMSDataSource" + Utils.getFileExtension(ebMSDataSource.getContentType()) : ebMSDataSource.getName(),getRequest().getCharset());
+		String fileName = UrlEncoder.QUERY_INSTANCE.encode(StringUtils.isEmpty(ebMSDataSource.getName()) ? "ebMSDataSource" + Utils.getFileExtension(ebMSDataSource.getContentType()) : ebMSDataSource.getName(),getRequest().getCharset());
 		IResourceStream resourceStream = new AbstractResourceStream()
 		{
 			private static final long serialVersionUID = 1L;

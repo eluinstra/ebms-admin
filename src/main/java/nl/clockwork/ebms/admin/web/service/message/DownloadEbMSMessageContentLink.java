@@ -30,6 +30,7 @@ import nl.clockwork.ebms.common.XMLMessageBuilder;
 import nl.clockwork.ebms.model.EbMSMessageContent;
 import nl.clockwork.ebms.model.EbMSMessageContext;
 
+import org.apache.cxf.common.util.StringUtils;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
@@ -120,7 +121,7 @@ public class DownloadEbMSMessageContentLink extends Link<Void>
 		zip.closeEntry();
 		for (nl.clockwork.ebms.model.EbMSDataSource dataSource : messageContent.getDataSources())
 		{
-			entry = new ZipEntry("datasources/" + (dataSource.getName() == null ? UUID.randomUUID() + Utils.getFileExtension(dataSource.getContentType()) : dataSource.getName()));
+			entry = new ZipEntry("datasources/" + (StringUtils.isEmpty(dataSource.getName()) ? UUID.randomUUID() + Utils.getFileExtension(dataSource.getContentType()) : dataSource.getName()));
 			entry.setComment("Content-Type: " + dataSource.getContentType());
 			zip.putNextEntry(entry);
 			zip.write(dataSource.getContent());

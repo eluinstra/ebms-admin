@@ -26,6 +26,7 @@ import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.Utils;
 
+import org.apache.cxf.common.util.StringUtils;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.IRequestCycle;
@@ -112,7 +113,7 @@ public class DownloadEbMSMessageLinkX extends Link<EbMSMessage>
 		zip.closeEntry();
 		for (EbMSAttachment attachment : message.getAttachments())
 		{
-			entry = new ZipEntry("attachments/" + (attachment.getName() == null ? attachment.getContentId() + Utils.getFileExtension(attachment.getContentType()) : attachment.getName()));
+			entry = new ZipEntry("attachments/" + (StringUtils.isEmpty(attachment.getName()) ? attachment.getContentId() + Utils.getFileExtension(attachment.getContentType()) : attachment.getName()));
 			entry.setComment("Content-Type: " + attachment.getContentType());
 			zip.putNextEntry(entry);
 			zip.write(attachment.getContent());

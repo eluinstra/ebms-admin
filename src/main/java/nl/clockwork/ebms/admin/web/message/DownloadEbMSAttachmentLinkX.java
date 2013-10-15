@@ -22,6 +22,7 @@ import java.io.InputStream;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.web.Utils;
 
+import org.apache.cxf.common.util.StringUtils;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.IRequestCycle;
@@ -47,7 +48,7 @@ public class DownloadEbMSAttachmentLinkX extends Link<EbMSAttachment>
 	public void onClick()
 	{
 		final EbMSAttachment attachment = getModelObject();
-		String fileName = UrlEncoder.QUERY_INSTANCE.encode(attachment.getName() == null ? attachment.getContentId() + Utils.getFileExtension(attachment.getContentType()) : attachment.getName(),getRequest().getCharset());
+		String fileName = UrlEncoder.QUERY_INSTANCE.encode(StringUtils.isEmpty(attachment.getName()) ? attachment.getContentId() + Utils.getFileExtension(attachment.getContentType()) : attachment.getName(),getRequest().getCharset());
 		IResourceStream resourceStream = new AbstractResourceStream()
 		{
 			private static final long serialVersionUID = 1L;

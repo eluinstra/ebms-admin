@@ -39,7 +39,7 @@ import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
 import nl.clockwork.ebms.dao.DAOException;
 
 import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.lang.StringUtils;
+import org.apache.cxf.common.util.StringUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -319,14 +319,13 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			" from ebms_message" + 
 			" where time_stamp >= ? " +
 			" and time_stamp < ?" +
-			(status.length == 0 ? "" : "status in (" + StringUtils.join(status,",") + ")") +
+			(status.length == 0 ? " and status is not null" : " and status in (" + join(status,",") + ")") +
 			" group by trunc(time_stamp,'HH')",
 			new ParameterizedRowMapper<Object>()
 			{
 				@Override
 				public Object mapRow(ResultSet rs, int rowNum) throws SQLException
 				{
-					System.out.println(rs.getTimestamp("time").toString()+":"+rs.getInt("nr"));
 					result.put(rs.getTimestamp("time"),rs.getInt("nr"));
 					return null;
 				}
@@ -336,6 +335,20 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		);
 		return result;
 	}
+	
+	private String join(EbMSMessageStatus[] array, String delimiter)
+	{
+		StringBuffer result = new StringBuffer();
+		if (array.length > 0)
+		{
+			for (EbMSMessageStatus s : array)
+				result.append(s.id()).append(delimiter);
+			result.delete(result.length() - 1,result.length() - 1 + delimiter.length());
+		}
+		return result.toString();
+	}
+	
+
 	
 	@Override
 	public void printMessagesToCSV(final CSVPrinter printer, EbMSMessageFilter filter)
@@ -426,7 +439,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 					{
 						try
 						{
-							ZipEntry entry = new ZipEntry(rs.getString("name") == null ? rs.getString("content_id") + Utils.getFileExtension(rs.getString("content_type")) : rs.getString("name"));
+							ZipEntry entry = new ZipEntry("attachments/" + (StringUtils.isEmpty(rs.getString("name")) ? rs.getString("content_id") + Utils.getFileExtension(rs.getString("content_type")) : rs.getString("name")));
 							entry.setComment("Content-Type: " + rs.getString("content_type"));
 							zip.putNextEntry(entry);
 							zip.write(rs.getBytes("content"));
