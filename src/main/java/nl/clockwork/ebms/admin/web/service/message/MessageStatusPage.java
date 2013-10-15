@@ -147,7 +147,7 @@ public class MessageStatusPage extends BasePage
 						String otherPartyName = CPAUtils.getOtherPartyName(cpa,model.getFromParty());
 						model.setToParties(Arrays.asList(otherPartyName));
 						model.setToParty(otherPartyName);
-						model.setMessageIds(ebMSDAO.getMessageIds(model.getCpaId(),model.getFromParty(),model.getToParty(),EbMSMessageStatus.SENT));
+						model.setMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromParty(),model.getToParty(),EbMSMessageStatus.SENT));
 						target.add(toParties);
 						target.add(messageIds);
 					}

@@ -128,7 +128,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 
 	@Override
-	public CPA getCPA(String cpaId)
+	public CPA findCPA(String cpaId)
 	{
 		try
 		{
@@ -146,13 +146,13 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 
 	@Override
-	public int getCPACount()
+	public int countCPAs()
 	{
 		return jdbcTemplate.queryForInt("select count(cpa_id) from cpa");
 	}
 	
 	@Override
-	public List<String> getCPAIds()
+	public List<String> selectCPAIds()
 	{
 		return jdbcTemplate.queryForList(
 			"select cpa_id" +
@@ -163,7 +163,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 	
 	@Override
-	public List<CPA> getCPAs(long first, long count)
+	public List<CPA> selectCPAs(long first, long count)
 	{
 		return jdbcTemplate.query(
 			CPARowMapper.getBaseQuery() +
@@ -176,13 +176,13 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 
 	@Override
-	public EbMSMessage getMessage(String messageId)
+	public EbMSMessage findMessage(String messageId)
 	{
-		return getMessage(messageId,0);
+		return findMessage(messageId,0);
 	}
 
 	@Override
-	public EbMSMessage getMessage(String messageId, int messageNr)
+	public EbMSMessage findMessage(String messageId, int messageNr)
 	{
 		EbMSMessage result = jdbcTemplate.queryForObject(
 			new EbMSMessageRowMapper(true).getBaseQuery() + 
@@ -203,7 +203,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 
 	@Override
-	public int getMessageCount(EbMSMessageFilter filter)
+	public int countMessages(EbMSMessageFilter filter)
 	{
 		List<Object> parameters = new ArrayList<Object>();
 		return jdbcTemplate.queryForInt(
@@ -216,7 +216,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 	
 	@Override
-	public List<EbMSMessage> getMessages(EbMSMessageFilter filter, long first, long count)
+	public List<EbMSMessage> selectMessages(EbMSMessageFilter filter, long first, long count)
 	{
 		List<Object> parameters = new ArrayList<Object>();
 		return jdbcTemplate.query(
@@ -231,7 +231,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 	
 	@Override
-	public EbMSAttachment getAttachment(String messageId, int messageNr, String contentId)
+	public EbMSAttachment findAttachment(String messageId, int messageNr, String contentId)
 	{
 		return jdbcTemplate.queryForObject(
 			"select name, content_id, content_type, content" + 
@@ -292,7 +292,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 	
 	@Override
-	public List<String> getMessageIds(String cpaId, String fromParty, String toParty, EbMSMessageStatus status)
+	public List<String> selectMessageIds(String cpaId, String fromParty, String toParty, EbMSMessageStatus status)
 	{
 		return jdbcTemplate.queryForList(
 			"select message_id" + 

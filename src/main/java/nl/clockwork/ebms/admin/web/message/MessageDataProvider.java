@@ -38,7 +38,7 @@ public class MessageDataProvider implements IDataProvider<EbMSMessage>
 	@Override
 	public Iterator<? extends EbMSMessage> iterator(long first, long count)
 	{
-		return ebMSDAO.getMessages(filter,first,count).iterator();
+		return ebMSDAO.selectMessages(filter,first,count).iterator();
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class MessageDataProvider implements IDataProvider<EbMSMessage>
 	@Override
 	public long size()
 	{
-		return (int)ebMSDAO.getMessageCount(filter);
+		return (int)ebMSDAO.countMessages(filter);
 	}
 
 	@Override

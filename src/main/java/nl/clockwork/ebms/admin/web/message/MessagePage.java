@@ -56,7 +56,7 @@ public class MessagePage extends BasePage
 			@Override
 			public void onClick()
 			{
-				setResponsePage(new MessagePage(ebMSDAO.getMessage(message.getRefToMessageId()),MessagePage.this));
+				setResponsePage(new MessagePage(ebMSDAO.findMessage(message.getRefToMessageId()),MessagePage.this));
 			}
 		};
 		link.add(new Label("refToMessageId",message.getRefToMessageId()));

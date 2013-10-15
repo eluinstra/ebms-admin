@@ -36,7 +36,7 @@ public class CPADataProvider implements IDataProvider<CPA>
 	@Override
 	public Iterator<? extends CPA> iterator(long first, long count)
 	{
-		return ebMSDAO.getCPAs(first,count).iterator();
+		return ebMSDAO.selectCPAs(first,count).iterator();
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class CPADataProvider implements IDataProvider<CPA>
 	@Override
 	public long size()
 	{
-		return (int)ebMSDAO.getCPACount();
+		return (int)ebMSDAO.countCPAs();
 	}
 
 	@Override

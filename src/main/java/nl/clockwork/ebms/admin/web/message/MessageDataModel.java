@@ -49,7 +49,7 @@ public class MessageDataModel extends LoadableDetachableModel<EbMSMessage>
 	@Override
 	protected EbMSMessage load()
 	{
-		return getEbMSDAO().getMessage(messageId,messageNr);
+		return getEbMSDAO().findMessage(messageId,messageNr);
 	}
 
 	@Override

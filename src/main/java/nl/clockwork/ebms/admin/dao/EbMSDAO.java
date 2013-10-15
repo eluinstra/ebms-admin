@@ -28,19 +28,19 @@ import org.apache.commons.csv.CSVPrinter;
 
 public interface EbMSDAO
 {
-	CPA getCPA(String cpaId);
-	int getCPACount();
-	List<String> getCPAIds();
-	List<CPA> getCPAs(long first, long count);
+	CPA findCPA(String cpaId);
+	int countCPAs();
+	List<String> selectCPAIds();
+	List<CPA> selectCPAs(long first, long count);
 
-	EbMSMessage getMessage(String messageId);
-	EbMSMessage getMessage(String messageId, int messageNr);
-	int getMessageCount(EbMSMessageFilter filter);
-	List<EbMSMessage> getMessages(EbMSMessageFilter filter, long first, long count);
+	EbMSMessage findMessage(String messageId);
+	EbMSMessage findMessage(String messageId, int messageNr);
+	int countMessages(EbMSMessageFilter filter);
+	List<EbMSMessage> selectMessages(EbMSMessageFilter filter, long first, long count);
 
-	EbMSAttachment getAttachment(String messageId, int messageNr, String contentId);
+	EbMSAttachment findAttachment(String messageId, int messageNr, String contentId);
 	
-	List<String> getMessageIds(String cpaId, String fromParty, String toParty, EbMSMessageStatus status);
+	List<String> selectMessageIds(String cpaId, String fromParty, String toParty, EbMSMessageStatus status);
 	
 	void writeMessageToZip(String messageId, int messageNr, ZipOutputStream stream);
 	void printMessagesToCSV(CSVPrinter printer, EbMSMessageFilter filter);

@@ -46,7 +46,7 @@ public class CPADataModel extends LoadableDetachableModel<CPA>
 	@Override
 	protected CPA load()
 	{
-		return getEbMSDAO().getCPA(cpaId);
+		return getEbMSDAO().findCPA(cpaId);
 	}
 
 	@Override
