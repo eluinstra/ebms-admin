@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -27,6 +29,7 @@ import nl.clockwork.ebms.Constants;
 import nl.clockwork.ebms.Constants.EbMSEventStatus;
 import nl.clockwork.ebms.Constants.EbMSEventType;
 import nl.clockwork.ebms.Constants.EbMSMessageStatus;
+import nl.clockwork.ebms.admin.Constants.TimeUnit;
 import nl.clockwork.ebms.admin.model.CPA;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSEvent;
@@ -36,6 +39,7 @@ import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
 import nl.clockwork.ebms.dao.DAOException;
 
 import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -303,6 +307,34 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			cpaId,
 			status.id()
 		);
+	}
+	
+	@Override
+	public HashMap<Date,Number> selectMessageTraffic(Date from, Date to, TimeUnit timeUnit, EbMSMessageStatus...status)
+	{
+		final HashMap<Date,Number> result = new HashMap<Date,Number>();
+		//if (TimeUnit.HOURS.equals(timeUnit))
+		jdbcTemplate.query(
+			"select trunc(time_stamp,'HH') time, count(*) nr" + 
+			" from ebms_message" + 
+			" where time_stamp >= ? " +
+			" and time_stamp < ?" +
+			(status.length == 0 ? "" : "status in (" + StringUtils.join(status,",") + ")") +
+			" group by trunc(time_stamp,'HH')",
+			new ParameterizedRowMapper<Object>()
+			{
+				@Override
+				public Object mapRow(ResultSet rs, int rowNum) throws SQLException
+				{
+					System.out.println(rs.getTimestamp("time").toString()+":"+rs.getInt("nr"));
+					result.put(rs.getTimestamp("time"),rs.getInt("nr"));
+					return null;
+				}
+			},
+			from,
+			to
+		);
+		return result;
 	}
 	
 	@Override

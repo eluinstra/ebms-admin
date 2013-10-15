@@ -18,4 +18,9 @@ package nl.clockwork.ebms.admin;
 public class Constants
 {
 	public final static String DATETIME_FORMAT = "dd-MM-yyyy hh:mm:ss";
+
+	public enum TimeUnit
+	{
+		HOURS, DAYS, WEEKS, MONTHS, YEARS;
+	}
 }
