@@ -292,17 +292,16 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 	
 	@Override
-	public List<String> getPendingMessageIds(String cpaId, String fromParty, String toParty)
+	public List<String> getMessageIds(String cpaId, String fromParty, String toParty, EbMSMessageStatus status)
 	{
 		return jdbcTemplate.queryForList(
 			"select message_id" + 
 			" from ebms_message" + 
 			" where cpa_id = ?" +
-			" and service <> ?" +
-			" and status is null",
+			" and status = ?",
 			String.class,
 			cpaId,
-			Constants.EBMS_SERVICE_URI
+			status.id()
 		);
 	}
 	

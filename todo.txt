@@ -4,6 +4,7 @@
 - add about
 - add help
 
+- add text field messageId to MessageStatusPage and switch to select messageIds selection or messageId text field 
 - improve uploading dataSources:
 	- create dataSource Form with fields name, content-type and file
 - improve Start class (add more options)

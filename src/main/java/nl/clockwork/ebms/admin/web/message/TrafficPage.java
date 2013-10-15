@@ -105,7 +105,7 @@ public class TrafficPage extends BasePage
 				item.add(new Label("toRole",message.getToRole()));
 				item.add(new Label("service",message.getService()));
 				item.add(new Label("action",message.getAction()));
-				item.add(new Label("status",message.getStatus() == null ? "PENDING" : message.getStatus()).add(AttributeModifier.replace("class",Model.of(getHtmlClass(message.getStatus())))));
+				item.add(new Label("status",message.getStatus()).add(AttributeModifier.replace("class",Model.of(getHtmlClass(message.getStatus())))));
 				item.add(DateLabel.forDatePattern("statusTime",new Model<Date>(message.getStatusTime()),Constants.DATETIME_FORMAT));
 				item.add(AttributeModifier.replace("class",new AbstractReadOnlyModel<String>()
 				{
@@ -142,7 +142,7 @@ public class TrafficPage extends BasePage
 	{
 		if (EbMSMessageStatus.PROCESSED.equals(ebMSMessageStatus) || EbMSMessageStatus.FORWARDED.equals(ebMSMessageStatus) || EbMSMessageStatus.ACKNOWLEDGED.equals(ebMSMessageStatus))
 			return "ok";
-		if (ebMSMessageStatus == null || EbMSMessageStatus.RECEIVED.equals(ebMSMessageStatus))
+		if (EbMSMessageStatus.RECEIVED.equals(ebMSMessageStatus) || EbMSMessageStatus.SENT.equals(ebMSMessageStatus))
 			return "warn";
 		if (EbMSMessageStatus.UNAUTHORIZED.equals(ebMSMessageStatus) || EbMSMessageStatus.NOT_RECOGNIZED.equals(ebMSMessageStatus) || EbMSMessageStatus.FAILED.equals(ebMSMessageStatus) || EbMSMessageStatus.DELIVERY_FAILED.equals(ebMSMessageStatus) || EbMSMessageStatus.NOT_ACKNOWLEDGED.equals(ebMSMessageStatus))
 			return "error";

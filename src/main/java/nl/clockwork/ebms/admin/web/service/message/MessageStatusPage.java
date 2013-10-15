@@ -21,6 +21,7 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
+import nl.clockwork.ebms.Constants.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.web.BasePage;
@@ -67,7 +68,7 @@ public class MessageStatusPage extends BasePage
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("ping",this);
+		return getLocalizer().getString("messageStatus",this);
 	}
 
 	public class MessageStatusForm extends Form<MessageStatusFormModel>
@@ -146,7 +147,7 @@ public class MessageStatusPage extends BasePage
 						String otherPartyName = CPAUtils.getOtherPartyName(cpa,model.getFromParty());
 						model.setToParties(Arrays.asList(otherPartyName));
 						model.setToParty(otherPartyName);
-						model.setMessageIds(ebMSDAO.getPendingMessageIds(model.getCpaId(),model.getFromParty(),model.getToParty()));
+						model.setMessageIds(ebMSDAO.getMessageIds(model.getCpaId(),model.getFromParty(),model.getToParty(),EbMSMessageStatus.SENT));
 						target.add(toParties);
 						target.add(messageIds);
 					}
