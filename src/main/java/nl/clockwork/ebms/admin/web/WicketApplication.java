@@ -57,6 +57,14 @@ public class WicketApplication extends WebApplication
 		new MenuLinkItem(advanced,"3","cpas",nl.clockwork.ebms.admin.web.cpa.CPAsPage.class);
 		new MenuLinkItem(advanced,"4","messages",nl.clockwork.ebms.admin.web.message.MessagesPage.class);
 		menu.add(advanced);
+
+		MenuItem configuration = new MenuItem("4","configuration");
+		new MenuLinkItem(configuration,"1","ebMSAdmin",nl.clockwork.ebms.admin.web.HomePage.class);
+		new MenuLinkItem(configuration,"2","ebMSCore",nl.clockwork.ebms.admin.web.HomePage.class);
+		menu.add(configuration);
+
+		MenuItem about = new MenuLinkItem("5","about",nl.clockwork.ebms.admin.web.HomePage.class);
+		menu.add(about);
 	}
 	
 	/**
