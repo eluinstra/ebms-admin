@@ -15,12 +15,44 @@
  */
 package nl.clockwork.ebms.admin;
 
+import nl.clockwork.ebms.Constants.EbMSMessageStatus;
+
+import org.apache.commons.lang.ArrayUtils;
+import org.joda.time.Period;
+
 public class Constants
 {
 	public final static String DATETIME_FORMAT = "dd-MM-yyyy hh:mm:ss";
 
 	public enum TimeUnit
 	{
-		HOURS, DAYS, WEEKS, MONTHS, YEARS;
+		HOURS(Period.hours(1),Period.hours(48),"HH"), DAYS(Period.days(1),Period.days(14),"dd"), WEEKS(Period.weeks(1),Period.weeks(13),"ww"), MONTHS(Period.months(1),Period.months(12),"MM")/*, YEARS(Period.years(1),Period.years(10),"yyyy")*/;
+		
+		private Period period;
+		private Period defaultPeriod;
+		private String dateFormat;
+
+		TimeUnit(Period period, Period defaultPeriod, String dateFormat)
+		{
+			this.period = period;
+			this.defaultPeriod = defaultPeriod;
+			this.dateFormat = dateFormat;
+		}
+		public Period period()
+		{
+			return period;
+		}
+		public Period defaultPeriod()
+		{
+			return defaultPeriod;
+		}
+		public String dateFormat()
+		{
+			return dateFormat; 
+		}
 	}
+
+	public final static EbMSMessageStatus[] receiveStatus = {EbMSMessageStatus.UNAUTHORIZED,EbMSMessageStatus.NOT_RECOGNIZED,EbMSMessageStatus.RECEIVED,EbMSMessageStatus.PROCESSED,EbMSMessageStatus.FORWARDED,EbMSMessageStatus.FAILED};
+	public final static EbMSMessageStatus[] sendStatus = {EbMSMessageStatus.SENT,EbMSMessageStatus.ACKNOWLEDGED,EbMSMessageStatus.DELIVERY_FAILED,EbMSMessageStatus.NOT_ACKNOWLEDGED};
+	public final static EbMSMessageStatus[] allStatus = (EbMSMessageStatus[])ArrayUtils.addAll(receiveStatus,sendStatus);
 }
