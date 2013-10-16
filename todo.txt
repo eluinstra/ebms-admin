@@ -8,7 +8,6 @@
 - improve uploading dataSources:
 	- create dataSource Form with fields name, content-type and file
 - improve Start class (add more options)
-- implement Start class to start ebms-adapter embedded
 
 - add attachment viewers for 'known'/common content types
 - add viewers for ebms message format???
