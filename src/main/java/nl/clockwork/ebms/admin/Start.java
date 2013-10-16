@@ -63,15 +63,16 @@ public class Start
 			Resource keystore = Resource.newClassPathResource(keyStore);
 			if (keystore != null && keystore.exists())
 			{
-				connector.setConfidentialPort(cmd.getOptionValue("p") == null ? 8080 : Integer.parseInt(cmd.getOptionValue("p")));
+				connector.setConfidentialPort(cmd.getOptionValue("p") == null ? 8433 : Integer.parseInt(cmd.getOptionValue("p")));
 				SslContextFactory factory = new SslContextFactory();
 				factory.setKeyStoreResource(keystore);
 				factory.setKeyStorePassword(password);
-				factory.setTrustStoreResource(keystore);
-				factory.setKeyManagerPassword(password);
+				//factory.setNeedClientAuth(clientAuth);
+				//factory.setTrustStoreResource(truststore);
+				//factory.setTrustStorePassword(truststore.password);
 				SslSocketConnector sslConnector = new SslSocketConnector(factory);
 				sslConnector.setPort(connector.getConfidentialPort());
-				sslConnector.setAcceptors(4);
+				//sslConnector.setAcceptors(4);
 				server.addConnector(sslConnector);
 				System.out.println("Application available on https://localhost:" + connector.getPort());
 			}
