@@ -35,6 +35,7 @@ import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PropertyListView;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -149,7 +150,6 @@ public class MessagePage extends BasePage
 		{
 			super(id);
 			setContent(new ErrorMessagePanel(this,Model.of(errorMessage)));
-			setTitle(getLocalizer().getString("eventError",this));
 			setCookieName("eventError");
 			setCloseButtonCallback(new ModalWindow.CloseButtonCallback()
 			{
@@ -160,6 +160,12 @@ public class MessagePage extends BasePage
 					return true;
 				}
 			});
+		}
+		
+		@Override
+		public IModel<String> getTitle()
+		{
+			return Model.of(getLocalizer().getString("eventError",this));
 		}
 	}
 	
