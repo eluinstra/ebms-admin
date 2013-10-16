@@ -23,12 +23,10 @@ textarea {
 }
 
 a.logo {
-	background: transparent url(../images/ebms_logo.gif) no-repeat scroll 0%;
 	float: left;
 	height: 49px;
-	margin: 10px 0 0 47px;
+	margin: 10px 0 0 160px;
 	width: 299px;
-	text-indent: -9999em;
 	overflow: hidden;
 }
 
@@ -45,8 +43,8 @@ a.logo {
 }
 			
 .frameTop {
-	/*width: 970px;*/
-	height: 80px;
+	/*width: 970px;
+	height: 80px;*/
 	margin: 0 auto;
 }
 
