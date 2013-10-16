@@ -41,6 +41,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
@@ -79,15 +80,31 @@ public class MessageStatusPage extends BasePage
 		{
 			super(id,new CompoundPropertyModel<MessageStatusFormModel>(new MessageStatusFormModel()));
 
-			DropDownChoice<String> cpaIds = new DropDownChoice<String>("cpaIds",new PropertyModel<String>(this.getModelObject(),"cpaId"),Model.ofList(cpaClient.getCPAIds()));
-			cpaIds.setLabel(Model.of(getLocalizer().getString("lbl.cpaId",this)));
+			DropDownChoice<String> cpaIds = new DropDownChoice<String>("cpaIds",new PropertyModel<String>(this.getModelObject(),"cpaId"),Model.ofList(cpaClient.getCPAIds()))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.cpaId",MessageStatusForm.this));
+				}
+			};
 			cpaIds.setRequired(true);
 			MarkupContainer cpaIdFeedback = new FormComponentFeedbackBorder("cpaIdFeedback");
 			add(cpaIdFeedback);
 			cpaIdFeedback.add(cpaIds);
 
-			final DropDownChoice<String> fromParties = new DropDownChoice<String>("fromParties",new PropertyModel<String>(this.getModelObject(),"fromParty"),new PropertyModel<List<String>>(this.getModelObject(),"fromParties"));
-			fromParties.setLabel(Model.of(getLocalizer().getString("lbl.fromParty",this)));
+			final DropDownChoice<String> fromParties = new DropDownChoice<String>("fromParties",new PropertyModel<String>(this.getModelObject(),"fromParty"),new PropertyModel<List<String>>(this.getModelObject(),"fromParties"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.fromParty",MessageStatusForm.this));
+				}
+			};
 			fromParties.setRequired(true);
 			fromParties.setOutputMarkupId(true);
 			MarkupContainer fromPartyFeedback = new FormComponentFeedbackBorder("fromPartyFeedback");
@@ -117,16 +134,32 @@ public class MessageStatusPage extends BasePage
 				}
       });
 
-			final DropDownChoice<String> toParties = new DropDownChoice<String>("toParties",new PropertyModel<String>(this.getModelObject(),"toParty"),new PropertyModel<List<String>>(this.getModelObject(),"toParties"));
-			toParties.setLabel(Model.of(getLocalizer().getString("lbl.toParty",this)));
+			final DropDownChoice<String> toParties = new DropDownChoice<String>("toParties",new PropertyModel<String>(this.getModelObject(),"toParty"),new PropertyModel<List<String>>(this.getModelObject(),"toParties"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.toParty",MessageStatusForm.this));
+				}
+			};
 			toParties.setRequired(true);
 			toParties.setOutputMarkupId(true);
 			MarkupContainer toPartyFeedback = new FormComponentFeedbackBorder("toPartyFeedback");
 			add(toPartyFeedback);
 			toPartyFeedback.add(toParties);
 			
-			final DropDownChoice<String> messageIds = new DropDownChoice<String>("messageIds",new PropertyModel<String>(this.getModelObject(),"messageId"),new PropertyModel<List<String>>(this.getModelObject(),"messageIds"));
-			messageIds.setLabel(Model.of(getLocalizer().getString("lbl.messageId",this)));
+			final DropDownChoice<String> messageIds = new DropDownChoice<String>("messageIds",new PropertyModel<String>(this.getModelObject(),"messageId"),new PropertyModel<List<String>>(this.getModelObject(),"messageIds"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.messageId",MessageStatusForm.this));
+				}
+			};
 			messageIds.setRequired(true);
 			messageIds.setOutputMarkupId(true);
 			MarkupContainer messageIdFeedback = new FormComponentFeedbackBorder("messageIdFeedback");
@@ -159,12 +192,20 @@ public class MessageStatusPage extends BasePage
 				}
       });
 
-			//TextField<String> messageId = new TextField<String>("messageId");
-			//messageId.setLabel(Model.of(getLocalizer().getString("lbl.messageId",this)));
-			//messageId.setRequired(true);
-			//MarkupContainer messageIdFeedback = new FormComponentFeedbackBorder("messageIdFeedback");
-			//add(messageIdFeedback);
-			//messageIdFeedback.add(messageId);
+//			TextField<String> messageId = new TextField<String>("messageId")
+//			{
+//				private static final long serialVersionUID = 1L;
+//
+//				@Override
+//				public IModel<String> getLabel()
+//				{
+//					return Model.of(getLocalizer().getString("lbl.messageId",MessageStatusForm.this));
+//				}
+//			};
+//			messageId.setRequired(true);
+//			MarkupContainer messageIdFeedback = new FormComponentFeedbackBorder("messageIdFeedback");
+//			add(messageIdFeedback);
+//			messageIdFeedback.add(messageId);
 			
 			Button ping = new Button("check",new ResourceModel("cmd.check"))
 			{

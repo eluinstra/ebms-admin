@@ -27,6 +27,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -68,8 +69,16 @@ public class CPAEditPage extends BasePage
 		{
 			super(id,Model.of(cpa));
 			
-			final TextArea<String> cpa_ = new TextArea<String>("cpa",Model.of(cpa));
-			cpa_.setLabel(Model.of(getLocalizer().getString("lbl.cpa",this)));
+			final TextArea<String> cpa_ = new TextArea<String>("cpa",Model.of(cpa))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.cpa",EditCPAForm.this));
+				}
+			};
 			cpa_.setRequired(true);
 			MarkupContainer cpaFeedback = new FormComponentFeedbackBorder("cpaFeedback");
 			add(cpaFeedback);

@@ -31,6 +31,7 @@ import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -64,15 +65,31 @@ public class CPAUploadPage extends BasePage
 			super(id,new CompoundPropertyModel<EditUploadFormModel>(new EditUploadFormModel()));
 			setMultiPart(true);
 
-			FileUploadField cpaFile = new FileUploadField("cpaFile");
-			cpaFile.setLabel(Model.of(getLocalizer().getString("lbl.cpa",this)));
+			FileUploadField cpaFile = new FileUploadField("cpaFile")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.cpa",EditUploadForm.this));
+				}
+			};
 			cpaFile.setRequired(true);
 			MarkupContainer cpaFeedback = new FormComponentFeedbackBorder("cpaFeedback");
 			add(cpaFeedback);
 			cpaFeedback.add(cpaFile);
 			
-			CheckBox overwrite = new CheckBox("overwrite");
-			overwrite.setLabel(Model.of(getLocalizer().getString("lbl.overwrite",this)));
+			CheckBox overwrite = new CheckBox("overwrite")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.overwrite",EditUploadForm.this));
+				}
+			};
 			add(overwrite);
 
 			Button validate = new Button("validate",new ResourceModel("cmd.validate"))

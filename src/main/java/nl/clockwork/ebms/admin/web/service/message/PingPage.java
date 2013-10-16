@@ -38,6 +38,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
@@ -74,15 +75,31 @@ public class PingPage extends BasePage
 		{
 			super(id,new CompoundPropertyModel<PingFormModel>(new PingFormModel()));
 
-			DropDownChoice<String> cpaIds = new DropDownChoice<String>("cpaIds",new PropertyModel<String>(this.getModelObject(),"cpaId"),Model.ofList(cpaClient.getCPAIds()));
-			cpaIds.setLabel(Model.of(getLocalizer().getString("lbl.cpaId",this)));
+			DropDownChoice<String> cpaIds = new DropDownChoice<String>("cpaIds",new PropertyModel<String>(this.getModelObject(),"cpaId"),Model.ofList(cpaClient.getCPAIds()))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.cpaId",PingForm.this));
+				}
+			};
 			cpaIds.setRequired(true);
 			MarkupContainer cpaIdFeedback = new FormComponentFeedbackBorder("cpaIdFeedback");
 			add(cpaIdFeedback);
 			cpaIdFeedback.add(cpaIds);
 
-			final DropDownChoice<String> fromParties = new DropDownChoice<String>("fromParties",new PropertyModel<String>(this.getModelObject(),"fromParty"),new PropertyModel<List<String>>(this.getModelObject(),"fromParties"));
-			fromParties.setLabel(Model.of(getLocalizer().getString("lbl.fromParty",this)));
+			final DropDownChoice<String> fromParties = new DropDownChoice<String>("fromParties",new PropertyModel<String>(this.getModelObject(),"fromParty"),new PropertyModel<List<String>>(this.getModelObject(),"fromParties"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.fromParty",PingForm.this));
+				}
+			};
 			fromParties.setRequired(true);
 			fromParties.setOutputMarkupId(true);
 			MarkupContainer fromPartyFeedback = new FormComponentFeedbackBorder("fromPartyFeedback");
@@ -112,8 +129,16 @@ public class PingPage extends BasePage
 				}
       });
 
-			final DropDownChoice<String> toParties = new DropDownChoice<String>("toParties",new PropertyModel<String>(this.getModelObject(),"toParty"),new PropertyModel<List<String>>(this.getModelObject(),"toParties"));
-			toParties.setLabel(Model.of(getLocalizer().getString("lbl.toParty",this)));
+			final DropDownChoice<String> toParties = new DropDownChoice<String>("toParties",new PropertyModel<String>(this.getModelObject(),"toParty"),new PropertyModel<List<String>>(this.getModelObject(),"toParties"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.toParty",PingForm.this));
+				}
+			};
 			toParties.setRequired(true);
 			toParties.setOutputMarkupId(true);
 			MarkupContainer toPartyFeedback = new FormComponentFeedbackBorder("toPartyFeedback");

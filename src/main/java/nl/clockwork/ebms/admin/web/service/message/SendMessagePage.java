@@ -42,6 +42,7 @@ import org.apache.wicket.markup.html.form.upload.MultiFileUploadField;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
@@ -78,15 +79,31 @@ public class SendMessagePage extends BasePage
 			super(id,new CompoundPropertyModel<EbMSMessageContextModel>(new EbMSMessageContextModel()));
 			setMultiPart(true);
 
-			DropDownChoice<String> cpaIds = new DropDownChoice<String>("cpaIds",new PropertyModel<String>(this.getModelObject(),"cpaId"),Model.ofList(cpaClient.getCPAIds()));
-			cpaIds.setLabel(Model.of(getLocalizer().getString("lbl.cpaId",this)));
+			DropDownChoice<String> cpaIds = new DropDownChoice<String>("cpaIds",new PropertyModel<String>(this.getModelObject(),"cpaId"),Model.ofList(cpaClient.getCPAIds()))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.cpaId",MessageForm.this));
+				}
+			};
 			cpaIds.setRequired(true);
 			MarkupContainer cpaIdFeedback = new FormComponentFeedbackBorder("cpaIdFeedback");
 			add(cpaIdFeedback);
 			cpaIdFeedback.add(cpaIds);
 
-			final DropDownChoice<String> fromRoles = new DropDownChoice<String>("fromRoles",new PropertyModel<String>(this.getModelObject(),"fromRole"),new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"));
-			fromRoles.setLabel(Model.of(getLocalizer().getString("lbl.fromRole",this)));
+			final DropDownChoice<String> fromRoles = new DropDownChoice<String>("fromRoles",new PropertyModel<String>(this.getModelObject(),"fromRole"),new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.fromRole",MessageForm.this));
+				}
+			};
 			fromRoles.setRequired(true);
 			fromRoles.setOutputMarkupId(true);
 			MarkupContainer fromRoleFeedback = new FormComponentFeedbackBorder("fromRoleFeedback");
@@ -116,8 +133,16 @@ public class SendMessagePage extends BasePage
 				}
       });
 
-			final DropDownChoice<String> services = new DropDownChoice<String>("services",new PropertyModel<String>(this.getModelObject(),"service"),new PropertyModel<List<String>>(this.getModelObject(),"services"));
-			services.setLabel(Model.of(getLocalizer().getString("lbl.service",this)));
+			final DropDownChoice<String> services = new DropDownChoice<String>("services",new PropertyModel<String>(this.getModelObject(),"service"),new PropertyModel<List<String>>(this.getModelObject(),"services"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.service",MessageForm.this));
+				}
+			};
 			services.setRequired(true);
 			services.setOutputMarkupId(true);
 			MarkupContainer serviceFeedback = new FormComponentFeedbackBorder("serviceFeedback");
@@ -147,8 +172,16 @@ public class SendMessagePage extends BasePage
 				}
       });
 
-			final DropDownChoice<String> actions = new DropDownChoice<String>("actions",new PropertyModel<String>(this.getModelObject(),"action"),new PropertyModel<List<String>>(this.getModelObject(),"actions"));
-			actions.setLabel(Model.of(getLocalizer().getString("lbl.action",this)));
+			final DropDownChoice<String> actions = new DropDownChoice<String>("actions",new PropertyModel<String>(this.getModelObject(),"action"),new PropertyModel<List<String>>(this.getModelObject(),"actions"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.action",MessageForm.this));
+				}
+			};
 			actions.setRequired(true);
 			actions.setOutputMarkupId(true);
 			MarkupContainer actionFeedback = new FormComponentFeedbackBorder("actionFeedback");
@@ -178,8 +211,16 @@ public class SendMessagePage extends BasePage
 				}
       });
 			
-			MultiFileUploadField dataSources = new MultiFileUploadField("dataSources");
-			dataSources.setLabel(Model.of(getLocalizer().getString("lbl.dataSources",this)));
+			MultiFileUploadField dataSources = new MultiFileUploadField("dataSources")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.dataSources",MessageForm.this));
+				}
+			};
 			dataSources.setRequired(true);
 			add(dataSources);
 
