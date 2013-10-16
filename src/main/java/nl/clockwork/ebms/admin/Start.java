@@ -27,9 +27,12 @@ import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.bio.SocketConnector;
 import org.eclipse.jetty.server.ssl.SslSocketConnector;
+import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlet.FilterMapping;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
-import org.eclipse.jetty.webapp.WebAppContext;
+import org.springframework.web.context.ContextLoaderListener;
 
 public class Start
 {
@@ -44,14 +47,11 @@ public class Start
 		if (cmd.hasOption("h"))
 			printUsage();
 
-		int timeout = Integer.MAX_VALUE;
 		Server server = new Server();
 		SocketConnector connector = new SocketConnector();
 
 		if (!cmd.hasOption("ssl"))
 		{
-			connector.setMaxIdleTime(timeout);
-			connector.setSoLingerTime(-1);
 			connector.setPort(cmd.getOptionValue("p") == null ? 8080 : Integer.parseInt(cmd.getOptionValue("p")));
 			server.addConnector(connector);
 			System.out.println("Application available on http://localhost:" + connector.getPort());
@@ -70,7 +70,6 @@ public class Start
 				factory.setTrustStoreResource(keystore);
 				factory.setKeyManagerPassword(password);
 				SslSocketConnector sslConnector = new SslSocketConnector(factory);
-				sslConnector.setMaxIdleTime(timeout);
 				sslConnector.setPort(connector.getConfidentialPort());
 				sslConnector.setAcceptors(4);
 				server.addConnector(sslConnector);
@@ -81,10 +80,8 @@ public class Start
 		}
 		System.out.println();
 
-		WebAppContext context = new WebAppContext();
-		context.setServer(server);
+		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		context.setContextPath("/");
-		context.setWar("src/main/webapp");
 
 		if (cmd.hasOption("jmx"))
 		{
@@ -96,20 +93,21 @@ public class Start
 
 		server.setHandler(context);
 
-		try
-		{
-			System.out.println(">>> STARTING EMBEDDED JETTY SERVER, PRESS ANY KEY TO STOP");
-			server.start();
-			System.in.read();
-			System.out.println(">>> STOPPING EMBEDDED JETTY SERVER");
-			server.stop();
-			server.join();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			System.exit(1);
-		}
+		context.setInitParameter("configuration","deployment");
+		context.setInitParameter("contextConfigLocation","classpath:applicationContext.xml");
+
+		context.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
+		
+		FilterHolder filterHolder = new FilterHolder(org.apache.wicket.protocol.http.WicketFilter.class); 
+		filterHolder.setInitParameter("applicationClassName","nl.clockwork.ebms.admin.web.WicketApplication");
+		filterHolder.setInitParameter("filterMappingUrlPattern","/*");
+		context.addFilter(filterHolder,"/*",FilterMapping.DEFAULT);
+		
+		ContextLoaderListener listener = new ContextLoaderListener();
+		context.addEventListener(listener);
+		
+		server.start();
+		server.join();
 	}
 
 	private static Options createOptions()
