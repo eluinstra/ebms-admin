@@ -40,7 +40,7 @@ textarea {
 a.logo {
 	float: left;
 	height: 49px;
-	margin: 10px 0 0 160px;
+	margin: 10px 0 0 80px;
 	width: 299px;
 	overflow: hidden;
 }
@@ -58,8 +58,8 @@ a.logo {
 }
 			
 .frameTop {
-	/*width: 970px;
-	height: 80px;*/
+	width: 1280px;
+	/*height: 80px;*/
 	margin: 0 auto;
 }
 
