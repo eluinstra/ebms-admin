@@ -15,7 +15,7 @@ public class Main
 		context.setContextPath("/");
 		server.setHandler(context);
 
-		context.setInitParameter("configuration","deployment");
+		context.setInitParameter("configuration","deployment"); //"development"
 		context.setInitParameter("contextConfigLocation","classpath:applicationContext.xml");
 
 		context.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
