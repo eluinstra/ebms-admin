@@ -92,7 +92,10 @@
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2"><textarea wicket:id="content" rows="64" cols="192" readonly="readonly" style="white-space: pre; word-wrap: normal; overflow-x: scroll;">[content]</textarea></td>
+				<td colspan="2">
+					<a href="#" onclick="if (this.innerHTML=='Show') { document.getElementById('contentDiv').style.display='inline'; this.innerHTML='Hide'; } else { document.getElementById('contentDiv').style.display='none'; this.innerHTML='Show'; } return false;">Show</a><br/>
+					<div id="contentDiv" style="display: none;"><textarea wicket:id="content" rows="64" cols="192" readonly="readonly" style="white-space: pre; word-wrap: normal; overflow-x: scroll;">[content]</textarea></div>
+				</td>
 			</tr>
 		</tbody>
 		<tfoot>
