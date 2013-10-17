@@ -23,7 +23,9 @@ import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.namespace.QName;
 
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
@@ -117,7 +119,7 @@ public class DownloadEbMSMessageContentLink extends Link<Void>
 	{
 		ZipEntry entry = new ZipEntry("messageContext.xml");
 		zip.putNextEntry(entry);
-		zip.write(XMLMessageBuilder.getInstance(EbMSMessageContext.class).handle(messageContent.getContext()).getBytes());
+		zip.write(XMLMessageBuilder.getInstance(EbMSMessageContext.class).handle(new JAXBElement<EbMSMessageContext>(new QName("http://www.clockwork.nl/ebms/2.0","messageContext"),EbMSMessageContext.class,messageContent.getContext())).getBytes());
 		zip.closeEntry();
 		for (nl.clockwork.ebms.model.EbMSDataSource dataSource : messageContent.getDataSources())
 		{
