@@ -34,23 +34,23 @@ import nl.clockwork.ebms.model.EbMSMessageContext;
 
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
+import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 
-public class DownloadEbMSMessageContentLink extends Link<Void>
+public class DownloadEbMSMessageContentLink extends Link<EbMSMessageContent>
 {
 	private static final long serialVersionUID = 1L;
-	private nl.clockwork.ebms.model.EbMSMessageContent messageContent;
 
 	public DownloadEbMSMessageContentLink(String id, nl.clockwork.ebms.model.EbMSMessageContent messageContent)
 	{
-		super(id);//,Model.of(Args.notNull(messageContent,"messageContent"))
-		this.messageContent = messageContent;
+		super(id,Model.of(Args.notNull(messageContent,"messageContent")));
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class DownloadEbMSMessageContentLink extends Link<Void>
 	{
 		try
 		{
-			//EbMSMessageContent messageContent = getModelObject();
+			EbMSMessageContent messageContent = getModelObject();
 			final ByteArrayOutputStream output = new ByteArrayOutputStream();
 			ZipOutputStream zip = new ZipOutputStream(output);
 			writeMessageToZip(messageContent,zip);
