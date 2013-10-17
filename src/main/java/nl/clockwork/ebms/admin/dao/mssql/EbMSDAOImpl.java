@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.clockwork.ebms.admin.dao.hsqldb;
+package nl.clockwork.ebms.admin.dao.mssql;
 
 import java.util.List;
 
@@ -34,9 +34,10 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 	@Override
 	public String selectCPAsQuery(long first, long count)
 	{
-		return CPARowMapper.getBaseQuery() +
+		return "select * from (" +
+			CPARowMapper.getBaseQuery() +
 			" order by cpa_id" +
-			" offset " + first + " limit " + (first + count)
+			" offset " + first + " rows fetch " + count + " rows only"
 		;
 	}
 	
@@ -47,7 +48,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 			" where 1 = 1" +
 			getMessageFilter(filter,parameters) +
 			" order by time_stamp desc" +
-			" offset " + first + " limit " + (first + count)
+			" offset " + first + " rows fetch " + count + " rows only"
 		;
 	}
 }

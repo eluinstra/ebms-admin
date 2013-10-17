@@ -15,10 +15,13 @@
  */
 package nl.clockwork.ebms.admin.dao.oracle;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.transaction.support.TransactionTemplate;
+import java.util.List;
 
 import nl.clockwork.ebms.admin.dao.AbstractEbMSDAO;
+import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.support.TransactionTemplate;
 
 public class EbMSDAOImpl extends AbstractEbMSDAO
 {
@@ -29,9 +32,24 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 	}
 
 	@Override
-	public String getTimestampFunction()
+	public String selectCPAsQuery(long first, long count)
 	{
-		return "SYSDATE";
+		return "select * from (" +
+			CPARowMapper.getBaseQuery() +
+			" order by cpa_id" +
+			" ) where ROWNUM > " + (first) + " and ROWNUM <= " + (first + count)
+		;
 	}
 
+	@Override
+	public String selectMessagesQuery(EbMSMessageFilter filter, long first, long count, List<Object> parameters)
+	{
+		return "select * from (" +
+			new EbMSMessageRowMapper().getBaseQuery() +
+			" where 1 = 1" +
+			getMessageFilter(filter,parameters) +
+			" order by time_stamp desc" +
+			" ) where ROWNUM > " + (first) + " and ROWNUM <= " + (first + count)
+		;
+	}
 }

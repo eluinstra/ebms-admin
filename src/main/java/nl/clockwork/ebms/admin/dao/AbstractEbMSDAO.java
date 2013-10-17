@@ -48,7 +48,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 public abstract class AbstractEbMSDAO implements EbMSDAO
 {
-	private static class CPARowMapper implements ParameterizedRowMapper<CPA>
+	public static class CPARowMapper implements ParameterizedRowMapper<CPA>
 	{
 		public static String getBaseQuery()
 		{
@@ -62,7 +62,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		}
 	}
 	
-	private static class EbMSMessageRowMapper implements ParameterizedRowMapper<EbMSMessage>
+	public static class EbMSMessageRowMapper implements ParameterizedRowMapper<EbMSMessage>
 	{
 		private boolean detail;
 
@@ -123,7 +123,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	
 	protected TransactionTemplate transactionTemplate;
 	protected JdbcTemplate jdbcTemplate;
-	public abstract String getTimestampFunction();
 
 	public AbstractEbMSDAO(TransactionTemplate transactionTemplate, JdbcTemplate jdbcTemplate)
 	{
@@ -166,16 +165,14 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		);
 	}
 	
+	public abstract String selectCPAsQuery(long first, long count);
+	
 	@Override
 	public List<CPA> selectCPAs(long first, long count)
 	{
 		return jdbcTemplate.query(
-			CPARowMapper.getBaseQuery() +
-			" order by cpa_id" +
-			" limit ? offset ?",
-			new CPARowMapper(),
-			first + count,
-			first
+			selectCPAsQuery(first,count),
+			new CPARowMapper()
 		);
 	}
 
@@ -219,16 +216,14 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		);
 	}
 	
+	public abstract String selectMessagesQuery(EbMSMessageFilter filter, long first, long count, List<Object> parameters);
+	
 	@Override
 	public List<EbMSMessage> selectMessages(EbMSMessageFilter filter, long first, long count)
 	{
 		List<Object> parameters = new ArrayList<Object>();
 		return jdbcTemplate.query(
-			new EbMSMessageRowMapper().getBaseQuery() +
-			" where 1 = 1" +
-			getMessageFilter(filter,parameters) +
-			" order by time_stamp desc" +
-			" limit " + (first + count) + " offset " + first,
+			selectMessagesQuery(filter,first,count,parameters),
 			parameters.toArray(new Object[0]),
 			new EbMSMessageRowMapper()
 		);
