@@ -42,7 +42,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 public class MessagePage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="ebMSDAO")
+	@SpringBean(name="ebMSAdminDAO")
 	private EbMSDAO ebMSDAO;
 
 	public MessagePage(final EbMSMessage message, final WebPage responsePage)

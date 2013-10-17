@@ -20,7 +20,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="ebMSDAO" class="nl.clockwork.ebms.admin.dao.EbMSDAOFactory">
+	<bean id="ebMSAdminDAO" class="nl.clockwork.ebms.admin.dao.EbMSDAOFactory">
 		<property name="dataSource" ref="ebMSDataSource"/>
 		<property name="transactionTemplate" ref="ebMSTransactionTemplate"/>
 		<property name="jdbcTemplate" ref="ebMSJdbcTemplate"/>

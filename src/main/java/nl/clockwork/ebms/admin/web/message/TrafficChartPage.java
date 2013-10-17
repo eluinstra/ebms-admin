@@ -46,7 +46,7 @@ import com.googlecode.wickedcharts.wicket6.highcharts.Chart;
 public class TrafficChartPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="ebMSDAO")
+	@SpringBean(name="ebMSAdminDAO")
 	private EbMSDAO ebMSDAO;
 
 	public TrafficChartPage()

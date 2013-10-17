@@ -53,7 +53,7 @@ public class MessageStatusPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	protected transient Log logger = LogFactory.getLog(getClass());
-	@SpringBean(name="ebMSDAO")
+	@SpringBean(name="ebMSAdminDAO")
 	public EbMSDAO ebMSDAO;
 	@SpringBean(name="cpaClient")
 	private CPAService cpaClient;
