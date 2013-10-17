@@ -41,8 +41,8 @@ public class CPAUploadPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	protected transient Log logger = LogFactory.getLog(getClass());
-	@SpringBean(name="cpaClient")
-	private CPAService cpaClient;
+	@SpringBean(name="cpaService")
+	private CPAService cpaService;
 
 	public CPAUploadPage()
 	{
@@ -107,7 +107,7 @@ public class CPAUploadPage extends BasePage
 							FileUpload file = files.get(0);
 							//String contentType = file.getContentType();
 							//FIXME char encoding
-							cpaClient.validateCPA(new String(file.getBytes()));
+							cpaService.validateCPA(new String(file.getBytes()));
 						}
 						info("CPA is valid");
 					}
@@ -135,7 +135,7 @@ public class CPAUploadPage extends BasePage
 							FileUpload file = files.get(0);
 							//String contentType = file.getContentType();
 							//FIXME char encoding
-							cpaClient.insertCPA(new String(file.getBytes()),EditUploadForm.this.getModelObject().isOverwrite());
+							cpaService.insertCPA(new String(file.getBytes()),EditUploadForm.this.getModelObject().isOverwrite());
 						}
 						setResponsePage(new CPAsPage());
 					}

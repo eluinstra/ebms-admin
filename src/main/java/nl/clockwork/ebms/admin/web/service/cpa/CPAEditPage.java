@@ -36,8 +36,8 @@ public class CPAEditPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	protected transient Log logger = LogFactory.getLog(getClass());
-	@SpringBean(name="cpaClient")
-	private CPAService cpaClient;
+	@SpringBean(name="cpaService")
+	private CPAService cpaService;
 
 	public CPAEditPage(WebPage responsePage)
 	{
@@ -96,9 +96,9 @@ public class CPAEditPage extends BasePage
 						//String cpa = (String)getParent().getDefaultModelObject();
 						String cpa = cpa_.getModelObject();
 						if (isNew)
-							cpaClient.insertCPA(cpa,false);
+							cpaService.insertCPA(cpa,false);
 						else
-							cpaClient.insertCPA(cpa,true);
+							cpaService.insertCPA(cpa,true);
 						setResponsePage(new CPAsPage());
 					}
 					catch (Exception e)

@@ -41,8 +41,8 @@ public class MessagePage extends BasePage
 {
 	protected transient Log logger = LogFactory.getLog(this.getClass());
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="ebMSClient")
-	private EbMSMessageService ebMSClient;
+	@SpringBean(name="ebMSMessageService")
+	private EbMSMessageService ebMSMessageService;
 
 	public MessagePage(final EbMSMessageContent messageContent, final WebPage responsePage)
 	{
@@ -56,7 +56,7 @@ public class MessagePage extends BasePage
 			@Override
 			public void onClick()
 			{
-				setResponsePage(new MessagePage(ebMSClient.getMessage(messageContent.getContext().getRefToMessageId(),null),MessagePage.this));
+				setResponsePage(new MessagePage(ebMSMessageService.getMessage(messageContent.getContext().getRefToMessageId(),null),MessagePage.this));
 			}
 		};
 		link.add(new Label("refToMessageId",messageContent.getContext().getRefToMessageId()));
@@ -109,7 +109,7 @@ public class MessagePage extends BasePage
 			{
 				try
 				{
-					ebMSClient.processMessage(messageContent.getContext().getMessageId());
+					ebMSMessageService.processMessage(messageContent.getContext().getMessageId());
 					setResponsePage(responsePage);
 				}
 				catch (Exception e)

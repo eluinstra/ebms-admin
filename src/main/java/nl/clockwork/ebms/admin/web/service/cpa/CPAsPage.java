@@ -37,8 +37,8 @@ public class CPAsPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	private Log logger = LogFactory.getLog(this.getClass());
-	@SpringBean(name="cpaClient")
-	private CPAService cpaClient;
+	@SpringBean(name="cpaService")
+	private CPAService cpaService;
 
 	public CPAsPage()
 	{
@@ -56,7 +56,7 @@ public class CPAsPage extends BasePage
 			WebMarkupContainer container = new WebMarkupContainer("container");
 			container.setOutputMarkupId(true);
 
-			DataView<String> cpaIds = new DataView<String>("cpaIds",new CPADataProvider(cpaClient))
+			DataView<String> cpaIds = new DataView<String>("cpaIds",new CPADataProvider(cpaService))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -71,7 +71,7 @@ public class CPAsPage extends BasePage
 						@Override
 						public void onClick()
 						{
-							setResponsePage(new CPAPage(cpaClient.getCPA(cpaId),CPAsPage.this));
+							setResponsePage(new CPAPage(cpaService.getCPA(cpaId),CPAsPage.this));
 						}
 					};
 					link.add(new Label("cpaId",cpaId));
@@ -86,7 +86,7 @@ public class CPAsPage extends BasePage
 							try
 							{
 								String cpaId = (String)getParent().getDefaultModelObject();
-								cpaClient.deleteCPA(cpaId);
+								cpaService.deleteCPA(cpaId);
 								setResponsePage(new CPAsPage());
 							}
 							catch (Exception e)
@@ -109,7 +109,7 @@ public class CPAsPage extends BasePage
 							return (item.getIndex() % 2 == 0) ? "even" : "odd";
 						}
 					}));
-					item.add(new DownloadCPALink("downloadCPA",cpaClient,cpaId));
+					item.add(new DownloadCPALink("downloadCPA",cpaService,cpaId));
 				}
 			};
 			cpaIds.setOutputMarkupId(true);

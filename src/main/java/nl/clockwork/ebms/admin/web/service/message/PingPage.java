@@ -50,10 +50,10 @@ public class PingPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	protected transient Log logger = LogFactory.getLog(getClass());
-	@SpringBean(name="cpaClient")
-	private CPAService cpaClient;
-	@SpringBean(name="ebMSClient")
-	private EbMSMessageService ebMSClient;
+	@SpringBean(name="cpaService")
+	private CPAService cpaService;
+	@SpringBean(name="ebMSMessageService")
+	private EbMSMessageService ebMSMessageService;
 
 	public PingPage()
 	{
@@ -75,7 +75,7 @@ public class PingPage extends BasePage
 		{
 			super(id,new CompoundPropertyModel<PingFormModel>(new PingFormModel()));
 
-			DropDownChoice<String> cpaIds = new DropDownChoice<String>("cpaIds",new PropertyModel<String>(this.getModelObject(),"cpaId"),Model.ofList(cpaClient.getCPAIds()))
+			DropDownChoice<String> cpaIds = new DropDownChoice<String>("cpaIds",new PropertyModel<String>(this.getModelObject(),"cpaId"),Model.ofList(cpaService.getCPAIds()))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -116,7 +116,7 @@ public class PingPage extends BasePage
 					try
 					{
 						PingFormModel model = PingForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaClient.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						ArrayList<String> partyNames = CPAUtils.getPartyNames(cpa);
 						model.setFromParties(partyNames);
 						target.add(fromParties);
@@ -155,7 +155,7 @@ public class PingPage extends BasePage
 					try
 					{
 						PingFormModel model = PingForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaClient.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						String otherPartyName = CPAUtils.getOtherPartyName(cpa,model.getFromParty());
 						model.setToParties(Arrays.asList(otherPartyName));
 						model.setToParty(otherPartyName);
@@ -179,8 +179,8 @@ public class PingPage extends BasePage
 					try
 					{
 						PingFormModel model = PingForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaClient.getCPA(model.getCpaId()));
-						ebMSClient.ping(model.getCpaId(),CPAUtils.getPartyIdbyPartyName(cpa,model.getFromParty()),CPAUtils.getPartyIdbyPartyName(cpa,model.getToParty()));
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						ebMSMessageService.ping(model.getCpaId(),CPAUtils.getPartyIdbyPartyName(cpa,model.getFromParty()),CPAUtils.getPartyIdbyPartyName(cpa,model.getToParty()));
 						info("Ping succesful");
 					}
 					catch (Exception e)

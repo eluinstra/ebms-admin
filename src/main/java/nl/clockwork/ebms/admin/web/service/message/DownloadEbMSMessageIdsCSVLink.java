@@ -38,13 +38,13 @@ import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 public class DownloadEbMSMessageIdsCSVLink extends Link<Void>
 {
 	private static final long serialVersionUID = 1L;
-	private EbMSMessageService ebMSClient;
+	private EbMSMessageService ebMSMessageService;
 	private EbMSMessageContextFilter filter;
 
-	public DownloadEbMSMessageIdsCSVLink(String id, EbMSMessageService ebMSClient, EbMSMessageContextFilter filter)
+	public DownloadEbMSMessageIdsCSVLink(String id, EbMSMessageService ebMSMessageService, EbMSMessageContextFilter filter)
 	{
 		super(id);
-		this.ebMSClient = ebMSClient;
+		this.ebMSMessageService = ebMSMessageService;
 		this.filter = filter;
 	}
 
@@ -55,7 +55,7 @@ public class DownloadEbMSMessageIdsCSVLink extends Link<Void>
 		{
 			final ByteArrayOutputStream output = new ByteArrayOutputStream();
 			CSVPrinter printer = new CSVPrinter(new OutputStreamWriter(output),CSVFormat.DEFAULT);
-			List<String> messageIds = ebMSClient.getMessageIds(filter,null);
+			List<String> messageIds = ebMSMessageService.getMessageIds(filter,null);
 			if (messageIds != null)
 				printMessagesToCSV(printer,messageIds);
 			printer.close();

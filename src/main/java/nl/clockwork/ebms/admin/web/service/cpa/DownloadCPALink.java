@@ -34,19 +34,19 @@ import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 public class DownloadCPALink extends Link<String>
 {
 	private static final long serialVersionUID = 1L;
-	private CPAService cpaClient;
+	private CPAService cpaService;
 
-	public DownloadCPALink(String id, CPAService cpaClient, String cpaId)
+	public DownloadCPALink(String id, CPAService cpaService, String cpaId)
 	{
 		super(id,Model.of(cpaId));
-		this.cpaClient = cpaClient;
+		this.cpaService = cpaService;
 	}
 
 	@Override
 	public void onClick()
 	{
 		String cpaId = getModelObject();
-		final String cpa = cpaClient.getCPA(cpaId);
+		final String cpa = cpaService.getCPA(cpaId);
 		IResourceStream resourceStream = new AbstractResourceStream()
 		{
 			private static final long serialVersionUID = 1L;

@@ -28,19 +28,19 @@ import org.apache.wicket.model.Model;
 public class MessageDataProvider implements IDataProvider<String>
 {
 	private static final long serialVersionUID = 1L;
-	private EbMSMessageService ebMSClient;
+	private EbMSMessageService ebMSMessageService;
 	private EbMSMessageContextFilter filter;
 
-	public MessageDataProvider(EbMSMessageService ebMSClient, EbMSMessageContextFilter filter)
+	public MessageDataProvider(EbMSMessageService ebMSMessageService, EbMSMessageContextFilter filter)
 	{
-		this.ebMSClient = ebMSClient;
+		this.ebMSMessageService = ebMSMessageService;
 		this.filter = filter;
 	}
 	
 	@Override
 	public Iterator<? extends String> iterator(long first, long count)
 	{
-		List<String> messageIds = ebMSClient.getMessageIds(filter,(int)(first+count));
+		List<String> messageIds = ebMSMessageService.getMessageIds(filter,(int)(first+count));
 		return messageIds == null ? new ArrayList<String>().iterator() : messageIds.listIterator((int)first);
 	}
 
@@ -53,7 +53,7 @@ public class MessageDataProvider implements IDataProvider<String>
 	@Override
 	public long size()
 	{
-		List<String> messageIds = ebMSClient.getMessageIds(filter,null);
+		List<String> messageIds = ebMSMessageService.getMessageIds(filter,null);
 		return messageIds == null ? 0 : messageIds.size();
 	}
 

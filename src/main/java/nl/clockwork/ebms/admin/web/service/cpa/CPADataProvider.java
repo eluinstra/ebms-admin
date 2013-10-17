@@ -28,17 +28,17 @@ import org.apache.wicket.model.Model;
 public class CPADataProvider implements IDataProvider<String>
 {
 	private static final long serialVersionUID = 1L;
-	private CPAService cpaClient;
+	private CPAService cpaService;
 
-	public CPADataProvider(CPAService cpaClient)
+	public CPADataProvider(CPAService cpaService)
 	{
-		this.cpaClient = cpaClient;
+		this.cpaService = cpaService;
 	}
 	
 	@Override
 	public Iterator<? extends String> iterator(long first, long count)
 	{
-		List<String> cpaIds = cpaClient.getCPAIds();
+		List<String> cpaIds = cpaService.getCPAIds();
 		return cpaIds == null ? new ArrayList<String>().iterator() : cpaIds.iterator();
 	}
 
@@ -51,7 +51,7 @@ public class CPADataProvider implements IDataProvider<String>
 	@Override
 	public long size()
 	{
-		List<String> cpaIds = cpaClient.getCPAIds();
+		List<String> cpaIds = cpaService.getCPAIds();
 		return cpaIds == null ? 0 : cpaIds.size();
 	}
 

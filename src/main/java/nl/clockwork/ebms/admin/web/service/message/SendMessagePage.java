@@ -53,10 +53,10 @@ public class SendMessagePage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	protected transient Log logger = LogFactory.getLog(getClass());
-	@SpringBean(name="cpaClient")
-	private CPAService cpaClient;
-	@SpringBean(name="ebMSClient")
-	private EbMSMessageService ebMSClient;
+	@SpringBean(name="cpaService")
+	private CPAService cpaService;
+	@SpringBean(name="ebMSMessageService")
+	private EbMSMessageService ebMSMessageService;
 
 	public SendMessagePage()
 	{
@@ -79,7 +79,7 @@ public class SendMessagePage extends BasePage
 			super(id,new CompoundPropertyModel<EbMSMessageContextModel>(new EbMSMessageContextModel()));
 			setMultiPart(true);
 
-			DropDownChoice<String> cpaIds = new DropDownChoice<String>("cpaIds",new PropertyModel<String>(this.getModelObject(),"cpaId"),Model.ofList(cpaClient.getCPAIds()))
+			DropDownChoice<String> cpaIds = new DropDownChoice<String>("cpaIds",new PropertyModel<String>(this.getModelObject(),"cpaId"),Model.ofList(cpaService.getCPAIds()))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -120,7 +120,7 @@ public class SendMessagePage extends BasePage
 					try
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaClient.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						ArrayList<String> roleNames = CPAUtils.getRoleNames(cpa);
 						model.setFromRoles(roleNames);
 						target.add(fromRoles);
@@ -159,7 +159,7 @@ public class SendMessagePage extends BasePage
 					try
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaClient.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						List<String> serviceNames = CPAUtils.getServiceNames(cpa,model.getFromRole());
 						model.setServices(serviceNames);
 						target.add(services);
@@ -198,7 +198,7 @@ public class SendMessagePage extends BasePage
 					try
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaClient.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						List<String> actionNames = CPAUtils.getActionNames(cpa,model.getFromRole(),model.getService());
 						model.setActions(actionNames);
 						target.add(actions);
@@ -239,7 +239,7 @@ public class SendMessagePage extends BasePage
 							dataSources.add(new EbMSDataSource(dataSource.getClientFileName(),URLConnection.guessContentTypeFromName(dataSource.getClientFileName()),dataSource.getBytes()));
 							//dataSources.add(new EbMSDataSource(dataSource.getClientFileName(),new MimetypesFileTypeMap().getContentType(dataSource.getClientFileName()),dataSource.getBytes()));
 						EbMSMessageContent messageContent = new EbMSMessageContent(model,dataSources);
-						String messageId = ebMSClient.sendMessage(messageContent );
+						String messageId = ebMSMessageService.sendMessage(messageContent );
 						info("Send message succesful. MessageId is " + messageId);
 					}
 					catch (Exception e)

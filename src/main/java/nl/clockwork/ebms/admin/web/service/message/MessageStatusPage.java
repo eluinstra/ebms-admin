@@ -55,10 +55,10 @@ public class MessageStatusPage extends BasePage
 	protected transient Log logger = LogFactory.getLog(getClass());
 	@SpringBean(name="ebMSAdminDAO")
 	public EbMSDAO ebMSDAO;
-	@SpringBean(name="cpaClient")
-	private CPAService cpaClient;
-	@SpringBean(name="ebMSClient")
-	private EbMSMessageService ebMSClient;
+	@SpringBean(name="cpaService")
+	private CPAService cpaService;
+	@SpringBean(name="ebMSMessageService")
+	private EbMSMessageService ebMSMessageService;
 
 	public MessageStatusPage()
 	{
@@ -80,7 +80,7 @@ public class MessageStatusPage extends BasePage
 		{
 			super(id,new CompoundPropertyModel<MessageStatusFormModel>(new MessageStatusFormModel()));
 
-			DropDownChoice<String> cpaIds = new DropDownChoice<String>("cpaIds",new PropertyModel<String>(this.getModelObject(),"cpaId"),Model.ofList(cpaClient.getCPAIds()))
+			DropDownChoice<String> cpaIds = new DropDownChoice<String>("cpaIds",new PropertyModel<String>(this.getModelObject(),"cpaId"),Model.ofList(cpaService.getCPAIds()))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -121,7 +121,7 @@ public class MessageStatusPage extends BasePage
 					try
 					{
 						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaClient.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						ArrayList<String> partyNames = CPAUtils.getPartyNames(cpa);
 						model.setFromParties(partyNames);
 						target.add(fromParties);
@@ -176,7 +176,7 @@ public class MessageStatusPage extends BasePage
 					try
 					{
 						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaClient.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						String otherPartyName = CPAUtils.getOtherPartyName(cpa,model.getFromParty());
 						model.setToParties(Arrays.asList(otherPartyName));
 						model.setToParty(otherPartyName);
@@ -217,8 +217,8 @@ public class MessageStatusPage extends BasePage
 					try
 					{
 						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaClient.getCPA(model.getCpaId()));
-						MessageStatus messageStatus = ebMSClient.getMessageStatus(model.getCpaId(),CPAUtils.getPartyIdbyPartyName(cpa,model.getFromParty()),CPAUtils.getPartyIdbyPartyName(cpa,model.getToParty()),model.getMessageId());
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						MessageStatus messageStatus = ebMSMessageService.getMessageStatus(model.getCpaId(),CPAUtils.getPartyIdbyPartyName(cpa,model.getFromParty()),CPAUtils.getPartyIdbyPartyName(cpa,model.getToParty()),model.getMessageId());
 						info("Get Message Status succesful. Status is " + messageStatus.getStatus().statusCode());
 					}
 					catch (Exception e)

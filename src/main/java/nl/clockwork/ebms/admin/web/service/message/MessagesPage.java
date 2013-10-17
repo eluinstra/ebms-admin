@@ -32,8 +32,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 public class MessagesPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="ebMSClient")
-	private EbMSMessageService ebMSClient;
+	@SpringBean(name="ebMSMessageService")
+	private EbMSMessageService ebMSMessageService;
 	@SpringBean(name="maxItemsPerPage")
 	private Integer maxItemsPerPage;
 	private EbMSMessageContextFilter filter;
@@ -54,7 +54,7 @@ public class MessagesPage extends BasePage
 		WebMarkupContainer container = new WebMarkupContainer("container");
 		container.setOutputMarkupId(true);
 
-		DataView<String> messages = new DataView<String>("messages",new MessageDataProvider(ebMSClient,this.filter))
+		DataView<String> messages = new DataView<String>("messages",new MessageDataProvider(ebMSMessageService,this.filter))
 		{
 			private static final long serialVersionUID = 1L;
 
@@ -69,7 +69,7 @@ public class MessagesPage extends BasePage
 					@Override
 					public void onClick()
 					{
-						setResponsePage(new MessagePage(ebMSClient.getMessage(messageId,null),MessagesPage.this));
+						setResponsePage(new MessagePage(ebMSMessageService.getMessage(messageId,null),MessagesPage.this));
 					}
 				};
 				link.add(new Label("messageId",messageId));
@@ -102,7 +102,7 @@ public class MessagesPage extends BasePage
 				setResponsePage(responsePage);
 			}
 		}.setVisible(responsePage != null));
-		add(new DownloadEbMSMessageIdsCSVLink("download",ebMSClient,filter));
+		add(new DownloadEbMSMessageIdsCSVLink("download",ebMSMessageService,filter));
 	}
 
 	@Override
