@@ -3,6 +3,7 @@
 - add properties file creator (for ebms-core and ebms-admin)
 - add about
 - add help
+- add cpp editor/creator
 
 - add text field messageId to MessageStatusPage and switch to select messageIds selection or messageId text field 
 - improve uploading dataSources:
@@ -17,3 +18,5 @@
 - replace current menu with dropdown menu
 	- for nested panels see: nested - Trees and nested lists.
 - update ui by using bootstrap
+
+- add service registry and cpa creator?
