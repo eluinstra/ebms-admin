@@ -140,11 +140,11 @@ public class TrafficPage extends BasePage
 
 	private String getHtmlClass(EbMSMessageStatus ebMSMessageStatus)
 	{
-		if (EbMSMessageStatus.PROCESSED.equals(ebMSMessageStatus) || EbMSMessageStatus.FORWARDED.equals(ebMSMessageStatus) || EbMSMessageStatus.ACKNOWLEDGED.equals(ebMSMessageStatus))
+		if (EbMSMessageStatus.PROCESSED.equals(ebMSMessageStatus) || EbMSMessageStatus.FORWARDED.equals(ebMSMessageStatus) || EbMSMessageStatus.DELIVERED.equals(ebMSMessageStatus))
 			return "ok";
 		if (EbMSMessageStatus.RECEIVED.equals(ebMSMessageStatus) || EbMSMessageStatus.SENT.equals(ebMSMessageStatus))
 			return "warn";
-		if (EbMSMessageStatus.UNAUTHORIZED.equals(ebMSMessageStatus) || EbMSMessageStatus.NOT_RECOGNIZED.equals(ebMSMessageStatus) || EbMSMessageStatus.FAILED.equals(ebMSMessageStatus) || EbMSMessageStatus.DELIVERY_FAILED.equals(ebMSMessageStatus) || EbMSMessageStatus.NOT_ACKNOWLEDGED.equals(ebMSMessageStatus))
+		if (EbMSMessageStatus.UNAUTHORIZED.equals(ebMSMessageStatus) || EbMSMessageStatus.NOT_RECOGNIZED.equals(ebMSMessageStatus) || EbMSMessageStatus.FAILED.equals(ebMSMessageStatus) || EbMSMessageStatus.DELIVERY_ERROR.equals(ebMSMessageStatus) || EbMSMessageStatus.DELIVERY_FAILED.equals(ebMSMessageStatus))
 			return "error";
 		return null;
 	}

@@ -53,6 +53,6 @@ public class Constants
 	}
 
 	public final static EbMSMessageStatus[] receiveStatus = {EbMSMessageStatus.UNAUTHORIZED,EbMSMessageStatus.NOT_RECOGNIZED,EbMSMessageStatus.RECEIVED,EbMSMessageStatus.PROCESSED,EbMSMessageStatus.FORWARDED,EbMSMessageStatus.FAILED};
-	public final static EbMSMessageStatus[] sendStatus = {EbMSMessageStatus.SENT,EbMSMessageStatus.ACKNOWLEDGED,EbMSMessageStatus.DELIVERY_FAILED,EbMSMessageStatus.NOT_ACKNOWLEDGED};
+	public final static EbMSMessageStatus[] sendStatus = {EbMSMessageStatus.SENT,EbMSMessageStatus.DELIVERED,EbMSMessageStatus.DELIVERY_ERROR,EbMSMessageStatus.DELIVERY_FAILED};
 	public final static EbMSMessageStatus[] allStatus = (EbMSMessageStatus[])ArrayUtils.addAll(receiveStatus,sendStatus);
 }
