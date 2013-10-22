@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import nl.clockwork.ebms.Constants.EbMSMessageStatus;
-import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.Constants.EbMSMessageTrafficChartOption;
 import nl.clockwork.ebms.admin.Constants.EbMSMessageTrafficChartSerie;
 import nl.clockwork.ebms.admin.Constants.TimeUnit;
@@ -65,7 +64,7 @@ public class TrafficChartPage extends BasePage
 
 	public TrafficChartPage()
 	{
-		this(getTrafficChartFormModel(TimeUnit.HOURS,EbMSMessageTrafficChartOption.RECEIVED));
+		this(getTrafficChartFormModel(TimeUnit.DAY,EbMSMessageTrafficChartOption.RECEIVED));
 	}
 	
 	public TrafficChartPage(TrafficChartFormModel model)
@@ -78,22 +77,22 @@ public class TrafficChartPage extends BasePage
 	private Component createTrafficChart(String id, TrafficChartFormModel model)
 	{
 		DateTime from = new DateTime(model.from.getTime());
-		DateTime to = from.plus(model.timeUnit.defaultPeriod());
+		DateTime to = from.plus(model.timeUnit.getPeriod());
 
 		List<Date> dates = new ArrayList<Date>();
 		while (from.isBefore(to))
 		{
 			dates.add(from.toDate());
-			from = from.plus(model.timeUnit.period());
+			from = from.plus(model.timeUnit.getTimeUnit());
 		}
 
 		List<String> dateString = new ArrayList<String>();
 		for (Date date : dates)
-			dateString.add(new SimpleDateFormat(model.timeUnit.dateFormat()).format(date));
+			dateString.add(new SimpleDateFormat(model.timeUnit.getTimeUnitDateFormat()).format(date));
 
 		Options options = new Options();
 		options.setChartOptions(new ChartOptions().setType(SeriesType.LINE));
-		options.setTitle(new Title("Message Traffic " + new SimpleDateFormat(Constants.DATE_FORMAT).format(model.getFrom())));
+		options.setTitle(new Title(model.getEbMSMessageTrafficChartOption().getTitle() + " " + new SimpleDateFormat(model.timeUnit.getDateFormat()).format(model.getFrom())));
 		options.setxAxis(new Axis().setCategories(dateString));
 		options.setyAxis(new Axis().setTitle(new Title("Messages")));
 		options.setLegend(new Legend().setLayout(LegendLayout.VERTICAL).setAlign(HorizontalAlignment.RIGHT).setVerticalAlign(VerticalAlignment.TOP).setX(0).setY(1000).setBorderWidth(0));
@@ -110,14 +109,14 @@ public class TrafficChartPage extends BasePage
 	private static TrafficChartFormModel getTrafficChartFormModel(TimeUnit timeUnit, EbMSMessageTrafficChartOption ebMSMessageTrafficChartOption)
 	{
 		DateTime from = timeUnit.getFrom();
-		DateTime to = from.plus(timeUnit.defaultPeriod());
+		DateTime to = from.plus(timeUnit.getPeriod());
 		return new TrafficChartFormModel(timeUnit,from.toDate(),to.toDate(),ebMSMessageTrafficChartOption);
 	}
 
 	private List<Number> getMessages(List<Date> dates, TrafficChartFormModel model, EbMSMessageStatus...status)
 	{
 		List<Number> result = new ArrayList<Number>();
-		HashMap<Date,Number> messageTraffic = ebMSDAO.selectMessageTraffic(model.from,new DateTime(model.from.getTime()).plus(model.timeUnit.defaultPeriod()).toDate(),model.timeUnit,status);
+		HashMap<Date,Number> messageTraffic = ebMSDAO.selectMessageTraffic(model.from,new DateTime(model.from.getTime()).plus(model.timeUnit.getPeriod()).toDate(),model.timeUnit,status);
 		for (Date date : dates)
 			if (messageTraffic.containsKey(date))
 				result.add(messageTraffic.get(date));
@@ -174,7 +173,7 @@ public class TrafficChartPage extends BasePage
 				public void onClick()
 				{
 					TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
-					model.setFrom(new DateTime(model.getFrom().getTime()).minus(model.getTimeUnit().defaultPeriod()).toDate());
+					model.setFrom(new DateTime(model.getFrom().getTime()).minus(model.getTimeUnit().getPeriod()).toDate());
 					setResponsePage(new TrafficChartPage(model));
 				}
 			});
@@ -187,7 +186,7 @@ public class TrafficChartPage extends BasePage
 				public void onClick()
 				{
 					TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
-					model.setFrom(new DateTime(model.getFrom().getTime()).plus(model.getTimeUnit().defaultPeriod()).toDate());
+					model.setFrom(new DateTime(model.getFrom().getTime()).plus(model.getTimeUnit().getPeriod()).toDate());
 					setResponsePage(new TrafficChartPage(model));
 				}
 			});

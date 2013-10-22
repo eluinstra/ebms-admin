@@ -308,14 +308,14 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	public HashMap<Date,Number> selectMessageTraffic(Date from, Date to, TimeUnit timeUnit, EbMSMessageStatus...status)
 	{
 		final HashMap<Date,Number> result = new HashMap<Date,Number>();
-		//if (TimeUnit.HOURS.equals(timeUnit))
+		//if (TimeUnit.DAY.equals(timeUnit))
 		jdbcTemplate.query(
-			"select trunc(time_stamp,'" + timeUnit.dateFormat() + "') time, count(*) nr" + 
+			"select trunc(time_stamp,'" + timeUnit.getTimeUnitDateFormat() + "') time, count(*) nr" + 
 			" from ebms_message" + 
 			" where time_stamp >= ? " +
 			" and time_stamp < ?" +
 			(status.length == 0 ? " and status is not null" : " and status in (" + join(status,",") + ")") +
-			" group by trunc(time_stamp,'" + timeUnit.dateFormat() + "')",
+			" group by trunc(time_stamp,'" + timeUnit.getTimeUnitDateFormat() + "')",
 			new ParameterizedRowMapper<Object>()
 			{
 				@Override

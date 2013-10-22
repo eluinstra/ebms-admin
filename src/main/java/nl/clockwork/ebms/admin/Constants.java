@@ -16,6 +16,8 @@
 package nl.clockwork.ebms.admin;
 
 import java.awt.Color;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import nl.clockwork.ebms.Constants.EbMSMessageStatus;
 
@@ -25,45 +27,57 @@ import org.joda.time.Period;
 public class Constants
 {
 	public final static String DATE_FORMAT = "dd-MM-yyyy";
+	public final static String DATE_MONTH_FORMAT = "MM-yyyy";
+	public final static String DATE_YEAR_FORMAT = "yyyy";
 	public final static String DATETIME_FORMAT = "dd-MM-yyyy hh:mm:ss";
 
 	public enum TimeUnit
 	{
-		HOURS(Period.hours(1),Period.days(1),"HH"), DAYS(Period.days(1),Period.weeks(1),"dd"), WEEKS(Period.weeks(1),Period.months(1),"ww"), MONTHS(Period.months(1),Period.years(1),"MM");
+		DAY(Period.hours(1),Period.days(1),DATE_FORMAT,"HH")/*, WEEK(Period.days(1),Period.weeks(1),DATE_FORMAT,"dd"), MONTH(Period.weeks(1),Period.months(1),DATE_FORMAT,"ww")*/, MONTH(Period.days(1),Period.months(1),DATE_MONTH_FORMAT,"dd"), YEAR(Period.months(1),Period.years(1),DATE_YEAR_FORMAT,"MM");
 		
+		private Period timeUnit;
 		private Period period;
-		private Period defaultPeriod;
 		private String dateFormat;
+		private String timeUnitDateFormat;
 
-		TimeUnit(Period period, Period defaultPeriod, String dateFormat)
+		TimeUnit(Period timeUnit, Period period, String dateFormat, String timeUnitDateFormat)
 		{
+			this.timeUnit = timeUnit;
 			this.period = period;
-			this.defaultPeriod = defaultPeriod;
 			this.dateFormat = dateFormat;
+			this.timeUnitDateFormat = timeUnitDateFormat;
 		}
-		public Period period()
+		public Period getTimeUnit()
+		{
+			return timeUnit;
+		}
+		public Period getPeriod()
 		{
 			return period;
 		}
-		public Period defaultPeriod()
+		public String getDateFormat()
 		{
-			return defaultPeriod;
+			return dateFormat;
 		}
-		public String dateFormat()
+		public String getTimeUnitDateFormat()
 		{
-			return dateFormat; 
+			return timeUnitDateFormat; 
 		}
 		public DateTime getFrom()
 		{
-			if (HOURS.equals(this))
-				return new DateTime().withMillisOfSecond(0).withSecondOfMinute(0).withMinuteOfHour(0).withHourOfDay(0).plusDays(1).minus(this.defaultPeriod());
-			else if (DAYS.equals(this))
-				return new DateTime().withMillisOfSecond(0).withSecondOfMinute(0).withMinuteOfHour(0).withHourOfDay(0).withDayOfWeek(1).plusWeeks(1).minus(this.defaultPeriod());
-			else if (WEEKS.equals(this))
-				return new DateTime().withMillisOfSecond(0).withSecondOfMinute(0).withMinuteOfHour(0).withHourOfDay(0).withDayOfMonth(1).plusMonths(1).minus(this.defaultPeriod());
-			else if (MONTHS.equals(this))
-				return new DateTime().withMillisOfSecond(0).withSecondOfMinute(0).withMinuteOfHour(0).withHourOfDay(0).withDayOfYear(1).plusYears(1).minus(this.defaultPeriod());
+			if (DAY.equals(this))
+				return new DateTime().withMillisOfSecond(0).withSecondOfMinute(0).withMinuteOfHour(0).withHourOfDay(0).plusDays(1).minus(this.getPeriod());
+			//else if (WEEK.equals(this))
+				//return new DateTime().withMillisOfSecond(0).withSecondOfMinute(0).withMinuteOfHour(0).withHourOfDay(0).withDayOfWeek(1).plusWeeks(1).minus(this.getPeriod());
+			else if (MONTH.equals(this))
+				return new DateTime().withMillisOfSecond(0).withSecondOfMinute(0).withMinuteOfHour(0).withHourOfDay(0).withDayOfMonth(1).plusMonths(1).minus(this.getPeriod());
+			else if (YEAR.equals(this))
+				return new DateTime().withMillisOfSecond(0).withSecondOfMinute(0).withMinuteOfHour(0).withHourOfDay(0).withDayOfYear(1).plusYears(1).minus(this.getPeriod());
 			return null;
+		}
+		public String format(Date date)
+		{
+			return new SimpleDateFormat(dateFormat).format(date);
 		}
 	}
 	
@@ -104,17 +118,22 @@ public class Constants
 	
 	public enum EbMSMessageTrafficChartOption
 	{
-		ALL(new EbMSMessageTrafficChartSerie[]{EbMSMessageTrafficChartSerie.RECEIVE_STATUS,EbMSMessageTrafficChartSerie.SEND_STATUS}),
-		RECEIVED(new EbMSMessageTrafficChartSerie[]{EbMSMessageTrafficChartSerie.RECEIVE_STATUS,EbMSMessageTrafficChartSerie.RECEIVE_STATUS_OK,EbMSMessageTrafficChartSerie.RECEIVE_STATUS_WARN,EbMSMessageTrafficChartSerie.RECEIVE_STATUS_NOK}),
-		SEND(new EbMSMessageTrafficChartSerie[]{EbMSMessageTrafficChartSerie.SEND_STATUS,EbMSMessageTrafficChartSerie.SEND_STATUS_OK,EbMSMessageTrafficChartSerie.SEND_STATUS_WARN,EbMSMessageTrafficChartSerie.SEND_STATUS_NOK});
+		ALL("All Messages",new EbMSMessageTrafficChartSerie[]{EbMSMessageTrafficChartSerie.RECEIVE_STATUS,EbMSMessageTrafficChartSerie.SEND_STATUS}),
+		RECEIVED("Received Messages",new EbMSMessageTrafficChartSerie[]{EbMSMessageTrafficChartSerie.RECEIVE_STATUS_NOK,EbMSMessageTrafficChartSerie.RECEIVE_STATUS_WARN,EbMSMessageTrafficChartSerie.RECEIVE_STATUS_OK,EbMSMessageTrafficChartSerie.RECEIVE_STATUS}),
+		SEND("Sent Messages",new EbMSMessageTrafficChartSerie[]{EbMSMessageTrafficChartSerie.SEND_STATUS_NOK,EbMSMessageTrafficChartSerie.SEND_STATUS_WARN,EbMSMessageTrafficChartSerie.SEND_STATUS_OK,EbMSMessageTrafficChartSerie.SEND_STATUS});
 		
+		private String title;
 		private EbMSMessageTrafficChartSerie[] ebMSMessageTrafficChartSeries;
 
-		private EbMSMessageTrafficChartOption(EbMSMessageTrafficChartSerie[] ebMSMessageTrafficChartSeries)
+		private EbMSMessageTrafficChartOption(String title, EbMSMessageTrafficChartSerie[] ebMSMessageTrafficChartSeries)
 		{
+			this.title = title;
 			this.ebMSMessageTrafficChartSeries = ebMSMessageTrafficChartSeries;
 		}
-		
+		public String getTitle()
+		{
+			return title;
+		}
 		public EbMSMessageTrafficChartSerie[] getEbMSMessageTrafficChartSeries()
 		{
 			return ebMSMessageTrafficChartSeries;
