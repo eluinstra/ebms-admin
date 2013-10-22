@@ -15,18 +15,32 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import nl.clockwork.ebms.Constants.EbMSMessageStatus;
+import nl.clockwork.ebms.admin.Constants;
+import nl.clockwork.ebms.admin.Constants.EbMSMessageTrafficChartOption;
+import nl.clockwork.ebms.admin.Constants.EbMSMessageTrafficChartSerie;
 import nl.clockwork.ebms.admin.Constants.TimeUnit;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.web.BasePage;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IClusterable;
 import org.joda.time.DateTime;
@@ -51,13 +65,21 @@ public class TrafficChartPage extends BasePage
 
 	public TrafficChartPage()
 	{
-		DateTime now = new DateTime();
-		now = now.withMillisOfSecond(0).withSecondOfMinute(0).withMinuteOfHour(0);
-		DateTime to = now.toDateTime();
-		DateTime from = now.minus(TimeUnit.HOURS.defaultPeriod());
-		
-		TrafficChartFormModel model = new TrafficChartFormModel(TimeUnit.HOURS,from.toDate(),to.toDate(),nl.clockwork.ebms.admin.Constants.allStatus);
-		
+		this(getTrafficChartFormModel(TimeUnit.HOURS,EbMSMessageTrafficChartOption.RECEIVED));
+	}
+	
+	public TrafficChartPage(TrafficChartFormModel model)
+	{
+		add(new FeedbackPanel("feedback"));
+    add(new TrafficChartForm("trafficChartForm",model));
+    add(createTrafficChart("chart",model));
+  }
+	
+	private Component createTrafficChart(String id, TrafficChartFormModel model)
+	{
+		DateTime from = new DateTime(model.from.getTime());
+		DateTime to = from.plus(model.timeUnit.defaultPeriod());
+
 		List<Date> dates = new ArrayList<Date>();
 		while (from.isBefore(to))
 		{
@@ -69,26 +91,33 @@ public class TrafficChartPage extends BasePage
 		for (Date date : dates)
 			dateString.add(new SimpleDateFormat(model.timeUnit.dateFormat()).format(date));
 
-		List<Number> allMessages = getMessages(dates,model,nl.clockwork.ebms.admin.Constants.allStatus);
-		List<Number> receivedMessages = getMessages(dates,model,nl.clockwork.ebms.admin.Constants.receiveStatus);
-		List<Number> sentMessages = getMessages(dates,model,nl.clockwork.ebms.admin.Constants.sendStatus);
-		
 		Options options = new Options();
-    options.setChartOptions(new ChartOptions().setType(SeriesType.LINE));
-    options.setTitle(new Title("Message Traffic"));
-    options.setxAxis(new Axis().setCategories(dateString));
-    options.setyAxis(new Axis().setTitle(new Title("Messages")));
-    options.setLegend(new Legend().setLayout(LegendLayout.VERTICAL).setAlign(HorizontalAlignment.RIGHT).setVerticalAlign(VerticalAlignment.TOP).setX(0).setY(1000).setBorderWidth(0));
-    options.addSeries(new SimpleSeries().setName("Total").setColor(Color.BLACK).setData(allMessages));
-    options.addSeries(new SimpleSeries().setName("Received").setColor(Color.BLUE).setData(receivedMessages));
-    options.addSeries(new SimpleSeries().setName("Sent").setColor(Color.YELLOW).setData(sentMessages));
-    add(new Chart("chart", options));
-  }
-	
+		options.setChartOptions(new ChartOptions().setType(SeriesType.LINE));
+		options.setTitle(new Title("Message Traffic " + new SimpleDateFormat(Constants.DATE_FORMAT).format(model.getFrom())));
+		options.setxAxis(new Axis().setCategories(dateString));
+		options.setyAxis(new Axis().setTitle(new Title("Messages")));
+		options.setLegend(new Legend().setLayout(LegendLayout.VERTICAL).setAlign(HorizontalAlignment.RIGHT).setVerticalAlign(VerticalAlignment.TOP).setX(0).setY(1000).setBorderWidth(0));
+
+		for (EbMSMessageTrafficChartSerie status : model.getEbMSMessageTrafficChartOption().getEbMSMessageTrafficChartSeries())
+		{
+			List<Number> receivedMessages = getMessages(dates,model,status.getEbMSMessageStatuses());
+			options.addSeries(new SimpleSeries().setName(status.getName()).setColor(status.getColor()).setData(receivedMessages));
+		}
+
+		return new Chart(id,options);
+	}
+
+	private static TrafficChartFormModel getTrafficChartFormModel(TimeUnit timeUnit, EbMSMessageTrafficChartOption ebMSMessageTrafficChartOption)
+	{
+		DateTime from = timeUnit.getFrom();
+		DateTime to = from.plus(timeUnit.defaultPeriod());
+		return new TrafficChartFormModel(timeUnit,from.toDate(),to.toDate(),ebMSMessageTrafficChartOption);
+	}
+
 	private List<Number> getMessages(List<Date> dates, TrafficChartFormModel model, EbMSMessageStatus...status)
 	{
 		List<Number> result = new ArrayList<Number>();
-		HashMap<Date,Number> messageTraffic = ebMSDAO.selectMessageTraffic(model.from,model.to,model.timeUnit,status);
+		HashMap<Date,Number> messageTraffic = ebMSDAO.selectMessageTraffic(model.from,new DateTime(model.from.getTime()).plus(model.timeUnit.defaultPeriod()).toDate(),model.timeUnit,status);
 		for (Date date : dates)
 			if (messageTraffic.containsKey(date))
 				result.add(messageTraffic.get(date));
@@ -103,36 +132,112 @@ public class TrafficChartPage extends BasePage
 		return getLocalizer().getString("traffic",this);
 	}
 	
-	public class TrafficChartFormModel implements IClusterable
+	public class TrafficChartForm extends Form<TrafficChartFormModel>
+	{
+		private static final long serialVersionUID = 1L;
+		
+		public TrafficChartForm(String id, TrafficChartFormModel model)
+		{
+			super(id,new CompoundPropertyModel<TrafficChartFormModel>(model));
+
+			DropDownChoice<TimeUnit> timeUnits = new DropDownChoice<TimeUnit>("timeUnits",new PropertyModel<TimeUnit>(this.getModelObject(),"timeUnit"),new PropertyModel<List<TimeUnit>>(this.getModelObject(),"timeUnits"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.timeUnit",TrafficChartForm.this));
+				}
+			};
+			timeUnits.setRequired(true);
+			add(timeUnits);
+
+			timeUnits.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
+					model.setFrom(model.getTimeUnit().getFrom().toDate());
+					setResponsePage(new TrafficChartPage(model));
+				}
+			});
+
+			add(new Link<Void>("minus")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void onClick()
+				{
+					TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
+					model.setFrom(new DateTime(model.getFrom().getTime()).minus(model.getTimeUnit().defaultPeriod()).toDate());
+					setResponsePage(new TrafficChartPage(model));
+				}
+			});
+
+			add(new Link<Void>("plus")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void onClick()
+				{
+					TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
+					model.setFrom(new DateTime(model.getFrom().getTime()).plus(model.getTimeUnit().defaultPeriod()).toDate());
+					setResponsePage(new TrafficChartPage(model));
+				}
+			});
+		}
+	}
+	
+	public static class TrafficChartFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		private TimeUnit timeUnit;
 		private Date from;
-		private Date to;
-		private EbMSMessageStatus[] status;
+		private EbMSMessageTrafficChartOption ebMSMessageTrafficChartOption;
 		
-		public TrafficChartFormModel(TimeUnit timeUnit, Date from, Date to, EbMSMessageStatus...status)
+		public TrafficChartFormModel(TimeUnit timeUnit, Date from, Date to, EbMSMessageTrafficChartOption ebMSMessageTrafficChartOption)
 		{
 			this.timeUnit = timeUnit;
 			this.from = from;
-			this.to = to;
-			this.status = status;
+			this.ebMSMessageTrafficChartOption = ebMSMessageTrafficChartOption;
+		}
+		public List<TimeUnit> getTimeUnits()
+		{
+			return Arrays.asList(TimeUnit.values());
 		}
 		public TimeUnit getTimeUnit()
 		{
 			return timeUnit;
 		}
+		public void setTimeUnit(TimeUnit timeUnit)
+		{
+			this.timeUnit = timeUnit;
+		}
 		public Date getFrom()
 		{
 			return from;
 		}
-		public Date getTo()
+		public void setFrom(Date from)
 		{
-			return to;
+			this.from = from;
 		}
-		public EbMSMessageStatus[] getStatus()
+		public List<EbMSMessageTrafficChartOption> getEbMSMessageTrafficChartOptions()
 		{
-			return status;
+			return Arrays.asList(EbMSMessageTrafficChartOption.values());
+		}
+		public EbMSMessageTrafficChartOption getEbMSMessageTrafficChartOption()
+		{
+			return ebMSMessageTrafficChartOption;
+		}
+		public void setEbMSMessageTrafficChartOption(EbMSMessageTrafficChartOption ebMSMessageTrafficChartOption)
+		{
+			this.ebMSMessageTrafficChartOption = ebMSMessageTrafficChartOption;
 		}
 	}
 

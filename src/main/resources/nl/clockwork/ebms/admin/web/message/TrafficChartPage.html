@@ -2,6 +2,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
 <body>
 <wicket:extend>
+	<span wicket:id="feedback">[feedback]</span>
+	<form wicket:id="trafficChartForm">
+		<table class="vertical">
+			<caption><wicket:message key="trafficChart">Traffic Chart</wicket:message></caption>
+			<tbody>
+				<tr>
+					<td align="left"><a href="#" wicket:id="minus" style="text-decoration: none; color: black; font-size: large;">&#9668;</a></td>
+					<td align="center"><select wicket:id="timeUnits"/></td>
+					<td align="right"><a href="#" wicket:id="plus" style="text-decoration: none; color: black; font-size: large;">&#9658;</a></td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
 	<div wicket:id="chart" style="width: 1024px;"/>
 </wicket:extend>
 </body>

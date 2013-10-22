@@ -310,12 +310,12 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		final HashMap<Date,Number> result = new HashMap<Date,Number>();
 		//if (TimeUnit.HOURS.equals(timeUnit))
 		jdbcTemplate.query(
-			"select trunc(time_stamp,'HH') time, count(*) nr" + 
+			"select trunc(time_stamp,'" + timeUnit.dateFormat() + "') time, count(*) nr" + 
 			" from ebms_message" + 
 			" where time_stamp >= ? " +
 			" and time_stamp < ?" +
 			(status.length == 0 ? " and status is not null" : " and status in (" + join(status,",") + ")") +
-			" group by trunc(time_stamp,'HH')",
+			" group by trunc(time_stamp,'" + timeUnit.dateFormat() + "')",
 			new ParameterizedRowMapper<Object>()
 			{
 				@Override
