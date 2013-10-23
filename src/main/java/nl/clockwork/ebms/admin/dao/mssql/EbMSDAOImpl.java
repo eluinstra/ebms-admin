@@ -34,21 +34,32 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 	@Override
 	public String selectCPAsQuery(long first, long count)
 	{
+		//return CPARowMapper.getBaseQuery() +
+		//	" order by cpa_id" +
+		//	" offset " + first + " rows fetch " + count + " rows only"
+		//;
 		return "select * from (" +
-			CPARowMapper.getBaseQuery() +
-			" order by cpa_id" +
-			" offset " + first + " rows fetch " + count + " rows only"
+			CPARowMapper.getBaseQuery().replaceFirst("select ","select row_number() over (order by cpa_id) as rownum, ") +
+			//") where rownum >= " + first + " and rownum < " + (first + count)
+			") where rownum between " + first + " and " + (first + count)
 		;
 	}
 	
 	@Override
 	public String selectMessagesQuery(EbMSMessageFilter filter, long first, long count, List<Object> parameters)
 	{
-		return new EbMSMessageRowMapper().getBaseQuery() +
+		//return new EbMSMessageRowMapper().getBaseQuery() +
+		//	" where 1 = 1" +
+		//	getMessageFilter(filter,parameters) +
+		//	" order by time_stamp desc" +
+		//	" offset " + first + " rows fetch " + count + " rows only"
+		//;
+		return "select * from (" +
+			new EbMSMessageRowMapper().getBaseQuery().replaceFirst("select ","select row_number() over (order by time_stamp desc) as rownum, ") +
 			" where 1 = 1" +
 			getMessageFilter(filter,parameters) +
-			" order by time_stamp desc" +
-			" offset " + first + " rows fetch " + count + " rows only"
+			//") where rownum >= " + first + " and rownum < " + (first + count)
+			") where rownum between " + first + " and " + (first + count)
 		;
 	}
 }

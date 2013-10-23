@@ -36,7 +36,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 	{
 		return CPARowMapper.getBaseQuery() +
 			" order by cpa_id" +
-			" offset " + first + " limit " + (first + count)
+			" offset " + first + " limit " + count
 		;
 	}
 	
@@ -47,7 +47,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 			" where 1 = 1" +
 			getMessageFilter(filter,parameters) +
 			" order by time_stamp desc" +
-			" offset " + first + " limit " + (first + count)
+			" offset " + first + " limit " + count
 		;
 	}
 }
