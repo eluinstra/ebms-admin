@@ -310,12 +310,12 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		final HashMap<Date,Number> result = new HashMap<Date,Number>();
 		//if (TimeUnit.DAY.equals(timeUnit))
 		jdbcTemplate.query(
-			"select trunc(time_stamp,'" + timeUnit.getTimeUnitDateFormat() + "') time, count(*) nr" + 
+			"select trunc(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "') time, count(*) nr" + 
 			" from ebms_message" + 
 			" where time_stamp >= ? " +
 			" and time_stamp < ?" +
 			(status.length == 0 ? " and status is not null" : " and status in (" + join(status,",") + ")") +
-			" group by trunc(time_stamp,'" + timeUnit.getTimeUnitDateFormat() + "')",
+			" group by trunc(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "')",
 			new ParameterizedRowMapper<Object>()
 			{
 				@Override
@@ -331,6 +331,14 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		return result;
 	}
 	
+	protected String getDateFormat(String timeUnitDateFormat)
+	{
+		if ("mm".equals(timeUnitDateFormat))
+			return "mi";
+		else
+			return timeUnitDateFormat;
+	}
+
 	private String join(EbMSMessageStatus[] array, String delimiter)
 	{
 		StringBuffer result = new StringBuffer();
