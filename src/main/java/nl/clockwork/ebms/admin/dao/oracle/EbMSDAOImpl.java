@@ -34,28 +34,46 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 	@Override
 	public String selectCPAsQuery(long first, long count)
 	{
+		//return "select * from (" +
+		//	"select t.*, rownum rn from (" +
+		//	CPARowMapper.getBaseQuery() +
+		//	" order by cpa_id" +
+		//	") t" +
+		//	//") where rn >= " + (first) + " and rn < " + (first + count)
+		//	") where rn between " + (first) + " and " + (first + count)
+		//;
 		return "select * from (" +
-			"select t.*, rownum rn from (" +
-			CPARowMapper.getBaseQuery() +
-			" order by cpa_id" +
-			") t" +
-			//") where rn >= " + (first) + " and rn < " + (first + count)
-			") where rn between " + (first) + " and " + (first + count)
-		;
+		"select t.*, rownum rn from (" +
+		CPARowMapper.getBaseQuery() +
+		" order by cpa_id" +
+		") t" +
+		" where rownum < " + (first + count) +
+		") where rn >= " + (first)
+	;
 	}
 
 	@Override
 	public String selectMessagesQuery(EbMSMessageFilter filter, long first, long count, List<Object> parameters)
 	{
+		//return "select * from (" +
+		//	"select t.*, rownum rn from (" +
+		//	new EbMSMessageRowMapper().getBaseQuery() +
+		//	" where 1 = 1" +
+		//	getMessageFilter(filter,parameters) +
+		//	" order by time_stamp desc" +
+		//	") t" +
+		//	//") where rn >= " + (first) + " and rn < " + (first + count)
+		//	") where rn between " + (first) + " and " + (first + count)
+		//;
 		return "select * from (" +
-			"select t.*, rownum rn from (" +
-			new EbMSMessageRowMapper().getBaseQuery() +
-			" where 1 = 1" +
-			getMessageFilter(filter,parameters) +
-			" order by time_stamp desc" +
-			") t" +
-			//") where rn >= " + (first) + " and rn < " + (first + count)
-			") where rn between " + (first) + " and " + (first + count)
-		;
+		"select t.*, rownum rn from (" +
+		new EbMSMessageRowMapper().getBaseQuery() +
+		" where 1 = 1" +
+		getMessageFilter(filter,parameters) +
+		" order by time_stamp desc" +
+		") t" +
+		" where rownum < " + (first + count) +
+		") where rn >= " + (first)
+	;
 	}
 }

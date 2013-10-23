@@ -39,9 +39,9 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 		//	" offset " + first + " rows fetch " + count + " rows only"
 		//;
 		return "select * from (" +
-			CPARowMapper.getBaseQuery().replaceFirst("select ","select row_number() over (order by cpa_id) as rownum, ") +
-			//") where rownum >= " + first + " and rownum < " + (first + count)
-			") where rownum between " + first + " and " + (first + count)
+			CPARowMapper.getBaseQuery().replaceFirst("select ","select row_number() over (order by cpa_id) as rn, ") +
+			//") where rn >= " + first + " and rn < " + (first + count)
+			") where rn between " + first + " and " + (first + count)
 		;
 	}
 	
@@ -55,11 +55,11 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 		//	" offset " + first + " rows fetch " + count + " rows only"
 		//;
 		return "select * from (" +
-			new EbMSMessageRowMapper().getBaseQuery().replaceFirst("select ","select row_number() over (order by time_stamp desc) as rownum, ") +
+			new EbMSMessageRowMapper().getBaseQuery().replaceFirst("select ","select row_number() over (order by time_stamp desc) as rn, ") +
 			" where 1 = 1" +
 			getMessageFilter(filter,parameters) +
-			//") where rownum >= " + first + " and rownum < " + (first + count)
-			") where rownum between " + first + " and " + (first + count)
+			//") where rn >= " + first + " and rn < " + (first + count)
+			") where rn between " + first + " and " + (first + count)
 		;
 	}
 }
