@@ -29,11 +29,12 @@ public class Constants
 	public final static String DATE_FORMAT = "dd-MM-yyyy";
 	public final static String DATE_MONTH_FORMAT = "MM-yyyy";
 	public final static String DATE_YEAR_FORMAT = "yyyy";
-	public final static String DATETIME_FORMAT = "dd-MM-yyyy hh:mm:ss";
+	public final static String DATETIME_FORMAT = "dd-MM-yyyy HH:mm:ss";
+	public final static String DATETIME_HOUR_FORMAT = "dd-MM-yyyy HH:mm";
 
 	public enum TimeUnit
 	{
-		DAY(Period.hours(1),Period.days(1),DATE_FORMAT,"HH")/*, WEEK(Period.days(1),Period.weeks(1),DATE_FORMAT,"dd"), MONTH(Period.weeks(1),Period.months(1),DATE_FORMAT,"ww")*/, MONTH(Period.days(1),Period.months(1),DATE_MONTH_FORMAT,"dd"), YEAR(Period.months(1),Period.years(1),DATE_YEAR_FORMAT,"MM");
+		HOUR(Period.minutes(1),Period.hours(1),DATETIME_HOUR_FORMAT,"mm"), DAY(Period.hours(1),Period.days(1),DATE_FORMAT,"HH")/*, WEEK(Period.days(1),Period.weeks(1),DATE_FORMAT,"dd"), MONTH(Period.weeks(1),Period.months(1),DATE_FORMAT,"ww")*/, MONTH(Period.days(1),Period.months(1),DATE_MONTH_FORMAT,"dd"), YEAR(Period.months(1),Period.years(1),DATE_YEAR_FORMAT,"MM");
 		
 		private Period timeUnit;
 		private Period period;
@@ -69,7 +70,9 @@ public class Constants
 		}
 		public DateTime getFrom(Date date)
 		{
-			if (DAY.equals(this))
+			if (HOUR.equals(this))
+				return new DateTime(date.getTime()).withMillisOfSecond(0).withSecondOfMinute(0).withMinuteOfHour(0).plusHours(1).minus(this.getPeriod());
+			else if (DAY.equals(this))
 				return new DateTime(date.getTime()).withMillisOfSecond(0).withSecondOfMinute(0).withMinuteOfHour(0).withHourOfDay(0).plusDays(1).minus(this.getPeriod());
 			//else if (WEEK.equals(this))
 				//return new DateTime().withMillisOfSecond(0).withSecondOfMinute(0).withMinuteOfHour(0).withHourOfDay(0).withDayOfWeek(1).plusWeeks(1).minus(this.getPeriod());
