@@ -29,12 +29,11 @@ import nl.clockwork.ebms.admin.Constants.TimeUnit;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.web.BasePage;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
@@ -61,20 +60,20 @@ public class TrafficChartPage extends BasePage
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="ebMSAdminDAO")
 	private EbMSDAO ebMSDAO;
+	private Chart chart;
 
 	public TrafficChartPage()
 	{
-		this(getTrafficChartFormModel(TimeUnit.DAY,EbMSMessageTrafficChartOption.RECEIVED));
+		this(getTrafficChartFormModel(TimeUnit.DAY,EbMSMessageTrafficChartOption.ALL));
 	}
 	
 	public TrafficChartPage(TrafficChartFormModel model)
 	{
 		add(new FeedbackPanel("feedback"));
     add(new TrafficChartForm("trafficChartForm",model));
-    add(createTrafficChart("chart",model));
   }
 	
-	private Component createTrafficChart(String id, TrafficChartFormModel model)
+	private Options createOptions(TrafficChartFormModel model)
 	{
 		DateTime from = new DateTime(model.from.getTime());
 		DateTime to = from.plus(model.timeUnit.getPeriod());
@@ -90,20 +89,20 @@ public class TrafficChartPage extends BasePage
 		for (Date date : dates)
 			dateString.add(new SimpleDateFormat(model.timeUnit.getTimeUnitDateFormat()).format(date));
 
-		Options options = new Options();
-		options.setChartOptions(new ChartOptions().setType(SeriesType.LINE));
-		options.setTitle(new Title(model.getEbMSMessageTrafficChartOption().getTitle() + " " + new SimpleDateFormat(model.timeUnit.getDateFormat()).format(model.getFrom())));
-		options.setxAxis(new Axis().setCategories(dateString));
-		options.setyAxis(new Axis().setTitle(new Title("Messages")));
-		options.setLegend(new Legend().setLayout(LegendLayout.VERTICAL).setAlign(HorizontalAlignment.RIGHT).setVerticalAlign(VerticalAlignment.TOP).setX(0).setY(1000).setBorderWidth(0));
+		Options result = new Options();
+		result.setChartOptions(new ChartOptions().setType(SeriesType.LINE));
+		result.setTitle(new Title(model.getEbMSMessageTrafficChartOption().getTitle() + " " + new SimpleDateFormat(model.timeUnit.getDateFormat()).format(model.getFrom())));
+		result.setxAxis(new Axis().setCategories(dateString));
+		result.setyAxis(new Axis().setTitle(new Title("Messages")));
+		result.setLegend(new Legend().setLayout(LegendLayout.VERTICAL).setAlign(HorizontalAlignment.RIGHT).setVerticalAlign(VerticalAlignment.TOP).setX(0).setY(1000).setBorderWidth(0));
 
 		for (EbMSMessageTrafficChartSerie status : model.getEbMSMessageTrafficChartOption().getEbMSMessageTrafficChartSeries())
 		{
 			List<Number> receivedMessages = getMessages(dates,model,status.getEbMSMessageStatuses());
-			options.addSeries(new SimpleSeries().setName(status.getName()).setColor(status.getColor()).setData(receivedMessages));
+			result.addSeries(new SimpleSeries().setName(status.getName()).setColor(status.getColor()).setData(receivedMessages));
 		}
-
-		return new Chart(id,options);
+		
+		return result;
 	}
 
 	private static TrafficChartFormModel getTrafficChartFormModel(TimeUnit timeUnit, EbMSMessageTrafficChartOption ebMSMessageTrafficChartOption)
@@ -128,7 +127,7 @@ public class TrafficChartPage extends BasePage
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("traffic",this);
+		return getLocalizer().getString("trafficChart",this);
 	}
 	
 	public class TrafficChartForm extends Form<TrafficChartFormModel>
@@ -161,33 +160,65 @@ public class TrafficChartPage extends BasePage
 				{
 					TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
 					model.setFrom(model.getTimeUnit().getFrom().toDate());
-					setResponsePage(new TrafficChartPage(model));
+					chart.setOptions(createOptions(model));
+					target.add(chart);
 				}
 			});
 
-			add(new Link<Void>("minus")
+			add(new AjaxLink<Void>("minus")
 			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public void onClick()
+				public void onClick(AjaxRequestTarget target)
 				{
 					TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
 					model.setFrom(new DateTime(model.getFrom().getTime()).minus(model.getTimeUnit().getPeriod()).toDate());
-					setResponsePage(new TrafficChartPage(model));
+					chart.setOptions(createOptions(model));
+					target.add(chart);
 				}
 			});
 
-			add(new Link<Void>("plus")
+			add(new AjaxLink<Void>("plus")
 			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public void onClick()
+				public void onClick(AjaxRequestTarget target)
 				{
 					TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
 					model.setFrom(new DateTime(model.getFrom().getTime()).plus(model.getTimeUnit().getPeriod()).toDate());
-					setResponsePage(new TrafficChartPage(model));
+					chart.setOptions(createOptions(model));
+					target.add(chart);
+				}
+			});
+
+	    chart = new Chart("chart",createOptions(model));
+	    add(chart);
+
+			DropDownChoice<EbMSMessageTrafficChartOption> ebMSMessageTrafficChartOptions = new DropDownChoice<EbMSMessageTrafficChartOption>("ebMSMessageTrafficChartOptions",new PropertyModel<EbMSMessageTrafficChartOption>(this.getModelObject(),"ebMSMessageTrafficChartOption"),new PropertyModel<List<EbMSMessageTrafficChartOption>>(this.getModelObject(),"ebMSMessageTrafficChartOptions"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.ebMSMessageTrafficChartOption",TrafficChartForm.this));
+				}
+			};
+			ebMSMessageTrafficChartOptions.setRequired(true);
+			add(ebMSMessageTrafficChartOptions);
+
+			ebMSMessageTrafficChartOptions.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
+					chart.setOptions(createOptions(model));
+					target.add(chart);
 				}
 			});
 		}

@@ -12,10 +12,17 @@
 					<td align="center"><select wicket:id="timeUnits"/></td>
 					<td align="right"><a href="#" wicket:id="plus" style="text-decoration: none; color: black; font-size: large;">&#9658;</a></td>
 				</tr>
+				<tr>
+					<td colspan="3">
+						<div wicket:id="chart" style="width: 1024px;"/>
+					</td>
+				</tr>
+				<tr>
+					<td align="right" colspan="3"><select wicket:id="ebMSMessageTrafficChartOptions"/></td>
+				</tr>
 			</tbody>
 		</table>
 	</form>
-	<div wicket:id="chart" style="width: 1024px;"/>
 </wicket:extend>
 </body>
 </html>
