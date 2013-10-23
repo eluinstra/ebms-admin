@@ -45,11 +45,11 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 	public String selectMessagesQuery(EbMSMessageFilter filter, long first, long count, List<Object> parameters)
 	{
 		return "select * from (" +
-			new EbMSMessageRowMapper().getBaseQuery() +
+			new EbMSMessageRowMapper().getBaseQuery().replaceFirst("select ","select rownum r, ") +
 			" where 1 = 1" +
 			getMessageFilter(filter,parameters) +
 			" order by time_stamp desc" +
-			" ) where ROWNUM > " + (first) + " and ROWNUM <= " + (first + count)
+			" ) where r > " + (first) + " and r <= " + (first + count)
 		;
 	}
 }
