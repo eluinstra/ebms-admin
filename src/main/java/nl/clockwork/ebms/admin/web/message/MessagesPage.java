@@ -21,6 +21,7 @@ import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.Utils;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
@@ -115,7 +116,7 @@ public class MessagesPage extends BasePage
 				item.add(new Label("toRole",message.getToRole()));
 				item.add(new Label("service",message.getService()));
 				item.add(new Label("action",message.getAction()));
-				item.add(new Label("status",message.getStatus()));
+				item.add(new Label("status",message.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getHtmlClass(message.getStatus())))));
 				item.add(DateLabel.forDatePattern("statusTime",new Model<Date>(message.getStatusTime()),Constants.DATETIME_FORMAT));
 				item.add(AttributeModifier.replace("class",new AbstractReadOnlyModel<String>()
 				{

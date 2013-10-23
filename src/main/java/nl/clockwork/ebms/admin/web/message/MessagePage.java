@@ -24,7 +24,9 @@ import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSEvent;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.Utils;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
@@ -68,7 +70,7 @@ public class MessagePage extends BasePage
 		add(new Label("toRole",message.getToRole()));
 		add(new Label("service",message.getService()));
 		add(new Label("action",message.getAction()));
-		add(new Label("status",message.getStatus()));
+		add(new Label("status",message.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getHtmlClass(message.getStatus())))));
 		add(new Label("statusTime",message.getStatusTime()));
 		
 		PropertyListView<EbMSAttachment> attachments = 

@@ -15,6 +15,8 @@
  */
 package nl.clockwork.ebms.admin.web;
 
+import nl.clockwork.ebms.Constants.EbMSMessageStatus;
+
 import org.apache.commons.lang.StringUtils;
 
 public class Utils
@@ -25,4 +27,16 @@ public class Utils
 			return "";
 		return "." + (contentType.contains("text") ? "txt" : contentType.split("/")[1]);
 	}
+
+	public static String getHtmlClass(EbMSMessageStatus ebMSMessageStatus)
+	{
+		if (EbMSMessageStatus.PROCESSED.equals(ebMSMessageStatus) || EbMSMessageStatus.FORWARDED.equals(ebMSMessageStatus) || EbMSMessageStatus.DELIVERED.equals(ebMSMessageStatus))
+			return "ok";
+		if (EbMSMessageStatus.RECEIVED.equals(ebMSMessageStatus) || EbMSMessageStatus.SENT.equals(ebMSMessageStatus))
+			return "warn";
+		if (EbMSMessageStatus.UNAUTHORIZED.equals(ebMSMessageStatus) || EbMSMessageStatus.NOT_RECOGNIZED.equals(ebMSMessageStatus) || EbMSMessageStatus.FAILED.equals(ebMSMessageStatus) || EbMSMessageStatus.DELIVERY_ERROR.equals(ebMSMessageStatus) || EbMSMessageStatus.DELIVERY_FAILED.equals(ebMSMessageStatus))
+			return "error";
+		return null;
+	}
+
 }

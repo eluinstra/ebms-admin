@@ -17,11 +17,11 @@ package nl.clockwork.ebms.admin.web.message;
 
 import java.util.Date;
 
-import nl.clockwork.ebms.Constants.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.Utils;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
@@ -105,7 +105,7 @@ public class TrafficPage extends BasePage
 				item.add(new Label("toRole",message.getToRole()));
 				item.add(new Label("service",message.getService()));
 				item.add(new Label("action",message.getAction()));
-				item.add(new Label("status",message.getStatus()).add(AttributeModifier.replace("class",Model.of(getHtmlClass(message.getStatus())))));
+				item.add(new Label("status",message.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getHtmlClass(message.getStatus())))));
 				item.add(DateLabel.forDatePattern("statusTime",new Model<Date>(message.getStatusTime()),Constants.DATETIME_FORMAT));
 				item.add(AttributeModifier.replace("class",new AbstractReadOnlyModel<String>()
 				{
@@ -136,17 +136,6 @@ public class TrafficPage extends BasePage
 			}
 		}.setVisible(responsePage != null));
 		add(new DownloadEbMSMessagesCSVLink("download",ebMSDAO,filter));
-	}
-
-	private String getHtmlClass(EbMSMessageStatus ebMSMessageStatus)
-	{
-		if (EbMSMessageStatus.PROCESSED.equals(ebMSMessageStatus) || EbMSMessageStatus.FORWARDED.equals(ebMSMessageStatus) || EbMSMessageStatus.DELIVERED.equals(ebMSMessageStatus))
-			return "ok";
-		if (EbMSMessageStatus.RECEIVED.equals(ebMSMessageStatus) || EbMSMessageStatus.SENT.equals(ebMSMessageStatus))
-			return "warn";
-		if (EbMSMessageStatus.UNAUTHORIZED.equals(ebMSMessageStatus) || EbMSMessageStatus.NOT_RECOGNIZED.equals(ebMSMessageStatus) || EbMSMessageStatus.FAILED.equals(ebMSMessageStatus) || EbMSMessageStatus.DELIVERY_ERROR.equals(ebMSMessageStatus) || EbMSMessageStatus.DELIVERY_FAILED.equals(ebMSMessageStatus))
-			return "error";
-		return null;
 	}
 
 	@Override
