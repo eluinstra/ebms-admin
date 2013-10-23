@@ -40,7 +40,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 		//;
 		return "select * from (" +
 			CPARowMapper.getBaseQuery().replaceFirst("select ","select row_number() over (order by cpa_id) as rn, ") +
-			//") where rn >= " + first + " and rn < " + (first + count)
+			//") where rn >= " + (first + 1) + " and rn < " + (first + 1 + count)
 			") where rn between " + first + " and " + (first + count)
 		;
 	}
@@ -58,7 +58,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 			new EbMSMessageRowMapper().getBaseQuery().replaceFirst("select ","select row_number() over (order by time_stamp desc) as rn, ") +
 			" where 1 = 1" +
 			getMessageFilter(filter,parameters) +
-			//") where rn >= " + first + " and rn < " + (first + count)
+			//") where rn >= " + (first + 1) + " and rn < " + (first + 1 + count)
 			") where rn between " + first + " and " + (first + count)
 		;
 	}
