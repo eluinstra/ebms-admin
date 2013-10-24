@@ -98,7 +98,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 			add(jdbcDriverFeedback);
 			jdbcDriverFeedback.add(jdbcDrivers);
 
-			TextField<String> dbHost = new TextField<String>("dbHost")
+			TextField<String> jdbcHost = new TextField<String>("jdbcHost")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -108,40 +108,40 @@ public class EbMSAdminPropertiesPage extends BasePage
 					return Model.of(getLocalizer().getString("lbl.dbHost",EbMSAdminPropertiesForm.this));
 				}
 			};
-			dbHost.setRequired(true);
-			MarkupContainer dbHostFeedback = new FormComponentFeedbackBorder("dbHostFeedback");
-			add(dbHostFeedback);
-			dbHostFeedback.add(dbHost);
+			jdbcHost.setRequired(true);
+			MarkupContainer jdbcHostFeedback = new FormComponentFeedbackBorder("jdbcHostFeedback");
+			add(jdbcHostFeedback);
+			jdbcHostFeedback.add(jdbcHost);
 
-			TextField<Integer> dbPort = new TextField<Integer>("dbPort")
+			TextField<Integer> jdbcPort = new TextField<Integer>("jdbcPort")
 			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
 				public IModel<String> getLabel()
 				{
-					return Model.of(getLocalizer().getString("lbl.dbPort",EbMSAdminPropertiesForm.this));
+					return Model.of(getLocalizer().getString("lbl.jdbcPort",EbMSAdminPropertiesForm.this));
 				}
 			};
-			dbPort.setRequired(true);
-			MarkupContainer dbPortFeedback = new FormComponentFeedbackBorder("dbPortFeedback");
-			add(dbPortFeedback);
-			dbPortFeedback.add(dbPort);
+			jdbcPort.setRequired(true);
+			MarkupContainer jdbcPortFeedback = new FormComponentFeedbackBorder("jdbcPortFeedback");
+			add(jdbcPortFeedback);
+			jdbcPortFeedback.add(jdbcPort);
 
-			TextField<String> dbName = new TextField<String>("dbName")
+			TextField<String> jdbcDatabase = new TextField<String>("jdbcDatabase")
 			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
 				public IModel<String> getLabel()
 				{
-					return Model.of(getLocalizer().getString("lbl.dbName",EbMSAdminPropertiesForm.this));
+					return Model.of(getLocalizer().getString("lbl.jdbcDatabase",EbMSAdminPropertiesForm.this));
 				}
 			};
-			dbName.setRequired(true);
-			MarkupContainer dbNameFeedback = new FormComponentFeedbackBorder("dbNameFeedback");
-			add(dbNameFeedback);
-			dbNameFeedback.add(dbName);
+			jdbcDatabase.setRequired(true);
+			MarkupContainer jdbcDatabaseFeedback = new FormComponentFeedbackBorder("jdbcDatabaseFeedback");
+			add(jdbcDatabaseFeedback);
+			jdbcDatabaseFeedback.add(jdbcDatabase);
 
 			final TextField<String> jdbcURL = new TextField<String>("jdbcURL");
 			jdbcURL.setOutputMarkupId(true);
@@ -158,7 +158,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 					try
 					{
 						EbMSAdminPropertiesFormModel model = EbMSAdminPropertiesForm.this.getModelObject();
-						Utils.testDatabaseConnection(model.getJdbcDriver().getDriverClassName(),model.getJdbcURL(),model.getDbUsername(),model.getDbPassword());
+						Utils.testDatabaseConnection(model.getJdbcDriver().getDriverClassName(),model.getJdbcURL(),model.getJdbcUsername(),model.getJdbcPassword());
 						info("Database connection succesful.");
 					}
 					catch (Exception e)
@@ -181,7 +181,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 				}
       });
 
-			dbHost.add(new OnChangeAjaxBehavior()
+			jdbcHost.add(new OnChangeAjaxBehavior()
       {
 				private static final long serialVersionUID = 1L;
 
@@ -192,7 +192,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 				}
       });
 
-			dbPort.add(new OnChangeAjaxBehavior()
+			jdbcPort.add(new OnChangeAjaxBehavior()
       {
 				private static final long serialVersionUID = 1L;
 
@@ -203,7 +203,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 				}
       });
 
-			dbName.add(new OnChangeAjaxBehavior()
+			jdbcDatabase.add(new OnChangeAjaxBehavior()
       {
 				private static final long serialVersionUID = 1L;
 
@@ -214,37 +214,37 @@ public class EbMSAdminPropertiesPage extends BasePage
 				}
       });
 
-			TextField<String> dbUsername = new TextField<String>("dbUsername")
+			TextField<String> jdbcUsername = new TextField<String>("jdbcUsername")
 			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
 				public IModel<String> getLabel()
 				{
-					return Model.of(getLocalizer().getString("lbl.dbUsername",EbMSAdminPropertiesForm.this));
+					return Model.of(getLocalizer().getString("lbl.jdbcUsername",EbMSAdminPropertiesForm.this));
 				}
 			};
-			dbUsername.setRequired(true);
-			MarkupContainer dbUsernameFeedback = new FormComponentFeedbackBorder("dbUsernameFeedback");
-			add(dbUsernameFeedback);
-			dbUsernameFeedback.add(dbUsername);
+			jdbcUsername.setRequired(true);
+			MarkupContainer jdbcUsernameFeedback = new FormComponentFeedbackBorder("jdbcUsernameFeedback");
+			add(jdbcUsernameFeedback);
+			jdbcUsernameFeedback.add(jdbcUsername);
 
-			TextField<String> dbPassword = new TextField<String>("dbPassword")
+			TextField<String> jdbcPassword = new TextField<String>("jdbcPassword")
 			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
 				public IModel<String> getLabel()
 				{
-					return Model.of(getLocalizer().getString("lbl.dbPassword",EbMSAdminPropertiesForm.this));
+					return Model.of(getLocalizer().getString("lbl.jdbcPassword",EbMSAdminPropertiesForm.this));
 				}
 			};
-			dbPassword.setRequired(true);
-			MarkupContainer dbPasswordFeedback = new FormComponentFeedbackBorder("dbPasswordFeedback");
-			add(dbPasswordFeedback);
-			dbPasswordFeedback.add(dbPassword);
+			jdbcPassword.setRequired(true);
+			MarkupContainer jdbcPasswordFeedback = new FormComponentFeedbackBorder("jdbcPasswordFeedback");
+			add(jdbcPasswordFeedback);
+			jdbcPasswordFeedback.add(jdbcPassword);
 
-			add(new GenerateEbMSAdminPropertiesLink("generate",getModelObject()));
+			add(new GenerateEbMSAdminPropertiesButton("generate",getModelObject()));
 		}
 	}
 
@@ -257,11 +257,11 @@ public class EbMSAdminPropertiesPage extends BasePage
 		//private int servicePort = 8888;
 		//private String serviceURL = "/digipoortStub";
 		private JdbcDriver jdbcDriver = JdbcDriver.ORACLE;
-		private String dbHost = "localhost";
-		private int dbPort = 1521;
-		private String dbName = "xe";
-		private String dbUsername = "system";
-		private String dbPassword = "oraclexe";
+		private String jdbcHost = "localhost";
+		private int jdbcPort = 1521;
+		private String jdbcDatabase = "xe";
+		private String jdbcUsername = "system";
+		private String jdbcPassword = "oraclexe";
 		
 		public int getMaxItemsPerPage()
 		{
@@ -291,50 +291,50 @@ public class EbMSAdminPropertiesPage extends BasePage
 		{
 			this.jdbcDriver = jdbcDriver;
 		}
-		public String getDbHost()
+		public String getJdbcHost()
 		{
-			return dbHost;
+			return jdbcHost;
 		}
-		public void setDbHost(String dbHost)
+		public void setJdbcHost(String jdbcHost)
 		{
-			this.dbHost = dbHost;
+			this.jdbcHost = jdbcHost;
 		}
-		public int getDbPort()
+		public int getJdbcPort()
 		{
-			return dbPort;
+			return jdbcPort;
 		}
-		public void setDbPort(int dbPort)
+		public void setJdbcPort(int jdbcPort)
 		{
-			this.dbPort = dbPort;
+			this.jdbcPort = jdbcPort;
 		}
 		public String getJdbcURL()
 		{
-			//return jdbcDriver.createJdbcURL(dbHost,dbPort,dbName);
-			return JdbcDriver.createJdbcURL(jdbcDriver.getUrlExpr(),dbHost,dbPort,dbName);
+			//return jdbcDriver.createJdbcURL(jdbcHost,jdbcPort,jdbcDatabase);
+			return JdbcDriver.createJdbcURL(jdbcDriver.getUrlExpr(),jdbcHost,jdbcPort,jdbcDatabase);
 		}
-		public String getDbName()
+		public String getJdbcDatabase()
 		{
-			return dbName;
+			return jdbcDatabase;
 		}
-		public void setDbName(String dbName)
+		public void setJdbcDatabase(String jdbcDatabase)
 		{
-			this.dbName = dbName;
+			this.jdbcDatabase = jdbcDatabase;
 		}
-		public String getDbUsername()
+		public String getJdbcUsername()
 		{
-			return dbUsername;
+			return jdbcUsername;
 		}
-		public void setDbUsername(String dbUsername)
+		public void setJdbcUsername(String jdbcUsername)
 		{
-			this.dbUsername = dbUsername;
+			this.jdbcUsername = jdbcUsername;
 		}
-		public String getDbPassword()
+		public String getJdbcPassword()
 		{
-			return dbPassword;
+			return jdbcPassword;
 		}
-		public void setDbPassword(String dbPassword)
+		public void setJdbcPassword(String jdbcPassword)
 		{
-			this.dbPassword = dbPassword;
+			this.jdbcPassword = jdbcPassword;
 		}
 	}
 }

@@ -25,8 +25,7 @@ import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdm
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.model.Model;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
@@ -35,23 +34,24 @@ import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 
-public class GenerateEbMSAdminPropertiesLink extends Link<EbMSAdminPropertiesFormModel>
+public class GenerateEbMSAdminPropertiesButton extends Button
 {
 	private static final long serialVersionUID = 1L;
 	protected transient Log logger = LogFactory.getLog(this.getClass());
+	private EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel;
 
-	public GenerateEbMSAdminPropertiesLink(String id, EbMSAdminPropertiesFormModel model)
+	public GenerateEbMSAdminPropertiesButton(String id, EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel)
 	{
-		super(id,Model.of(model));
+		super(id);
+		this.ebMSAdminPropertiesFormModel = ebMSAdminPropertiesFormModel;
 	}
 
 	@Override
-	public void onClick()
+	public void onSubmit()
 	{
 		try
 		{
-			EbMSAdminPropertiesFormModel model = getModelObject();
-			Properties properties = createProperties(model);
+			Properties properties = createProperties(ebMSAdminPropertiesFormModel);
 			final StringWriter sw = new StringWriter();
 			properties.store(sw,"EbMS Admin Console properties.");
 			IResourceStream resourceStream = new AbstractResourceStream()
@@ -109,6 +109,9 @@ public class GenerateEbMSAdminPropertiesLink extends Link<EbMSAdminPropertiesFor
 		result.setProperty("service.ebms.url",model.getEbMSURL());
 		result.setProperty("ebms.jdbc.driverClassName",model.getJdbcDriver().getDriverClassName());
 		result.setProperty("ebms.jdbc.url",model.getJdbcURL());
+		result.setProperty("ebms.jdbc.username",model.getJdbcUsername());
+		result.setProperty("ebms.jdbc.password",model.getJdbcPassword());
+		result.setProperty("ebms.pool.preferredTestQuery",model.getJdbcDriver().getPreferredTestQuery());
 		return result;
 	}
 
