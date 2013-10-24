@@ -159,12 +159,12 @@ public class EbMSAdminPropertiesPage extends BasePage
 					{
 						EbMSAdminPropertiesFormModel model = EbMSAdminPropertiesForm.this.getModelObject();
 						Utils.testDatabaseConnection(model.getJdbcDriver().getDriverClassName(),model.getJdbcURL(),model.getDbUsername(),model.getDbPassword());
-						info("JdbcURL is valid");
+						info("Database connection succesful.");
 					}
 					catch (Exception e)
 					{
 						logger.error("",e);
-						error(e.getMessage());
+						error("Database connection not succesful! " + e.getMessage());
 					}
 				}
 			};
