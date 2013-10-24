@@ -6,8 +6,6 @@ import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
-
 public class Utils
 {
 	public static void testEbMSUrl(String url)
