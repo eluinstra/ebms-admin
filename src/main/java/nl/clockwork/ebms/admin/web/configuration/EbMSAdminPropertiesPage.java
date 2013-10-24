@@ -244,7 +244,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 			add(jdbcPasswordFeedback);
 			jdbcPasswordFeedback.add(jdbcPassword);
 
-			add(new GenerateEbMSAdminPropertiesButton("generate",getModelObject()));
+			add(new DownloadEbMSAdminPropertiesButton("download",new ResourceModel("cmd.download"),getModelObject()));
 		}
 	}
 

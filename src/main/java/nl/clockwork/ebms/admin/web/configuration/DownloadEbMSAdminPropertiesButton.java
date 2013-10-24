@@ -26,6 +26,7 @@ import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdm
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
@@ -34,15 +35,15 @@ import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 
-public class GenerateEbMSAdminPropertiesButton extends Button
+public class DownloadEbMSAdminPropertiesButton extends Button
 {
 	private static final long serialVersionUID = 1L;
 	protected transient Log logger = LogFactory.getLog(this.getClass());
 	private EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel;
 
-	public GenerateEbMSAdminPropertiesButton(String id, EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel)
+	public DownloadEbMSAdminPropertiesButton(String id, ResourceModel resourceModel, EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel)
 	{
-		super(id);
+		super(id,resourceModel);
 		this.ebMSAdminPropertiesFormModel = ebMSAdminPropertiesFormModel;
 	}
 
