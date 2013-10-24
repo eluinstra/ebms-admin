@@ -54,7 +54,7 @@ public class Start
 		{
 			connector.setPort(cmd.getOptionValue("p") == null ? 8080 : Integer.parseInt(cmd.getOptionValue("p")));
 			server.addConnector(connector);
-			System.out.println("Application available on http://localhost:" + connector.getPort());
+			System.out.println("Web server listening on http://localhost:" + connector.getPort());
 		}
 		else
 		{
@@ -74,24 +74,23 @@ public class Start
 				sslConnector.setPort(connector.getConfidentialPort());
 				//sslConnector.setAcceptors(4);
 				server.addConnector(sslConnector);
-				System.out.println("Application available on https://localhost:" + connector.getPort());
+				System.out.println("Web server listening on https://localhost:" + connector.getPort());
 			}
 			else
-				System.out.println("Application not available: keystore" + args[0] + " not found!");
+				System.out.println("Web server not available: keystore" + args[0] + " not found!");
 		}
-		System.out.println();
-
 		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		context.setContextPath("/");
 
 		if (cmd.hasOption("jmx"))
 		{
+			System.out.println("Starting mbean server...");
 			MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
 			MBeanContainer mBeanContainer = new MBeanContainer(mBeanServer);
 			server.getContainer().addEventListener(mBeanContainer);
 			mBeanContainer.start();
 		}
-
+		
 		server.setHandler(context);
 
 		context.setInitParameter("configuration","deployment");
@@ -107,6 +106,9 @@ public class Start
 		ContextLoaderListener listener = new ContextLoaderListener();
 		context.addEventListener(listener);
 		
+		System.out.println();
+		System.out.println("Starting web server...");
+
 		server.start();
 		server.join();
 	}
