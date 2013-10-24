@@ -15,7 +15,9 @@
  */
 package nl.clockwork.ebms.admin.web;
 
+import java.io.File;
 
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 public class HomePage extends BasePage
@@ -25,6 +27,12 @@ public class HomePage extends BasePage
 	public HomePage(final PageParameters parameters)
 	{
 		super(parameters);
+		add(new FeedbackPanel("message"));
+		File file = new File("ebms-admin.properties");
+		if (file.exists())
+			info("Using configuration file " + file.getAbsolutePath());
+		else
+			error("Configuration file " + file.getAbsolutePath() + " not found! Goto configuration/ebMSAdmin to create this file.");
 	}
 
 	@Override
