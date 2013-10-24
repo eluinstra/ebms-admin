@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
+<body>
+<wicket:extend>
+	<span wicket:id="feedback">[feedback]</span>
+	<form wicket:id="ebMSAdminPropertiesForm">
+		<table class="vertical">
+			<caption><wicket:message key="ebMSAdminProperties">EbMS Admin Properties</wicket:message></caption>
+			<tbody>
+				<tr>
+					<th><wicket:message key="lbl.maxItemsPerPage">Max Items Per Page</wicket:message></th>
+					<td wicket:id="maxItemsPerPageFeedback"><input type="text" wicket:id="maxItemsPerPage"/></td>
+				</tr>
+				<tr>
+					<th><wicket:message key="lbl.ebMSURL">EbMS Service URL</wicket:message></th>
+					<td wicket:id="ebMSURLFeedback"><input type="text" wicket:id="ebMSURL" size="64"/></td>
+				</tr>
+				<tr>
+					<th><wicket:message key="lbl.jdbcDriver">JDBC Driver</wicket:message></th>
+					<td wicket:id="jdbcDriverFeedback"><select wicket:id="jdbcDrivers"/></td>
+				</tr>
+				<tr>
+					<th><wicket:message key="lbl.dbHost">Database Host</wicket:message></th>
+					<td wicket:id="dbHostFeedback"><input type="text" wicket:id="dbHost"/></td>
+				</tr>
+				<tr>
+					<th><wicket:message key="lbl.dbPort">Database Port</wicket:message></th>
+					<td wicket:id="dbPortFeedback"><input type="text" wicket:id="dbPort"/></td>
+				</tr>
+				<tr>
+					<th><wicket:message key="lbl.dbName">Database Name</wicket:message></th>
+					<td wicket:id="dbNameFeedback"><input type="text" wicket:id="dbName"/></td>
+				</tr>
+				<tr>
+					<th><wicket:message key="lbl.jdbcURL">JDBC Url</wicket:message></th>
+					<td><input type="text" wicket:id="jdbcURL" size="64"/><input type="submit" wicket:id="testJdbcURL" value="Test"/></td>
+				</tr>
+				<tr>
+					<th><wicket:message key="lbl.dbUsername">Database Username</wicket:message></th>
+					<td wicket:id="dbUsernameFeedback"><input type="text" wicket:id="dbUsername"/></td>
+				</tr>
+				<tr>
+					<th><wicket:message key="lbl.dbPassword">Database Password</wicket:message></th>
+					<td wicket:id="dbPasswordFeedback"><input type="text" wicket:id="dbPassword"/></td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="2">
+						<a href="#" wicket:id="generate"><wicket:message key="cmd.generate">Generate</wicket:message></a>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</form>
+</wicket:extend>
+</body>
+</html>
