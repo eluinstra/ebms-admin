@@ -20,33 +20,34 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import nl.clockwork.ebms.admin.web.Utils;
+import nl.clockwork.ebms.model.EbMSDataSource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.encoding.UrlEncoder;
+import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 
-public class DownloadEbMSDataSourceLink extends Link<Void>
+public class DownloadEbMSDataSourceLink extends Link<EbMSDataSource>
 {
 	private static final long serialVersionUID = 1L;
-	private nl.clockwork.ebms.model.EbMSDataSource ebMSDataSource;
 
-	public DownloadEbMSDataSourceLink(String id, nl.clockwork.ebms.model.EbMSDataSource ebMSDataSource)
+	public DownloadEbMSDataSourceLink(String id, EbMSDataSource ebMSDataSource)
 	{
-		super(id);//,Model.of(Args.notNull(new EbMSDataSource(ebMSDataSource),"ebMSDataSource"))
-		this.ebMSDataSource = ebMSDataSource;
+		super(id,Model.of(Args.notNull(ebMSDataSource,"ebMSDataSource")));
 	}
 
 	@Override
 	public void onClick()
 	{
-		//final EbMSDataSource ebMSDataSource = getModelObject();
+		final EbMSDataSource ebMSDataSource = getModelObject();
 		String fileName = UrlEncoder.QUERY_INSTANCE.encode(StringUtils.isEmpty(ebMSDataSource.getName()) ? "ebMSDataSource" + Utils.getFileExtension(ebMSDataSource.getContentType()) : ebMSDataSource.getName(),getRequest().getCharset());
 		IResourceStream resourceStream = new AbstractResourceStream()
 		{

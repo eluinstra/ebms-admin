@@ -32,6 +32,8 @@ import nl.clockwork.ebms.common.XMLMessageBuilder;
 import nl.clockwork.ebms.model.EbMSMessageContent;
 import nl.clockwork.ebms.model.EbMSMessageContext;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
@@ -47,6 +49,7 @@ import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 public class DownloadEbMSMessageContentLink extends Link<EbMSMessageContent>
 {
 	private static final long serialVersionUID = 1L;
+	protected transient Log logger = LogFactory.getLog(this.getClass());
 
 	public DownloadEbMSMessageContentLink(String id, nl.clockwork.ebms.model.EbMSMessageContent messageContent)
 	{
@@ -107,11 +110,13 @@ public class DownloadEbMSMessageContentLink extends Link<EbMSMessageContent>
 		}
 		catch (IOException e)
 		{
-			throw new RuntimeException(e);
+			logger.error("",e);
+			error(e.getMessage());
 		}
 		catch (JAXBException e)
 		{
-			throw new RuntimeException(e);
+			logger.error("",e);
+			error(e.getMessage());
 		}
 	}
 

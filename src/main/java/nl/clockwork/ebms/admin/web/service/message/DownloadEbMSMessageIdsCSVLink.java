@@ -26,6 +26,8 @@ import nl.clockwork.ebms.service.EbMSMessageService;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
@@ -38,6 +40,7 @@ import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 public class DownloadEbMSMessageIdsCSVLink extends Link<Void>
 {
 	private static final long serialVersionUID = 1L;
+	protected transient Log logger = LogFactory.getLog(this.getClass());
 	private EbMSMessageService ebMSMessageService;
 	private EbMSMessageContextFilter filter;
 
@@ -103,7 +106,8 @@ public class DownloadEbMSMessageIdsCSVLink extends Link<Void>
 		}
 		catch (IOException e)
 		{
-			throw new RuntimeException(e);
+			logger.error("",e);
+			error(e.getMessage());
 		}
 	}
 
