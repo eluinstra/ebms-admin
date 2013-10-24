@@ -16,6 +16,8 @@
 package nl.clockwork.ebms.admin;
 
 import java.lang.management.ManagementFactory;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.management.MBeanServer;
 
@@ -54,7 +56,7 @@ public class StartEmbedded
 		{
 			connector.setPort(cmd.getOptionValue("p") == null ? 8888 : Integer.parseInt(cmd.getOptionValue("p")));
 			server.addConnector(connector);
-			System.out.println("Application available on http://localhost:" + connector.getPort());
+			System.out.println("Web server listening on http://localhost:" + connector.getPort());
 		}
 		else
 		{
@@ -74,10 +76,10 @@ public class StartEmbedded
 				sslConnector.setPort(connector.getConfidentialPort());
 				//sslConnector.setAcceptors(4);
 				server.addConnector(sslConnector);
-				System.out.println("Application available on https://localhost:" + connector.getPort());
+				System.out.println("Web server listening on https://localhost:" + connector.getPort());
 			}
 			else
-				System.out.println("Application not available: keystore" + args[0] + " not found!");
+				System.out.println("Web server not available: keystore" + args[0] + " not found!");
 		}
 		System.out.println();
 
@@ -86,10 +88,24 @@ public class StartEmbedded
 
 		if (cmd.hasOption("jmx"))
 		{
+			System.out.println("Starting mbean server...");
 			MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
 			MBeanContainer mBeanContainer = new MBeanContainer(mBeanServer);
 			server.getContainer().addEventListener(mBeanContainer);
 			mBeanContainer.start();
+		}
+
+		if (cmd.hasOption("hsqldb"))
+		{
+			System.out.println("Starting hsqldb on port" + (cmd.hasOption("hsqldbPort") ? cmd.getOptionValue("hsqldbPort") : "9001") + "...");
+			List<String> options = new ArrayList<String>();
+			options.add("-database.0");
+			options.add(cmd.hasOption("hsqldbFile") ? "file:" + cmd.getOptionValue("hsqldbFile") : "file:hsqldb/ebms");
+			options.add("-dbname.0");
+			options.add("ebms");
+			options.add("-port");
+			options.add(cmd.hasOption("hsqldbPort") ? cmd.getOptionValue("hsqldbPort") : "9001");
+			org.hsqldb.Server.main(options.toArray(new String[0]));
 		}
 
 		server.setHandler(context);
@@ -121,6 +137,9 @@ public class StartEmbedded
 //		context.addEventListener(listener);
 //		ebMSServer.start();
 
+		System.out.println();
+		System.out.println("Starting web server...");
+
 		server.start();
 		server.join();
 	}
@@ -134,6 +153,9 @@ public class StartEmbedded
 		options.addOption("keystore",true,"set keystore");
 		options.addOption("password",true,"set keystore password");
 		options.addOption("jmx",false,"start mbean server");
+		options.addOption("hsqldb",false,"start hsqldb server");
+		options.addOption("hsqldbFile",true,"set hsqldb file location (default: hsqldb/ebms)");
+		options.addOption("hsqldbPort",true,"set hsqldb port (default: 9001)");
 		return options;
 	}
 	

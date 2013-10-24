@@ -13,4 +13,6 @@ hooks
 /.project
 /target
 /findbugs
+/hsqldb
+/ebms-admin.properties
 
