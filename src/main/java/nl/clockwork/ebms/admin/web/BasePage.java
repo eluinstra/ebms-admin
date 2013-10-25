@@ -26,16 +26,13 @@ import nl.clockwork.ebms.admin.web.menu.MenuProvider;
 import org.apache.wicket.Component;
 import org.apache.wicket.extensions.markup.html.repeater.tree.DefaultNestedTree;
 import org.apache.wicket.extensions.markup.html.repeater.tree.content.Folder;
-import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.apache.wicket.request.resource.PackageResourceReference;
 
 public abstract class BasePage extends WebPage
 {
@@ -87,7 +84,7 @@ public abstract class BasePage extends WebPage
     	}
     ;
 
-    add(new BookmarkablePageLink<Object>("home",WicketApplication.get().getHomePage()).add(new Image("logo", new PackageResourceReference(BasePage.class, "ebms_logo.gif"))));
+    add(new BookmarkablePageLink<Object>("home",WicketApplication.get().getHomePage()));
 		add(new Label("pageTitle",new PropertyModel<String>(this,"pageTitle")));
 		add(menu);
 	}
@@ -108,6 +105,7 @@ public abstract class BasePage extends WebPage
 	@Override
 	public void renderHead(IHeaderResponse response)
 	{
-		response.render(CssHeaderItem.forReference(new PackageResourceReference(BasePage.class,"screen.css")));
+		//response.render(CssHeaderItem.forReference(new PackageResourceReference(BasePage.class,"bootstrap.min.css")));
+		//response.render(CssHeaderItem.forReference(new PackageResourceReference(BasePage.class,"ebms-admin.css")));
 	}
 }

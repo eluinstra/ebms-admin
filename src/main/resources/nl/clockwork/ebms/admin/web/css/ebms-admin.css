@@ -38,11 +38,13 @@ textarea {
 }
 
 a.logo {
+	background:transparent url(../images/ebms_logo.gif) no-repeat scroll 0%;
 	float: left;
 	height: 49px;
 	margin: 10px 0 0 80px;
 	width: 299px;
-	overflow: hidden;
+	text-indent:-9999em;
+overflow: hidden;
 }
 
 .frame {

@@ -33,6 +33,7 @@ import org.eclipse.jetty.server.ssl.SslSocketConnector;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.FilterMapping;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.hsqldb.persist.HsqlProperties;
@@ -109,6 +110,12 @@ public class StartEmbedded
 
 		context.setInitParameter("configuration","deployment");
 		context.setInitParameter("contextConfigLocation","classpath:applicationContext.embedded.xml");
+
+		ServletHolder servletHolder = new ServletHolder(nl.clockwork.ebms.admin.web.ResourceServlet.class);
+		context.addServlet(servletHolder,"/css/*");
+		context.addServlet(servletHolder,"/fonts/*");
+		context.addServlet(servletHolder,"/images/*");
+		context.addServlet(servletHolder,"/js/*");
 
 		context.addServlet(nl.clockwork.ebms.servlet.EbMSServlet.class,"/digipoortStub");
 
