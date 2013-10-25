@@ -40,7 +40,7 @@ public class ResourceServlet extends GenericServlet
 	@Override
 	public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException
 	{
-		InputStream input = this.getClass().getResourceAsStream("/nl/clockwork/ebms/admin/web" + ((HttpServletRequest)request).getRequestURI());
+		InputStream input = this.getClass().getResourceAsStream(((HttpServletRequest)request).getRequestURI());
 		if (input == null)
 			((HttpServletResponse)response).setStatus(204);
 		else
