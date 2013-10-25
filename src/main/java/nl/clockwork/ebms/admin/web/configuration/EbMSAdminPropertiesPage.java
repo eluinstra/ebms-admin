@@ -239,7 +239,6 @@ public class EbMSAdminPropertiesPage extends BasePage
 					return Model.of(getLocalizer().getString("lbl.jdbcPassword",EbMSAdminPropertiesForm.this));
 				}
 			};
-			jdbcPassword.setRequired(true);
 			MarkupContainer jdbcPasswordFeedback = new FormComponentFeedbackBorder("jdbcPasswordFeedback");
 			add(jdbcPasswordFeedback);
 			jdbcPasswordFeedback.add(jdbcPassword);
@@ -256,12 +255,12 @@ public class EbMSAdminPropertiesPage extends BasePage
 		//private String serviceHost = "localhost";
 		//private int servicePort = 8888;
 		//private String serviceURL = "/digipoortStub";
-		private JdbcDriver jdbcDriver = JdbcDriver.ORACLE;
+		private JdbcDriver jdbcDriver = JdbcDriver.HSQLDB;
 		private String jdbcHost = "localhost";
-		private int jdbcPort = 1521;
-		private String jdbcDatabase = "xe";
-		private String jdbcUsername = "system";
-		private String jdbcPassword = "oraclexe";
+		private int jdbcPort = 9001;
+		private String jdbcDatabase = "ebms";
+		private String jdbcUsername = "sa";
+		private String jdbcPassword = null;
 		
 		public int getMaxItemsPerPage()
 		{

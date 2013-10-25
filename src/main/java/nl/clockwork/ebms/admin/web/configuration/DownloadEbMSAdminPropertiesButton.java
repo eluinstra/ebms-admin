@@ -111,7 +111,7 @@ public class DownloadEbMSAdminPropertiesButton extends Button
 		result.setProperty("ebms.jdbc.driverClassName",model.getJdbcDriver().getDriverClassName());
 		result.setProperty("ebms.jdbc.url",model.getJdbcURL());
 		result.setProperty("ebms.jdbc.username",model.getJdbcUsername());
-		result.setProperty("ebms.jdbc.password",model.getJdbcPassword());
+		result.setProperty("ebms.jdbc.password",model.getJdbcPassword() == null ? "" : model.getJdbcPassword());
 		result.setProperty("ebms.pool.preferredTestQuery",model.getJdbcDriver().getPreferredTestQuery());
 		return result;
 	}

@@ -22,8 +22,10 @@ public class Utils
     	throw new IllegalArgumentException("Jdbc Url '" + jdbcUrl + "' not valid.");
     Properties info = new Properties();
     info.setProperty("user",username);
-    info.setProperty("password",password);
+    if (password != null)
+    	info.setProperty("password",password);
     Connection connection = driver.connect(jdbcUrl,info);
+		//TODO execute preferredTestQuery
 		connection.close();
 	}
 

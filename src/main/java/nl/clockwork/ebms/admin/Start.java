@@ -54,7 +54,7 @@ public class Start
 		{
 			connector.setPort(cmd.getOptionValue("p") == null ? 8080 : Integer.parseInt(cmd.getOptionValue("p")));
 			server.addConnector(connector);
-			System.out.println("Web server listening on http://localhost:" + connector.getPort());
+			System.out.println("Web server configured on http://localhost:" + connector.getPort());
 		}
 		else
 		{
@@ -74,7 +74,7 @@ public class Start
 				sslConnector.setPort(connector.getConfidentialPort());
 				//sslConnector.setAcceptors(4);
 				server.addConnector(sslConnector);
-				System.out.println("Web server listening on https://localhost:" + connector.getPort());
+				System.out.println("Web server configured on https://localhost:" + connector.getPort());
 			}
 			else
 				System.out.println("Web server not available: keystore" + args[0] + " not found!");

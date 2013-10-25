@@ -15,6 +15,7 @@
  */
 package nl.clockwork.ebms.admin;
 
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,12 @@ import org.eclipse.jetty.servlet.FilterMapping;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.hsqldb.persist.HsqlProperties;
+import org.hsqldb.server.EbMSServerProperties;
+import org.hsqldb.server.ServerAcl.AclFormatException;
+import org.hsqldb.server.ServerConfiguration;
+import org.hsqldb.server.ServerConstants;
+import org.hsqldb.server.ServerProperties;
 import org.springframework.web.context.ContextLoaderListener;
 
 public class StartEmbedded
@@ -49,6 +56,13 @@ public class StartEmbedded
 		if (cmd.hasOption("h"))
 			printUsage();
 
+		if (cmd.hasOption("hsqldb"))
+		{
+			System.out.println("Starting hsqldb...");
+			startHSQLDBServerX();
+		}
+		System.out.println();
+
 		Server server = new Server();
 		SocketConnector connector = new SocketConnector();
 
@@ -56,7 +70,7 @@ public class StartEmbedded
 		{
 			connector.setPort(cmd.getOptionValue("p") == null ? 8888 : Integer.parseInt(cmd.getOptionValue("p")));
 			server.addConnector(connector);
-			System.out.println("Web server listening on http://localhost:" + connector.getPort());
+			System.out.println("Web server configured on http://localhost:" + connector.getPort());
 		}
 		else
 		{
@@ -76,12 +90,11 @@ public class StartEmbedded
 				sslConnector.setPort(connector.getConfidentialPort());
 				//sslConnector.setAcceptors(4);
 				server.addConnector(sslConnector);
-				System.out.println("Web server listening on https://localhost:" + connector.getPort());
+				System.out.println("Web server configured on https://localhost:" + connector.getPort());
 			}
 			else
 				System.out.println("Web server not available: keystore" + args[0] + " not found!");
 		}
-		System.out.println();
 
 		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		context.setContextPath("/");
@@ -89,23 +102,7 @@ public class StartEmbedded
 		if (cmd.hasOption("jmx"))
 		{
 			System.out.println("Starting mbean server...");
-			MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-			MBeanContainer mBeanContainer = new MBeanContainer(mBeanServer);
-			server.getContainer().addEventListener(mBeanContainer);
-			mBeanContainer.start();
-		}
-
-		if (cmd.hasOption("hsqldb"))
-		{
-			System.out.println("Starting hsqldb on port" + (cmd.hasOption("hsqldbPort") ? cmd.getOptionValue("hsqldbPort") : "9001") + "...");
-			List<String> options = new ArrayList<String>();
-			options.add("-database.0");
-			options.add(cmd.hasOption("hsqldbFile") ? "file:" + cmd.getOptionValue("hsqldbFile") : "file:hsqldb/ebms");
-			options.add("-dbname.0");
-			options.add("ebms");
-			options.add("-port");
-			options.add(cmd.hasOption("hsqldbPort") ? cmd.getOptionValue("hsqldbPort") : "9001");
-			org.hsqldb.Server.main(options.toArray(new String[0]));
+			startMBeanServer(server);
 		}
 
 		server.setHandler(context);
@@ -137,8 +134,8 @@ public class StartEmbedded
 //		context.addEventListener(listener);
 //		ebMSServer.start();
 
-		System.out.println();
 		System.out.println("Starting web server...");
+		System.out.println();
 
 		server.start();
 		server.join();
@@ -177,4 +174,47 @@ public class StartEmbedded
 		formatter.printHelp("Start",options,true);
 		System.exit(0);
 	}
+	
+	public static void startMBeanServer(Server server) throws Exception
+	{
+		MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+		MBeanContainer mBeanContainer = new MBeanContainer(mBeanServer);
+		server.getContainer().addEventListener(mBeanContainer);
+		mBeanContainer.start();
+	}
+
+	public static void startHSQLDBServer()
+	{
+		List<String> options = new ArrayList<String>();
+		options.add("-database.0");
+		options.add(cmd.hasOption("hsqldbFile") ? "file:" + cmd.getOptionValue("hsqldbFile") : "file:hsqldb/ebms");
+		options.add("-dbname.0");
+		options.add("ebms");
+		options.add("-port");
+		options.add(cmd.hasOption("hsqldbPort") ? cmd.getOptionValue("hsqldbPort") : "9001");
+		org.hsqldb.Server.main(options.toArray(new String[0]));
+	}
+
+	public static void startHSQLDBServerX() throws IOException, AclFormatException
+	{
+		List<String> options = new ArrayList<String>();
+		options.add("-database.0");
+		options.add(cmd.hasOption("hsqldbFile") ? "file:" + cmd.getOptionValue("hsqldbFile") : "file:hsqldb/ebms");
+		options.add("-dbname.0");
+		options.add("ebms");
+		options.add("-port");
+		options.add(cmd.hasOption("hsqldbPort") ? cmd.getOptionValue("hsqldbPort") : "9001");
+		
+		HsqlProperties argProps = HsqlProperties.argArrayToProps(options.toArray(new String[0]),"server");
+		ServerProperties props = new EbMSServerProperties(ServerConstants.SC_PROTOCOL_HSQL);
+		props.addProperties(argProps);
+		ServerConfiguration.translateDefaultDatabaseProperty(props);
+		ServerConfiguration.translateDefaultNoSystemExitProperty(props);
+		ServerConfiguration.translateAddressProperty(props);
+		org.hsqldb.server.Server server = new org.hsqldb.server.Server();
+		server.setProperties(props);
+    server.start();
+		
+	}
+
 }
