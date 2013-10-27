@@ -6,6 +6,7 @@
 - add help
 - add cpp editor/creator
 
+- add form reset button?
 - add text field messageId to MessageStatusPage and switch to select messageIds selection or messageId text field 
 - improve uploading dataSources:
 	- create dataSource Form with fields name, content-type and file
