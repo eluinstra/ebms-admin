@@ -23,6 +23,7 @@ public class MenuLinkItemPanel extends Panel
 		BookmarkablePageLink<BasePage> link = new BookmarkablePageLink<BasePage>("link",model.getObject().getPageClass());
 		link.add(new Label("name",model.getObject().getName()));
 		add(link);
+		//add(AttributeModifier.replace("class",Model.of("active"));
 	}
 
 }
