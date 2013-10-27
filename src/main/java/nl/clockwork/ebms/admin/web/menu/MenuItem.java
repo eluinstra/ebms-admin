@@ -19,8 +19,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class MenuItem
+import org.apache.wicket.util.io.IClusterable;
+
+public class MenuItem implements IClusterable
 {
+	private static final long serialVersionUID = 1L;
 	private String id;
 	private String name;
 	private MenuItem parent;

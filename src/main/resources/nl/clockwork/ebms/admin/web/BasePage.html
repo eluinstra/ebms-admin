@@ -7,19 +7,25 @@
 		<link href="css/ebms-admin.css" rel="stylesheet" media="screen" />
 	</head>
 	<body>
+    <div class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <!--a class="navbar-brand" href="#" wicket:id="home"><img src="/images/ebms-admin.gif" class="img-responsive"/></a-->
+          <a class="navbar-brand" href="#" wicket:id="home"><wicket:message key="applicationName"/></a>
+        </div>
+        <div class="navbar-collapse collapse">
+         	<span wicket:id="menu"/>
+        </div>
+      </div>
+    </div>
 		<div class="container">
-			<a class="logo" href="#" wicket:id="home"><img src="/images/ebms-admin.gif" class="img-responsive"/></a>
-		</div>
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-2">
-					<div wicket:id="menu"/>
-				</div>
-				<div class="col-lg-10">
-					<h4 wicket:id="pageTitle"/>
-					<wicket:child/>
-				</div>
-			</div>
+			<h4 wicket:id="pageTitle"/>
+			<wicket:child/>
 		</div>
 		<script src="js/jquery.js"></script>
 		<script src="js/bootstrap.min.js"></script>

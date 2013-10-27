@@ -32,39 +32,39 @@ import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
  */
 public class WicketApplication extends WebApplication
 {
-	public List<MenuItem> menu = new ArrayList<MenuItem>();
+	public List<MenuItem> menuItems = new ArrayList<MenuItem>();
 	
 	public WicketApplication()
 	{
 		MenuItem home = new MenuLinkItem("0","Home",nl.clockwork.ebms.admin.web.HomePage.class);
-		menu.add(home);
+		menuItems.add(home);
 		
 		MenuItem cpa = new MenuItem("1","cpaService");
 		new MenuLinkItem(cpa,"1","cpas",nl.clockwork.ebms.admin.web.service.cpa.CPAsPage.class);
 		new MenuLinkItem(cpa,"2","cpa",nl.clockwork.ebms.admin.web.service.cpa.CPAUploadPage.class);
-		menu.add(cpa);
+		menuItems.add(cpa);
 
 		MenuItem message = new MenuItem("2","messageService");
 		new MenuLinkItem(message,"1","ping",nl.clockwork.ebms.admin.web.service.message.PingPage.class);
 		new MenuLinkItem(message,"2","messages",nl.clockwork.ebms.admin.web.service.message.MessagesPage.class);
 		new MenuLinkItem(message,"3","message",nl.clockwork.ebms.admin.web.service.message.SendMessagePage.class);
 		new MenuLinkItem(message,"3","status",nl.clockwork.ebms.admin.web.service.message.MessageStatusPage.class);
-		menu.add(message);
+		menuItems.add(message);
 
 		MenuItem advanced = new MenuItem("3","advanced");
 		new MenuLinkItem(advanced,"1","traffic",nl.clockwork.ebms.admin.web.message.TrafficPage.class);
 		new MenuLinkItem(advanced,"2","trafficChart",nl.clockwork.ebms.admin.web.message.TrafficChartPage.class);
 		new MenuLinkItem(advanced,"3","cpas",nl.clockwork.ebms.admin.web.cpa.CPAsPage.class);
 		new MenuLinkItem(advanced,"4","messages",nl.clockwork.ebms.admin.web.message.MessagesPage.class);
-		menu.add(advanced);
+		menuItems.add(advanced);
 
 		MenuItem configuration = new MenuItem("4","configuration");
 		new MenuLinkItem(configuration,"1","ebMSAdmin",nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.class);
 		new MenuLinkItem(configuration,"2","ebMSCore",nl.clockwork.ebms.admin.web.HomePage.class);
-		menu.add(configuration);
+		menuItems.add(configuration);
 
 		MenuItem about = new MenuLinkItem("5","about",nl.clockwork.ebms.admin.web.HomePage.class);
-		menu.add(about);
+		menuItems.add(about);
 	}
 	
 	/**
@@ -87,22 +87,9 @@ public class WicketApplication extends WebApplication
 		getComponentInstantiationListeners().add(new SpringComponentInjector(this));
 	}
 	
-	public MenuItem getMenuItem(String id)
+	public List<MenuItem> getMenuItems()
 	{
-		return findMenuItem(menu,id);
-	}
-
-	private static MenuItem findMenuItem(List<MenuItem> menuItems, String id)
-	{
-		for (MenuItem menuItem : menuItems)
-		{
-			if (menuItem.getId().equals(id))
-				return menuItem;
-			MenuItem item = findMenuItem(menuItem.getChildren(),id);
-			if (item != null)
-				return item;
-		}
-		return null;
+		return menuItems;
 	}
 
 	public static WicketApplication get()

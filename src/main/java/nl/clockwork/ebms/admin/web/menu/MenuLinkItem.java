@@ -19,6 +19,7 @@ import org.apache.wicket.Page;
 
 public class MenuLinkItem extends MenuItem
 {
+	private static final long serialVersionUID = 1L;
 	private Class<? extends Page> pageClass;
 	
 	public MenuLinkItem(String id, String name, Class<? extends Page> pageClass)
