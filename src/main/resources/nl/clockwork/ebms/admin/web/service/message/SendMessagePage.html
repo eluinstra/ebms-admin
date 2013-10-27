@@ -2,40 +2,45 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
 <body>
 <wicket:extend>
-	<span wicket:id="feedback">[feedback]</span>
-	<form wicket:id="messageForm">
-		<table class="vertical">
-			<caption><wicket:message key="message">Message</wicket:message></caption>
-			<tbody>
-				<tr>
-					<th><wicket:message key="lbl.cpaId">CPA Id</wicket:message></th>
-					<td wicket:id="cpaIdFeedback"><select wicket:id="cpaIds"/></td>
-				</tr>
-				<tr>
-					<th><wicket:message key="lbl.fromRole">From Role</wicket:message></th>
-					<td wicket:id="fromRoleFeedback"><select wicket:id="fromRoles"/></td>
-				</tr>
-				<tr>
-					<th><wicket:message key="lbl.service">Service</wicket:message></th>
-					<td wicket:id="serviceFeedback"><select wicket:id="services"/></td>
-				</tr>
-				<tr>
-					<th><wicket:message key="lbl.action">Action</wicket:message></th>
-					<td wicket:id="actionFeedback"><select wicket:id="actions"/></td>
-				</tr>
-				<tr>
-					<th></th>
-					<td><div wicket:id="dataSources" /></td>
-				</tr>
-			</tbody>
-			<tfoot>
-				<tr>
-					<td colspan="4">
-						<input type="submit" wicket:id="send" wicket:message="value:cmd.send"/>
-					</td>
-				</tr>
-			</tfoot>
-		</table>
+	<div class="col-lg-offset-2 col-lg-10">
+		<span wicket:id="feedback"/>
+	</div>
+	<form class="form-horizontal" role="form" wicket:id="messageForm">
+		<div class="form-group">
+			<label for="cpaIds" class="col-lg-2 control-label"><wicket:message key="lbl.cpaId"/></label>
+			<div class="col-lg-10">
+				<span wicket:id="cpaIdFeedback"><select class="form-control" wicket:id="cpaIds"/></span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="fromRoles" class="col-lg-2 control-label"><wicket:message key="lbl.fromRole"/></label>
+			<div class="col-lg-10">
+				<span wicket:id="fromRoleFeedback"><select class="form-control" wicket:id="fromRoles"/></span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="services" class="col-lg-2 control-label"><wicket:message key="lbl.service"/></label>
+			<div class="col-lg-10">
+				<span wicket:id="serviceFeedback"><select class="form-control" wicket:id="services"/></span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="actions" class="col-lg-2 control-label"><wicket:message key="lbl.action"/></label>
+			<div class="col-lg-10">
+				<span wicket:id="actionFeedback"><select class="form-control" wicket:id="actions"/></span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="dataSources" class="col-lg-2 control-label"><wicket:message key="lbl.dataSources"/></label>
+			<div class="col-lg-10">
+				<div wicket:id="dataSources" />
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-lg-offset-2 col-lg-10">
+				<input type="submit" class="btn btn-default" wicket:id="send" wicket:message="value:cmd.send"/>
+			</div>
+		</div>
 	</form>
 </wicket:extend>
 </body>

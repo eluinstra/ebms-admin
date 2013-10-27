@@ -16,6 +16,7 @@
 package nl.clockwork.ebms.admin.web.service.cpa;
 
 import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.CSSFeedbackPanel;
 import nl.clockwork.ebms.service.CPAService;
 
 import org.apache.commons.logging.Log;
@@ -26,7 +27,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
@@ -42,7 +42,7 @@ public class CPAsPage extends BasePage
 
 	public CPAsPage()
 	{
-		add(new FeedbackPanel("feedback"));
+		add(new CSSFeedbackPanel("feedback"));
 		add(new EditCPAsForm("editCPAsForm"));
 	}
 
@@ -76,6 +76,9 @@ public class CPAsPage extends BasePage
 					};
 					link.add(new Label("cpaId",cpaId));
 					item.add(link);
+
+					item.add(new DownloadCPALink("downloadCPA",cpaService,cpaId));
+
 					Button delete = new Button("delete",new ResourceModel("cmd.delete"))
 					{
 						private static final long serialVersionUID = 1L;
@@ -109,7 +112,6 @@ public class CPAsPage extends BasePage
 							return (item.getIndex() % 2 == 0) ? "even" : "odd";
 						}
 					}));
-					item.add(new DownloadCPALink("downloadCPA",cpaService,cpaId));
 				}
 			};
 			cpaIds.setOutputMarkupId(true);

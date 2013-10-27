@@ -2,20 +2,21 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
 <body>
 <wicket:extend>
-	<span wicket:id="navigator">[navigator]</span>
-	<table class="horizontal">
-		<caption><wicket:message key="cpas">Collaboration Protocol Agreements</wicket:message></caption>
-		<thead>
-			<tr>
-				<th><wicket:message key="lbl.cpaId">Collaboration Protocol Agreement Id</wicket:message></th>
-			</tr>
-		</thead>
-		<tbody wicket:id="container">
-			<tr wicket:id="cpas">
-				<td><a href="#" wicket:id="view"><span wicket:id="cpaId">[cpaId]</span></a></td>
-			</tr>
-		</tbody>
-	</table>
+	<span wicket:id="navigator"/>
+	<div class="table-responsive">
+		<table class="table table-striped table-condensed">
+			<thead>
+				<tr>
+					<th><wicket:message key="lbl.cpaId"/></th>
+				</tr>
+			</thead>
+			<tbody wicket:id="container">
+				<tr wicket:id="cpas">
+					<td><a href="#" wicket:id="view"><span wicket:id="cpaId"/></a></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </wicket:extend>
 </body>
 </html>

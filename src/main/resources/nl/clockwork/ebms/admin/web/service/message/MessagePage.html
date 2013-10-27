@@ -2,68 +2,95 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
 <body>
 <wicket:extend>
-	<span wicket:id="feedback">[feedback]</span>
-	<table class="vertical">
-		<caption><wicket:message key="message">EbMS Message</wicket:message></caption>
-		<tbody>
-			<tr>
-				<th><wicket:message key="lbl.messageId">Message Id</wicket:message></th>
-				<td><span wicket:id="messageId">[messageId]</span></td>
-			</tr>
-			<tr>
-				<th><wicket:message key="lbl.conversationId">Conversation Id</wicket:message></th>
-				<td><span wicket:id="conversationId">[conversationId]</span></td>
-			</tr>
-			<tr>
-				<th><wicket:message key="lbl.refToMessageId">Ref To Message Id</wicket:message></th>
-				<td><a href="#" wicket:id="viewRefToMessageId"><span wicket:id="refToMessageId">[refToMessageId]</span></a></td>
-			</tr>
-			<tr>
-				<th><wicket:message key="lbl.timestamp">Timestamp</wicket:message></th>
-				<td><span wicket:id="timestamp">[timestamp]</span></td>
-			</tr>
-			<tr>
-				<th><wicket:message key="lbl.cpaId">CPA Id</wicket:message></th>
-				<td><span wicket:id="cpaId">[cpaId]</span></td>
-			</tr>
-			<tr>
-				<th><wicket:message key="lbl.fromRole">From Role</wicket:message></th>
-				<td><span wicket:id="fromRole">[fromRole]</span></td>
-			</tr>
-			<tr>
-				<th><wicket:message key="lbl.toRole">To Role</wicket:message></th>
-				<td><span wicket:id="toRole">[toRole]</span></td>
-			</tr>
-			<tr>
-				<th><wicket:message key="lbl.service">Service</wicket:message></th>
-				<td><span wicket:id="service">[service]</span></td>
-			</tr>
-			<tr>
-				<th><wicket:message key="lbl.action">Action</wicket:message></th>
-				<td><span wicket:id="action">[action]</span></td>
-			</tr>
-			<tr>
-				<th><wicket:message key="lbl.dataSources">Data Sources</wicket:message></th>
-				<td>
-					<table>
-						<tr>
-							<th><wicket:message key="lbl.name">Name</wicket:message></th>
-							<th><wicket:message key="lbl.contentType">Content Type</wicket:message></th>
-						</tr>
-						<tr wicket:id="dataSources">
-							<td><a href="#" wicket:id="downloadDataSource"><span wicket:id="name">[name]</span></a></td>
-							<td wicket:id="contentType">[contentType]</td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</tbody>
-		<tfoot>
-			<tr>
-				<td colspan="2"><a href="#" wicket:id="back"><wicket:message key="cmd.back">Back</wicket:message></a>&nbsp;<a href="#" wicket:id="download"><wicket:message key="cmd.download">Download</wicket:message></a>&nbsp;<a href="#" wicket:id="process"><wicket:message key="cmd.process">Process</wicket:message></a></td>
-			</tr>
-		</tfoot>
-	</table>
+	<div class="col-lg-offset-2 col-lg-10">
+		<span wicket:id="feedback"/>
+	</div>
+	<form class="form-horizontal" role="form">
+		<div class="form-group">
+			<label for="messageId" class="col-lg-2 control-label"><wicket:message key="lbl.messageId"/></label>
+			<div class="col-lg-10">
+				<p class="form-control-static"><span wicket:id="messageId"/></p>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="conversationId" class="col-lg-2 control-label"><wicket:message key="lbl.conversationId"/></label>
+			<div class="col-lg-10">
+				<p class="form-control-static"><span wicket:id="conversationId"/></p>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="refToMessageId" class="col-lg-2 control-label"><wicket:message key="lbl.refToMessageId"/></label>
+			<div class="col-lg-10">
+				<p class="form-control-static"><a href="#" wicket:id="viewRefToMessageId"><span wicket:id="refToMessageId"/></a></p>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="timestamp" class="col-lg-2 control-label"><wicket:message key="lbl.timestamp"/></label>
+			<div class="col-lg-10">
+				<p class="form-control-static"><span wicket:id="timestamp"/></p>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="cpaId" class="col-lg-2 control-label"><wicket:message key="lbl.cpaId"/></label>
+			<div class="col-lg-10">
+				<p class="form-control-static"><span wicket:id="cpaId"/></p>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="fromRole" class="col-lg-2 control-label"><wicket:message key="lbl.fromRole"/></label>
+			<div class="col-lg-10">
+				<p class="form-control-static"><span wicket:id="fromRole"/></p>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="toRole" class="col-lg-2 control-label"><wicket:message key="lbl.toRole"/></label>
+			<div class="col-lg-10">
+				<p class="form-control-static"><span wicket:id="toRole"/></p>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="service" class="col-lg-2 control-label"><wicket:message key="lbl.service"/></label>
+			<div class="col-lg-10">
+				<p class="form-control-static"><span wicket:id="service"/></p>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="action" class="col-lg-2 control-label"><wicket:message key="lbl.action"/></label>
+			<div class="col-lg-10">
+				<p class="form-control-static"><span wicket:id="action"/></p>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-lg-2 control-label"><wicket:message key="lbl.dataSources"/></label>
+			<div class="col-lg-10 table-responsive">
+				<table class="table table-striped">
+					<tr>
+						<td>
+							<label for="name"><wicket:message key="lbl.name"/></label>
+						</td>
+						<td>
+							<label for="contentType"><wicket:message key="lbl.contentType"/></label>
+						</td>
+					</tr>
+					<tr wicket:id="dataSources">
+						<td>
+							<p class="form-control-static"><a href="#" wicket:id="downloadDataSource"><span wicket:id="name"/></a></p>
+						</td>
+						<td>
+							<p class="form-control-static"><span wicket:id="contentType"/></p>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-lg-offset-2 col-lg-10">
+				<a class="btn btn-default" href="#" wicket:id="back"><wicket:message key="cmd.back"/></a>
+				<a class="btn btn-default" href="#" wicket:id="download"><wicket:message key="cmd.download"/></a>
+				<a class="btn btn-default" href="#" wicket:id="process"><wicket:message key="cmd.process"/></a>
+			</div>
+		</div>
+	</form>
 </wicket:extend>
 </body>
 </html>

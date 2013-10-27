@@ -16,6 +16,7 @@
 package nl.clockwork.ebms.admin.web.service.cpa;
 
 import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.CSSFeedbackPanel;
 import nl.clockwork.ebms.service.CPAService;
 
 import org.apache.commons.logging.Log;
@@ -26,7 +27,6 @@ import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
@@ -51,7 +51,7 @@ public class CPAEditPage extends BasePage
 	
 	protected CPAEditPage(String cpa, boolean isNew, WebPage responsePage)
 	{
-		add(new FeedbackPanel("feedback"));
+		add(new CSSFeedbackPanel("feedback"));
 		add(new EditCPAForm("editCPAForm",cpa,isNew,responsePage));
 	}
 	

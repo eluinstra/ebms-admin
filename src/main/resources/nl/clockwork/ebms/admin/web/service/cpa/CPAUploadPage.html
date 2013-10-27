@@ -2,29 +2,28 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
 <body>
 <wicket:extend>
-	<span wicket:id="feedback">[feedback]</span>
-	<form wicket:id="uploadCPAForm">
-		<table class="vertical">
-			<caption><wicket:message key="cpa">Collaboration Protocol Agreement</wicket:message></caption>
-			<tbody>
-				<tr>
-					<th><wicket:message key="lbl.cpa">CPA</wicket:message></th>
-					<td wicket:id="cpaFeedback"><input wicket:id="cpaFile" type="file"/></td>
-				</tr>
-				<tr>
-					<th><wicket:message key="lbl.overwrite">CPA</wicket:message></th>
-					<td><input wicket:id="overwrite" type="checkbox"/></td>
-				</tr>
-			</tbody>
-			<tfoot>
-				<tr>
-					<td colspan="2">
-						<input type="submit" wicket:id="validate" wicket:message="value:cmd.validate"/>
-						<input type="submit" wicket:id="upload" wicket:message="value:cmd.upload"/>
-					</td>
-				</tr>
-			</tfoot>
-		</table>
+	<div class="col-lg-offset-2 col-lg-10">
+		<span wicket:id="feedback">[feedback]</span>
+	</div>
+	<form class="form-horizontal" role="form" wicket:id="uploadCPAForm">
+		<div class="form-group">
+			<label for="cpaFile" class="col-lg-2 control-label"><wicket:message key="lbl.cpa"/></label>
+			<div class="col-lg-10">
+				<span wicket:id="cpaFeedback"><input type="file" class="form-control" wicket:id="cpaFile"/></span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="overwrite" class="col-lg-2 control-label"><wicket:message key="lbl.overwrite"/></label>
+			<div class="col-lg-10">
+				<input type="checkbox" wicket:id="overwrite" />
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-lg-offset-2 col-lg-10">
+				<input class="btn btn-default" type="submit" wicket:id="validate" wicket:message="value:cmd.validate"/>
+				<input class="btn btn-default" type="submit" wicket:id="upload" wicket:message="value:cmd.upload"/>
+			</div>
+		</div>
 	</form>
 </wicket:extend>
 </body>

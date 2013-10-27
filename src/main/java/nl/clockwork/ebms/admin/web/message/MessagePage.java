@@ -70,7 +70,7 @@ public class MessagePage extends BasePage
 		add(new Label("toRole",message.getToRole()));
 		add(new Label("service",message.getService()));
 		add(new Label("action",message.getAction()));
-		add(new Label("status",message.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getHtmlClass(message.getStatus())))));
+		add(new Label("status",message.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus())))));
 		add(new Label("statusTime",message.getStatusTime()));
 		
 		PropertyListView<EbMSAttachment> attachments = 
@@ -123,8 +123,6 @@ public class MessagePage extends BasePage
 		;
 		add(events);
 
-		add(new TextArea<String>("content",Model.of(message.getContent())));
-
 		add(new Link<Object>("back")
 		{
 			private static final long serialVersionUID = 1L;
@@ -136,6 +134,10 @@ public class MessagePage extends BasePage
 			}
 		});
 		add(new DownloadEbMSMessageLink("download",ebMSDAO,message));
+
+		TextArea<String> content = new TextArea<String>("content",Model.of(message.getContent()));
+		content.setEnabled(false);
+		add(content);
 	}
 	
 	@Override

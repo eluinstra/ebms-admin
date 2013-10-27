@@ -31,7 +31,9 @@ public class CPAPage extends BasePage
 	public CPAPage(final CPA cpa, final WebPage responsePage)
 	{
 		add(new Label("cpaId",cpa.getCpaId()));
-		add(new TextArea<String>("cpa",Model.of(cpa.getCpa())));
+		TextArea<String> cpa_ = new TextArea<String>("cpa",Model.of(cpa.getCpa()));
+		cpa_.setEnabled(false);
+		add(cpa_);
 		add(new Link<Object>("back")
 		{
 			private static final long serialVersionUID = 1L;

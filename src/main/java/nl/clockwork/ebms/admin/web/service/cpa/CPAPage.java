@@ -28,7 +28,9 @@ public class CPAPage extends BasePage
 
 	public CPAPage(final String cpa, final WebPage responsePage)
 	{
-		add(new TextArea<String>("cpa",Model.of(cpa)));
+		TextArea<String> cpa_ = new TextArea<String>("cpa",Model.of(cpa));
+		cpa_.setEnabled(false);
+		add(cpa_);
 		add(new Link<Void>("edit")
 		{
 			private static final long serialVersionUID = 1L;

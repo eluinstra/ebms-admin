@@ -25,6 +25,7 @@ import nl.clockwork.ebms.Constants.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.CSSFeedbackPanel;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
 import nl.clockwork.ebms.model.MessageStatus;
 import nl.clockwork.ebms.service.CPAService;
@@ -39,7 +40,6 @@ import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -62,7 +62,7 @@ public class MessageStatusPage extends BasePage
 
 	public MessageStatusPage()
 	{
-		add(new FeedbackPanel("feedback"));
+		add(new CSSFeedbackPanel("feedback"));
 		add(new MessageStatusForm("pingForm"));
 	}
 	

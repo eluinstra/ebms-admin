@@ -19,6 +19,7 @@ import java.util.Date;
 
 import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.CSSFeedbackPanel;
 import nl.clockwork.ebms.model.EbMSDataSource;
 import nl.clockwork.ebms.model.EbMSMessageContent;
 import nl.clockwork.ebms.service.EbMSMessageService;
@@ -33,7 +34,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PropertyListView;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -46,7 +46,7 @@ public class MessagePage extends BasePage
 
 	public MessagePage(final EbMSMessageContent messageContent, final WebPage responsePage)
 	{
-		add(new FeedbackPanel("feedback"));
+		add(new CSSFeedbackPanel("feedback"));
 		add(new Label("messageId",messageContent.getContext().getMessageId()));
 		add(new Label("conversationId",messageContent.getContext().getConversationId()));
 		Link<Void> link = new Link<Void>("viewRefToMessageId")

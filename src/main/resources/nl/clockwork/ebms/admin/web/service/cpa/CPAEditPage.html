@@ -2,24 +2,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
 <body>
 <wicket:extend>
-	<span wicket:id="feedback">[feedback]</span>
-	<form wicket:id="editCPAForm">
-		<table class="vertical">
-			<caption><wicket:message key="cpa">Collaboration Protocol Agreement</wicket:message></caption>
-			<tbody>
-				<tr>
-					<td colspan="2" wicket:id="cpaFeedback"><textarea wicket:id="cpa" rows="64" cols="192" style="white-space: pre; word-wrap: normal; overflow-x: scroll;">[cpa]</textarea></td>
-				</tr>
-			</tbody>
-			<tfoot>
-				<tr>
-					<td colspan="2">
-						<input type="submit" wicket:id="save" wicket:message="value:cmd.save"/>
-						<input type="submit" wicket:id="cancel" wicket:message="value:cmd.cancel"/>
-					</td>
-				</tr>
-			</tfoot>
-		</table>
+	<span wicket:id="feedback"/>
+	<form role="form" wicket:id="editCPAForm">
+		<div class="form-group">
+			<span wicket:id="cpaFeedback"><textarea class="form-control" rows="50" wicket:id="cpa"/></span>
+		</div>
+		<div class="form-group">
+			<input type="submit" class="btn btn-default" wicket:id="save" wicket:message="value:cmd.save"/>
+			<input type="submit" class="btn btn-default" wicket:id="cancel" wicket:message="value:cmd.cancel"/>
+		</div>
 	</form>
 </wicket:extend>
 </body>

@@ -32,7 +32,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
-import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -105,18 +104,9 @@ public class TrafficPage extends BasePage
 				item.add(new Label("toRole",message.getToRole()));
 				item.add(new Label("service",message.getService()));
 				item.add(new Label("action",message.getAction()));
-				item.add(new Label("status",message.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getHtmlClass(message.getStatus())))));
+				item.add(new Label("status",message.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus())))));
 				item.add(DateLabel.forDatePattern("statusTime",new Model<Date>(message.getStatusTime()),Constants.DATETIME_FORMAT));
-				item.add(AttributeModifier.replace("class",new AbstractReadOnlyModel<String>()
-				{
-					private static final long serialVersionUID = 1L;
-				
-					@Override
-					public String getObject()
-					{
-						return (item.getIndex() % 2 == 0) ? "even" : "odd";
-					}
-				}));
+				item.add(AttributeModifier.replace("class",Model.of(Utils.getTableRowCssClass(message.getStatus()))));
 			}
 		};
 		messages.setOutputMarkupId(true);

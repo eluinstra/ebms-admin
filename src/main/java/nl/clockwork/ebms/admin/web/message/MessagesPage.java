@@ -116,7 +116,7 @@ public class MessagesPage extends BasePage
 				item.add(new Label("toRole",message.getToRole()));
 				item.add(new Label("service",message.getService()));
 				item.add(new Label("action",message.getAction()));
-				item.add(new Label("status",message.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getHtmlClass(message.getStatus())))));
+				item.add(new Label("status",message.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus())))));
 				item.add(DateLabel.forDatePattern("statusTime",new Model<Date>(message.getStatusTime()),Constants.DATETIME_FORMAT));
 				item.add(AttributeModifier.replace("class",new AbstractReadOnlyModel<String>()
 				{

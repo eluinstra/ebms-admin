@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.CSSFeedbackPanel;
 import nl.clockwork.ebms.admin.web.configuration.Constants.JdbcDriver;
 
 import org.apache.commons.logging.Log;
@@ -33,7 +34,6 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -48,7 +48,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 
 	public EbMSAdminPropertiesPage() throws IOException
 	{
-		add(new FeedbackPanel("feedback"));
+		add(new CSSFeedbackPanel("feedback"));
 		add(new EbMSAdminPropertiesForm("ebMSAdminPropertiesForm"));
 	}
 	

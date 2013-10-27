@@ -2,30 +2,31 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
 <body>
 <wicket:extend>
-	<span wicket:id="feedback">[feedback]</span>
+	<span wicket:id="feedback"/>
 	<form wicket:id="editCPAsForm">
-		<table class="horizontal">
-			<caption><wicket:message key="cpas">Collaboration Protocol Agreements</wicket:message></caption>
-			<thead>
-				<tr>
-					<th><wicket:message key="lbl.cpaId">Collaboration Protocol Agreement Id</wicket:message></th>
-					<th></th>
-					<th></th>
-				</tr>
-			</thead>
-			<tbody wicket:id="container">
-				<tr wicket:id="cpaIds">
-					<td><a href="#" wicket:id="view"><span wicket:id="cpaId">[cpaId]</span></a></td>
-					<td><input type="submit" wicket:id="delete" wicket:message="value:cmd.delete"/></td>
-					<td><a href="#" wicket:id="downloadCPA"><wicket:message key="cmd.download">Download</wicket:message></a></td>
-				</tr>
-			</tbody>
-			<tfoot>
-				<tr>
-					<td colspan="3"><a href="#" wicket:id="new"><wicket:message key="cmd.new">New</wicket:message></a></td>
-				</tr>
-			</tfoot>
-		</table>
+		<div class="table-responsive">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th><wicket:message key="lbl.cpaId"/></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody wicket:id="container">
+					<tr wicket:id="cpaIds">
+						<td><a href="#" wicket:id="view"><span wicket:id="cpaId"/></a></td>
+						<td><a class="btn btn-default" href="#" wicket:id="downloadCPA"><wicket:message key="cmd.download"/></a><input type="submit" class="btn btn-default" wicket:id="delete" wicket:message="value:cmd.delete"/></td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="2">
+							<a class="btn btn-default" href="#" wicket:id="new"><wicket:message key="cmd.new"/></a>
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
 	</form>
 </wicket:extend>
 </body>

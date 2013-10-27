@@ -2,23 +2,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
 <body>
 <wicket:extend>
-	<table class="vertical">
-		<caption><wicket:message key="cpa">Collaboration Protocol Agreement</wicket:message></caption>
-		<tbody>
-			<tr>
-				<th><wicket:message key="lbl.cpaId">CPA Id</wicket:message></th>
-				<td><span wicket:id="cpaId">[cpaId]</span></td>
-			</tr>
-			<tr>
-				<td colspan="2"><textarea wicket:id="cpa" rows="64" cols="192" readonly="readonly" style="white-space: pre; word-wrap: normal; overflow-x: scroll;">[cpa]</textarea></td>
-			</tr>
-		</tbody>
-		<tfoot>
-			<tr>
-				<td colspan="2"><a href="#" wicket:id="back"><wicket:message key="cmd.back">Back</wicket:message></a></td>
-			</tr>
-		</tfoot>
-	</table>
+	<form role="form">
+		<div class="form-group">
+			<label for="cpaId" class="control-label"><wicket:message key="lbl.cpaId"/></label>
+			<p class="form-control-static"><span wicket:id="cpaId"/></p>
+		</div>
+		<div class="form-group">
+			<label for="cpa" class="control-label"><wicket:message key="lbl.cpa"/></label>
+			<span><textarea class="form-control" rows="50" wicket:id="cpa"/></span>
+		</div>
+		<div class="form-group">
+			<a class="btn btn-default" href="#" wicket:id="back"><wicket:message key="cmd.back"/></a>
+		</div>
+	</form>
 </wicket:extend>
 </body>
 </html>

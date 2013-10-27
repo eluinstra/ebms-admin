@@ -28,14 +28,25 @@ public class Utils
 		return "." + (contentType.contains("text") ? "txt" : contentType.split("/")[1]);
 	}
 
-	public static String getHtmlClass(EbMSMessageStatus ebMSMessageStatus)
+	public static String getTableCellCssClass(EbMSMessageStatus ebMSMessageStatus)
 	{
 		if (EbMSMessageStatus.PROCESSED.equals(ebMSMessageStatus) || EbMSMessageStatus.FORWARDED.equals(ebMSMessageStatus) || EbMSMessageStatus.DELIVERED.equals(ebMSMessageStatus))
-			return "ok";
+			return "text-success";
 		if (EbMSMessageStatus.RECEIVED.equals(ebMSMessageStatus) || EbMSMessageStatus.SENT.equals(ebMSMessageStatus))
-			return "warn";
+			return "text-warning";
 		if (EbMSMessageStatus.UNAUTHORIZED.equals(ebMSMessageStatus) || EbMSMessageStatus.NOT_RECOGNIZED.equals(ebMSMessageStatus) || EbMSMessageStatus.FAILED.equals(ebMSMessageStatus) || EbMSMessageStatus.DELIVERY_ERROR.equals(ebMSMessageStatus) || EbMSMessageStatus.DELIVERY_FAILED.equals(ebMSMessageStatus))
-			return "error";
+			return "text-danger";
+		return null;
+	}
+
+	public static String getTableRowCssClass(EbMSMessageStatus ebMSMessageStatus)
+	{
+		if (EbMSMessageStatus.PROCESSED.equals(ebMSMessageStatus) || EbMSMessageStatus.FORWARDED.equals(ebMSMessageStatus) || EbMSMessageStatus.DELIVERED.equals(ebMSMessageStatus))
+			return "success";
+		if (EbMSMessageStatus.RECEIVED.equals(ebMSMessageStatus) || EbMSMessageStatus.SENT.equals(ebMSMessageStatus))
+			return "warning";
+		if (EbMSMessageStatus.UNAUTHORIZED.equals(ebMSMessageStatus) || EbMSMessageStatus.NOT_RECOGNIZED.equals(ebMSMessageStatus) || EbMSMessageStatus.FAILED.equals(ebMSMessageStatus) || EbMSMessageStatus.DELIVERY_ERROR.equals(ebMSMessageStatus) || EbMSMessageStatus.DELIVERY_FAILED.equals(ebMSMessageStatus))
+			return "danger";
 		return null;
 	}
 

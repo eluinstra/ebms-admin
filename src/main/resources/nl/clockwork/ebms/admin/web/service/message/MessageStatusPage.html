@@ -2,37 +2,40 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
 <body>
 <wicket:extend>
-	<span wicket:id="feedback">[feedback]</span>
-	<form wicket:id="pingForm">
-		<table class="vertical">
-			<caption><wicket:message key="ping">Ping</wicket:message></caption>
-			<tbody>
-				<tr>
-					<th><wicket:message key="lbl.cpaId">CPA Id</wicket:message></th>
-					<td wicket:id="cpaIdFeedback"><select wicket:id="cpaIds"/></td>
-				</tr>
-				<tr>
-					<th><wicket:message key="lbl.fromParty">From Party</wicket:message></th>
-					<td wicket:id="fromPartyFeedback"><select wicket:id="fromParties"/></td>
-				</tr>
-				<tr>
-					<th><wicket:message key="lbl.toParty">To Party</wicket:message></th>
-					<td wicket:id="toPartyFeedback"><select wicket:id="toParties"/></td>
-				</tr>
-				<tr>
-					<th><wicket:message key="lbl.messageId">Message Id</wicket:message></th>
-					<!--td wicket:id="messageIdFeedback"><input type="text" wicket:id="messageId"/></td-->
-					<td wicket:id="messageIdFeedback"><select wicket:id="messageIds"/></td>
-				</tr>
-			</tbody>
-			<tfoot>
-				<tr>
-					<td colspan="3">
-						<input type="submit" wicket:id="check" wicket:message="value:cmd.check"/>
-					</td>
-				</tr>
-			</tfoot>
-		</table>
+	<div class="col-lg-offset-2 col-lg-10">
+		<span wicket:id="feedback"/>
+	</div>
+	<form class="form-horizontal" role="form" wicket:id="pingForm">
+		<div class="form-group">
+			<label for="cpaIds" class="col-lg-2 control-label"><wicket:message key="lbl.cpaId"/></label>
+			<div class="col-lg-10">
+				<span wicket:id="cpaIdFeedback"><select class="form-control" wicket:id="cpaIds"/></span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="fromParties" class="col-lg-2 control-label"><wicket:message key="lbl.fromParty"/></label>
+			<div class="col-lg-10">
+				<span wicket:id="fromPartyFeedback"><select class="form-control" wicket:id="fromParties"/></span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="toParties" class="col-lg-2 control-label"><wicket:message key="lbl.toParty"/></label>
+			<div class="col-lg-10">
+				<span wicket:id="toPartyFeedback"><select class="form-control" wicket:id="toParties"/></span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="messageIds" class="col-lg-2 control-label"><wicket:message key="lbl.messageId"/></label>
+			<div class="col-lg-10">
+				<!--span wicket:id="messageIdFeedback"><input type="text" class="form-control" wicket:id="messageId"/></span-->
+				<span wicket:id="messageIdFeedback"><select class="form-control" wicket:id="messageIds"/></span>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-lg-offset-2 col-lg-10">
+				<input type="submit" class="btn btn-default" wicket:id="check" wicket:message="value:cmd.check"/>
+			</div>
+		</div>
 	</form>
 </wicket:extend>
 </body>

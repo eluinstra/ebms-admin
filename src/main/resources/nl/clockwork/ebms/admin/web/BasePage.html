@@ -1,26 +1,27 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
 	<head>
-		<title><wicket:message key="applicationName">EbMS Admin Console</wicket:message></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title><wicket:message key="applicationName"/></title>
+		<link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
 		<link href="css/ebms-admin.css" rel="stylesheet" media="screen" />
 	</head>
 	<body>
-		<div class="frameTop">
-			<a class="logo" href="#" wicket:id="home">[home]</a>
+		<div class="container">
+			<a class="logo" href="#" wicket:id="home"><img src="/images/ebms-admin.gif" class="img-responsive"/></a>
 		</div>
-		<div class="frame">
-			<div class="frameLeft">
-				<div wicket:id="menu">[menu]</div>
-			</div>
-			<div class="frameMiddle">
-				<h1 wicket:id="pageTitle">[title]</h1>
-				<wicket:child/>
-			</div>
-			<div class="frameRight">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-2">
+					<div wicket:id="menu"/>
+				</div>
+				<div class="col-lg-10">
+					<h4 wicket:id="pageTitle"/>
+					<wicket:child/>
+				</div>
 			</div>
 		</div>
-		<div class="frameBottom">
-			<div style="text-align: center"></div>
-		</div>
+		<script src="js/jquery.js"></script>
+		<script src="js/bootstrap.min.js"></script>
 	</body>
 </html>
