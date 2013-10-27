@@ -1,3 +1,5 @@
+- add exception page
+
 - improve message filters
 - add properties file creator (for ebms-core and ebms-admin)
 	- add test ebms url
