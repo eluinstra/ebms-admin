@@ -1,5 +1,6 @@
 package nl.clockwork.ebms.admin.web;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.feedback.FeedbackMessage;
@@ -7,7 +8,7 @@ import org.apache.wicket.feedback.IFeedbackMessageFilter;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 
-public class CSSFeedbackPanel extends FeedbackPanel
+public class BootstrapFeedbackPanel extends FeedbackPanel
 {
 	private static final long serialVersionUID = 1L;
 	private enum ErrorLevel
@@ -37,12 +38,12 @@ public class CSSFeedbackPanel extends FeedbackPanel
 		}
 	}
 
-	public CSSFeedbackPanel(final String id, final IFeedbackMessageFilter filter)
+	public BootstrapFeedbackPanel(final String id, final IFeedbackMessageFilter filter)
 	{
 		super(id,filter);
 	}
 
-	public CSSFeedbackPanel(final String id)
+	public BootstrapFeedbackPanel(final String id)
 	{
 		super(id);
 	}
@@ -51,7 +52,8 @@ public class CSSFeedbackPanel extends FeedbackPanel
 	protected Component newMessageDisplayComponent(final String id, final FeedbackMessage message)
 	{
 		final Component newMessageDisplayComponent = super.newMessageDisplayComponent(id,message);
-		newMessageDisplayComponent.add(new AttributeAppender("class",new Model<String>(ErrorLevel.getErrorLevel(message.getLevel()).getCssClass())," "));
+		//newMessageDisplayComponent.add(new AttributeAppender("class",new Model<String>(ErrorLevel.getErrorLevel(message.getLevel()).getCssClass())," "));
+		newMessageDisplayComponent.add(AttributeModifier.replace("class",new Model<String>(ErrorLevel.getErrorLevel(message.getLevel()).getCssClass())));
 		return newMessageDisplayComponent;
 	}
 }

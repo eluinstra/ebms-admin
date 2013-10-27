@@ -28,7 +28,7 @@ import nl.clockwork.ebms.admin.Constants.EbMSMessageTrafficChartSerie;
 import nl.clockwork.ebms.admin.Constants.TimeUnit;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.CSSFeedbackPanel;
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -69,7 +69,7 @@ public class TrafficChartPage extends BasePage
 	
 	public TrafficChartPage(TrafficChartFormModel model)
 	{
-		add(new CSSFeedbackPanel("feedback"));
+		add(new BootstrapFeedbackPanel("feedback"));
     add(new TrafficChartForm("trafficChartForm",model));
   }
 	

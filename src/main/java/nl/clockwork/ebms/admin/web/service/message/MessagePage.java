@@ -19,7 +19,7 @@ import java.util.Date;
 
 import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.CSSFeedbackPanel;
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.model.EbMSDataSource;
 import nl.clockwork.ebms.model.EbMSMessageContent;
 import nl.clockwork.ebms.service.EbMSMessageService;
@@ -46,7 +46,7 @@ public class MessagePage extends BasePage
 
 	public MessagePage(final EbMSMessageContent messageContent, final WebPage responsePage)
 	{
-		add(new CSSFeedbackPanel("feedback"));
+		add(new BootstrapFeedbackPanel("feedback"));
 		add(new Label("messageId",messageContent.getContext().getMessageId()));
 		add(new Label("conversationId",messageContent.getContext().getConversationId()));
 		Link<Void> link = new Link<Void>("viewRefToMessageId")

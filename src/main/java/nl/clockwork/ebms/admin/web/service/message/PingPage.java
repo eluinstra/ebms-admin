@@ -23,7 +23,7 @@ import javax.xml.bind.JAXBException;
 
 import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.CSSFeedbackPanel;
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
 import nl.clockwork.ebms.service.CPAService;
 import nl.clockwork.ebms.service.EbMSMessageService;
@@ -57,7 +57,7 @@ public class PingPage extends BasePage
 
 	public PingPage()
 	{
-		add(new CSSFeedbackPanel("feedback"));
+		add(new BootstrapFeedbackPanel("feedback"));
 		add(new PingForm("pingForm"));
 	}
 	

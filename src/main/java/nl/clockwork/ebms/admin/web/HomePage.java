@@ -26,7 +26,7 @@ public class HomePage extends BasePage
 	public HomePage(final PageParameters parameters)
 	{
 		super(parameters);
-		add(new CSSFeedbackPanel("message"));
+		add(new BootstrapFeedbackPanel("message"));
 		File file = new File("ebms-admin.properties");
 		if (file.exists())
 			info("Using configuration file " + file.getAbsolutePath());

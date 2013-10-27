@@ -25,7 +25,7 @@ import nl.clockwork.ebms.Constants.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.CSSFeedbackPanel;
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
 import nl.clockwork.ebms.model.MessageStatus;
 import nl.clockwork.ebms.service.CPAService;
@@ -62,7 +62,7 @@ public class MessageStatusPage extends BasePage
 
 	public MessageStatusPage()
 	{
-		add(new CSSFeedbackPanel("feedback"));
+		add(new BootstrapFeedbackPanel("feedback"));
 		add(new MessageStatusForm("pingForm"));
 	}
 	

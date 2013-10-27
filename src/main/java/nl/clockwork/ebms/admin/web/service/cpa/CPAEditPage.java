@@ -16,7 +16,7 @@
 package nl.clockwork.ebms.admin.web.service.cpa;
 
 import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.CSSFeedbackPanel;
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.service.CPAService;
 
 import org.apache.commons.logging.Log;
@@ -51,7 +51,7 @@ public class CPAEditPage extends BasePage
 	
 	protected CPAEditPage(String cpa, boolean isNew, WebPage responsePage)
 	{
-		add(new CSSFeedbackPanel("feedback"));
+		add(new BootstrapFeedbackPanel("feedback"));
 		add(new EditCPAForm("editCPAForm",cpa,isNew,responsePage));
 	}
 	

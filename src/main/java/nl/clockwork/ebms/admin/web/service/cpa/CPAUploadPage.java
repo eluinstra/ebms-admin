@@ -18,7 +18,7 @@ package nl.clockwork.ebms.admin.web.service.cpa;
 import java.util.List;
 
 import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.CSSFeedbackPanel;
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.service.CPAService;
 
 import org.apache.commons.logging.Log;
@@ -46,7 +46,7 @@ public class CPAUploadPage extends BasePage
 
 	public CPAUploadPage()
 	{
-		add(new CSSFeedbackPanel("feedback"));
+		add(new BootstrapFeedbackPanel("feedback"));
 		add(new EditUploadForm("uploadCPAForm"));
 	}
 	

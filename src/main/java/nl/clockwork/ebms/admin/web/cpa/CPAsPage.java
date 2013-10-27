@@ -18,9 +18,9 @@ package nl.clockwork.ebms.admin.web.cpa;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.model.CPA;
 import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
 
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
@@ -88,7 +88,7 @@ public class CPAsPage extends BasePage
 
 		container.add(cpas);
 		add(container);
-		add(new AjaxPagingNavigator("navigator",cpas));
+		add(new BootstrapPagingNavigator("navigator",cpas));
 	}
 
 	@Override

@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.CSSFeedbackPanel;
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.configuration.Constants.JdbcDriver;
 
 import org.apache.commons.logging.Log;
@@ -48,7 +48,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 
 	public EbMSAdminPropertiesPage() throws IOException
 	{
-		add(new CSSFeedbackPanel("feedback"));
+		add(new BootstrapFeedbackPanel("feedback"));
 		add(new EbMSAdminPropertiesForm("ebMSAdminPropertiesForm"));
 	}
 	

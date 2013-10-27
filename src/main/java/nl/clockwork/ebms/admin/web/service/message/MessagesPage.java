@@ -16,10 +16,10 @@
 package nl.clockwork.ebms.admin.web.service.message;
 
 import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
@@ -91,7 +91,7 @@ public class MessagesPage extends BasePage
 
 		container.add(messages);
 		add(container);
-		add(new AjaxPagingNavigator("navigator",messages));
+		add(new BootstrapPagingNavigator("navigator",messages));
 		add(new Link<Object>("back")
 		{
 			private static final long serialVersionUID = 1L;
