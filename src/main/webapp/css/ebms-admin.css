@@ -20,3 +20,8 @@ h4 {
 	color: graytext;
 	font-variant: small-caps;
 }
+a.arrow {
+	text-decoration: none;
+	color: black;
+	font-size: large;
+}
