@@ -14,7 +14,7 @@ public class MenuPanel extends Panel
 	public MenuPanel(String id, List<MenuItem> menuItems)
 	{
 		super(id,Model.of(menuItems));
-		add(new Rows("rows",menuItems).setRenderBodyOnly(true));
+		add(new Rows("rows",menuItems));
 	}
 	
 	public static class Rows extends ListView<MenuItem>
@@ -35,6 +35,7 @@ public class MenuPanel extends Panel
 				item.add(new MenuLinkItemPanel("row",(MenuLinkItem)menuItem).setRenderBodyOnly(true));
 			else
 				item.add(new MenuItemPanel("row",menuItem).setRenderBodyOnly(true));
+			item.setRenderBodyOnly(true);
 		}
 		
 	}

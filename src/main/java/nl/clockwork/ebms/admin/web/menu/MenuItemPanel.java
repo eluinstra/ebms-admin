@@ -19,7 +19,7 @@ public class MenuItemPanel extends Panel
 	public MenuItemPanel(String id, IModel<MenuItem> model)
 	{
 		super(id,model);
-		add(new Rows("rows",model.getObject().getChildren()).setRenderBodyOnly(true));
+		add(new Rows("rows",model.getObject().getChildren()));
 		add(new Label("name",model.getObject().getName()));
 	}
 
