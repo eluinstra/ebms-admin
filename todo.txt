@@ -1,7 +1,10 @@
 - add exception page
+- active menu item?
+- improve uploading dataSources:
+	- create dataSource Form with fields name, content-type and file
 
 - improve message filters
-- add properties file creator (for ebms-core and ebms-admin)
+/ add properties file creator (for ebms-core and ebms-admin)
 	- add test ebms url
 	- add test jdbc url
 - add about
@@ -10,14 +13,12 @@
 
 - add form reset button?
 - add text field messageId to MessageStatusPage and switch to select messageIds selection or messageId text field 
-- improve uploading dataSources:
-	- create dataSource Form with fields name, content-type and file
 - improve Start class (add more options)
 
+- add breadcrumbs???
 - add attachment viewers for 'known'/common content types
 - add viewers for ebms message format???
 - make menu extension point to add new pages??? 
-- add breadcrumbs???
 
 - replace current menu with dropdown menu
 	- for nested panels see: nested - Trees and nested lists.
