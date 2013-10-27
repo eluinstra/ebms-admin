@@ -32,10 +32,10 @@ public class MenuPanel extends Panel
 		{
 			MenuItem menuItem = item.getModelObject();
 			if (menuItem instanceof MenuLinkItem)
-				item.add(new MenuLinkItemPanel("row",(MenuLinkItem)menuItem).setRenderBodyOnly(true));
+				item.add(new MenuLinkItemPanel("row",(MenuLinkItem)menuItem)/*.setRenderBodyOnly(true)*/);
 			else
-				item.add(new MenuItemPanel("row",menuItem).setRenderBodyOnly(true));
-			item.setRenderBodyOnly(true);
+				item.add(new MenuItemPanel("row",menuItem)/*.setRenderBodyOnly(true)*/);
+			//item.setRenderBodyOnly(true);
 		}
 		
 	}
