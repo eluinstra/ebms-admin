@@ -55,11 +55,14 @@
 							<input type="submit" class="btn btn-default pull-right" wicket:id="remove" wicket:message="value:cmd.remove"/>
 						</td>
 					</tr>
+					<tfoot>
+						<tr>
+							<td colspan="3">
+								<input type="submit" class="btn btn-default" wicket:id="add" wicket:message="value:cmd.add"/>
+							</td>
+						</tr>
+					</tfoot>
 				</table>
-				
-				<div class="form-group">
-					<input type="submit" class="btn btn-default" wicket:id="add" wicket:message="value:cmd.add"/>
-				</div>
 				<div wicket:id="dataSourceModelWindow"/>
 			</form>
 			</div>
