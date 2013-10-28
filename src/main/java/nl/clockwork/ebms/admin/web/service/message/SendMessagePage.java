@@ -305,7 +305,7 @@ public class SendMessagePage extends BasePage
 		public DataSourceModalWindow(String id, final List<EbMSDataSource> dataSources, final Component...components)
 		{
 			super(id);
-			//setTitle(getLocalizer().getString("eventError",this));
+			//setTitle(getLocalizer().getString("dataSource",this));
 			setCssClassName(ModalWindow.CSS_CLASS_GRAY);
 			setContent(new DataSourcePanel(this,getContentId())
 			{
@@ -344,7 +344,7 @@ public class SendMessagePage extends BasePage
 		@Override
 		public IModel<String> getTitle()
 		{
-			return Model.of(getLocalizer().getString("eventError",this));
+			return Model.of(getLocalizer().getString("dataSource",this));
 		}
 	}
 }
