@@ -19,7 +19,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.clockwork.ebms.admin.web.service.message.DataSourcePanel.DataSourceModel;
+import nl.clockwork.ebms.admin.web.service.message.SendMessagePage.DataSourcesForm;
+import nl.clockwork.ebms.model.EbMSDataSource;
 import nl.clockwork.ebms.model.EbMSMessageContext;
 
 
@@ -30,7 +31,8 @@ public class EbMSMessageContextModel extends EbMSMessageContext implements Seria
 	private List<String> fromRoles = new ArrayList<String>();
 	private List<String> services = new ArrayList<String>();
 	private List<String> actions = new ArrayList<String>();
-	private List<DataSourceModel> dataSources = new ArrayList<DataSourceModel>();
+	private List<EbMSDataSource> dataSources = new ArrayList<EbMSDataSource>();
+	private DataSourcesForm dataSourcesForm;
 
 	public List<String> getFromRoles()
 	{
@@ -56,12 +58,20 @@ public class EbMSMessageContextModel extends EbMSMessageContext implements Seria
 	{
 		this.actions = actions;
 	}
-	public List<DataSourceModel> getDataSources()
+	public List<EbMSDataSource> getDataSources()
 	{
 		return dataSources;
 	}
-	public void setDataSources(List<DataSourceModel> dataSources)
+	public void setDataSources(List<EbMSDataSource> dataSources)
 	{
 		this.dataSources = dataSources;
+	}
+	public DataSourcesForm getDataSourcesForm()
+	{
+		return dataSourcesForm;
+	}
+	public void setDataSourcesForm(DataSourcesForm dataSourcesForm)
+	{
+		this.dataSourcesForm = dataSourcesForm;
 	}
 }

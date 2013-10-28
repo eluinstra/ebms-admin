@@ -153,6 +153,8 @@ public class MessagePage extends BasePage
 		public ErrorMessageModalWindow(String id, String errorMessage)
 		{
 			super(id);
+			//setTitle(getLocalizer().getString("eventError",this));
+			setCssClassName(ModalWindow.CSS_CLASS_GRAY);
 			setContent(new ErrorMessagePanel(this,Model.of(errorMessage)));
 			setCookieName("eventError");
 			setCloseButtonCallback(new ModalWindow.CloseButtonCallback()

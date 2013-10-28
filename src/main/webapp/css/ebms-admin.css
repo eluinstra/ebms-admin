@@ -25,3 +25,7 @@ a.arrow {
 	color: black;
 	font-size: large;
 }
+div.viewport {
+	width: 970px !important;
+	overflow: auto;
+}

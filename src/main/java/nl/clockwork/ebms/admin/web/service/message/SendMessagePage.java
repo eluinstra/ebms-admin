@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,24 +23,24 @@ import javax.xml.bind.JAXBException;
 import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.admin.web.service.message.DataSourcePanel.DataSourceModel;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
 import nl.clockwork.ebms.model.EbMSDataSource;
 import nl.clockwork.ebms.model.EbMSMessageContent;
 import nl.clockwork.ebms.service.CPAService;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -215,34 +214,13 @@ public class SendMessagePage extends BasePage
 				}
       });
 			
-			final ListView<DataSourceModel> dataSources = new ListView<DataSourceModel>("dataSources",this.getModelObject().getDataSources())
-			{
-				private static final long serialVersionUID = 1L;
-				private int i;
+			final DataSourcesForm dataSourcesForm = new DataSourcesForm("dataSourcesForm",getModelObject().getDataSources());
+			dataSourcesForm.setOutputMarkupId(true);
+			add(dataSourcesForm);
+			//FIXME
+			getModelObject().setDataSourcesForm(dataSourcesForm);
 
-				@Override
-				protected void populateItem(ListItem<DataSourceModel> item)
-				{
-					item.add(new DataSourcePanel("dataSource",item.getModelObject(),MessageForm.this,MessageForm.this.getModelObject().getDataSources(),i));
-				}
-			};
-			dataSources.setOutputMarkupId(true);
-			add(dataSources);
-			
-			AjaxLink<Void> add = new AjaxLink<Void>("add")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void onClick(AjaxRequestTarget target)
-				{
-					MessageForm.this.getModelObject().getDataSources().add(new DataSourceModel());
-					target.add(MessageForm.this);
-				}
-			};
-			add(add);
-			
-			Button ping = new Button("send",new ResourceModel("cmd.send"))
+			Button send = new Button("send",new ResourceModel("cmd.send"))
 			{
 				private static final long serialVersionUID = 1L;
 	
@@ -252,11 +230,7 @@ public class SendMessagePage extends BasePage
 					try
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
-						List<EbMSDataSource> dataSources = new ArrayList<EbMSDataSource>();
-						for (DataSourceModel dataSourceModel : model.getDataSources())
-							for (FileUpload file : dataSourceModel.getFile())
-								dataSources.add(new EbMSDataSource(StringUtils.isBlank(dataSourceModel.getName()) ? file.getClientFileName() : dataSourceModel.getName(),StringUtils.isBlank(dataSourceModel.getContentType()) ? URLConnection.guessContentTypeFromName(file.getClientFileName()) : dataSourceModel.getContentType(),file.getBytes()));
-						EbMSMessageContent messageContent = new EbMSMessageContent(model,dataSources);
+						EbMSMessageContent messageContent = new EbMSMessageContent(model,model.getDataSources());
 						String messageId = ebMSMessageService.sendMessage(messageContent );
 						info("Send message succesful. MessageId is " + messageId);
 					}
@@ -267,9 +241,110 @@ public class SendMessagePage extends BasePage
 					}
 				}
 			};
-			setDefaultButton(ping);
-			add(ping);
+			setDefaultButton(send);
+			add(send);
 		}
 	}
 
+	public class DataSourcesForm extends Form<List<EbMSDataSource>>
+	{
+		private static final long serialVersionUID = 1L;
+
+		public DataSourcesForm(String id, final List<EbMSDataSource> dataSources)
+		{
+			super(id);//,Model.ofList(dataSources));
+
+			final ListView<EbMSDataSource> dataSources_ = new ListView<EbMSDataSource>("dataSources",dataSources)
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void populateItem(final ListItem<EbMSDataSource> item)
+				{
+					item.setModel(new CompoundPropertyModel<EbMSDataSource>(item.getModelObject()));
+					item.add(new Label("name"));
+					item.add(new Label("contentType"));
+					item.add(new AjaxButton("remove",new ResourceModel("cmd.remove"),DataSourcesForm.this)
+					{
+						private static final long serialVersionUID = 1L;
+						
+						@Override
+						protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+						{
+							dataSources.remove(item.getModelObject());
+							target.add(DataSourcesForm.this);
+						}
+					});
+				}
+			};
+			dataSources_.setOutputMarkupId(true);
+			add(dataSources_);
+
+			final ModalWindow dataSourceModalWindow = new DataSourceModalWindow("dataSourceModelWindow",dataSources,DataSourcesForm.this);
+			add(dataSourceModalWindow);
+			
+			AjaxButton add = new AjaxButton("add")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+				{
+					dataSourceModalWindow.show(target);
+				}
+			};
+			add(add);
+		}
+
+	}
+
+	public class DataSourceModalWindow extends ModalWindow
+	{
+		private static final long serialVersionUID = 1L;
+
+		public DataSourceModalWindow(String id, final List<EbMSDataSource> dataSources, final Component...components)
+		{
+			super(id);
+			//setTitle(getLocalizer().getString("eventError",this));
+			setCssClassName(ModalWindow.CSS_CLASS_GRAY);
+			setContent(new DataSourcePanel(this,getContentId())
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void addDataSource(EbMSDataSource dataSource)
+				{
+					dataSources.add(dataSource);
+				}
+				
+				@Override
+				public Component[] getComponents()
+				{
+					return components;
+				}
+				
+				@Override
+				public ModalWindow getWindow()
+				{
+					return DataSourceModalWindow.this;
+				}
+			});
+			setCookieName("eventError");
+			setCloseButtonCallback(new ModalWindow.CloseButtonCallback()
+			{
+				private static final long serialVersionUID = 1L;
+
+				public boolean onCloseButtonClicked(AjaxRequestTarget target)
+				{
+					return true;
+				}
+			});
+		}
+		
+		@Override
+		public IModel<String> getTitle()
+		{
+			return Model.of(getLocalizer().getString("eventError",this));
+		}
+	}
 }
