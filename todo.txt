@@ -1,7 +1,5 @@
 - add exception page
 - active menu item?
-- improve uploading dataSources:
-	- create dataSource Form with fields name, content-type and file
 
 - improve message filters
 / add properties file creator (for ebms-core and ebms-admin)
