@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
+<body>
+<wicket:panel>
+	<div class="form-group">
+		<label for="file" class="col-lg-2 control-label"><wicket:message key="lbl.file"/></label>
+		<div class="col-lg-10">
+			<input type="file" class="form-control" wicket:id="file"/>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="name" class="col-lg-2 control-label"><wicket:message key="lbl.name"/></label>
+		<div class="col-lg-10">
+			<input type="text" class="form-control" wicket:id="name"/>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="contentType" class="col-lg-2 control-label"><wicket:message key="lbl.contentType"/></label>
+		<div class="col-lg-10">
+			<input type="text" class="form-control" wicket:id="contentType"/>
+		</div>
+	</div>
+	<div class=form-group>
+<!-- 		<a class="btn btn-default pull-right" href="#" wicket:id="remove"><wicket:message key="cmd.remove"/></a> -->
+		<input type="submit" class="btn btn-default pull-right" wicket:id="remove" wicket:message="value:cmd.remove"/>
+	</div>
+</wicket:panel>
+</body>
+</html>

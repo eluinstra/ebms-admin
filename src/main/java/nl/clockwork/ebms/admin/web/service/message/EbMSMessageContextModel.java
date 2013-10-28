@@ -19,8 +19,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.wicket.markup.html.form.upload.FileUpload;
-
+import nl.clockwork.ebms.admin.web.service.message.DataSourcePanel.DataSourceModel;
 import nl.clockwork.ebms.model.EbMSMessageContext;
 
 
@@ -31,7 +30,7 @@ public class EbMSMessageContextModel extends EbMSMessageContext implements Seria
 	private List<String> fromRoles = new ArrayList<String>();
 	private List<String> services = new ArrayList<String>();
 	private List<String> actions = new ArrayList<String>();
-	private List<FileUpload> dataSources;
+	private List<DataSourceModel> dataSources = new ArrayList<DataSourceModel>();
 
 	public List<String> getFromRoles()
 	{
@@ -57,11 +56,11 @@ public class EbMSMessageContextModel extends EbMSMessageContext implements Seria
 	{
 		this.actions = actions;
 	}
-	public List<FileUpload> getDataSources()
+	public List<DataSourceModel> getDataSources()
 	{
 		return dataSources;
 	}
-	public void setDataSources(List<FileUpload> dataSources)
+	public void setDataSources(List<DataSourceModel> dataSources)
 	{
 		this.dataSources = dataSources;
 	}

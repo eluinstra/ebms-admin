@@ -33,7 +33,10 @@
 		<div class="form-group">
 			<label for="dataSources" class="col-lg-2 control-label"><wicket:message key="lbl.dataSources"/></label>
 			<div class="col-lg-10">
-				<div wicket:id="dataSources" />
+				<a class="btn btn-default" href="#" wicket:id="add"><wicket:message key="cmd.add"/></a>
+				<div wicket:id="dataSources">
+					<div wicket:id="dataSource"/>
+				</div>
 			</div>
 		</div>
 		<div class="form-group">

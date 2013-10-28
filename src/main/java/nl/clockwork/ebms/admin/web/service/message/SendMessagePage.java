@@ -24,23 +24,27 @@ import javax.xml.bind.JAXBException;
 import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.service.message.DataSourcePanel.DataSourceModel;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
 import nl.clockwork.ebms.model.EbMSDataSource;
 import nl.clockwork.ebms.model.EbMSMessageContent;
 import nl.clockwork.ebms.service.CPAService;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
-import org.apache.wicket.markup.html.form.upload.MultiFileUploadField;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -211,19 +215,33 @@ public class SendMessagePage extends BasePage
 				}
       });
 			
-			MultiFileUploadField dataSources = new MultiFileUploadField("dataSources")
+			final ListView<DataSourceModel> dataSources = new ListView<DataSourceModel>("dataSources",this.getModelObject().getDataSources())
+			{
+				private static final long serialVersionUID = 1L;
+				private int i;
+
+				@Override
+				protected void populateItem(ListItem<DataSourceModel> item)
+				{
+					item.add(new DataSourcePanel("dataSource",item.getModelObject(),MessageForm.this,MessageForm.this.getModelObject().getDataSources(),i));
+				}
+			};
+			dataSources.setOutputMarkupId(true);
+			add(dataSources);
+			
+			AjaxLink<Void> add = new AjaxLink<Void>("add")
 			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public IModel<String> getLabel()
+				public void onClick(AjaxRequestTarget target)
 				{
-					return Model.of(getLocalizer().getString("lbl.dataSources",MessageForm.this));
+					MessageForm.this.getModelObject().getDataSources().add(new DataSourceModel());
+					target.add(MessageForm.this);
 				}
 			};
-			dataSources.setRequired(true);
-			add(dataSources);
-
+			add(add);
+			
 			Button ping = new Button("send",new ResourceModel("cmd.send"))
 			{
 				private static final long serialVersionUID = 1L;
@@ -235,9 +253,9 @@ public class SendMessagePage extends BasePage
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
 						List<EbMSDataSource> dataSources = new ArrayList<EbMSDataSource>();
-						for (FileUpload dataSource : model.getDataSources())
-							dataSources.add(new EbMSDataSource(dataSource.getClientFileName(),URLConnection.guessContentTypeFromName(dataSource.getClientFileName()),dataSource.getBytes()));
-							//dataSources.add(new EbMSDataSource(dataSource.getClientFileName(),new MimetypesFileTypeMap().getContentType(dataSource.getClientFileName()),dataSource.getBytes()));
+						for (DataSourceModel dataSourceModel : model.getDataSources())
+							for (FileUpload file : dataSourceModel.getFile())
+								dataSources.add(new EbMSDataSource(StringUtils.isBlank(dataSourceModel.getName()) ? file.getClientFileName() : dataSourceModel.getName(),StringUtils.isBlank(dataSourceModel.getContentType()) ? URLConnection.guessContentTypeFromName(file.getClientFileName()) : dataSourceModel.getContentType(),file.getBytes()));
 						EbMSMessageContent messageContent = new EbMSMessageContent(model,dataSources);
 						String messageId = ebMSMessageService.sendMessage(messageContent );
 						info("Send message succesful. MessageId is " + messageId);
