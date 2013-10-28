@@ -14,6 +14,7 @@ import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
@@ -59,36 +60,47 @@ public abstract class DataSourcePanel extends Panel
 
 			add(new TextField<String>("contentType"));
 
-			final AjaxButton add =
-				new AjaxButton("add",new ResourceModel("cmd.add"))
+			final AjaxButton add = new AjaxButton("add",new ResourceModel("cmd.add"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onSubmit(AjaxRequestTarget target, Form<?> form)
 				{
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+					DataSourceModel model = DataSourceForm.this.getModelObject();
+					for (FileUpload file : model.getFile())
+						addDataSource(new EbMSDataSource(StringUtils.isBlank(model.getName()) ? file.getClientFileName() : model.getName(),StringUtils.isBlank(model.getContentType()) ? URLConnection.guessContentTypeFromName(file.getClientFileName()) : model.getContentType(),file.getBytes()));
+					if (target != null)
 					{
-						DataSourceModel model = DataSourceForm.this.getModelObject();
-						for (FileUpload file : model.getFile())
-							addDataSource(new EbMSDataSource(StringUtils.isBlank(model.getName()) ? file.getClientFileName() : model.getName(),StringUtils.isBlank(model.getContentType()) ? URLConnection.guessContentTypeFromName(file.getClientFileName()) : model.getContentType(),file.getBytes()));
-						if (target != null)
-						{
-							target.add(getComponents());
-							getWindow().close(target);
-						}
-					}
-
-					@Override
-					protected void onError(AjaxRequestTarget target, Form<?> form)
-					{
-						super.onError(target,form);
-						if (target != null)
-						{
-							target.add(form);
-						}
+						target.add(getComponents());
+						getWindow().close(target);
 					}
 				}
-			;
+
+				@Override
+				protected void onError(AjaxRequestTarget target, Form<?> form)
+				{
+					super.onError(target,form);
+					if (target != null)
+					{
+						target.add(form);
+					}
+				}
+			};
 			add(add);
+
+			AjaxButton cancel = new AjaxButton("cancel",new ResourceModel("cmd.cancel"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+				{
+					getWindow().close(target);
+				}
+			};
+			cancel.setDefaultFormProcessing(false);
+			add(cancel);
 		}
 
 	}
