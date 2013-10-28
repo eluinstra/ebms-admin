@@ -23,7 +23,6 @@ import nl.clockwork.ebms.admin.web.service.message.SendMessagePage.DataSourcesFo
 import nl.clockwork.ebms.model.EbMSDataSource;
 import nl.clockwork.ebms.model.EbMSMessageContext;
 
-
 public class EbMSMessageContextModel extends EbMSMessageContext implements Serializable
 {
 	private static final long serialVersionUID = 1L;

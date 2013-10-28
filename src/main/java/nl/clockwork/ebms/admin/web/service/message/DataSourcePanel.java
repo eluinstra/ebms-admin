@@ -39,7 +39,6 @@ public abstract class DataSourcePanel extends Panel
 	public abstract Component[] getComponents();
 	public abstract ModalWindow getWindow();
 
-
 	public class DataSourceForm extends Form<DataSourceModel>
 	{
 		private static final long serialVersionUID = 1L;
@@ -93,7 +92,6 @@ public abstract class DataSourcePanel extends Panel
 		}
 
 	}
-
 	
 	public static class DataSourceModel extends EbMSDataSource
 	{
