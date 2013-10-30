@@ -1,0 +1,8 @@
+button.collapsible.collapsed:before
+{
+	content: '${show}';
+}
+button.collapsible:before
+{
+	content: '${hide}';
+}

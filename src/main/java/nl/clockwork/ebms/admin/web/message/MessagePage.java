@@ -16,6 +16,8 @@
 package nl.clockwork.ebms.admin.web.message;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import nl.clockwork.ebms.Constants.EbMSEventStatus;
 import nl.clockwork.ebms.admin.Constants;
@@ -31,6 +33,8 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.head.CssReferenceHeaderItem;
+import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -38,7 +42,9 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.resource.TextTemplateResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 public class MessagePage extends BasePage
@@ -174,5 +180,22 @@ public class MessagePage extends BasePage
 			return Model.of(getLocalizer().getString("eventError",this));
 		}
 	}
-	
+
+	@Override
+	public void renderHead(IHeaderResponse response)
+	{
+		super.renderHead(response);
+		response.render(CssReferenceHeaderItem.forReference(new TextTemplateResourceReference(this.getClass(),"style.css","text/css",new LoadableDetachableModel<Map<String,Object>>()
+		{
+			private static final long serialVersionUID = 1L;
+
+			public Map<String,Object> load()
+			{
+				final Map<String,Object> vars = new HashMap<String,Object>();
+				vars.put("show",MessagePage.this.getLocalizer().getString("cmd.show",MessagePage.this));
+				vars.put("hide",MessagePage.this.getLocalizer().getString("cmd.hide",MessagePage.this));
+				return vars;
+			}
+		})));
+	}
 }
