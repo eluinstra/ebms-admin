@@ -26,6 +26,7 @@ a.arrow {
 	font-size: large;
 }
 div.viewport {
-	width: 970px !important;
-	overflow: auto;
+	overflow-x: scroll;
+	overflow-y: hidden;
+	white-space: nowrap;
 }
