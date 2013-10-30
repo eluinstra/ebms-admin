@@ -21,8 +21,13 @@ import java.util.List;
 import nl.clockwork.ebms.admin.web.menu.MenuItem;
 import nl.clockwork.ebms.admin.web.menu.MenuLinkItem;
 
+import org.apache.wicket.core.request.handler.PageProvider;
+import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.request.IRequestHandler;
+import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
+import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 
 /**
@@ -85,6 +90,19 @@ public class WicketApplication extends WebApplication
 		super.init();
 		getDebugSettings().setDevelopmentUtilitiesEnabled(true);
 		getComponentInstantiationListeners().add(new SpringComponentInjector(this));
+//		getApplicationSettings().setPageExpiredErrorPage(ExpiredPage.class);
+//		getApplicationSettings().setAccessDeniedPage(AccessDeniedPage.class);
+//		getApplicationSettings().setInternalErrorPage(InternalErrorPage.class);
+//		getExceptionSettings().setUnexpectedExceptionDisplay(IExceptionSettings.SHOW_INTERNAL_ERROR_PAGE); 
+		getRequestCycleListeners().add(new AbstractRequestCycleListener()
+		{
+			@Override
+			public IRequestHandler onException(RequestCycle cycle, Exception e)
+			{
+				return new RenderPageRequestHandler(new PageProvider(new ErrorPage(e)));
+			}
+		});
+		mountPage("/404",PageNotFoundPage.class); 
 	}
 	
 	public List<MenuItem> getMenuItems()

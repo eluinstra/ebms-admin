@@ -16,6 +16,9 @@
 package nl.clockwork.ebms.admin;
 
 import java.lang.management.ManagementFactory;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.management.MBeanServer;
 
@@ -24,11 +27,12 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.eclipse.jetty.jmx.MBeanContainer;
+import org.eclipse.jetty.server.DispatcherType;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.bio.SocketConnector;
 import org.eclipse.jetty.server.ssl.SslSocketConnector;
+import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.FilterMapping;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
@@ -108,7 +112,13 @@ public class Start
 		FilterHolder filterHolder = new FilterHolder(org.apache.wicket.protocol.http.WicketFilter.class); 
 		filterHolder.setInitParameter("applicationClassName","nl.clockwork.ebms.admin.web.WicketApplication");
 		filterHolder.setInitParameter("filterMappingUrlPattern","/*");
-		context.addFilter(filterHolder,"/*",FilterMapping.DEFAULT);
+		context.addFilter(filterHolder,"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
+		
+		ErrorPageErrorHandler errorHandler = new ErrorPageErrorHandler();
+		context.setErrorHandler(errorHandler);
+		Map<String,String> errorPages = new HashMap<String,String>();
+		errorPages.put("404","/404");
+		errorHandler.setErrorPages(errorPages);
 		
 		ContextLoaderListener listener = new ContextLoaderListener();
 		context.addEventListener(listener);
