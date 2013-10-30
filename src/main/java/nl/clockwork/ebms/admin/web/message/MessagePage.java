@@ -196,6 +196,6 @@ public class MessagePage extends BasePage
 				vars.put("hide",MessagePage.this.getLocalizer().getString("cmd.hide",MessagePage.this));
 				return vars;
 			}
-		})));
+		}),"screen"));
 	}
 }
