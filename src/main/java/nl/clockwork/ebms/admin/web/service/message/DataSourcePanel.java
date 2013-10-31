@@ -1,6 +1,5 @@
 package nl.clockwork.ebms.admin.web.service.message;
 
-import java.net.URLConnection;
 import java.util.List;
 
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
