@@ -15,6 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import nl.clockwork.ebms.admin.Constants;
@@ -25,15 +26,19 @@ import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
 import nl.clockwork.ebms.admin.web.Utils;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 public class MessagesPage extends BasePage
@@ -58,13 +63,20 @@ public class MessagesPage extends BasePage
 	public MessagesPage(EbMSMessageFilter filter, final WebPage responsePage)
 	{
 		this.filter = filter;
-		WebMarkupContainer container = new WebMarkupContainer("container");
+
+		final WebMarkupContainer container = new WebMarkupContainer("container");
 		container.setOutputMarkupId(true);
 
 		DataView<EbMSMessage> messages = new DataView<EbMSMessage>("messages",new MessageDataProvider(ebMSDAO,this.filter))
 		{
 			private static final long serialVersionUID = 1L;
 
+			@Override
+			public long getItemsPerPage()
+			{
+				return maxItemsPerPage;
+			}
+			
 			@Override
 			protected void populateItem(final Item<EbMSMessage> item)
 			{
@@ -131,11 +143,27 @@ public class MessagesPage extends BasePage
 			}
 		};
 		messages.setOutputMarkupId(true);
-		messages.setItemsPerPage(maxItemsPerPage);
-
 		container.add(messages);
 		add(container);
-		add(new BootstrapPagingNavigator("navigator",messages));
+
+		final BootstrapPagingNavigator navigator = new BootstrapPagingNavigator("navigator",messages);
+		add(navigator);
+
+		DropDownChoice<Integer> maxItemsPerPage = new DropDownChoice<Integer>("maxItemsPerPage",new PropertyModel<Integer>(this,"maxItemsPerPage"),Arrays.asList(5,10,15,20,25,50,100));
+		add(maxItemsPerPage);
+		maxItemsPerPage.add(new AjaxFormComponentUpdatingBehavior("onchange")
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target)
+			{
+				target.add(navigator);
+				target.add(container);
+			}
+			
+		});
+		
 		add(new Link<Object>("back")
 		{
 			private static final long serialVersionUID = 1L;

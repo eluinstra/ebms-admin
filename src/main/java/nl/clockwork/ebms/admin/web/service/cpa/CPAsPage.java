@@ -53,6 +53,7 @@ public class CPAsPage extends BasePage
 		public EditCPAsForm(String id)
 		{
 			super(id);
+
 			WebMarkupContainer container = new WebMarkupContainer("container");
 			container.setOutputMarkupId(true);
 

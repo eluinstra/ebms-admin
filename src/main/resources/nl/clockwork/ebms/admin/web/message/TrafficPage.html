@@ -2,7 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
 <body>
 <wicket:extend>
-	<span wicket:id="navigator"/>
+	<div class="row">
+		<div class="col-lg-10"><span wicket:id="navigator"/></div>
+		<div class="col-lg-2"><select class="form-control pull-right" wicket:id="maxItemsPerPage"/></div>
+	</div>
 	<div class="table-responsive viewport">
 		<table class="table table-striped table-condensed">
 			<thead>
