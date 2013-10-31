@@ -47,9 +47,6 @@ public class ResourceServlet extends GenericServlet
 		{
 			((HttpServletResponse)response).setStatus(200);
 			((HttpServletResponse)response).setContentType(getContentType(((HttpServletRequest)request).getPathInfo()));
-			//System.out.println(URLConnection.guessContentTypeFromName(((HttpServletRequest)request).getRequestURI()));
-			//System.out.println(new MimetypesFileTypeMap().getContentType(((HttpServletRequest)request).getRequestURI()));
-			//System.out.println(URLConnection.getFileNameMap().getContentTypeFor(((HttpServletRequest)request).getRequestURI()));
 			IOUtils.copy(input,response.getOutputStream());
 		}
 	}
