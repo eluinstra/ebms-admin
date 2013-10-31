@@ -4,6 +4,7 @@ import java.net.URLConnection;
 import java.util.List;
 
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.model.EbMSDataSource;
 
 import org.apache.commons.lang.StringUtils;
@@ -68,7 +69,7 @@ public abstract class DataSourcePanel extends Panel
 				{
 					DataSourceModel model = DataSourceForm.this.getModelObject();
 					for (FileUpload file : model.getFile())
-						addDataSource(new EbMSDataSource(StringUtils.isBlank(model.getName()) ? file.getClientFileName() : model.getName(),StringUtils.isBlank(model.getContentType()) ? URLConnection.guessContentTypeFromName(file.getClientFileName()) : model.getContentType(),file.getBytes()));
+						addDataSource(new EbMSDataSource(StringUtils.isBlank(model.getName()) ? file.getClientFileName() : model.getName(),StringUtils.isBlank(model.getContentType()) ? Utils.getContentType(file.getClientFileName()) : model.getContentType(),file.getBytes()));
 					if (target != null)
 					{
 						target.add(getComponents());

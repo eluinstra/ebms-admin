@@ -15,12 +15,22 @@
  */
 package nl.clockwork.ebms.admin.web;
 
+import java.net.URLConnection;
+
 import nl.clockwork.ebms.Constants.EbMSMessageStatus;
 
 import org.apache.commons.lang.StringUtils;
 
 public class Utils
 {
+	public static String getContentType(String pathInfo)
+	{
+		String result = URLConnection.guessContentTypeFromName(pathInfo);
+		//String result = new MimetypesFileTypeMap().getContentType(pathInfo);
+		//String result = URLConnection.getFileNameMap().getContentTypeFor(pathInfo);
+		return result == null ? "application/octet-stream" : result;
+	}
+
 	public static String getFileExtension(String contentType)
 	{
 		if (StringUtils.isEmpty(contentType))
