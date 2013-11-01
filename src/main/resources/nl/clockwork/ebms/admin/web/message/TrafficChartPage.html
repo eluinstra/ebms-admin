@@ -9,12 +9,14 @@
 		  <li><select wicket:id="timeUnits"/></li>
 		  <li class="next"><a class="arrow" href="#" wicket:id="plus">&#9658;</a></li>
 		</ul-->
-		<table class="table">
-			<tr>
-				<td style="border: 0px;"><a class="arrow pull-left" href="#" wicket:id="minus">&#9668;</a></td>
-				<td style="border: 0px;" align="center"><select class="form-control" style="width: auto !important;" wicket:id="timeUnits"/></td>
-				<td style="border: 0px;"><div class="pull-right"><a class="arrow pull-right" href="#" wicket:id="plus">&#9658;</a></div></td>
-			</tr>
+		<table class="table table-condensed pager">
+			<tbody>
+				<tr>
+					<td><div class="pull-left"><a class="arrow" href="#" wicket:id="minus">&#9668;</a></div></td>
+					<td align="center"><select class="form-control auto-width" wicket:id="timeUnits"/></td>
+					<td><div class="pull-right"><a class="arrow" href="#" wicket:id="plus">&#9658;</a></div></td>
+				</tr>
+			</tbody>
 		</table>
 		<div class="row">
 			<div wicket:id="chart" class="col-lg-12"/>

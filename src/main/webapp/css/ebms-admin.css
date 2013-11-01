@@ -26,7 +26,18 @@ a.arrow {
 	font-size: large;
 }
 div.viewport {
-	overflow-x: scroll;
-	overflow-y: hidden;
-	white-space: nowrap;
+  width: 100%;
+  margin-bottom: 15px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+div.viewport > .table {
+  margin-bottom: 0;
+  white-space: nowrap;
+}
+table.pager > tbody > tr > td {
+	border: none;
+}
+select.auto-width {
+	width: auto !important;
 }
