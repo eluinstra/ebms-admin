@@ -3,6 +3,8 @@ package nl.clockwork.ebms.admin.web;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.authorization.UnauthorizedActionException;
 import org.apache.wicket.markup.html.basic.Label;
@@ -12,6 +14,7 @@ import org.apache.wicket.protocol.http.PageExpiredException;
 public class ErrorPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
+	protected transient Log logger = LogFactory.getLog(this.getClass());
 	private String pageTitle;
 	private String message;
 	private boolean showStackTrace;
@@ -19,6 +22,7 @@ public class ErrorPage extends BasePage
 
 	public ErrorPage(Exception exception)
 	{
+		logger.error("",exception);
 		add(new BookmarkablePageLink<Object>("continue",WicketApplication.get().getHomePage()));
 		if (exception instanceof PageExpiredException)
 		{
