@@ -270,14 +270,9 @@
 						<include>pom.xml</include>
 						<include>src/main/java/**/*.java</include>
 						<include>src/main/resources/**/*</include>
-						<include>src/main/webapp/**/*</include>
 					</includes>
 					<excludes>
 						<exclude>src/main/resources/log4j.*</exclude>
-						<exclude>src/main/webapp/css/*</exclude>
-						<exclude>src/main/webapp/js/*</exclude>
-						<exclude>src/main/webapp/fonts/*</exclude>
-						<exclude>src/main/webapp/WEB-INF/web.xml</exclude>
 						<exclude>src/main/resources/**/*.css</exclude>
 						<exclude>src/main/resources/**/*.html</exclude>
 						<exclude>src/main/resources/**/*.wsdl</exclude>
@@ -287,7 +282,7 @@
 					<execution>
 						<phase>package</phase>
 						<goals>
-							<goal>check</goal>
+							<goal>format</goal>
 						</goals>
 					</execution>
 				</executions>
