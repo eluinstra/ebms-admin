@@ -274,10 +274,11 @@
 					</includes>
 					<excludes>
 						<exclude>src/main/resources/log4j.*</exclude>
-						<exclude>src/main/webapp/css/bootstrap*.css</exclude>
-						<exclude>src/main/webapp/js/bootstrap*.js</exclude>
+						<exclude>src/main/webapp/css/*</exclude>
+						<exclude>src/main/webapp/js/*</exclude>
 						<exclude>src/main/webapp/fonts/*</exclude>
 						<exclude>src/main/webapp/WEB-INF/web.xml</exclude>
+						<exclude>src/main/resources/**/*.css</exclude>
 						<exclude>src/main/resources/**/*.html</exclude>
 						<exclude>src/main/resources/**/*.wsdl</exclude>
 					</excludes>
