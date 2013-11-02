@@ -1,11 +1,8 @@
 package nl.clockwork.ebms.admin.web;
 
-import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.Component;
 import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.feedback.IFeedbackMessageFilter;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.model.Model;
 
 public class BootstrapFeedbackPanel extends FeedbackPanel
 {
@@ -48,11 +45,9 @@ public class BootstrapFeedbackPanel extends FeedbackPanel
 	}
 
 	@Override
-	protected Component newMessageDisplayComponent(final String id, final FeedbackMessage message)
+	protected String getCSSClass(FeedbackMessage message)
 	{
-		final Component newMessageDisplayComponent = super.newMessageDisplayComponent(id,message);
-		//newMessageDisplayComponent.add(new AttributeAppender("class",new Model<String>(ErrorLevel.getErrorLevel(message.getLevel()).getCssClass())," "));
-		newMessageDisplayComponent.add(AttributeModifier.replace("class",new Model<String>(ErrorLevel.getErrorLevel(message.getLevel()).getCssClass())));
-		return newMessageDisplayComponent;
+		return ErrorLevel.getErrorLevel(message.getLevel()).getCssClass();
 	}
+	
 }
