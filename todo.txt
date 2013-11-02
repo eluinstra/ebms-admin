@@ -1,25 +1,21 @@
-- add exception page
-- active menu item?
-
 - improve message filters
 / add properties file creator (for ebms-core and ebms-admin)
 	- add test ebms url
-	- add test jdbc url
+	x add test jdbc url
 - add about
-- add help
-- add cpp editor/creator
 
 - add form reset button?
 - add text field messageId to MessageStatusPage and switch to select messageIds selection or messageId text field 
-- improve Start class (add more options)
 
-- add breadcrumbs???
+- improve Start class (add more options)
+- implement StartAllInOne
+	- configure ebms endpoints (+ keystores)
+- validate stored cpas
+- keystore editor
+- add cpp editor/creator
+
 - add attachment viewers for 'known'/common content types
 - add viewers for ebms message format???
 - make menu extension point to add new pages??? 
-
-- replace current menu with dropdown menu
-	- for nested panels see: nested - Trees and nested lists.
-- update ui by using bootstrap
 
 - add service registry and cpa creator?
