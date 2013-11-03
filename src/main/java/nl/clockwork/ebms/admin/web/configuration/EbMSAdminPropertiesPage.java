@@ -32,6 +32,7 @@ import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -244,7 +245,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 			add(jdbcUsernameFeedback);
 			jdbcUsernameFeedback.add(jdbcUsername);
 
-			TextField<String> jdbcPassword = new TextField<String>("jdbcPassword")
+			PasswordTextField jdbcPassword = new PasswordTextField("jdbcPassword")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -254,6 +255,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 					return Model.of(getLocalizer().getString("lbl.jdbcPassword",EbMSAdminPropertiesForm.this));
 				}
 			};
+			jdbcPassword.setResetPassword(false);
 			MarkupContainer jdbcPasswordFeedback = new FormComponentFeedbackBorder("jdbcPasswordFeedback");
 			add(jdbcPasswordFeedback);
 			jdbcPasswordFeedback.add(jdbcPassword);
