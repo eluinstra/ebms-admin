@@ -2,6 +2,7 @@
 / add properties file creator (for ebms-core and ebms-admin)
 	- add test ebms url
 	x add test jdbc url
+	- add load/save
 - add about
 
 - add form reset button?
