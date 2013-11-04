@@ -4,7 +4,7 @@ import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.model.IModel;
 
-public class ResetButton extends Button
+public class ResetButton extends Button //GoToButton
 {
 	private static final long serialVersionUID = 1L;
 	private Class<? extends Page> page;
