@@ -12,6 +12,8 @@
 - implement StartAllInOne
 	- configure ebms endpoints (+ keystores)
 - validate stored cpas
+	- replace parameter overwrite by force
+	- give warning on inserting expired CPA 
 - keystore editor
 - add cpp editor/creator
 
