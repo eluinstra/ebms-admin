@@ -19,7 +19,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.util.Properties;
 
 import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormModel;
 
@@ -52,9 +51,8 @@ public class DownloadEbMSAdminPropertiesButton extends Button
 	{
 		try
 		{
-			Properties properties = createProperties(ebMSAdminPropertiesFormModel);
-			final StringWriter sw = new StringWriter();
-			properties.store(sw,"EbMS Admin Console properties.");
+			final StringWriter writer = new StringWriter();
+			Utils.storeProperties(ebMSAdminPropertiesFormModel,writer);
 			IResourceStream resourceStream = new AbstractResourceStream()
 			{
 				private static final long serialVersionUID = 1L;
@@ -68,13 +66,13 @@ public class DownloadEbMSAdminPropertiesButton extends Button
 				@Override
 				public Bytes length()
 				{
-					return Bytes.bytes(sw.getBuffer().length());
+					return Bytes.bytes(writer.getBuffer().length());
 				}
 				
 				@Override
 				public InputStream getInputStream() throws ResourceStreamNotFoundException
 				{
-					return new ByteArrayInputStream(sw.toString().getBytes());
+					return new ByteArrayInputStream(writer.toString().getBytes());
 				}
 				
 				@Override
@@ -101,19 +99,6 @@ public class DownloadEbMSAdminPropertiesButton extends Button
 			logger.error("",e);
 			error(e.getMessage());
 		}
-	}
-
-	private Properties createProperties(EbMSAdminPropertiesFormModel model)
-	{
-		Properties result = new Properties();
-		result.setProperty("maxItemsPerPage",Integer.toString(model.getMaxItemsPerPage()));
-		result.setProperty("service.ebms.url",model.getEbMSURL());
-		result.setProperty("ebms.jdbc.driverClassName",model.getJdbcDriver().getDriverClassName());
-		result.setProperty("ebms.jdbc.url",model.getJdbcURL());
-		result.setProperty("ebms.jdbc.username",model.getJdbcUsername());
-		result.setProperty("ebms.jdbc.password",model.getJdbcPassword() == null ? "" : model.getJdbcPassword());
-		result.setProperty("ebms.pool.preferredTestQuery",model.getJdbcDriver().getPreferredTestQuery());
-		return result;
 	}
 
 }

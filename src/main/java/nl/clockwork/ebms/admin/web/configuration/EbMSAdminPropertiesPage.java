@@ -49,8 +49,12 @@ public class EbMSAdminPropertiesPage extends BasePage
 
 	public EbMSAdminPropertiesPage() throws IOException
 	{
+		this(new EbMSAdminPropertiesFormModel());
+	}
+	public EbMSAdminPropertiesPage(EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel) throws IOException
+	{
 		add(new BootstrapFeedbackPanel("feedback"));
-		add(new EbMSAdminPropertiesForm("ebMSAdminPropertiesForm"));
+		add(new EbMSAdminPropertiesForm("ebMSAdminPropertiesForm",ebMSAdminPropertiesFormModel));
 	}
 	
 	@Override
@@ -63,9 +67,10 @@ public class EbMSAdminPropertiesPage extends BasePage
 	{
 		private static final long serialVersionUID = 1L;
 
-		public EbMSAdminPropertiesForm(String id)
+		public EbMSAdminPropertiesForm(String id, EbMSAdminPropertiesFormModel model)
 		{
-			super(id,new CompoundPropertyModel<EbMSAdminPropertiesFormModel>(new EbMSAdminPropertiesFormModel()));
+			super(id,new CompoundPropertyModel<EbMSAdminPropertiesFormModel>(model));
+			setOutputMarkupId(true);
 			
 			TextField<Integer> maxItemsPerPage = new TextField<Integer>("maxItemsPerPage")
 			{
@@ -261,10 +266,12 @@ public class EbMSAdminPropertiesPage extends BasePage
 			jdbcPasswordFeedback.add(jdbcPassword);
 
 			add(new DownloadEbMSAdminPropertiesButton("download",new ResourceModel("cmd.download"),getModelObject()));
+			add(new LoadEbMSAdminPropertiesButton("load",new ResourceModel("cmd.load"),getModelObject()));
+			add(new SaveEbMSAdminPropertiesButton("save",new ResourceModel("cmd.save"),getModelObject()));
 		}
 	}
 
-	public class EbMSAdminPropertiesFormModel implements IClusterable
+	public static class EbMSAdminPropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		private int maxItemsPerPage = 10;
