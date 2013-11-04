@@ -24,19 +24,19 @@ import javax.xml.bind.JAXBException;
 import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.FormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
 import nl.clockwork.ebms.service.CPAService;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -86,9 +86,7 @@ public class PingPage extends BasePage
 				}
 			};
 			cpaIds.setRequired(true);
-			MarkupContainer cpaIdFeedback = new FormComponentFeedbackBorder("cpaIdFeedback");
-			add(cpaIdFeedback);
-			cpaIdFeedback.add(cpaIds);
+			add(new FormComponentFeedbackBorder("cpaIdFeedback",cpaIds));
 
 			final DropDownChoice<String> fromParties = new DropDownChoice<String>("fromParties",new PropertyModel<String>(this.getModelObject(),"fromParty"),new PropertyModel<List<String>>(this.getModelObject(),"fromParties"))
 			{
@@ -100,11 +98,8 @@ public class PingPage extends BasePage
 					return Model.of(getLocalizer().getString("lbl.fromParty",PingForm.this));
 				}
 			};
-			fromParties.setRequired(true);
-			fromParties.setOutputMarkupId(true);
-			MarkupContainer fromPartyFeedback = new FormComponentFeedbackBorder("fromPartyFeedback");
-			add(fromPartyFeedback);
-			fromPartyFeedback.add(fromParties);
+			fromParties.setRequired(true).setOutputMarkupId(true);
+			add(new FormComponentFeedbackBorder("fromPartyFeedback",fromParties));
 			
 			cpaIds.add(new AjaxFormComponentUpdatingBehavior("onchange")
       {
@@ -139,11 +134,8 @@ public class PingPage extends BasePage
 					return Model.of(getLocalizer().getString("lbl.toParty",PingForm.this));
 				}
 			};
-			toParties.setRequired(true);
-			toParties.setOutputMarkupId(true);
-			MarkupContainer toPartyFeedback = new FormComponentFeedbackBorder("toPartyFeedback");
-			add(toPartyFeedback);
-			toPartyFeedback.add(toParties);
+			toParties.setRequired(true).setOutputMarkupId(true);
+			add(new FormComponentFeedbackBorder("toPartyFeedback",toParties));
 			
 			fromParties.add(new AjaxFormComponentUpdatingBehavior("onchange")
       {
@@ -192,6 +184,8 @@ public class PingPage extends BasePage
 			};
 			setDefaultButton(ping);
 			add(ping);
+
+			add(new ResetButton("reset",new ResourceModel("cmd.reset"),PingPage.class));
 		}
 	}
 
