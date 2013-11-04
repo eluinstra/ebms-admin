@@ -121,7 +121,7 @@ public class MessagesPage extends BasePage
 			
 		});
 		
-		add(new Link<Object>("back")
+		add(new Link<Void>("back")
 		{
 			private static final long serialVersionUID = 1L;
 

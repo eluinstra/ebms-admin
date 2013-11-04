@@ -38,7 +38,7 @@ public class ErrorPage extends BasePage
 	public ErrorPage(Exception exception)
 	{
 		logger.error("",exception);
-		add(new BookmarkablePageLink<Object>("continue",WicketApplication.get().getHomePage()));
+		add(new BookmarkablePageLink<Void>("continue",WicketApplication.get().getHomePage()));
 		if (exception instanceof PageExpiredException)
 		{
 			pageTitle = getLocalizer().getString("pageExpired",this);

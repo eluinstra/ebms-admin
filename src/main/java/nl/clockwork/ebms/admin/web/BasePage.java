@@ -37,7 +37,7 @@ public abstract class BasePage extends WebPage
 	{
 		super(parameters);
     add(new MenuPanel("menu",WicketApplication.get().getMenuItems()));
-    add(new BookmarkablePageLink<Object>("home",WicketApplication.get().getHomePage()));
+    add(new BookmarkablePageLink<Void>("home",WicketApplication.get().getHomePage()));
 		add(new Label("pageTitle",new PropertyModel<String>(this,"pageTitle")));
 	}
 	

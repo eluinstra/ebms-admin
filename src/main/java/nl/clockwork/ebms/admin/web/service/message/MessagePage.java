@@ -89,7 +89,7 @@ public class MessagePage extends BasePage
 		;
 		add(dataSources);
 		
-		add(new Link<Object>("back")
+		add(new Link<Void>("back")
 		{
 			private static final long serialVersionUID = 1L;
 
