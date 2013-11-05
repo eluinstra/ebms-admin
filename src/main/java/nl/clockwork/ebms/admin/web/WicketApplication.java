@@ -41,7 +41,7 @@ public class WicketApplication extends WebApplication
 	
 	public WicketApplication()
 	{
-		MenuItem home = new MenuLinkItem("0","Home",getHomePage());
+		MenuItem home = new MenuLinkItem("0","home",getHomePage());
 		menuItems.add(home);
 		
 		MenuItem cpa = new MenuItem("1","cpaService");
@@ -53,7 +53,7 @@ public class WicketApplication extends WebApplication
 		new MenuLinkItem(message,"1","ping",nl.clockwork.ebms.admin.web.service.message.PingPage.class);
 		new MenuLinkItem(message,"2","messages",nl.clockwork.ebms.admin.web.service.message.MessagesPage.class);
 		new MenuLinkItem(message,"3","message",nl.clockwork.ebms.admin.web.service.message.SendMessagePage.class);
-		new MenuLinkItem(message,"3","status",nl.clockwork.ebms.admin.web.service.message.MessageStatusPage.class);
+		new MenuLinkItem(message,"3","messageStatus",nl.clockwork.ebms.admin.web.service.message.MessageStatusPage.class);
 		menuItems.add(message);
 
 		MenuItem advanced = new MenuItem("3","advanced");
@@ -64,8 +64,8 @@ public class WicketApplication extends WebApplication
 		menuItems.add(advanced);
 
 		MenuItem configuration = new MenuItem("4","configuration");
-		new MenuLinkItem(configuration,"1","ebMSAdmin",nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.class);
-		new MenuLinkItem(configuration,"2","ebMSCore",getHomePage());
+		new MenuLinkItem(configuration,"1","ebMSAdminProperties",nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.class);
+		new MenuLinkItem(configuration,"2","ebMSCoreProperties",getHomePage());
 		menuItems.add(configuration);
 
 		MenuItem about = new MenuLinkItem("5","about",getHomePage());

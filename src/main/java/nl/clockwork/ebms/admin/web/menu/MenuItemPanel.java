@@ -35,7 +35,7 @@ public class MenuItemPanel extends Panel
 	{
 		super(id,model);
 		add(new Rows("rows",model.getObject().getChildren()));
-		add(new Label("name",model.getObject().getName()));
+		add(new Label("name",getLocalizer().getString(model.getObject().getName(),this)));
 	}
 
 }
