@@ -90,7 +90,7 @@ public class DownloadEbMSAdminPropertiesButton extends Button
 						super.respond(requestCycle);
 					}
 				}
-				.setFileName("ebms-admin.properties")
+				.setFileName(Constants.PROPERTIES_FILE)
 				.setContentDisposition(ContentDisposition.ATTACHMENT)
 			);
 		}

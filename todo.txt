@@ -2,7 +2,6 @@
 / add properties file creator (for ebms-core and ebms-admin)
 	- add test ebms url
 - add about
-- i18n all messages
 - remove 1 jquery.js file
 
 - add form reset button?

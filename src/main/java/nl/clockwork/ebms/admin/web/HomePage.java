@@ -17,6 +17,7 @@ package nl.clockwork.ebms.admin.web;
 
 import java.io.File;
 
+import nl.clockwork.ebms.admin.web.configuration.Constants;
 import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -31,7 +32,7 @@ public class HomePage extends BasePage
 	public HomePage(final PageParameters parameters)
 	{
 		super(parameters);
-		File file = new File("ebms-admin.properties");
+		File file = new File(Constants.PROPERTIES_FILE);
 		add(new WebMarkupContainer("configurationFile.found").add(new Label("configuration_file",file.getAbsolutePath())).setVisible(file.exists()));
 		add(new WebMarkupContainer("configurationFile.notFound").add(new Label("configuration_file",file.getAbsolutePath()),new ConfigurationLink("configuration_link")).setVisible(!file.exists()));
 	}

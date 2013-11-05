@@ -109,7 +109,7 @@ public class CPAUploadPage extends BasePage
 							//FIXME char encoding
 							cpaService.validateCPA(new String(file.getBytes()));
 						}
-						info("CPA is valid");
+						info(getString("cpa.valid"));
 					}
 					catch (Exception e)
 					{

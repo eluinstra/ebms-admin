@@ -17,6 +17,8 @@ package nl.clockwork.ebms.admin.web.configuration;
 
 public class Constants
 {
+	public final static String PROPERTIES_FILE = "ebms-admin.properties"; 
+
 	public enum JdbcDriver
 	{
 		HSQLDB("org.hsqldb.jdbcDriver","jdbc:hsqldb:hsql://%s/%s","select 1 from information_schema.system_tables"),

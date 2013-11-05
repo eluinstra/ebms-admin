@@ -173,7 +173,7 @@ public class PingPage extends BasePage
 						PingFormModel model = PingForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						ebMSMessageService.ping(model.getCpaId(),CPAUtils.getPartyIdbyPartyName(cpa,model.getFromParty()),CPAUtils.getPartyIdbyPartyName(cpa,model.getToParty()));
-						info("Ping succesful");
+						info(PingPage.this.getString("ping.ok"));
 					}
 					catch (Exception e)
 					{

@@ -40,6 +40,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.io.IClusterable;
 
 public class EbMSAdminPropertiesPage extends BasePage
@@ -179,12 +180,12 @@ public class EbMSAdminPropertiesPage extends BasePage
 					{
 						EbMSAdminPropertiesFormModel model = EbMSAdminPropertiesForm.this.getModelObject();
 						Utils.testDatabaseConnection(model.getJdbcDriver().getDriverClassName(),model.getJdbcURL(),model.getJdbcUsername(),model.getJdbcPassword());
-						info("Database connection succesful");
+						info(EbMSAdminPropertiesPage.this.getString("db.connection.ok"));
 					}
 					catch (Exception e)
 					{
 						logger.error("",e);
-						error("Database connection not succesful! " + e.getMessage());
+						error(new StringResourceModel("db.connection.nok",EbMSAdminPropertiesPage.this,Model.of(e)).getString());
 					}
 				}
 			};

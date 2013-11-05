@@ -15,6 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web.menu;
 
+import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.menu.MenuPanel.Rows;
 
 import org.apache.wicket.markup.html.basic.Label;
@@ -35,7 +36,7 @@ public class MenuItemPanel extends Panel
 	{
 		super(id,model);
 		add(new Rows("rows",model.getObject().getChildren()));
-		add(new Label("name",getLocalizer().getString(model.getObject().getName(),this)));
+		add(new Label("name",Utils.getResourceString(this.getClass(),model.getObject().getName())));
 	}
 
 }

@@ -24,7 +24,9 @@ import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdm
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 
 public class LoadEbMSAdminPropertiesButton extends Button
 {
@@ -44,11 +46,11 @@ public class LoadEbMSAdminPropertiesButton extends Button
 	{
 		try
 		{
-			File file = new File("ebms-admin.properties");
+			File file = new File(Constants.PROPERTIES_FILE);
 			FileReader reader = new FileReader(file);
 			Utils.loadProperties(ebMSAdminPropertiesFormModel,reader);
 			EbMSAdminPropertiesPage page = new EbMSAdminPropertiesPage(ebMSAdminPropertiesFormModel);
-			page.info("Properties loaded from " + file.getAbsolutePath());
+			page.info(new StringResourceModel("properties.loaded",page,Model.of(file)).getString());
 			setResponsePage(page);
 		}
 		catch (IOException e)

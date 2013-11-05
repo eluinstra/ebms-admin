@@ -16,13 +16,27 @@
 package nl.clockwork.ebms.admin.web;
 
 import java.net.URLConnection;
+import java.util.List;
 
 import nl.clockwork.ebms.Constants.EbMSMessageStatus;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.wicket.resource.loader.IStringResourceLoader;
 
 public class Utils
 {
+	public static String getResourceString(Class<?> clazz, String propertyName)
+	{
+		List<IStringResourceLoader> loaders = WicketApplication.get().getResourceSettings().getStringResourceLoaders();
+		for (IStringResourceLoader loader: loaders)
+		{
+			String value = loader.loadStringResource(clazz,propertyName,null,null,null);
+			if (StringUtils.isNotBlank(value))
+				return value;
+		}
+		return null;
+	}
+
 	public static String getContentType(String pathInfo)
 	{
 		String result = URLConnection.guessContentTypeFromName(pathInfo);

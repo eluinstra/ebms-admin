@@ -24,7 +24,9 @@ import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdm
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 
 public class SaveEbMSAdminPropertiesButton extends Button
 {
@@ -43,11 +45,11 @@ public class SaveEbMSAdminPropertiesButton extends Button
 	{
 		try
 		{
-			File file = new File("ebms-admin.properties");
+			File file = new File(Constants.PROPERTIES_FILE);
 			FileWriter writer = new FileWriter(file);
 			Utils.storeProperties(ebMSAdminPropertiesFormModel,writer);
-			info("Properties saved to " + file.getAbsolutePath());
-			warn("Restart " + getLocalizer().getString("applicationName",this) + "...");
+			info(new StringResourceModel("properties.saved",getPage(),Model.of(file)).getString());
+			warn(new StringResourceModel("restart",getPage(),null).getString());
 		}
 		catch (IOException e)
 		{

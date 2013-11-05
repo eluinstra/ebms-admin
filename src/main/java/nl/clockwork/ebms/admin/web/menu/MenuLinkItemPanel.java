@@ -16,6 +16,7 @@
 package nl.clockwork.ebms.admin.web.menu;
 
 import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.Utils;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
@@ -36,7 +37,7 @@ public class MenuLinkItemPanel extends Panel
 	{
 		super(id,model);
 		BookmarkablePageLink<BasePage> link = new BookmarkablePageLink<BasePage>("link",model.getObject().getPageClass());
-		link.add(new Label("name",getLocalizer().getString(model.getObject().getName(),this)));
+		link.add(new Label("name",Utils.getResourceString(this.getClass(),model.getObject().getName())));
 		add(link);
 		//add(AttributeModifier.replace("class",Model.of("active"));
 	}

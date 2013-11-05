@@ -49,6 +49,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement;
 
@@ -232,7 +233,7 @@ public class SendMessagePage extends BasePage
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
 						EbMSMessageContent messageContent = new EbMSMessageContent(model,model.getDataSources());
 						String messageId = ebMSMessageService.sendMessage(messageContent );
-						info("Send message succesful. MessageId is " + messageId);
+						info(new StringResourceModel("sendMessage.ok",Model.of(messageId)).getString());
 					}
 					catch (Exception e)
 					{

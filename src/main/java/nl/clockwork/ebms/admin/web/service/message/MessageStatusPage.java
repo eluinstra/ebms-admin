@@ -45,6 +45,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IClusterable;
 import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement;
@@ -219,7 +220,7 @@ public class MessageStatusPage extends BasePage
 						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						MessageStatus messageStatus = ebMSMessageService.getMessageStatus(model.getCpaId(),CPAUtils.getPartyIdbyPartyName(cpa,model.getFromParty()),CPAUtils.getPartyIdbyPartyName(cpa,model.getToParty()),model.getMessageId());
-						info("Get Message Status succesful. Status is " + messageStatus.getStatus().statusCode());
+						info(new StringResourceModel("getMessageStatus.ok",Model.of(messageStatus.getStatus())));
 					}
 					catch (Exception e)
 					{
