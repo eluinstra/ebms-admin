@@ -179,7 +179,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 					{
 						EbMSAdminPropertiesFormModel model = EbMSAdminPropertiesForm.this.getModelObject();
 						Utils.testDatabaseConnection(model.getJdbcDriver().getDriverClassName(),model.getJdbcURL(),model.getJdbcUsername(),model.getJdbcPassword());
-						info("Database connection succesful.");
+						info("Database connection succesful");
 					}
 					catch (Exception e)
 					{

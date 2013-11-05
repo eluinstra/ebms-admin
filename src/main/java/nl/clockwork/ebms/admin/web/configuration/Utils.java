@@ -85,7 +85,7 @@ public class Utils
 		properties.setProperty("ebms.jdbc.username",model.getJdbcUsername());
 		properties.setProperty("ebms.jdbc.password",model.getJdbcPassword() == null ? "" : model.getJdbcPassword());
 		properties.setProperty("ebms.pool.preferredTestQuery",model.getJdbcDriver().getPreferredTestQuery());
-		properties.store(writer,"EbMS Admin Console properties.");
+		properties.store(writer,"EbMS Admin Console properties");
 	}
 
   public static void testEbMSUrl(String url)
@@ -99,7 +99,7 @@ public class Utils
     Class<?> driverClass = loader.loadClass(driverClassName);
     Driver driver = (Driver)driverClass.newInstance();
     if (!driver.acceptsURL(jdbcUrl))
-    	throw new IllegalArgumentException("Jdbc Url '" + jdbcUrl + "' not valid.");
+    	throw new IllegalArgumentException("Jdbc Url '" + jdbcUrl + "' not valid!");
     Properties info = new Properties();
     info.setProperty("user",username);
     if (password != null)
