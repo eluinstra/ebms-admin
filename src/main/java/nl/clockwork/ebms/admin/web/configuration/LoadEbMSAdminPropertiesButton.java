@@ -39,6 +39,7 @@ public class LoadEbMSAdminPropertiesButton extends Button
 		super(id,resourceModel);
 		this.ebMSAdminPropertiesFormModel = ebMSAdminPropertiesFormModel;
 		setDefaultFormProcessing(false);
+		setEnabled(new File(Constants.PROPERTIES_FILE).exists());
 	}
 
 	@Override
