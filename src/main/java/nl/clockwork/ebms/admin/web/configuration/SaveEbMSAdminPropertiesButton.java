@@ -47,6 +47,7 @@ public class SaveEbMSAdminPropertiesButton extends Button
 			FileWriter writer = new FileWriter(file);
 			Utils.storeProperties(ebMSAdminPropertiesFormModel,writer);
 			info("Properties saved to " + file.getAbsolutePath());
+			warn("Restart " + getLocalizer().getString("applicationName",this) + "...");
 		}
 		catch (IOException e)
 		{
