@@ -62,7 +62,6 @@ public class Utils
 		String protocol = scanner.findInLine("(://|@|:@//)");
 		if (protocol != null)
 		{
-			//String urlString = scanner.findInLine(".*:\\d+");
 			String urlString = scanner.findInLine("[^/:]+(:\\d+){0,1}");
 			scanner.findInLine("(/|:|;databaseName=)");
 			String database = scanner.findInLine("[^;]*");
@@ -106,7 +105,7 @@ public class Utils
     if (password != null)
     	info.setProperty("password",password);
     Connection connection = driver.connect(jdbcUrl,info);
-		//TODO execute preferredTestQuery
+		//TODO execute preferredTestQuery???
 		connection.close();
 	}
 
