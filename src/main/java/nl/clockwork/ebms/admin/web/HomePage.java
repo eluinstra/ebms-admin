@@ -17,6 +17,11 @@ package nl.clockwork.ebms.admin.web;
 
 import java.io.File;
 
+import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage;
+
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 public class HomePage extends BasePage
@@ -26,12 +31,9 @@ public class HomePage extends BasePage
 	public HomePage(final PageParameters parameters)
 	{
 		super(parameters);
-		add(new BootstrapFeedbackPanel("message"));
 		File file = new File("ebms-admin.properties");
-		if (file.exists())
-			info("Using configuration file " + file.getAbsolutePath());
-		else
-			error("Configuration file " + file.getAbsolutePath() + " not found! Goto configuration/ebMSAdmin to create this file.");
+		add(new WebMarkupContainer("configurationFile.found").add(new Label("configuration_file",file.getAbsolutePath())).setVisible(file.exists()));
+		add(new WebMarkupContainer("configurationFile.notFound").add(new Label("configuration_file",file.getAbsolutePath()),new ConfigurationLink("configuration_link")).setVisible(!file.exists()));
 	}
 
 	@Override
@@ -39,4 +41,20 @@ public class HomePage extends BasePage
 	{
 		return getLocalizer().getString("home",this);
 	}
+
+	private final class ConfigurationLink extends Link<Void>
+	{
+		private static final long serialVersionUID = 1L;
+
+		private ConfigurationLink(String id)
+		{
+			super(id);
+		}
+
+		public void onClick()
+		{
+			setResponsePage(EbMSAdminPropertiesPage.class);
+		}
+	}
+
 }

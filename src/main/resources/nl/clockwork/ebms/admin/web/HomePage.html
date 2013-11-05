@@ -3,7 +3,17 @@
 <body>
 <wicket:extend>
 	<p><wicket:message key="home.message"/></p>
-	<p><span wicket:id="message"/></p>
+	<p class="text-info" wicket:id="configurationFile.found">
+		<wicket:message key="configurationFile.found">
+			<span class="text-primary" wicket:id="configuration_file"/>
+		</wicket:message>
+	</p>
+	<p class="text-danger" wicket:id="configurationFile.notFound">
+		<wicket:message key="configurationFile.notFound">
+			<span class="text-primary" wicket:id="configuration_file"/>
+			<a wicket:id="configuration_link"><wicket:message key="configuration_link_text"/></a>
+		</wicket:message>
+	</p>
 </wicket:extend>
 </body>
 </html>
