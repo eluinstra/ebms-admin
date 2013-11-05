@@ -49,7 +49,7 @@ public class Utils
 	private static void parseJdbcURL(EbMSAdminPropertiesFormModel model, JdbcDriver jdbcDriver, String jdbcURL) throws MalformedURLException
 	{
 		Scanner scanner = new Scanner(jdbcURL);
-		String protocol = scanner.findInLine("://");
+		String protocol = scanner.findInLine("(://|@)");
 		if (protocol != null)
 		{
 			String urlString = scanner.findInLine(".*:\\d+");
