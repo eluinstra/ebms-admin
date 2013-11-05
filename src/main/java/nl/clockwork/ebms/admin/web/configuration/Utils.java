@@ -32,6 +32,16 @@ import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdm
 
 public class Utils
 {
+	public static String createURL(String hostname, int port)
+	{
+		return hostname + (port == -1 ? "" : ":" + port); 
+	}
+	
+	public static String createURL(String hostname, Integer port)
+	{
+		return hostname + (port == null ? "" : ":" + port); 
+	}
+	
 	public static void loadProperties(EbMSAdminPropertiesFormModel model, FileReader reader) throws IOException
 	{
 		Properties properties = new Properties();
@@ -49,17 +59,18 @@ public class Utils
 	private static void parseJdbcURL(EbMSAdminPropertiesFormModel model, JdbcDriver jdbcDriver, String jdbcURL) throws MalformedURLException
 	{
 		Scanner scanner = new Scanner(jdbcURL);
-		String protocol = scanner.findInLine("(://|@)");
+		String protocol = scanner.findInLine("(://|@|:@//)");
 		if (protocol != null)
 		{
-			String urlString = scanner.findInLine(".*:\\d+");
+			//String urlString = scanner.findInLine(".*:\\d+");
+			String urlString = scanner.findInLine("[^/:]+(:\\d+){0,1}");
 			scanner.findInLine("(/|:|;databaseName=)");
 			String database = scanner.findInLine("[^;]*");
 			if (urlString != null)
 			{
 				URL url = new URL("http://" + urlString);
 				model.setJdbcHost(url.getHost());
-				model.setJdbcPort(url.getPort());
+				model.setJdbcPort(url.getPort() == -1 ? null : url.getPort());
 				model.setJdbcDatabase(database);
 			}
 		}

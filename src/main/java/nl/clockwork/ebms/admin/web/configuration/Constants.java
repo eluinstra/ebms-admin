@@ -19,12 +19,13 @@ public class Constants
 {
 	public enum JdbcDriver
 	{
-		HSQLDB("org.hsqldb.jdbcDriver","jdbc:hsqldb:hsql://%s:%s/%s","select 1 from information_schema.system_tables"),
-		MYSQL("com.mysql.jdbc.Driver","jdbc:mysql://%s:%s/%s","select 1"),
-		POSTGRESQL("org.postgresql.Driver","jdbc:postgresql://%s:%s/%s","select 1"),
-		MSSQL("com.microsoft.sqlserver.jdbc.SQLServerDriver","jdbc:sqlserver://%s:%s;databaseName=%s;","select 1"),
-		MSSQL_JTDS("net.sourceforge.jtds.jdbc.Driver","jdbc:jtds:sqlserver://%s:%s/%s","select 1"),
-		ORACLE("oracle.jdbc.OracleDriver","jdbc:oracle:thin:@%s:%s:%s","select 1 from dual");
+		HSQLDB("org.hsqldb.jdbcDriver","jdbc:hsqldb:hsql://%s/%s","select 1 from information_schema.system_tables"),
+		MYSQL("com.mysql.jdbc.Driver","jdbc:mysql://%s/%s","select 1"),
+		POSTGRESQL("org.postgresql.Driver","jdbc:postgresql://%s/%s","select 1"),
+		MSSQL("com.microsoft.sqlserver.jdbc.SQLServerDriver","jdbc:sqlserver://%s;databaseName=%s;","select 1"),
+		MSSQL_JTDS("net.sourceforge.jtds.jdbc.Driver","jdbc:jtds:sqlserver://%s/%s","select 1"),
+		ORACLE("oracle.jdbc.OracleDriver","jdbc:oracle:thin:@//%s/%s","select 1 from dual"),
+		ORACLE_("oracle.jdbc.OracleDriver","jdbc:oracle:thin:@%s:%s","select 1 from dual");
 		
 		private String driverClassName;
 		private String urlExpr;
@@ -55,13 +56,13 @@ public class Constants
 					return jdbcDriver;
 			return null;
 		}
-		public String createJdbcURL(String hostname, int port, String database)
+		public String createJdbcURL(String hostname, Integer port, String database)
 		{
 			return createJdbcURL(urlExpr,hostname,port,database);
 		}
-		public static String createJdbcURL(String urlExpr, String hostname, int port, String database)
+		public static String createJdbcURL(String urlExpr, String hostname, Integer port, String database)
 		{
-			return String.format(urlExpr,hostname,port,database);
+			return String.format(urlExpr,Utils.createURL(hostname,port),database);
 		}
 	}
 }
