@@ -1,9 +1,9 @@
 - improve message filters
 / add properties file creator (for ebms-core and ebms-admin)
 	- add test ebms url
-	x add test jdbc url
-	- add load/save
 - add about
+- i18n all messages
+- remove 1 jquery.js file
 
 - add form reset button?
 - add text field messageId to MessageStatusPage and switch to select messageIds selection or messageId text field 
