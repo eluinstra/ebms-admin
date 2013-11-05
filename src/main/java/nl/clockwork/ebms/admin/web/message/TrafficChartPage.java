@@ -35,7 +35,6 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -140,23 +139,7 @@ public class TrafficChartPage extends BasePage
 			super(id,new CompoundPropertyModel<TrafficChartFormModel>(model));
 
 			DropDownChoice<TimeUnit> timeUnits = 
-			new DropDownChoice<TimeUnit>("timeUnits",new PropertyModel<TimeUnit>(this.getModelObject(),"timeUnit"),new PropertyModel<List<TimeUnit>>(this.getModelObject(),"timeUnits"),
-				new IChoiceRenderer<TimeUnit>()
-				{
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public Object getDisplayValue(TimeUnit object)
-					{
-						return getLocalizer().getString(object.toString(),TrafficChartForm.this);
-					}
-
-					@Override
-					public String getIdValue(TimeUnit object, int index)
-					{
-						return object.toString();
-					}
-				})
+			new DropDownChoice<TimeUnit>("timeUnits",new PropertyModel<TimeUnit>(this.getModelObject(),"timeUnit"),new PropertyModel<List<TimeUnit>>(this.getModelObject(),"timeUnits"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -165,7 +148,12 @@ public class TrafficChartPage extends BasePage
 				{
 					return Model.of(getLocalizer().getString("lbl.timeUnit",TrafficChartForm.this));
 				}
-
+				
+				@Override
+				protected boolean localizeDisplayValues()
+				{
+					return true;
+				}
 			};
 			timeUnits.setRequired(true);
 			add(timeUnits);
@@ -216,23 +204,7 @@ public class TrafficChartPage extends BasePage
 	    add(chart);
 
 			DropDownChoice<EbMSMessageTrafficChartOption> ebMSMessageTrafficChartOptions =
-			new DropDownChoice<EbMSMessageTrafficChartOption>("ebMSMessageTrafficChartOptions",new PropertyModel<EbMSMessageTrafficChartOption>(this.getModelObject(),"ebMSMessageTrafficChartOption"),new PropertyModel<List<EbMSMessageTrafficChartOption>>(this.getModelObject(),"ebMSMessageTrafficChartOptions"),
-				new IChoiceRenderer<EbMSMessageTrafficChartOption>()
-				{
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public Object getDisplayValue(EbMSMessageTrafficChartOption object)
-					{
-						return getLocalizer().getString(object.toString(),TrafficChartForm.this);
-					}
-
-					@Override
-					public String getIdValue(EbMSMessageTrafficChartOption object, int index)
-					{
-						return object.toString();
-					}
-				})
+			new DropDownChoice<EbMSMessageTrafficChartOption>("ebMSMessageTrafficChartOptions",new PropertyModel<EbMSMessageTrafficChartOption>(this.getModelObject(),"ebMSMessageTrafficChartOption"),new PropertyModel<List<EbMSMessageTrafficChartOption>>(this.getModelObject(),"ebMSMessageTrafficChartOptions"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -240,6 +212,12 @@ public class TrafficChartPage extends BasePage
 				public IModel<String> getLabel()
 				{
 					return Model.of(getLocalizer().getString("lbl.ebMSMessageTrafficChartOption",TrafficChartForm.this));
+				}
+				
+				@Override
+				protected boolean localizeDisplayValues()
+				{
+					return true;
 				}
 			};
 			ebMSMessageTrafficChartOptions.setRequired(true);
