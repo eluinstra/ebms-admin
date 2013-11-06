@@ -13,3 +13,17 @@
 mvn package
 mvn license:format
 
+==========
+= Eclipse
+==========
+Import -> Existing Maven Projects
+
+resolve js validation errors:
+- Properties -> JavaScript -> Include Path -> Source
+- Edit ebms-admin/src/main/webapp -> Excluded
+- Add Exclusion Pattern: js/jquery-min.js
+- Remove file js/jquery-min.js from project and add it again
+OR
+- Properties -> Builders
+- Uncheck JavaScript Validator
+- Remove file js/jquery-min.js from project and add it again

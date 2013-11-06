@@ -1,12 +1,10 @@
-- improve message filters
-/ add properties file creator (for ebms-core and ebms-admin)
-	- add test ebms url
 - add about
-- remove 1 jquery.js file
 
+- improve message filters
 - add form reset button?
 - add text field messageId to MessageStatusPage and switch to select messageIds selection or messageId text field 
 
+- add properties file creator for ebms-core
 - improve Start class (add more options)
 - implement StartAllInOne
 	- configure ebms endpoints (+ keystores)

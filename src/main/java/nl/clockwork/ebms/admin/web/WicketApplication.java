@@ -28,6 +28,9 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
 import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.resource.JavaScriptResourceReference;
+import org.apache.wicket.request.resource.ResourceReference;
+import org.apache.wicket.resource.JQueryResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 
 /**
@@ -90,10 +93,7 @@ public class WicketApplication extends WebApplication
 		super.init();
 		getDebugSettings().setDevelopmentUtilitiesEnabled(true);
 		getComponentInstantiationListeners().add(new SpringComponentInjector(this));
-//		getApplicationSettings().setPageExpiredErrorPage(ExpiredPage.class);
-//		getApplicationSettings().setAccessDeniedPage(AccessDeniedPage.class);
-//		getApplicationSettings().setInternalErrorPage(InternalErrorPage.class);
-//		getExceptionSettings().setUnexpectedExceptionDisplay(IExceptionSettings.SHOW_INTERNAL_ERROR_PAGE); 
+		getJavaScriptLibrarySettings().setJQueryReference(new JavaScriptResourceReference(HomePage.class,"../../../../../js/jquery-min.js"));
 		getRequestCycleListeners().add(new AbstractRequestCycleListener()
 		{
 			@Override
