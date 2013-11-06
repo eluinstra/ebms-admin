@@ -1,5 +1,3 @@
-- add about
-
 - improve message filters
 - add text field messageId to MessageStatusPage and switch to select messageIds selection or messageId text field 
 
