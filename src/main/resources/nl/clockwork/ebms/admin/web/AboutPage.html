@@ -2,16 +2,23 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
 <body>
 <wicket:extend>
-	<p wicket:id="ebms-admin.version"><wicket:message key="ebms-admin.version"><span wicket:id="version"/></wicket:message></p>
-	<p wicket:id="ebms-core.version"><wicket:message key="ebms-core.version"><span wicket:id="version"/></wicket:message></p>
+	<p>
+		<h5><a href="#" class="collapsible collapsed" data-toggle="collapse" data-target="#versionsDiv">Versions</a></h5>
+		<div id="versionsDiv" class="collapse in well well-sm">
+			<wicket:container wicket:id="ebms-admin.version"><wicket:message key="ebms-admin.version"><span wicket:id="version"/></wicket:message></wicket:container><br/>
+			<wicket:container wicket:id="ebms-core.version"><wicket:message key="ebms-core.version"><span wicket:id="version"/></wicket:message></wicket:container>
+		</div>
+	</p>
 	<p>
 		<h5><a href="#" class="collapsible collapsed" data-toggle="collapse" data-target="#propertiesDiv"><wicket:message key="properties"/></a></h5>
-		<div id="propertiesDiv" class="collapse"><pre><span wicket:id="properties"/></pre></div>
+		<div id="propertiesDiv" class="collapse well well-sm">
+			<wicket:container wicket:id="properties"/>
+		</div>
 	</p>
 	<p>
 		<h5><a href="#" class="collapsible collapsed" data-toggle="collapse" data-target="#licenseDiv"><wicket:message key="license"/></a></h5>
-		<div id="licenseDiv" class="collapse"><pre>
-Copyright 2013 Clockwork
+		<div id="licenseDiv" class="collapse">
+<pre class="well well-sm">Copyright 2013 Clockwork
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,8 +30,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License.
-		</pre></div>
+limitations under the License.</pre>
+		</div>
 	</p>
 </wicket:extend>
 </body>

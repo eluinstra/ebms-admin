@@ -43,8 +43,7 @@ public class AboutPage extends BasePage
 		Map<String,String> properties = placeholderConfigurer.getProperties();
 		StringWriter writer = new StringWriter();
 		Utils.writeProperties(properties,writer);
-		String string = writer.toString();
-		add(new MultiLineLabel("properties",string));
+		add(new MultiLineLabel("properties",writer.toString()));
 	}
 
 	@Override
