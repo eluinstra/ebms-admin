@@ -21,6 +21,7 @@ import java.util.List;
 
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.admin.web.configuration.Constants.JdbcDriver;
 
 import org.apache.commons.logging.Log;
@@ -269,6 +270,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 			add(new DownloadEbMSAdminPropertiesButton("download",new ResourceModel("cmd.download"),getModelObject()));
 			add(new LoadEbMSAdminPropertiesButton("load",new ResourceModel("cmd.load"),getModelObject()));
 			add(new SaveEbMSAdminPropertiesButton("save",new ResourceModel("cmd.save"),getModelObject()));
+			add(new ResetButton("reset",new ResourceModel("cmd.reset"),EbMSAdminPropertiesPage.class));
 		}
 	}
 

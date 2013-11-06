@@ -26,6 +26,7 @@ import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
 import nl.clockwork.ebms.model.MessageStatus;
 import nl.clockwork.ebms.service.CPAService;
@@ -231,6 +232,8 @@ public class MessageStatusPage extends BasePage
 			};
 			setDefaultButton(ping);
 			add(ping);
+
+			add(new ResetButton("reset",new ResourceModel("cmd.reset"),MessageStatusPage.class));
 		}
 	}
 

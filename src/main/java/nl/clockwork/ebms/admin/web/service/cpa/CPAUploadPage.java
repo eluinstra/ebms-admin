@@ -19,6 +19,7 @@ import java.util.List;
 
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.service.CPAService;
 
 import org.apache.commons.logging.Log;
@@ -148,6 +149,8 @@ public class CPAUploadPage extends BasePage
 			};
 			setDefaultButton(upload);
 			add(upload);
+
+			add(new ResetButton("reset",new ResourceModel("cmd.reset"),CPAUploadPage.class));
 		}
 	}
 	

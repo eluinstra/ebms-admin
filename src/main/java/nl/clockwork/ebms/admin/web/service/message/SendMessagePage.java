@@ -23,6 +23,7 @@ import javax.xml.bind.JAXBException;
 import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
 import nl.clockwork.ebms.model.EbMSDataSource;
 import nl.clockwork.ebms.model.EbMSMessageContent;
@@ -244,6 +245,8 @@ public class SendMessagePage extends BasePage
 			};
 			setDefaultButton(send);
 			add(send);
+
+			add(new ResetButton("reset",new ResourceModel("cmd.reset"),SendMessagePage.class));
 		}
 	}
 

@@ -1,7 +1,6 @@
 - add about
 
 - improve message filters
-- add form reset button?
 - add text field messageId to MessageStatusPage and switch to select messageIds selection or messageId text field 
 
 - add properties file creator for ebms-core
