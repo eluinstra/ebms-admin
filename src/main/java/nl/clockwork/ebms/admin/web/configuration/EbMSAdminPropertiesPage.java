@@ -277,7 +277,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 	public static class EbMSAdminPropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		private int maxItemsPerPage = 10;
+		private int maxItemsPerPage = 20;
 		private String ebMSURL = "http://localhost:8089/adapter";
 		//private String serviceHost = "localhost";
 		//private int servicePort = 8888;
