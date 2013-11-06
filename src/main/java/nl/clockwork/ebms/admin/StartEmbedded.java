@@ -17,6 +17,9 @@ package nl.clockwork.ebms.admin;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -29,6 +32,7 @@ import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.DispatcherType;
 import org.eclipse.jetty.server.Server;
@@ -69,13 +73,13 @@ public class StartEmbedded
 		System.out.println();
 
 		Server server = new Server();
-		SocketConnector connector = new SocketConnector();
 
 		if (!cmd.hasOption("ssl"))
 		{
-			connector.setPort(cmd.getOptionValue("p") == null ? 8888 : Integer.parseInt(cmd.getOptionValue("p")));
+			SocketConnector connector = new SocketConnector();
+			connector.setPort(cmd.getOptionValue("p") == null ? 8080 : Integer.parseInt(cmd.getOptionValue("p")));
 			server.addConnector(connector);
-			System.out.println("Web server configured on http://localhost:" + connector.getPort());
+			System.out.println("Web Server configured on http://localhost:" + connector.getPort());
 		}
 		else
 		{
@@ -84,6 +88,7 @@ public class StartEmbedded
 			Resource keystore = Resource.newClassPathResource(keyStore);
 			if (keystore != null && keystore.exists())
 			{
+				SocketConnector connector = new SocketConnector();
 				connector.setConfidentialPort(cmd.getOptionValue("p") == null ? 8433 : Integer.parseInt(cmd.getOptionValue("p")));
 				SslContextFactory factory = new SslContextFactory();
 				factory.setKeyStoreResource(keystore);
@@ -95,10 +100,42 @@ public class StartEmbedded
 				sslConnector.setPort(connector.getConfidentialPort());
 				//sslConnector.setAcceptors(4);
 				server.addConnector(sslConnector);
-				System.out.println("Web server configured on https://localhost:" + connector.getPort());
+				System.out.println("Web Server configured on https://localhost:" + connector.getPort());
 			}
 			else
-				System.out.println("Web server not available: keystore" + args[0] + " not found!");
+				System.out.println("Web Server not available: keystore" + keyStore + " not found!");
+		}
+
+		if (!cmd.hasOption("ebmsSsl"))
+		{
+			SocketConnector connector = new SocketConnector();
+			connector.setPort(cmd.getOptionValue("ebmsPort") == null ? 8888 : Integer.parseInt(cmd.getOptionValue("ebmsPort")));
+			server.addConnector(connector);
+			System.out.println("EbMS Service configured on http://localhost:" + connector.getPort() + getEbMSUrl());
+		}
+		else
+		{
+			String keyStore = getRequiredArg("ebmsKeystore");
+			String password = getRequiredArg("ebmsPassword");
+			Resource keystore = Resource.newClassPathResource(keyStore);
+			if (keystore != null && keystore.exists())
+			{
+				SocketConnector connector = new SocketConnector();
+				connector.setConfidentialPort(cmd.getOptionValue("ebmsPort") == null ? 8888 : Integer.parseInt(cmd.getOptionValue("ebmsPort")));
+				SslContextFactory factory = new SslContextFactory();
+				factory.setKeyStoreResource(keystore);
+				factory.setKeyStorePassword(password);
+				//factory.setNeedClientAuth(clientAuth);
+				//factory.setTrustStoreResource(truststore);
+				//factory.setTrustStorePassword(truststore.password);
+				SslSocketConnector sslConnector = new SslSocketConnector(factory);
+				sslConnector.setPort(connector.getConfidentialPort());
+				//sslConnector.setAcceptors(4);
+				server.addConnector(sslConnector);
+				System.out.println("EbMS Service configured on https://localhost:" + connector.getPort() + getEbMSUrl());
+			}
+			else
+				System.out.println("EbMS Service not available: keystore" + keyStore + " not found!");
 		}
 
 		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
@@ -121,7 +158,7 @@ public class StartEmbedded
 		context.addServlet(servletHolder,"/images/*");
 		context.addServlet(servletHolder,"/js/*");
 
-		context.addServlet(nl.clockwork.ebms.servlet.EbMSServlet.class,"/digipoortStub");
+		context.addServlet(nl.clockwork.ebms.servlet.EbMSServlet.class,getEbMSUrl());
 
 		context.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
 		
@@ -158,6 +195,14 @@ public class StartEmbedded
 		server.join();
 	}
 
+	private static String getEbMSUrl()
+	{
+		if (cmd.hasOption("ebmsUrl"))
+			return cmd.getOptionValue("ebmsUrl");
+		else
+			return "/digipoortStub";
+	}
+
 	private static Options createOptions()
 	{
 		options = new Options();
@@ -166,6 +211,11 @@ public class StartEmbedded
 		options.addOption("ssl",false,"use ssl");
 		options.addOption("keystore",true,"set keystore");
 		options.addOption("password",true,"set keystore password");
+		options.addOption("ebmsPort",true,"set ebms port");
+		options.addOption("ebmsUrl",true,"set ebms url");
+		options.addOption("ebmsSsl",false,"use ssl for ebms");
+		options.addOption("ebmsKeystore",true,"set ebms keystore");
+		options.addOption("ebmsPassword",true,"set ebms keystore password");
 		options.addOption("jmx",false,"start mbean server");
 		options.addOption("hsqldb",false,"start hsqldb server");
 		options.addOption("hsqldbFile",true,"set hsqldb file location (default: hsqldb/ebms)");
@@ -230,8 +280,40 @@ public class StartEmbedded
 		ServerConfiguration.translateAddressProperty(props);
 		org.hsqldb.server.Server server = new org.hsqldb.server.Server();
 		server.setProperties(props);
-    server.start();
-		
+		server.start();
+		initDatabase(server);
+	}
+
+	private static void initDatabase(org.hsqldb.server.Server server)
+	{
+		Connection c = null;
+    try
+		{
+			c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:" + server.getPort() + "/ebms", "sa", "");
+			if (!c.createStatement().executeQuery("select table_name from information_schema.tables where table_name = 'CPA'").next())
+			{
+				c.createStatement().executeUpdate(IOUtils.toString(StartEmbedded.class.getResourceAsStream("hsqldb.sql")));
+				System.out.println("EbMS tables created");
+			}
+			else
+				System.out.println("EbMS tables already exist");
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+    finally
+    {
+    	if (c != null)
+				try
+				{
+					c.close();
+				}
+				catch (SQLException e)
+				{
+					e.printStackTrace();
+				}
+    }
 	}
 
 }
