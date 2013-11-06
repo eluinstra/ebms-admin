@@ -7,11 +7,13 @@
 > java -cp ebms-admin-1.0.0.jar nl.clockwork.ebms.admin.Start
 > java -cp ebms-admin-1.0.0.jar nl.clockwork.ebms.admin.Start -h
 
+> java -cp ebms-admin-1.0.0.jar nl.clockwork.ebms.admin.StartEmbedded
+> java -cp ebms-admin-1.0.0.jar nl.clockwork.ebms.admin.StartEmbedded -hsqldb
+
 ================
 = Build project
 ================
 mvn package
-mvn license:format
 
 ==========
 = Eclipse
