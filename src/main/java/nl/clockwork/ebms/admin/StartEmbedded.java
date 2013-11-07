@@ -17,6 +17,7 @@ package nl.clockwork.ebms.admin;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -27,10 +28,14 @@ import java.util.List;
 import java.util.Map;
 
 import javax.management.MBeanServer;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.jmx.MBeanContainer;
@@ -83,19 +88,16 @@ public class StartEmbedded
 		}
 		else
 		{
-			String keyStore = getRequiredArg("keystore");
-			String password = getRequiredArg("password");
-			Resource keystore = Resource.newClassPathResource(keyStore);
+			String keystorePath = getRequiredArg("keystore");
+			String keystorePassword = getRequiredArg("password");
+			Resource keystore = getResource(keystorePath);
 			if (keystore != null && keystore.exists())
 			{
 				SocketConnector connector = new SocketConnector();
 				connector.setConfidentialPort(cmd.getOptionValue("p") == null ? 8433 : Integer.parseInt(cmd.getOptionValue("p")));
 				SslContextFactory factory = new SslContextFactory();
 				factory.setKeyStoreResource(keystore);
-				factory.setKeyStorePassword(password);
-				//factory.setNeedClientAuth(clientAuth);
-				//factory.setTrustStoreResource(truststore);
-				//factory.setTrustStorePassword(truststore.password);
+				factory.setKeyStorePassword(keystorePassword);
 				SslSocketConnector sslConnector = new SslSocketConnector(factory);
 				sslConnector.setPort(connector.getConfidentialPort());
 				//sslConnector.setAcceptors(4);
@@ -103,7 +105,10 @@ public class StartEmbedded
 				System.out.println("Web Server configured on https://localhost:" + connector.getPort());
 			}
 			else
-				System.out.println("Web Server not available: keystore" + keyStore + " not found!");
+			{
+				System.out.println("Web Server not available: keystore " + keystorePath + " not found!");
+				System.exit(1);
+			}
 		}
 
 		if (!cmd.hasOption("ebmsSsl"))
@@ -115,27 +120,55 @@ public class StartEmbedded
 		}
 		else
 		{
-			String keyStore = getRequiredArg("ebmsKeystore");
-			String password = getRequiredArg("ebmsPassword");
-			Resource keystore = Resource.newClassPathResource(keyStore);
+			String keystorePath = getRequiredArg("ebmsKeystore");
+			String keystorePassword = getRequiredArg("ebmsKeystorePassword");
+			Resource keystore = getResource(keystorePath);
 			if (keystore != null && keystore.exists())
 			{
 				SocketConnector connector = new SocketConnector();
 				connector.setConfidentialPort(cmd.getOptionValue("ebmsPort") == null ? 8888 : Integer.parseInt(cmd.getOptionValue("ebmsPort")));
 				SslContextFactory factory = new SslContextFactory();
+				if (cmd.hasOption("ebmsSslCipherSuites"))
+					factory.setIncludeCipherSuites(cmd.getOptionValues("ebmsSslCipherSuites"));
 				factory.setKeyStoreResource(keystore);
-				factory.setKeyStorePassword(password);
-				//factory.setNeedClientAuth(clientAuth);
-				//factory.setTrustStoreResource(truststore);
-				//factory.setTrustStorePassword(truststore.password);
+				factory.setKeyStorePassword(keystorePassword);
+				if (cmd.hasOption("ebmsClientAuth"))
+				{
+					String truststorePath = getRequiredArg("ebmsTruststore");
+					String truststorePassword = getRequiredArg("ebmsTruststorePassword");
+					Resource truststore = getResource(truststorePath);
+					if (truststore != null && truststore.exists())
+					{
+						factory.setNeedClientAuth(true);
+						factory.setTrustStoreResource(truststore);
+						factory.setTrustStorePassword(truststorePassword);
+					}
+					else
+					{
+						System.out.println("EbMS Service not available: truststore " + truststorePath + " not found!");
+						System.exit(1);
+					}
+				}
 				SslSocketConnector sslConnector = new SslSocketConnector(factory);
 				sslConnector.setPort(connector.getConfidentialPort());
 				//sslConnector.setAcceptors(4);
 				server.addConnector(sslConnector);
-				System.out.println("EbMS Service configured on https://localhost:" + connector.getPort() + getEbMSUrl());
+				System.out.println("EbMS Service configured on https://localhost:" + connector.getConfidentialPort() + getEbMSUrl());
+				if (!cmd.hasOption("ebmsSslVerifyHostnames"))
+					HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier()
+					{
+						@Override
+						public boolean verify(String hostname, SSLSession sslSession)
+						{
+							return true;
+						}
+					});
 			}
 			else
-				System.out.println("EbMS Service not available: keystore" + keyStore + " not found!");
+			{
+				System.out.println("EbMS Service not available: keystore " + keystorePath + " not found!");
+				System.exit(1);
+			}
 		}
 
 		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
@@ -195,6 +228,11 @@ public class StartEmbedded
 		server.join();
 	}
 
+	private static Resource getResource(String path) throws MalformedURLException, IOException
+	{
+		return path.startsWith("classpath:") ? Resource.newClassPathResource(path.substring("classpath:".length())) : Resource.newResource(path);
+	}
+
 	private static String getEbMSUrl()
 	{
 		if (cmd.hasOption("ebmsUrl"))
@@ -213,9 +251,17 @@ public class StartEmbedded
 		options.addOption("password",true,"set keystore password");
 		options.addOption("ebmsPort",true,"set ebms port");
 		options.addOption("ebmsUrl",true,"set ebms url");
-		options.addOption("ebmsSsl",false,"use ssl for ebms");
+		options.addOption("ebmsSsl",false,"use ebms ssl");
+		Option option = new Option("ebmsSslCipherSuites",true,"allowed ebms ssl cipher suites");
+		option.setValueSeparator(',');
+		option.setArgs(Integer.MAX_VALUE);
+		options.addOption(option);
+		options.addOption("ebmsSslVerifyHostnames",false,"verify ebms ssl hostnames");
+		options.addOption("ebmsClientAuth",false,"use ebms ssl client authentication");
 		options.addOption("ebmsKeystore",true,"set ebms keystore");
-		options.addOption("ebmsPassword",true,"set ebms keystore password");
+		options.addOption("ebmsKeystorePassword",true,"set ebms keystore password");
+		options.addOption("ebmsTruststore",true,"set ebms truststore");
+		options.addOption("ebmsTruststorePassword",true,"set ebms truststore password");
 		options.addOption("jmx",false,"start mbean server");
 		options.addOption("hsqldb",false,"start hsqldb server");
 		options.addOption("hsqldbFile",true,"set hsqldb file location (default: hsqldb/ebms)");
@@ -225,7 +271,7 @@ public class StartEmbedded
 	
 	private static String getRequiredArg(String arg)
 	{
-		String result = cmd.getOptionValue("keystore");
+		String result = cmd.getOptionValue(arg);
 		if (result == null)
 		{
 			System.out.println(arg + " is not set!");

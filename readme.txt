@@ -9,6 +9,9 @@
 
 > java -cp ebms-admin-1.0.0.jar nl.clockwork.ebms.admin.StartEmbedded
 > java -cp ebms-admin-1.0.0.jar nl.clockwork.ebms.admin.StartEmbedded -hsqldb
+> java -cp ebms-admin-1.0.0.jar nl.clockwork.ebms.admin.StartEmbedded -hsqldb -ebmsSsl -ebmsSslCipherSuites TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA -ebmsClientAuth -ebmsKeystore classpath:keystore.jks -ebmsKeystorePassword password -ebmsTruststore classpath:keystore.jks -ebmsTruststorePassword password
+> java -cp ebms-admin-1.0.0.jar nl.clockwork.ebms.admin.StartEmbedded -hsqldb -ebmsSsl -ebmsSslCipherSuites TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA -ebmsClientAuth -ebmsKeystore keystore.jks -ebmsKeystorePassword password -ebmsTruststore keystore.jks -ebmsTruststorePassword password
+> java -cp ebms-admin-1.0.0.jar nl.clockwork.ebms.admin.StartEmbedded -hsqldb -ebmsSsl -ebmsSslCipherSuites TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA -ebmsClientAuth -ebmsKeystore f:/keystore.jks -ebmsKeystorePassword password -ebmsTruststore f:/keystore.jks -ebmsTruststorePassword password
 
 ================
 = Build project
