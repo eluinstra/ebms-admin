@@ -164,8 +164,11 @@ public class StartEmbedded
 		options.add((cmd.hasOption("hsqldbDir") ? "file:" + cmd.getOptionValue("hsqldbDir") : "file:hsqldb") + "/" + jdbcURL.getJdbcDatabase());
 		options.add("-dbname.0");
 		options.add(jdbcURL.getJdbcDatabase());
-		options.add("-port");
-		options.add(jdbcURL.getJdbcPort().toString());
+		if (jdbcURL.getJdbcPort() != null)
+		{
+			options.add("-port");
+			options.add(jdbcURL.getJdbcPort().toString());
+		}
 		
 		HsqlProperties argProps = HsqlProperties.argArrayToProps(options.toArray(new String[0]),"server");
 		ServerProperties props = new EbMSServerProperties(ServerConstants.SC_PROTOCOL_HSQL);
