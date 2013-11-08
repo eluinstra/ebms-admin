@@ -19,13 +19,10 @@ import java.beans.PropertyVetoException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Writer;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.util.Scanner;
 
 import nl.clockwork.ebms.admin.web.configuration.Constants.JdbcDriver;
 import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormModel;
@@ -50,29 +47,10 @@ public class Utils
 		model.setEbMSURL(properties.getProperty("service.ebms.url"));
 		model.setJdbcDriver(JdbcDriver.getJdbcDriver(properties.getProperty("ebms.jdbc.driverClassName")));
 		//model.setJdbcURL(properties.getProperty("ebms.jdbc.url"));
-		parseJdbcURL(model,model.getJdbcDriver(),properties.getProperty("ebms.jdbc.url"));
+		nl.clockwork.ebms.admin.Utils.parseJdbcURL(properties.getProperty("ebms.jdbc.url"),model);
 		model.setJdbcUsername(properties.getProperty("ebms.jdbc.username"));
 		model.setJdbcPassword(properties.getProperty("ebms.jdbc.password"));
 		//model.setPreferredTestQuery(properties.getProperty("ebms.pool.preferredTestQuery"));
-	}
-
-	private static void parseJdbcURL(EbMSAdminPropertiesFormModel model, JdbcDriver jdbcDriver, String jdbcURL) throws MalformedURLException
-	{
-		Scanner scanner = new Scanner(jdbcURL);
-		String protocol = scanner.findInLine("(://|@|:@//)");
-		if (protocol != null)
-		{
-			String urlString = scanner.findInLine("[^/:]+(:\\d+){0,1}");
-			scanner.findInLine("(/|:|;databaseName=)");
-			String database = scanner.findInLine("[^;]*");
-			if (urlString != null)
-			{
-				URL url = new URL("http://" + urlString);
-				model.setJdbcHost(url.getHost());
-				model.setJdbcPort(url.getPort() == -1 ? null : url.getPort());
-				model.setJdbcDatabase(database);
-			}
-		}
 	}
 
   public static void storeProperties(EbMSAdminPropertiesFormModel model, Writer writer) throws IOException

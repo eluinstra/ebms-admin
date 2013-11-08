@@ -274,7 +274,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 		}
 	}
 
-	public static class EbMSAdminPropertiesFormModel implements IClusterable
+	public static class EbMSAdminPropertiesFormModel extends JdbcURL implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		private int maxItemsPerPage = 20;
@@ -317,34 +317,10 @@ public class EbMSAdminPropertiesPage extends BasePage
 		{
 			this.jdbcDriver = jdbcDriver;
 		}
-		public String getJdbcHost()
-		{
-			return jdbcHost;
-		}
-		public void setJdbcHost(String jdbcHost)
-		{
-			this.jdbcHost = jdbcHost;
-		}
-		public Integer getJdbcPort()
-		{
-			return jdbcPort;
-		}
-		public void setJdbcPort(Integer jdbcPort)
-		{
-			this.jdbcPort = jdbcPort;
-		}
 		public String getJdbcURL()
 		{
 			//return jdbcDriver.createJdbcURL(jdbcHost,jdbcPort,jdbcDatabase);
 			return JdbcDriver.createJdbcURL(jdbcDriver.getUrlExpr(),jdbcHost,jdbcPort,jdbcDatabase);
-		}
-		public String getJdbcDatabase()
-		{
-			return jdbcDatabase;
-		}
-		public void setJdbcDatabase(String jdbcDatabase)
-		{
-			this.jdbcDatabase = jdbcDatabase;
 		}
 		public String getJdbcUsername()
 		{

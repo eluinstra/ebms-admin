@@ -29,6 +29,8 @@ import java.util.Map;
 
 import javax.management.MBeanServer;
 
+import nl.clockwork.ebms.admin.web.configuration.JdbcURL;
+
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
@@ -121,8 +123,7 @@ public class StartEmbedded
 		options.addOption("password",true,"set keystore password");
 		options.addOption("jmx",false,"start mbean server");
 		options.addOption("hsqldb",false,"start hsqldb server");
-		options.addOption("hsqldbFile",true,"set hsqldb file location (default: hsqldb/ebms)");
-		options.addOption("hsqldbPort",true,"set hsqldb port (default: 9001)");
+		options.addOption("hsqldbDir",true,"set hsqldb location (default: hsqldb)");
 		return options;
 	}
 	
@@ -142,23 +143,29 @@ public class StartEmbedded
 
 	private static void initHSQLDB() throws IOException, AclFormatException
 	{
-		if (cmd.hasOption("hsqldb"))
+		if ("org.hsqldb.jdbcDriver".equals(properties.get("ebms.jdbc.driverClassName")) && cmd.hasOption("hsqldb"))
 		{
+			JdbcURL jdbcURL = Utils.parseJdbcURL(properties.get("ebms.jdbc.url"),new JdbcURL());
+			if (!jdbcURL.getJdbcHost().matches("(localhost|127.0.0.1)"))
+			{
+				System.out.println("Cannot start server on " + jdbcURL.getJdbcHost());
+				System.exit(1);
+			}
 			System.out.println("Starting hsqldb...");
-			startHSQLDBServer();
+			startHSQLDBServer(jdbcURL);
 		}
 		System.out.println();
 	}
 
-	public static void startHSQLDBServer() throws IOException, AclFormatException
+	public static void startHSQLDBServer(JdbcURL jdbcURL) throws IOException, AclFormatException
 	{
 		List<String> options = new ArrayList<String>();
 		options.add("-database.0");
-		options.add(cmd.hasOption("hsqldbFile") ? "file:" + cmd.getOptionValue("hsqldbFile") : "file:hsqldb/ebms");
+		options.add((cmd.hasOption("hsqldbDir") ? "file:" + cmd.getOptionValue("hsqldbDir") : "file:hsqldb") + "/" + jdbcURL.getJdbcDatabase());
 		options.add("-dbname.0");
-		options.add("ebms");
+		options.add(jdbcURL.getJdbcDatabase());
 		options.add("-port");
-		options.add(cmd.hasOption("hsqldbPort") ? cmd.getOptionValue("hsqldbPort") : "9001");
+		options.add(jdbcURL.getJdbcPort().toString());
 		
 		HsqlProperties argProps = HsqlProperties.argArrayToProps(options.toArray(new String[0]),"server");
 		ServerProperties props = new EbMSServerProperties(ServerConstants.SC_PROTOCOL_HSQL);
@@ -177,7 +184,7 @@ public class StartEmbedded
 		Connection c = null;
     try
 		{
-			c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:" + server.getPort() + "/ebms", "sa", "");
+			c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:" + server.getPort() + "/" + server.getDatabaseName(0,true), "sa", "");
 			if (!c.createStatement().executeQuery("select table_name from information_schema.tables where table_name = 'CPA'").next())
 			{
 				c.createStatement().executeUpdate(IOUtils.toString(StartEmbedded.class.getResourceAsStream("hsqldb.sql")));
