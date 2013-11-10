@@ -15,4 +15,5 @@ hooks
 /findbugs
 /hsqldb
 /ebms-admin.properties
+/ebms-admin.embedded.properties
 
