@@ -16,38 +16,37 @@
 package nl.clockwork.ebms.admin.web.configuration;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
+import nl.clockwork.ebms.admin.PropertyPlaceholderConfigurer;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.admin.web.configuration.Constants.JdbcDriver;
+import nl.clockwork.ebms.admin.web.configuration.ConsolePropertiesFormPanel.ConsolePropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.Constants.PropertiesType;
+import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.ServicePropertiesFormPanel.ServicePropertiesFormModel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.MarkupContainer;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
-import org.apache.wicket.markup.html.form.Button;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.PasswordTextField;
-import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IClusterable;
 
 public class EbMSAdminPropertiesPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	protected transient Log logger = LogFactory.getLog(this.getClass());
+	@SpringBean(name="propertyConfigurer")
+	private PropertyPlaceholderConfigurer propertyPlaceholderConfigurer;
+	private PropertiesType propertiesType;
 
 	public EbMSAdminPropertiesPage() throws IOException
 	{
@@ -55,8 +54,9 @@ public class EbMSAdminPropertiesPage extends BasePage
 	}
 	public EbMSAdminPropertiesPage(EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel) throws IOException
 	{
+		propertiesType = PropertiesType.getPropertiesType(propertyPlaceholderConfigurer.getOverridePropertiesFile().getFilename());
 		add(new BootstrapFeedbackPanel("feedback"));
-		add(new EbMSAdminPropertiesForm("ebMSAdminPropertiesForm",ebMSAdminPropertiesFormModel));
+		add(new EbMSAdminPropertiesForm("form",ebMSAdminPropertiesFormModel));
 	}
 	
 	@Override
@@ -74,269 +74,60 @@ public class EbMSAdminPropertiesPage extends BasePage
 			super(id,new CompoundPropertyModel<EbMSAdminPropertiesFormModel>(model));
 			setOutputMarkupId(true);
 			
-			TextField<Integer> maxItemsPerPage = new TextField<Integer>("maxItemsPerPage")
+			List<Panel> components = new ArrayList<Panel>();
+			components.add(new ConsolePropertiesFormPanel("component",new PropertyModel<ConsolePropertiesFormModel>(getModelObject(),"consoleProperties")));
+			if (PropertiesType.EBMS_ADMIN.equals(propertiesType))
+				components.add(new ServicePropertiesFormPanel("component",new PropertyModel<ServicePropertiesFormModel>(getModelObject(),"serviceProperties")));
+			components.add(new JdbcPropertiesFormPanel("component",new PropertyModel<JdbcPropertiesFormModel>(getModelObject(),"jdbcProperties")));
+			add(new ListView<Panel>("components",components)
 			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public IModel<String> getLabel()
+				protected void populateItem(ListItem<Panel> item)
 				{
-					return Model.of(getLocalizer().getString("lbl.maxItemsPerPage",EbMSAdminPropertiesForm.this));
+					item.add((Panel)item.getModelObject()); 
 				}
-			};
-			maxItemsPerPage.setRequired(true);
-			MarkupContainer maxItemsPerPageFeedback = new FormComponentFeedbackBorder("maxItemsPerPageFeedback");
-			add(maxItemsPerPageFeedback);
-			maxItemsPerPageFeedback.add(maxItemsPerPage);
-			add(maxItemsPerPageFeedback);
-
-			TextField<String> ebMSURL = new TextField<String>("ebMSURL")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.ebMSURL",EbMSAdminPropertiesForm.this));
-				}
-			};
-			ebMSURL.setRequired(true);
-			MarkupContainer ebMSURLFeedback = new FormComponentFeedbackBorder("ebMSURLFeedback");
-			add(ebMSURLFeedback);
-			ebMSURLFeedback.add(ebMSURL);
-			add(ebMSURLFeedback);
-
-			DropDownChoice<JdbcDriver> jdbcDrivers = new DropDownChoice<JdbcDriver>("jdbcDrivers",new PropertyModel<JdbcDriver>(this.getModelObject(),"jdbcDriver"),new PropertyModel<List<JdbcDriver>>(this.getModelObject(),"jdbcDrivers"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.jdbcDriver",EbMSAdminPropertiesForm.this));
-				}
-			};
-			jdbcDrivers.setRequired(true);
-			MarkupContainer jdbcDriverFeedback = new FormComponentFeedbackBorder("jdbcDriverFeedback");
-			add(jdbcDriverFeedback);
-			jdbcDriverFeedback.add(jdbcDrivers);
-
-			TextField<String> jdbcHost = new TextField<String>("jdbcHost")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.dbHost",EbMSAdminPropertiesForm.this));
-				}
-			};
-			jdbcHost.setRequired(true);
-			MarkupContainer jdbcHostFeedback = new FormComponentFeedbackBorder("jdbcHostFeedback");
-			add(jdbcHostFeedback);
-			jdbcHostFeedback.add(jdbcHost);
-
-			TextField<Integer> jdbcPort = new TextField<Integer>("jdbcPort")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.jdbcPort",EbMSAdminPropertiesForm.this));
-				}
-			};
-			MarkupContainer jdbcPortFeedback = new FormComponentFeedbackBorder("jdbcPortFeedback");
-			add(jdbcPortFeedback);
-			jdbcPortFeedback.add(jdbcPort);
-
-			TextField<String> jdbcDatabase = new TextField<String>("jdbcDatabase")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.jdbcDatabase",EbMSAdminPropertiesForm.this));
-				}
-			};
-			jdbcDatabase.setRequired(true);
-			MarkupContainer jdbcDatabaseFeedback = new FormComponentFeedbackBorder("jdbcDatabaseFeedback");
-			add(jdbcDatabaseFeedback);
-			jdbcDatabaseFeedback.add(jdbcDatabase);
-
-			final TextField<String> jdbcURL = new TextField<String>("jdbcURL");
-			jdbcURL.setOutputMarkupId(true);
-			jdbcURL.setEnabled(false);
-			add(jdbcURL);
+			}.setReuseItems(true));
 			
-			Button testJdbcURL = new Button("testJdbcURL",new ResourceModel("cmd.test"))
-			{
-				private static final long serialVersionUID = 1L;
-	
-				@Override
-				public void onSubmit()
-				{
-					try
-					{
-						EbMSAdminPropertiesFormModel model = EbMSAdminPropertiesForm.this.getModelObject();
-						Utils.testDatabaseConnection(model.getJdbcDriver().getDriverClassName(),model.getJdbcURL(),model.getJdbcUsername(),model.getJdbcPassword());
-						info(EbMSAdminPropertiesPage.this.getString("db.connection.ok"));
-					}
-					catch (Exception e)
-					{
-						logger.error("",e);
-						error(new StringResourceModel("db.connection.nok",EbMSAdminPropertiesPage.this,Model.of(e)).getString());
-					}
-				}
-			};
-			add(testJdbcURL);
 			
-			jdbcDrivers.add(new AjaxFormComponentUpdatingBehavior("onchange")
-      {
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					target.add(jdbcURL);
-				}
-      });
-
-			jdbcHost.add(new OnChangeAjaxBehavior()
-      {
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					target.add(jdbcURL);
-				}
-      });
-
-			jdbcPort.add(new OnChangeAjaxBehavior()
-      {
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					target.add(jdbcURL);
-				}
-      });
-
-			jdbcDatabase.add(new OnChangeAjaxBehavior()
-      {
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					target.add(jdbcURL);
-				}
-      });
-
-			TextField<String> jdbcUsername = new TextField<String>("jdbcUsername")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.jdbcUsername",EbMSAdminPropertiesForm.this));
-				}
-			};
-			jdbcUsername.setRequired(true);
-			MarkupContainer jdbcUsernameFeedback = new FormComponentFeedbackBorder("jdbcUsernameFeedback");
-			add(jdbcUsernameFeedback);
-			jdbcUsernameFeedback.add(jdbcUsername);
-
-			PasswordTextField jdbcPassword = new PasswordTextField("jdbcPassword")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.jdbcPassword",EbMSAdminPropertiesForm.this));
-				}
-			};
-			jdbcPassword.setResetPassword(false);
-			jdbcPassword.setRequired(false);
-			MarkupContainer jdbcPasswordFeedback = new FormComponentFeedbackBorder("jdbcPasswordFeedback");
-			add(jdbcPasswordFeedback);
-			jdbcPasswordFeedback.add(jdbcPassword);
-
-			add(new DownloadEbMSAdminPropertiesButton("download",new ResourceModel("cmd.download"),getModelObject()));
-			add(new LoadEbMSAdminPropertiesButton("load",new ResourceModel("cmd.load"),getModelObject()));
-			add(new SaveEbMSAdminPropertiesButton("save",new ResourceModel("cmd.save"),getModelObject()));
+			add(new DownloadEbMSAdminPropertiesButton("download",new ResourceModel("cmd.download"),getModelObject(),propertiesType));
+			add(new LoadEbMSAdminPropertiesButton("load",new ResourceModel("cmd.load"),getModelObject(),propertiesType));
+			add(new SaveEbMSAdminPropertiesButton("save",new ResourceModel("cmd.save"),getModelObject(),propertiesType));
 			add(new ResetButton("reset",new ResourceModel("cmd.reset"),EbMSAdminPropertiesPage.class));
 		}
 	}
 
-	public static class EbMSAdminPropertiesFormModel extends JdbcURL implements IClusterable
+	public static class EbMSAdminPropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		private int maxItemsPerPage = 20;
-		private String ebMSURL = "http://localhost:8089/adapter";
-		//private String serviceHost = "localhost";
-		//private int servicePort = 8888;
-		//private String serviceURL = "/digipoortStub";
-		private JdbcDriver jdbcDriver = JdbcDriver.HSQLDB;
-		private String jdbcHost = "localhost";
-		private Integer jdbcPort = 9001;
-		private String jdbcDatabase = "ebms";
-		private String jdbcUsername = "sa";
-		private String jdbcPassword = null;
+		private ConsolePropertiesFormModel consoleProperties = new ConsolePropertiesFormModel();
+		private ServicePropertiesFormModel serviceProperties = new ServicePropertiesFormModel();
+		private JdbcPropertiesFormModel jdbcProperties = new JdbcPropertiesFormModel();
 		
-		public int getMaxItemsPerPage()
+		public ConsolePropertiesFormModel getConsoleProperties()
 		{
-			return maxItemsPerPage;
+			return consoleProperties;
 		}
-		public void setMaxItemsPerPage(int maxItemsPerPage)
+		public void setConsoleProperties(ConsolePropertiesFormModel consoleProperties)
 		{
-			this.maxItemsPerPage = maxItemsPerPage;
+			this.consoleProperties = consoleProperties;
 		}
-		public String getEbMSURL()
+		public ServicePropertiesFormModel getServiceProperties()
 		{
-			return ebMSURL;
+			return serviceProperties;
 		}
-		public void setEbMSURL(String ebMSURL)
+		public void setServiceProperties(ServicePropertiesFormModel serviceProperties)
 		{
-			this.ebMSURL = ebMSURL;
+			this.serviceProperties = serviceProperties;
 		}
-		public List<JdbcDriver> getJdbcDrivers()
+		public JdbcPropertiesFormModel getJdbcProperties()
 		{
-			return Arrays.asList(JdbcDriver.values());
+			return jdbcProperties;
 		}
-		public JdbcDriver getJdbcDriver()
+		public void setJdbcProperties(JdbcPropertiesFormModel jdbcProperties)
 		{
-			return jdbcDriver;
-		}
-		public void setJdbcDriver(JdbcDriver jdbcDriver)
-		{
-			this.jdbcDriver = jdbcDriver;
-		}
-		public String getJdbcURL()
-		{
-			//return jdbcDriver.createJdbcURL(jdbcHost,jdbcPort,jdbcDatabase);
-			return JdbcDriver.createJdbcURL(jdbcDriver.getUrlExpr(),jdbcHost,jdbcPort,jdbcDatabase);
-		}
-		public String getJdbcUsername()
-		{
-			return jdbcUsername;
-		}
-		public void setJdbcUsername(String jdbcUsername)
-		{
-			this.jdbcUsername = jdbcUsername;
-		}
-		public String getJdbcPassword()
-		{
-			return jdbcPassword;
-		}
-		public void setJdbcPassword(String jdbcPassword)
-		{
-			this.jdbcPassword = jdbcPassword;
+			this.jdbcProperties = jdbcProperties;
 		}
 	}
 }

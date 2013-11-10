@@ -2,9 +2,9 @@ package nl.clockwork.ebms.admin.web.configuration;
 
 public class JdbcURL
 {
-	private String jdbcHost;
-	private Integer jdbcPort;
-	private String jdbcDatabase;
+	private String jdbcHost = "localhost";
+	private Integer jdbcPort = 9001;
+	private String jdbcDatabase = "ebms";
 
 	public String getJdbcHost()
 	{

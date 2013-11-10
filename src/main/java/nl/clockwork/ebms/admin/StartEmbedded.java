@@ -145,7 +145,7 @@ public class StartEmbedded
 	{
 		if ("org.hsqldb.jdbcDriver".equals(properties.get("ebms.jdbc.driverClassName")) && cmd.hasOption("hsqldb"))
 		{
-			JdbcURL jdbcURL = Utils.parseJdbcURL(properties.get("ebms.jdbc.url"),new JdbcURL());
+			JdbcURL jdbcURL = nl.clockwork.ebms.admin.web.configuration.Utils.parseJdbcURL(properties.get("ebms.jdbc.url"),new JdbcURL());
 			if (!jdbcURL.getJdbcHost().matches("(localhost|127.0.0.1)"))
 			{
 				System.out.println("Cannot start server on " + jdbcURL.getJdbcHost());

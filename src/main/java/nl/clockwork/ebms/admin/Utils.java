@@ -20,15 +20,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
-
-import nl.clockwork.ebms.admin.web.configuration.JdbcURL;
 
 public class Utils
 {
@@ -74,26 +69,6 @@ public class Utils
 		catch (IOException e)
 		{
 		}
-	}
-
-	public static JdbcURL parseJdbcURL(String jdbcURL, JdbcURL model) throws MalformedURLException
-	{
-		Scanner scanner = new Scanner(jdbcURL);
-		String protocol = scanner.findInLine("(://|@|:@//)");
-		if (protocol != null)
-		{
-			String urlString = scanner.findInLine("[^/:]+(:\\d+){0,1}");
-			scanner.findInLine("(/|:|;databaseName=)");
-			String database = scanner.findInLine("[^;]*");
-			if (urlString != null)
-			{
-				URL url = new URL("http://" + urlString);
-				model.setJdbcHost(url.getHost());
-				model.setJdbcPort(url.getPort() == -1 ? null : url.getPort());
-				model.setJdbcDatabase(database);
-			}
-		}
-		return model;
 	}
 
 }

@@ -3,63 +3,12 @@
 <body>
 <wicket:extend>
 	<div class="col-lg-offset-2 col-lg-10">
-		<span wicket:id="feedback"/>
+		<wicket:container wicket:id="feedback"/>
 	</div>
-	<form class="form-horizontal" role="form" wicket:id="ebMSAdminPropertiesForm">
-		<div class="form-group">
-			<label for="maxItemsPerPage" class="col-lg-2 control-label"><wicket:message key="lbl.maxItemsPerPage"/></label>
-			<div class="col-lg-10">
-				<span wicket:id="maxItemsPerPageFeedback"><input type="text" class="form-control" wicket:id="maxItemsPerPage"/></span>
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="ebMSURL" class="col-lg-2 control-label"><wicket:message key="lbl.ebMSURL"/></label>
-			<div class="col-lg-10">
-				<span wicket:id="ebMSURLFeedback"><input type="text" class="form-control" wicket:id="ebMSURL"/></span>
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="jdbcDrivers" class="col-lg-2 control-label"><wicket:message key="lbl.jdbcDriver"/></label>
-			<div class="col-lg-10">
-				<span wicket:id="jdbcDriverFeedback"><select class="form-control" wicket:id="jdbcDrivers"/></span>
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="jdbcHost" class="col-lg-2 control-label"><wicket:message key="lbl.jdbcHost"/></label>
-			<div class="col-lg-10">
-				<span wicket:id="jdbcHostFeedback"><input type="text" class="form-control" wicket:id="jdbcHost"/></span>
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="jdbcPort" class="col-lg-2 control-label"><wicket:message key="lbl.jdbcPort"/></label>
-			<div class="col-lg-10">
-				<span wicket:id="jdbcPortFeedback"><input type="text" class="form-control" wicket:id="jdbcPort"/></span>
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="jdbcDatabase" class="col-lg-2 control-label"><wicket:message key="lbl.jdbcDatabase"/></label>
-			<div class="col-lg-10">
-				<span wicket:id="jdbcDatabaseFeedback"><input type="text" class="form-control" wicket:id="jdbcDatabase"/></span>
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="jdbcURL" class="col-lg-2 control-label"><wicket:message key="lbl.jdbcURL"/></label>
-			<div class="col-lg-10">
-				<input type="text" class="form-control" wicket:id="jdbcURL"/><input type="submit" class="btn btn-default" wicket:id="testJdbcURL" wicket:message="value:cmd.test"/>
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="jdbcUsername" class="col-lg-2 control-label"><wicket:message key="lbl.jdbcUsername"/></label>
-			<div class="col-lg-10">
-				<span wicket:id="jdbcUsernameFeedback"><input type="text" class="form-control" wicket:id="jdbcUsername"/></span>
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="jdbcPassword" class="col-lg-2 control-label"><wicket:message key="lbl.jdbcPassword"/></label>
-			<div class="col-lg-10">
-				<span wicket:id="jdbcPasswordFeedback"><input type="password" class="form-control" wicket:id="jdbcPassword"/></span>
-			</div>
-		</div>
+	<form class="form-horizontal" role="form" wicket:id="form">
+		<wicket:container wicket:id="components">
+			<wicket:container wicket:id="component"/>
+		</wicket:container>
 		<div class="form-group">
 			<div class="col-lg-offset-2 col-lg-10">
 				<input type="submit" class="btn btn-default" wicket:id="download" wicket:message="value:cmd.download"/>

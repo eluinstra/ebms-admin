@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 
+import nl.clockwork.ebms.admin.web.configuration.Constants.PropertiesType;
 import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormModel;
 
 import org.apache.commons.logging.Log;
@@ -39,11 +40,13 @@ public class DownloadEbMSAdminPropertiesButton extends Button
 	private static final long serialVersionUID = 1L;
 	protected transient Log logger = LogFactory.getLog(this.getClass());
 	private EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel;
+	private PropertiesType propertiesType;
 
-	public DownloadEbMSAdminPropertiesButton(String id, ResourceModel resourceModel, EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel)
+	public DownloadEbMSAdminPropertiesButton(String id, ResourceModel resourceModel, EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel, PropertiesType propertiesType)
 	{
 		super(id,resourceModel);
 		this.ebMSAdminPropertiesFormModel = ebMSAdminPropertiesFormModel;
+		this.propertiesType = propertiesType;
 	}
 
 	@Override
@@ -52,7 +55,7 @@ public class DownloadEbMSAdminPropertiesButton extends Button
 		try
 		{
 			final StringWriter writer = new StringWriter();
-			Utils.storeProperties(ebMSAdminPropertiesFormModel,writer);
+			Utils.storeProperties(ebMSAdminPropertiesFormModel,propertiesType,writer);
 			IResourceStream resourceStream = new AbstractResourceStream()
 			{
 				private static final long serialVersionUID = 1L;
@@ -90,7 +93,7 @@ public class DownloadEbMSAdminPropertiesButton extends Button
 						super.respond(requestCycle);
 					}
 				}
-				.setFileName(Constants.PROPERTIES_FILE)
+				.setFileName(propertiesType.getPropertiesFile())
 				.setContentDisposition(ContentDisposition.ATTACHMENT)
 			);
 		}

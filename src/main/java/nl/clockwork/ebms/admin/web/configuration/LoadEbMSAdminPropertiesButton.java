@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+import nl.clockwork.ebms.admin.web.configuration.Constants.PropertiesType;
 import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormModel;
 
 import org.apache.commons.logging.Log;
@@ -33,13 +34,20 @@ public class LoadEbMSAdminPropertiesButton extends Button
 	private static final long serialVersionUID = 1L;
 	protected transient Log logger = LogFactory.getLog(this.getClass());
 	private EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel;
+	private PropertiesType propertiesType;
 
-	public LoadEbMSAdminPropertiesButton(String id, ResourceModel resourceModel, EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel)
+	public LoadEbMSAdminPropertiesButton(String id, ResourceModel resourceModel, EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel, PropertiesType propertiesType)
 	{
 		super(id,resourceModel);
 		this.ebMSAdminPropertiesFormModel = ebMSAdminPropertiesFormModel;
+		this.propertiesType = propertiesType;
 		setDefaultFormProcessing(false);
-		setEnabled(new File(Constants.PROPERTIES_FILE).exists());
+	}
+	
+	@Override
+	public boolean isEnabled()
+	{
+		return new File(propertiesType.getPropertiesFile()).exists();
 	}
 
 	@Override
@@ -47,9 +55,9 @@ public class LoadEbMSAdminPropertiesButton extends Button
 	{
 		try
 		{
-			File file = new File(Constants.PROPERTIES_FILE);
+			File file = new File(propertiesType.getPropertiesFile());
 			FileReader reader = new FileReader(file);
-			Utils.loadProperties(ebMSAdminPropertiesFormModel,reader);
+			Utils.loadProperties(ebMSAdminPropertiesFormModel,propertiesType,reader);
 			EbMSAdminPropertiesPage page = new EbMSAdminPropertiesPage(ebMSAdminPropertiesFormModel);
 			page.info(new StringResourceModel("properties.loaded",page,Model.of(file)).getString());
 			setResponsePage(page);

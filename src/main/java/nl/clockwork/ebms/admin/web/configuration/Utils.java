@@ -19,13 +19,20 @@ import java.beans.PropertyVetoException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.Scanner;
 
+import nl.clockwork.ebms.admin.web.configuration.ConsolePropertiesFormPanel.ConsolePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.Constants.JdbcDriver;
+import nl.clockwork.ebms.admin.web.configuration.Constants.PropertiesType;
 import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.ServicePropertiesFormPanel.ServicePropertiesFormModel;
 
 public class Utils
 {
@@ -39,31 +46,107 @@ public class Utils
 		return hostname + (port == null ? "" : ":" + port); 
 	}
 	
-	public static void loadProperties(EbMSAdminPropertiesFormModel model, FileReader reader) throws IOException
+	public static void loadProperties(EbMSAdminPropertiesFormModel ebMSAdminProperties, PropertiesType propertiesType, FileReader reader) throws IOException
 	{
 		Properties properties = new Properties();
 		properties.load(reader);
-		model.setMaxItemsPerPage(Integer.parseInt(properties.getProperty("maxItemsPerPage")));
-		model.setEbMSURL(properties.getProperty("service.ebms.url"));
-		model.setJdbcDriver(JdbcDriver.getJdbcDriver(properties.getProperty("ebms.jdbc.driverClassName")));
-		//model.setJdbcURL(properties.getProperty("ebms.jdbc.url"));
-		nl.clockwork.ebms.admin.Utils.parseJdbcURL(properties.getProperty("ebms.jdbc.url"),model);
-		model.setJdbcUsername(properties.getProperty("ebms.jdbc.username"));
-		model.setJdbcPassword(properties.getProperty("ebms.jdbc.password"));
-		//model.setPreferredTestQuery(properties.getProperty("ebms.pool.preferredTestQuery"));
+		switch (propertiesType)
+		{
+			case EBMS_ADMIN:
+				loadProperties(properties,ebMSAdminProperties.getConsoleProperties());
+				loadProperties(properties,ebMSAdminProperties.getServiceProperties());
+				loadProperties(properties,ebMSAdminProperties.getJdbcProperties());
+				break;
+			case EBMS_ADMIN_EMBEDDED:
+				loadProperties(properties,ebMSAdminProperties.getConsoleProperties());
+				loadProperties(properties,ebMSAdminProperties.getJdbcProperties());
+				break;
+			case EBMS_CORE:
+				loadProperties(properties,ebMSAdminProperties.getServiceProperties());
+				loadProperties(properties,ebMSAdminProperties.getJdbcProperties());
+				break;
+		}
+	}
+	
+	public static void loadProperties(Properties properties, ConsolePropertiesFormModel consoleProperties) throws MalformedURLException
+	{
+		consoleProperties.setMaxItemsPerPage(Integer.parseInt(properties.getProperty("maxItemsPerPage")));
 	}
 
-  public static void storeProperties(EbMSAdminPropertiesFormModel model, Writer writer) throws IOException
+	public static void loadProperties(Properties properties, ServicePropertiesFormModel serviceProperties) throws MalformedURLException
 	{
-		Properties properties = new Properties();
-		properties.setProperty("maxItemsPerPage",Integer.toString(model.getMaxItemsPerPage()));
-		properties.setProperty("service.ebms.url",model.getEbMSURL());
-		properties.setProperty("ebms.jdbc.driverClassName",model.getJdbcDriver().getDriverClassName());
-		properties.setProperty("ebms.jdbc.url",model.getJdbcURL());
-		properties.setProperty("ebms.jdbc.username",model.getJdbcUsername());
-		properties.setProperty("ebms.jdbc.password",model.getJdbcPassword() == null ? "" : model.getJdbcPassword());
-		properties.setProperty("ebms.pool.preferredTestQuery",model.getJdbcDriver().getPreferredTestQuery());
-		properties.store(writer,"EbMS Admin Console properties");
+		serviceProperties.setEbMSURL(properties.getProperty("service.ebms.url"));
+	}
+
+	public static void loadProperties(Properties properties, JdbcPropertiesFormModel jdbcProperties) throws MalformedURLException
+	{
+		jdbcProperties.setJdbcDriver(JdbcDriver.getJdbcDriver(properties.getProperty("ebms.jdbc.driverClassName")));
+		//jdbcProperties.setJdbcURL(properties.getProperty("ebms.jdbc.url"));
+		parseJdbcURL(properties.getProperty("ebms.jdbc.url"),jdbcProperties);
+		jdbcProperties.setJdbcUsername(properties.getProperty("ebms.jdbc.username"));
+		jdbcProperties.setJdbcPassword(properties.getProperty("ebms.jdbc.password"));
+		//jdbcProperties.setPreferredTestQuery(properties.getProperty("ebms.pool.preferredTestQuery"));
+	}
+
+  public static void storeProperties(EbMSAdminPropertiesFormModel ebMSAdminProperties, PropertiesType propertiesType, Writer writer) throws IOException
+	{
+		Properties p = new Properties();
+		switch (propertiesType)
+		{
+			case EBMS_ADMIN:
+				storeProperties(p,ebMSAdminProperties.getConsoleProperties());
+				storeProperties(p,ebMSAdminProperties.getServiceProperties());
+				storeProperties(p,ebMSAdminProperties.getJdbcProperties());
+				break;
+			case EBMS_ADMIN_EMBEDDED:
+				storeProperties(p,ebMSAdminProperties.getConsoleProperties());
+				storeProperties(p,ebMSAdminProperties.getJdbcProperties());
+				break;
+			case EBMS_CORE:
+				storeProperties(p,ebMSAdminProperties.getServiceProperties());
+				storeProperties(p,ebMSAdminProperties.getJdbcProperties());
+				break;
+		}
+		p.store(writer,"EbMS Admin Console properties");
+	}
+
+  public static void storeProperties(Properties properties, ConsolePropertiesFormModel consoleProperties)
+  {
+		properties.setProperty("maxItemsPerPage",Integer.toString(consoleProperties.getMaxItemsPerPage()));
+  }
+
+  public static void storeProperties(Properties properties, ServicePropertiesFormModel serviceProperties)
+  {
+		properties.setProperty("service.ebms.url",serviceProperties.getEbMSURL());
+  }
+
+  public static void storeProperties(Properties properties, JdbcPropertiesFormModel jdbcProperties)
+  {
+		properties.setProperty("ebms.jdbc.driverClassName",jdbcProperties.getJdbcDriver().getDriverClassName());
+		properties.setProperty("ebms.jdbc.url",jdbcProperties.getJdbcURL());
+		properties.setProperty("ebms.jdbc.username",jdbcProperties.getJdbcUsername());
+		properties.setProperty("ebms.jdbc.password",jdbcProperties.getJdbcPassword() == null ? "" : jdbcProperties.getJdbcPassword());
+		properties.setProperty("ebms.pool.preferredTestQuery",jdbcProperties.getJdbcDriver().getPreferredTestQuery());
+  }
+  
+	public static JdbcURL parseJdbcURL(String jdbcURL, JdbcURL model) throws MalformedURLException
+	{
+		Scanner scanner = new Scanner(jdbcURL);
+		String protocol = scanner.findInLine("(://|@|:@//)");
+		if (protocol != null)
+		{
+			String urlString = scanner.findInLine("[^/:]+(:\\d+){0,1}");
+			scanner.findInLine("(/|:|;databaseName=)");
+			String database = scanner.findInLine("[^;]*");
+			if (urlString != null)
+			{
+				URL url = new URL("http://" + urlString);
+				model.setJdbcHost(url.getHost());
+				model.setJdbcPort(url.getPort() == -1 ? null : url.getPort());
+				model.setJdbcDatabase(database);
+			}
+		}
+		return model;
 	}
 
   public static void testEbMSUrl(String url)

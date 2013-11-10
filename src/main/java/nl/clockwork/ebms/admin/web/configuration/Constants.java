@@ -15,10 +15,32 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
+
 public class Constants
 {
-	public final static String PROPERTIES_FILE = "ebms-admin.properties"; 
+	public enum PropertiesType
+	{
+		EBMS_ADMIN("ebms-admin.properties"), EBMS_ADMIN_EMBEDDED("ebms-admin.embedded.properties"), EBMS_CORE("ebms-core.properties");
+		
+		private String propertiesFile;
 
+		private PropertiesType(String propertiesFile)
+		{
+			this.propertiesFile = propertiesFile;
+		}
+		public String getPropertiesFile()
+		{
+			return propertiesFile;
+		}
+		public static PropertiesType getPropertiesType(String propertiesFile)
+		{
+			for (PropertiesType propertiesType : PropertiesType.values())
+				if (propertiesType.propertiesFile.equals(propertiesFile))
+					return propertiesType;
+			return null;
+		}
+	}
+	
 	public enum JdbcDriver
 	{
 		HSQLDB("org.hsqldb.jdbcDriver","jdbc:hsqldb:hsql://%s/%s","select 1 from information_schema.system_tables"),

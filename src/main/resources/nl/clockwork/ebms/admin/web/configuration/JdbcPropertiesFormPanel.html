@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
+<body>
+<wicket:panel>
+	<form wicket:id="form">
+		<div class="form-group">
+			<label for="jdbcDrivers" class="col-lg-2 control-label"><wicket:message key="lbl.jdbcDriver"/></label>
+			<div class="col-lg-10">
+				<span wicket:id="jdbcDriverFeedback"><select class="form-control" wicket:id="jdbcDrivers"/></span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="jdbcHost" class="col-lg-2 control-label"><wicket:message key="lbl.jdbcHost"/></label>
+			<div class="col-lg-10">
+				<span wicket:id="jdbcHostFeedback"><input type="text" class="form-control" wicket:id="jdbcHost"/></span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="jdbcPort" class="col-lg-2 control-label"><wicket:message key="lbl.jdbcPort"/></label>
+			<div class="col-lg-10">
+				<span wicket:id="jdbcPortFeedback"><input type="text" class="form-control" wicket:id="jdbcPort"/></span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="jdbcDatabase" class="col-lg-2 control-label"><wicket:message key="lbl.jdbcDatabase"/></label>
+			<div class="col-lg-10">
+				<span wicket:id="jdbcDatabaseFeedback"><input type="text" class="form-control" wicket:id="jdbcDatabase"/></span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="jdbcURL" class="col-lg-2 control-label"><wicket:message key="lbl.jdbcURL"/></label>
+			<div class="col-lg-10">
+				<input type="text" class="form-control" wicket:id="jdbcURL"/><input type="submit" class="btn btn-default" wicket:id="test" wicket:message="value:cmd.test"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="jdbcUsername" class="col-lg-2 control-label"><wicket:message key="lbl.jdbcUsername"/></label>
+			<div class="col-lg-10">
+				<span wicket:id="jdbcUsernameFeedback"><input type="text" class="form-control" wicket:id="jdbcUsername"/></span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="jdbcPassword" class="col-lg-2 control-label"><wicket:message key="lbl.jdbcPassword"/></label>
+			<div class="col-lg-10">
+				<span wicket:id="jdbcPasswordFeedback"><input type="password" class="form-control" wicket:id="jdbcPassword"/></span>
+			</div>
+		</div>
+	</form>
+</wicket:panel>
+</body>
+</html>

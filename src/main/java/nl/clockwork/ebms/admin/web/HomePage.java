@@ -15,26 +15,30 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import java.io.File;
+import java.io.IOException;
 
-import nl.clockwork.ebms.admin.web.configuration.Constants;
+import nl.clockwork.ebms.admin.PropertyPlaceholderConfigurer;
 import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.springframework.core.io.Resource;
 
 public class HomePage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
+	@SpringBean(name="propertyConfigurer")
+	private PropertyPlaceholderConfigurer propertyPlaceholderConfigurer;
 
-	public HomePage(final PageParameters parameters)
+	public HomePage(final PageParameters parameters) throws IOException
 	{
 		super(parameters);
-		File file = new File(Constants.PROPERTIES_FILE);
-		add(new WebMarkupContainer("configurationFile.found").add(new Label("configuration_file",file.getAbsolutePath())).setVisible(file.exists()));
-		add(new WebMarkupContainer("configurationFile.notFound").add(new Label("configuration_file",file.getAbsolutePath()),new ConfigurationLink("configuration_link")).setVisible(!file.exists()));
+		Resource file = propertyPlaceholderConfigurer.getOverridePropertiesFile();
+		add(new WebMarkupContainer("configurationFile.found").add(new Label("configuration_file",file.getFile().getAbsolutePath())).setVisible(file.exists()));
+		add(new WebMarkupContainer("configurationFile.notFound").add(new Label("configuration_file",file.getFile().getAbsolutePath()),new ConfigurationLink("configuration_link")).setVisible(!file.exists()));
 	}
 
 	@Override

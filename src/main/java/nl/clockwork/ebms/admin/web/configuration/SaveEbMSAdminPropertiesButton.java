@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import nl.clockwork.ebms.admin.web.configuration.Constants.PropertiesType;
 import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormModel;
 
 import org.apache.commons.logging.Log;
@@ -33,11 +34,13 @@ public class SaveEbMSAdminPropertiesButton extends Button
 	private static final long serialVersionUID = 1L;
 	protected transient Log logger = LogFactory.getLog(this.getClass());
 	private EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel;
+	private PropertiesType propertiesType;
 
-	public SaveEbMSAdminPropertiesButton(String id, ResourceModel resourceModel, EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel)
+	public SaveEbMSAdminPropertiesButton(String id, ResourceModel resourceModel, EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel, PropertiesType propertiesType)
 	{
 		super(id,resourceModel);
 		this.ebMSAdminPropertiesFormModel = ebMSAdminPropertiesFormModel;
+		this.propertiesType = propertiesType;
 	}
 
 	@Override
@@ -45,9 +48,9 @@ public class SaveEbMSAdminPropertiesButton extends Button
 	{
 		try
 		{
-			File file = new File(Constants.PROPERTIES_FILE);
+			File file = new File(propertiesType.getPropertiesFile());
 			FileWriter writer = new FileWriter(file);
-			Utils.storeProperties(ebMSAdminPropertiesFormModel,writer);
+			Utils.storeProperties(ebMSAdminPropertiesFormModel,propertiesType,writer);
 			info(new StringResourceModel("properties.saved",getPage(),Model.of(file)).getString());
 			warn(new StringResourceModel("restart",getPage(),null).getString());
 		}

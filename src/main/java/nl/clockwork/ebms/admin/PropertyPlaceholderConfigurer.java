@@ -22,11 +22,20 @@ import java.util.Properties;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.core.io.Resource;
 
 public class PropertyPlaceholderConfigurer extends org.springframework.beans.factory.config.PropertyPlaceholderConfigurer
 {
+	private Resource overridePropertiesFile;
 	private Map<String,String> properties;
 
+	@Override
+	public void setLocations(Resource[] locations)
+	{
+		overridePropertiesFile = locations[locations.length - 1];
+		super.setLocations(locations);
+	}
+	
 	@Override
 	protected void processProperties(ConfigurableListableBeanFactory beanFactoryToProcess, Properties properties) throws BeansException
 	{
@@ -42,6 +51,11 @@ public class PropertyPlaceholderConfigurer extends org.springframework.beans.fac
 		super.convertProperties(properties);
 	}
 
+	public Resource getOverridePropertiesFile()
+	{
+		return overridePropertiesFile;
+	}
+	
 	public Map<String,String> getProperties()
 	{
 		return Collections.unmodifiableMap(properties);
