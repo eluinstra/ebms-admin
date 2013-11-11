@@ -76,7 +76,7 @@ public class SslPropertiesFormPanel extends Panel
 		private List<String> defaultCipherSuites = Arrays.asList(((SSLServerSocketFactory)SSLServerSocketFactory.getDefault()).getDefaultCipherSuites());
 		private List<String> allowedCipherSuites = new ArrayList<String>(Arrays.asList(new String[]{"TLS_DHE_RSA_WITH_AES_128_CBC_SHA","TLS_RSA_WITH_AES_128_CBC_SHA"}));
 		private boolean requireClientAuthentication = true;
-		private boolean verifyHostnames = true;
+		private boolean verifyHostnames = false;
 		private JavaKeyStorePropertiesFormModel keystoreProperties = new JavaKeyStorePropertiesFormModel();
 		private JavaKeyStorePropertiesFormModel truststoreProperties = new JavaKeyStorePropertiesFormModel();
 
