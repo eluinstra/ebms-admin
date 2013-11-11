@@ -118,13 +118,13 @@ public class JdbcPropertiesFormPanel extends Panel
 					try
 					{
 						JdbcPropertiesFormModel m = model.getObject();
-						Utils.testDatabaseConnection(m.getDriver().getDriverClassName(),m.getUrl(),m.getUsername(),m.getPassword());
-						info(JdbcPropertiesForm.this.getString("connection.ok"));
+						Utils.testJdbcConnection(m.getDriver().getDriverClassName(),m.getUrl(),m.getUsername(),m.getPassword());
+						info(JdbcPropertiesForm.this.getString("test.ok"));
 					}
 					catch (Exception e)
 					{
 						logger .error("",e);
-						error(new StringResourceModel("connection.nok",JdbcPropertiesForm.this,Model.of(e)).getString());
+						error(new StringResourceModel("test.nok",JdbcPropertiesForm.this,Model.of(e)).getString());
 					}
 				}
 			};

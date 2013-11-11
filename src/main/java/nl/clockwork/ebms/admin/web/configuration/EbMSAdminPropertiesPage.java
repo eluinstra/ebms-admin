@@ -25,8 +25,10 @@ import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.admin.web.configuration.ConsolePropertiesFormPanel.ConsolePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.Constants.PropertiesType;
+import nl.clockwork.ebms.admin.web.configuration.HttpPropertiesFormPanel.HttpPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.ServicePropertiesFormPanel.ServicePropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.SignaturePropertiesFormModel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -78,6 +80,11 @@ public class EbMSAdminPropertiesPage extends BasePage
 			components.add(new ConsolePropertiesFormPanel("component",new PropertyModel<ConsolePropertiesFormModel>(getModelObject(),"consoleProperties")));
 			if (PropertiesType.EBMS_ADMIN.equals(propertiesType))
 				components.add(new ServicePropertiesFormPanel("component",new PropertyModel<ServicePropertiesFormModel>(getModelObject(),"serviceProperties")));
+			if (PropertiesType.EBMS_ADMIN_EMBEDDED.equals(propertiesType))
+			{
+				components.add(new HttpPropertiesFormPanel("component",new PropertyModel<HttpPropertiesFormModel>(getModelObject(),"httpProperties")));
+				components.add(new SignaturePropertiesFormPanel("component",new PropertyModel<SignaturePropertiesFormModel>(getModelObject(),"signatureProperties")));
+			}
 			components.add(new JdbcPropertiesFormPanel("component",new PropertyModel<JdbcPropertiesFormModel>(getModelObject(),"jdbcProperties")));
 			add(new ListView<Panel>("components",components)
 			{
@@ -103,6 +110,8 @@ public class EbMSAdminPropertiesPage extends BasePage
 		private static final long serialVersionUID = 1L;
 		private ConsolePropertiesFormModel consoleProperties = new ConsolePropertiesFormModel();
 		private ServicePropertiesFormModel serviceProperties = new ServicePropertiesFormModel();
+		private HttpPropertiesFormModel httpProperties = new HttpPropertiesFormModel();
+		private SignaturePropertiesFormModel signatureProperties = new SignaturePropertiesFormModel();
 		private JdbcPropertiesFormModel jdbcProperties = new JdbcPropertiesFormModel();
 		
 		public ConsolePropertiesFormModel getConsoleProperties()
@@ -120,6 +129,22 @@ public class EbMSAdminPropertiesPage extends BasePage
 		public void setServiceProperties(ServicePropertiesFormModel serviceProperties)
 		{
 			this.serviceProperties = serviceProperties;
+		}
+		public HttpPropertiesFormModel getHttpProperties()
+		{
+			return httpProperties;
+		}
+		public void setHttpProperties(HttpPropertiesFormModel httpProperties)
+		{
+			this.httpProperties = httpProperties;
+		}
+		public SignaturePropertiesFormModel getSignatureProperties()
+		{
+			return signatureProperties;
+		}
+		public void setSignatureProperties(SignaturePropertiesFormModel signatureProperties)
+		{
+			this.signatureProperties = signatureProperties;
 		}
 		public JdbcPropertiesFormModel getJdbcProperties()
 		{

@@ -61,12 +61,12 @@ public class ServicePropertiesFormPanel extends Panel
 					{
 						ServicePropertiesFormModel m = model.getObject();
 						Utils.testEbMSUrl(m.getUrl());
-						info(ServicePropertiesForm.this.getString("connection.ok"));
+						info(ServicePropertiesForm.this.getString("test.ok"));
 					}
 					catch (Exception e)
 					{
 						logger .error("",e);
-						error(new StringResourceModel("connection.nok",ServicePropertiesForm.this,Model.of(e)).getString());
+						error(new StringResourceModel("test.nok",ServicePropertiesForm.this,Model.of(e)).getString());
 					}
 				}
 			};
@@ -74,7 +74,7 @@ public class ServicePropertiesFormPanel extends Panel
 		}
 	}
 
-	public static class ServicePropertiesFormModel extends JdbcURL implements IClusterable
+	public static class ServicePropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		private String url = "http://localhost:8089/adapter";

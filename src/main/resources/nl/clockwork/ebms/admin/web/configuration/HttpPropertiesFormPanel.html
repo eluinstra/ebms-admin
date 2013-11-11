@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
+<body>
+<wicket:panel>
+	<form wicket:id="form">
+		<div class="form-group">
+			<label for="host" class="col-lg-2 control-label"><wicket:message key="lbl.host"/></label>
+			<div class="col-lg-10">
+				<input type="text" class="form-control" wicket:id="host"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="port" class="col-lg-2 control-label"><wicket:message key="lbl.port"/></label>
+			<div class="col-lg-10">
+				<span wicket:id="portFeedback"><input type="text" class="form-control" wicket:id="port"/></span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="url" class="col-lg-2 control-label"><wicket:message key="lbl.url"/></label>
+			<div class="col-lg-10">
+				<span wicket:id="urlFeedback"><input type="text" class="form-control" wicket:id="url"/></span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="chunkedStreamingMode" class="col-lg-2 control-label"><wicket:message key="lbl.chunkedStreamingMode"/></label>
+			<div class="col-lg-10">
+				<input type="checkbox" wicket:id="chunkedStreamingMode" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="ssl" class="col-lg-2 control-label"><wicket:message key="lbl.ssl"/></label>
+			<div class="col-lg-10">
+				<input type="checkbox" wicket:id="ssl" />
+			</div>
+		</div>
+		<wicket:container wicket:id="sslProperties"/>
+	</form>
+</wicket:panel>
+</body>
+</html>
