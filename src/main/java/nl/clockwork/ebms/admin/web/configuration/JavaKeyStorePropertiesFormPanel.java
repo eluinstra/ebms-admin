@@ -95,7 +95,7 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 					}
 				}
 			};
-			add(test);
+			passwordFeedback.add(test);
 		}
 	}
 
