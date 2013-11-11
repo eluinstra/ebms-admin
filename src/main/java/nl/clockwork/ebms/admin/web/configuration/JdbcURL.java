@@ -2,32 +2,32 @@ package nl.clockwork.ebms.admin.web.configuration;
 
 public class JdbcURL
 {
-	private String jdbcHost = "localhost";
-	private Integer jdbcPort = 9001;
-	private String jdbcDatabase = "ebms";
+	private String host = "localhost";
+	private Integer port = 9001;
+	private String database = "ebms";
 
-	public String getJdbcHost()
+	public String getHost()
 	{
-		return jdbcHost;
+		return host;
 	}
-	public void setJdbcHost(String jdbcHost)
+	public void setHost(String host)
 	{
-		this.jdbcHost = jdbcHost;
+		this.host = host;
 	}
-	public Integer getJdbcPort()
+	public Integer getPort()
 	{
-		return jdbcPort;
+		return port;
 	}
-	public void setJdbcPort(Integer jdbcPort)
+	public void setPort(Integer port)
 	{
-		this.jdbcPort = jdbcPort;
+		this.port = port;
 	}
-	public String getJdbcDatabase()
+	public String getDatabase()
 	{
-		return jdbcDatabase;
+		return database;
 	}
-	public void setJdbcDatabase(String jdbcDatabase)
+	public void setDatabase(String database)
 	{
-		this.jdbcDatabase = jdbcDatabase;
+		this.database = database;
 	}
 }

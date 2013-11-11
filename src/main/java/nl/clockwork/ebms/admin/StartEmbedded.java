@@ -146,9 +146,9 @@ public class StartEmbedded
 		if ("org.hsqldb.jdbcDriver".equals(properties.get("ebms.jdbc.driverClassName")) && cmd.hasOption("hsqldb"))
 		{
 			JdbcURL jdbcURL = nl.clockwork.ebms.admin.web.configuration.Utils.parseJdbcURL(properties.get("ebms.jdbc.url"),new JdbcURL());
-			if (!jdbcURL.getJdbcHost().matches("(localhost|127.0.0.1)"))
+			if (!jdbcURL.getHost().matches("(localhost|127.0.0.1)"))
 			{
-				System.out.println("Cannot start server on " + jdbcURL.getJdbcHost());
+				System.out.println("Cannot start server on " + jdbcURL.getHost());
 				System.exit(1);
 			}
 			System.out.println("Starting hsqldb...");
@@ -161,13 +161,13 @@ public class StartEmbedded
 	{
 		List<String> options = new ArrayList<String>();
 		options.add("-database.0");
-		options.add((cmd.hasOption("hsqldbDir") ? "file:" + cmd.getOptionValue("hsqldbDir") : "file:hsqldb") + "/" + jdbcURL.getJdbcDatabase());
+		options.add((cmd.hasOption("hsqldbDir") ? "file:" + cmd.getOptionValue("hsqldbDir") : "file:hsqldb") + "/" + jdbcURL.getDatabase());
 		options.add("-dbname.0");
-		options.add(jdbcURL.getJdbcDatabase());
-		if (jdbcURL.getJdbcPort() != null)
+		options.add(jdbcURL.getDatabase());
+		if (jdbcURL.getPort() != null)
 		{
 			options.add("-port");
-			options.add(jdbcURL.getJdbcPort().toString());
+			options.add(jdbcURL.getPort().toString());
 		}
 		
 		HsqlProperties argProps = HsqlProperties.argArrayToProps(options.toArray(new String[0]),"server");

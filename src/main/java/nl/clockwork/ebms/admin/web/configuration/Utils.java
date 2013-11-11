@@ -19,8 +19,10 @@ import java.beans.PropertyVetoException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Writer;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
@@ -75,16 +77,16 @@ public class Utils
 
 	public static void loadProperties(Properties properties, ServicePropertiesFormModel serviceProperties) throws MalformedURLException
 	{
-		serviceProperties.setEbMSURL(properties.getProperty("service.ebms.url"));
+		serviceProperties.setUrl(properties.getProperty("service.ebms.url"));
 	}
 
 	public static void loadProperties(Properties properties, JdbcPropertiesFormModel jdbcProperties) throws MalformedURLException
 	{
-		jdbcProperties.setJdbcDriver(JdbcDriver.getJdbcDriver(properties.getProperty("ebms.jdbc.driverClassName")));
+		jdbcProperties.setDriver(JdbcDriver.getJdbcDriver(properties.getProperty("ebms.jdbc.driverClassName")));
 		//jdbcProperties.setJdbcURL(properties.getProperty("ebms.jdbc.url"));
 		parseJdbcURL(properties.getProperty("ebms.jdbc.url"),jdbcProperties);
-		jdbcProperties.setJdbcUsername(properties.getProperty("ebms.jdbc.username"));
-		jdbcProperties.setJdbcPassword(properties.getProperty("ebms.jdbc.password"));
+		jdbcProperties.setUsername(properties.getProperty("ebms.jdbc.username"));
+		jdbcProperties.setPassword(properties.getProperty("ebms.jdbc.password"));
 		//jdbcProperties.setPreferredTestQuery(properties.getProperty("ebms.pool.preferredTestQuery"));
 	}
 
@@ -117,16 +119,16 @@ public class Utils
 
   public static void storeProperties(Properties properties, ServicePropertiesFormModel serviceProperties)
   {
-		properties.setProperty("service.ebms.url",serviceProperties.getEbMSURL());
+		properties.setProperty("service.ebms.url",serviceProperties.getUrl());
   }
 
   public static void storeProperties(Properties properties, JdbcPropertiesFormModel jdbcProperties)
   {
-		properties.setProperty("ebms.jdbc.driverClassName",jdbcProperties.getJdbcDriver().getDriverClassName());
-		properties.setProperty("ebms.jdbc.url",jdbcProperties.getJdbcURL());
-		properties.setProperty("ebms.jdbc.username",jdbcProperties.getJdbcUsername());
-		properties.setProperty("ebms.jdbc.password",jdbcProperties.getJdbcPassword() == null ? "" : jdbcProperties.getJdbcPassword());
-		properties.setProperty("ebms.pool.preferredTestQuery",jdbcProperties.getJdbcDriver().getPreferredTestQuery());
+		properties.setProperty("ebms.jdbc.driverClassName",jdbcProperties.getDriver().getDriverClassName());
+		properties.setProperty("ebms.jdbc.url",jdbcProperties.getUrl());
+		properties.setProperty("ebms.jdbc.username",jdbcProperties.getUsername());
+		properties.setProperty("ebms.jdbc.password",jdbcProperties.getPassword() == null ? "" : jdbcProperties.getPassword());
+		properties.setProperty("ebms.pool.preferredTestQuery",jdbcProperties.getDriver().getPreferredTestQuery());
   }
   
 	public static JdbcURL parseJdbcURL(String jdbcURL, JdbcURL model) throws MalformedURLException
@@ -141,17 +143,29 @@ public class Utils
 			if (urlString != null)
 			{
 				URL url = new URL("http://" + urlString);
-				model.setJdbcHost(url.getHost());
-				model.setJdbcPort(url.getPort() == -1 ? null : url.getPort());
-				model.setJdbcDatabase(database);
+				model.setHost(url.getHost());
+				model.setPort(url.getPort() == -1 ? null : url.getPort());
+				model.setDatabase(database);
 			}
 		}
 		return model;
 	}
 
-  public static void testEbMSUrl(String url)
+  public static void testEbMSUrl(String uri) throws IOException
 	{
-		
+		URL url = new URL(uri + "/cpa?wsdl");
+		//URL url = new URL(uri + "/message?wsdl");
+		URLConnection connection = url.openConnection();
+		if (connection instanceof HttpURLConnection)
+		{
+			connection.setDoOutput(true);
+			((HttpURLConnection)connection).setRequestMethod("GET");
+			connection.connect();
+			if (((HttpURLConnection)connection).getResponseCode() != 200)
+				throw new RuntimeException("Status code " + ((HttpURLConnection)connection).getResponseCode());
+		}
+		else
+			throw new IllegalArgumentException("Unknown protocol: " + uri);
 	}
 	
 	public static void testDatabaseConnection(String driverClassName, String jdbcUrl, String username, String password) throws PropertyVetoException, SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException
@@ -166,7 +180,6 @@ public class Utils
     if (password != null)
     	info.setProperty("password",password);
     Connection connection = driver.connect(jdbcUrl,info);
-		//TODO execute preferredTestQuery???
 		connection.close();
 	}
 

@@ -3,6 +3,7 @@ package nl.clockwork.ebms.admin.web.configuration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
@@ -10,6 +11,8 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.io.IClusterable;
 
 public class ServicePropertiesFormPanel extends Panel
@@ -31,37 +34,58 @@ public class ServicePropertiesFormPanel extends Panel
 		{
 			super(id,new CompoundPropertyModel<ServicePropertiesFormModel>(model));
 
-			TextField<String> ebMSURL = new TextField<String>("ebMSURL")
+			TextField<String> url = new TextField<String>("url")
 			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
 				public IModel<String> getLabel()
 				{
-					return Model.of(getLocalizer().getString("lbl.ebMSURL",ServicePropertiesForm.this));
+					return Model.of(getLocalizer().getString("lbl.url",ServicePropertiesForm.this));
 				}
 			};
-			ebMSURL.setRequired(true);
-			MarkupContainer ebMSURLFeedback = new FormComponentFeedbackBorder("ebMSURLFeedback");
-			add(ebMSURLFeedback);
-			ebMSURLFeedback.add(ebMSURL);
-			add(ebMSURLFeedback);
+			url.setRequired(true);
+			MarkupContainer urlFeedback = new FormComponentFeedbackBorder("urlFeedback");
+			add(urlFeedback);
+			urlFeedback.add(url);
+			add(urlFeedback);
 
+			Button test = new Button("test",new ResourceModel("cmd.test"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void onSubmit()
+				{
+					try
+					{
+						ServicePropertiesFormModel m = model.getObject();
+						Utils.testEbMSUrl(m.getUrl());
+						info(ServicePropertiesForm.this.getString("connection.ok"));
+					}
+					catch (Exception e)
+					{
+						logger .error("",e);
+						error(new StringResourceModel("connection.nok",ServicePropertiesForm.this,Model.of(e)).getString());
+					}
+				}
+			};
+			add(test);
 		}
 	}
 
 	public static class ServicePropertiesFormModel extends JdbcURL implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		private String ebMSURL = "http://localhost:8089/adapter";
+		private String url = "http://localhost:8089/adapter";
 
-		public String getEbMSURL()
+		public String getUrl()
 		{
-			return ebMSURL;
+			return url;
 		}
-		public void setEbMSURL(String ebMSURL)
+		public void setUrl(String url)
 		{
-			this.ebMSURL = ebMSURL;
+			this.url = url;
 		}
 	}
 }

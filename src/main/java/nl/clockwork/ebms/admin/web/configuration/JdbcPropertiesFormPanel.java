@@ -44,69 +44,69 @@ public class JdbcPropertiesFormPanel extends Panel
 		public JdbcPropertiesForm(String id, final IModel<JdbcPropertiesFormModel> model)
 		{
 			super(id,new CompoundPropertyModel<JdbcPropertiesFormModel>(model));
-			DropDownChoice<JdbcDriver> jdbcDrivers = new DropDownChoice<JdbcDriver>("jdbcDrivers",new PropertyModel<JdbcDriver>(model.getObject(),"jdbcDriver"),new PropertyModel<List<JdbcDriver>>(model.getObject(),"jdbcDrivers"))
+			DropDownChoice<JdbcDriver> drivers = new DropDownChoice<JdbcDriver>("drivers",new PropertyModel<JdbcDriver>(model.getObject(),"driver"),new PropertyModel<List<JdbcDriver>>(model.getObject(),"drivers"))
 			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
 				public IModel<String> getLabel()
 				{
-					return Model.of(getLocalizer().getString("lbl.jdbcDriver",JdbcPropertiesFormPanel.this));
+					return Model.of(getLocalizer().getString("lbl.driver",JdbcPropertiesFormPanel.this));
 				}
 			};
-			jdbcDrivers.setRequired(true);
-			MarkupContainer jdbcDriverFeedback = new FormComponentFeedbackBorder("jdbcDriverFeedback");
-			add(jdbcDriverFeedback);
-			jdbcDriverFeedback.add(jdbcDrivers);
+			drivers.setRequired(true);
+			MarkupContainer driverFeedback = new FormComponentFeedbackBorder("driverFeedback");
+			add(driverFeedback);
+			driverFeedback.add(drivers);
 
-			TextField<String> jdbcHost = new TextField<String>("jdbcHost")
+			TextField<String> host = new TextField<String>("host")
 			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
 				public IModel<String> getLabel()
 				{
-					return Model.of(getLocalizer().getString("lbl.jdbcHost",JdbcPropertiesFormPanel.this));
+					return Model.of(getLocalizer().getString("lbl.host",JdbcPropertiesFormPanel.this));
 				}
 			};
-			jdbcHost.setRequired(true);
-			MarkupContainer jdbcHostFeedback = new FormComponentFeedbackBorder("jdbcHostFeedback");
-			add(jdbcHostFeedback);
-			jdbcHostFeedback.add(jdbcHost);
+			host.setRequired(true);
+			MarkupContainer hostFeedback = new FormComponentFeedbackBorder("hostFeedback");
+			add(hostFeedback);
+			hostFeedback.add(host);
 
-			TextField<Integer> jdbcPort = new TextField<Integer>("jdbcPort")
+			TextField<Integer> port = new TextField<Integer>("port")
 			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
 				public IModel<String> getLabel()
 				{
-					return Model.of(getLocalizer().getString("lbl.jdbcPort",JdbcPropertiesFormPanel.this));
+					return Model.of(getLocalizer().getString("lbl.port",JdbcPropertiesFormPanel.this));
 				}
 			};
-			MarkupContainer jdbcPortFeedback = new FormComponentFeedbackBorder("jdbcPortFeedback");
-			add(jdbcPortFeedback);
-			jdbcPortFeedback.add(jdbcPort);
+			MarkupContainer portFeedback = new FormComponentFeedbackBorder("portFeedback");
+			add(portFeedback);
+			portFeedback.add(port);
 
-			TextField<String> jdbcDatabase = new TextField<String>("jdbcDatabase")
+			TextField<String> database = new TextField<String>("database")
 			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
 				public IModel<String> getLabel()
 				{
-					return Model.of(getLocalizer().getString("lbl.jdbcDatabase",JdbcPropertiesFormPanel.this));
+					return Model.of(getLocalizer().getString("lbl.database",JdbcPropertiesFormPanel.this));
 				}
 			};
-			jdbcDatabase.setRequired(true);
-			MarkupContainer jdbcDatabaseFeedback = new FormComponentFeedbackBorder("jdbcDatabaseFeedback");
-			add(jdbcDatabaseFeedback);
-			jdbcDatabaseFeedback.add(jdbcDatabase);
+			database.setRequired(true);
+			MarkupContainer databaseFeedback = new FormComponentFeedbackBorder("databaseFeedback");
+			add(databaseFeedback);
+			databaseFeedback.add(database);
 
-			final TextField<String> jdbcURL = new TextField<String>("jdbcURL");
-			jdbcURL.setOutputMarkupId(true);
-			jdbcURL.setEnabled(false);
-			add(jdbcURL);
+			final TextField<String> url = new TextField<String>("url");
+			url.setOutputMarkupId(true);
+			url.setEnabled(false);
+			add(url);
 			
 			Button test = new Button("test",new ResourceModel("cmd.test"))
 			{
@@ -118,134 +118,134 @@ public class JdbcPropertiesFormPanel extends Panel
 					try
 					{
 						JdbcPropertiesFormModel m = model.getObject();
-						Utils.testDatabaseConnection(m.getJdbcDriver().getDriverClassName(),m.getJdbcURL(),m.getJdbcUsername(),m.getJdbcPassword());
-						info(getPage().getString("db.connection.ok"));
+						Utils.testDatabaseConnection(m.getDriver().getDriverClassName(),m.getUrl(),m.getUsername(),m.getPassword());
+						info(JdbcPropertiesForm.this.getString("connection.ok"));
 					}
 					catch (Exception e)
 					{
 						logger .error("",e);
-						error(new StringResourceModel("db.connection.nok",getPage(),Model.of(e)).getString());
+						error(new StringResourceModel("connection.nok",JdbcPropertiesForm.this,Model.of(e)).getString());
 					}
 				}
 			};
 			add(test);
 			
-			jdbcDrivers.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			drivers.add(new AjaxFormComponentUpdatingBehavior("onchange")
 	    {
 				private static final long serialVersionUID = 1L;
 
 				@Override
 				protected void onUpdate(AjaxRequestTarget target)
 				{
-					target.add(jdbcURL);
+					target.add(url);
 				}
 	    });
 
-			jdbcHost.add(new OnChangeAjaxBehavior()
+			host.add(new OnChangeAjaxBehavior()
 	    {
 				private static final long serialVersionUID = 1L;
 
 				@Override
 				protected void onUpdate(AjaxRequestTarget target)
 				{
-					target.add(jdbcURL);
+					target.add(url);
 				}
 	    });
 
-			jdbcPort.add(new OnChangeAjaxBehavior()
+			port.add(new OnChangeAjaxBehavior()
 	    {
 				private static final long serialVersionUID = 1L;
 
 				@Override
 				protected void onUpdate(AjaxRequestTarget target)
 				{
-					target.add(jdbcURL);
+					target.add(url);
 				}
 	    });
 
-			jdbcDatabase.add(new OnChangeAjaxBehavior()
+			database.add(new OnChangeAjaxBehavior()
 	    {
 				private static final long serialVersionUID = 1L;
 
 				@Override
 				protected void onUpdate(AjaxRequestTarget target)
 				{
-					target.add(jdbcURL);
+					target.add(url);
 				}
 	    });
 
-			TextField<String> jdbcUsername = new TextField<String>("jdbcUsername")
+			TextField<String> username = new TextField<String>("username")
 			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
 				public IModel<String> getLabel()
 				{
-					return Model.of(getLocalizer().getString("lbl.jdbcUsername",JdbcPropertiesFormPanel.this));
+					return Model.of(getLocalizer().getString("lbl.username",JdbcPropertiesFormPanel.this));
 				}
 			};
-			jdbcUsername.setRequired(true);
-			MarkupContainer jdbcUsernameFeedback = new FormComponentFeedbackBorder("jdbcUsernameFeedback");
-			add(jdbcUsernameFeedback);
-			jdbcUsernameFeedback.add(jdbcUsername);
+			username.setRequired(true);
+			MarkupContainer usernameFeedback = new FormComponentFeedbackBorder("usernameFeedback");
+			add(usernameFeedback);
+			usernameFeedback.add(username);
 
-			PasswordTextField jdbcPassword = new PasswordTextField("jdbcPassword")
+			PasswordTextField password = new PasswordTextField("password")
 			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
 				public IModel<String> getLabel()
 				{
-					return Model.of(getLocalizer().getString("lbl.jdbcPassword",JdbcPropertiesFormPanel.this));
+					return Model.of(getLocalizer().getString("lbl.password",JdbcPropertiesFormPanel.this));
 				}
 			};
-			jdbcPassword.setResetPassword(false);
-			jdbcPassword.setRequired(false);
-			MarkupContainer jdbcPasswordFeedback = new FormComponentFeedbackBorder("jdbcPasswordFeedback");
-			add(jdbcPasswordFeedback);
-			jdbcPasswordFeedback.add(jdbcPassword);
+			password.setResetPassword(false);
+			password.setRequired(false);
+			MarkupContainer passwordFeedback = new FormComponentFeedbackBorder("passwordFeedback");
+			add(passwordFeedback);
+			passwordFeedback.add(password);
 		}
 	}
 
 	public static class JdbcPropertiesFormModel extends JdbcURL implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		private JdbcDriver jdbcDriver = JdbcDriver.HSQLDB;
-		private String jdbcUsername = "sa";
-		private String jdbcPassword = null;
+		private JdbcDriver driver = JdbcDriver.HSQLDB;
+		private String username = "sa";
+		private String password = null;
 
-		public List<JdbcDriver> getJdbcDrivers()
+		public List<JdbcDriver> getDrivers()
 		{
 			return Arrays.asList(JdbcDriver.values());
 		}
-		public JdbcDriver getJdbcDriver()
+		public JdbcDriver getDriver()
 		{
-			return jdbcDriver;
+			return driver;
 		}
-		public void setJdbcDriver(JdbcDriver jdbcDriver)
+		public void setDriver(JdbcDriver driver)
 		{
-			this.jdbcDriver = jdbcDriver;
+			this.driver = driver;
 		}
-		public String getJdbcURL()
+		public String getUrl()
 		{
-			//return jdbcDriver.createJdbcURL(getJdbcHost(),getJdbcPort(),getJdbcDatabase());
-			return JdbcDriver.createJdbcURL(jdbcDriver.getUrlExpr(),getJdbcHost(),getJdbcPort(),getJdbcDatabase());
+			//return driver.createJdbcURL(getHost(),getPort(),getDatabase());
+			return JdbcDriver.createJdbcURL(driver.getUrlExpr(),getHost(),getPort(),getDatabase());
 		}
-		public String getJdbcUsername()
+		public String getUsername()
 		{
-			return jdbcUsername;
+			return username;
 		}
-		public void setJdbcUsername(String jdbcUsername)
+		public void setUsername(String username)
 		{
-			this.jdbcUsername = jdbcUsername;
+			this.username = username;
 		}
-		public String getJdbcPassword()
+		public String getPassword()
 		{
-			return jdbcPassword;
+			return password;
 		}
-		public void setJdbcPassword(String jdbcPassword)
+		public void setPassword(String password)
 		{
-			this.jdbcPassword = jdbcPassword;
+			this.password = password;
 		}
 	}
 }
