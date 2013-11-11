@@ -1,5 +1,7 @@
 package nl.clockwork.ebms.admin.web.configuration;
 
+import java.util.Locale;
+
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormModel;
 
@@ -18,6 +20,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.io.IClusterable;
 
 public class HttpPropertiesFormPanel extends Panel
@@ -73,6 +76,13 @@ public class HttpPropertiesFormPanel extends Panel
 			TextField<String> path = new TextField<String>("path")
 			{
 				private static final long serialVersionUID = 1L;
+
+				@SuppressWarnings("unchecked")
+				@Override
+				public <C> IConverter<C> getConverter(Class<C> type)
+				{
+					return (IConverter<C>)new PathConverter();
+				}
 
 				@Override
 				public IModel<String> getLabel()
@@ -234,5 +244,23 @@ public class HttpPropertiesFormPanel extends Panel
 		{
 			this.sslProperties = sslProperties;
 		}
+	}
+	
+	public class PathConverter implements IConverter<String>
+	{
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public String convertToObject(String value, Locale locale)
+		{
+			return "/" + value;
+		}
+
+		@Override
+		public String convertToString(String value, Locale locale)
+		{
+			return value.substring(1);
+		}
+
 	}
 }
