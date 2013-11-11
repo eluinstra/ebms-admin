@@ -6,10 +6,10 @@
 		<span wicket:id="feedback">[feedback]</span>
 	</div>
 	<form class="form-horizontal" role="form" wicket:id="uploadCPAForm">
-		<div class="form-group">
+		<div class="form-group" wicket:id="cpaFeedback">
 			<label for="cpaFile" class="col-lg-2 control-label"><wicket:message key="lbl.cpa"/></label>
 			<div class="col-lg-10">
-				<span wicket:id="cpaFeedback"><input type="file" class="form-control" wicket:id="cpaFile"/></span>
+				<input type="file" class="form-control" wicket:id="cpaFile"/>
 			</div>
 		</div>
 		<div class="form-group">

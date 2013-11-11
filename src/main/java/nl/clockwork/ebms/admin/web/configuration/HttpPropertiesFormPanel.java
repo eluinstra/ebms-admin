@@ -1,5 +1,6 @@
 package nl.clockwork.ebms.admin.web.configuration;
 
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormModel;
 
 import org.apache.commons.logging.Log;
@@ -10,7 +11,6 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
@@ -62,7 +62,7 @@ public class HttpPropertiesFormPanel extends Panel
 					return Model.of(getLocalizer().getString("lbl.port",HttpPropertiesForm.this));
 				}
 			};
-			MarkupContainer portFeedback = new FormComponentFeedbackBorder("portFeedback");
+			MarkupContainer portFeedback = new BootstrapFormComponentFeedbackBorder("portFeedback");
 			add(portFeedback);
 			portFeedback.add(port);
 
@@ -77,7 +77,7 @@ public class HttpPropertiesFormPanel extends Panel
 				}
 			};
 			url.setRequired(true);
-			MarkupContainer urlFeedback = new FormComponentFeedbackBorder("urlFeedback");
+			MarkupContainer urlFeedback = new BootstrapFormComponentFeedbackBorder("urlFeedback");
 			add(urlFeedback);
 			urlFeedback.add(url);
 

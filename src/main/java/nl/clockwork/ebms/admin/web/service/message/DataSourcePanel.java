@@ -18,6 +18,7 @@ package nl.clockwork.ebms.admin.web.service.message;
 import java.util.List;
 
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.model.EbMSDataSource;
 
@@ -33,7 +34,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
-import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.ResourceModel;
@@ -66,7 +66,7 @@ public abstract class DataSourcePanel extends Panel
 
 			FileUploadField file = new FileUploadField("file");
 			file.setRequired(true);
-			MarkupContainer fileFeedback = new FormComponentFeedbackBorder("fileFeedback");
+			MarkupContainer fileFeedback = new BootstrapFormComponentFeedbackBorder("fileFeedback");
 			add(fileFeedback);
 			fileFeedback.add(file);
 

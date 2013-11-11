@@ -23,6 +23,7 @@ import javax.xml.bind.JAXBException;
 import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
 import nl.clockwork.ebms.model.EbMSDataSource;
@@ -42,7 +43,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -95,7 +95,7 @@ public class SendMessagePage extends BasePage
 				}
 			};
 			cpaIds.setRequired(true);
-			MarkupContainer cpaIdFeedback = new FormComponentFeedbackBorder("cpaIdFeedback");
+			MarkupContainer cpaIdFeedback = new BootstrapFormComponentFeedbackBorder("cpaIdFeedback");
 			add(cpaIdFeedback);
 			cpaIdFeedback.add(cpaIds);
 
@@ -111,7 +111,7 @@ public class SendMessagePage extends BasePage
 			};
 			fromRoles.setRequired(true);
 			fromRoles.setOutputMarkupId(true);
-			MarkupContainer fromRoleFeedback = new FormComponentFeedbackBorder("fromRoleFeedback");
+			MarkupContainer fromRoleFeedback = new BootstrapFormComponentFeedbackBorder("fromRoleFeedback");
 			add(fromRoleFeedback);
 			fromRoleFeedback.add(fromRoles);
 			
@@ -150,7 +150,7 @@ public class SendMessagePage extends BasePage
 			};
 			services.setRequired(true);
 			services.setOutputMarkupId(true);
-			MarkupContainer serviceFeedback = new FormComponentFeedbackBorder("serviceFeedback");
+			MarkupContainer serviceFeedback = new BootstrapFormComponentFeedbackBorder("serviceFeedback");
 			add(serviceFeedback);
 			serviceFeedback.add(services);
 			
@@ -189,7 +189,7 @@ public class SendMessagePage extends BasePage
 			};
 			actions.setRequired(true);
 			actions.setOutputMarkupId(true);
-			MarkupContainer actionFeedback = new FormComponentFeedbackBorder("actionFeedback");
+			MarkupContainer actionFeedback = new BootstrapFormComponentFeedbackBorder("actionFeedback");
 			add(actionFeedback);
 			actionFeedback.add(actions);
 			

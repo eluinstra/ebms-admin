@@ -26,6 +26,7 @@ import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
 import nl.clockwork.ebms.model.MessageStatus;
@@ -40,7 +41,6 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -93,7 +93,7 @@ public class MessageStatusPage extends BasePage
 				}
 			};
 			cpaIds.setRequired(true);
-			MarkupContainer cpaIdFeedback = new FormComponentFeedbackBorder("cpaIdFeedback");
+			MarkupContainer cpaIdFeedback = new BootstrapFormComponentFeedbackBorder("cpaIdFeedback");
 			add(cpaIdFeedback);
 			cpaIdFeedback.add(cpaIds);
 
@@ -109,7 +109,7 @@ public class MessageStatusPage extends BasePage
 			};
 			fromParties.setRequired(true);
 			fromParties.setOutputMarkupId(true);
-			MarkupContainer fromPartyFeedback = new FormComponentFeedbackBorder("fromPartyFeedback");
+			MarkupContainer fromPartyFeedback = new BootstrapFormComponentFeedbackBorder("fromPartyFeedback");
 			add(fromPartyFeedback);
 			fromPartyFeedback.add(fromParties);
 			
@@ -148,7 +148,7 @@ public class MessageStatusPage extends BasePage
 			};
 			toParties.setRequired(true);
 			toParties.setOutputMarkupId(true);
-			MarkupContainer toPartyFeedback = new FormComponentFeedbackBorder("toPartyFeedback");
+			MarkupContainer toPartyFeedback = new BootstrapFormComponentFeedbackBorder("toPartyFeedback");
 			add(toPartyFeedback);
 			toPartyFeedback.add(toParties);
 			
@@ -164,7 +164,7 @@ public class MessageStatusPage extends BasePage
 			};
 			messageIds.setRequired(true);
 			messageIds.setOutputMarkupId(true);
-			MarkupContainer messageIdFeedback = new FormComponentFeedbackBorder("messageIdFeedback");
+			MarkupContainer messageIdFeedback = new BootstrapFormComponentFeedbackBorder("messageIdFeedback");
 			add(messageIdFeedback);
 			messageIdFeedback.add(messageIds);
 			
@@ -205,7 +205,7 @@ public class MessageStatusPage extends BasePage
 //				}
 //			};
 //			messageId.setRequired(true);
-//			MarkupContainer messageIdFeedback = new FormComponentFeedbackBorder("messageIdFeedback");
+//			MarkupContainer messageIdFeedback = new BootstrapFormComponentFeedbackBorder("messageIdFeedback");
 //			add(messageIdFeedback);
 //			messageIdFeedback.add(messageId);
 			

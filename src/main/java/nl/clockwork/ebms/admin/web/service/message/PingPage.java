@@ -24,7 +24,7 @@ import javax.xml.bind.JAXBException;
 import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.admin.web.FormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
 import nl.clockwork.ebms.service.CPAService;
@@ -86,7 +86,7 @@ public class PingPage extends BasePage
 				}
 			};
 			cpaIds.setRequired(true);
-			add(new FormComponentFeedbackBorder("cpaIdFeedback",cpaIds));
+			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",cpaIds));
 
 			final DropDownChoice<String> fromParties = new DropDownChoice<String>("fromParties",new PropertyModel<String>(this.getModelObject(),"fromParty"),new PropertyModel<List<String>>(this.getModelObject(),"fromParties"))
 			{
@@ -99,7 +99,7 @@ public class PingPage extends BasePage
 				}
 			};
 			fromParties.setRequired(true).setOutputMarkupId(true);
-			add(new FormComponentFeedbackBorder("fromPartyFeedback",fromParties));
+			add(new BootstrapFormComponentFeedbackBorder("fromPartyFeedback",fromParties));
 			
 			cpaIds.add(new AjaxFormComponentUpdatingBehavior("onchange")
       {
@@ -135,7 +135,7 @@ public class PingPage extends BasePage
 				}
 			};
 			toParties.setRequired(true).setOutputMarkupId(true);
-			add(new FormComponentFeedbackBorder("toPartyFeedback",toParties));
+			add(new BootstrapFormComponentFeedbackBorder("toPartyFeedback",toParties));
 			
 			fromParties.add(new AjaxFormComponentUpdatingBehavior("onchange")
       {

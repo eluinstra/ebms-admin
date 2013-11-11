@@ -3,28 +3,28 @@
 <body>
 <wicket:panel>
 	<form wicket:id="form">
-		<div class="form-group">
+		<div class="form-group" wicket:id="driverFeedback">
 			<label for="drivers" class="col-lg-2 control-label"><wicket:message key="lbl.driver"/></label>
 			<div class="col-lg-10">
-				<span wicket:id="driverFeedback"><select class="form-control" wicket:id="drivers"/></span>
+				<select class="form-control" wicket:id="drivers"/>
 			</div>
 		</div>
-		<div class="form-group">
+		<div class="form-group" wicket:id="hostFeedback">
 			<label for="host" class="col-lg-2 control-label"><wicket:message key="lbl.host"/></label>
 			<div class="col-lg-10">
-				<span wicket:id="hostFeedback"><input type="text" class="form-control" wicket:id="host"/></span>
+				<input type="text" class="form-control" wicket:id="host"/>
 			</div>
 		</div>
-		<div class="form-group">
+		<div class="form-group" wicket:id="portFeedback">
 			<label for="port" class="col-lg-2 control-label"><wicket:message key="lbl.port"/></label>
 			<div class="col-lg-10">
-				<span wicket:id="portFeedback"><input type="text" class="form-control" wicket:id="port"/></span>
+				<input type="text" class="form-control" wicket:id="port"/>
 			</div>
 		</div>
-		<div class="form-group">
+		<div class="form-group" wicket:id="databaseFeedback">
 			<label for="database" class="col-lg-2 control-label"><wicket:message key="lbl.database"/></label>
 			<div class="col-lg-10">
-				<span wicket:id="databaseFeedback"><input type="text" class="form-control" wicket:id="database"/></span>
+				<input type="text" class="form-control" wicket:id="database"/>
 			</div>
 		</div>
 		<div class="form-group">
@@ -33,16 +33,16 @@
 				<input type="text" class="form-control" wicket:id="url"/><input type="submit" class="btn btn-default" wicket:id="test" wicket:message="value:cmd.test"/>
 			</div>
 		</div>
-		<div class="form-group">
+		<div class="form-group" wicket:id="usernameFeedback">
 			<label for="username" class="col-lg-2 control-label"><wicket:message key="lbl.username"/></label>
 			<div class="col-lg-10">
-				<span wicket:id="usernameFeedback"><input type="text" class="form-control" wicket:id="username"/></span>
+				<input type="text" class="form-control" wicket:id="username"/>
 			</div>
 		</div>
-		<div class="form-group">
+		<div class="form-group" wicket:id="passwordFeedback">
 			<label for="password" class="col-lg-2 control-label"><wicket:message key="lbl.password"/></label>
 			<div class="col-lg-10">
-				<span wicket:id="passwordFeedback"><input type="password" class="form-control" wicket:id="password"/></span>
+				<input type="password" class="form-control" wicket:id="password"/>
 			</div>
 		</div>
 	</form>

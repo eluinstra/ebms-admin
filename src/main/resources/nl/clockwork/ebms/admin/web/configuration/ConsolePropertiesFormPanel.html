@@ -3,10 +3,10 @@
 <body>
 <wicket:panel>
 	<form wicket:id="form">
-		<div class="form-group">
+		<div class="form-group" wicket:id="maxItemsPerPageFeedback">
 			<label for="maxItemsPerPage" class="col-lg-2 control-label"><wicket:message key="lbl.maxItemsPerPage"/></label>
 			<div class="col-lg-10">
-				<span wicket:id="maxItemsPerPageFeedback"><input type="text" class="form-control" wicket:id="maxItemsPerPage"/></span>
+				<input type="text" class="form-control" wicket:id="maxItemsPerPage"/>
 			</div>
 		</div>
 	</form>

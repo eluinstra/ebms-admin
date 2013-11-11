@@ -1,12 +1,13 @@
 package nl.clockwork.ebms.admin.web.configuration;
 
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
@@ -45,7 +46,7 @@ public class ServicePropertiesFormPanel extends Panel
 				}
 			};
 			url.setRequired(true);
-			MarkupContainer urlFeedback = new FormComponentFeedbackBorder("urlFeedback");
+			MarkupContainer urlFeedback = new BootstrapFormComponentFeedbackBorder("urlFeedback");
 			add(urlFeedback);
 			urlFeedback.add(url);
 			add(urlFeedback);

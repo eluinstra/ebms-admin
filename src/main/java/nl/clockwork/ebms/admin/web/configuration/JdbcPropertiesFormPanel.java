@@ -3,6 +3,7 @@ package nl.clockwork.ebms.admin.web.configuration;
 import java.util.Arrays;
 import java.util.List;
 
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.configuration.Constants.JdbcDriver;
 
 import org.apache.commons.logging.Log;
@@ -16,7 +17,6 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
@@ -55,7 +55,7 @@ public class JdbcPropertiesFormPanel extends Panel
 				}
 			};
 			drivers.setRequired(true);
-			MarkupContainer driverFeedback = new FormComponentFeedbackBorder("driverFeedback");
+			MarkupContainer driverFeedback = new BootstrapFormComponentFeedbackBorder("driverFeedback");
 			add(driverFeedback);
 			driverFeedback.add(drivers);
 
@@ -70,7 +70,7 @@ public class JdbcPropertiesFormPanel extends Panel
 				}
 			};
 			host.setRequired(true);
-			MarkupContainer hostFeedback = new FormComponentFeedbackBorder("hostFeedback");
+			MarkupContainer hostFeedback = new BootstrapFormComponentFeedbackBorder("hostFeedback");
 			add(hostFeedback);
 			hostFeedback.add(host);
 
@@ -84,7 +84,7 @@ public class JdbcPropertiesFormPanel extends Panel
 					return Model.of(getLocalizer().getString("lbl.port",JdbcPropertiesFormPanel.this));
 				}
 			};
-			MarkupContainer portFeedback = new FormComponentFeedbackBorder("portFeedback");
+			MarkupContainer portFeedback = new BootstrapFormComponentFeedbackBorder("portFeedback");
 			add(portFeedback);
 			portFeedback.add(port);
 
@@ -99,7 +99,7 @@ public class JdbcPropertiesFormPanel extends Panel
 				}
 			};
 			database.setRequired(true);
-			MarkupContainer databaseFeedback = new FormComponentFeedbackBorder("databaseFeedback");
+			MarkupContainer databaseFeedback = new BootstrapFormComponentFeedbackBorder("databaseFeedback");
 			add(databaseFeedback);
 			databaseFeedback.add(database);
 
@@ -185,7 +185,7 @@ public class JdbcPropertiesFormPanel extends Panel
 				}
 			};
 			username.setRequired(true);
-			MarkupContainer usernameFeedback = new FormComponentFeedbackBorder("usernameFeedback");
+			MarkupContainer usernameFeedback = new BootstrapFormComponentFeedbackBorder("usernameFeedback");
 			add(usernameFeedback);
 			usernameFeedback.add(username);
 
@@ -201,7 +201,7 @@ public class JdbcPropertiesFormPanel extends Panel
 			};
 			password.setResetPassword(false);
 			password.setRequired(false);
-			MarkupContainer passwordFeedback = new FormComponentFeedbackBorder("passwordFeedback");
+			MarkupContainer passwordFeedback = new BootstrapFormComponentFeedbackBorder("passwordFeedback");
 			add(passwordFeedback);
 			passwordFeedback.add(password);
 		}

@@ -19,6 +19,7 @@ import java.util.List;
 
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.service.CPAService;
 
@@ -30,7 +31,6 @@ import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
-import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -77,7 +77,7 @@ public class CPAUploadPage extends BasePage
 				}
 			};
 			cpaFile.setRequired(true);
-			MarkupContainer cpaFeedback = new FormComponentFeedbackBorder("cpaFeedback");
+			MarkupContainer cpaFeedback = new BootstrapFormComponentFeedbackBorder("cpaFeedback");
 			add(cpaFeedback);
 			cpaFeedback.add(cpaFile);
 			
