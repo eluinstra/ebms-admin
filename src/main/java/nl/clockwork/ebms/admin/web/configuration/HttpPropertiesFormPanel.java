@@ -21,6 +21,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.convert.IConverter;
+import org.apache.wicket.util.convert.converter.AbstractConverter;
 import org.apache.wicket.util.io.IClusterable;
 
 public class HttpPropertiesFormPanel extends Panel
@@ -246,7 +247,7 @@ public class HttpPropertiesFormPanel extends Panel
 		}
 	}
 	
-	public class PathConverter implements IConverter<String>
+	public class PathConverter extends AbstractConverter<String>
 	{
 		private static final long serialVersionUID = 1L;
 
@@ -260,6 +261,12 @@ public class HttpPropertiesFormPanel extends Panel
 		public String convertToString(String value, Locale locale)
 		{
 			return value.substring(1);
+		}
+
+		@Override
+		protected Class<String> getTargetType()
+		{
+			return String.class;
 		}
 
 	}
