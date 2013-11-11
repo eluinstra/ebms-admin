@@ -16,6 +16,8 @@
 package nl.clockwork.ebms.admin.web;
 
 
+import java.util.Locale;
+
 import nl.clockwork.ebms.admin.web.menu.MenuPanel;
 
 import org.apache.wicket.markup.html.WebPage;
@@ -36,6 +38,7 @@ public abstract class BasePage extends WebPage
 	protected BasePage(final PageParameters parameters)
 	{
 		super(parameters);
+		getSession().setLocale(Locale.US);
     add(new MenuPanel("menu",WicketApplication.get().getMenuItems()));
     add(new BookmarkablePageLink<Void>("home",WicketApplication.get().getHomePage()));
 		add(new Label("pageTitle",new PropertyModel<String>(this,"pageTitle")));
