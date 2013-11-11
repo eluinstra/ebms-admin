@@ -6,7 +6,7 @@
 		<div class="form-group">
 			<label for="host" class="col-lg-2 control-label"><wicket:message key="lbl.host"/></label>
 			<div class="col-lg-10">
-				<input type="text" class="form-control" wicket:id="host"/>
+				<div class="input-group"><span class="input-group-addon" wicket:id="protocol"/><input type="text" class="form-control" wicket:id="host"/></div>
 			</div>
 		</div>
 		<div class="form-group" wicket:id="portFeedback">
@@ -15,7 +15,13 @@
 				<input type="text" class="form-control" wicket:id="port"/>
 			</div>
 		</div>
-		<div class="form-group" wicket:id="urlFeedback">
+		<div class="form-group" wicket:id="pathFeedback">
+			<label for="path" class="col-lg-2 control-label"><wicket:message key="lbl.path"/></label>
+			<div class="col-lg-10">
+				<input type="text" class="form-control" wicket:id="path"/>
+			</div>
+		</div>
+		<div class="form-group">
 			<label for="url" class="col-lg-2 control-label"><wicket:message key="lbl.url"/></label>
 			<div class="col-lg-10">
 				<input type="text" class="form-control" wicket:id="url"/>

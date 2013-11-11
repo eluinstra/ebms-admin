@@ -256,7 +256,7 @@ public class StartEmbedded
 			SocketConnector connector = new SocketConnector();
 			connector.setPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
 			server.addConnector(connector);
-			System.out.println("EbMS service configured on http://localhost:" + connector.getPort() + properties.get("ebms.url"));
+			System.out.println("EbMS service configured on http://localhost:" + connector.getPort() + properties.get("ebms.path"));
 		}
 		else
 		{
@@ -289,7 +289,7 @@ public class StartEmbedded
 				sslConnector.setPort(connector.getConfidentialPort());
 				//sslConnector.setAcceptors(4);
 				server.addConnector(sslConnector);
-				System.out.println("EbMS service configured on https://localhost:" + connector.getConfidentialPort() + properties.get("ebms.url"));
+				System.out.println("EbMS service configured on https://localhost:" + connector.getConfidentialPort() + properties.get("ebms.path"));
 			}
 			else
 			{
@@ -332,7 +332,7 @@ public class StartEmbedded
 		context.addServlet(servletHolder,"/images/*");
 		context.addServlet(servletHolder,"/js/*");
 
-		context.addServlet(nl.clockwork.ebms.servlet.EbMSServlet.class,properties.get("ebms.url"));
+		context.addServlet(nl.clockwork.ebms.servlet.EbMSServlet.class,properties.get("ebms.path"));
 
 		context.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
 		

@@ -101,7 +101,7 @@ public class Utils
 	{
 		//httpProperties.setHost(properties.getProperty("ebms.host"));
 		httpProperties.setPort(properties.getProperty("ebms.port") == null ? null : new Integer(properties.getProperty("ebms.port")));
-		httpProperties.setUrl(properties.getProperty("ebms.url"));
+		httpProperties.setPath(properties.getProperty("ebms.path"));
 		httpProperties.setSsl(new Boolean(properties.getProperty("ebms.ssl")));
 		httpProperties.setChunkedStreamingMode(new Boolean(properties.getProperty("http.chunkedStreamingMode")));
 		if (httpProperties.getSsl())
@@ -175,7 +175,7 @@ public class Utils
   {
 		//properties.setProperty("ebms.host",httpProperties.getHost());
 		properties.setProperty("ebms.port",httpProperties.getPort() == null ? "" : httpProperties.getPort().toString());
-		properties.setProperty("ebms.url",httpProperties.getUrl());
+		properties.setProperty("ebms.path",httpProperties.getPath());
 		properties.setProperty("ebms.ssl",Boolean.toString(httpProperties.getSsl()));
 		properties.setProperty("http.chunkedStreamingMode",Boolean.toString(httpProperties.isChunkedStreamingMode()));
 		if (httpProperties.getSsl())

@@ -8,6 +8,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -37,6 +39,8 @@ public class HttpPropertiesFormPanel extends Panel
 		{
 			super(id,new CompoundPropertyModel<HttpPropertiesFormModel>(model));
 			setOutputMarkupId(true);
+			
+			add(new Label("protocol")); 
 
 			TextField<String> host = new TextField<String>("host")
 			{
@@ -66,7 +70,22 @@ public class HttpPropertiesFormPanel extends Panel
 			add(portFeedback);
 			portFeedback.add(port);
 
-			TextField<String> url = new TextField<String>("url")
+			TextField<String> path = new TextField<String>("path")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.path",HttpPropertiesForm.this));
+				}
+			};
+			path.setRequired(true);
+			MarkupContainer pathFeedback = new BootstrapFormComponentFeedbackBorder("pathFeedback");
+			add(pathFeedback);
+			pathFeedback.add(path);
+
+			final TextField<String> url = new TextField<String>("url")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -76,10 +95,31 @@ public class HttpPropertiesFormPanel extends Panel
 					return Model.of(getLocalizer().getString("lbl.url",HttpPropertiesForm.this));
 				}
 			};
-			url.setRequired(true);
-			MarkupContainer urlFeedback = new BootstrapFormComponentFeedbackBorder("urlFeedback");
-			add(urlFeedback);
-			urlFeedback.add(url);
+			url.setOutputMarkupId(true);
+			url.setEnabled(false);
+			add(url);
+
+			port.add(new OnChangeAjaxBehavior()
+	    {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					target.add(url);
+				}
+	    });
+
+			path.add(new OnChangeAjaxBehavior()
+	    {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					target.add(url);
+				}
+	    });
 
 			CheckBox chunkedStreamingMode = new CheckBox("chunkedStreamingMode")
 			{
@@ -137,11 +177,15 @@ public class HttpPropertiesFormPanel extends Panel
 		private static final long serialVersionUID = 1L;
 		private String host = "localhost";
 		private Integer port = 8888;
-		private String url = "/digipoortStub";
+		private String path = "/digipoortStub";
 		private boolean chunkedStreamingMode = true;
 		private boolean ssl = true;
 		private SslPropertiesFormModel sslProperties = new SslPropertiesFormModel();
 
+		public String getProtocol()
+		{
+			return ssl ? "https://" : "http://";
+		}
 		public String getHost()
 		{
 			return host;
@@ -154,13 +198,17 @@ public class HttpPropertiesFormPanel extends Panel
 		{
 			this.port = port;
 		}
+		public String getPath()
+		{
+			return path;
+		}
+		public void setPath(String path)
+		{
+			this.path = path;
+		}
 		public String getUrl()
 		{
-			return url;
-		}
-		public void setUrl(String url)
-		{
-			this.url = url;
+			return getProtocol() + host + (port == null ? "" : ":" + port.toString()) + path;
 		}
 		public boolean isChunkedStreamingMode()
 		{
