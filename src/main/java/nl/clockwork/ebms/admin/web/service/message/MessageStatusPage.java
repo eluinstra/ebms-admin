@@ -63,7 +63,7 @@ public class MessageStatusPage extends BasePage
 
 	public MessageStatusPage()
 	{
-		add(new BootstrapFeedbackPanel("feedback"));
+		add(new BootstrapFeedbackPanel("feedback").setOutputMarkupId(true));
 		add(new MessageStatusForm("form"));
 	}
 	
@@ -94,7 +94,7 @@ public class MessageStatusPage extends BasePage
 			cpaIds.setRequired(true);
 			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",cpaIds));
 
-			final DropDownChoice<String> fromParties = new DropDownChoice<String>("fromParties",new PropertyModel<String>(this.getModelObject(),"fromParty"),new PropertyModel<List<String>>(this.getModelObject(),"fromParties"))
+			DropDownChoice<String> fromParties = new DropDownChoice<String>("fromParties",new PropertyModel<String>(this.getModelObject(),"fromParty"),new PropertyModel<List<String>>(this.getModelObject(),"fromParties"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -121,10 +121,11 @@ public class MessageStatusPage extends BasePage
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.setFromParties(CPAUtils.getPartyNames(cpa));
 						model.setFromParty(null);
-						model.setToParties(new ArrayList<String>());
+						model.getToParties().clear();
 						model.setToParty(null);
 						model.setMessageId(null);
-						target.add(MessageStatusPage.this);
+						target.add(getPage().get("feedback"));
+						target.add(getPage().get("form"));
 					}
 					catch (JAXBException e)
 					{
@@ -134,7 +135,7 @@ public class MessageStatusPage extends BasePage
 				}
       });
 
-			final DropDownChoice<String> toParties = new DropDownChoice<String>("toParties",new PropertyModel<String>(this.getModelObject(),"toParty"),new PropertyModel<List<String>>(this.getModelObject(),"toParties"))
+			DropDownChoice<String> toParties = new DropDownChoice<String>("toParties",new PropertyModel<String>(this.getModelObject(),"toParty"),new PropertyModel<List<String>>(this.getModelObject(),"toParties"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -148,7 +149,7 @@ public class MessageStatusPage extends BasePage
 			toParties.setOutputMarkupId(true);
 			add(new BootstrapFormComponentFeedbackBorder("toPartyFeedback",toParties));
 			
-			final DropDownChoice<String> messageIds = new DropDownChoice<String>("messageIds",new PropertyModel<String>(this.getModelObject(),"messageId"),new PropertyModel<List<String>>(this.getModelObject(),"messageIds"))
+			DropDownChoice<String> messageIds = new DropDownChoice<String>("messageIds",new PropertyModel<String>(this.getModelObject(),"messageId"),new PropertyModel<List<String>>(this.getModelObject(),"messageIds"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -179,7 +180,8 @@ public class MessageStatusPage extends BasePage
 						model.setMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromParty(),model.getToParty(),EbMSMessageStatus.SENT));
 						if (model.getMessageIds().size() == 0)
 							info("No messages found");
-						target.add(MessageStatusPage.this);
+						target.add(getPage().get("feedback"));
+						target.add(getPage().get("form"));
 					}
 					catch (JAXBException e)
 					{

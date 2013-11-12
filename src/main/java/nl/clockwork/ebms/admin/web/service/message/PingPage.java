@@ -57,7 +57,7 @@ public class PingPage extends BasePage
 
 	public PingPage()
 	{
-		add(new BootstrapFeedbackPanel("feedback"));
+		add(new BootstrapFeedbackPanel("feedback").setOutputMarkupId(true));
 		add(new PingForm("form"));
 	}
 	
@@ -88,7 +88,7 @@ public class PingPage extends BasePage
 			cpaIds.setRequired(true);
 			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",cpaIds));
 
-			final DropDownChoice<String> fromParties = new DropDownChoice<String>("fromParties",new PropertyModel<String>(this.getModelObject(),"fromParty"),new PropertyModel<List<String>>(this.getModelObject(),"fromParties"))
+			DropDownChoice<String> fromParties = new DropDownChoice<String>("fromParties",new PropertyModel<String>(this.getModelObject(),"fromParty"),new PropertyModel<List<String>>(this.getModelObject(),"fromParties"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -114,9 +114,10 @@ public class PingPage extends BasePage
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.setFromParties(CPAUtils.getPartyNames(cpa));
 						model.setFromParty(null);
-						model.setToParties(new ArrayList<String>());
+						model.getToParties().clear();
 						model.setToParty(null);
-						target.add(PingPage.this);
+						target.add(getPage().get("feedback"));
+						target.add(getPage().get("form"));
 					}
 					catch (JAXBException e)
 					{
@@ -126,7 +127,7 @@ public class PingPage extends BasePage
 				}
       });
 
-			final DropDownChoice<String> toParties = new DropDownChoice<String>("toParties",new PropertyModel<String>(this.getModelObject(),"toParty"),new PropertyModel<List<String>>(this.getModelObject(),"toParties"))
+			DropDownChoice<String> toParties = new DropDownChoice<String>("toParties",new PropertyModel<String>(this.getModelObject(),"toParty"),new PropertyModel<List<String>>(this.getModelObject(),"toParties"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -153,7 +154,8 @@ public class PingPage extends BasePage
 						String otherPartyName = CPAUtils.getOtherPartyName(cpa,model.getFromParty());
 						model.setToParties(Arrays.asList(otherPartyName));
 						model.setToParty(otherPartyName);
-						target.add(PingPage.this);
+						target.add(getPage().get("feedback"));
+						target.add(getPage().get("form"));
 					}
 					catch (JAXBException e)
 					{
