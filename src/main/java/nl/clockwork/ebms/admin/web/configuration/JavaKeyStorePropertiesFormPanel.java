@@ -67,8 +67,9 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 			};
 			password.setRequired(required);
 			password.setResetPassword(false);
+			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",password));
 
-			Button test = new Button("test",new ResourceModel("cmd.test"))
+			add(new Button("test",new ResourceModel("cmd.test"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -87,8 +88,7 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 						error(new StringResourceModel("test.nok",JavaKeyStorePropertiesForm.this,Model.of(e)).getString());
 					}
 				}
-			};
-			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",password,test));
+			});
 		}
 	}
 
