@@ -58,7 +58,7 @@ public class PingPage extends BasePage
 	public PingPage()
 	{
 		add(new BootstrapFeedbackPanel("feedback"));
-		add(new PingForm("pingForm"));
+		add(new PingForm("form"));
 	}
 	
 	@Override
@@ -112,9 +112,11 @@ public class PingPage extends BasePage
 					{
 						PingFormModel model = PingForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						ArrayList<String> partyNames = CPAUtils.getPartyNames(cpa);
-						model.setFromParties(partyNames);
-						target.add(fromParties);
+						model.setFromParties(CPAUtils.getPartyNames(cpa));
+						model.setFromParty(null);
+						model.setToParties(new ArrayList<String>());
+						model.setToParty(null);
+						target.add(PingPage.this);
 					}
 					catch (JAXBException e)
 					{
@@ -151,7 +153,7 @@ public class PingPage extends BasePage
 						String otherPartyName = CPAUtils.getOtherPartyName(cpa,model.getFromParty());
 						model.setToParties(Arrays.asList(otherPartyName));
 						model.setToParty(otherPartyName);
-						target.add(toParties);
+						target.add(PingPage.this);
 					}
 					catch (JAXBException e)
 					{

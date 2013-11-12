@@ -65,7 +65,7 @@ public class SendMessagePage extends BasePage
 	public SendMessagePage()
 	{
 		add(new BootstrapFeedbackPanel("feedback"));
-		add(new MessageForm("messageForm"));
+		add(new MessageForm("form"));
 	}
 	
 	@Override
@@ -123,7 +123,13 @@ public class SendMessagePage extends BasePage
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						ArrayList<String> roleNames = CPAUtils.getRoleNames(cpa);
 						model.setFromRoles(roleNames);
-						target.add(fromRoles);
+						model.setFromRole(null);
+						model.setServices(new ArrayList<String>());
+						model.setService(null);
+						model.setActions(new ArrayList<String>());
+						model.setAction(null);
+						model.setDataSources(new ArrayList<EbMSDataSource>());
+						target.add(SendMessagePage.this);
 					}
 					catch (JAXBException e)
 					{
@@ -160,7 +166,11 @@ public class SendMessagePage extends BasePage
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						List<String> serviceNames = CPAUtils.getServiceNames(cpa,model.getFromRole());
 						model.setServices(serviceNames);
-						target.add(services);
+						model.setService(null);
+						model.setActions(new ArrayList<String>());
+						model.setAction(null);
+						model.setDataSources(new ArrayList<EbMSDataSource>());
+						target.add(SendMessagePage.this);
 					}
 					catch (JAXBException e)
 					{
@@ -197,7 +207,9 @@ public class SendMessagePage extends BasePage
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						List<String> actionNames = CPAUtils.getActionNames(cpa,model.getFromRole(),model.getService());
 						model.setActions(actionNames);
-						target.add(actions);
+						model.setAction(null);
+						model.setDataSources(new ArrayList<EbMSDataSource>());
+						target.add(SendMessagePage.this);
 					}
 					catch (JAXBException e)
 					{
@@ -207,7 +219,7 @@ public class SendMessagePage extends BasePage
 				}
       });
 			
-			final DataSourcesForm dataSourcesForm = new DataSourcesForm("dataSourcesForm",getModelObject().getDataSources());
+			final DataSourcesForm dataSourcesForm = new DataSourcesForm("form",getModelObject().getDataSources());
 			dataSourcesForm.setOutputMarkupId(true);
 			add(dataSourcesForm);
 			//FIXME
