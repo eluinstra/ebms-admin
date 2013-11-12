@@ -7,7 +7,6 @@ import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPrope
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
@@ -70,9 +69,7 @@ public class HttpPropertiesFormPanel extends Panel
 					return Model.of(getLocalizer().getString("lbl.port",HttpPropertiesForm.this));
 				}
 			};
-			MarkupContainer portFeedback = new BootstrapFormComponentFeedbackBorder("portFeedback");
-			add(portFeedback);
-			portFeedback.add(port);
+			add(new BootstrapFormComponentFeedbackBorder("portFeedback",port));
 
 			TextField<String> path = new TextField<String>("path")
 			{
@@ -92,9 +89,7 @@ public class HttpPropertiesFormPanel extends Panel
 				}
 			};
 			path.setRequired(true);
-			MarkupContainer pathFeedback = new BootstrapFormComponentFeedbackBorder("pathFeedback");
-			add(pathFeedback);
-			pathFeedback.add(path);
+			add(new BootstrapFormComponentFeedbackBorder("pathFeedback",path));
 
 			final TextField<String> url = new TextField<String>("url")
 			{
@@ -176,6 +171,8 @@ public class HttpPropertiesFormPanel extends Panel
 				protected void onUpdate(AjaxRequestTarget target)
 				{
 					//FIXME
+					//target.add(protocol);
+					//target.add(url);
 					//target.add(sslProperties);
 					target.add(HttpPropertiesForm.this);
 				}

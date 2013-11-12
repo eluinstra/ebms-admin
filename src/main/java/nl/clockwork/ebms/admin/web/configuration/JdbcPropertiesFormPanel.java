@@ -8,7 +8,6 @@ import nl.clockwork.ebms.admin.web.configuration.Constants.JdbcDriver;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
@@ -55,9 +54,7 @@ public class JdbcPropertiesFormPanel extends Panel
 				}
 			};
 			drivers.setRequired(true);
-			MarkupContainer driverFeedback = new BootstrapFormComponentFeedbackBorder("driverFeedback");
-			add(driverFeedback);
-			driverFeedback.add(drivers);
+			add(new BootstrapFormComponentFeedbackBorder("driverFeedback",drivers));
 
 			TextField<String> host = new TextField<String>("host")
 			{
@@ -70,9 +67,7 @@ public class JdbcPropertiesFormPanel extends Panel
 				}
 			};
 			host.setRequired(true);
-			MarkupContainer hostFeedback = new BootstrapFormComponentFeedbackBorder("hostFeedback");
-			add(hostFeedback);
-			hostFeedback.add(host);
+			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",host));
 
 			TextField<Integer> port = new TextField<Integer>("port")
 			{
@@ -84,9 +79,7 @@ public class JdbcPropertiesFormPanel extends Panel
 					return Model.of(getLocalizer().getString("lbl.port",JdbcPropertiesFormPanel.this));
 				}
 			};
-			MarkupContainer portFeedback = new BootstrapFormComponentFeedbackBorder("portFeedback");
-			add(portFeedback);
-			portFeedback.add(port);
+			add(new BootstrapFormComponentFeedbackBorder("portFeedback",port));
 
 			TextField<String> database = new TextField<String>("database")
 			{
@@ -99,9 +92,7 @@ public class JdbcPropertiesFormPanel extends Panel
 				}
 			};
 			database.setRequired(true);
-			MarkupContainer databaseFeedback = new BootstrapFormComponentFeedbackBorder("databaseFeedback");
-			add(databaseFeedback);
-			databaseFeedback.add(database);
+			add(new BootstrapFormComponentFeedbackBorder("databaseFeedback",database));
 
 			final TextField<String> url = new TextField<String>("url");
 			url.setOutputMarkupId(true);
@@ -185,9 +176,7 @@ public class JdbcPropertiesFormPanel extends Panel
 				}
 			};
 			username.setRequired(true);
-			MarkupContainer usernameFeedback = new BootstrapFormComponentFeedbackBorder("usernameFeedback");
-			add(usernameFeedback);
-			usernameFeedback.add(username);
+			add(new BootstrapFormComponentFeedbackBorder("usernameFeedback",username));
 
 			PasswordTextField password = new PasswordTextField("password")
 			{
@@ -201,9 +190,7 @@ public class JdbcPropertiesFormPanel extends Panel
 			};
 			password.setResetPassword(false);
 			password.setRequired(false);
-			MarkupContainer passwordFeedback = new BootstrapFormComponentFeedbackBorder("passwordFeedback");
-			add(passwordFeedback);
-			passwordFeedback.add(password);
+			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",password));
 		}
 	}
 

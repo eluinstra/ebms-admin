@@ -4,7 +4,6 @@ import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -43,10 +42,7 @@ public class ConsolePropertiesFormPanel extends Panel
 				}
 			};
 			maxItemsPerPage.setRequired(true);
-			MarkupContainer maxItemsPerPageFeedback = new BootstrapFormComponentFeedbackBorder("maxItemsPerPageFeedback");
-			add(maxItemsPerPageFeedback);
-			maxItemsPerPageFeedback.add(maxItemsPerPage);
-			add(maxItemsPerPageFeedback);
+			add(new BootstrapFormComponentFeedbackBorder("maxItemsPerPageFeedback",maxItemsPerPage));
 		}
 	}
 

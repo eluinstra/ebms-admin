@@ -35,7 +35,6 @@ import nl.clockwork.ebms.service.EbMSMessageService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.Button;
@@ -93,9 +92,7 @@ public class MessageStatusPage extends BasePage
 				}
 			};
 			cpaIds.setRequired(true);
-			MarkupContainer cpaIdFeedback = new BootstrapFormComponentFeedbackBorder("cpaIdFeedback");
-			add(cpaIdFeedback);
-			cpaIdFeedback.add(cpaIds);
+			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",cpaIds));
 
 			final DropDownChoice<String> fromParties = new DropDownChoice<String>("fromParties",new PropertyModel<String>(this.getModelObject(),"fromParty"),new PropertyModel<List<String>>(this.getModelObject(),"fromParties"))
 			{
@@ -109,9 +106,7 @@ public class MessageStatusPage extends BasePage
 			};
 			fromParties.setRequired(true);
 			fromParties.setOutputMarkupId(true);
-			MarkupContainer fromPartyFeedback = new BootstrapFormComponentFeedbackBorder("fromPartyFeedback");
-			add(fromPartyFeedback);
-			fromPartyFeedback.add(fromParties);
+			add(new BootstrapFormComponentFeedbackBorder("fromPartyFeedback",fromParties));
 			
 			cpaIds.add(new AjaxFormComponentUpdatingBehavior("onchange")
       {
@@ -148,9 +143,7 @@ public class MessageStatusPage extends BasePage
 			};
 			toParties.setRequired(true);
 			toParties.setOutputMarkupId(true);
-			MarkupContainer toPartyFeedback = new BootstrapFormComponentFeedbackBorder("toPartyFeedback");
-			add(toPartyFeedback);
-			toPartyFeedback.add(toParties);
+			add(new BootstrapFormComponentFeedbackBorder("toPartyFeedback",toParties));
 			
 			final DropDownChoice<String> messageIds = new DropDownChoice<String>("messageIds",new PropertyModel<String>(this.getModelObject(),"messageId"),new PropertyModel<List<String>>(this.getModelObject(),"messageIds"))
 			{
@@ -164,9 +157,7 @@ public class MessageStatusPage extends BasePage
 			};
 			messageIds.setRequired(true);
 			messageIds.setOutputMarkupId(true);
-			MarkupContainer messageIdFeedback = new BootstrapFormComponentFeedbackBorder("messageIdFeedback");
-			add(messageIdFeedback);
-			messageIdFeedback.add(messageIds);
+			add(new BootstrapFormComponentFeedbackBorder("messageIdFeedback",messageIds));
 			
 			fromParties.add(new AjaxFormComponentUpdatingBehavior("onchange")
       {

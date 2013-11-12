@@ -4,7 +4,6 @@ import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
@@ -54,10 +53,7 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 				}
 			};
 			uri.setRequired(required);
-			MarkupContainer uriFeedback = new BootstrapFormComponentFeedbackBorder("uriFeedback");
-			add(uriFeedback);
-			uriFeedback.add(uri);
-			add(uriFeedback);
+			add(new BootstrapFormComponentFeedbackBorder("uriFeedback",uri));
 
 			PasswordTextField password = new PasswordTextField("password")
 			{
@@ -71,9 +67,6 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 			};
 			password.setRequired(required);
 			password.setResetPassword(false);
-			MarkupContainer passwordFeedback = new BootstrapFormComponentFeedbackBorder("passwordFeedback");
-			add(passwordFeedback);
-			passwordFeedback.add(password);
 
 			Button test = new Button("test",new ResourceModel("cmd.test"))
 			{
@@ -95,7 +88,7 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 					}
 				}
 			};
-			passwordFeedback.add(test);
+			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",password,test));
 		}
 	}
 

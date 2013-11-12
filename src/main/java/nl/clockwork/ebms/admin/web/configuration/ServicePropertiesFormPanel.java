@@ -4,7 +4,6 @@ import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -46,10 +45,7 @@ public class ServicePropertiesFormPanel extends Panel
 				}
 			};
 			url.setRequired(true);
-			MarkupContainer urlFeedback = new BootstrapFormComponentFeedbackBorder("urlFeedback");
-			add(urlFeedback);
-			urlFeedback.add(url);
-			add(urlFeedback);
+			add(new BootstrapFormComponentFeedbackBorder("urlFeedback",url));
 
 			Button test = new Button("test",new ResourceModel("cmd.test"))
 			{

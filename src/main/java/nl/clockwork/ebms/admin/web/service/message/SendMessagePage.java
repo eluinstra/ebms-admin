@@ -34,7 +34,6 @@ import nl.clockwork.ebms.service.EbMSMessageService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Component;
-import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -95,9 +94,7 @@ public class SendMessagePage extends BasePage
 				}
 			};
 			cpaIds.setRequired(true);
-			MarkupContainer cpaIdFeedback = new BootstrapFormComponentFeedbackBorder("cpaIdFeedback");
-			add(cpaIdFeedback);
-			cpaIdFeedback.add(cpaIds);
+			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",cpaIds));
 
 			final DropDownChoice<String> fromRoles = new DropDownChoice<String>("fromRoles",new PropertyModel<String>(this.getModelObject(),"fromRole"),new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
 			{
@@ -111,9 +108,7 @@ public class SendMessagePage extends BasePage
 			};
 			fromRoles.setRequired(true);
 			fromRoles.setOutputMarkupId(true);
-			MarkupContainer fromRoleFeedback = new BootstrapFormComponentFeedbackBorder("fromRoleFeedback");
-			add(fromRoleFeedback);
-			fromRoleFeedback.add(fromRoles);
+			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",fromRoles));
 			
 			cpaIds.add(new AjaxFormComponentUpdatingBehavior("onchange")
       {
@@ -150,9 +145,7 @@ public class SendMessagePage extends BasePage
 			};
 			services.setRequired(true);
 			services.setOutputMarkupId(true);
-			MarkupContainer serviceFeedback = new BootstrapFormComponentFeedbackBorder("serviceFeedback");
-			add(serviceFeedback);
-			serviceFeedback.add(services);
+			add(new BootstrapFormComponentFeedbackBorder("serviceFeedback",services));
 			
 			fromRoles.add(new AjaxFormComponentUpdatingBehavior("onchange")
       {
@@ -189,9 +182,7 @@ public class SendMessagePage extends BasePage
 			};
 			actions.setRequired(true);
 			actions.setOutputMarkupId(true);
-			MarkupContainer actionFeedback = new BootstrapFormComponentFeedbackBorder("actionFeedback");
-			add(actionFeedback);
-			actionFeedback.add(actions);
+			add(new BootstrapFormComponentFeedbackBorder("actionFeedback",actions));
 			
 			services.add(new AjaxFormComponentUpdatingBehavior("onchange")
       {

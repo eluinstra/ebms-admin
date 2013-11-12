@@ -12,15 +12,10 @@ public class BootstrapFormComponentFeedbackBorder extends Border implements IFee
 {
 	private static final long serialVersionUID = 1L;
 
-	public BootstrapFormComponentFeedbackBorder(String id)
+	public BootstrapFormComponentFeedbackBorder(String id, FormComponent<?>...formComponents)
 	{
 		super(id);
-	}
-
-	public BootstrapFormComponentFeedbackBorder(String id, FormComponent<?> formComponent)
-	{
-		this(id);
-		add(formComponent);
+		add(formComponents);
 	}
 
 	@Override

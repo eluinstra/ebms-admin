@@ -25,7 +25,6 @@ import nl.clockwork.ebms.service.CPAService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
@@ -77,9 +76,7 @@ public class CPAUploadPage extends BasePage
 				}
 			};
 			cpaFile.setRequired(true);
-			MarkupContainer cpaFeedback = new BootstrapFormComponentFeedbackBorder("cpaFeedback");
-			add(cpaFeedback);
-			cpaFeedback.add(cpaFile);
+			add(new BootstrapFormComponentFeedbackBorder("cpaFeedback",cpaFile));
 			
 			CheckBox overwrite = new CheckBox("overwrite")
 			{

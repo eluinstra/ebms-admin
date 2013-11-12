@@ -22,7 +22,6 @@ import nl.clockwork.ebms.service.CPAService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
@@ -80,9 +79,7 @@ public class CPAEditPage extends BasePage
 				}
 			};
 			cpa_.setRequired(true);
-			MarkupContainer cpaFeedback = new BootstrapFormComponentFeedbackBorder("cpaFeedback");
-			add(cpaFeedback);
-			cpaFeedback.add(cpa_);
+			add(new BootstrapFormComponentFeedbackBorder("cpaFeedback",cpa_));
 
 			Button save = new Button("save",new ResourceModel("cmd.save"))
 			{

@@ -26,7 +26,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Component;
-import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -66,9 +65,7 @@ public abstract class DataSourcePanel extends Panel
 
 			FileUploadField file = new FileUploadField("file");
 			file.setRequired(true);
-			MarkupContainer fileFeedback = new BootstrapFormComponentFeedbackBorder("fileFeedback");
-			add(fileFeedback);
-			fileFeedback.add(file);
+			add(new BootstrapFormComponentFeedbackBorder("fileFeedback",file));
 
 			add(new TextField<String>("name"));
 
