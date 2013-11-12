@@ -47,7 +47,7 @@ public class CPAUploadPage extends BasePage
 	public CPAUploadPage()
 	{
 		add(new BootstrapFeedbackPanel("feedback"));
-		add(new EditUploadForm("uploadCPAForm"));
+		add(new EditUploadForm("form"));
 	}
 	
 	@Override

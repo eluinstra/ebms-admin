@@ -51,7 +51,7 @@ public class CPAEditPage extends BasePage
 	protected CPAEditPage(String cpa, boolean isNew, WebPage responsePage)
 	{
 		add(new BootstrapFeedbackPanel("feedback"));
-		add(new EditCPAForm("editCPAForm",cpa,isNew,responsePage));
+		add(new EditCPAForm("form",cpa,isNew,responsePage));
 	}
 	
 	@Override

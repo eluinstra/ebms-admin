@@ -45,7 +45,7 @@ public abstract class DataSourcePanel extends Panel
 	public DataSourcePanel(final ModalWindow window, String id)
 	{
 		super(id,new CompoundPropertyModel<DataSourceModel>(new DataSourceModel()));
-		add(new DataSourceForm("dataSourceForm"));
+		add(new DataSourceForm("form"));
 		
 	}
 	

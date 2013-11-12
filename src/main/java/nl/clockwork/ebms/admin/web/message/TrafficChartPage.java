@@ -70,7 +70,7 @@ public class TrafficChartPage extends BasePage
 	public TrafficChartPage(TrafficChartFormModel model)
 	{
 		add(new BootstrapFeedbackPanel("feedback"));
-    add(new TrafficChartForm("trafficChartForm",model));
+    add(new TrafficChartForm("form",model));
   }
 	
 	private Options createOptions(TrafficChartFormModel model)

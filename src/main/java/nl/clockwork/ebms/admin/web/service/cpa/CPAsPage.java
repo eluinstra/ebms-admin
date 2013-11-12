@@ -43,7 +43,7 @@ public class CPAsPage extends BasePage
 	public CPAsPage()
 	{
 		add(new BootstrapFeedbackPanel("feedback"));
-		add(new EditCPAsForm("editCPAsForm"));
+		add(new EditCPAsForm("form"));
 	}
 
 	public class EditCPAsForm extends Form<Void>
