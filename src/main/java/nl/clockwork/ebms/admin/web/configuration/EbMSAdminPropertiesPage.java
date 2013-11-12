@@ -32,6 +32,7 @@ import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.Si
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -98,6 +99,16 @@ public class EbMSAdminPropertiesPage extends BasePage
 			}.setReuseItems(true));
 			
 			
+			add(new Button("validate")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void onSubmit()
+				{
+					info(EbMSAdminPropertiesPage.this.getString("validate.ok"));
+				}
+			});
 			add(new DownloadEbMSAdminPropertiesButton("download",new ResourceModel("cmd.download"),getModelObject(),propertiesType));
 			add(new LoadEbMSAdminPropertiesButton("load",new ResourceModel("cmd.load"),getModelObject(),propertiesType));
 			add(new SaveEbMSAdminPropertiesButton("save",new ResourceModel("cmd.save"),getModelObject(),propertiesType));
