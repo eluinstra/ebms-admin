@@ -22,6 +22,7 @@ import java.util.List;
 import nl.clockwork.ebms.admin.PropertyPlaceholderConfigurer;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.BootstrapPanelBorder;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.admin.web.configuration.ConsolePropertiesFormPanel.ConsolePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.Constants.PropertiesType;
@@ -36,7 +37,6 @@ import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
@@ -75,26 +75,25 @@ public class EbMSAdminPropertiesPage extends BasePage
 		public EbMSAdminPropertiesForm(String id, EbMSAdminPropertiesFormModel model)
 		{
 			super(id,new CompoundPropertyModel<EbMSAdminPropertiesFormModel>(model));
-			setOutputMarkupId(true);
 			
-			List<Panel> components = new ArrayList<Panel>();
-			components.add(new ConsolePropertiesFormPanel("component",new PropertyModel<ConsolePropertiesFormModel>(getModelObject(),"consoleProperties")));
+			List<BootstrapPanelBorder> components = new ArrayList<BootstrapPanelBorder>();
+			components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("consoleProperties"),new ConsolePropertiesFormPanel("component",new PropertyModel<ConsolePropertiesFormModel>(getModelObject(),"consoleProperties"))));
 			if (PropertiesType.EBMS_ADMIN.equals(propertiesType))
-				components.add(new ServicePropertiesFormPanel("component",new PropertyModel<ServicePropertiesFormModel>(getModelObject(),"serviceProperties")));
+				components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("serviceProperties"),new ServicePropertiesFormPanel("component",new PropertyModel<ServicePropertiesFormModel>(getModelObject(),"serviceProperties"))));
 			if (PropertiesType.EBMS_ADMIN_EMBEDDED.equals(propertiesType))
 			{
-				components.add(new HttpPropertiesFormPanel("component",new PropertyModel<HttpPropertiesFormModel>(getModelObject(),"httpProperties")));
-				components.add(new SignaturePropertiesFormPanel("component",new PropertyModel<SignaturePropertiesFormModel>(getModelObject(),"signatureProperties")));
+				components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("httpProperties"),new HttpPropertiesFormPanel("component",new PropertyModel<HttpPropertiesFormModel>(getModelObject(),"httpProperties"))));
+				components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("signatureProperties"),new SignaturePropertiesFormPanel("component",new PropertyModel<SignaturePropertiesFormModel>(getModelObject(),"signatureProperties"))));
 			}
-			components.add(new JdbcPropertiesFormPanel("component",new PropertyModel<JdbcPropertiesFormModel>(getModelObject(),"jdbcProperties")));
-			add(new ListView<Panel>("components",components)
+			components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("jdbcProperties"),new JdbcPropertiesFormPanel("component",new PropertyModel<JdbcPropertiesFormModel>(getModelObject(),"jdbcProperties"))));
+			add(new ListView<BootstrapPanelBorder>("components",components)
 			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				protected void populateItem(ListItem<Panel> item)
+				protected void populateItem(ListItem<BootstrapPanelBorder> item)
 				{
-					item.add((Panel)item.getModelObject()); 
+					item.add((BootstrapPanelBorder)item.getModelObject()); 
 				}
 			}.setReuseItems(true));
 			

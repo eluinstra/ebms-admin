@@ -2,23 +2,29 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
 <body>
 <wicket:extend>
-	<div class="col-lg-offset-2 col-lg-10">
-		<wicket:container wicket:id="feedback"/>
-	</div>
-	<form class="form-horizontal" role="form" wicket:id="form">
-		<wicket:container wicket:id="components">
-			<wicket:container wicket:id="component"/>
-		</wicket:container>
-		<div class="form-group">
-			<div class="col-lg-offset-2 col-lg-10">
-				<input type="submit" class="btn btn-default" wicket:id="validate" wicket:message="value:cmd.validate"/>
-				<input type="submit" class="btn btn-default" wicket:id="download" wicket:message="value:cmd.download"/>
-				<input type="submit" class="btn btn-default" wicket:id="load" wicket:message="value:cmd.load"/>
-				<input type="submit" class="btn btn-default" wicket:id="save" wicket:message="value:cmd.save"/>
-				<input type="submit" class="btn btn-default" wicket:id="reset" wicket:message="value:cmd.reset"/>
-			</div>
+	<div class="row">
+		<div class="col-lg-offset-2 col-lg-10">
+			<wicket:container wicket:id="feedback"/>
 		</div>
-	</form>
+	</div>
+	<div class="row">
+		<form class="form-horizontal" role="form" wicket:id="form">
+			<wicket:container wicket:id="components">
+				<wicket:container wicket:id="panelBorder">
+					<wicket:container wicket:id="component"/>
+				</wicket:container>
+			</wicket:container>
+			<div class="form-group">
+				<div class="col-lg-offset-2 col-lg-10">
+					<input type="submit" class="btn btn-default" wicket:id="validate" wicket:message="value:cmd.validate"/>
+					<input type="submit" class="btn btn-default" wicket:id="download" wicket:message="value:cmd.download"/>
+					<input type="submit" class="btn btn-default" wicket:id="load" wicket:message="value:cmd.load"/>
+					<input type="submit" class="btn btn-default" wicket:id="save" wicket:message="value:cmd.save"/>
+					<input type="submit" class="btn btn-default" wicket:id="reset" wicket:message="value:cmd.reset"/>
+				</div>
+			</div>
+		</form>
+	</div>
 </wicket:extend>
 </body>
 </html>

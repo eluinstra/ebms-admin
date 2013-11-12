@@ -123,8 +123,11 @@ public class Utils
 
 	public static void loadProperties(Properties properties, SignaturePropertiesFormModel signatureProperties) throws MalformedURLException
 	{
-		signatureProperties.getKeystoreProperties().setUri(properties.getProperty("signature.keystore.path"));
-		signatureProperties.getKeystoreProperties().setPassword(properties.getProperty("signature.keystore.password"));
+		if (signatureProperties.getSigning())
+		{
+			signatureProperties.getKeystoreProperties().setUri(properties.getProperty("signature.keystore.path"));
+			signatureProperties.getKeystoreProperties().setPassword(properties.getProperty("signature.keystore.password"));
+		}
 	}
 
 	public static void loadProperties(Properties properties, JdbcPropertiesFormModel jdbcProperties) throws MalformedURLException
@@ -197,8 +200,11 @@ public class Utils
 
   public static void storeProperties(Properties properties, SignaturePropertiesFormModel signatureProperties)
   {
- 		properties.setProperty("signature.keystore.path",StringUtils.defaultString(signatureProperties.getKeystoreProperties().getUri()));
- 		properties.setProperty("signature.keystore.password",StringUtils.defaultString(signatureProperties.getKeystoreProperties().getPassword()));
+  	if (signatureProperties.getSigning())
+  	{
+  		properties.setProperty("signature.keystore.path",StringUtils.defaultString(signatureProperties.getKeystoreProperties().getUri()));
+  		properties.setProperty("signature.keystore.password",StringUtils.defaultString(signatureProperties.getKeystoreProperties().getPassword()));
+  	}
   }
 
   public static void storeProperties(Properties properties, JdbcPropertiesFormModel jdbcProperties)
