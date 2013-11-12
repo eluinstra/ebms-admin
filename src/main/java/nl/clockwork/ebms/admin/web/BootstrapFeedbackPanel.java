@@ -49,14 +49,14 @@ public class BootstrapFeedbackPanel extends FeedbackPanel
 		}
 	}
 
-	public BootstrapFeedbackPanel(final String id, final IFeedbackMessageFilter filter)
-	{
-		super(id,filter);
-	}
-
 	public BootstrapFeedbackPanel(final String id)
 	{
 		super(id);
+	}
+
+	public BootstrapFeedbackPanel(final String id, final IFeedbackMessageFilter filter)
+	{
+		super(id,filter);
 	}
 
 	@Override
