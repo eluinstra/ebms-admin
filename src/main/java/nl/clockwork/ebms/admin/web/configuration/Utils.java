@@ -26,11 +26,13 @@ import java.net.URLConnection;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -251,11 +253,18 @@ public class Utils
 		return result.exists() ? result : new ClassPathResource(path);
 	}
   
-	public static void testKeystore(String path, String password) throws MalformedURLException, IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException
+	public static void testKeystore(String path, String password) throws MalformedURLException, IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException
 	{
 		Resource resource = getResource(path);
 		KeyStore keyStore = KeyStore.getInstance("JKS");
 		keyStore.load(resource.getInputStream(),password.toCharArray());
+		Enumeration<String> aliases = keyStore.aliases();
+		while (aliases.hasMoreElements())
+		{
+			String alias = aliases.nextElement();
+			if (keyStore.isKeyEntry(alias))
+				keyStore.getKey(alias,password.toCharArray());
+		}
 	}
 
 	public static void testJdbcConnection(String driverClassName, String jdbcUrl, String username, String password) throws PropertyVetoException, SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException
