@@ -50,12 +50,13 @@ public class SignaturePropertiesFormPanel extends Panel
 			{
 				private static final long serialVersionUID = 1L;
 
+				@Override
 				public boolean isVisible()
 				{
 					return getModelObject().getSigning();
 				}
 			};
-			keystoreProperties.setOutputMarkupId(true);
+			keystoreProperties.setOutputMarkupPlaceholderTag(true);
 			add(keystoreProperties);
 
 			signing.add(new AjaxFormComponentUpdatingBehavior("onchange")

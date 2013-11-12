@@ -41,7 +41,6 @@ public class HttpPropertiesFormPanel extends Panel
 		public HttpPropertiesForm(String id, final IModel<HttpPropertiesFormModel> model)
 		{
 			super(id,new CompoundPropertyModel<HttpPropertiesFormModel>(model));
-			setOutputMarkupId(true);
 			
 			add(new Label("protocol")); 
 
@@ -155,12 +154,13 @@ public class HttpPropertiesFormPanel extends Panel
 			{
 				private static final long serialVersionUID = 1L;
 
+				@Override
 				public boolean isVisible()
 				{
 					return getModelObject().getSsl();
 				}
 			};
-			sslProperties.setOutputMarkupId(true);
+			sslProperties.setOutputMarkupPlaceholderTag(true);
 			add(sslProperties);
 
 			ssl.add(new AjaxFormComponentUpdatingBehavior("onchange")
