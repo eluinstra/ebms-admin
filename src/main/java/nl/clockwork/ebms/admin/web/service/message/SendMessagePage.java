@@ -64,7 +64,7 @@ public class SendMessagePage extends BasePage
 
 	public SendMessagePage()
 	{
-		add(new BootstrapFeedbackPanel("feedback"));
+		add(new BootstrapFeedbackPanel("feedback").setOutputMarkupId(true));
 		add(new MessageForm("form"));
 	}
 	
@@ -96,7 +96,7 @@ public class SendMessagePage extends BasePage
 			cpaIds.setRequired(true);
 			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",cpaIds));
 
-			final DropDownChoice<String> fromRoles = new DropDownChoice<String>("fromRoles",new PropertyModel<String>(this.getModelObject(),"fromRole"),new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
+			DropDownChoice<String> fromRoles = new DropDownChoice<String>("fromRoles",new PropertyModel<String>(this.getModelObject(),"fromRole"),new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -124,12 +124,13 @@ public class SendMessagePage extends BasePage
 						ArrayList<String> roleNames = CPAUtils.getRoleNames(cpa);
 						model.setFromRoles(roleNames);
 						model.setFromRole(null);
-						model.setServices(new ArrayList<String>());
+						model.getServices().clear();
 						model.setService(null);
-						model.setActions(new ArrayList<String>());
+						model.getActions().clear();
 						model.setAction(null);
-						model.setDataSources(new ArrayList<EbMSDataSource>());
-						target.add(SendMessagePage.this);
+						model.getDataSources().clear();
+						target.add(getPage().get("feedback"));
+						target.add(getPage().get("form"));
 					}
 					catch (JAXBException e)
 					{
@@ -139,7 +140,7 @@ public class SendMessagePage extends BasePage
 				}
       });
 
-			final DropDownChoice<String> services = new DropDownChoice<String>("services",new PropertyModel<String>(this.getModelObject(),"service"),new PropertyModel<List<String>>(this.getModelObject(),"services"))
+			DropDownChoice<String> services = new DropDownChoice<String>("services",new PropertyModel<String>(this.getModelObject(),"service"),new PropertyModel<List<String>>(this.getModelObject(),"services"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -167,10 +168,11 @@ public class SendMessagePage extends BasePage
 						List<String> serviceNames = CPAUtils.getServiceNames(cpa,model.getFromRole());
 						model.setServices(serviceNames);
 						model.setService(null);
-						model.setActions(new ArrayList<String>());
+						model.getActions().clear();
 						model.setAction(null);
-						model.setDataSources(new ArrayList<EbMSDataSource>());
-						target.add(SendMessagePage.this);
+						model.getDataSources().clear();
+						target.add(getPage().get("feedback"));
+						target.add(getPage().get("form"));
 					}
 					catch (JAXBException e)
 					{
@@ -180,7 +182,7 @@ public class SendMessagePage extends BasePage
 				}
       });
 
-			final DropDownChoice<String> actions = new DropDownChoice<String>("actions",new PropertyModel<String>(this.getModelObject(),"action"),new PropertyModel<List<String>>(this.getModelObject(),"actions"))
+			DropDownChoice<String> actions = new DropDownChoice<String>("actions",new PropertyModel<String>(this.getModelObject(),"action"),new PropertyModel<List<String>>(this.getModelObject(),"actions"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -208,8 +210,9 @@ public class SendMessagePage extends BasePage
 						List<String> actionNames = CPAUtils.getActionNames(cpa,model.getFromRole(),model.getService());
 						model.setActions(actionNames);
 						model.setAction(null);
-						model.setDataSources(new ArrayList<EbMSDataSource>());
-						target.add(SendMessagePage.this);
+						model.getDataSources().clear();
+						target.add(getPage().get("feedback"));
+						target.add(getPage().get("form"));
 					}
 					catch (JAXBException e)
 					{
@@ -219,7 +222,7 @@ public class SendMessagePage extends BasePage
 				}
       });
 			
-			final DataSourcesForm dataSourcesForm = new DataSourcesForm("form",getModelObject().getDataSources());
+			DataSourcesForm dataSourcesForm = new DataSourcesForm("form",getModelObject().getDataSources());
 			dataSourcesForm.setOutputMarkupId(true);
 			add(dataSourcesForm);
 			//FIXME
@@ -253,15 +256,15 @@ public class SendMessagePage extends BasePage
 		}
 	}
 
-	public class DataSourcesForm extends Form<List<EbMSDataSource>>
+	public class DataSourcesForm extends Form<List<? extends EbMSDataSource>>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public DataSourcesForm(String id, final List<EbMSDataSource> dataSources)
+		public DataSourcesForm(String id, List<EbMSDataSource> dataSources)
 		{
-			super(id);//,Model.ofList(dataSources));
+			super(id,Model.ofList(dataSources));
 
-			final ListView<EbMSDataSource> dataSources_ = new ListView<EbMSDataSource>("dataSources",dataSources)
+			ListView<EbMSDataSource> dataSources_ = new ListView<EbMSDataSource>("dataSources",dataSources)
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -278,7 +281,7 @@ public class SendMessagePage extends BasePage
 						@Override
 						protected void onSubmit(AjaxRequestTarget target, Form<?> form)
 						{
-							dataSources.remove(item.getModelObject());
+							DataSourcesForm.this.getModelObject().remove(item.getModelObject());
 							target.add(DataSourcesForm.this);
 						}
 					});
