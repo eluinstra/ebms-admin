@@ -15,6 +15,4 @@
 - add viewers for ebms message format???
 - make menu extension point to add new pages??? 
 
-- load start class identifier through WicketFilter into WicketApplication to enable/show right properties page in menu
-
 - add service registry and cpa creator?
