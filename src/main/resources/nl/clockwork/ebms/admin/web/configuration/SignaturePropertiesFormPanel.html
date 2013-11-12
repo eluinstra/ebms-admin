@@ -3,7 +3,13 @@
 <body>
 <wicket:panel>
 	<form wicket:id="form">
-		<wicket:container wicket:id="properties"/>
+		<div class="form-group">
+			<label for="signing" class="col-lg-2 control-label"><wicket:message key="lbl.signing"/></label>
+			<div class="col-lg-10">
+				<input type="checkbox" wicket:id="signing" />
+			</div>
+		</div>
+		<wicket:container wicket:id="keystoreProperties"/>
 	</form>
 </wicket:panel>
 </body>
