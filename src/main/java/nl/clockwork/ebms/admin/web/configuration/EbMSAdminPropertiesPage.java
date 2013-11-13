@@ -26,6 +26,7 @@ import nl.clockwork.ebms.admin.web.BootstrapPanelBorder;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.admin.web.configuration.ConsolePropertiesFormPanel.ConsolePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.Constants.PropertiesType;
+import nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.EbMSCorePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.HttpPropertiesFormPanel.HttpPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.ServicePropertiesFormPanel.ServicePropertiesFormModel;
@@ -41,7 +42,6 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.io.IClusterable;
 
 public class EbMSAdminPropertiesPage extends BasePage
 {
@@ -115,14 +115,11 @@ public class EbMSAdminPropertiesPage extends BasePage
 		}
 	}
 
-	public static class EbMSAdminPropertiesFormModel implements IClusterable
+	public static class EbMSAdminPropertiesFormModel extends EbMSCorePropertiesFormModel
 	{
 		private static final long serialVersionUID = 1L;
 		private ConsolePropertiesFormModel consoleProperties = new ConsolePropertiesFormModel();
 		private ServicePropertiesFormModel serviceProperties = new ServicePropertiesFormModel();
-		private HttpPropertiesFormModel httpProperties = new HttpPropertiesFormModel();
-		private SignaturePropertiesFormModel signatureProperties = new SignaturePropertiesFormModel();
-		private JdbcPropertiesFormModel jdbcProperties = new JdbcPropertiesFormModel();
 		
 		public ConsolePropertiesFormModel getConsoleProperties()
 		{
@@ -139,30 +136,6 @@ public class EbMSAdminPropertiesPage extends BasePage
 		public void setServiceProperties(ServicePropertiesFormModel serviceProperties)
 		{
 			this.serviceProperties = serviceProperties;
-		}
-		public HttpPropertiesFormModel getHttpProperties()
-		{
-			return httpProperties;
-		}
-		public void setHttpProperties(HttpPropertiesFormModel httpProperties)
-		{
-			this.httpProperties = httpProperties;
-		}
-		public SignaturePropertiesFormModel getSignatureProperties()
-		{
-			return signatureProperties;
-		}
-		public void setSignatureProperties(SignaturePropertiesFormModel signatureProperties)
-		{
-			this.signatureProperties = signatureProperties;
-		}
-		public JdbcPropertiesFormModel getJdbcProperties()
-		{
-			return jdbcProperties;
-		}
-		public void setJdbcProperties(JdbcPropertiesFormModel jdbcProperties)
-		{
-			this.jdbcProperties = jdbcProperties;
 		}
 	}
 }

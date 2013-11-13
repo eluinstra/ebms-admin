@@ -40,6 +40,7 @@ import nl.clockwork.ebms.admin.web.configuration.ConsolePropertiesFormPanel.Cons
 import nl.clockwork.ebms.admin.web.configuration.Constants.JdbcDriver;
 import nl.clockwork.ebms.admin.web.configuration.Constants.PropertiesType;
 import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.EbMSCorePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.HttpPropertiesFormPanel.HttpPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.ServicePropertiesFormPanel.ServicePropertiesFormModel;
@@ -140,6 +141,14 @@ public class Utils
 		//jdbcProperties.setPreferredTestQuery(properties.getProperty("ebms.pool.preferredTestQuery"));
 	}
 
+  public static void storeProperties(EbMSCorePropertiesFormModel ebMSCoreProperties, Writer writer) throws IOException
+	{
+		Properties p = new Properties();
+		storeProperties(p,ebMSCoreProperties.getHttpProperties());
+		storeProperties(p,ebMSCoreProperties.getSignatureProperties());
+		storeProperties(p,ebMSCoreProperties.getJdbcProperties());
+		p.store(writer,"EbMS Core properties");
+	}
   public static void storeProperties(EbMSAdminPropertiesFormModel ebMSAdminProperties, PropertiesType propertiesType, Writer writer) throws IOException
 	{
 		Properties p = new Properties();
@@ -149,21 +158,19 @@ public class Utils
 				storeProperties(p,ebMSAdminProperties.getConsoleProperties());
 				storeProperties(p,ebMSAdminProperties.getServiceProperties());
 				storeProperties(p,ebMSAdminProperties.getJdbcProperties());
+				p.store(writer,"EbMS Admin properties");
 				break;
 			case EBMS_ADMIN_EMBEDDED:
 				storeProperties(p,ebMSAdminProperties.getConsoleProperties());
 				storeProperties(p,ebMSAdminProperties.getHttpProperties());
 				storeProperties(p,ebMSAdminProperties.getSignatureProperties());
 				storeProperties(p,ebMSAdminProperties.getJdbcProperties());
+				p.store(writer,"EbMS Admin Embedded properties");
 				break;
 			case EBMS_CORE:
-				storeProperties(p,ebMSAdminProperties.getServiceProperties());
-				storeProperties(p,ebMSAdminProperties.getHttpProperties());
-				storeProperties(p,ebMSAdminProperties.getSignatureProperties());
-				storeProperties(p,ebMSAdminProperties.getJdbcProperties());
+				storeProperties(ebMSAdminProperties,writer);
 				break;
 		}
-		p.store(writer,"EbMS Admin Console properties");
 	}
 
   public static void storeProperties(Properties properties, ConsolePropertiesFormModel consoleProperties)
