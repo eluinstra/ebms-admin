@@ -6,61 +6,61 @@
 		<div class="form-group">
 			<label for="messageId" class="col-lg-2 control-label"><wicket:message key="lbl.messageId"/></label>
 			<div class="col-lg-10">
-				<p class="form-control-static"><span wicket:id="messageId"/></p>
+				<p class="form-control-static"><wicket:container wicket:id="messageId"/></p>
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="messageNr" class="col-lg-2 control-label"><wicket:message key="lbl.messageNr"/></label>
 			<div class="col-lg-10">
-				<p class="form-control-static"><span wicket:id="messageNr"/></p>
+				<p class="form-control-static"><wicket:container wicket:id="messageNr"/></p>
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="conversationId" class="col-lg-2 control-label"><wicket:message key="lbl.conversationId"/></label>
 			<div class="col-lg-10">
-				<p class="form-control-static"><span wicket:id="conversationId"/></p>
+				<p class="form-control-static"><wicket:container wicket:id="conversationId"/></p>
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="refToMessageId" class="col-lg-2 control-label"><wicket:message key="lbl.refToMessageId"/></label>
 			<div class="col-lg-10">
-				<p class="form-control-static"><a href="#" wicket:id="viewRefToMessageId"><span wicket:id="refToMessageId"/></a></p>
+				<p class="form-control-static"><a href="#" wicket:id="viewRefToMessageId"><wicket:container wicket:id="refToMessageId"/></a></p>
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="timestamp" class="col-lg-2 control-label"><wicket:message key="lbl.timestamp"/></label>
 			<div class="col-lg-10">
-				<p class="form-control-static"><span wicket:id="timestamp"/></p>
+				<p class="form-control-static"><wicket:container wicket:id="timestamp"/></p>
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="cpaId" class="col-lg-2 control-label"><wicket:message key="lbl.cpaId"/></label>
 			<div class="col-lg-10">
-				<p class="form-control-static"><span wicket:id="cpaId"/></p>
+				<p class="form-control-static"><wicket:container wicket:id="cpaId"/></p>
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="fromRole" class="col-lg-2 control-label"><wicket:message key="lbl.fromRole"/></label>
 			<div class="col-lg-10">
-				<p class="form-control-static"><span wicket:id="fromRole"/></p>
+				<p class="form-control-static"><wicket:container wicket:id="fromRole"/></p>
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="toRole" class="col-lg-2 control-label"><wicket:message key="lbl.toRole"/></label>
 			<div class="col-lg-10">
-				<p class="form-control-static"><span wicket:id="toRole"/></p>
+				<p class="form-control-static"><wicket:container wicket:id="toRole"/></p>
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="service" class="col-lg-2 control-label"><wicket:message key="lbl.service"/></label>
 			<div class="col-lg-10">
-				<p class="form-control-static"><span wicket:id="service"/></p>
+				<p class="form-control-static"><wicket:container wicket:id="service"/></p>
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="action" class="col-lg-2 control-label"><wicket:message key="lbl.action"/></label>
 			<div class="col-lg-10">
-				<p class="form-control-static"><span wicket:id="action"/></p>
+				<p class="form-control-static"><wicket:container wicket:id="action"/></p>
 			</div>
 		</div>
 		<div class="form-group">
@@ -72,7 +72,7 @@
 		<div class="form-group">
 			<label for="statusTime" class="col-lg-2 control-label"><wicket:message key="lbl.statusTime"/></label>
 			<div class="col-lg-10">
-				<p class="form-control-static"><span wicket:id="statusTime"/></p>
+				<p class="form-control-static"><wicket:container wicket:id="statusTime"/></p>
 			</div>
 		</div>
 		<div class="form-group">
@@ -92,13 +92,13 @@
 					</tr>
 					<tr wicket:id="attachments">
 						<td>
-							<p class="form-control-static"><span wicket:id="name"/></p>
+							<p class="form-control-static"><wicket:container wicket:id="name"/></p>
 						</td>
 						<td>
-							<p class="form-control-static"><a href="#" wicket:id="downloadAttachment"><span wicket:id="contentId"/></a></p>
+							<p class="form-control-static"><a href="#" wicket:id="downloadAttachment"><wicket:container wicket:id="contentId"/></a></p>
 						</td>
 						<td>
-							<p class="form-control-static"><span wicket:id="contentType"/></p>
+							<p class="form-control-static"><wicket:container wicket:id="contentType"/></p>
 						</td>
 					</tr>
 				</table>
@@ -127,19 +127,19 @@
 					</tr>
 					<tr wicket:id="events">
 						<td>
-							<p class="form-control-static"><span wicket:id="time"/></p>
+							<p class="form-control-static"><wicket:container wicket:id="time"/></p>
 						</td>
 						<td>
-							<p class="form-control-static"><span wicket:id="type"/></p>
+							<p class="form-control-static"><wicket:container wicket:id="type"/></p>
 						</td>
 						<td>
-							<p class="form-control-static"><a href="#" wicket:id="showErrorMessageWindow"><span wicket:id="status"/></a></p><div wicket:id="errorMessageWindow"/>
+							<p class="form-control-static"><a href="#" wicket:id="showErrorMessageWindow"><wicket:container wicket:id="status"/></a></p><div wicket:id="errorMessageWindow"/>
 						</td>
 						<td>
-							<p class="form-control-static"><span wicket:id="statusTime"/></p>
+							<p class="form-control-static"><wicket:container wicket:id="statusTime"/></p>
 						</td>
 						<td>
-							<p class="form-control-static"><span wicket:id="uri"/></p>
+							<p class="form-control-static"><wicket:container wicket:id="uri"/></p>
 						</td>
 					</tr>
 				</table>
@@ -149,10 +149,14 @@
 			<div class="col-lg-offset-2 col-lg-10">
 				<a class="btn btn-default" href="#" wicket:id="back"><wicket:message key="cmd.back"/></a>
 				<a class="btn btn-default" href="#" wicket:id="download"><wicket:message key="cmd.download"/></a>
-				<button type="button" class="btn btn-default collapsible collapsed" data-toggle="collapse" data-target="#contentDiv"/>
+				<wicket:remove><!--button type="button" class="btn btn-default collapsible collapsed" data-toggle="collapse" data-target="#contentDiv"/--></wicket:remove>
+				<a class="btn btn-default" href="#" wicket:id="toggleContent"><wicket:container wicket:id="label"/></a>
 			</div>
 		</div>
-		<div id="contentDiv" class="collapse"><textarea class="form-control" wicket:id="content" rows="40"/></div>
+		<wicket:remove><!--div id="contentDiv" class="collapse in"><textarea class="form-control" wicket:id="content" rows="40"/></div--></wicket:remove>
+		<div class="row">
+			<textarea class="form-control" wicket:id="content" rows="40"/>
+		</div>
 	</form>
 </wicket:extend>
 </body>

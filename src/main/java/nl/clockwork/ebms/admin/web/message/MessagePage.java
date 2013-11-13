@@ -16,8 +16,6 @@
 package nl.clockwork.ebms.admin.web.message;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import nl.clockwork.ebms.Constants.EbMSEventStatus;
 import nl.clockwork.ebms.admin.Constants;
@@ -33,18 +31,13 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.markup.head.CssReferenceHeaderItem;
-import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PropertyListView;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.resource.TextTemplateResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 public class MessagePage extends BasePage
@@ -52,6 +45,7 @@ public class MessagePage extends BasePage
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="ebMSAdminDAO")
 	private EbMSDAO ebMSDAO;
+	protected boolean showContent;
 
 	public MessagePage(final EbMSMessage message, final WebPage responsePage)
 	{
@@ -141,9 +135,43 @@ public class MessagePage extends BasePage
 		});
 		add(new DownloadEbMSMessageLink("download",ebMSDAO,message));
 
-		TextArea<String> content = new TextArea<String>("content",Model.of(message.getContent()));
+		final TextArea<String> content = new TextArea<String>("content",Model.of(message.getContent()))
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public boolean isVisible()
+			{
+				return showContent;
+			}
+		};
+		content.setOutputMarkupPlaceholderTag(true);
 		content.setEnabled(false);
 		add(content);
+
+		AjaxLink<String> toggleContent = new AjaxLink<String>("toggleContent")
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick(AjaxRequestTarget target)
+			{
+				showContent = !showContent;
+				target.add(this);
+				target.add(content);
+			}
+		};
+		toggleContent.add(new Label("label",new Model<String>()
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public String getObject()
+			{
+				return MessagePage.this.getLocalizer().getString(showContent ? "cmd.hide" : "cmd.show",MessagePage.this);
+			}
+		}));
+		add(toggleContent);
 	}
 	
 	@Override
@@ -151,7 +179,12 @@ public class MessagePage extends BasePage
 	{
 		return getLocalizer().getString("message",this);
 	}
-
+	
+	public boolean getShowContent()
+	{
+		return showContent;
+	}
+	
 	public class ErrorMessageModalWindow extends ModalWindow
 	{
 		private static final long serialVersionUID = 1L;
@@ -159,7 +192,7 @@ public class MessagePage extends BasePage
 		public ErrorMessageModalWindow(String id, String errorMessage)
 		{
 			super(id);
-			//setTitle(getLocalizer().getString("eventError",this));
+			setTitle(getLocalizer().getString("eventError",this));
 			setCssClassName(ModalWindow.CSS_CLASS_GRAY);
 			setContent(new ErrorMessagePanel(this,Model.of(errorMessage)));
 			setCookieName("eventError");
@@ -173,29 +206,23 @@ public class MessagePage extends BasePage
 				}
 			});
 		}
-		
-		@Override
-		public IModel<String> getTitle()
-		{
-			return Model.of(getLocalizer().getString("eventError",this));
-		}
 	}
 
-	@Override
-	public void renderHead(IHeaderResponse response)
-	{
-		super.renderHead(response);
-		response.render(CssReferenceHeaderItem.forReference(new TextTemplateResourceReference(this.getClass(),"style.css","text/css",new LoadableDetachableModel<Map<String,Object>>()
-		{
-			private static final long serialVersionUID = 1L;
-
-			public Map<String,Object> load()
-			{
-				final Map<String,Object> vars = new HashMap<String,Object>();
-				vars.put("show",MessagePage.this.getLocalizer().getString("cmd.show",MessagePage.this));
-				vars.put("hide",MessagePage.this.getLocalizer().getString("cmd.hide",MessagePage.this));
-				return vars;
-			}
-		}),"screen"));
-	}
+//	@Override
+//	public void renderHead(IHeaderResponse response)
+//	{
+//		super.renderHead(response);
+//		response.render(CssReferenceHeaderItem.forReference(new TextTemplateResourceReference(this.getClass(),"style.css","text/css",new LoadableDetachableModel<Map<String,Object>>()
+//		{
+//			private static final long serialVersionUID = 1L;
+//
+//			public Map<String,Object> load()
+//			{
+//				final Map<String,Object> vars = new HashMap<String,Object>();
+//				vars.put("showContent",MessagePage.this.getLocalizer().getString("cmd.show",MessagePage.this));
+//				vars.put("hide",MessagePage.this.getLocalizer().getString("cmd.hide",MessagePage.this));
+//				return vars;
+//			}
+//		}),"screen"));
+//	}
 }
