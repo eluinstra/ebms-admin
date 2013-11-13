@@ -18,11 +18,10 @@ package nl.clockwork.ebms.admin.web;
 import java.io.IOException;
 
 import nl.clockwork.ebms.admin.PropertyPlaceholderConfigurer;
-import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.springframework.core.io.Resource;
@@ -38,28 +37,13 @@ public class HomePage extends BasePage
 		super(parameters);
 		Resource file = propertyPlaceholderConfigurer.getOverridePropertiesFile();
 		add(new WebMarkupContainer("configurationFile.found").add(new Label("configuration_file",file.getFile().getAbsolutePath())).setVisible(file.exists()));
-		add(new WebMarkupContainer("configurationFile.notFound").add(new Label("configuration_file",file.getFile().getAbsolutePath()),new ConfigurationLink("configuration_link")).setVisible(!file.exists()));
+		add(new WebMarkupContainer("configurationFile.notFound").add(new Label("configuration_file",file.getFile().getAbsolutePath()),new BookmarkablePageLink<Void>("configuration_link",WicketApplication.get().getHomePage())).setVisible(!file.exists()));
 	}
 
 	@Override
 	public String getPageTitle()
 	{
 		return getLocalizer().getString("home",this);
-	}
-
-	private final class ConfigurationLink extends Link<Void>
-	{
-		private static final long serialVersionUID = 1L;
-
-		private ConfigurationLink(String id)
-		{
-			super(id);
-		}
-
-		public void onClick()
-		{
-			setResponsePage(EbMSAdminPropertiesPage.class);
-		}
 	}
 
 }
