@@ -24,7 +24,6 @@ import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.authorization.UnauthorizedActionException;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.protocol.http.PageExpiredException;
 
 public class ErrorPage extends BasePage
@@ -61,9 +60,9 @@ public class ErrorPage extends BasePage
 	{
 		logger.error("",exception);
 		errorType = ErrorType.get(exception);
-		add(new WebMarkupContainer("error").add(new ContinueLink("continue_link")).setVisible(ErrorType.ERROR.equals(errorType)));
-		add(new WebMarkupContainer("pageExpired").add(new ContinueLink("continue_link")).setVisible(ErrorType.PAGE_EXPIRED.equals(errorType)));
-		add(new WebMarkupContainer("unauthorizedAction").add(new ContinueLink("continue_link")).setVisible(ErrorType.UNAUTHORIZED_ACTION.equals(errorType)));
+		add(new WebMarkupContainer("error").add(new HomePageLink("homePageLink")).setVisible(ErrorType.ERROR.equals(errorType)));
+		add(new WebMarkupContainer("pageExpired").add(new HomePageLink("homePageLink")).setVisible(ErrorType.PAGE_EXPIRED.equals(errorType)));
+		add(new WebMarkupContainer("unauthorizedAction").add(new HomePageLink("homePageLink")).setVisible(ErrorType.UNAUTHORIZED_ACTION.equals(errorType)));
 		boolean showStackTrace = RuntimeConfigurationType.DEVELOPMENT.equals(getApplication().getConfigurationType());
 		String stackTrace = null;
 		if (showStackTrace)
@@ -93,13 +92,4 @@ public class ErrorPage extends BasePage
 		return errorType.getTitle();
 	}
 
-	private final class ContinueLink extends BookmarkablePageLink<Void>
-	{
-		private static final long serialVersionUID = 1L;
-
-		private ContinueLink(String id)
-		{
-			super(id,WicketApplication.get().getHomePage());
-		}
-	}
 }

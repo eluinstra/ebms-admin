@@ -17,7 +17,6 @@ package nl.clockwork.ebms.admin.web;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.request.http.WebResponse;
 
 public class PageNotFoundPage extends BasePage
@@ -26,7 +25,7 @@ public class PageNotFoundPage extends BasePage
 
 	public PageNotFoundPage()
 	{
-		add(new BookmarkablePageLink<Void>("continue_link",WicketApplication.get().getHomePage()));
+		add(new HomePageLink("homePageLink"));
 	}
 
 	@Override
