@@ -274,15 +274,20 @@ public class MessageStatusPage extends BasePage
 					try
 					{
 						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
-						if (model.getManual())
+						if (!model.getManual() || (model.getCpaId() != null && model.getFromParty() != null && model.getToParty() != null))
 						{
-							MessageStatus messageStatus = ebMSMessageService.getMessageStatus(model.getMessageId());
+							CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+							MessageStatus messageStatus = ebMSMessageService.getMessageStatus(model.getCpaId(),CPAUtils.getPartyIdbyPartyName(cpa,model.getFromParty()),CPAUtils.getPartyIdbyPartyName(cpa,model.getToParty()),model.getMessageId());
 							info(new StringResourceModel("getMessageStatus.ok",Model.of(messageStatus.getStatus())).getString());
 						}
 						else
 						{
-							CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-							MessageStatus messageStatus = ebMSMessageService.getMessageStatus(model.getCpaId(),CPAUtils.getPartyIdbyPartyName(cpa,model.getFromParty()),CPAUtils.getPartyIdbyPartyName(cpa,model.getToParty()),model.getMessageId());
+							model.setCpaId(null);
+							model.getFromParties().clear();
+							model.setFromParty(null);
+							model.getToParties().clear();
+							model.setToParty(null);
+							MessageStatus messageStatus = ebMSMessageService.getMessageStatus(model.getMessageId());
 							info(new StringResourceModel("getMessageStatus.ok",Model.of(messageStatus.getStatus())).getString());
 						}
 					}
