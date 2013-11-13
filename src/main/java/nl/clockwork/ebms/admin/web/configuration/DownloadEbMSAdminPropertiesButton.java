@@ -55,7 +55,7 @@ public class DownloadEbMSAdminPropertiesButton extends Button
 		try
 		{
 			final StringWriter writer = new StringWriter();
-			Utils.storeProperties(ebMSAdminPropertiesFormModel,propertiesType,writer);
+			new EbMSAdminPropertiesWriter(writer).write(ebMSAdminPropertiesFormModel,propertiesType);
 			IResourceStream resourceStream = new AbstractResourceStream()
 			{
 				private static final long serialVersionUID = 1L;

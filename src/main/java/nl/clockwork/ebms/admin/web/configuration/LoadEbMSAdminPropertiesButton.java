@@ -57,7 +57,7 @@ public class LoadEbMSAdminPropertiesButton extends Button
 		{
 			File file = new File(propertiesType.getPropertiesFile());
 			FileReader reader = new FileReader(file);
-			Utils.loadProperties(ebMSAdminPropertiesFormModel,propertiesType,reader);
+			new EbMSAdminPropertiesReader(reader).read(ebMSAdminPropertiesFormModel,propertiesType);
 			EbMSAdminPropertiesPage page = new EbMSAdminPropertiesPage(ebMSAdminPropertiesFormModel);
 			page.info(new StringResourceModel("properties.loaded",page,Model.of(file)).getString());
 			setResponsePage(page);

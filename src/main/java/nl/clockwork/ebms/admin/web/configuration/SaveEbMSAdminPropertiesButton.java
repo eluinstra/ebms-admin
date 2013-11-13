@@ -50,7 +50,7 @@ public class SaveEbMSAdminPropertiesButton extends Button
 		{
 			File file = new File(propertiesType.getPropertiesFile());
 			FileWriter writer = new FileWriter(file);
-			Utils.storeProperties(ebMSAdminPropertiesFormModel,propertiesType,writer);
+			new EbMSAdminPropertiesWriter(writer).write(ebMSAdminPropertiesFormModel,propertiesType);
 			info(new StringResourceModel("properties.saved",getPage(),Model.of(file)).getString());
 			warn(new StringResourceModel("restart",getPage(),null).getString());
 		}

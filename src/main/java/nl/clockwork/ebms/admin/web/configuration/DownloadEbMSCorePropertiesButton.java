@@ -53,7 +53,7 @@ public class DownloadEbMSCorePropertiesButton extends Button
 		try
 		{
 			final StringWriter writer = new StringWriter();
-			Utils.storeProperties(ebMSCorePropertiesFormModel,writer);
+			new EbMSCorePropertiesWriter(writer).write(ebMSCorePropertiesFormModel);
 			IResourceStream resourceStream = new AbstractResourceStream()
 			{
 				private static final long serialVersionUID = 1L;
