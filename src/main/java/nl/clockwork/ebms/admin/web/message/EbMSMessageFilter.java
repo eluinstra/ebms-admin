@@ -26,7 +26,7 @@ public class EbMSMessageFilter extends EbMSMessageContext implements Serializabl
 	private static final long serialVersionUID = 1L;
 	private Integer messageNr;
 	private Boolean serviceMessage;
-	private EbMSMessageStatus messageStatus;
+	private EbMSMessageStatus status;
 	private Date from;
 	private Date to;
 
@@ -48,11 +48,11 @@ public class EbMSMessageFilter extends EbMSMessageContext implements Serializabl
 	}
 	public EbMSMessageStatus getStatus()
 	{
-		return messageStatus;
+		return status;
 	}
-	public void setMessageStatus(EbMSMessageStatus messageStatus)
+	public void setStatus(EbMSMessageStatus status)
 	{
-		this.messageStatus = messageStatus;
+		this.status = status;
 	}
 	public Date getFrom()
 	{
