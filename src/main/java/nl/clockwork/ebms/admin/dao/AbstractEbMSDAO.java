@@ -520,6 +520,11 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				parameters.add(messageFilter.getSequenceNr());
 				result.append(" and sequence_nr = ?");
 			}
+			if (messageFilter.getStatus() != null)
+			{
+				parameters.add(messageFilter.getStatus().id());
+				result.append(" and status = ?");
+			}
 			if (messageFilter.getServiceMessage() != null)
 			{
 				parameters.add(Constants.EBMS_SERVICE_URI);
