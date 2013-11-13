@@ -3,7 +3,7 @@
 <body>
 <wicket:extend>
 	<div>
-		<div class="pull-left"><span wicket:id="navigator"/></div>
+		<div class="pull-left"><wicket:container wicket:id="navigator"/></div>
 		<div class="pull-right"><select class="form-control pull-right auto-width" wicket:id="maxItemsPerPage"/></div>
 	</div>
 	<div class="table-responsive">
@@ -15,7 +15,7 @@
 			</thead>
 			<tbody wicket:id="container">
 				<tr wicket:id="messages">
-					<td><a href="#" wicket:id="view"><span wicket:id="messageId"/></a></td>
+					<td><a href="#" wicket:id="view"><wicket:container wicket:id="messageId"/></a></td>
 				</tr>
 			</tbody>
 		</table>

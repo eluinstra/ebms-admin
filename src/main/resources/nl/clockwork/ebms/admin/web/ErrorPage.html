@@ -2,9 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
 <body>
 <wicket:extend>
-	<p class="text-danger"><span wicket:id="message"/>&nbsp;<a href="#" wicket:id="continue"><wicket:message key="cmd.continue"/></a></p>
-	<!--h2><span wicket:id="message"/></h2-->
-	<p><span wicket:id="stackTrace"/></p>
+	<p class="text-danger"><wicket:container wicket:id="message"/>&nbsp;<a href="#" wicket:id="continue"><wicket:message key="cmd.continue"/></a></p>
+	<!--h2><wicket:container wicket:id="message"/></h2-->
+	<p><wicket:container wicket:id="stackTrace"/></p>
 </wicket:extend>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <body>
 <wicket:extend>
 	<div>
-		<div class="pull-left"><span wicket:id="navigator"/></div>
+		<div class="pull-left"><wicket:container wicket:id="navigator"/></div>
 		<div class="pull-right"><select class="form-control pull-right auto-width" wicket:id="maxItemsPerPage"/></div>
 	</div>
 	<div class="viewport">
@@ -24,16 +24,16 @@
 			</thead>
 			<tbody wicket:id="container">
 				<tr wicket:id="messages">
-					<td><a href="#" wicket:id="view"><span wicket:id="messageId"/></a></td>
-					<td><a href="#" wicket:id="filterConversationId"><span wicket:id="conversationId"/></a></td>
-					<td><span wicket:id="timestamp"/></td>
-					<td><span wicket:id="cpaId"/></td>
-					<td><span wicket:id="fromRole"/></td>
-					<td><span wicket:id="toRole"/></td>
-					<td><span wicket:id="service"/></td>
-					<td><span wicket:id="action"/></td>
+					<td><a href="#" wicket:id="view"><wicket:container wicket:id="messageId"/></a></td>
+					<td><a href="#" wicket:id="filterConversationId"><wicket:container wicket:id="conversationId"/></a></td>
+					<td><wicket:container wicket:id="timestamp"/></td>
+					<td><wicket:container wicket:id="cpaId"/></td>
+					<td><wicket:container wicket:id="fromRole"/></td>
+					<td><wicket:container wicket:id="toRole"/></td>
+					<td><wicket:container wicket:id="service"/></td>
+					<td><wicket:container wicket:id="action"/></td>
 					<td><span wicket:id="status"/></td>
-					<td><span wicket:id="statusTime"/></td>
+					<td><wicket:container wicket:id="statusTime"/></td>
 				</tr>
 			</tbody>
 		</table>
