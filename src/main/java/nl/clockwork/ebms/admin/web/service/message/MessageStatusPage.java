@@ -38,8 +38,10 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -90,8 +92,14 @@ public class MessageStatusPage extends BasePage
 				{
 					return Model.of(getLocalizer().getString("lbl.cpaId",MessageStatusForm.this));
 				}
+
+				@Override
+				public boolean isRequired()
+				{
+					return !MessageStatusForm.this.getModelObject().getManual();
+				}
 			};
-			cpaIds.setRequired(true);
+			//cpaIds.setRequired(true);
 			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",cpaIds));
 
 			DropDownChoice<String> fromParties = new DropDownChoice<String>("fromParties",new PropertyModel<String>(this.getModelObject(),"fromParty"),new PropertyModel<List<String>>(this.getModelObject(),"fromParties"))
@@ -103,8 +111,14 @@ public class MessageStatusPage extends BasePage
 				{
 					return Model.of(getLocalizer().getString("lbl.fromParty",MessageStatusForm.this));
 				}
+
+				@Override
+				public boolean isRequired()
+				{
+					return !MessageStatusForm.this.getModelObject().getManual();
+				}
 			};
-			fromParties.setRequired(true);
+			//fromParties.setRequired(true);
 			fromParties.setOutputMarkupId(true);
 			add(new BootstrapFormComponentFeedbackBorder("fromPartyFeedback",fromParties));
 			
@@ -145,12 +159,18 @@ public class MessageStatusPage extends BasePage
 				{
 					return Model.of(getLocalizer().getString("lbl.toParty",MessageStatusForm.this));
 				}
+				
+				@Override
+				public boolean isRequired()
+				{
+					return !MessageStatusForm.this.getModelObject().getManual();
+				}
 			};
-			toParties.setRequired(true);
+			//toParties.setRequired(true);
 			toParties.setOutputMarkupId(true);
 			add(new BootstrapFormComponentFeedbackBorder("toPartyFeedback",toParties));
 			
-			DropDownChoice<String> messageIds = new DropDownChoice<String>("messageIds",new PropertyModel<String>(this.getModelObject(),"messageId"),new PropertyModel<List<String>>(this.getModelObject(),"messageIds"))
+			final DropDownChoice<String> messageIds = new DropDownChoice<String>("messageIds",new PropertyModel<String>(this.getModelObject(),"messageId"),new PropertyModel<List<String>>(this.getModelObject(),"messageIds"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -159,10 +179,16 @@ public class MessageStatusPage extends BasePage
 				{
 					return Model.of(getLocalizer().getString("lbl.messageId",MessageStatusForm.this));
 				}
+				
+				@Override
+				public boolean isVisible()
+				{
+					return !MessageStatusForm.this.getModelObject().getManual();
+				}
 			};
+			messageIds.setOutputMarkupPlaceholderTag(true);
 			messageIds.setRequired(true);
-			messageIds.setOutputMarkupId(true);
-			add(new BootstrapFormComponentFeedbackBorder("messageIdFeedback",messageIds));
+			//add(new BootstrapFormComponentFeedbackBorder("messageIdFeedback",messageIds));
 			
 			fromParties.add(new AjaxFormComponentUpdatingBehavior("onchange")
       {
@@ -194,21 +220,50 @@ public class MessageStatusPage extends BasePage
 				}
       });
 
-//			TextField<String> messageId = new TextField<String>("messageId")
-//			{
-//				private static final long serialVersionUID = 1L;
-//
-//				@Override
-//				public IModel<String> getLabel()
-//				{
-//					return Model.of(getLocalizer().getString("lbl.messageId",MessageStatusForm.this));
-//				}
-//			};
-//			messageId.setRequired(true);
-//			MarkupContainer messageIdFeedback = new BootstrapFormComponentFeedbackBorder("messageIdFeedback");
-//			add(messageIdFeedback);
-//			messageIdFeedback.add(messageId);
+			final TextField<String> messageId = new TextField<String>("messageId")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.messageId",MessageStatusForm.this));
+				}
+				
+				@Override
+				public boolean isVisible()
+				{
+					return MessageStatusForm.this.getModelObject().getManual();
+				}
+			};
+			messageId.setOutputMarkupPlaceholderTag(true);
+			messageId.setRequired(true);
+			add(new BootstrapFormComponentFeedbackBorder("messageIdFeedback",messageIds,messageId));
+
+			CheckBox manual = new CheckBox("manual")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.manual",MessageStatusForm.this));
+				}
+			};
+			add(manual);
 			
+			manual.add(new AjaxFormComponentUpdatingBehavior("onchange")
+      {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					target.add(messageIds);
+					target.add(messageId);
+				}
+      });
+
 			Button ping = new Button("check",new ResourceModel("cmd.check"))
 			{
 				private static final long serialVersionUID = 1L;
@@ -219,9 +274,17 @@ public class MessageStatusPage extends BasePage
 					try
 					{
 						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						MessageStatus messageStatus = ebMSMessageService.getMessageStatus(model.getCpaId(),CPAUtils.getPartyIdbyPartyName(cpa,model.getFromParty()),CPAUtils.getPartyIdbyPartyName(cpa,model.getToParty()),model.getMessageId());
-						info(new StringResourceModel("getMessageStatus.ok",Model.of(messageStatus.getStatus())));
+						if (model.getManual())
+						{
+							MessageStatus messageStatus = ebMSMessageService.getMessageStatus(model.getMessageId());
+							info(new StringResourceModel("getMessageStatus.ok",Model.of(messageStatus.getStatus())).getString());
+						}
+						else
+						{
+							CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+							MessageStatus messageStatus = ebMSMessageService.getMessageStatus(model.getCpaId(),CPAUtils.getPartyIdbyPartyName(cpa,model.getFromParty()),CPAUtils.getPartyIdbyPartyName(cpa,model.getToParty()),model.getMessageId());
+							info(new StringResourceModel("getMessageStatus.ok",Model.of(messageStatus.getStatus())).getString());
+						}
 					}
 					catch (Exception e)
 					{
@@ -247,6 +310,7 @@ public class MessageStatusPage extends BasePage
 		private String toParty;
 		private List<String> messageIds = new ArrayList<String>();
 		private String messageId;
+		private boolean manual;
 		
 		public String getCpaId()
 		{
@@ -291,6 +355,14 @@ public class MessageStatusPage extends BasePage
 		public void setMessageId(String messageId)
 		{
 			this.messageId = messageId;
+		}
+		public boolean getManual()
+		{
+			return manual;
+		}
+		public void setManual(boolean manual)
+		{
+			this.manual = manual;
 		}
 	}		
 

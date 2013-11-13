@@ -27,8 +27,14 @@
 		<div class="form-group" wicket:id="messageIdFeedback">
 			<label for="messageIds" class="col-lg-2 control-label"><wicket:message key="lbl.messageId"/></label>
 			<div class="col-lg-10">
-				<!--input type="text" class="form-control" wicket:id="messageId"/-->
 				<select class="form-control" wicket:id="messageIds"/>
+				<input type="text" class="form-control" wicket:id="messageId"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="manual" class="col-lg-2 control-label"><wicket:message key="lbl.manual"/></label>
+			<div class="col-lg-10">
+				<input type="checkbox" wicket:id="manual" />
 			</div>
 		</div>
 		<div class="form-group">
