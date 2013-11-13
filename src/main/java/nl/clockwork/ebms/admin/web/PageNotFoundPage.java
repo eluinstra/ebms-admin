@@ -26,7 +26,7 @@ public class PageNotFoundPage extends BasePage
 
 	public PageNotFoundPage()
 	{
-		add(new BookmarkablePageLink<Void>("continue",WicketApplication.get().getHomePage()));
+		add(new BookmarkablePageLink<Void>("continue_link",WicketApplication.get().getHomePage()));
 	}
 
 	@Override

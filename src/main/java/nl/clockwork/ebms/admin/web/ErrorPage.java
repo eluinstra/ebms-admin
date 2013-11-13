@@ -22,6 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.authorization.UnauthorizedActionException;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.protocol.http.PageExpiredException;
@@ -29,34 +30,42 @@ import org.apache.wicket.protocol.http.PageExpiredException;
 public class ErrorPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
+	private enum ErrorType
+	{
+		ERROR("error"), PAGE_EXPIRED("pageExpired"), UNAUTHORIZED_ACTION("unauthorizedAction");
+		
+		private String title;
+
+		private ErrorType(String title)
+		{
+			this.title = title;
+		}
+		public String getTitle()
+		{
+			return title;
+		}
+		public static ErrorType get(Exception exception)
+		{
+			if (exception instanceof PageExpiredException)
+				return PAGE_EXPIRED;
+			else if(exception instanceof UnauthorizedActionException)
+				return UNAUTHORIZED_ACTION;
+			else
+				return ERROR;
+		}
+	}
 	protected transient Log logger = LogFactory.getLog(this.getClass());
-	private String pageTitle;
-	private String message;
-	private boolean showStackTrace;
-	private String stackTrace;
+	private ErrorType errorType;
 
 	public ErrorPage(Exception exception)
 	{
 		logger.error("",exception);
-		add(new BookmarkablePageLink<Void>("continue",WicketApplication.get().getHomePage()));
-		if (exception instanceof PageExpiredException)
-		{
-			pageTitle = getLocalizer().getString("pageExpired",this);
-			message = getLocalizer().getString("pageExpired.message",this);
-		}
-		else if(exception instanceof UnauthorizedActionException)
-		{
-			pageTitle = getLocalizer().getString("unauthorizedAction",this);
-			message = getLocalizer().getString("unauthorizedAction.message",this);
-		}
-		else
-		{
-			pageTitle = getLocalizer().getString("error",this);
-			message = getLocalizer().getString("error.message",this);
-			showStackTrace = RuntimeConfigurationType.DEVELOPMENT.equals(getApplication().getConfigurationType());
-		}
-		add(new Label("message",message));
-		//add(new Label("message",e.getMessage()));
+		errorType = ErrorType.get(exception);
+		add(new WebMarkupContainer("error").add(new ContinueLink("continue_link")).setVisible(ErrorType.ERROR.equals(errorType)));
+		add(new WebMarkupContainer("pageExpired").add(new ContinueLink("continue_link")).setVisible(ErrorType.PAGE_EXPIRED.equals(errorType)));
+		add(new WebMarkupContainer("unauthorizedAction").add(new ContinueLink("continue_link")).setVisible(ErrorType.UNAUTHORIZED_ACTION.equals(errorType)));
+		boolean showStackTrace = RuntimeConfigurationType.DEVELOPMENT.equals(getApplication().getConfigurationType());
+		String stackTrace = null;
 		if (showStackTrace)
 		{
 			StringWriter sw = new StringWriter();
@@ -67,9 +76,30 @@ public class ErrorPage extends BasePage
 	}
 
 	@Override
-	public String getPageTitle()
+	public boolean isVersioned()
 	{
-		return pageTitle;
+		return false;
 	}
 
+	@Override
+	public boolean isErrorPage()
+	{
+		return true;
+	}
+
+	@Override
+	public String getPageTitle()
+	{
+		return errorType.getTitle();
+	}
+
+	private final class ContinueLink extends BookmarkablePageLink<Void>
+	{
+		private static final long serialVersionUID = 1L;
+
+		private ContinueLink(String id)
+		{
+			super(id,WicketApplication.get().getHomePage());
+		}
+	}
 }

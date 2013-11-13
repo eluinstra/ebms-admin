@@ -2,8 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
 <body>
 <wicket:extend>
-	<p class="text-danger"><wicket:container wicket:id="message"/>&nbsp;<a href="#" wicket:id="continue"><wicket:message key="cmd.continue"/></a></p>
-	<!--h2><wicket:container wicket:id="message"/></h2-->
+	<p class="text-danger" wicket:id="error"><wicket:message key="error.message"><a href="#" wicket:id="continue_link"><wicket:message key="continue_link_text"/></a></wicket:message></p>
+	<p class="text-danger" wicket:id="pageExpired"><wicket:message key="pageExpired.message"><a href="#" wicket:id="continue_link"><wicket:message key="continue_link_text"/></a></wicket:message></p>
+	<p class="text-danger" wicket:id="unauthorizedAction"><wicket:message key="unauthorizedAction.message"><a href="#" wicket:id="continue_link"><wicket:message key="continue_link_text"/></a></wicket:message></p>
 	<p><wicket:container wicket:id="stackTrace"/></p>
 </wicket:extend>
 </body>
