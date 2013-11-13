@@ -37,33 +37,17 @@ public class EbMSMessageContextModel extends EbMSMessageContext implements Seria
 	{
 		return fromRoles;
 	}
-	public void setFromRoles(List<String> fromRoles)
-	{
-		this.fromRoles = fromRoles;
-	}
 	public List<String> getServices()
 	{
 		return services;
-	}
-	public void setServices(List<String> services)
-	{
-		this.services = services;
 	}
 	public List<String> getActions()
 	{
 		return actions;
 	}
-	public void setActions(List<String> actions)
-	{
-		this.actions = actions;
-	}
 	public List<EbMSDataSource> getDataSources()
 	{
 		return dataSources;
-	}
-	public void setDataSources(List<EbMSDataSource> dataSources)
-	{
-		this.dataSources = dataSources;
 	}
 	public DataSourcesForm getDataSourcesForm()
 	{

@@ -112,7 +112,8 @@ public class PingPage extends BasePage
 					{
 						PingFormModel model = PingForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						model.setFromParties(CPAUtils.getPartyNames(cpa));
+						model.getFromParties().clear();
+						model.getFromParties().addAll(CPAUtils.getPartyNames(cpa));
 						model.setFromParty(null);
 						model.getToParties().clear();
 						model.setToParty(null);
@@ -152,7 +153,8 @@ public class PingPage extends BasePage
 						PingFormModel model = PingForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						String otherPartyName = CPAUtils.getOtherPartyName(cpa,model.getFromParty());
-						model.setToParties(Arrays.asList(otherPartyName));
+						model.getToParties().clear();
+						model.getToParties().addAll(Arrays.asList(otherPartyName));
 						model.setToParty(otherPartyName);
 						target.add(getPage().get("feedback"));
 						target.add(getPage().get("form"));
@@ -214,10 +216,6 @@ public class PingPage extends BasePage
 		{
 			return fromParty;
 		}
-		public void setFromParties(List<String> fromParties)
-		{
-			this.fromParties = fromParties;
-		}
 		public String getToParty()
 		{
 			return toParty;
@@ -229,10 +227,6 @@ public class PingPage extends BasePage
 		public List<String> getFromParties()
 		{
 			return fromParties;
-		}
-		public void setToParties(List<String> toParties)
-		{
-			this.toParties = toParties;
 		}
 		public void setToParty(String toParty)
 		{

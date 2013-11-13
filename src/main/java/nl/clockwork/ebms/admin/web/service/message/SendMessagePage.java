@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -121,8 +120,8 @@ public class SendMessagePage extends BasePage
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						ArrayList<String> roleNames = CPAUtils.getRoleNames(cpa);
-						model.setFromRoles(roleNames);
+						model.getFromRoles().clear();
+						model.getFromRoles().addAll(CPAUtils.getRoleNames(cpa));
 						model.setFromRole(null);
 						model.getServices().clear();
 						model.setService(null);
@@ -165,8 +164,8 @@ public class SendMessagePage extends BasePage
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						List<String> serviceNames = CPAUtils.getServiceNames(cpa,model.getFromRole());
-						model.setServices(serviceNames);
+						model.getServices().clear();
+						model.getServices().addAll(CPAUtils.getServiceNames(cpa,model.getFromRole()));
 						model.setService(null);
 						model.getActions().clear();
 						model.setAction(null);
@@ -207,8 +206,8 @@ public class SendMessagePage extends BasePage
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						List<String> actionNames = CPAUtils.getActionNames(cpa,model.getFromRole(),model.getService());
-						model.setActions(actionNames);
+						model.getActions().clear();
+						model.getActions().addAll(CPAUtils.getActionNames(cpa,model.getFromRole(),model.getService()));
 						model.setAction(null);
 						model.getDataSources().clear();
 						target.add(getPage().get("feedback"));

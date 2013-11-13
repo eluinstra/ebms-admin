@@ -119,7 +119,8 @@ public class MessageStatusPage extends BasePage
 					{
 						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						model.setFromParties(CPAUtils.getPartyNames(cpa));
+						model.getFromParties().clear();
+						model.getFromParties().addAll(CPAUtils.getPartyNames(cpa));
 						model.setFromParty(null);
 						model.getToParties().clear();
 						model.setToParty(null);
@@ -175,9 +176,11 @@ public class MessageStatusPage extends BasePage
 						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						String otherPartyName = CPAUtils.getOtherPartyName(cpa,model.getFromParty());
-						model.setToParties(Arrays.asList(otherPartyName));
+						model.getToParties().clear();
+						model.getToParties().addAll(Arrays.asList(otherPartyName));
 						model.setToParty(otherPartyName);
-						model.setMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromParty(),model.getToParty(),EbMSMessageStatus.SENT));
+						model.getMessageIds().clear();
+						model.getMessageIds().addAll(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromParty(),model.getToParty(),EbMSMessageStatus.SENT));
 						if (model.getMessageIds().size() == 0)
 							info("No messages found");
 						target.add(getPage().get("feedback"));
@@ -253,45 +256,33 @@ public class MessageStatusPage extends BasePage
 		{
 			this.cpaId = cpaId;
 		}
+		public List<String> getFromParties()
+		{
+			return fromParties;
+		}
 		public String getFromParty()
 		{
 			return fromParty;
-		}
-		public void setFromParties(List<String> fromParties)
-		{
-			this.fromParties = fromParties;
-		}
-		public String getToParty()
-		{
-			return toParty;
 		}
 		public void setFromParty(String fromParty)
 		{
 			this.fromParty = fromParty;
 		}
-		public List<String> getFromParties()
+		public List<String> getToParties()
 		{
-			return fromParties;
+			return toParties;
 		}
-		public void setToParties(List<String> toParties)
+		public String getToParty()
 		{
-			this.toParties = toParties;
+			return toParty;
 		}
 		public void setToParty(String toParty)
 		{
 			this.toParty = toParty;
 		}
-		public List<String> getToParties()
-		{
-			return toParties;
-		}
 		public List<String> getMessageIds()
 		{
 			return messageIds;
-		}
-		public void setMessageIds(List<String> messageIds)
-		{
-			this.messageIds = messageIds;
 		}
 		public String getMessageId()
 		{
