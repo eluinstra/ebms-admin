@@ -4,11 +4,11 @@
 <wicket:panel>
 	<ul class="pagination">
 		<li><a wicket:id="first">&laquo;</a></li>
-		<!--li><a wicket:id="prev">&laquo;</a></li-->
+		<wicket:remove><!--li><a wicket:id="prev">&laquo;</a></li--></wicket:remove>
 		<li wicket:id="navigation" class="goto">
-			<a wicket:id="pageLink" ><span wicket:id="pageNumber">5</span></a>
+			<a wicket:id="pageLink" ><wicket:container wicket:id="pageNumber"/></a>
 		</li>
-		<!--li><a wicket:id="next">&raquo;</a></li-->
+		<wicket:remove><!--li><a wicket:id="next">&raquo;</a></li--></wicket:remove>
 		<li><a wicket:id="last">&raquo;</a></li>
 	</ul>
 </wicket:panel>
