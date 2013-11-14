@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
+import nl.clockwork.ebms.model.EbMSMessageContext;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
 import org.apache.commons.csv.CSVFormat;
@@ -42,9 +43,9 @@ public class DownloadEbMSMessageIdsCSVLink extends Link<Void>
 	private static final long serialVersionUID = 1L;
 	protected transient Log logger = LogFactory.getLog(this.getClass());
 	private EbMSMessageService ebMSMessageService;
-	private EbMSMessageContextFilter filter;
+	private EbMSMessageContext filter;
 
-	public DownloadEbMSMessageIdsCSVLink(String id, EbMSMessageService ebMSMessageService, EbMSMessageContextFilter filter)
+	public DownloadEbMSMessageIdsCSVLink(String id, EbMSMessageService ebMSMessageService, EbMSMessageContext filter)
 	{
 		super(id);
 		this.ebMSMessageService = ebMSMessageService;

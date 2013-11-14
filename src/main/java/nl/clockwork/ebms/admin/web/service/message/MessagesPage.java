@@ -19,6 +19,7 @@ import java.util.Arrays;
 
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
+import nl.clockwork.ebms.model.EbMSMessageContext;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
 import org.apache.wicket.AttributeModifier;
@@ -42,19 +43,19 @@ public class MessagesPage extends BasePage
 	private EbMSMessageService ebMSMessageService;
 	@SpringBean(name="maxItemsPerPage")
 	private Integer maxItemsPerPage;
-	private EbMSMessageContextFilter filter;
+	private EbMSMessageContext filter;
 
 	public MessagesPage()
 	{
-		this(new EbMSMessageContextFilter());
+		this(new EbMSMessageContext());
 	}
 
-	public MessagesPage(EbMSMessageContextFilter filter)
+	public MessagesPage(EbMSMessageContext filter)
 	{
 		this(filter,null);
 	}
 
-	public MessagesPage(EbMSMessageContextFilter filter, final WebPage responsePage)
+	public MessagesPage(EbMSMessageContext filter, final WebPage responsePage)
 	{
 		this.filter = filter;
 

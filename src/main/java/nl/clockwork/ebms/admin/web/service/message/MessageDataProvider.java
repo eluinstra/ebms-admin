@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import nl.clockwork.ebms.model.EbMSMessageContext;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
 import org.apache.wicket.markup.repeater.data.IDataProvider;
@@ -29,9 +30,9 @@ public class MessageDataProvider implements IDataProvider<String>
 {
 	private static final long serialVersionUID = 1L;
 	private EbMSMessageService ebMSMessageService;
-	private EbMSMessageContextFilter filter;
+	private EbMSMessageContext filter;
 
-	public MessageDataProvider(EbMSMessageService ebMSMessageService, EbMSMessageContextFilter filter)
+	public MessageDataProvider(EbMSMessageService ebMSMessageService, EbMSMessageContext filter)
 	{
 		this.ebMSMessageService = ebMSMessageService;
 		this.filter = filter;
