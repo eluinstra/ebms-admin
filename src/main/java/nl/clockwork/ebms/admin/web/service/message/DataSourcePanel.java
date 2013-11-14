@@ -46,7 +46,6 @@ public abstract class DataSourcePanel extends Panel
 	{
 		super(id,new CompoundPropertyModel<DataSourceModel>(new DataSourceModel()));
 		add(new DataSourceForm("form"));
-		
 	}
 	
 	public abstract void addDataSource(EbMSDataSource dataSource);
