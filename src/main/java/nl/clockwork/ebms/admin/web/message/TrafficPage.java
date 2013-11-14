@@ -62,8 +62,8 @@ public class TrafficPage extends BasePage
 	public TrafficPage(EbMSMessageFilter filter, final WebPage responsePage)
 	{
 		this.filter = filter;
-		this.filter.setMessageNr(0);
-		this.filter.setServiceMessage(false);
+		filter.setMessageNr(0);
+		filter.setServiceMessage(false);
 
 		final WebMarkupContainer container = new WebMarkupContainer("container");
 		container.setOutputMarkupId(true);
