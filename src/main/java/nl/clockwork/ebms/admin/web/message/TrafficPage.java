@@ -24,7 +24,9 @@ import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
 import nl.clockwork.ebms.admin.web.Utils;
+import nl.clockwork.ebms.admin.web.message.MessageFilterPanel.MessageFilterFormModel;
 
+import org.apache.commons.lang.SerializationUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -51,7 +53,7 @@ public class TrafficPage extends BasePage
 
 	public TrafficPage()
 	{
-		this(new EbMSMessageFilter());
+		this(MessageFilterPanel.createMessageFilter());
 	}
 
 	public TrafficPage(EbMSMessageFilter filter)
@@ -65,6 +67,17 @@ public class TrafficPage extends BasePage
 		filter.setMessageNr(0);
 		filter.setServiceMessage(false);
 
+		add(new MessageFilterPanel("messageFilter",(MessageFilterFormModel)filter)
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public BasePage getPage(MessageFilterFormModel filter)
+			{
+				return new TrafficPage(filter);
+			}
+		});
+		
 		final WebMarkupContainer container = new WebMarkupContainer("container");
 		container.setOutputMarkupId(true);
 
@@ -102,7 +115,7 @@ public class TrafficPage extends BasePage
 					@Override
 					public void onClick()
 					{
-						EbMSMessageFilter filter = new EbMSMessageFilter();
+						MessageFilterFormModel filter = (MessageFilterFormModel)SerializationUtils.clone(TrafficPage.this.filter);
 						filter.setConversationId(message.getConversationId());
 						setResponsePage(new TrafficPage(filter,TrafficPage.this));
 					}
