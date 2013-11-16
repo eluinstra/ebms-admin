@@ -20,6 +20,7 @@ import java.util.List;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.Utils;
+import nl.clockwork.ebms.admin.web.service.message.SendMessagePage.MessageForm;
 import nl.clockwork.ebms.model.EbMSDataSource;
 
 import org.apache.commons.lang.StringUtils;
@@ -35,6 +36,8 @@ import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 
 public abstract class DataSourcePanel extends Panel
@@ -62,13 +65,40 @@ public abstract class DataSourcePanel extends Panel
 
 			add(new BootstrapFeedbackPanel("feedback"));
 
-			FileUploadField file = new FileUploadField("file");
+			FileUploadField file = new FileUploadField("file")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.file",DataSourceForm.this));
+				}
+			};
 			file.setRequired(true);
 			add(new BootstrapFormComponentFeedbackBorder("fileFeedback",file));
 
-			add(new TextField<String>("name"));
+			add(new TextField<String>("name")
+			{
+				private static final long serialVersionUID = 1L;
 
-			add(new TextField<String>("contentType"));
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.name",DataSourceForm.this));
+				}
+			});
+
+			add(new TextField<String>("contentType")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.contentType",DataSourceForm.this));
+				}
+			});
 
 			final AjaxButton add = new AjaxButton("add",new ResourceModel("cmd.add"))
 			{

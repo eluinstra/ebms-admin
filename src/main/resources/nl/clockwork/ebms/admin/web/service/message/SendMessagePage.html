@@ -7,40 +7,40 @@
 	</div>
 	<form class="form-horizontal" role="form" wicket:id="form">
 		<div class="form-group" wicket:id="cpaIdFeedback">
-			<label for="cpaIds" class="col-lg-2 control-label"><wicket:message key="lbl.cpaId"/></label>
+			<label wicket:for="cpaIds" class="col-lg-2 control-label"><wicket:label/></label>
 			<div class="col-lg-10">
 				<select class="form-control" wicket:id="cpaIds"/>
 			</div>
 		</div>
 		<div class="form-group" wicket:id="fromRoleFeedback">
-			<label for="fromRoles" class="col-lg-2 control-label"><wicket:message key="lbl.fromRole"/></label>
+			<label wicket:for="fromRoles" class="col-lg-2 control-label"><wicket:label/></label>
 			<div class="col-lg-10">
 				<select class="form-control" wicket:id="fromRoles"/>
 			</div>
 		</div>
 		<div class="form-group" wicket:id="serviceFeedback">
-			<label for="services" class="col-lg-2 control-label"><wicket:message key="lbl.service"/></label>
+			<label wicket:for="services" class="col-lg-2 control-label"><wicket:label/></label>
 			<div class="col-lg-10">
 				<select class="form-control" wicket:id="services"/>
 			</div>
 		</div>
 		<div class="form-group" wicket:id="actionFeedback">
-			<label for="actions" class="col-lg-2 control-label"><wicket:message key="lbl.action"/></label>
+			<label wicket:for="actions" class="col-lg-2 control-label"><wicket:label/></label>
 			<div class="col-lg-10">
 				<select class="form-control" wicket:id="actions"/>
 			</div>
 		</div>
 		<div class="form-group">
-			<label for="dataSources" class="col-lg-2 control-label"><wicket:message key="lbl.dataSources"/></label>
+			<label class="col-lg-2 control-label"><wicket:message key="lbl.dataSources"/></label>
 			<div class="col-lg-10">
 			<form class="form-horizontal" role="form" wicket:id="form">
 				<table class="table table-striped">
 					<tr>
 						<td>
-							<label for="name"><wicket:message key="lbl.name"/></label>
+							<label><wicket:message key="lbl.name"/></label>
 						</td>
 						<td>
-							<label for="contentType"><wicket:message key="lbl.contentType"/></label>
+							<label><wicket:message key="lbl.contentType"/></label>
 						</td>
 						<td></td>
 					</tr>

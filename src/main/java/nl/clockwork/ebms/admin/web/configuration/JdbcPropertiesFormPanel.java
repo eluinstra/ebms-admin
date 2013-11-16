@@ -138,7 +138,16 @@ public class JdbcPropertiesFormPanel extends Panel
 				}
 			});
 
-			final TextField<String> url = new TextField<String>("url");
+			final TextField<String> url = new TextField<String>("url")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.url",JdbcPropertiesFormPanel.this));
+				}
+			};
 			url.setOutputMarkupId(true);
 			url.setEnabled(false);
 			add(url);

@@ -7,15 +7,15 @@
 	</div>
 	<form class="form-horizontal" role="form" wicket:id="form">
 		<div class="form-group" wicket:id="cpaFeedback">
-			<label for="cpaFile" class="col-lg-2 control-label"><wicket:message key="lbl.cpa"/></label>
+			<label wicket:for="cpaFile" class="col-lg-2 control-label"><wicket:label/></label>
 			<div class="col-lg-10">
-				<input type="file" class="form-control" wicket:id="cpaFile"/>
+				<input type="file" class="form-control" id="cpaFile" wicket:id="cpaFile"/>
 			</div>
 		</div>
 		<div class="form-group">
-			<label for="overwrite" class="col-lg-2 control-label"><wicket:message key="lbl.overwrite"/></label>
+			<label wicket:for="overwrite" class="col-lg-2 control-label"><wicket:label/></label>
 			<div class="col-lg-10">
-				<input type="checkbox" wicket:id="overwrite" />
+				<input type="checkbox" id="overwrite" wicket:id="overwrite"/>
 			</div>
 		</div>
 		<div class="form-group">

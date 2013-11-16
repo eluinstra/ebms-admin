@@ -4,19 +4,19 @@
 <wicket:panel>
 	<form wicket:id="form">
 		<div class="form-group">
-			<label for="allowedCipherSuites" class="col-lg-2 control-label"><wicket:message key="lbl.allowedCipherSuites"/></label>
+			<label wicket:for="allowedCipherSuites" class="col-lg-2 control-label"><wicket:label/></label>
 			<div class="col-lg-10">
 				<wicket:container wicket:id="allowedCipherSuites"/>
 			</div>
 		</div>
 		<div class="form-group">
-			<label for="requireClientAuthentication" class="col-lg-2 control-label"><wicket:message key="lbl.requireClientAuthentication"/></label>
+			<label wicket:for="requireClientAuthentication" class="col-lg-2 control-label"><wicket:label/></label>
 			<div class="col-lg-10">
 				<input type="checkbox" wicket:id="requireClientAuthentication" />
 			</div>
 		</div>
 		<div class="form-group">
-			<label for="verifyHostnames" class="col-lg-2 control-label"><wicket:message key="lbl.verifyHostnames"/></label>
+			<label wicket:for="verifyHostnames" class="col-lg-2 control-label"><wicket:label/></label>
 			<div class="col-lg-10">
 				<input type="checkbox" wicket:id="verifyHostnames" />
 			</div>

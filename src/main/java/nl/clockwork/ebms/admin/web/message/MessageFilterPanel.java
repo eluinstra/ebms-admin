@@ -296,6 +296,12 @@ public abstract class MessageFilterPanel extends Panel
 			{
 				private static final long serialVersionUID = 1L;
 
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.from",MessageFilterForm.this));
+				}
+
 				public java.util.Date getEndDate()
 				{
 					return MessageFilterForm.this.getModelObject().getTo();
@@ -319,6 +325,12 @@ public abstract class MessageFilterPanel extends Panel
 			BootstrapDateTimePicker to = new BootstrapDateTimePicker("to","dd-MM-yyyy")
 			{
 				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.to",MessageFilterForm.this));
+				}
 
 				public java.util.Date getStartDate()
 				{
