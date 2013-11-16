@@ -20,7 +20,6 @@ import java.util.List;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.Utils;
-import nl.clockwork.ebms.admin.web.service.message.SendMessagePage.MessageForm;
 import nl.clockwork.ebms.model.EbMSDataSource;
 
 import org.apache.commons.lang.StringUtils;
