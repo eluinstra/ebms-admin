@@ -1,4 +1,5 @@
 - improve message filters
+	- improve date picker
 
 - implement StartAllInOne
 	- configure ebms endpoints (+ keystores)
