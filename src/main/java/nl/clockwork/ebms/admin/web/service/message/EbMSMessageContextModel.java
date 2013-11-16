@@ -37,13 +37,43 @@ public class EbMSMessageContextModel extends EbMSMessageContext implements Seria
 	{
 		return fromRoles;
 	}
+	public void resetFromRoles()
+	{
+		getFromRoles().clear();
+		setFromRole(null);
+	}
+	public void resetFromRoles(List<String> roles)
+	{
+		resetFromRoles();
+		getFromRoles().addAll(roles);
+	}
 	public List<String> getServices()
 	{
 		return services;
 	}
+	public void resetServices()
+	{
+		getServices().clear();
+		setService(null);
+	}
+	public void resetServices(List<String> serviceNames)
+	{
+		resetServices();
+		getServices().addAll(serviceNames);
+	}
 	public List<String> getActions()
 	{
 		return actions;
+	}
+	public void resetActions()
+	{
+		getActions().clear();
+		setAction(null);
+	}
+	public void resetActions(List<String> actionNames)
+	{
+		resetActions();
+		getActions().addAll(actionNames);
 	}
 	public List<EbMSDataSource> getDataSources()
 	{
@@ -56,5 +86,9 @@ public class EbMSMessageContextModel extends EbMSMessageContext implements Seria
 	public void setDataSourcesForm(DataSourcesForm dataSourcesForm)
 	{
 		this.dataSourcesForm = dataSourcesForm;
+	}
+	public void resetDataSources()
+	{
+		getDataSources().clear();
 	}
 }

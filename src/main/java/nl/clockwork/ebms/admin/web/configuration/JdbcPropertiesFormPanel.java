@@ -8,8 +8,8 @@ import nl.clockwork.ebms.admin.web.configuration.Constants.JdbcDriver;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -56,6 +56,17 @@ public class JdbcPropertiesFormPanel extends Panel
 			drivers.setRequired(true);
 			add(new BootstrapFormComponentFeedbackBorder("driverFeedback",drivers));
 
+			drivers.add(new OnChangeAjaxBehavior()
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					target.add(getUrlComponent());
+				}
+			});
+
 			TextField<String> host = new TextField<String>("host")
 			{
 				private static final long serialVersionUID = 1L;
@@ -69,6 +80,17 @@ public class JdbcPropertiesFormPanel extends Panel
 			host.setRequired(true);
 			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",host));
 
+			host.add(new OnChangeAjaxBehavior()
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					target.add(getUrlComponent());
+				}
+			});
+
 			TextField<Integer> port = new TextField<Integer>("port")
 			{
 				private static final long serialVersionUID = 1L;
@@ -80,6 +102,17 @@ public class JdbcPropertiesFormPanel extends Panel
 				}
 			};
 			add(new BootstrapFormComponentFeedbackBorder("portFeedback",port));
+
+			port.add(new OnChangeAjaxBehavior()
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					target.add(getUrlComponent());
+				}
+			});
 
 			TextField<String> database = new TextField<String>("database")
 			{
@@ -93,6 +126,17 @@ public class JdbcPropertiesFormPanel extends Panel
 			};
 			database.setRequired(true);
 			add(new BootstrapFormComponentFeedbackBorder("databaseFeedback",database));
+
+			database.add(new OnChangeAjaxBehavior()
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					target.add(getUrlComponent());
+				}
+			});
 
 			final TextField<String> url = new TextField<String>("url");
 			url.setOutputMarkupId(true);
@@ -121,50 +165,6 @@ public class JdbcPropertiesFormPanel extends Panel
 			};
 			add(test);
 			
-			drivers.add(new AjaxFormComponentUpdatingBehavior("onchange")
-	    {
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					target.add(url);
-				}
-	    });
-
-			host.add(new OnChangeAjaxBehavior()
-	    {
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					target.add(url);
-				}
-	    });
-
-			port.add(new OnChangeAjaxBehavior()
-	    {
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					target.add(url);
-				}
-	    });
-
-			database.add(new OnChangeAjaxBehavior()
-	    {
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					target.add(url);
-				}
-	    });
-
 			TextField<String> username = new TextField<String>("username")
 			{
 				private static final long serialVersionUID = 1L;
@@ -192,8 +192,13 @@ public class JdbcPropertiesFormPanel extends Panel
 			password.setRequired(false);
 			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",password));
 		}
-	}
 
+		private Component getUrlComponent()
+		{
+			return this.get("url");
+		}
+	}
+	
 	public static class JdbcPropertiesFormModel extends JdbcURL implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;

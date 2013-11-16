@@ -88,6 +88,30 @@ public class PingPage extends BasePage
 			cpaIds.setRequired(true);
 			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",cpaIds));
 
+			cpaIds.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					try
+					{
+						PingFormModel model = PingForm.this.getModelObject();
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						model.resetFromParties(CPAUtils.getPartyNames(cpa));
+						model.resetToParties();
+						target.add(getPage().get("feedback"));
+						target.add(getPage().get("form"));
+					}
+					catch (JAXBException e)
+					{
+						logger.error("",e);
+						error(e.getMessage());
+					}
+				}
+			});
+
 			DropDownChoice<String> fromParties = new DropDownChoice<String>("fromParties",new PropertyModel<String>(this.getModelObject(),"fromParty"),new PropertyModel<List<String>>(this.getModelObject(),"fromParties"))
 			{
 				private static final long serialVersionUID = 1L;
@@ -101,8 +125,8 @@ public class PingPage extends BasePage
 			fromParties.setRequired(true).setOutputMarkupId(true);
 			add(new BootstrapFormComponentFeedbackBorder("fromPartyFeedback",fromParties));
 			
-			cpaIds.add(new AjaxFormComponentUpdatingBehavior("onchange")
-      {
+			fromParties.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
@@ -112,11 +136,7 @@ public class PingPage extends BasePage
 					{
 						PingFormModel model = PingForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						model.getFromParties().clear();
-						model.getFromParties().addAll(CPAUtils.getPartyNames(cpa));
-						model.setFromParty(null);
-						model.getToParties().clear();
-						model.setToParty(null);
+						model.resetToParties(CPAUtils.getOtherPartyName(cpa,model.getFromParty()));
 						target.add(getPage().get("feedback"));
 						target.add(getPage().get("form"));
 					}
@@ -126,7 +146,7 @@ public class PingPage extends BasePage
 						error(e.getMessage());
 					}
 				}
-      });
+			});
 
 			DropDownChoice<String> toParties = new DropDownChoice<String>("toParties",new PropertyModel<String>(this.getModelObject(),"toParty"),new PropertyModel<List<String>>(this.getModelObject(),"toParties"))
 			{
@@ -141,32 +161,6 @@ public class PingPage extends BasePage
 			toParties.setRequired(true).setOutputMarkupId(true);
 			add(new BootstrapFormComponentFeedbackBorder("toPartyFeedback",toParties));
 			
-			fromParties.add(new AjaxFormComponentUpdatingBehavior("onchange")
-      {
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					try
-					{
-						PingFormModel model = PingForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						String otherPartyName = CPAUtils.getOtherPartyName(cpa,model.getFromParty());
-						model.getToParties().clear();
-						model.getToParties().addAll(Arrays.asList(otherPartyName));
-						model.setToParty(otherPartyName);
-						target.add(getPage().get("feedback"));
-						target.add(getPage().get("form"));
-					}
-					catch (JAXBException e)
-					{
-						logger.error("",e);
-						error(e.getMessage());
-					}
-				}
-      });
-
 			Button ping = new Button("ping",new ResourceModel("cmd.ping"))
 			{
 				private static final long serialVersionUID = 1L;
@@ -216,10 +210,6 @@ public class PingPage extends BasePage
 		{
 			return fromParty;
 		}
-		public String getToParty()
-		{
-			return toParty;
-		}
 		public void setFromParty(String fromParty)
 		{
 			this.fromParty = fromParty;
@@ -228,6 +218,20 @@ public class PingPage extends BasePage
 		{
 			return fromParties;
 		}
+		public void resetFromParties()
+		{
+			getFromParties().clear();
+			setFromParty(null);
+		}
+		public void resetFromParties(ArrayList<String> partyNames)
+		{
+			resetFromParties();
+			getFromParties().addAll(partyNames);
+		}
+		public String getToParty()
+		{
+			return toParty;
+		}
 		public void setToParty(String toParty)
 		{
 			this.toParty = toParty;
@@ -235,6 +239,17 @@ public class PingPage extends BasePage
 		public List<String> getToParties()
 		{
 			return toParties;
+		}
+		public void resetToParties()
+		{
+			getToParties().clear();
+			setToParty(null);
+		}
+		public void resetToParties(String otherPartyName)
+		{
+			resetToParties();
+			getToParties().addAll(Arrays.asList(otherPartyName));
+			setToParty(otherPartyName);
 		}
 	}		
 

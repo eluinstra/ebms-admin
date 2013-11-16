@@ -96,7 +96,7 @@ public abstract class MessageFilterPanel extends Panel
 						model.resetToRoles(CPAUtils.getRoleNames(cpa));
 						model.resetServices();
 						model.resetActions();
-						target.add(getFeedbackPanel());
+						target.add(getFeedbackComponent());
 						target.add(getForm());
 					}
 					catch (JAXBException e)
@@ -139,7 +139,7 @@ public abstract class MessageFilterPanel extends Panel
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole()));
 						model.resetActions();
-						target.add(getFeedbackPanel());
+						target.add(getFeedbackComponent());
 						target.add(getForm());
 					}
 					catch (JAXBException e)
@@ -182,7 +182,7 @@ public abstract class MessageFilterPanel extends Panel
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetServices(CPAUtils.getServiceNames(cpa,model.getToRole()));
 						model.resetActions();
-						target.add(getFeedbackPanel());
+						target.add(getFeedbackComponent());
 						target.add(getForm());
 					}
 					catch (JAXBException e)
@@ -218,7 +218,7 @@ public abstract class MessageFilterPanel extends Panel
 						MessageFilterFormModel model = MessageFilterForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetActions(model.getFromRole() == null ? CPAUtils.getToActionNames(cpa,model.getToRole(),model.getService()) : CPAUtils.getFromActionNames(cpa,model.getFromRole(),model.getService()));
-						target.add(getFeedbackPanel());
+						target.add(getFeedbackComponent());
 						target.add(getForm());
 					}
 					catch (JAXBException e)
@@ -367,12 +367,12 @@ public abstract class MessageFilterPanel extends Panel
 	
 	public abstract BasePage getPage(MessageFilterFormModel filter);
 	
-	public Component getFeedbackPanel()
+	private Component getFeedbackComponent()
 	{
 		return this.get("feedback");
 	}
 	
-	public Component getForm()
+	private Component getForm()
 	{
 		return this.get("form");
 	}

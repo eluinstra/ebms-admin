@@ -95,6 +95,32 @@ public class SendMessagePage extends BasePage
 			cpaIds.setRequired(true);
 			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",cpaIds));
 
+			cpaIds.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					try
+					{
+						EbMSMessageContextModel model = MessageForm.this.getModelObject();
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						model.resetFromRoles(CPAUtils.getRoleNames(cpa));
+						model.resetServices();
+						model.resetActions();
+						model.resetDataSources();
+						target.add(getPage().get("feedback"));
+						target.add(getPage().get("form"));
+					}
+					catch (JAXBException e)
+					{
+						logger.error("",e);
+						error(e.getMessage());
+					}
+				}
+			});
+
 			DropDownChoice<String> fromRoles = new DropDownChoice<String>("fromRoles",new PropertyModel<String>(this.getModelObject(),"fromRole"),new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
 			{
 				private static final long serialVersionUID = 1L;
@@ -109,8 +135,8 @@ public class SendMessagePage extends BasePage
 			fromRoles.setOutputMarkupId(true);
 			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",fromRoles));
 			
-			cpaIds.add(new AjaxFormComponentUpdatingBehavior("onchange")
-      {
+			fromRoles.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
@@ -120,14 +146,9 @@ public class SendMessagePage extends BasePage
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						model.getFromRoles().clear();
-						model.getFromRoles().addAll(CPAUtils.getRoleNames(cpa));
-						model.setFromRole(null);
-						model.getServices().clear();
-						model.setService(null);
-						model.getActions().clear();
-						model.setAction(null);
-						model.getDataSources().clear();
+						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole()));
+						model.resetActions();
+						model.resetDataSources();
 						target.add(getPage().get("feedback"));
 						target.add(getPage().get("form"));
 					}
@@ -137,7 +158,7 @@ public class SendMessagePage extends BasePage
 						error(e.getMessage());
 					}
 				}
-      });
+			});
 
 			DropDownChoice<String> services = new DropDownChoice<String>("services",new PropertyModel<String>(this.getModelObject(),"service"),new PropertyModel<List<String>>(this.getModelObject(),"services"))
 			{
@@ -153,8 +174,8 @@ public class SendMessagePage extends BasePage
 			services.setOutputMarkupId(true);
 			add(new BootstrapFormComponentFeedbackBorder("serviceFeedback",services));
 			
-			fromRoles.add(new AjaxFormComponentUpdatingBehavior("onchange")
-      {
+			services.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
@@ -164,12 +185,8 @@ public class SendMessagePage extends BasePage
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						model.getServices().clear();
-						model.getServices().addAll(CPAUtils.getServiceNames(cpa,model.getFromRole()));
-						model.setService(null);
-						model.getActions().clear();
-						model.setAction(null);
-						model.getDataSources().clear();
+						model.resetActions(CPAUtils.getFromActionNames(cpa,model.getFromRole(),model.getService()));
+						model.resetDataSources();
 						target.add(getPage().get("feedback"));
 						target.add(getPage().get("form"));
 					}
@@ -179,7 +196,7 @@ public class SendMessagePage extends BasePage
 						error(e.getMessage());
 					}
 				}
-      });
+			});
 
 			DropDownChoice<String> actions = new DropDownChoice<String>("actions",new PropertyModel<String>(this.getModelObject(),"action"),new PropertyModel<List<String>>(this.getModelObject(),"actions"))
 			{
@@ -194,33 +211,7 @@ public class SendMessagePage extends BasePage
 			actions.setRequired(true);
 			actions.setOutputMarkupId(true);
 			add(new BootstrapFormComponentFeedbackBorder("actionFeedback",actions));
-			
-			services.add(new AjaxFormComponentUpdatingBehavior("onchange")
-      {
-				private static final long serialVersionUID = 1L;
 
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					try
-					{
-						EbMSMessageContextModel model = MessageForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						model.getActions().clear();
-						model.getActions().addAll(CPAUtils.getActionNames(cpa,model.getFromRole(),model.getService()));
-						model.setAction(null);
-						model.getDataSources().clear();
-						target.add(getPage().get("feedback"));
-						target.add(getPage().get("form"));
-					}
-					catch (JAXBException e)
-					{
-						logger.error("",e);
-						error(e.getMessage());
-					}
-				}
-      });
-			
 			DataSourcesForm dataSourcesForm = new DataSourcesForm("form",getModelObject().getDataSources());
 			dataSourcesForm.setOutputMarkupId(true);
 			add(dataSourcesForm);

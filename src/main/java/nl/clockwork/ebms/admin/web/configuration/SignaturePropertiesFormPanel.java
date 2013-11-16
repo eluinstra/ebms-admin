@@ -46,6 +46,17 @@ public class SignaturePropertiesFormPanel extends Panel
 			};
 			add(signing);
 
+			signing.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					target.add(SignaturePropertiesForm.this);
+				}
+			});
+
 			final JavaKeyStorePropertiesFormPanel keystoreProperties = new JavaKeyStorePropertiesFormPanel("keystoreProperties",new PropertyModel<JavaKeyStorePropertiesFormModel>(getModelObject(),"keystoreProperties"),false)
 			{
 				private static final long serialVersionUID = 1L;
@@ -56,21 +67,7 @@ public class SignaturePropertiesFormPanel extends Panel
 					return getModelObject().getSigning();
 				}
 			};
-			keystoreProperties.setOutputMarkupPlaceholderTag(true);
 			add(keystoreProperties);
-
-			signing.add(new AjaxFormComponentUpdatingBehavior("onchange")
-      {
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					//FIXME
-					//target.add(keystoreProperties);
-					target.add(SignaturePropertiesForm.this);
-				}
-      });
 		}
 	}
 

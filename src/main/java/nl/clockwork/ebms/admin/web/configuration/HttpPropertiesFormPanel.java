@@ -150,6 +150,17 @@ public class HttpPropertiesFormPanel extends Panel
 			};
 			add(ssl);
 
+			ssl.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					target.add(HttpPropertiesForm.this);
+				}
+			});
+
 			final SslPropertiesFormPanel sslProperties = new SslPropertiesFormPanel("sslProperties",new PropertyModel<SslPropertiesFormModel>(getModelObject(),"sslProperties"))
 			{
 				private static final long serialVersionUID = 1L;
@@ -160,23 +171,7 @@ public class HttpPropertiesFormPanel extends Panel
 					return getModelObject().getSsl();
 				}
 			};
-			sslProperties.setOutputMarkupPlaceholderTag(true);
 			add(sslProperties);
-
-			ssl.add(new AjaxFormComponentUpdatingBehavior("onchange")
-      {
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					//FIXME
-					//target.add(protocol);
-					//target.add(url);
-					//target.add(sslProperties);
-					target.add(HttpPropertiesForm.this);
-				}
-      });
 		}
 	}
 

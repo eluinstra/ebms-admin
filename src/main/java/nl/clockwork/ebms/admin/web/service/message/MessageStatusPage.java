@@ -102,6 +102,31 @@ public class MessageStatusPage extends BasePage
 			//cpaIds.setRequired(true);
 			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",cpaIds));
 
+			cpaIds.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					try
+					{
+						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						model.resetFromParties(CPAUtils.getPartyNames(cpa));
+						model.resetToParties();
+						model.resetMessageId();
+						target.add(getPage().get("feedback"));
+						target.add(getPage().get("form"));
+					}
+					catch (JAXBException e)
+					{
+						logger.error("",e);
+						error(e.getMessage());
+					}
+				}
+			});
+
 			DropDownChoice<String> fromParties = new DropDownChoice<String>("fromParties",new PropertyModel<String>(this.getModelObject(),"fromParty"),new PropertyModel<List<String>>(this.getModelObject(),"fromParties"))
 			{
 				private static final long serialVersionUID = 1L;
@@ -122,8 +147,8 @@ public class MessageStatusPage extends BasePage
 			fromParties.setOutputMarkupId(true);
 			add(new BootstrapFormComponentFeedbackBorder("fromPartyFeedback",fromParties));
 			
-			cpaIds.add(new AjaxFormComponentUpdatingBehavior("onchange")
-      {
+			fromParties.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
@@ -133,12 +158,10 @@ public class MessageStatusPage extends BasePage
 					{
 						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						model.getFromParties().clear();
-						model.getFromParties().addAll(CPAUtils.getPartyNames(cpa));
-						model.setFromParty(null);
-						model.getToParties().clear();
-						model.setToParty(null);
-						model.setMessageId(null);
+						model.resetToParties(CPAUtils.getOtherPartyName(cpa,model.getFromParty()));
+						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromParty(),model.getToParty(),EbMSMessageStatus.SENT));
+						if (model.getMessageIds().size() == 0)
+							info("No messages found");
 						target.add(getPage().get("feedback"));
 						target.add(getPage().get("form"));
 					}
@@ -148,7 +171,7 @@ public class MessageStatusPage extends BasePage
 						error(e.getMessage());
 					}
 				}
-      });
+			});
 
 			DropDownChoice<String> toParties = new DropDownChoice<String>("toParties",new PropertyModel<String>(this.getModelObject(),"toParty"),new PropertyModel<List<String>>(this.getModelObject(),"toParties"))
 			{
@@ -190,36 +213,6 @@ public class MessageStatusPage extends BasePage
 			messageIds.setRequired(true);
 			//add(new BootstrapFormComponentFeedbackBorder("messageIdFeedback",messageIds));
 			
-			fromParties.add(new AjaxFormComponentUpdatingBehavior("onchange")
-      {
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					try
-					{
-						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						String otherPartyName = CPAUtils.getOtherPartyName(cpa,model.getFromParty());
-						model.getToParties().clear();
-						model.getToParties().addAll(Arrays.asList(otherPartyName));
-						model.setToParty(otherPartyName);
-						model.getMessageIds().clear();
-						model.getMessageIds().addAll(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromParty(),model.getToParty(),EbMSMessageStatus.SENT));
-						if (model.getMessageIds().size() == 0)
-							info("No messages found");
-						target.add(getPage().get("feedback"));
-						target.add(getPage().get("form"));
-					}
-					catch (JAXBException e)
-					{
-						logger.error("",e);
-						error(e.getMessage());
-					}
-				}
-      });
-
 			final TextField<String> messageId = new TextField<String>("messageId")
 			{
 				private static final long serialVersionUID = 1L;
@@ -283,10 +276,8 @@ public class MessageStatusPage extends BasePage
 						else
 						{
 							model.setCpaId(null);
-							model.getFromParties().clear();
-							model.setFromParty(null);
-							model.getToParties().clear();
-							model.setToParty(null);
+							model.resetFromParties();
+							model.resetToParties();
 							MessageStatus messageStatus = ebMSMessageService.getMessageStatus(model.getMessageId());
 							info(new StringResourceModel("getMessageStatus.ok",Model.of(messageStatus.getStatus())).getString());
 						}
@@ -337,6 +328,16 @@ public class MessageStatusPage extends BasePage
 		{
 			this.fromParty = fromParty;
 		}
+		public void resetFromParties()
+		{
+			getFromParties().clear();
+			setFromParty(null);
+		}
+		public void resetFromParties(ArrayList<String> partyNames)
+		{
+			resetFromParties();
+			getFromParties().addAll(partyNames);
+		}
 		public List<String> getToParties()
 		{
 			return toParties;
@@ -349,6 +350,17 @@ public class MessageStatusPage extends BasePage
 		{
 			this.toParty = toParty;
 		}
+		public void resetToParties()
+		{
+			getToParties().clear();
+			setToParty(null);
+		}
+		public void resetToParties(String otherPartyName)
+		{
+			resetToParties();
+			getToParties().addAll(Arrays.asList(otherPartyName));
+			setToParty(otherPartyName);
+		}
 		public List<String> getMessageIds()
 		{
 			return messageIds;
@@ -360,6 +372,16 @@ public class MessageStatusPage extends BasePage
 		public void setMessageId(String messageId)
 		{
 			this.messageId = messageId;
+		}
+		public void resetMessageId()
+		{
+			setMessageId(null);
+		}
+		public void resetMessageIds(List<String> messageIds)
+		{
+			getMessageIds().clear();
+			getMessageIds().addAll(messageIds);
+			setMessageId(null);
 		}
 		public boolean getManual()
 		{
