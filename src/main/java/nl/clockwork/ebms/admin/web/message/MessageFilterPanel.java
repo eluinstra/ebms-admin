@@ -1,0 +1,450 @@
+package nl.clockwork.ebms.admin.web.message;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.xml.bind.JAXBException;
+
+import nl.clockwork.ebms.Constants.EbMSMessageStatus;
+import nl.clockwork.ebms.admin.CPAUtils;
+import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.BootstrapDateTimePicker;
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.common.XMLMessageBuilder;
+import nl.clockwork.ebms.service.CPAService;
+import nl.clockwork.ebms.service.EbMSMessageService;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.ListMultipleChoice;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement;
+
+public abstract class MessageFilterPanel extends Panel
+{
+	private static final long serialVersionUID = 1L;
+	protected transient Log logger = LogFactory.getLog(getClass());
+	@SpringBean(name="cpaService")
+	private CPAService cpaService;
+	@SpringBean(name="ebMSMessageService")
+	private EbMSMessageService ebMSMessageService;
+
+	public MessageFilterPanel(String id, MessageFilterFormModel filter)
+	{
+		super(id);
+		add(new BootstrapFeedbackPanel("feedback").setOutputMarkupId(true));
+		add(new MessageFilterForm("form",filter));
+		add(new Link<Void>("clear")
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick()
+			{
+				setResponsePage(getPage().getClass());
+			}
+		});
+	}
+
+	public class MessageFilterForm extends Form<MessageFilterFormModel>
+	{
+		private static final long serialVersionUID = 1L;
+
+		public MessageFilterForm(String id, MessageFilterFormModel model)
+		{
+			super(id,new CompoundPropertyModel<MessageFilterFormModel>(model));
+
+			DropDownChoice<String> cpaIds = new DropDownChoice<String>("cpaIds",new PropertyModel<String>(this.getModelObject(),"cpaId"),Model.ofList(cpaService.getCPAIds()))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.cpaId",MessageFilterForm.this));
+				}
+			};
+			add(cpaIds);
+
+			cpaIds.add(new AjaxFormComponentUpdatingBehavior("onchange")
+      {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					try
+					{
+						MessageFilterFormModel model = MessageFilterForm.this.getModelObject();
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						model.resetFromRoles(CPAUtils.getRoleNames(cpa));
+						model.resetToRoles(CPAUtils.getRoleNames(cpa));
+						model.resetServices();
+						model.resetActions();
+						target.add(getFeedbackPanel());
+						target.add(getForm());
+					}
+					catch (JAXBException e)
+					{
+						logger.error("",e);
+						error(e.getMessage());
+					}
+				}
+      });
+
+			DropDownChoice<String> fromRoles = new DropDownChoice<String>("fromRoles",new PropertyModel<String>(this.getModelObject(),"fromRole"),new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.fromRole",MessageFilterForm.this));
+				}
+				
+				@Override
+				public boolean isEnabled()
+				{
+					return MessageFilterForm.this.getModelObject().getToRole() == null;
+				}
+			};
+			fromRoles.setOutputMarkupId(true);
+			add(fromRoles);
+			
+			fromRoles.add(new AjaxFormComponentUpdatingBehavior("onchange")
+      {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					try
+					{
+						MessageFilterFormModel model = MessageFilterForm.this.getModelObject();
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole()));
+						model.resetActions();
+						target.add(getFeedbackPanel());
+						target.add(getForm());
+					}
+					catch (JAXBException e)
+					{
+						logger.error("",e);
+						error(e.getMessage());
+					}
+				}
+      });
+
+			DropDownChoice<String> toRoles = new DropDownChoice<String>("toRoles",new PropertyModel<String>(this.getModelObject(),"toRole"),new PropertyModel<List<String>>(this.getModelObject(),"toRoles"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.toRole",MessageFilterForm.this));
+				}
+
+				@Override
+				public boolean isEnabled()
+				{
+					return MessageFilterForm.this.getModelObject().getFromRole() == null;
+				}
+			};
+			toRoles.setOutputMarkupId(true);
+			add(toRoles);
+			
+			toRoles.add(new AjaxFormComponentUpdatingBehavior("onchange")
+      {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					try
+					{
+						MessageFilterFormModel model = MessageFilterForm.this.getModelObject();
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						model.resetServices(CPAUtils.getServiceNames(cpa,model.getToRole()));
+						model.resetActions();
+						target.add(getFeedbackPanel());
+						target.add(getForm());
+					}
+					catch (JAXBException e)
+					{
+						logger.error("",e);
+						error(e.getMessage());
+					}
+				}
+      });
+
+			DropDownChoice<String> services = new DropDownChoice<String>("services",new PropertyModel<String>(this.getModelObject(),"service"),new PropertyModel<List<String>>(this.getModelObject(),"services"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.service",MessageFilterForm.this));
+				}
+			};
+			services.setOutputMarkupId(true);
+			add(services);
+
+			services.add(new AjaxFormComponentUpdatingBehavior("onchange")
+      {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					try
+					{
+						MessageFilterFormModel model = MessageFilterForm.this.getModelObject();
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						model.resetActions(model.getFromRole() == null ? CPAUtils.getToActionNames(cpa,model.getToRole(),model.getService()) : CPAUtils.getFromActionNames(cpa,model.getFromRole(),model.getService()));
+						target.add(getFeedbackPanel());
+						target.add(getForm());
+					}
+					catch (JAXBException e)
+					{
+						logger.error("",e);
+						error(e.getMessage());
+					}
+				}
+      });
+
+			DropDownChoice<String> actions = new DropDownChoice<String>("actions",new PropertyModel<String>(this.getModelObject(),"action"),new PropertyModel<List<String>>(this.getModelObject(),"actions"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.action",MessageFilterForm.this));
+				}
+			};
+			actions.setOutputMarkupId(true);
+			add(actions);
+
+			add(new TextField<String>("conversationId")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.conversationId",MessageFilterForm.this));
+				}
+			});
+
+			add(new TextField<String>("messageId")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.messageId",MessageFilterForm.this));
+				}
+			});
+
+			add(new TextField<String>("refToMessageId")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.refToMessageId",MessageFilterForm.this));
+				}
+			});
+
+			add(new ListMultipleChoice<EbMSMessageStatus>("statuses",new PropertyModel<List<EbMSMessageStatus>>(this.getModelObject(),"statuses"),Model.ofList(Arrays.asList(EbMSMessageStatus.values())))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.status",MessageFilterForm.this));
+				}
+				
+				@Override
+				protected boolean localizeDisplayValues()
+				{
+					return true;
+				}
+			}.setMaxRows(4));
+			
+			BootstrapDateTimePicker from = new BootstrapDateTimePicker("from","dd-MM-yyyy")
+			{
+				private static final long serialVersionUID = 1L;
+
+				public java.util.Date getEndDate()
+				{
+					return MessageFilterForm.this.getModelObject().getTo();
+				};
+			};
+			from.setType(BootstrapDateTimePicker.Type.DATE);
+			add(from);
+
+			//from.add(new AjaxFormComponentUpdatingBehavior("onchange")
+      //{
+			//	private static final long serialVersionUID = 1L;
+			//
+			//	@Override
+			//	protected void onUpdate(AjaxRequestTarget target)
+			//	{
+			//		target.add(getPage().get("feedback"));
+			//		target.add(getPage().get("form"));
+			//	}
+      //});
+
+			BootstrapDateTimePicker to = new BootstrapDateTimePicker("to","dd-MM-yyyy")
+			{
+				private static final long serialVersionUID = 1L;
+
+				public java.util.Date getStartDate()
+				{
+					return MessageFilterForm.this.getModelObject().getFrom();
+				};
+			};
+			to.setType(BootstrapDateTimePicker.Type.DATE);
+			add(to);
+
+			//to.add(new AjaxFormComponentUpdatingBehavior("onchange")
+      //{
+			//	private static final long serialVersionUID = 1L;
+			//
+			//	@Override
+			//	protected void onUpdate(AjaxRequestTarget target)
+			//	{
+			//		target.add(getPage().get("feedback"));
+			//		target.add(getPage().get("form"));
+			//	}
+      //});
+
+			add(new Button("search",new ResourceModel("cmd.search"))
+			{
+				private static final long serialVersionUID = 1L;
+	
+				@Override
+				public void onSubmit()
+				{
+					setResponsePage(MessageFilterPanel.this.getPage(MessageFilterForm.this.getModelObject()));
+				}
+			});
+			
+			add(new Button("reset",new ResourceModel("cmd.reset"))
+			{
+				private static final long serialVersionUID = 1L;
+	
+				@Override
+				public void onSubmit()
+				{
+					setResponsePage(getPage().getClass());
+				}
+			});
+
+		}
+	}
+	
+	public abstract BasePage getPage(MessageFilterFormModel filter);
+	
+	public Component getFeedbackPanel()
+	{
+		return this.get("feedback");
+	}
+	
+	public Component getForm()
+	{
+		return this.get("form");
+	}
+	
+	public static MessageFilterFormModel createMessageFilter()
+	{
+		return new MessageFilterFormModel();
+	}
+
+	public static class MessageFilterFormModel extends EbMSMessageFilter
+	{
+		private static final long serialVersionUID = 1L;
+		private List<String> fromRoles = new ArrayList<String>();
+		private List<String> toRoles = new ArrayList<String>();
+		private List<String> services = new ArrayList<String>();
+		private List<String> actions = new ArrayList<String>();
+		
+		public List<String> getFromRoles()
+		{
+			return fromRoles;
+		}
+		public void resetFromRoles()
+		{
+			getFromRoles().clear();
+			setFromRole(null);
+		}
+		public void resetFromRoles(ArrayList<String> roleNames)
+		{
+			resetFromRoles();
+			getFromRoles().addAll(roleNames);
+		}
+		public List<String> getToRoles()
+		{
+			return toRoles;
+		}
+		public void resetToRoles()
+		{
+			getToRoles().clear();
+			setFromRole(null);
+		}
+		public void resetToRoles(ArrayList<String> roleNames)
+		{
+			resetToRoles();
+			getToRoles().addAll(roleNames);
+		}
+		public List<String> getServices()
+		{
+			return services;
+		}
+		public void resetServices()
+		{
+			getServices().clear();
+			setService(null);
+		}
+		public void resetServices(List<String> serviceNames)
+		{
+			resetServices();
+			getServices().addAll(serviceNames);
+		}
+		public List<String> getActions()
+		{
+			return actions;
+		}
+		public void resetActions()
+		{
+			getActions().clear();
+			setAction(null);
+		}
+		public void resetActions(List<String> actionNames)
+		{
+			resetActions();
+			getActions().addAll(actionNames);
+		}
+	}
+}

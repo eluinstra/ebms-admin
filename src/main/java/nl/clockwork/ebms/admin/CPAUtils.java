@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CanReceive;
 import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CanSend;
 import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement;
 import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationRole;
@@ -96,13 +97,23 @@ public class CPAUtils
 		return getServiceName(service).equals(serviceName);
 	}
 
-	public static List<String> getActionNames(CollaborationProtocolAgreement cpa, String roleName, String serviceName)
+	public static List<String> getFromActionNames(CollaborationProtocolAgreement cpa, String roleName, String serviceName)
 	{
 		List<String> result = new ArrayList<String>();
 		List<CollaborationRole> roles = findRoles(cpa,roleName,serviceName);
 		for (CollaborationRole role : roles)
 			for (CanSend canSend : role.getServiceBinding().getCanSend())
 				result.add(canSend.getThisPartyActionBinding().getAction());
+		return result;
+	}
+	
+	public static List<String> getToActionNames(CollaborationProtocolAgreement cpa, String roleName, String serviceName)
+	{
+		List<String> result = new ArrayList<String>();
+		List<CollaborationRole> roles = findRoles(cpa,roleName,serviceName);
+		for (CollaborationRole role : roles)
+			for (CanReceive canReceive : role.getServiceBinding().getCanReceive())
+				result.add(canReceive.getThisPartyActionBinding().getAction());
 		return result;
 	}
 	

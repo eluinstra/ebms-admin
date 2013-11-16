@@ -39,7 +39,7 @@ import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
 import nl.clockwork.ebms.dao.DAOException;
 
 import org.apache.commons.csv.CSVPrinter;
-import org.apache.cxf.common.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -520,10 +520,12 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				parameters.add(messageFilter.getSequenceNr());
 				result.append(" and sequence_nr = ?");
 			}
-			if (messageFilter.getStatus() != null)
+			if (messageFilter.getStatuses().size() > 0)
 			{
-				parameters.add(messageFilter.getStatus().id());
-				result.append(" and status = ?");
+				List<Integer> ids = new ArrayList<Integer>();
+				for (EbMSMessageStatus status : messageFilter.getStatuses())
+					ids.add(status.id());
+				result.append(" and status in (" + StringUtils.join(ids,',') + ")");
 			}
 			if (messageFilter.getServiceMessage() != null)
 			{
@@ -536,12 +538,12 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			if (messageFilter.getFrom() != null)
 			{
 				parameters.add(messageFilter.getFrom());
-				result.append(" and timestamp >= ?");
+				result.append(" and time_stamp >= ?");
 			}
 			if (messageFilter.getTo() != null)
 			{
 				parameters.add(messageFilter.getTo());
-				result.append(" and timestamp < ?");
+				result.append(" and time_stamp < ?");
 			}
 		}
 		return result.toString();
