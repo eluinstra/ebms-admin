@@ -37,11 +37,11 @@ public interface EbMSDAO
 	List<CPA> selectCPAs(long first, long count);
 
 	EbMSMessage findMessage(String messageId);
-	EbMSMessage findMessage(String messageId, int messageNr);
+	EbMSMessage findMessage(long id);
 	int countMessages(EbMSMessageFilter filter);
 	List<EbMSMessage> selectMessages(EbMSMessageFilter filter, long first, long count);
 
-	EbMSAttachment findAttachment(String messageId, int messageNr, String contentId);
+	EbMSAttachment findAttachment(long id, String contentId);
 	
 	List<String> selectMessageIds(String cpaId, String fromParty, String toParty, EbMSMessageStatus status);
 

@@ -26,6 +26,7 @@ import org.apache.wicket.util.io.IClusterable;
 public class EbMSMessage implements IClusterable
 {
 	private static final long serialVersionUID = 1L;
+	private long id;
 	private Date timestamp;
 	private String cpaId;
 	private String conversationId;
@@ -43,6 +44,16 @@ public class EbMSMessage implements IClusterable
 	private Date statusTime;
 	private List<EbMSAttachment> attachments = new ArrayList<EbMSAttachment>();
 	private List<EbMSEvent> events = new ArrayList<EbMSEvent>();
+
+	public long getId()
+	{
+		return id;
+	}
+	
+	public void setId(long id)
+	{
+		this.id = id;
+	}
 
 	public Date getTimestamp()
 	{

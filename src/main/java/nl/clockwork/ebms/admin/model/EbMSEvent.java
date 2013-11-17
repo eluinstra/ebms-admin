@@ -30,20 +30,18 @@ public class EbMSEvent implements IClusterable
 	private EbMSEventType type;
 	private EbMSEventStatus status;
 	private Date statusTime;
-	private String uri;
 	private String errorMessage;
 
 	public EbMSEvent()
 	{
 	}
 	
-	public EbMSEvent(Date time, EbMSEventType type, EbMSEventStatus status, Date statusTime, String uri, String errorMessage)
+	public EbMSEvent(Date time, EbMSEventType type, EbMSEventStatus status, Date statusTime, String errorMessage)
 	{
 		this.time = time;
 		this.type = type;
 		this.status = status;
 		this.statusTime = statusTime;
-		this.uri = uri;
 		this.errorMessage = errorMessage;
 	}
 
@@ -86,14 +84,6 @@ public class EbMSEvent implements IClusterable
 	public void setStatusTime(Date statusTime)
 	{
 		this.statusTime = statusTime;
-	}
-	public String getUri()
-	{
-		return uri;
-	}
-	public void setUri(String uri)
-	{
-		this.uri = uri;
 	}
 	public String getErrorMessage()
 	{

@@ -24,21 +24,17 @@ public class MessageDataModel extends LoadableDetachableModel<EbMSMessage>
 {
 	private static final long serialVersionUID = 1L;
 	private EbMSDAO ebMSDAO;
-	private final String messageId;
-	private final int messageNr;
+	private final long id;
 
 	public MessageDataModel(EbMSDAO ebMSDAO, EbMSMessage message)
 	{
-		this(ebMSDAO,message.getMessageId(),message.getMessageNr());
+		this(ebMSDAO,message.getId());
 	}
 
-	public MessageDataModel(EbMSDAO ebMSDAO, String messageId, int messageNr)
+	public MessageDataModel(EbMSDAO ebMSDAO, long id)
 	{
-		if (messageId == null)
-			throw new IllegalArgumentException("messageId is null!");
 		this.ebMSDAO = ebMSDAO;
-		this.messageId = messageId;
-		this.messageNr = messageNr;
+		this.id = id;
 	}
 
 	protected EbMSDAO getEbMSDAO()
@@ -49,16 +45,13 @@ public class MessageDataModel extends LoadableDetachableModel<EbMSMessage>
 	@Override
 	protected EbMSMessage load()
 	{
-		return getEbMSDAO().findMessage(messageId,messageNr);
+		return getEbMSDAO().findMessage(id);
 	}
 
 	@Override
 	public int hashCode()
 	{
-    int hash = 1;
-    hash = hash * 13 + (messageId == null ? 0 : messageId.hashCode());
-    hash = hash * 17 + Integer.valueOf(messageNr).hashCode();
-    return hash;
+    return new Long(id).intValue();
 	}
 
 	@Override
@@ -71,7 +64,7 @@ public class MessageDataModel extends LoadableDetachableModel<EbMSMessage>
 		else if (obj instanceof MessageDataModel)
 		{
 			MessageDataModel other = (MessageDataModel)obj;
-			return messageId.equals(other.messageId) && messageNr == other.messageNr;
+			return id == other.id;
 		}
 		return false;
 	}

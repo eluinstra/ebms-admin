@@ -38,28 +38,26 @@ public class DownloadEbMSAttachmentLink extends Link<Void>
 {
 	private static final long serialVersionUID = 1L;
 	private EbMSDAO ebMSDAO;
-	private String messageId;
-	private int messageNr;
+	private long messageId;
 	private String contentId;
 
 	public DownloadEbMSAttachmentLink(String id, EbMSDAO ebMSDAO, EbMSAttachment attachment)
 	{
-		this(id,ebMSDAO,attachment.getMessage().getMessageId(),attachment.getMessage().getMessageNr(),attachment.getContentId());
+		this(id,ebMSDAO,attachment.getMessage().getId(),attachment.getContentId());
 	}
 	
-	public DownloadEbMSAttachmentLink(String id, EbMSDAO ebMSDAO, String messageId, int messageNr, String contentId)
+	public DownloadEbMSAttachmentLink(String id, EbMSDAO ebMSDAO, long messageId, String contentId)
 	{
 		super(id,null);
 		this.ebMSDAO = ebMSDAO;
 		this.messageId = messageId;
-		this.messageNr = messageNr;
 		this.contentId = contentId;
 	}
 
 	@Override
 	public void onClick()
 	{
-		final EbMSAttachment attachment = ebMSDAO.findAttachment(messageId,messageNr,contentId);
+		final EbMSAttachment attachment = ebMSDAO.findAttachment(messageId,contentId);
 		String fileName = UrlEncoder.QUERY_INSTANCE.encode(StringUtils.isEmpty(attachment.getName()) ? attachment.getContentId() + Utils.getFileExtension(attachment.getContentType()) : attachment.getName(),getRequest().getCharset());
 		IResourceStream resourceStream = new AbstractResourceStream()
 		{

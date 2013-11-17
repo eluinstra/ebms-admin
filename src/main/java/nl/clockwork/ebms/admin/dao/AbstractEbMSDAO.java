@@ -79,6 +79,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		public String getBaseQuery()
 		{
 			return "select" +
+				" id," +
 				" time_stamp," +
 				" cpa_id," +
 				" conversation_id," +
@@ -91,7 +92,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				" to_role," +
 				" service," +
 				" action," +
-				(detail ? " content," : "") +
+				(detail ? " message_header," : "") +
 				" status," +
 				" status_time" +
 				" from ebms_message";
@@ -101,6 +102,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		public EbMSMessage mapRow(ResultSet rs, int rowNum) throws SQLException
 		{
 			EbMSMessage result = new EbMSMessage();
+			result.setId(rs.getLong("id"));
 			result.setTimestamp(rs.getTimestamp("time_stamp"));
 			result.setCpaId(rs.getString("cpa_id"));
 			result.setConversationId(rs.getString("conversation_id"));
@@ -114,7 +116,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			result.setService(rs.getString("service"));
 			result.setAction(rs.getString("action"));
 			if (detail)
-				result.setContent(rs.getString("content"));
+				result.setContent(rs.getString("message_header"));
 			result.setStatus(rs.getObject("status") == null ? null : EbMSMessageStatus.get(rs.getInt("status")));
 			result.setStatusTime(rs.getTimestamp("status_time"));
 			return result;
@@ -179,24 +181,37 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	@Override
 	public EbMSMessage findMessage(String messageId)
 	{
-		return findMessage(messageId,0);
-	}
-
-	@Override
-	public EbMSMessage findMessage(String messageId, int messageNr)
-	{
 		EbMSMessage result = jdbcTemplate.queryForObject(
 			new EbMSMessageRowMapper(true).getBaseQuery() + 
 			" where message_id = ?" +
 			" and message_nr = ?",
 			new EbMSMessageRowMapper(true),
 			messageId,
-			messageNr
+			0
 		);
-		result.setAttachments(getAttachments(messageId,messageNr));
+		result.setAttachments(getAttachments(result.getId()));
 		for (EbMSAttachment attachment : result.getAttachments())
 			attachment.setMessage(result);
-		result.setEvents(getEvents(messageId));
+		result.setEvents(getEvents(result.getId()));
+		for (EbMSEvent event : result.getEvents())
+			event.setMessage(result);
+		
+		return result;
+	}
+
+	@Override
+	public EbMSMessage findMessage(long id)
+	{
+		EbMSMessage result = jdbcTemplate.queryForObject(
+			new EbMSMessageRowMapper(true).getBaseQuery() + 
+			" where id = ?",
+			new EbMSMessageRowMapper(true),
+			id
+		);
+		result.setAttachments(getAttachments(id));
+		for (EbMSAttachment attachment : result.getAttachments())
+			attachment.setMessage(result);
+		result.setEvents(getEvents(id));
 		for (EbMSEvent event : result.getEvents())
 			event.setMessage(result);
 		
@@ -230,13 +245,12 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 	
 	@Override
-	public EbMSAttachment findAttachment(String messageId, int messageNr, String contentId)
+	public EbMSAttachment findAttachment(long id, String contentId)
 	{
 		return jdbcTemplate.queryForObject(
 			"select name, content_id, content_type, content" + 
 			" from ebms_attachment" + 
-			" where message_id = ?" +
-			" and message_nr = ?" +
+			" where ebms_message_id = ?" +
 			" and content_id = ?",
 			new ParameterizedRowMapper<EbMSAttachment>()
 			{
@@ -246,19 +260,17 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 					return new EbMSAttachment(rs.getString("name"),rs.getString("content_id"),rs.getString("content_type"),rs.getBytes("content"));
 				}
 			},
-			messageId,
-			messageNr,
+			id,
 			contentId
 		);
 	}
 
-	private List<EbMSAttachment> getAttachments(String messageId, int messageNr)
+	private List<EbMSAttachment> getAttachments(long id)
 	{
 		return jdbcTemplate.query(
 			"select name, content_id, content_type" + 
 			" from ebms_attachment" + 
-			" where message_id = ?" +
-			" and message_nr = ?",
+			" where ebms_message_id = ?",
 			new ParameterizedRowMapper<EbMSAttachment>()
 			{
 				@Override
@@ -267,26 +279,25 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 					return new EbMSAttachment(rs.getString("name"),rs.getString("content_id"),rs.getString("content_type"),null);
 				}
 			},
-			messageId,
-			messageNr
+			id
 		);
 	}
 
-	private List<EbMSEvent> getEvents(String messageId)
+	private List<EbMSEvent> getEvents(long id)
 	{
 		return jdbcTemplate.query(
-			"select message_id, time, type, status, status_time, uri, error_message" + 
+			"select time, type, status, status_time, error_message" + 
 			" from ebms_event" + 
-			" where message_id = ?",
+			" where ebms_message_id = ?",
 			new ParameterizedRowMapper<EbMSEvent>()
 			{
 				@Override
 				public EbMSEvent mapRow(ResultSet rs, int rowNum) throws SQLException
 				{
-					return new EbMSEvent(rs.getTimestamp("time"),EbMSEventType.get(rs.getInt("type")),EbMSEventStatus.get(rs.getInt("status")),rs.getTimestamp("status_time"),rs.getString("uri"),rs.getString("error_message"));
+					return new EbMSEvent(rs.getTimestamp("time"),EbMSEventType.get(rs.getInt("type")),EbMSEventStatus.get(rs.getInt("status")),rs.getTimestamp("status_time"),rs.getString("error_message"));
 				}
 			},
-			messageId
+			id
 		);
 	}
 	
