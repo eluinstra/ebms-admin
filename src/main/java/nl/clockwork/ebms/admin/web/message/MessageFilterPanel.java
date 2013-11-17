@@ -20,6 +20,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -43,6 +45,8 @@ public abstract class MessageFilterPanel extends Panel
 	private CPAService cpaService;
 	@SpringBean(name="ebMSMessageService")
 	private EbMSMessageService ebMSMessageService;
+	private BootstrapDateTimePicker from;
+	private BootstrapDateTimePicker to;
 
 	public MessageFilterPanel(String id, MessageFilterFormModel filter)
 	{
@@ -59,6 +63,22 @@ public abstract class MessageFilterPanel extends Panel
 				setResponsePage(getPage().getClass());
 			}
 		});
+	}
+	
+	@Override
+	public void renderHead(IHeaderResponse response)
+	{
+		response.render(OnDomReadyHeaderItem.forScript(
+			"$(function () {" +
+				"$('#" + from.getDateTimePickerId() + "').on('changeDate',function () {" +
+				   "$('#" + to.getDateTimePickerId() + "').data('datetimepicker').setStartDate($('#" + from.getDateTimePickerId() + "').data('datetimepicker').getDate());" +
+				"});" +
+				"$('#" + to.getDateTimePickerId() + "').on('changeDate',function (e) {" +
+				   "$('#" + from.getDateTimePickerId() + "').data('datetimepicker').setEndDate($('#" + to.getDateTimePickerId() + "').data('datetimepicker').getDate());" +
+				"});" +
+			"});"
+		));
+		super.renderHead(response);
 	}
 
 	public class MessageFilterForm extends Form<MessageFilterFormModel>
@@ -292,7 +312,7 @@ public abstract class MessageFilterPanel extends Panel
 				}
 			}.setMaxRows(4));
 			
-			BootstrapDateTimePicker from = new BootstrapDateTimePicker("from","dd-MM-yyyy")
+			from = new BootstrapDateTimePicker("from","dd-MM-yyyy")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -301,28 +321,11 @@ public abstract class MessageFilterPanel extends Panel
 				{
 					return Model.of(getLocalizer().getString("lbl.from",MessageFilterForm.this));
 				}
-
-				public java.util.Date getEndDate()
-				{
-					return MessageFilterForm.this.getModelObject().getTo();
-				};
 			};
 			from.setType(BootstrapDateTimePicker.Type.DATE);
 			add(from);
 
-			//from.add(new AjaxFormComponentUpdatingBehavior("onchange")
-      //{
-			//	private static final long serialVersionUID = 1L;
-			//
-			//	@Override
-			//	protected void onUpdate(AjaxRequestTarget target)
-			//	{
-			//		target.add(getPage().get("feedback"));
-			//		target.add(getPage().get("form"));
-			//	}
-      //});
-
-			BootstrapDateTimePicker to = new BootstrapDateTimePicker("to","dd-MM-yyyy")
+			to = new BootstrapDateTimePicker("to","dd-MM-yyyy")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -331,26 +334,9 @@ public abstract class MessageFilterPanel extends Panel
 				{
 					return Model.of(getLocalizer().getString("lbl.to",MessageFilterForm.this));
 				}
-
-				public java.util.Date getStartDate()
-				{
-					return MessageFilterForm.this.getModelObject().getFrom();
-				};
 			};
 			to.setType(BootstrapDateTimePicker.Type.DATE);
 			add(to);
-
-			//to.add(new AjaxFormComponentUpdatingBehavior("onchange")
-      //{
-			//	private static final long serialVersionUID = 1L;
-			//
-			//	@Override
-			//	protected void onUpdate(AjaxRequestTarget target)
-			//	{
-			//		target.add(getPage().get("feedback"));
-			//		target.add(getPage().get("form"));
-			//	}
-      //});
 
 			add(new Button("search",new ResourceModel("cmd.search"))
 			{

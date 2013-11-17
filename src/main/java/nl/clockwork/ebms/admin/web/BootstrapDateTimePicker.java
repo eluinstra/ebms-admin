@@ -46,6 +46,8 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 	private String formatJS;
 	private Type type = Type.DATE_TIME;
 	private HourFormat hourFormat;
+	private Date startDate;
+	private Date endDate;
 	private Date dateTime;
 	private TextField<Date> dateTimeField;
 
@@ -107,10 +109,10 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 			options.add("pick12HourFormat: true");
 		if (getJQueryLocale() != null)
 			options.add("language: '" + getLocale().toString() + "'");
-		if (getStartDate() != null)
-			options.add("startDate: new Date(" + getStartDate().getTime() + ")");
-		if (getEndDate() != null)
-			options.add("endDate: new Date(" + getEndDate().getTime() + ")");
+		if (startDate != null)
+			options.add("startDate: new Date(" + startDate.getTime() + ")");
+		if (endDate != null)
+			options.add("endDate: new Date(" + endDate.getTime() + ")");
 		response.render(OnDomReadyHeaderItem.forScript("$(function () {$('#" + getDateTimePickerId() + "').datetimepicker({" + StringUtils.join(options,",") + "});});"));
 		super.renderHead(container);
 	}
@@ -145,17 +147,17 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 		return JQueryLocale.EN;
 	}
 
-	public Date getStartDate()
+	public void setStartDate(Date startDate)
 	{
-		return null;
+		this.startDate = startDate;
+	}
+
+	public void setEndDate(Date endDate)
+	{
+		this.endDate = endDate;
 	}
 	
-	public Date getEndDate()
-	{
-		return null;
-	}
-	
-	private String getDateTimePickerId()
+	public String getDateTimePickerId()
 	{
 		return getMarkupId() + "DateTimePicker";
 	}
