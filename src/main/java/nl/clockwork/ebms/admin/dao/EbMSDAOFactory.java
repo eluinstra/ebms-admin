@@ -15,10 +15,10 @@
  */
 package nl.clockwork.ebms.admin.dao;
 
+import nl.clockwork.ebms.admin.dao.AbstractDAOFactory.DefaultDAOFactory;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.support.TransactionTemplate;
-
-import nl.clockwork.ebms.dao.AbstractDAOFactory.DefaultDAOFactory;
 
 public class EbMSDAOFactory extends DefaultDAOFactory<EbMSDAO>
 {
