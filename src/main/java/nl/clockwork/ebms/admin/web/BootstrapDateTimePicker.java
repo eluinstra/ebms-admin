@@ -94,7 +94,7 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 		dateTimePicker.add(dateTimeField);
 	}
 	
-	public static String getLinkJavaScript(BootstrapDateTimePicker startDate, BootstrapDateTimePicker endDate)
+	public static String getLinkBootstrapDateTimePickersJavaScript(BootstrapDateTimePicker startDate, BootstrapDateTimePicker endDate)
 	{
 		return
 			"$(function () {" +

@@ -68,7 +68,7 @@ public abstract class MessageFilterPanel extends Panel
 	@Override
 	public void renderHead(IHeaderResponse response)
 	{
-		response.render(OnDomReadyHeaderItem.forScript(BootstrapDateTimePicker.getLinkJavaScript(from,to)));
+		response.render(OnDomReadyHeaderItem.forScript(BootstrapDateTimePicker.getLinkBootstrapDateTimePickersJavaScript(from,to)));
 		super.renderHead(response);
 	}
 
