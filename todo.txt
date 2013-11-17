@@ -1,5 +1,6 @@
 - improve message filters
 	- improve date picker
+- improve ModalWindow?
 
 - implement StartAllInOne
 	- configure ebms endpoints (+ keystores)
