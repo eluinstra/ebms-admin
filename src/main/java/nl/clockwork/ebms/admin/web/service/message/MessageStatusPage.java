@@ -99,7 +99,7 @@ public class MessageStatusPage extends BasePage
 					return !MessageStatusForm.this.getModelObject().getManual();
 				}
 			};
-			//cpaIds.setRequired(true);
+			cpaIds.setRequired(true);
 			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",cpaIds));
 
 			cpaIds.add(new AjaxFormComponentUpdatingBehavior("onchange")
@@ -143,7 +143,7 @@ public class MessageStatusPage extends BasePage
 					return !MessageStatusForm.this.getModelObject().getManual();
 				}
 			};
-			//fromParties.setRequired(true);
+			fromParties.setRequired(true);
 			fromParties.setOutputMarkupId(true);
 			add(new BootstrapFormComponentFeedbackBorder("fromPartyFeedback",fromParties));
 			
@@ -189,7 +189,7 @@ public class MessageStatusPage extends BasePage
 					return !MessageStatusForm.this.getModelObject().getManual();
 				}
 			};
-			//toParties.setRequired(true);
+			toParties.setRequired(true);
 			toParties.setOutputMarkupId(true);
 			add(new BootstrapFormComponentFeedbackBorder("toPartyFeedback",toParties));
 			
@@ -267,20 +267,20 @@ public class MessageStatusPage extends BasePage
 					try
 					{
 						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
-						if (!model.getManual() || (model.getCpaId() != null && model.getFromParty() != null && model.getToParty() != null))
+						//if (!model.getManual() || (model.getCpaId() != null && model.getFromParty() != null && model.getToParty() != null))
 						{
 							CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 							MessageStatus messageStatus = ebMSMessageService.getMessageStatus(model.getCpaId(),CPAUtils.getPartyIdbyPartyName(cpa,model.getFromParty()),CPAUtils.getPartyIdbyPartyName(cpa,model.getToParty()),model.getMessageId());
 							info(new StringResourceModel("getMessageStatus.ok",Model.of(messageStatus.getStatus())).getString());
 						}
-						else
-						{
-							model.setCpaId(null);
-							model.resetFromParties();
-							model.resetToParties();
-							MessageStatus messageStatus = ebMSMessageService.getMessageStatus(model.getMessageId());
-							info(new StringResourceModel("getMessageStatus.ok",Model.of(messageStatus.getStatus())).getString());
-						}
+						//else
+						//{
+						//	model.setCpaId(null);
+						//	model.resetFromParties();
+						//	model.resetToParties();
+						//	MessageStatus messageStatus = ebMSMessageService.getMessageStatus(model.getMessageId());
+						//	info(new StringResourceModel("getMessageStatus.ok",Model.of(messageStatus.getStatus())).getString());
+						//}
 					}
 					catch (Exception e)
 					{
