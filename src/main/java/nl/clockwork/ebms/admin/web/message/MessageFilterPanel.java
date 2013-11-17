@@ -68,16 +68,7 @@ public abstract class MessageFilterPanel extends Panel
 	@Override
 	public void renderHead(IHeaderResponse response)
 	{
-		response.render(OnDomReadyHeaderItem.forScript(
-			"$(function () {" +
-				"$('#" + from.getDateTimePickerId() + "').on('changeDate',function () {" +
-				   "$('#" + to.getDateTimePickerId() + "').data('datetimepicker').setStartDate($('#" + from.getDateTimePickerId() + "').data('datetimepicker').getDate());" +
-				"});" +
-				"$('#" + to.getDateTimePickerId() + "').on('changeDate',function (e) {" +
-				   "$('#" + from.getDateTimePickerId() + "').data('datetimepicker').setEndDate($('#" + to.getDateTimePickerId() + "').data('datetimepicker').getDate());" +
-				"});" +
-			"});"
-		));
+		response.render(OnDomReadyHeaderItem.forScript(BootstrapDateTimePicker.getLinkJavaScript(from,to)));
 		super.renderHead(response);
 	}
 

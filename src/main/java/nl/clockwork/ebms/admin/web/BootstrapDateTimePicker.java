@@ -94,6 +94,19 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 		dateTimePicker.add(dateTimeField);
 	}
 	
+	public static String getLinkJavaScript(BootstrapDateTimePicker startDate, BootstrapDateTimePicker endDate)
+	{
+		return
+			"$(function () {" +
+			"$('#" + startDate.getDateTimePickerId() + "').on('changeDate',function () {" +
+			   "$('#" + endDate.getDateTimePickerId() + "').data('datetimepicker').setStartDate($('#" + startDate.getDateTimePickerId() + "').data('datetimepicker').getDate());" +
+			"});" +
+			"$('#" + endDate.getDateTimePickerId() + "').on('changeDate',function (e) {" +
+			   "$('#" + startDate.getDateTimePickerId() + "').data('datetimepicker').setEndDate($('#" + endDate.getDateTimePickerId() + "').data('datetimepicker').getDate());" +
+			"});" +
+		"});";
+	}
+	
 	@Override
 	public void renderHead(HtmlHeaderContainer container)
 	{
@@ -157,7 +170,7 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 		this.endDate = endDate;
 	}
 	
-	public String getDateTimePickerId()
+	private String getDateTimePickerId()
 	{
 		return getMarkupId() + "DateTimePicker";
 	}
