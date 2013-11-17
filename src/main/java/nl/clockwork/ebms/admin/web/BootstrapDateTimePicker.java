@@ -98,12 +98,16 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 	{
 		return
 			"$(function () {" +
-			"$('#" + startDate.getDateTimePickerId() + "').on('changeDate',function () {" +
-			   "$('#" + endDate.getDateTimePickerId() + "').data('datetimepicker').setStartDate($('#" + startDate.getDateTimePickerId() + "').data('datetimepicker').getDate());" +
-			"});" +
-			"$('#" + endDate.getDateTimePickerId() + "').on('changeDate',function (e) {" +
-			   "$('#" + startDate.getDateTimePickerId() + "').data('datetimepicker').setEndDate($('#" + endDate.getDateTimePickerId() + "').data('datetimepicker').getDate());" +
-			"});" +
+				"$('#" + startDate.getDateTimePickerId() + "').on('changeDate',function () {" +
+					"var d = $('#" + startDate.getDateTimePickerId() + "').data('datetimepicker').getDate();" +
+					"d.setDate(d.getDate() + 1);" +
+				  "$('#" + endDate.getDateTimePickerId() + "').data('datetimepicker').setStartDate(d);" +
+				"});" +
+				"$('#" + endDate.getDateTimePickerId() + "').on('changeDate',function (e) {" +
+					"var d = $('#" + endDate.getDateTimePickerId() + "').data('datetimepicker').getDate();" +
+					"d.setDate(d.getDate() - 1);" +
+				  "$('#" + startDate.getDateTimePickerId() + "').data('datetimepicker').setEndDate(d);" +
+				"});" +
 		"});";
 	}
 	
