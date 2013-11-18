@@ -15,12 +15,19 @@
  */
 package nl.clockwork.ebms.admin.dao.mysql;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
+import nl.clockwork.ebms.Constants.EbMSMessageStatus;
+import nl.clockwork.ebms.admin.Constants.TimeUnit;
 import nl.clockwork.ebms.admin.dao.AbstractEbMSDAO;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.transaction.support.TransactionTemplate;
 
 public class EbMSDAOImpl extends AbstractEbMSDAO
@@ -36,7 +43,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 	{
 		return CPARowMapper.getBaseQuery() +
 			" order by cpa_id" +
-			" offset " + first + " limit " + count
+			" limit " + count + " offset " + first
 		;
 	}
 	
@@ -47,7 +54,49 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 			" where 1 = 1" +
 			getMessageFilter(filter,parameters) +
 			" order by time_stamp desc" +
-			" offset " + first + " limit " + count
+			" limit " + count + " offset " + first
 		;
 	}
+
+	@Override
+	public HashMap<Date,Number> selectMessageTraffic(Date from, Date to, TimeUnit timeUnit, EbMSMessageStatus...status)
+	{
+		final HashMap<Date,Number> result = new HashMap<Date,Number>();
+		jdbcTemplate.query(
+			//"select date_format(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "') time, count(*) nr" + 
+			"select str_to_date(date_format(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "'),'%Y-%m-%d %k:%i:%s') time, count(*) nr" + 
+			" from ebms_message" + 
+			" where time_stamp >= ? " +
+			" and time_stamp < ?" +
+			(status.length == 0 ? " and status is not null" : " and status in (" + join(status,",") + ")") +
+			" group by date_format(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "')",
+			new ParameterizedRowMapper<Object>()
+			{
+				@Override
+				public Object mapRow(ResultSet rs, int rowNum) throws SQLException
+				{
+					result.put(rs.getTimestamp("time"),rs.getInt("nr"));
+					return null;
+				}
+			},
+			from,
+			to
+		);
+		return result;
+	}
+	
+	protected String getDateFormat(String timeUnitDateFormat)
+	{
+		if ("mm".equals(timeUnitDateFormat))
+			return "%Y-%m-%d %k:%i:00";
+		else if ("HH".equals(timeUnitDateFormat))
+			return "%Y-%m-%d %k:00:00";
+		else if ("dd".equals(timeUnitDateFormat))
+			return "%Y-%m-%d 00:00:00";
+		else if ("MM".equals(timeUnitDateFormat))
+			return "%Y-%m-01 00:00:00";
+		else
+			return timeUnitDateFormat;
+	}
+
 }
