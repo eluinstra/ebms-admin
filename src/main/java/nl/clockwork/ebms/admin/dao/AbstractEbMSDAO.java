@@ -308,7 +308,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	public HashMap<Date,Number> selectMessageTraffic(Date from, Date to, TimeUnit timeUnit, EbMSMessageStatus...status)
 	{
 		final HashMap<Date,Number> result = new HashMap<Date,Number>();
-		//if (TimeUnit.DAY.equals(timeUnit))
 		jdbcTemplate.query(
 			"select trunc(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "') time, count(*) nr" + 
 			" from ebms_message" + 
@@ -339,7 +338,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			return timeUnitDateFormat;
 	}
 
-	private String join(EbMSMessageStatus[] array, String delimiter)
+	protected String join(EbMSMessageStatus[] array, String delimiter)
 	{
 		StringBuffer result = new StringBuffer();
 		if (array.length > 0)
