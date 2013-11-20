@@ -2,6 +2,9 @@
 	- improve date picker
 - improve ModalWindow?
 
+- simplify MenuItems
+	- remove id and parent???
+
 - implement StartAllInOne
 	- configure ebms endpoints (+ keystores)
 - validate stored cpas
