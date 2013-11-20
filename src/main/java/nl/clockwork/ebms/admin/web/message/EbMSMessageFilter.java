@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +22,7 @@ import java.util.List;
 import nl.clockwork.ebms.Constants.EbMSMessageStatus;
 import nl.clockwork.ebms.model.EbMSMessageContext;
 
-public class EbMSMessageFilter extends EbMSMessageContext implements Serializable
+public class EbMSMessageFilter extends EbMSMessageContext
 {
 	private static final long serialVersionUID = 1L;
 	private Integer messageNr;
