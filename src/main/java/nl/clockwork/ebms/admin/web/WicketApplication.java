@@ -69,7 +69,17 @@ public class WicketApplication extends WebApplication
 		new MenuLinkItem(configuration,"2","ebMSCoreProperties",nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.class);
 		menuItems.add(configuration);
 
-		MenuItem about = new MenuLinkItem("5","about",nl.clockwork.ebms.admin.web.AboutPage.class);
+		List<MenuItemProvider> menuItemProviders = MenuItemProvider.get();
+		if (menuItemProviders.size() > 0)
+		{
+			MenuItem extensions = new MenuItem("5","extensions");
+			menuItems.add(extensions);
+			for (MenuItemProvider provider : menuItemProviders)
+				for (MenuItem menuItem : provider.getMenuItems())
+					extensions.addChild(menuItem);
+		}
+
+		MenuItem about = new MenuLinkItem("6","about",nl.clockwork.ebms.admin.web.AboutPage.class);
 		menuItems.add(about);
 	}
 	

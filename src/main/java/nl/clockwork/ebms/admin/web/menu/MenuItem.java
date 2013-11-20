@@ -34,7 +34,7 @@ public class MenuItem implements IClusterable
 		this.id = id;
 		this.name = name;
 	}
-	
+
 	public MenuItem(MenuItem parent, String id, String name)
 	{
 		this.id = parent.getId() + "." + id;
@@ -42,27 +42,34 @@ public class MenuItem implements IClusterable
 		this.parent = parent;
 		this.parent.children.add(this);
 	}
-	
+
 	public String getId()
 	{
 		return id;
 	}
-	
+
 	public String getName()
 	{
 		return name;
 	}
-	
+
 	public MenuItem getParent()
 	{
 		return parent;
 	}
-	
+
 	public List<MenuItem> getChildren()
 	{
 		return Collections.unmodifiableList(children);
 	}
-	
+
+	public void addChild(MenuItem child)
+	{
+		child.id = this.id + "." + children.size();
+		child.parent = this;
+		children.add(child);
+	}
+
 	@Override
 	public String toString()
 	{
