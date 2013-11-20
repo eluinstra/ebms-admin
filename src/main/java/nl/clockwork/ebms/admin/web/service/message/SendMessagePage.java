@@ -261,7 +261,7 @@ public class SendMessagePage extends BasePage
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
 						EbMSMessageContent messageContent = new EbMSMessageContent(model,model.getDataSources());
-						String messageId = ebMSMessageService.sendMessage(messageContent );
+						String messageId = ebMSMessageService.sendMessage(messageContent);
 						info(new StringResourceModel("sendMessage.ok",Model.of(messageId)).getString());
 					}
 					catch (Exception e)
