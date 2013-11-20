@@ -24,6 +24,7 @@ import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.ResetButton;
+import nl.clockwork.ebms.admin.web.service.message.MessageStatusPage.MessageStatusForm;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
 import nl.clockwork.ebms.model.EbMSDataSource;
 import nl.clockwork.ebms.model.EbMSMessageContent;
@@ -41,6 +42,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -211,6 +213,39 @@ public class SendMessagePage extends BasePage
 			actions.setRequired(true);
 			actions.setOutputMarkupId(true);
 			add(new BootstrapFormComponentFeedbackBorder("actionFeedback",actions));
+
+			add(new TextField<String>("conversationId")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.conversationId",MessageForm.this));
+				}
+			});
+
+			add(new TextField<String>("messageId")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.messageId",MessageForm.this));
+				}
+			});
+
+			add(new TextField<String>("refToMessageId")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.refToMessageId",MessageForm.this));
+				}
+			});
 
 			DataSourcesForm dataSourcesForm = new DataSourcesForm("form",getModelObject().getDataSources());
 			dataSourcesForm.setOutputMarkupId(true);
