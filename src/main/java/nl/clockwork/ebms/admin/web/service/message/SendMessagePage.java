@@ -215,8 +215,6 @@ public class SendMessagePage extends BasePage
 			DataSourcesForm dataSourcesForm = new DataSourcesForm("form",getModelObject().getDataSources());
 			dataSourcesForm.setOutputMarkupId(true);
 			add(dataSourcesForm);
-			//FIXME
-			getModelObject().setDataSourcesForm(dataSourcesForm);
 
 			Button send = new Button("send",new ResourceModel("cmd.send"))
 			{
