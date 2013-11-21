@@ -246,9 +246,7 @@ public class SendMessagePage extends BasePage
 				}
 			});
 
-			DataSourcesForm dataSourcesForm = new DataSourcesForm("form",getModelObject().getDataSources());
-			dataSourcesForm.setOutputMarkupId(true);
-			add(dataSourcesForm);
+			add(new DataSourcesForm("form",getModelObject().getDataSources()));
 
 			Button send = new Button("send",new ResourceModel("cmd.send"))
 			{
@@ -339,7 +337,7 @@ public class SendMessagePage extends BasePage
 			super(id);
 			//setTitle(getLocalizer().getString("dataSource",this));
 			setCssClassName(ModalWindow.CSS_CLASS_GRAY);
-			setContent(new DataSourcePanel(this,getContentId())
+			setContent(new DataSourcePanel(getContentId())
 			{
 				private static final long serialVersionUID = 1L;
 

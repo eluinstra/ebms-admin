@@ -44,7 +44,7 @@ public abstract class DataSourcePanel extends Panel
 	private static final long serialVersionUID = 1L;
 	protected Log logger = LogFactory.getLog(this.getClass());
 
-	public DataSourcePanel(final ModalWindow window, String id)
+	public DataSourcePanel(String id)
 	{
 		super(id,new CompoundPropertyModel<DataSourceModel>(new DataSourceModel()));
 		add(new DataSourceForm("form"));
