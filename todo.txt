@@ -2,6 +2,10 @@
 	- improve date picker
 - improve ModalWindow?
 
+- improve MessagePageProvider
+	- implement getMessagePanels()
+	- integrate messagePanel into SendMessagePage
+
 - simplify MenuItems
 	- remove id and parent???
 
@@ -12,9 +16,5 @@
 	- give warning on inserting expired CPA 
 - keystore editor
 - add cpp editor/creator
-
-- add attachment viewers for 'known'/common content types
-- add viewers for ebms message format???
-- make menu extension point to add new pages??? 
 
 - add service registry and cpa creator?
