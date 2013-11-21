@@ -24,7 +24,9 @@ import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSEvent;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.MessagePageProvider;
 import nl.clockwork.ebms.admin.web.Utils;
+import nl.clockwork.ebms.admin.web.WicketApplication;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -133,7 +135,20 @@ public class MessagePage extends BasePage
 				setResponsePage(responsePage);
 			}
 		});
+
 		add(new DownloadEbMSMessageLink("download",ebMSDAO,message));
+
+		add(new Link<Void>("view")
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick()
+			{
+				if (WicketApplication.get().getMessagePages().containsKey(MessagePageProvider.MessagePage.createId(message)))
+					setResponsePage(WicketApplication.get().getMessagePages().get(MessagePageProvider.MessagePage.createId(message)).getPage(message,MessagePage.this));
+			}
+		}.setVisible(WicketApplication.get().getMessagePages().containsKey(MessagePageProvider.MessagePage.createId(message))));
 
 		final TextArea<String> content = new TextArea<String>("content",Model.of(message.getContent()))
 		{
