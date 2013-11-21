@@ -15,6 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -27,6 +28,7 @@ import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
 import nl.clockwork.ebms.model.EbMSDataSource;
 import nl.clockwork.ebms.model.EbMSMessageContent;
+import nl.clockwork.ebms.model.EbMSMessageContext;
 import nl.clockwork.ebms.service.CPAService;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
@@ -276,6 +278,67 @@ public class SendMessagePage extends BasePage
 		}
 	}
 
+	public class EbMSMessageContextModel extends EbMSMessageContext
+	{
+		private static final long serialVersionUID = 1L;
+		//private List<String> fromParties = new ArrayList<String>();
+		private List<String> fromRoles = new ArrayList<String>();
+		private List<String> services = new ArrayList<String>();
+		private List<String> actions = new ArrayList<String>();
+		private List<EbMSDataSource> dataSources = new ArrayList<EbMSDataSource>();
+
+		public List<String> getFromRoles()
+		{
+			return fromRoles;
+		}
+		public void resetFromRoles()
+		{
+			getFromRoles().clear();
+			setFromRole(null);
+		}
+		public void resetFromRoles(List<String> roles)
+		{
+			resetFromRoles();
+			getFromRoles().addAll(roles);
+		}
+		public List<String> getServices()
+		{
+			return services;
+		}
+		public void resetServices()
+		{
+			getServices().clear();
+			setService(null);
+		}
+		public void resetServices(List<String> serviceNames)
+		{
+			resetServices();
+			getServices().addAll(serviceNames);
+		}
+		public List<String> getActions()
+		{
+			return actions;
+		}
+		public void resetActions()
+		{
+			getActions().clear();
+			setAction(null);
+		}
+		public void resetActions(List<String> actionNames)
+		{
+			resetActions();
+			getActions().addAll(actionNames);
+		}
+		public List<EbMSDataSource> getDataSources()
+		{
+			return dataSources;
+		}
+		public void resetDataSources()
+		{
+			getDataSources().clear();
+		}
+	}
+
 	public class DataSourcesForm extends Form<List<? extends EbMSDataSource>>
 	{
 		private static final long serialVersionUID = 1L;
@@ -328,53 +391,4 @@ public class SendMessagePage extends BasePage
 
 	}
 
-	public class DataSourceModalWindow extends ModalWindow
-	{
-		private static final long serialVersionUID = 1L;
-
-		public DataSourceModalWindow(String id, final List<EbMSDataSource> dataSources, final Component...components)
-		{
-			super(id);
-			//setTitle(getLocalizer().getString("dataSource",this));
-			setCssClassName(ModalWindow.CSS_CLASS_GRAY);
-			setContent(new DataSourcePanel(getContentId())
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void addDataSource(EbMSDataSource dataSource)
-				{
-					dataSources.add(dataSource);
-				}
-				
-				@Override
-				public Component[] getComponents()
-				{
-					return components;
-				}
-				
-				@Override
-				public ModalWindow getWindow()
-				{
-					return DataSourceModalWindow.this;
-				}
-			});
-			setCookieName("eventError");
-			setCloseButtonCallback(new ModalWindow.CloseButtonCallback()
-			{
-				private static final long serialVersionUID = 1L;
-
-				public boolean onCloseButtonClicked(AjaxRequestTarget target)
-				{
-					return true;
-				}
-			});
-		}
-		
-		@Override
-		public IModel<String> getTitle()
-		{
-			return Model.of(getLocalizer().getString("dataSource",this));
-		}
-	}
 }
