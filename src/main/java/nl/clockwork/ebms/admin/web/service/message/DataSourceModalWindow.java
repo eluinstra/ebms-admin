@@ -55,7 +55,7 @@ public class DataSourceModalWindow extends ModalWindow
 				return DataSourceModalWindow.this;
 			}
 		});
-		setCookieName("eventError");
+		setCookieName("dataSource");
 		setCloseButtonCallback(new ModalWindow.CloseButtonCallback()
 		{
 			private static final long serialVersionUID = 1L;
@@ -80,7 +80,7 @@ public class DataSourceModalWindow extends ModalWindow
 
 		public DataSourcePanel(String id)
 		{
-			super(id,new CompoundPropertyModel<DataSourceModel>(new DataSourceModel()));
+			super(id);
 			add(new DataSourceForm("form"));
 		}
 		
