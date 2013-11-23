@@ -42,6 +42,7 @@ public class WicketApplication extends WebApplication
 {
 	public List<MenuItem> menuItems = new ArrayList<MenuItem>();
 	public Map<String,MessagePageProvider.MessagePage> messagePages = new HashMap<String,MessagePageProvider.MessagePage>();
+	public Map<String,MessagePageProvider.MessagePanel> messagePanels = new HashMap<String,MessagePageProvider.MessagePanel>();
 	
 	public WicketApplication()
 	{
@@ -56,8 +57,8 @@ public class WicketApplication extends WebApplication
 		MenuItem message = new MenuItem("2","messageService");
 		new MenuLinkItem(message,"1","ping",nl.clockwork.ebms.admin.web.service.message.PingPage.class);
 		new MenuLinkItem(message,"2","messages",nl.clockwork.ebms.admin.web.service.message.MessagesPage.class);
-		new MenuLinkItem(message,"3","message",nl.clockwork.ebms.admin.web.service.message.SendMessagePage.class);
-		new MenuLinkItem(message,"3a","message",nl.clockwork.ebms.admin.web.service.message.SendMessagePageX.class);
+		new MenuLinkItem(message,"3","messageSend",nl.clockwork.ebms.admin.web.service.message.SendMessagePage.class);
+		new MenuLinkItem(message,"3a","messageSend",nl.clockwork.ebms.admin.web.service.message.SendMessagePageX.class);
 		new MenuLinkItem(message,"4","messageStatus",nl.clockwork.ebms.admin.web.service.message.MessageStatusPage.class);
 		menuItems.add(message);
 
@@ -87,6 +88,10 @@ public class WicketApplication extends WebApplication
 			for (MessagePageProvider.MessagePage messagePage : provider.getMessagePages())
 				messagePages.put(messagePage.getId(),messagePage);
 		
+		for (MessagePageProvider provider : messagePageProviders)
+			for (MessagePageProvider.MessagePanel messagePanel : provider.getMessagePanels())
+				messagePanels.put(messagePanel.getId(),messagePanel);
+
 		MenuItem about = new MenuLinkItem("6","about",nl.clockwork.ebms.admin.web.AboutPage.class);
 		menuItems.add(about);
 	}
@@ -129,6 +134,11 @@ public class WicketApplication extends WebApplication
 	public Map<String,MessagePageProvider.MessagePage> getMessagePages()
 	{
 		return messagePages;
+	}
+
+	public Map<String,MessagePageProvider.MessagePanel> getMessagePanels()
+	{
+		return messagePanels;
 	}
 
 	public static WicketApplication get()

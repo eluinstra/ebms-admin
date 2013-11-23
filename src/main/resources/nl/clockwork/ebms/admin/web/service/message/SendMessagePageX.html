@@ -48,10 +48,7 @@
 				<input type="text" class="form-control" wicket:id="refToMessageId"/>
 			</div>
 		</div>
-		<div class="form-group">
-			<label class="col-lg-2 control-label"><wicket:message key="lbl.dataSources"/></label>
-			<div class="col-lg-10" wicket:id="dataSourcesPanel"/>
-		</div>
+		<wicket:container wicket:id="dataSourcesPanel"/>
 		<div class="form-group">
 			<div class="col-lg-offset-2 col-lg-10">
 				<input type="submit" class="btn btn-default" wicket:id="send" wicket:message="value:cmd.send"/>

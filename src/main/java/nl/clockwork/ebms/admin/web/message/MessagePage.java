@@ -145,10 +145,10 @@ public class MessagePage extends BasePage
 			@Override
 			public void onClick()
 			{
-				if (WicketApplication.get().getMessagePages().containsKey(MessagePageProvider.MessagePage.createId(message)))
-					setResponsePage(WicketApplication.get().getMessagePages().get(MessagePageProvider.MessagePage.createId(message)).getPage(message,MessagePage.this));
+				if (WicketApplication.get().getMessagePages().containsKey(MessagePageProvider.createId(message)))
+					setResponsePage(WicketApplication.get().getMessagePages().get(MessagePageProvider.createId(message)).getPage(message,MessagePage.this));
 			}
-		}.setVisible(WicketApplication.get().getMessagePages().containsKey(MessagePageProvider.MessagePage.createId(message))));
+		}.setVisible(WicketApplication.get().getMessagePages().containsKey(MessagePageProvider.createId(message))));
 
 		final TextArea<String> content = new TextArea<String>("content",Model.of(message.getContent()))
 		{

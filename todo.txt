@@ -8,6 +8,7 @@
 
 - simplify MenuItems
 	- remove id and parent???
+	- derive name from page???
 
 - implement StartAllInOne
 	- configure ebms endpoints (+ keystores)

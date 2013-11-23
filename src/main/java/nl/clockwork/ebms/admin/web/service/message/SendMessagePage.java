@@ -72,7 +72,7 @@ public class SendMessagePage extends BasePage
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("message",this);
+		return getLocalizer().getString("messageSend",this);
 	}
 
 	public class MessageForm extends Form<EbMSMessageContextModel>

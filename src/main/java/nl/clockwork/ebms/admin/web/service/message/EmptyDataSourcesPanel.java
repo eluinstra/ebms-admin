@@ -15,11 +15,28 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import nl.clockwork.ebms.model.EbMSDataSource;
 
-public interface DataSources
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+public class EmptyDataSourcesPanel extends DataSourcesPanel
 {
-	List<EbMSDataSource> getDataSources();
+	private static final long serialVersionUID = 1L;
+	protected Log logger = LogFactory.getLog(this.getClass());
+
+	public EmptyDataSourcesPanel(String id)
+	{
+		super(id);
+	}
+
+	@Override
+	public List<EbMSDataSource> getDataSources()
+	{
+		return new ArrayList<EbMSDataSource>();
+	}
+
 }

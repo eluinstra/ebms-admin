@@ -24,7 +24,9 @@ import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.MessagePageProvider;
 import nl.clockwork.ebms.admin.web.ResetButton;
+import nl.clockwork.ebms.admin.web.WicketApplication;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
 import nl.clockwork.ebms.model.EbMSMessageContent;
 import nl.clockwork.ebms.model.EbMSMessageContext;
@@ -66,7 +68,7 @@ public class SendMessagePageX extends BasePage
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("message",this);
+		return getLocalizer().getString("messageSend",this);
 	}
 
 	public class MessageForm extends Form<EbMSMessageContextModel>
@@ -106,7 +108,7 @@ public class SendMessagePageX extends BasePage
 						model.resetFromRoles(CPAUtils.getRoleNames(cpa));
 						model.resetServices();
 						model.resetActions();
-						dataSourcesPanel.resetDataSources();
+						dataSourcesPanel.replaceWith(dataSourcesPanel = new EmptyDataSourcesPanel(dataSourcesPanel.getId()));
 						target.add(getPage().get("feedback"));
 						target.add(getPage().get("form"));
 					}
@@ -145,7 +147,7 @@ public class SendMessagePageX extends BasePage
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole()));
 						model.resetActions();
-						dataSourcesPanel.resetDataSources();
+						dataSourcesPanel.replaceWith(dataSourcesPanel = new EmptyDataSourcesPanel(dataSourcesPanel.getId()));
 						target.add(getPage().get("feedback"));
 						target.add(getPage().get("form"));
 					}
@@ -183,7 +185,7 @@ public class SendMessagePageX extends BasePage
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetActions(CPAUtils.getFromActionNames(cpa,model.getFromRole(),model.getService()));
-						dataSourcesPanel.resetDataSources();
+						dataSourcesPanel.replaceWith(dataSourcesPanel = new EmptyDataSourcesPanel(dataSourcesPanel.getId()));
 						target.add(getPage().get("feedback"));
 						target.add(getPage().get("form"));
 					}
@@ -208,6 +210,23 @@ public class SendMessagePageX extends BasePage
 			actions.setRequired(true);
 			actions.setOutputMarkupId(true);
 			add(new BootstrapFormComponentFeedbackBorder("actionFeedback",actions));
+
+			actions.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					EbMSMessageContextModel model = MessageForm.this.getModelObject();
+					if (WicketApplication.get().getMessagePanels().containsKey(MessagePageProvider.createId(model.getService(),model.getAction())))
+						dataSourcesPanel.replaceWith(dataSourcesPanel = WicketApplication.get().getMessagePanels().get(MessagePageProvider.createId(model.getService(),model.getAction())).getPanel(dataSourcesPanel.getId()));
+					else
+						dataSourcesPanel.replaceWith(dataSourcesPanel = new DefaultDataSourcesPanel(dataSourcesPanel.getId()));
+					target.add(getPage().get("feedback"));
+					target.add(getPage().get("form"));
+				}
+			});
 
 			add(new TextField<String>("conversationId")
 			{
@@ -242,9 +261,7 @@ public class SendMessagePageX extends BasePage
 				}
 			});
 
-			dataSourcesPanel = new DataSourcesPanel("dataSourcesPanel");
-			dataSourcesPanel.setOutputMarkupId(true);
-			add(dataSourcesPanel);
+			add(dataSourcesPanel = new EmptyDataSourcesPanel("dataSourcesPanel"));
 
 			Button send = new Button("send",new ResourceModel("cmd.send"))
 			{
