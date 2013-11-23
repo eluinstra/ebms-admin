@@ -37,7 +37,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -223,6 +225,7 @@ public class SendMessagePageX extends BasePage
 						dataSourcesPanel.replaceWith(dataSourcesPanel = WicketApplication.get().getMessagePanels().get(MessagePageProvider.createId(model.getService(),model.getAction())).getPanel(dataSourcesPanel.getId()));
 					else
 						dataSourcesPanel.replaceWith(dataSourcesPanel = new DefaultDataSourcesPanel(dataSourcesPanel.getId()));
+					model.setRawInput(false);
 					target.add(getPage().get("feedback"));
 					target.add(getPage().get("form"));
 				}
@@ -258,6 +261,48 @@ public class SendMessagePageX extends BasePage
 				public IModel<String> getLabel()
 				{
 					return Model.of(getLocalizer().getString("lbl.refToMessageId",MessageForm.this));
+				}
+			});
+
+			WebMarkupContainer rawInputContainer = new WebMarkupContainer("rawInputContainer")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public boolean isVisible()
+				{
+					EbMSMessageContextModel model = MessageForm.this.getModelObject();
+					return model.getAction() != null && (WicketApplication.get().getMessagePanels().containsKey(MessagePageProvider.createId(model.getService(),model.getAction()))) || (dataSourcesPanel != null && !(dataSourcesPanel instanceof EmptyDataSourcesPanel || dataSourcesPanel instanceof DefaultDataSourcesPanel));
+				}
+			};
+			add(rawInputContainer);
+			
+			CheckBox rawInput = new CheckBox("rawInput")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.rawInput",MessageForm.this));
+				}
+			};
+			rawInputContainer.add(rawInput);
+
+			rawInput.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					EbMSMessageContextModel model = MessageForm.this.getModelObject();
+					if (model.getRawInput())
+						dataSourcesPanel.replaceWith(dataSourcesPanel = new DefaultDataSourcesPanel(dataSourcesPanel.getId()));
+					else
+						dataSourcesPanel.replaceWith(dataSourcesPanel = WicketApplication.get().getMessagePanels().get(MessagePageProvider.createId(model.getService(),model.getAction())).getPanel(dataSourcesPanel.getId()));
+					target.add(getPage().get("feedback"));
+					target.add(getPage().get("form"));
 				}
 			});
 
@@ -298,6 +343,7 @@ public class SendMessagePageX extends BasePage
 		private List<String> fromRoles = new ArrayList<String>();
 		private List<String> services = new ArrayList<String>();
 		private List<String> actions = new ArrayList<String>();
+		private boolean rawInput;
 
 		public List<String> getFromRoles()
 		{
@@ -340,6 +386,14 @@ public class SendMessagePageX extends BasePage
 		{
 			resetActions();
 			getActions().addAll(actionNames);
+		}
+		public boolean getRawInput()
+		{
+			return rawInput;
+		}
+		public void setRawInput(boolean rawInput)
+		{
+			this.rawInput = rawInput;
 		}
 	}
 }
