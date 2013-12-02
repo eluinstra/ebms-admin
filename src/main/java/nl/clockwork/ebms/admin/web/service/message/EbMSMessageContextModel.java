@@ -18,7 +18,6 @@ package nl.clockwork.ebms.admin.web.service.message;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.clockwork.ebms.admin.web.service.message.SendMessagePage.DataSourcesForm;
 import nl.clockwork.ebms.model.EbMSDataSource;
 import nl.clockwork.ebms.model.EbMSMessageContext;
 
@@ -30,7 +29,6 @@ public class EbMSMessageContextModel extends EbMSMessageContext
 	private List<String> services = new ArrayList<String>();
 	private List<String> actions = new ArrayList<String>();
 	private List<EbMSDataSource> dataSources = new ArrayList<EbMSDataSource>();
-	private DataSourcesForm dataSourcesForm;
 
 	public List<String> getFromRoles()
 	{
@@ -77,14 +75,6 @@ public class EbMSMessageContextModel extends EbMSMessageContext
 	public List<EbMSDataSource> getDataSources()
 	{
 		return dataSources;
-	}
-	public DataSourcesForm getDataSourcesForm()
-	{
-		return dataSourcesForm;
-	}
-	public void setDataSourcesForm(DataSourcesForm dataSourcesForm)
-	{
-		this.dataSourcesForm = dataSourcesForm;
 	}
 	public void resetDataSources()
 	{

@@ -15,6 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -23,10 +24,12 @@ import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.MessageProvider;
 import nl.clockwork.ebms.admin.web.ResetButton;
+import nl.clockwork.ebms.admin.web.WicketApplication;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
-import nl.clockwork.ebms.model.EbMSDataSource;
 import nl.clockwork.ebms.model.EbMSMessageContent;
+import nl.clockwork.ebms.model.EbMSMessageContext;
 import nl.clockwork.ebms.service.CPAService;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
@@ -34,15 +37,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -52,7 +52,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement;
 
-public class SendMessagePage extends BasePage
+public class SendMessagePageX extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	protected transient Log logger = LogFactory.getLog(getClass());
@@ -61,7 +61,7 @@ public class SendMessagePage extends BasePage
 	@SpringBean(name="ebMSMessageService")
 	private EbMSMessageService ebMSMessageService;
 
-	public SendMessagePage()
+	public SendMessagePageX()
 	{
 		add(new BootstrapFeedbackPanel("feedback").setOutputMarkupId(true));
 		add(new MessageForm("form"));
@@ -76,6 +76,7 @@ public class SendMessagePage extends BasePage
 	public class MessageForm extends Form<EbMSMessageContextModel>
 	{
 		private static final long serialVersionUID = 1L;
+		private DataSourcesPanel dataSources;
 
 		public MessageForm(String id)
 		{
@@ -109,7 +110,7 @@ public class SendMessagePage extends BasePage
 						model.resetFromRoles(CPAUtils.getRoleNames(cpa));
 						model.resetServices();
 						model.resetActions();
-						model.resetDataSources();
+						dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 						target.add(getPage().get("feedback"));
 						target.add(getPage().get("form"));
 					}
@@ -148,7 +149,7 @@ public class SendMessagePage extends BasePage
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole()));
 						model.resetActions();
-						model.resetDataSources();
+						dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 						target.add(getPage().get("feedback"));
 						target.add(getPage().get("form"));
 					}
@@ -186,7 +187,7 @@ public class SendMessagePage extends BasePage
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetActions(CPAUtils.getFromActionNames(cpa,model.getFromRole(),model.getService()));
-						model.resetDataSources();
+						dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 						target.add(getPage().get("feedback"));
 						target.add(getPage().get("form"));
 					}
@@ -211,6 +212,24 @@ public class SendMessagePage extends BasePage
 			actions.setRequired(true);
 			actions.setOutputMarkupId(true);
 			add(new BootstrapFormComponentFeedbackBorder("actionFeedback",actions));
+
+			actions.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					EbMSMessageContextModel model = MessageForm.this.getModelObject();
+					if (WicketApplication.get().getMessageEditPanels().containsKey(MessageProvider.createId(model.getService(),model.getAction())))
+						dataSources.replaceWith(dataSources = WicketApplication.get().getMessageEditPanels().get(MessageProvider.createId(model.getService(),model.getAction())).getPanel(dataSources.getId()));
+					else
+						dataSources.replaceWith(dataSources = new DefaultDataSourcesPanel(dataSources.getId()));
+					model.setRawInput(false);
+					target.add(getPage().get("feedback"));
+					target.add(getPage().get("form"));
+				}
+			});
 
 			add(new TextField<String>("conversationId")
 			{
@@ -245,9 +264,49 @@ public class SendMessagePage extends BasePage
 				}
 			});
 
-			DataSourcesForm dataSourcesForm = new DataSourcesForm("form",getModelObject().getDataSources());
-			dataSourcesForm.setOutputMarkupId(true);
-			add(dataSourcesForm);
+			WebMarkupContainer rawInputContainer = new WebMarkupContainer("rawInputContainer")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public boolean isVisible()
+				{
+					EbMSMessageContextModel model = MessageForm.this.getModelObject();
+					return model.getAction() != null && (WicketApplication.get().getMessageEditPanels().containsKey(MessageProvider.createId(model.getService(),model.getAction()))) || (dataSources != null && !(dataSources instanceof EmptyDataSourcesPanel || dataSources instanceof DefaultDataSourcesPanel));
+				}
+			};
+			add(rawInputContainer);
+			
+			CheckBox rawInput = new CheckBox("rawInput")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.rawInput",MessageForm.this));
+				}
+			};
+			rawInputContainer.add(rawInput);
+
+			rawInput.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					EbMSMessageContextModel model = MessageForm.this.getModelObject();
+					if (model.getRawInput())
+						dataSources.replaceWith(dataSources = new DefaultDataSourcesPanel(dataSources.getId()));
+					else
+						dataSources.replaceWith(dataSources = WicketApplication.get().getMessageEditPanels().get(MessageProvider.createId(model.getService(),model.getAction())).getPanel(dataSources.getId()));
+					target.add(getPage().get("feedback"));
+					target.add(getPage().get("form"));
+				}
+			});
+
+			add(dataSources = new EmptyDataSourcesPanel("dataSources"));
 
 			Button send = new Button("send",new ResourceModel("cmd.send"))
 			{
@@ -259,7 +318,7 @@ public class SendMessagePage extends BasePage
 					try
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
-						EbMSMessageContent messageContent = new EbMSMessageContent(model,model.getDataSources());
+						EbMSMessageContent messageContent = new EbMSMessageContent(model,dataSources.getDataSources());
 						String messageId = ebMSMessageService.sendMessage(messageContent);
 						info(new StringResourceModel("sendMessage.ok",Model.of(messageId)).getString());
 					}
@@ -273,60 +332,68 @@ public class SendMessagePage extends BasePage
 			setDefaultButton(send);
 			add(send);
 
-			add(new ResetButton("reset",new ResourceModel("cmd.reset"),SendMessagePage.class));
+			add(new ResetButton("reset",new ResourceModel("cmd.reset"),SendMessagePageX.class));
 		}
 	}
 
-	public class DataSourcesForm extends Form<List<? extends EbMSDataSource>>
+	public class EbMSMessageContextModel extends EbMSMessageContext
 	{
 		private static final long serialVersionUID = 1L;
+		//private List<String> fromParties = new ArrayList<String>();
+		private List<String> fromRoles = new ArrayList<String>();
+		private List<String> services = new ArrayList<String>();
+		private List<String> actions = new ArrayList<String>();
+		private boolean rawInput;
 
-		public DataSourcesForm(String id, List<EbMSDataSource> dataSources)
+		public List<String> getFromRoles()
 		{
-			super(id,Model.ofList(dataSources));
-
-			ListView<EbMSDataSource> dataSources_ = new ListView<EbMSDataSource>("dataSources",dataSources)
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void populateItem(final ListItem<EbMSDataSource> item)
-				{
-					item.setModel(new CompoundPropertyModel<EbMSDataSource>(item.getModelObject()));
-					item.add(new Label("name"));
-					item.add(new Label("contentType"));
-					item.add(new AjaxButton("remove",new ResourceModel("cmd.remove"),DataSourcesForm.this)
-					{
-						private static final long serialVersionUID = 1L;
-						
-						@Override
-						protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-						{
-							DataSourcesForm.this.getModelObject().remove(item.getModelObject());
-							target.add(DataSourcesForm.this);
-						}
-					});
-				}
-			};
-			dataSources_.setOutputMarkupId(true);
-			add(dataSources_);
-
-			final ModalWindow dataSourceModalWindow = new DataSourceModalWindow("dataSourceModelWindow",dataSources,DataSourcesForm.this);
-			add(dataSourceModalWindow);
-			
-			AjaxButton add = new AjaxButton("add")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-				{
-					dataSourceModalWindow.show(target);
-				}
-			};
-			add(add);
+			return fromRoles;
 		}
-
+		public void resetFromRoles()
+		{
+			getFromRoles().clear();
+			setFromRole(null);
+		}
+		public void resetFromRoles(List<String> roles)
+		{
+			resetFromRoles();
+			getFromRoles().addAll(roles);
+		}
+		public List<String> getServices()
+		{
+			return services;
+		}
+		public void resetServices()
+		{
+			getServices().clear();
+			setService(null);
+		}
+		public void resetServices(List<String> serviceNames)
+		{
+			resetServices();
+			getServices().addAll(serviceNames);
+		}
+		public List<String> getActions()
+		{
+			return actions;
+		}
+		public void resetActions()
+		{
+			getActions().clear();
+			setAction(null);
+		}
+		public void resetActions(List<String> actionNames)
+		{
+			resetActions();
+			getActions().addAll(actionNames);
+		}
+		public boolean getRawInput()
+		{
+			return rawInput;
+		}
+		public void setRawInput(boolean rawInput)
+		{
+			this.rawInput = rawInput;
+		}
 	}
-
 }

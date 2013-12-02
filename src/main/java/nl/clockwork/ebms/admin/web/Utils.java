@@ -34,7 +34,7 @@ public class Utils
 			if (StringUtils.isNotBlank(value))
 				return value;
 		}
-		return null;
+		return propertyName;
 	}
 
 	public static String getContentType(String pathInfo)

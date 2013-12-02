@@ -102,8 +102,8 @@ public class TrafficPage extends BasePage
 					@Override
 					public void onClick()
 					{
-						//setResponsePage(new MessagePage(ebMSDAO.getMessage(message.getMessageId(),message.getMessageNr()),MessagesPage.this));
-						setResponsePage(new MessagePage(message,TrafficPage.this));
+						//setResponsePage(new MessagePageX(ebMSDAO.getMessage(message.getMessageId(),message.getMessageNr()),MessagesPage.this));
+						setResponsePage(new MessagePageX(message,TrafficPage.this));
 					}
 				};
 				link.add(new Label("messageId",message.getMessageId()));

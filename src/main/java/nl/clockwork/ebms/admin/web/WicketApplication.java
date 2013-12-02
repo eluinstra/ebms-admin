@@ -16,7 +16,9 @@
 package nl.clockwork.ebms.admin.web;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import nl.clockwork.ebms.admin.web.menu.MenuItem;
 import nl.clockwork.ebms.admin.web.menu.MenuLinkItem;
@@ -39,6 +41,8 @@ import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 public class WicketApplication extends WebApplication
 {
 	public List<MenuItem> menuItems = new ArrayList<MenuItem>();
+	public Map<String,MessageProvider.MessageViewPanel> messageViewPanels = new HashMap<String,MessageProvider.MessageViewPanel>();
+	public Map<String,MessageProvider.MessageEditPanel> messageEditPanels = new HashMap<String,MessageProvider.MessageEditPanel>();
 	
 	public WicketApplication()
 	{
@@ -53,7 +57,7 @@ public class WicketApplication extends WebApplication
 		MenuItem message = new MenuItem("2","messageService");
 		new MenuLinkItem(message,"1","ping",nl.clockwork.ebms.admin.web.service.message.PingPage.class);
 		new MenuLinkItem(message,"2","messages",nl.clockwork.ebms.admin.web.service.message.MessagesPage.class);
-		new MenuLinkItem(message,"3","message",nl.clockwork.ebms.admin.web.service.message.SendMessagePage.class);
+		new MenuLinkItem(message,"3","message",nl.clockwork.ebms.admin.web.service.message.SendMessagePageX.class);
 		new MenuLinkItem(message,"4","messageStatus",nl.clockwork.ebms.admin.web.service.message.MessageStatusPage.class);
 		menuItems.add(message);
 
@@ -69,7 +73,26 @@ public class WicketApplication extends WebApplication
 		new MenuLinkItem(configuration,"2","ebMSCoreProperties",nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.class);
 		menuItems.add(configuration);
 
-		MenuItem about = new MenuLinkItem("5","about",nl.clockwork.ebms.admin.web.AboutPage.class);
+		List<ExtensionPageProvider> extensionPageProviders = ExtensionPageProvider.get();
+		if (extensionPageProviders.size() > 0)
+		{
+			MenuItem extensions = new MenuItem("5","extensions");
+			menuItems.add(extensions);
+			for (ExtensionPageProvider provider : extensionPageProviders)
+				for (MenuItem menuItem : provider.getMenuItems())
+					extensions.addChild(menuItem);
+		}
+
+		List<MessageProvider> messageProviders = MessageProvider.get();
+		for (MessageProvider provider : messageProviders)
+			for (MessageProvider.MessageViewPanel messagePanel : provider.getMessageViewPanels())
+				messageViewPanels.put(messagePanel.getId(),messagePanel);
+
+		for (MessageProvider provider : messageProviders)
+			for (MessageProvider.MessageEditPanel messagePanel : provider.getMessageEditPanels())
+				messageEditPanels.put(messagePanel.getId(),messagePanel);
+
+		MenuItem about = new MenuLinkItem("6","about",nl.clockwork.ebms.admin.web.AboutPage.class);
 		menuItems.add(about);
 	}
 	
@@ -106,6 +129,16 @@ public class WicketApplication extends WebApplication
 	public List<MenuItem> getMenuItems()
 	{
 		return menuItems;
+	}
+
+	public Map<String,MessageProvider.MessageViewPanel> getMessageViewPanels()
+	{
+		return messageViewPanels;
+	}
+
+	public Map<String,MessageProvider.MessageEditPanel> getMessageEditPanels()
+	{
+		return messageEditPanels;
 	}
 
 	public static WicketApplication get()

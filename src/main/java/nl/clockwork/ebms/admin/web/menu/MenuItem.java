@@ -63,6 +63,13 @@ public class MenuItem implements IClusterable
 		return Collections.unmodifiableList(children);
 	}
 	
+	public void addChild(MenuItem child)
+	{
+		child.id = this.id + "." + children.size();
+		child.parent = this;
+		children.add(child);
+	}
+
 	@Override
 	public String toString()
 	{

@@ -1,0 +1,16 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
+<head>
+<wicket:head>
+	<link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen" />
+	<script src="js/bootstrap-datetimepicker.min.js" defer="defer"></script>
+</wicket:head>
+</head>
+<body>
+<wicket:panel>
+	<div class="input-group date" wicket:id="dateTimePicker">
+		<input type="text" class="form-control" wicket:id="dateTime"/><wicket:remove>readonly="readonly"</wicket:remove><wicket:remove><!--span class="input-group-addon">&times;</span--></wicket:remove><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+	</div>
+</wicket:panel>
+</body>
+</html>
