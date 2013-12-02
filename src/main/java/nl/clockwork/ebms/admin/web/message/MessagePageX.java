@@ -20,11 +20,13 @@ import java.util.Date;
 import nl.clockwork.ebms.Constants.EbMSEventStatus;
 import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
-import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSEvent;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.MessageProvider;
 import nl.clockwork.ebms.admin.web.Utils;
+import nl.clockwork.ebms.admin.web.WicketApplication;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -40,15 +42,16 @@ import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-public class MessagePage extends BasePage
+public class MessagePageX extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="ebMSAdminDAO")
 	private EbMSDAO ebMSDAO;
 	protected boolean showContent;
 
-	public MessagePage(final EbMSMessage message, final WebPage responsePage)
+	public MessagePageX(final EbMSMessage message, final WebPage responsePage)
 	{
+		add(new BootstrapFeedbackPanel("feedback"));
 		add(new Label("messageId",message.getMessageId()));
 		add(new Label("messageNr",message.getMessageNr()));
 		add(new Label("conversationId",message.getConversationId()));
@@ -59,7 +62,7 @@ public class MessagePage extends BasePage
 			@Override
 			public void onClick()
 			{
-				setResponsePage(new MessagePage(ebMSDAO.findMessage(message.getRefToMessageId()),MessagePage.this));
+				setResponsePage(new MessagePageX(ebMSDAO.findMessage(message.getRefToMessageId()),MessagePageX.this));
 			}
 		};
 		link.add(new Label("refToMessageId",message.getRefToMessageId()));
@@ -73,23 +76,21 @@ public class MessagePage extends BasePage
 		add(new Label("status",message.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus())))));
 		add(new Label("statusTime",message.getStatusTime()));
 		
-		PropertyListView<EbMSAttachment> attachments = 
-			new PropertyListView<EbMSAttachment>("attachments",message.getAttachments())
+		if (WicketApplication.get().getMessageViewPanels().containsKey(MessageProvider.createId(message.getService(),message.getAction())))
+		{
+			try
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void populateItem(ListItem<EbMSAttachment> item)
-				{
-					item.add(new Label("name"));
-					DownloadEbMSAttachmentLink link = new DownloadEbMSAttachmentLink("downloadAttachment",ebMSDAO,item.getModelObject());
-					link.add(new Label("contentId"));
-					item.add(link);
-					item.add(new Label("contentType"));
-				}
+				add(WicketApplication.get().getMessageViewPanels().get(MessageProvider.createId(message.getService(),message.getAction())).getPanel("attachments",message.getAttachments()));
 			}
-		;
-		add(attachments);
+			catch (Exception e)
+			{
+				warn("Unable to view message for action" + MessageProvider.createId(message.getService(),message.getAction()) + ". " + e.getMessage());
+				add(new AttachmentsPanel("attachments",message.getAttachments()));
+			}
+
+		}
+		else
+			add(new AttachmentsPanel("attachments",message.getAttachments()));
 		
 		PropertyListView<EbMSEvent> events = 
 			new PropertyListView<EbMSEvent>("events",message.getEvents())
@@ -169,7 +170,7 @@ public class MessagePage extends BasePage
 			@Override
 			public String getObject()
 			{
-				return MessagePage.this.getLocalizer().getString(showContent ? "cmd.hide" : "cmd.show",MessagePage.this);
+				return MessagePageX.this.getLocalizer().getString(showContent ? "cmd.hide" : "cmd.show",MessagePageX.this);
 			}
 		}));
 		add(toggleContent);

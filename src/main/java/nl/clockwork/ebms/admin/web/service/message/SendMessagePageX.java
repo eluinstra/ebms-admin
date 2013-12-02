@@ -24,7 +24,7 @@ import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.MessagePageProvider;
+import nl.clockwork.ebms.admin.web.MessageProvider;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.admin.web.WicketApplication;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
@@ -76,7 +76,7 @@ public class SendMessagePageX extends BasePage
 	public class MessageForm extends Form<EbMSMessageContextModel>
 	{
 		private static final long serialVersionUID = 1L;
-		private DataSourcesPanel dataSourcesPanel;
+		private DataSourcesPanel dataSources;
 
 		public MessageForm(String id)
 		{
@@ -110,7 +110,7 @@ public class SendMessagePageX extends BasePage
 						model.resetFromRoles(CPAUtils.getRoleNames(cpa));
 						model.resetServices();
 						model.resetActions();
-						dataSourcesPanel.replaceWith(dataSourcesPanel = new EmptyDataSourcesPanel(dataSourcesPanel.getId()));
+						dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 						target.add(getPage().get("feedback"));
 						target.add(getPage().get("form"));
 					}
@@ -149,7 +149,7 @@ public class SendMessagePageX extends BasePage
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole()));
 						model.resetActions();
-						dataSourcesPanel.replaceWith(dataSourcesPanel = new EmptyDataSourcesPanel(dataSourcesPanel.getId()));
+						dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 						target.add(getPage().get("feedback"));
 						target.add(getPage().get("form"));
 					}
@@ -187,7 +187,7 @@ public class SendMessagePageX extends BasePage
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetActions(CPAUtils.getFromActionNames(cpa,model.getFromRole(),model.getService()));
-						dataSourcesPanel.replaceWith(dataSourcesPanel = new EmptyDataSourcesPanel(dataSourcesPanel.getId()));
+						dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 						target.add(getPage().get("feedback"));
 						target.add(getPage().get("form"));
 					}
@@ -221,10 +221,10 @@ public class SendMessagePageX extends BasePage
 				protected void onUpdate(AjaxRequestTarget target)
 				{
 					EbMSMessageContextModel model = MessageForm.this.getModelObject();
-					if (WicketApplication.get().getMessagePanels().containsKey(MessagePageProvider.createId(model.getService(),model.getAction())))
-						dataSourcesPanel.replaceWith(dataSourcesPanel = WicketApplication.get().getMessagePanels().get(MessagePageProvider.createId(model.getService(),model.getAction())).getPanel(dataSourcesPanel.getId()));
+					if (WicketApplication.get().getMessageEditPanels().containsKey(MessageProvider.createId(model.getService(),model.getAction())))
+						dataSources.replaceWith(dataSources = WicketApplication.get().getMessageEditPanels().get(MessageProvider.createId(model.getService(),model.getAction())).getPanel(dataSources.getId()));
 					else
-						dataSourcesPanel.replaceWith(dataSourcesPanel = new DefaultDataSourcesPanel(dataSourcesPanel.getId()));
+						dataSources.replaceWith(dataSources = new DefaultDataSourcesPanel(dataSources.getId()));
 					model.setRawInput(false);
 					target.add(getPage().get("feedback"));
 					target.add(getPage().get("form"));
@@ -272,7 +272,7 @@ public class SendMessagePageX extends BasePage
 				public boolean isVisible()
 				{
 					EbMSMessageContextModel model = MessageForm.this.getModelObject();
-					return model.getAction() != null && (WicketApplication.get().getMessagePanels().containsKey(MessagePageProvider.createId(model.getService(),model.getAction()))) || (dataSourcesPanel != null && !(dataSourcesPanel instanceof EmptyDataSourcesPanel || dataSourcesPanel instanceof DefaultDataSourcesPanel));
+					return model.getAction() != null && (WicketApplication.get().getMessageEditPanels().containsKey(MessageProvider.createId(model.getService(),model.getAction()))) || (dataSources != null && !(dataSources instanceof EmptyDataSourcesPanel || dataSources instanceof DefaultDataSourcesPanel));
 				}
 			};
 			add(rawInputContainer);
@@ -298,15 +298,15 @@ public class SendMessagePageX extends BasePage
 				{
 					EbMSMessageContextModel model = MessageForm.this.getModelObject();
 					if (model.getRawInput())
-						dataSourcesPanel.replaceWith(dataSourcesPanel = new DefaultDataSourcesPanel(dataSourcesPanel.getId()));
+						dataSources.replaceWith(dataSources = new DefaultDataSourcesPanel(dataSources.getId()));
 					else
-						dataSourcesPanel.replaceWith(dataSourcesPanel = WicketApplication.get().getMessagePanels().get(MessagePageProvider.createId(model.getService(),model.getAction())).getPanel(dataSourcesPanel.getId()));
+						dataSources.replaceWith(dataSources = WicketApplication.get().getMessageEditPanels().get(MessageProvider.createId(model.getService(),model.getAction())).getPanel(dataSources.getId()));
 					target.add(getPage().get("feedback"));
 					target.add(getPage().get("form"));
 				}
 			});
 
-			add(dataSourcesPanel = new EmptyDataSourcesPanel("dataSourcesPanel"));
+			add(dataSources = new EmptyDataSourcesPanel("dataSources"));
 
 			Button send = new Button("send",new ResourceModel("cmd.send"))
 			{
@@ -318,7 +318,7 @@ public class SendMessagePageX extends BasePage
 					try
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
-						EbMSMessageContent messageContent = new EbMSMessageContent(model,dataSourcesPanel.getDataSources());
+						EbMSMessageContent messageContent = new EbMSMessageContent(model,dataSources.getDataSources());
 						String messageId = ebMSMessageService.sendMessage(messageContent);
 						info(new StringResourceModel("sendMessage.ok",Model.of(messageId)).getString());
 					}

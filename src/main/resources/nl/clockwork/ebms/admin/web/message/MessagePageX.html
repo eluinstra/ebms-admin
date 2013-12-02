@@ -2,6 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
 <body>
 <wicket:extend>
+	<div class="col-lg-offset-2 col-lg-10">
+		<span wicket:id="feedback"/>
+	</div>
 	<form class="form-horizontal" role="form">
 		<div class="form-group">
 			<label class="col-lg-2 control-label"><wicket:message key="lbl.messageId"/></label>
@@ -75,35 +78,7 @@
 				<p class="form-control-static"><wicket:container wicket:id="statusTime"/></p>
 			</div>
 		</div>
-		<div class="form-group">
-			<label class="col-lg-2 control-label"><wicket:message key="lbl.attachments"/></label>
-			<div class="col-lg-10 table-responsive">
-				<table class="table table-striped">
-					<tr>
-						<td>
-							<label><wicket:message key="lbl.name"/></label>
-						</td>
-						<td>
-							<label><wicket:message key="lbl.contentId"/></label>
-						</td>
-						<td>
-							<label><wicket:message key="lbl.contentType"/></label>
-						</td>
-					</tr>
-					<tr wicket:id="attachments">
-						<td>
-							<p class="form-control-static"><wicket:container wicket:id="name"/></p>
-						</td>
-						<td>
-							<p class="form-control-static"><a href="#" wicket:id="downloadAttachment"><wicket:container wicket:id="contentId"/></a></p>
-						</td>
-						<td>
-							<p class="form-control-static"><wicket:container wicket:id="contentType"/></p>
-						</td>
-					</tr>
-				</table>
-			</div>
-		</div>
+		<wicket:container wicket:id="attachments"/>
 		<div class="form-group">
 			<label class="col-lg-2 control-label"><wicket:message key="lbl.events"/></label>
 			<div class="col-lg-10 table-responsive">
