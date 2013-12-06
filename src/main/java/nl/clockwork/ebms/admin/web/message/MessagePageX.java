@@ -118,7 +118,6 @@ public class MessagePageX extends BasePage
 					link.add(new Label("status"));
 					item.add(link);
 					item.add(DateLabel.forDatePattern("statusTime",new Model<Date>(item.getModelObject().getStatusTime()),Constants.DATETIME_FORMAT));
-					item.add(new Label("uri"));
 				}
 			}
 		;
