@@ -30,16 +30,22 @@ import nl.clockwork.ebms.admin.web.WicketApplication;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PropertyListView;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 public class MessagePageX extends BasePage
@@ -48,6 +54,8 @@ public class MessagePageX extends BasePage
 	@SpringBean(name="ebMSAdminDAO")
 	private EbMSDAO ebMSDAO;
 	protected boolean showContent;
+	protected Panel messageViewPanel;
+	protected boolean rawOutput;
 
 	public MessagePageX(final EbMSMessage message, final WebPage responsePage)
 	{
@@ -75,22 +83,6 @@ public class MessagePageX extends BasePage
 		add(new Label("action",message.getAction()));
 		add(new Label("status",message.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus())))));
 		add(new Label("statusTime",message.getStatusTime()));
-		
-		if (WicketApplication.get().getMessageViewPanels().containsKey(MessageProvider.createId(message.getService(),message.getAction())))
-		{
-			try
-			{
-				add(WicketApplication.get().getMessageViewPanels().get(MessageProvider.createId(message.getService(),message.getAction())).getPanel("attachments",message.getAttachments()));
-			}
-			catch (Exception e)
-			{
-				warn("Unable to view message for action" + MessageProvider.createId(message.getService(),message.getAction()) + ". " + e.getMessage());
-				add(new AttachmentsPanel("attachments",message.getAttachments()));
-			}
-
-		}
-		else
-			add(new AttachmentsPanel("attachments",message.getAttachments()));
 		
 		PropertyListView<EbMSEvent> events = 
 			new PropertyListView<EbMSEvent>("events",message.getEvents())
@@ -123,6 +115,70 @@ public class MessagePageX extends BasePage
 		;
 		add(events);
 
+		WebMarkupContainer rawOutputContainer = new WebMarkupContainer("rawOutputContainer")
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public boolean isVisible()
+			{
+				return WicketApplication.get().getMessageViewPanels().containsKey(MessageProvider.createId(message.getService(),message.getAction()));
+			}
+		};
+		add(rawOutputContainer);
+		
+		CheckBox rawOutput = new CheckBox("rawOutput",new PropertyModel<Boolean>(this,"rawOutput"))
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public IModel<String> getLabel()
+			{
+				return Model.of(getLocalizer().getString("lbl.rawOutput",MessagePageX.this));
+			}
+		};
+		rawOutputContainer.add(rawOutput);
+
+		rawOutput.add(new AjaxFormComponentUpdatingBehavior("onchange")
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target)
+			{
+				if (getRawOutput())
+					messageViewPanel.replaceWith(messageViewPanel = new AttachmentsPanel("attachments",message.getAttachments()));
+				else
+				{
+					try
+					{
+						messageViewPanel.replaceWith(messageViewPanel = WicketApplication.get().getMessageViewPanels().get(MessageProvider.createId(message.getService(),message.getAction())).getPanel("attachments",message.getAttachments()));
+					}
+					catch (Exception e)
+					{
+						warn("Unable to view message for action" + MessageProvider.createId(message.getService(),message.getAction()) + ". " + e.getMessage());
+						messageViewPanel.replaceWith(messageViewPanel = new AttachmentsPanel("attachments",message.getAttachments()));
+					}
+				}
+				target.add(getPage());
+			}
+		});
+
+		if (WicketApplication.get().getMessageViewPanels().containsKey(MessageProvider.createId(message.getService(),message.getAction())))
+		{
+			try
+			{
+				add(messageViewPanel = WicketApplication.get().getMessageViewPanels().get(MessageProvider.createId(message.getService(),message.getAction())).getPanel("attachments",message.getAttachments()));
+			}
+			catch (Exception e)
+			{
+				warn("Unable to view message for action" + MessageProvider.createId(message.getService(),message.getAction()) + ". " + e.getMessage());
+				add(messageViewPanel = new AttachmentsPanel("attachments",message.getAttachments()));
+			}
+		}
+		else
+			add(messageViewPanel = new AttachmentsPanel("attachments",message.getAttachments()));
+		
 		add(new Link<Void>("back")
 		{
 			private static final long serialVersionUID = 1L;
@@ -184,6 +240,16 @@ public class MessagePageX extends BasePage
 	public boolean getShowContent()
 	{
 		return showContent;
+	}
+	
+	public boolean getRawOutput()
+	{
+		return rawOutput;
+	}
+	
+	public void setRawOutput(boolean rawOutput)
+	{
+		this.rawOutput = rawOutput;
 	}
 	
 	public class ErrorMessageModalWindow extends ModalWindow
