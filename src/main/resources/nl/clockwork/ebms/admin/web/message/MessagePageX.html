@@ -78,7 +78,6 @@
 				<p class="form-control-static"><wicket:container wicket:id="statusTime"/></p>
 			</div>
 		</div>
-		<wicket:container wicket:id="attachments"/>
 		<div class="form-group">
 			<label class="col-lg-2 control-label"><wicket:message key="lbl.events"/></label>
 			<div class="col-lg-10 table-responsive">
@@ -120,6 +119,13 @@
 				</table>
 			</div>
 		</div>
+		<div class="form-group" wicket:id="rawOutputContainer">
+			<label wicket:for="rawOutput" class="col-lg-2 control-label"><wicket:label/></label>
+			<div class="col-lg-10">
+				<input type="checkbox" wicket:id="rawOutput" />
+			</div>
+		</div>
+		<wicket:container wicket:id="attachments"/>
 		<div class="form-group">
 			<div class="col-lg-offset-2 col-lg-10">
 				<a class="btn btn-default" href="#" wicket:id="back"><wicket:message key="cmd.back"/></a>
