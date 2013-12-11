@@ -10,7 +10,7 @@
 	</appender>
 
 	<!--appender name="FILE" class="org.apache.log4j.RollingFileAppender">
-		<param name="File" value="${mule.home}/logs/ebms-admin.log"/>
+		<param name="File" value="logs/ebms-admin.log"/>
 		<param name="Threshold" value="INFO"/>
 		<param name="MaxFileSize" value="5MB"/>
 		<param name="MaxBackupIndex" value="20"/>
@@ -20,7 +20,7 @@
 	</appender-->
 
 	<!--appender  name="FILE"  class="org.apache.log4j.DailyFileAppender">
-		<param name="File" value="'${mule.home}/logs/ebms-admin-'yyyyMMdd'.log'"/>
+		<param name="File" value="'logs/ebms-admin-'yyyyMMdd'.log'"/>
 		<param name="Threshold" value="INFO"/>
 		<param name="Append" value="true"/>
 		<layout class="org.apache.log4j.PatternLayout">
@@ -29,7 +29,7 @@
 	</appender-->
 
 	<appender  name="FILE" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="File" value="${mule.home}/logs/ebms-admin.log"/>
+		<param name="File" value="logs/ebms-admin.log"/>
 		<param name="DatePattern" value="yyyyMMdd'.log'"/>
 		<param name="Threshold" value="debug"/>
 		<param name="Append" value="true"/>
@@ -39,7 +39,7 @@
 	</appender>
 
 	<appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
-		<appender-ref ref="CONSOLE"/>
+		<appender-ref ref="FILE"/>
 	</appender>
 
 	<logger name="nl.clockwork.ebms" additivity="false">
