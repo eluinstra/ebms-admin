@@ -254,7 +254,7 @@ public class StartEmbedded
 		if (!"true".equals(properties.get("ebms.ssl")))
 		{
 			SocketConnector connector = new SocketConnector();
-			connector.setPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
+			connector.setPort(StringUtils.isEmpty(properties.get("ebms.port")) ? 8888 : Integer.parseInt(properties.get("ebms.port")));
 			server.addConnector(connector);
 			System.out.println("EbMS service configured on http://localhost:" + connector.getPort() + properties.get("ebms.path"));
 		}
@@ -264,7 +264,7 @@ public class StartEmbedded
 			if (keystore != null && keystore.exists())
 			{
 				SocketConnector connector = new SocketConnector();
-				connector.setConfidentialPort(cmd.getOptionValue("ebmsPort") == null ? 8888 : Integer.parseInt(cmd.getOptionValue("ebmsPort")));
+				connector.setConfidentialPort(StringUtils.isEmpty(properties.get("ebms.port")) ? 8888 : Integer.parseInt(properties.get("ebms.port")));
 				SslContextFactory factory = new SslContextFactory();
 				if (!StringUtils.isEmpty(properties.get("https.allowedCipherSuites")))
 					factory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(properties.get("https.allowedCipherSuites"),',')));
