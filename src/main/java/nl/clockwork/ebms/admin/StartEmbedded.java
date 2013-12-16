@@ -264,7 +264,7 @@ public class StartEmbedded
 			if (keystore != null && keystore.exists())
 			{
 				SocketConnector connector = new SocketConnector();
-				connector.setConfidentialPort(cmd.getOptionValue("ebmsPort") == null ? 8888 : Integer.parseInt(cmd.getOptionValue("ebmsPort")));
+				connector.setConfidentialPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
 				SslContextFactory factory = new SslContextFactory();
 				if (!StringUtils.isEmpty(properties.get("https.allowedCipherSuites")))
 					factory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(properties.get("https.allowedCipherSuites"),',')));
