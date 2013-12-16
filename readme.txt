@@ -1,14 +1,20 @@
-===========================
-= Start EbMS Admin Console
-===========================
-> java -jar ebms-admin-1.0.0.jar
-> java -cp ebms-admin-1.0.0.jar nl.clockwork.ebms.admin.Main
+=====================================
+= Start EbMS Admin Console standalone
+=====================================
+show help:
+> java -cp ebms-admin-2.x.x.jar nl.clockwork.ebms.admin.Start -h
 
-> java -cp ebms-admin-1.0.0.jar nl.clockwork.ebms.admin.Start
-> java -cp ebms-admin-1.0.0.jar nl.clockwork.ebms.admin.Start -h
+start with hsqldb server:
+> java -cp ebms-admin-2.x.x.jar nl.clockwork.ebms.admin.Start -hsqldb
 
-> java -cp ebms-admin-1.0.0.jar nl.clockwork.ebms.admin.StartEmbedded
-> java -cp ebms-admin-1.0.0.jar nl.clockwork.ebms.admin.StartEmbedded -hsqldb
+=====================================================
+= Start EbMS Admin Console with embedded EbMS adapter
+=====================================================
+show help:
+> java -cp ebms-admin-2.x.x.jar nl.clockwork.ebms.admin.StartEmbedded -h
+
+start with hsqldb server:
+> java -cp ebms-admin-2.x.x.jar nl.clockwork.ebms.admin.StartEmbedded -hsqldb
 
 ================
 = Build project
