@@ -275,7 +275,6 @@ public class MessagePageX extends BasePage
 		public ErrorMessageModalWindow(String id, String errorMessage)
 		{
 			super(id);
-			setTitle(getLocalizer().getString("eventError",this));
 			setCssClassName(ModalWindow.CSS_CLASS_GRAY);
 			setContent(new ErrorMessagePanel(this,Model.of(errorMessage)));
 			setCookieName("eventError");
@@ -288,6 +287,12 @@ public class MessagePageX extends BasePage
 					return true;
 				}
 			});
+		}
+		
+		@Override
+		public IModel<String> getTitle()
+		{
+			return new Model<String>(getLocalizer().getString("eventError",this));
 		}
 	}
 

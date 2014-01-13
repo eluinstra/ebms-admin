@@ -38,6 +38,7 @@ import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PropertyListView;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -207,7 +208,6 @@ public class MessagePage extends BasePage
 		public ErrorMessageModalWindow(String id, String errorMessage)
 		{
 			super(id);
-			setTitle(getLocalizer().getString("eventError",this));
 			setCssClassName(ModalWindow.CSS_CLASS_GRAY);
 			setContent(new ErrorMessagePanel(this,Model.of(errorMessage)));
 			setCookieName("eventError");
@@ -220,6 +220,12 @@ public class MessagePage extends BasePage
 					return true;
 				}
 			});
+		}
+
+		@Override
+		public IModel<String> getTitle()
+		{
+			return new Model<String>(getLocalizer().getString("eventError",this));
 		}
 	}
 
