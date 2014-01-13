@@ -199,7 +199,26 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		result.setEvents(getEvents(messageId));
 		for (EbMSEvent event : result.getEvents())
 			event.setMessage(result);
-		
+		return result;
+	}
+
+	@Override
+	public EbMSMessage findResponseMessage(String messageId)
+	{
+		EbMSMessage result = jdbcTemplate.queryForObject(
+			new EbMSMessageRowMapper(true).getBaseQuery() + 
+			" where ref_to_message_id = ?" +
+			" and message_nr = ?" +
+			" and service = ?",
+			new EbMSMessageRowMapper(true),
+			messageId,
+			0,
+			Constants.EBMS_SERVICE_URI
+		);
+		result.setAttachments(new ArrayList<EbMSAttachment>());
+		result.setEvents(getEvents(messageId));
+		for (EbMSEvent event : result.getEvents())
+			event.setMessage(result);
 		return result;
 	}
 

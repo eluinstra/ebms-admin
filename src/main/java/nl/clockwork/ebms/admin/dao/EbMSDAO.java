@@ -38,6 +38,7 @@ public interface EbMSDAO
 
 	EbMSMessage findMessage(String messageId);
 	EbMSMessage findMessage(String messageId, int messageNr);
+	EbMSMessage findResponseMessage(String messageId);
 	int countMessages(EbMSMessageFilter filter);
 	List<EbMSMessage> selectMessages(EbMSMessageFilter filter, long first, long count);
 

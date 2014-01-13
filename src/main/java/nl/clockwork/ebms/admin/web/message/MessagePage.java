@@ -18,6 +18,7 @@ package nl.clockwork.ebms.admin.web.message;
 import java.util.Date;
 
 import nl.clockwork.ebms.Constants.EbMSEventStatus;
+import nl.clockwork.ebms.Constants.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
@@ -70,7 +71,20 @@ public class MessagePage extends BasePage
 		add(new Label("toRole",message.getToRole()));
 		add(new Label("service",message.getService()));
 		add(new Label("action",message.getAction()));
-		add(new Label("status",message.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus())))));
+		AjaxLink<Void> linkMessageError = new AjaxLink<Void>("viewMessageError")
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick(AjaxRequestTarget target)
+			{
+				setResponsePage(new MessagePage(ebMSDAO.findResponseMessage(message.getMessageId()),MessagePage.this));
+			}
+		};
+		linkMessageError.setEnabled(EbMSMessageStatus.DELIVERY_ERROR.equals(message.getStatus()));
+		linkMessageError.add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus()))));
+		linkMessageError.add(new Label("status",message.getStatus()));
+		add(linkMessageError);
 		add(new Label("statusTime",message.getStatusTime()));
 		
 		PropertyListView<EbMSAttachment> attachments = 
