@@ -1,3 +1,5 @@
+- add reset button per field instead of per form
+
 - improve message filters
 	- improve date picker
 - improve ModalWindow?
