@@ -110,6 +110,11 @@ public class SendMessagePageX extends BasePage
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
 						model.resetFromRoles(CPAUtils.getRoleNames(cpa));
+						if (model.extended)
+						{
+							model.resetToPartyIds();
+							model.resetToRoles();
+						}
 						model.resetServices();
 						model.resetActions();
 						dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
@@ -149,6 +154,12 @@ public class SendMessagePageX extends BasePage
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetFromRoles(CPAUtils.getRoleNames(cpa,model.getFromRole().getPartyId()));
+						if (model.extended)
+						{
+							if (model.getFromRole().getRole() != null)
+								model.resetToRoles(CPAUtils.getOtherRoleNames(cpa,model.getFromRole().getPartyId(),model.getFromRole().getRole()));
+							model.resetToPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getToRole().getRole()));
+						}
 						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole().getRole()));
 						model.resetActions();
 						dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
@@ -187,8 +198,112 @@ public class SendMessagePageX extends BasePage
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						if (model.getFromRole().getPartyId() == null)
-							model.resetFromPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getFromRole().getRole()));
+						model.resetFromPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getFromRole().getRole()));
+						if (model.extended)
+						{
+							model.resetToRoles(CPAUtils.getOtherRoleNames(cpa,model.getFromRole().getPartyId(),model.getFromRole().getRole()));
+							model.resetToPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getToRole().getRole()));
+						}
+						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole().getRole()));
+						model.resetActions();
+						dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
+						target.add(getPage().get("feedback"));
+						target.add(getPage().get("form"));
+					}
+					catch (JAXBException e)
+					{
+						logger.error("",e);
+						error(e.getMessage());
+					}
+				}
+			});
+
+			DropDownChoice<String> toPartyIds = new DropDownChoice<String>("toPartyIds",new PropertyModel<String>(this.getModelObject(),"toRole.partyId"),new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.toPartyId",MessageForm.this));
+				}
+			};
+			toPartyIds.setRequired(true).setOutputMarkupId(true);
+			add(new BootstrapFormComponentFeedbackBorder("toPartyIdFeedback",toPartyIds)
+			{
+				private static final long serialVersionUID = 1L;
+				
+				@Override
+				public boolean isVisible()
+				{
+					return MessageForm.this.getModelObject().extended;
+				}
+			});
+			
+			toPartyIds.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					try
+					{
+						EbMSMessageContextModel model = MessageForm.this.getModelObject();
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						if (model.extended)
+							if (model.getToRole().getRole() == null)
+								model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToRole().getPartyId()));
+						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole().getRole()));
+						model.resetActions();
+						dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
+						target.add(getPage().get("feedback"));
+						target.add(getPage().get("form"));
+					}
+					catch (JAXBException e)
+					{
+						logger.error("",e);
+						error(e.getMessage());
+					}
+				}
+			});
+
+			DropDownChoice<String> toRoles = new DropDownChoice<String>("toRoles",new PropertyModel<String>(this.getModelObject(),"toRole.role"),new PropertyModel<List<String>>(this.getModelObject(),"toRoles"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.toRole",MessageForm.this));
+				}
+			};
+			toRoles.setRequired(true).setOutputMarkupId(true);
+			add(new BootstrapFormComponentFeedbackBorder("toRoleFeedback",toRoles)
+			{
+				private static final long serialVersionUID = 1L;
+				
+				@Override
+				public boolean isVisible()
+				{
+					return MessageForm.this.getModelObject().extended;
+				}
+			});
+			
+			toRoles.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					try
+					{
+						EbMSMessageContextModel model = MessageForm.this.getModelObject();
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						if (model.extended)
+//							if (model.getToRole().getPartyId() == null)
+								model.resetToPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getToRole().getRole()));
 						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole().getRole()));
 						model.resetActions();
 						dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
@@ -350,6 +465,52 @@ public class SendMessagePageX extends BasePage
 
 			add(dataSources = new EmptyDataSourcesPanel("dataSources"));
 
+			CheckBox extended = new CheckBox("extended")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.extended",MessageForm.this));
+				}
+			};
+			add(extended);
+			
+			extended.add(new AjaxFormComponentUpdatingBehavior("onchange")
+      {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					try
+					{
+						EbMSMessageContextModel model = MessageForm.this.getModelObject();
+						if (model.extended)
+						{
+							model.setToRole(new Role());
+							if (model.getCpaId() != null)
+							{
+								CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+								if (model.getFromRole().getRole() != null)
+									model.resetToRoles(CPAUtils.getOtherRoleNames(cpa,model.getFromRole().getPartyId(),model.getFromRole().getRole()));
+								model.resetToPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getToRole().getRole()));
+							}
+						}
+						else
+							model.setToRole(null);
+						target.add(getPage().get("feedback"));
+						target.add(getPage().get("form"));
+					}
+					catch (JAXBException e)
+					{
+						logger.error("",e);
+						error(e.getMessage());
+					}
+				}
+      });
+
 			Button send = new Button("send",new ResourceModel("cmd.send"))
 			{
 				private static final long serialVersionUID = 1L;
@@ -383,9 +544,12 @@ public class SendMessagePageX extends BasePage
 		private static final long serialVersionUID = 1L;
 		private List<String> fromPartyIds = new ArrayList<String>();
 		private List<String> fromRoles = new ArrayList<String>();
+		private List<String> toPartyIds = new ArrayList<String>();
+		private List<String> toRoles = new ArrayList<String>();
 		private List<String> services = new ArrayList<String>();
 		private List<String> actions = new ArrayList<String>();
 		private boolean rawInput;
+		private boolean extended;
 
 		public EbMSMessageContextModel()
 		{
@@ -399,7 +563,7 @@ public class SendMessagePageX extends BasePage
 		public void resetFromPartyIds()
 		{
 			getFromPartyIds().clear();
-			getFromRole().setPartyId(null);
+			//getFromRole().setPartyId(null);
 		}
 		public void resetFromPartyIds(List<String> partyIds)
 		{
@@ -420,6 +584,36 @@ public class SendMessagePageX extends BasePage
 			resetFromRoles();
 			getFromRoles().addAll(roles);
 			getFromRole().setRole(getFromRoles().size() == 1 ? getFromRoles().get(0) : null);
+		}
+		public List<String> getToPartyIds()
+		{
+			return toPartyIds;
+		}
+		public void resetToPartyIds()
+		{
+			getToPartyIds().clear();
+			//getToRole().setPartyId(null);
+		}
+		public void resetToPartyIds(List<String> partyIds)
+		{
+			resetToPartyIds();
+			getToPartyIds().addAll(partyIds);
+			getToRole().setPartyId(getFromRole().getPartyId() != null && getToPartyIds().size() == 1 ? getToPartyIds().get(0) : null);
+		}
+		public List<String> getToRoles()
+		{
+			return toRoles;
+		}
+		public void resetToRoles()
+		{
+			getToRoles().clear();
+			getToRole().setRole(null);
+		}
+		public void resetToRoles(List<String> roles)
+		{
+			resetToRoles();
+			getToRoles().addAll(roles);
+			getToRole().setRole(getToRoles().size() == 1 ? getToRoles().get(0) : null);
 		}
 		public List<String> getServices()
 		{
@@ -456,6 +650,14 @@ public class SendMessagePageX extends BasePage
 		public void setRawInput(boolean rawInput)
 		{
 			this.rawInput = rawInput;
+		}
+		public boolean getExtended()
+		{
+			return extended;
+		}
+		public void setExtended(boolean extended)
+		{
+			this.extended = extended;
 		}
 	}
 }

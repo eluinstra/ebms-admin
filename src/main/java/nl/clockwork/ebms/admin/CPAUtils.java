@@ -80,6 +80,17 @@ public class CPAUtils
 		return new ArrayList<String>(result);
 	}
 
+	public static List<String> getOtherRoleNames(CollaborationProtocolAgreement cpa, String partyId, String roleName)
+	{
+		LinkedHashSet<String> result = new LinkedHashSet<String>();
+		for (PartyInfo partyInfo : cpa.getPartyInfo())
+			if (partyId == null || !partyId.equals(partyInfo.getPartyId().get(0)))
+				for (CollaborationRole role : partyInfo.getCollaborationRole())
+					if (roleName == null || !roleName.equals(role.getRole().getName()))
+						result.add(role.getRole().getName());
+		return new ArrayList<String>(result);
+	}
+
 	public static List<String> getServiceNames(CollaborationProtocolAgreement cpa, String roleName)
 	{
 		List<String> result = new ArrayList<String>();
