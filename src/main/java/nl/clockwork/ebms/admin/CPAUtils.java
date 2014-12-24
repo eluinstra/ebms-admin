@@ -34,31 +34,6 @@ public class CPAUtils
 		return (partyId.getType() == null ? "" : partyId.getType() + ":" ) + partyId.getValue();
 	}
 
-	public static ArrayList<String> getPartyNames(CollaborationProtocolAgreement cpa)
-	{
-		ArrayList<String> result = new ArrayList<String>();
-		for (PartyInfo partyInfo : cpa.getPartyInfo())
-			result.add(partyInfo.getPartyName());
-		return result;
-	}
-	
-	public static ArrayList<String> getOtherPartyNames(CollaborationProtocolAgreement cpa, String partyName)
-	{
-		ArrayList<String> result = new ArrayList<String>();
-		for (PartyInfo partyInfo : cpa.getPartyInfo())
-			if (!partyName.equals(partyInfo.getPartyName()))
-				result.add(partyInfo.getPartyName());
-		return result;
-	}
-	
-	public static String getPartyIdbyPartyName(CollaborationProtocolAgreement cpa, String partyName)
-	{
-		for (PartyInfo partyInfo : cpa.getPartyInfo())
-			if (partyName.equals(partyInfo.getPartyName()))
-				return toString(partyInfo.getPartyId().get(0));
-		return null;
-	}
-
 	public static ArrayList<String> getPartyIds(CollaborationProtocolAgreement cpa)
 	{
 		ArrayList<String> result = new ArrayList<String>();

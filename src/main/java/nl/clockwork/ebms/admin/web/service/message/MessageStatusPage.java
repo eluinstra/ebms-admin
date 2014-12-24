@@ -114,8 +114,6 @@ public class MessageStatusPage extends BasePage
 					{
 						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-//						model.resetFromParties(CPAUtils.getPartyNames(cpa));
-//						model.resetToParties();
 						model.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
 						model.resetFromRoles(CPAUtils.getRoleNames(cpa));
 						model.resetToPartyIds();
@@ -134,51 +132,6 @@ public class MessageStatusPage extends BasePage
 					}
 				}
 			});
-
-//			DropDownChoice<String> fromParties = new DropDownChoice<String>("fromParties",new PropertyModel<String>(this.getModelObject(),"fromParty"),new PropertyModel<List<String>>(this.getModelObject(),"fromParties"))
-//			{
-//				private static final long serialVersionUID = 1L;
-//
-//				@Override
-//				public IModel<String> getLabel()
-//				{
-//					return Model.of(getLocalizer().getString("lbl.fromParty",MessageStatusForm.this));
-//				}
-//
-//				@Override
-//				public boolean isRequired()
-//				{
-//					return !MessageStatusForm.this.getModelObject().getManual();
-//				}
-//			};
-//			fromParties.setOutputMarkupId(true);
-//			add(new BootstrapFormComponentFeedbackBorder("fromPartyFeedback",fromParties));
-//			
-//			fromParties.add(new AjaxFormComponentUpdatingBehavior("onchange")
-//			{
-//				private static final long serialVersionUID = 1L;
-//
-//				@Override
-//				protected void onUpdate(AjaxRequestTarget target)
-//				{
-//					try
-//					{
-//						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
-//						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-//						model.resetToParties(CPAUtils.getOtherPartyNames(cpa,model.getFromParty()));
-//						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),new ArrayList<String>(),new ArrayList<String>(),EbMSMessageStatus.SENT));
-//						if (model.getMessageIds().size() == 0)
-//							info("No messages found");
-//						target.add(getPage().get("feedback"));
-//						target.add(getPage().get("form"));
-//					}
-//					catch (JAXBException e)
-//					{
-//						logger.error("",e);
-//						error(e.getMessage());
-//					}
-//				}
-//			});
 
 			DropDownChoice<String> fromPartyIds = new DropDownChoice<String>("fromPartyIds",new PropertyModel<String>(this.getModelObject(),"fromPartyId"),new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"))
 			{
@@ -264,7 +217,6 @@ public class MessageStatusPage extends BasePage
 					{
 						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						//if (model.getFromPartyId() == null)
 						model.resetFromPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getFromRole()));
 						model.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,model.getFromPartyId()));
 						model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToPartyId()));
@@ -282,25 +234,6 @@ public class MessageStatusPage extends BasePage
 				}
 			});
 
-//			DropDownChoice<String> toParties = new DropDownChoice<String>("toParties",new PropertyModel<String>(this.getModelObject(),"toParty"),new PropertyModel<List<String>>(this.getModelObject(),"toParties"))
-//			{
-//				private static final long serialVersionUID = 1L;
-//
-//				@Override
-//				public IModel<String> getLabel()
-//				{
-//					return Model.of(getLocalizer().getString("lbl.toParty",MessageStatusForm.this));
-//				}
-//				
-//				@Override
-//				public boolean isRequired()
-//				{
-//					return !MessageStatusForm.this.getModelObject().getManual();
-//				}
-//			};
-//			toParties.setOutputMarkupId(true);
-//			add(new BootstrapFormComponentFeedbackBorder("toPartyFeedback",toParties));
-			
 			DropDownChoice<String> toPartyIds = new DropDownChoice<String>("toPartyIds",new PropertyModel<String>(this.getModelObject(),"toPartyId"),new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"))
 			{
 				private static final long serialVersionUID = 1L;
@@ -456,8 +389,6 @@ public class MessageStatusPage extends BasePage
 				@Override
 				protected void onUpdate(AjaxRequestTarget target)
 				{
-					//target.add(messageIds);
-					//target.add(messageId);
 					if (messageIds.isVisible())
 					{
 						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
@@ -480,11 +411,8 @@ public class MessageStatusPage extends BasePage
 					try
 					{
 						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
-//						if (!model.getManual() || (model.getCpaId() != null && model.getFromParty() != null && model.getToParty() != null))
 						if (!model.getManual() || (model.getCpaId() != null && model.getFromPartyId() != null && model.getToPartyId() != null))
 						{
-//							CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-//							MessageStatus messageStatus = ebMSMessageService.getMessageStatus(model.getCpaId(),new Party(CPAUtils.getPartyIdbyPartyName(cpa,model.getFromParty())),new Party(CPAUtils.getPartyIdbyPartyName(cpa,model.getToParty())),model.getMessageId());
 							MessageStatus messageStatus = ebMSMessageService.getMessageStatus(model.getCpaId(),new Party(model.getFromPartyId(),model.getFromRole()),new Party(model.getToPartyId(),model.getToRole()),model.getMessageId());
 							info(new StringResourceModel("getMessageStatus.ok",Model.of(messageStatus.getStatus())).getString());
 						}
@@ -529,14 +457,10 @@ public class MessageStatusPage extends BasePage
 	{
 		private static final long serialVersionUID = 1L;
 		private String cpaId;
-//		private List<String> fromParties = new ArrayList<String>();
-//		private String fromParty;
 		private List<String> fromPartyIds = new ArrayList<String>();
 		private String fromPartyId;
 		private List<String> fromRoles = new ArrayList<String>();
 		private String fromRole;
-//		private List<String> toParties = new ArrayList<String>();
-//		private String toParty;
 		private List<String> toPartyIds = new ArrayList<String>();
 		private String toPartyId;
 		private List<String> toRoles = new ArrayList<String>();
@@ -553,28 +477,6 @@ public class MessageStatusPage extends BasePage
 		{
 			this.cpaId = cpaId;
 		}
-//		public List<String> getFromParties()
-//		{
-//			return fromParties;
-//		}
-//		public String getFromParty()
-//		{
-//			return fromParty;
-//		}
-//		public void setFromParty(String fromParty)
-//		{
-//			this.fromParty = fromParty;
-//		}
-//		public void resetFromParties()
-//		{
-//			getFromParties().clear();
-//			setFromParty(null);
-//		}
-//		public void resetFromParties(ArrayList<String> partyNames)
-//		{
-//			resetFromParties();
-//			getFromParties().addAll(partyNames);
-//		}
 		public List<String> getFromPartyIds()
 		{
 			return fromPartyIds;
@@ -620,29 +522,6 @@ public class MessageStatusPage extends BasePage
 			resetFromRoles();
 			getFromRoles().addAll(roleNames);
 		}
-//		public List<String> getToParties()
-//		{
-//			return toParties;
-//		}
-//		public String getToParty()
-//		{
-//			return toParty;
-//		}
-//		public void setToParty(String toParty)
-//		{
-//			this.toParty = toParty;
-//		}
-//		public void resetToParties()
-//		{
-//			getToParties().clear();
-//			setToParty(null);
-//		}
-//		public void resetToParties(List<String> otherPartyNames)
-//		{
-//			resetToParties();
-//			getToParties().addAll(otherPartyNames);
-//			setToParty(otherPartyNames.size() == 1 ? otherPartyNames.get(0) : null);
-//		}
 		public List<String> getToPartyIds()
 		{
 			return toPartyIds;
