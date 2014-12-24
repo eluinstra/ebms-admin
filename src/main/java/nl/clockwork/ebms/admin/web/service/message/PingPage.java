@@ -178,7 +178,8 @@ public class PingPage extends BasePage
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetFromRoles(CPAUtils.getRoleNames(cpa,model.getFromPartyId()));
 						model.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,model.getFromPartyId()));
-						model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToPartyId()));
+						if (model.getFromRole() != null)
+							model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToPartyId()));
 						target.add(getPage().get("feedback"));
 						target.add(getPage().get("form"));
 					}
@@ -214,8 +215,8 @@ public class PingPage extends BasePage
 					{
 						PingFormModel model = PingForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						if (model.getFromPartyId() == null)
-							model.resetFromPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getFromRole()));
+						//if (model.getFromPartyId() == null)
+						model.resetFromPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getFromRole()));
 						model.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,model.getFromPartyId()));
 						model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToPartyId()));
 						target.add(getPage().get("feedback"));
