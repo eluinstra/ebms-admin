@@ -133,7 +133,7 @@ public abstract class MessageFilterPanel extends Panel
 				}
       });
 
-			DropDownChoice<String> fromRoles = new DropDownChoice<String>("fromRoles",new PropertyModel<String>(this.getModelObject(),"fromRole"),new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
+			DropDownChoice<String> fromRoles = new DropDownChoice<String>("fromRoles",new PropertyModel<String>(this.getModelObject(),"fromRole.role"),new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -163,7 +163,7 @@ public abstract class MessageFilterPanel extends Panel
 					{
 						MessageFilterFormModel model = MessageFilterForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole()));
+						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole().getRole()));
 						model.resetActions();
 						target.add(getFeedbackComponent());
 						target.add(getForm());
@@ -176,7 +176,7 @@ public abstract class MessageFilterPanel extends Panel
 				}
       });
 
-			DropDownChoice<String> toRoles = new DropDownChoice<String>("toRoles",new PropertyModel<String>(this.getModelObject(),"toRole"),new PropertyModel<List<String>>(this.getModelObject(),"toRoles"))
+			DropDownChoice<String> toRoles = new DropDownChoice<String>("toRoles",new PropertyModel<String>(this.getModelObject(),"toRole.role"),new PropertyModel<List<String>>(this.getModelObject(),"toRoles"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -206,7 +206,7 @@ public abstract class MessageFilterPanel extends Panel
 					{
 						MessageFilterFormModel model = MessageFilterForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						model.resetServices(CPAUtils.getServiceNames(cpa,model.getToRole()));
+						model.resetServices(CPAUtils.getServiceNames(cpa,model.getToRole().getRole()));
 						model.resetActions();
 						target.add(getFeedbackComponent());
 						target.add(getForm());
@@ -243,7 +243,7 @@ public abstract class MessageFilterPanel extends Panel
 					{
 						MessageFilterFormModel model = MessageFilterForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						model.resetActions(model.getFromRole() == null ? CPAUtils.getToActionNames(cpa,model.getToRole(),model.getService()) : CPAUtils.getFromActionNames(cpa,model.getFromRole(),model.getService()));
+						model.resetActions(model.getFromRole() == null ? CPAUtils.getToActionNames(cpa,model.getToRole().getRole(),model.getService()) : CPAUtils.getFromActionNames(cpa,model.getFromRole().getRole(),model.getService()));
 						target.add(getFeedbackComponent());
 						target.add(getForm());
 					}

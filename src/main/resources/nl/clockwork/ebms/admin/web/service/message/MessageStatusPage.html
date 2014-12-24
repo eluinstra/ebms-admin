@@ -12,16 +12,40 @@
 				<select class="form-control" wicket:id="cpaIds"/>
 			</div>
 		</div>
-		<div class="form-group" wicket:id="fromPartyFeedback">
+		<!--div class="form-group" wicket:id="fromPartyFeedback">
 			<label wicket:for="fromParties" class="col-lg-2 control-label"><wicket:label/></label>
 			<div class="col-lg-10">
 				<select class="form-control" wicket:id="fromParties"/>
 			</div>
+		</div-->
+		<div class="form-group" wicket:id="fromPartyIdFeedback">
+			<label wicket:for="fromPartyIds" class="col-lg-2 control-label"><wicket:label/></label>
+			<div class="col-lg-10">
+				<select class="form-control" id="fromPartyIds" wicket:id="fromPartyIds"/>
+			</div>
 		</div>
-		<div class="form-group" wicket:id="toPartyFeedback">
+		<div class="form-group" wicket:id="fromRoleFeedback">
+			<label wicket:for="fromRoles" class="col-lg-2 control-label"><wicket:label/></label>
+			<div class="col-lg-10">
+				<select class="form-control" id="fromRoles" wicket:id="fromRoles"/>
+			</div>
+		</div>
+		<!--div class="form-group" wicket:id="toPartyFeedback">
 			<label wicket:for="toParties" class="col-lg-2 control-label"><wicket:label/></label>
 			<div class="col-lg-10">
 				<select class="form-control" wicket:id="toParties"/>
+			</div>
+		</div-->
+		<div class="form-group" wicket:id="toPartyIdFeedback">
+			<label wicket:for="toPartyIds" class="col-lg-2 control-label"><wicket:label/></label>
+			<div class="col-lg-10">
+				<select class="form-control" id="toPartyIds" wicket:id="toPartyIds"/>
+			</div>
+		</div>
+		<div class="form-group" wicket:id="toRoleFeedback">
+			<label wicket:for="toRoles" class="col-lg-2 control-label"><wicket:label/></label>
+			<div class="col-lg-10">
+				<select class="form-control" id="toRoles" wicket:id="toRoles"/>
 			</div>
 		</div>
 		<div class="form-group" wicket:id="messageIdFeedback">

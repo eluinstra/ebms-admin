@@ -29,6 +29,7 @@ import nl.clockwork.ebms.common.XMLMessageBuilder;
 import nl.clockwork.ebms.model.EbMSDataSource;
 import nl.clockwork.ebms.model.EbMSMessageContent;
 import nl.clockwork.ebms.model.EbMSMessageContext;
+import nl.clockwork.ebms.model.Role;
 import nl.clockwork.ebms.service.CPAService;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
@@ -108,6 +109,7 @@ public class SendMessagePage extends BasePage
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						model.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
 						model.resetFromRoles(CPAUtils.getRoleNames(cpa));
 						model.resetServices();
 						model.resetActions();
@@ -123,7 +125,46 @@ public class SendMessagePage extends BasePage
 				}
 			});
 
-			DropDownChoice<String> fromRoles = new DropDownChoice<String>("fromRoles",new PropertyModel<String>(this.getModelObject(),"fromRole"),new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
+			DropDownChoice<String> fromPartyIds = new DropDownChoice<String>("fromPartyIds",new PropertyModel<String>(this.getModelObject(),"fromRole.partyId"),new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.fromPartyId",MessageForm.this));
+				}
+			};
+			fromPartyIds.setRequired(false).setOutputMarkupId(true);
+			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",fromPartyIds));
+			
+			fromPartyIds.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					try
+					{
+						EbMSMessageContextModel model = MessageForm.this.getModelObject();
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						model.resetFromRoles(CPAUtils.getRoleNames(cpa,model.getFromRole().getPartyId()));
+						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole().getRole()));
+						model.resetActions();
+						model.resetDataSources();
+						target.add(getPage().get("feedback"));
+						target.add(getPage().get("form"));
+					}
+					catch (JAXBException e)
+					{
+						logger.error("",e);
+						error(e.getMessage());
+					}
+				}
+			});
+
+			DropDownChoice<String> fromRoles = new DropDownChoice<String>("fromRoles",new PropertyModel<String>(this.getModelObject(),"fromRole.role"),new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -133,8 +174,7 @@ public class SendMessagePage extends BasePage
 					return Model.of(getLocalizer().getString("lbl.fromRole",MessageForm.this));
 				}
 			};
-			fromRoles.setRequired(true);
-			fromRoles.setOutputMarkupId(true);
+			fromRoles.setRequired(true).setOutputMarkupId(true);
 			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",fromRoles));
 			
 			fromRoles.add(new AjaxFormComponentUpdatingBehavior("onchange")
@@ -148,7 +188,9 @@ public class SendMessagePage extends BasePage
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole()));
+						if (model.getFromRole().getPartyId() == null)
+							model.resetFromPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getFromRole().getRole()));
+						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole().getRole()));
 						model.resetActions();
 						model.resetDataSources();
 						target.add(getPage().get("feedback"));
@@ -187,7 +229,7 @@ public class SendMessagePage extends BasePage
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						model.resetActions(CPAUtils.getFromActionNames(cpa,model.getFromRole(),model.getService()));
+						model.resetActions(CPAUtils.getFromActionNames(cpa,model.getFromRole().getRole(),model.getService()));
 						model.resetDataSources();
 						target.add(getPage().get("feedback"));
 						target.add(getPage().get("form"));
@@ -280,12 +322,31 @@ public class SendMessagePage extends BasePage
 	public class EbMSMessageContextModel extends EbMSMessageContext
 	{
 		private static final long serialVersionUID = 1L;
-		//private List<String> fromParties = new ArrayList<String>();
+		private List<String> fromPartyIds = new ArrayList<String>();
 		private List<String> fromRoles = new ArrayList<String>();
 		private List<String> services = new ArrayList<String>();
 		private List<String> actions = new ArrayList<String>();
 		private List<EbMSDataSource> dataSources = new ArrayList<EbMSDataSource>();
 
+		public EbMSMessageContextModel()
+		{
+			setFromRole(new Role());
+		}
+		
+		public List<String> getFromPartyIds()
+		{
+			return fromPartyIds;
+		}
+		public void resetFromPartyIds()
+		{
+			getFromRoles().clear();
+			getFromRole().setPartyId(null);
+		}
+		public void resetFromPartyIds(List<String> partyIds)
+		{
+			resetFromPartyIds();
+			getFromPartyIds().addAll(partyIds);
+		}
 		public List<String> getFromRoles()
 		{
 			return fromRoles;
@@ -293,12 +354,13 @@ public class SendMessagePage extends BasePage
 		public void resetFromRoles()
 		{
 			getFromRoles().clear();
-			setFromRole(null);
+			getFromRole().setRole(null);
 		}
 		public void resetFromRoles(List<String> roles)
 		{
 			resetFromRoles();
 			getFromRoles().addAll(roles);
+			getFromRole().setRole(getFromRoles().size() == 1 ? getFromRoles().get(0) : null);
 		}
 		public List<String> getServices()
 		{

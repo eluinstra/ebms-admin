@@ -310,15 +310,19 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 	
 	@Override
-	public List<String> selectMessageIds(String cpaId, String fromParty, String toParty, EbMSMessageStatus status)
+	public List<String> selectMessageIds(String cpaId, List<String> fromRole, List<String> toRole, EbMSMessageStatus status)
 	{
 		return jdbcTemplate.queryForList(
 			"select message_id" + 
 			" from ebms_message" + 
 			" where cpa_id = ?" +
+			" and from_role in (?)" +
+			" and to_role in (?)" +
 			" and status = ?",
 			String.class,
 			cpaId,
+			StringUtils.join(fromRole,","),
+			StringUtils.join(toRole,","),
 			status.id()
 		);
 	}

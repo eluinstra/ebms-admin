@@ -44,7 +44,7 @@ public interface EbMSDAO
 
 	EbMSAttachment findAttachment(String messageId, int messageNr, String contentId);
 	
-	List<String> selectMessageIds(String cpaId, String fromParty, String toParty, EbMSMessageStatus status);
+	List<String> selectMessageIds(String cpaId, List<String> fromRole, List<String> toRole, EbMSMessageStatus status);
 
 	HashMap<Date,Number> selectMessageTraffic(Date from, Date to, TimeUnit timeUnit, EbMSMessageStatus...status);
 	

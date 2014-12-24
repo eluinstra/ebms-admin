@@ -29,6 +29,10 @@ import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.ServiceType;
 
 public class CPAUtils
 {
+	public static String toString(PartyId partyId)
+	{
+		return (partyId.getType() == null ? "" : partyId.getType() + ":" ) + partyId.getValue();
+	}
 
 	public static ArrayList<String> getPartyNames(CollaborationProtocolAgreement cpa)
 	{
@@ -38,33 +42,66 @@ public class CPAUtils
 		return result;
 	}
 	
-	public static String getOtherPartyName(CollaborationProtocolAgreement cpa, String partyName)
+	public static ArrayList<String> getOtherPartyNames(CollaborationProtocolAgreement cpa, String partyName)
 	{
+		ArrayList<String> result = new ArrayList<String>();
 		for (PartyInfo partyInfo : cpa.getPartyInfo())
 			if (!partyName.equals(partyInfo.getPartyName()))
-				return partyInfo.getPartyName();
-		return null;
+				result.add(partyInfo.getPartyName());
+		return result;
 	}
 	
 	public static String getPartyIdbyPartyName(CollaborationProtocolAgreement cpa, String partyName)
 	{
 		for (PartyInfo partyInfo : cpa.getPartyInfo())
 			if (partyName.equals(partyInfo.getPartyName()))
-				return getPartyId(partyInfo.getPartyId().get(0));
+				return toString(partyInfo.getPartyId().get(0));
 		return null;
 	}
 
-	public static String getPartyId(PartyId partyId)
+	public static ArrayList<String> getPartyIds(CollaborationProtocolAgreement cpa)
 	{
-		return (partyId.getType() == null ? "" : partyId.getType() + ":" ) + partyId.getValue();
+		ArrayList<String> result = new ArrayList<String>();
+		for (PartyInfo partyInfo : cpa.getPartyInfo())
+			result.add(toString(partyInfo.getPartyId().get(0)));
+		return result;
+	}
+	
+	public static ArrayList<String> getPartyIdsByRoleName(CollaborationProtocolAgreement cpa, String roleName)
+	{
+		LinkedHashSet<String> result = new LinkedHashSet<String>();
+		for (PartyInfo partyInfo : cpa.getPartyInfo())
+			for (CollaborationRole role : partyInfo.getCollaborationRole())
+				if (roleName == null || roleName.equals(role.getRole().getName()))
+					result.add(toString(partyInfo.getPartyId().get(0)));
+		return new ArrayList<String>(result);
 	}
 
+	public static ArrayList<String> getOtherPartyIds(CollaborationProtocolAgreement cpa, String partyId)
+	{
+		ArrayList<String> result = new ArrayList<String>();
+		for (PartyInfo partyInfo : cpa.getPartyInfo())
+			if (!partyId.equals(toString(partyInfo.getPartyId().get(0))))
+				result.add(toString(partyInfo.getPartyId().get(0)));
+		return result;
+	}
+	
 	public static ArrayList<String> getRoleNames(CollaborationProtocolAgreement cpa)
 	{
 		LinkedHashSet<String> result = new LinkedHashSet<String>();
 		for (PartyInfo partyInfo : cpa.getPartyInfo())
 			for (CollaborationRole role : partyInfo.getCollaborationRole())
 				result.add(role.getRole().getName());
+		return new ArrayList<String>(result);
+	}
+
+	public static ArrayList<String> getRoleNames(CollaborationProtocolAgreement cpa, String partyId)
+	{
+		LinkedHashSet<String> result = new LinkedHashSet<String>();
+		for (PartyInfo partyInfo : cpa.getPartyInfo())
+			if (partyId == null || partyId.equals(toString(partyInfo.getPartyId().get(0))))
+				for (CollaborationRole role : partyInfo.getCollaborationRole())
+					result.add(role.getRole().getName());
 		return new ArrayList<String>(result);
 	}
 

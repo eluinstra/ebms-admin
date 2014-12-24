@@ -30,6 +30,7 @@ import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
 import nl.clockwork.ebms.model.MessageStatus;
+import nl.clockwork.ebms.model.Party;
 import nl.clockwork.ebms.service.CPAService;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
@@ -113,53 +114,14 @@ public class MessageStatusPage extends BasePage
 					{
 						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						model.resetFromParties(CPAUtils.getPartyNames(cpa));
-						model.resetToParties();
-						model.resetMessageId();
-						target.add(getPage().get("feedback"));
-						target.add(getPage().get("form"));
-					}
-					catch (JAXBException e)
-					{
-						logger.error("",e);
-						error(e.getMessage());
-					}
-				}
-			});
-
-			DropDownChoice<String> fromParties = new DropDownChoice<String>("fromParties",new PropertyModel<String>(this.getModelObject(),"fromParty"),new PropertyModel<List<String>>(this.getModelObject(),"fromParties"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.fromParty",MessageStatusForm.this));
-				}
-
-				@Override
-				public boolean isRequired()
-				{
-					return !MessageStatusForm.this.getModelObject().getManual();
-				}
-			};
-			//fromParties.setRequired(true);
-			fromParties.setOutputMarkupId(true);
-			add(new BootstrapFormComponentFeedbackBorder("fromPartyFeedback",fromParties));
-			
-			fromParties.add(new AjaxFormComponentUpdatingBehavior("onchange")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					try
-					{
-						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						model.resetToParties(CPAUtils.getOtherPartyName(cpa,model.getFromParty()));
-						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromParty(),model.getToParty(),EbMSMessageStatus.SENT));
+//						model.resetFromParties(CPAUtils.getPartyNames(cpa));
+//						model.resetToParties();
+						model.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
+						model.resetFromRoles(CPAUtils.getRoleNames(cpa));
+						model.resetToPartyIds();
+						model.resetToRoles();
+						//model.resetMessageId();
+						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),getFromRoles(model),getToRoles(model),EbMSMessageStatus.SENT));
 						if (model.getMessageIds().size() == 0)
 							info("No messages found");
 						target.add(getPage().get("feedback"));
@@ -173,26 +135,268 @@ public class MessageStatusPage extends BasePage
 				}
 			});
 
-			DropDownChoice<String> toParties = new DropDownChoice<String>("toParties",new PropertyModel<String>(this.getModelObject(),"toParty"),new PropertyModel<List<String>>(this.getModelObject(),"toParties"))
+//			DropDownChoice<String> fromParties = new DropDownChoice<String>("fromParties",new PropertyModel<String>(this.getModelObject(),"fromParty"),new PropertyModel<List<String>>(this.getModelObject(),"fromParties"))
+//			{
+//				private static final long serialVersionUID = 1L;
+//
+//				@Override
+//				public IModel<String> getLabel()
+//				{
+//					return Model.of(getLocalizer().getString("lbl.fromParty",MessageStatusForm.this));
+//				}
+//
+//				@Override
+//				public boolean isRequired()
+//				{
+//					return !MessageStatusForm.this.getModelObject().getManual();
+//				}
+//			};
+//			fromParties.setOutputMarkupId(true);
+//			add(new BootstrapFormComponentFeedbackBorder("fromPartyFeedback",fromParties));
+//			
+//			fromParties.add(new AjaxFormComponentUpdatingBehavior("onchange")
+//			{
+//				private static final long serialVersionUID = 1L;
+//
+//				@Override
+//				protected void onUpdate(AjaxRequestTarget target)
+//				{
+//					try
+//					{
+//						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
+//						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+//						model.resetToParties(CPAUtils.getOtherPartyNames(cpa,model.getFromParty()));
+//						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),new ArrayList<String>(),new ArrayList<String>(),EbMSMessageStatus.SENT));
+//						if (model.getMessageIds().size() == 0)
+//							info("No messages found");
+//						target.add(getPage().get("feedback"));
+//						target.add(getPage().get("form"));
+//					}
+//					catch (JAXBException e)
+//					{
+//						logger.error("",e);
+//						error(e.getMessage());
+//					}
+//				}
+//			});
+
+			DropDownChoice<String> fromPartyIds = new DropDownChoice<String>("fromPartyIds",new PropertyModel<String>(this.getModelObject(),"fromPartyId"),new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"))
 			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
 				public IModel<String> getLabel()
 				{
-					return Model.of(getLocalizer().getString("lbl.toParty",MessageStatusForm.this));
+					return Model.of(getLocalizer().getString("lbl.fromPartyId",MessageStatusForm.this));
 				}
 				
+				@Override
+				public boolean isEnabled()
+				{
+					return !MessageStatusForm.this.getModelObject().getManual();
+				}
+
 				@Override
 				public boolean isRequired()
 				{
 					return !MessageStatusForm.this.getModelObject().getManual();
 				}
 			};
-			//toParties.setRequired(true);
-			toParties.setOutputMarkupId(true);
-			add(new BootstrapFormComponentFeedbackBorder("toPartyFeedback",toParties));
+			fromPartyIds.setOutputMarkupId(true);
+			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",fromPartyIds));
 			
+			fromPartyIds.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					try
+					{
+						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						model.resetFromRoles(CPAUtils.getRoleNames(cpa,model.getFromPartyId()));
+						model.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,model.getFromPartyId()));
+						model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToPartyId()));
+						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),getFromRoles(model),getToRoles(model),EbMSMessageStatus.SENT));
+						if (model.getMessageIds().size() == 0)
+							info("No messages found");
+						target.add(getPage().get("feedback"));
+						target.add(getPage().get("form"));
+					}
+					catch (JAXBException e)
+					{
+						logger.error("",e);
+						error(e.getMessage());
+					}
+				}
+			});
+
+			DropDownChoice<String> fromRoles = new DropDownChoice<String>("fromRoles",new PropertyModel<String>(this.getModelObject(),"fromRole"),new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.fromRole",MessageStatusForm.this));
+				}
+				
+				@Override
+				public boolean isEnabled()
+				{
+					return !MessageStatusForm.this.getModelObject().getManual();
+				}
+			};
+			fromRoles.setRequired(false).setOutputMarkupId(true);
+			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",fromRoles));
+			
+			fromRoles.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					try
+					{
+						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						if (model.getFromPartyId() == null)
+							model.resetFromPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getFromRole()));
+						model.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,model.getFromPartyId()));
+						model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToPartyId()));
+						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),getFromRoles(model),getToRoles(model),EbMSMessageStatus.SENT));
+						if (model.getMessageIds().size() == 0)
+							info("No messages found");
+						target.add(getPage().get("feedback"));
+						target.add(getPage().get("form"));
+					}
+					catch (JAXBException e)
+					{
+						logger.error("",e);
+						error(e.getMessage());
+					}
+				}
+			});
+
+//			DropDownChoice<String> toParties = new DropDownChoice<String>("toParties",new PropertyModel<String>(this.getModelObject(),"toParty"),new PropertyModel<List<String>>(this.getModelObject(),"toParties"))
+//			{
+//				private static final long serialVersionUID = 1L;
+//
+//				@Override
+//				public IModel<String> getLabel()
+//				{
+//					return Model.of(getLocalizer().getString("lbl.toParty",MessageStatusForm.this));
+//				}
+//				
+//				@Override
+//				public boolean isRequired()
+//				{
+//					return !MessageStatusForm.this.getModelObject().getManual();
+//				}
+//			};
+//			toParties.setOutputMarkupId(true);
+//			add(new BootstrapFormComponentFeedbackBorder("toPartyFeedback",toParties));
+			
+			DropDownChoice<String> toPartyIds = new DropDownChoice<String>("toPartyIds",new PropertyModel<String>(this.getModelObject(),"toPartyId"),new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.toPartyId",MessageStatusForm.this));
+				}
+				
+				@Override
+				public boolean isEnabled()
+				{
+					return !MessageStatusForm.this.getModelObject().getManual();
+				}
+
+				@Override
+				public boolean isRequired()
+				{
+					return !MessageStatusForm.this.getModelObject().getManual();
+				}
+			};
+			toPartyIds.setOutputMarkupId(true);
+			add(new BootstrapFormComponentFeedbackBorder("toPartyIdFeedback",toPartyIds));
+
+			toPartyIds.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					try
+					{
+						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToPartyId()));
+						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),getFromRoles(model),getToRoles(model),EbMSMessageStatus.SENT));
+						if (model.getMessageIds().size() == 0)
+							info("No messages found");
+						target.add(getPage().get("feedback"));
+						target.add(getPage().get("form"));
+					}
+					catch (JAXBException e)
+					{
+						logger.error("",e);
+						error(e.getMessage());
+					}
+				}
+			});
+
+			DropDownChoice<String> toRoles = new DropDownChoice<String>("toRoles",new PropertyModel<String>(this.getModelObject(),"toRole"),new PropertyModel<List<String>>(this.getModelObject(),"toRoles"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.toRole",MessageStatusForm.this));
+				}
+				
+				@Override
+				public boolean isEnabled()
+				{
+					return !MessageStatusForm.this.getModelObject().getManual();
+				}
+			};
+			toRoles.setRequired(false).setOutputMarkupId(true);
+			add(new BootstrapFormComponentFeedbackBorder("toRoleFeedback",toRoles));
+			
+			toRoles.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					try
+					{
+						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						if (model.getToPartyId() == null)
+							model.resetToPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getToRole()));
+						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),getFromRoles(model),getToRoles(model),EbMSMessageStatus.SENT));
+						if (model.getMessageIds().size() == 0)
+							info("No messages found");
+						target.add(getPage().get("feedback"));
+						target.add(getPage().get("form"));
+					}
+					catch (JAXBException e)
+					{
+						logger.error("",e);
+						error(e.getMessage());
+					}
+				}
+			});
+
 			final DropDownChoice<String> messageIds = new DropDownChoice<String>("messageIds",new PropertyModel<String>(this.getModelObject(),"messageId"),new PropertyModel<List<String>>(this.getModelObject(),"messageIds"))
 			{
 				private static final long serialVersionUID = 1L;
@@ -229,8 +433,7 @@ public class MessageStatusPage extends BasePage
 					return MessageStatusForm.this.getModelObject().getManual();
 				}
 			};
-			messageId.setOutputMarkupPlaceholderTag(true);
-			messageId.setRequired(true);
+			messageId.setRequired(true).setOutputMarkupPlaceholderTag(true);
 			add(new BootstrapFormComponentFeedbackBorder("messageIdFeedback",messageIds,messageId));
 
 			CheckBox manual = new CheckBox("manual")
@@ -252,8 +455,17 @@ public class MessageStatusPage extends BasePage
 				@Override
 				protected void onUpdate(AjaxRequestTarget target)
 				{
-					target.add(messageIds);
-					target.add(messageId);
+					//target.add(messageIds);
+					//target.add(messageId);
+					if (messageIds.isVisible())
+					{
+						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
+						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),getFromRoles(model),getToRoles(model),EbMSMessageStatus.SENT));
+						if (model.getMessageIds().size() == 0)
+							info("No messages found");
+					}
+					target.add(getPage().get("feedback"));
+					target.add(getPage().get("form"));
 				}
       });
 
@@ -267,17 +479,16 @@ public class MessageStatusPage extends BasePage
 					try
 					{
 						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
-						if (!model.getManual() || (model.getCpaId() != null && model.getFromParty() != null && model.getToParty() != null))
+//						if (!model.getManual() || (model.getCpaId() != null && model.getFromParty() != null && model.getToParty() != null))
+						if (!model.getManual() || (model.getCpaId() != null && model.getFromPartyId() != null && model.getToPartyId() != null))
 						{
-							CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-							MessageStatus messageStatus = ebMSMessageService.getMessageStatus(model.getCpaId(),CPAUtils.getPartyIdbyPartyName(cpa,model.getFromParty()),CPAUtils.getPartyIdbyPartyName(cpa,model.getToParty()),model.getMessageId());
+//							CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+//							MessageStatus messageStatus = ebMSMessageService.getMessageStatus(model.getCpaId(),new Party(CPAUtils.getPartyIdbyPartyName(cpa,model.getFromParty())),new Party(CPAUtils.getPartyIdbyPartyName(cpa,model.getToParty())),model.getMessageId());
+							MessageStatus messageStatus = ebMSMessageService.getMessageStatus(model.getCpaId(),new Party(model.getFromPartyId(),model.getFromRole()),new Party(model.getToPartyId(),model.getToRole()),model.getMessageId());
 							info(new StringResourceModel("getMessageStatus.ok",Model.of(messageStatus.getStatus())).getString());
 						}
 						else
 						{
-							model.setCpaId(null);
-							model.resetFromParties();
-							model.resetToParties();
 							MessageStatus messageStatus = ebMSMessageService.getMessageStatus(model.getMessageId());
 							info(new StringResourceModel("getMessageStatus.ok",Model.of(messageStatus.getStatus())).getString());
 						}
@@ -294,16 +505,41 @@ public class MessageStatusPage extends BasePage
 
 			add(new ResetButton("reset",new ResourceModel("cmd.reset"),MessageStatusPage.class));
 		}
+
+		protected List<String> getFromRoles(MessageStatusFormModel model)
+		{
+			if (model.getFromRole() != null)
+				return Arrays.asList(model.getFromRole());
+			else
+				return model.getFromRoles();
+		}
+
+		protected List<String> getToRoles(MessageStatusFormModel model)
+		{
+			if (model.getToRole() != null)
+				return Arrays.asList(model.getToRole());
+			else
+				return model.getToRoles();
+		}
+
 	}
 
 	public class MessageStatusFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		private String cpaId;
-		private List<String> fromParties = new ArrayList<String>();
-		private String fromParty;
-		private List<String> toParties = new ArrayList<String>();
-		private String toParty;
+//		private List<String> fromParties = new ArrayList<String>();
+//		private String fromParty;
+		private List<String> fromPartyIds = new ArrayList<String>();
+		private String fromPartyId;
+		private List<String> fromRoles = new ArrayList<String>();
+		private String fromRole;
+//		private List<String> toParties = new ArrayList<String>();
+//		private String toParty;
+		private List<String> toPartyIds = new ArrayList<String>();
+		private String toPartyId;
+		private List<String> toRoles = new ArrayList<String>();
+		private String toRole;
 		private List<String> messageIds = new ArrayList<String>();
 		private String messageId;
 		private boolean manual;
@@ -316,50 +552,141 @@ public class MessageStatusPage extends BasePage
 		{
 			this.cpaId = cpaId;
 		}
-		public List<String> getFromParties()
+//		public List<String> getFromParties()
+//		{
+//			return fromParties;
+//		}
+//		public String getFromParty()
+//		{
+//			return fromParty;
+//		}
+//		public void setFromParty(String fromParty)
+//		{
+//			this.fromParty = fromParty;
+//		}
+//		public void resetFromParties()
+//		{
+//			getFromParties().clear();
+//			setFromParty(null);
+//		}
+//		public void resetFromParties(ArrayList<String> partyNames)
+//		{
+//			resetFromParties();
+//			getFromParties().addAll(partyNames);
+//		}
+		public List<String> getFromPartyIds()
 		{
-			return fromParties;
+			return fromPartyIds;
 		}
-		public String getFromParty()
+		public void setFromPartyId(String fromPartyId)
 		{
-			return fromParty;
+			this.fromPartyId = fromPartyId;
 		}
-		public void setFromParty(String fromParty)
+		public String getFromPartyId()
 		{
-			this.fromParty = fromParty;
+			return fromPartyId;
 		}
-		public void resetFromParties()
+		public void resetFromPartyIds()
 		{
-			getFromParties().clear();
-			setFromParty(null);
+			getFromPartyIds().clear();
+			setFromPartyId(null);
 		}
-		public void resetFromParties(ArrayList<String> partyNames)
+		public void resetFromPartyIds(ArrayList<String> partyIds)
 		{
-			resetFromParties();
-			getFromParties().addAll(partyNames);
+			resetFromPartyIds();
+			getFromPartyIds().addAll(partyIds);
+			setFromPartyId(getFromPartyIds().size() == 1 ? getFromPartyIds().get(0) : null);
 		}
-		public List<String> getToParties()
+		public List<String> getFromRoles()
 		{
-			return toParties;
+			return fromRoles;
 		}
-		public String getToParty()
+		public String getFromRole()
 		{
-			return toParty;
+			return fromRole;
 		}
-		public void setToParty(String toParty)
+		public void setFromRole(String fromRole)
 		{
-			this.toParty = toParty;
+			this.fromRole = fromRole;
 		}
-		public void resetToParties()
+		public void resetFromRoles()
 		{
-			getToParties().clear();
-			setToParty(null);
+			getFromRoles().clear();
+			//setFromRole(null);
 		}
-		public void resetToParties(String otherPartyName)
+		public void resetFromRoles(List<String> roleNames)
 		{
-			resetToParties();
-			getToParties().addAll(Arrays.asList(otherPartyName));
-			setToParty(otherPartyName);
+			resetFromRoles();
+			getFromRoles().addAll(roleNames);
+		}
+//		public List<String> getToParties()
+//		{
+//			return toParties;
+//		}
+//		public String getToParty()
+//		{
+//			return toParty;
+//		}
+//		public void setToParty(String toParty)
+//		{
+//			this.toParty = toParty;
+//		}
+//		public void resetToParties()
+//		{
+//			getToParties().clear();
+//			setToParty(null);
+//		}
+//		public void resetToParties(List<String> otherPartyNames)
+//		{
+//			resetToParties();
+//			getToParties().addAll(otherPartyNames);
+//			setToParty(otherPartyNames.size() == 1 ? otherPartyNames.get(0) : null);
+//		}
+		public List<String> getToPartyIds()
+		{
+			return toPartyIds;
+		}
+		public String getToPartyId()
+		{
+			return toPartyId;
+		}
+		public void setToPartyId(String toPartyId)
+		{
+			this.toPartyId = toPartyId;
+		}
+		public void resetToPartyIds()
+		{
+			getToPartyIds().clear();
+			setToPartyId(null);
+		}
+		public void resetToPartyIds(List<String> partyIds)
+		{
+			resetToPartyIds();
+			getToPartyIds().addAll(partyIds);
+			setToPartyId(getToPartyIds().size() == 1 ? getToPartyIds().get(0) : null);
+		}
+		public List<String> getToRoles()
+		{
+			return toRoles;
+		}
+		public String getToRole()
+		{
+			return toRole;
+		}
+		public void setToRole(String toRole)
+		{
+			this.toRole = toRole;
+		}
+		public void resetToRoles()
+		{
+			getToRoles().clear();
+			//setToRole(null);
+		}
+		public void resetToRoles(ArrayList<String> roleNames)
+		{
+			resetToRoles();
+			getToRoles().addAll(roleNames);
+			setToRole(getFromRole() != null && getToRoles().size() == 1 ? getToRoles().get(0) : null);
 		}
 		public List<String> getMessageIds()
 		{
