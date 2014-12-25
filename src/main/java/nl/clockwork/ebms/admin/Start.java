@@ -19,8 +19,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -33,6 +35,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jetty.jmx.MBeanContainer;
@@ -123,19 +126,13 @@ public class Start
 			Resource keystore = getResource(keystorePath);
 			if (keystore != null && keystore.exists())
 			{
-				SocketConnector connector = new SocketConnector();
-				connector.setConfidentialPort(cmd.getOptionValue("p") == null ? 8433 : Integer.parseInt(cmd.getOptionValue("p")));
 				SslContextFactory factory = new SslContextFactory();
 				factory.setKeyStoreResource(keystore);
 				factory.setKeyStorePassword(keystorePassword);
-				//factory.setNeedClientAuth(clientAuth);
-				//factory.setTrustStoreResource(truststore);
-				//factory.setTrustStorePassword(truststore.password);
-				SslSocketConnector sslConnector = new SslSocketConnector(factory);
-				sslConnector.setPort(connector.getConfidentialPort());
-				//sslConnector.setAcceptors(4);
-				server.addConnector(sslConnector);
-				System.out.println("Web server configured on https://localhost:" + connector.getConfidentialPort());
+				SslSocketConnector connector = new SslSocketConnector(factory);
+				connector.setPort(cmd.getOptionValue("p") == null ? 8433 : Integer.parseInt(cmd.getOptionValue("p")));
+				server.addConnector(connector);
+				System.out.println("Web server configured on https://localhost:" + connector.getPort());
 			}
 			else
 			{
@@ -157,7 +154,7 @@ public class Start
 		}
 	}
 
-	protected void initWebContext() throws IOException
+	protected void initWebContext() throws Exception
 	{
 		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		server.setHandler(context);
@@ -214,17 +211,12 @@ public class Start
 		return result.exists() ? result : Resource.newClassPathResource(path);
 	}
 
-	protected void createRealmFile(File file) throws IOException
+	protected void createRealmFile(File file) throws IOException, NoSuchAlgorithmException
 	{
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		String username = readLine("enter username: ",reader);
-		String password = readLine("enter password: ",reader);
-//		ConsoleReader consoleReader = new ConsoleReader();
-//		String username = consoleReader.readLine("enter username: ");
-//		String password = consoleReader.readLine("enter password: ");
-
+		String password = readPassword(reader);
 		System.out.println("Writing to file: " + file.getAbsoluteFile());
-//		consoleReader.println("Writing to file: " + file.getAbsoluteFile());
 		FileUtils.writeStringToFile(file,username + ": " + password + ",user",false);
 	}
 
@@ -237,6 +229,26 @@ public class Start
 			result = reader.readLine();
 		}
 		return result;
+	}
+
+	private String readPassword(BufferedReader reader) throws IOException, NoSuchAlgorithmException
+	{
+		String result = null;
+		while (true)
+		{
+			result = toMD5(readLine("enter password: ",reader));
+			String password = toMD5(readLine("re-enter password: ",reader));
+			if (!result.equals(password))
+				System.out.println("Passwords don't match! Try again.");
+			else
+				break;
+		}
+		return result;
+	}
+	
+	private String toMD5(String s) throws NoSuchAlgorithmException, UnsupportedEncodingException
+	{
+		return "MD5:" + DigestUtils.md5Hex(s);
 	}
 
 	protected SecurityHandler getSecurityHandler()

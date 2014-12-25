@@ -18,6 +18,7 @@ package nl.clockwork.ebms.admin;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -189,8 +190,6 @@ public class StartEmbedded extends Start
 			Resource keystore = getResource(properties.get("keystore.path"));
 			if (keystore != null && keystore.exists())
 			{
-				SocketConnector connector = new SocketConnector();
-				connector.setConfidentialPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
 				SslContextFactory factory = new SslContextFactory();
 				if (!StringUtils.isEmpty(properties.get("https.allowedCipherSuites")))
 					factory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(properties.get("https.allowedCipherSuites"),',')));
@@ -211,11 +210,10 @@ public class StartEmbedded extends Start
 						System.exit(1);
 					}
 				}
-				SslSocketConnector sslConnector = new SslSocketConnector(factory);
-				sslConnector.setPort(connector.getConfidentialPort());
-				//sslConnector.setAcceptors(4);
-				server.addConnector(sslConnector);
-				System.out.println("EbMS service configured on https://localhost:" + connector.getConfidentialPort() + properties.get("ebms.path"));
+				SslSocketConnector connector = new SslSocketConnector(factory);
+				connector.setPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
+				server.addConnector(connector);
+				System.out.println("EbMS service configured on https://localhost:" + connector.getPort() + properties.get("ebms.path"));
 			}
 			else
 			{
@@ -226,7 +224,7 @@ public class StartEmbedded extends Start
 	}
 
 	@Override
-	protected void initWebContext() throws IOException
+	protected void initWebContext() throws IOException, NoSuchAlgorithmException
 	{
 		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		server.setHandler(context);
