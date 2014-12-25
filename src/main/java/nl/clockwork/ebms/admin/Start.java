@@ -118,6 +118,8 @@ public class Start
 			String keystorePassword = cmd.getOptionValue("password",DEFAULT_KEYSTORE_PASSWORD);
 			if (DEFAULT_KEYSTORE_FILE.equals(keystorePath))
 				System.out.println("Using default keystore!");
+			else
+				System.out.println("Using keystore " + new File(keystorePath).getAbsolutePath());
 			Resource keystore = getResource(keystorePath);
 			if (keystore != null && keystore.exists())
 			{
