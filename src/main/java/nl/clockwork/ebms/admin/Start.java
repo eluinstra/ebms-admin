@@ -15,7 +15,13 @@
  */
 package nl.clockwork.ebms.admin;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
+import java.net.MalformedURLException;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +32,15 @@ import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jetty.jmx.MBeanContainer;
+import org.eclipse.jetty.security.ConstraintMapping;
+import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.security.HashLoginService;
+import org.eclipse.jetty.security.SecurityHandler;
+import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.DispatcherType;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.bio.SocketConnector;
@@ -36,42 +50,82 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.springframework.web.context.ContextLoaderListener;
 
 public class Start
 {
-	private static Options options;
-	private static CommandLine cmd;
+	protected final String DEFAULT_KEYSTORE_FILE = "nl/clockwork/ebms/admin/keystore.jks";
+	protected final String DEFAULT_KEYSTORE_PASSWORD = "password";
+	protected final String REALM = "Realm";
+	protected final String REALM_FILE = "realm.properties";
+	protected Options options;
+	protected CommandLine cmd;
+	protected Server server;
 
 	public static void main(String[] args) throws Exception
 	{
+		Start start = new Start();
+		start.initCmd(args);
+
+		if (start.cmd.hasOption("h"))
+			start.printUsage();
+
+		start.server = new Server();
+
+		start.initWebServer();
+		start.initJMX();
+		start.initWebContext();
+
+		System.out.println();
+		System.out.println("Starting web server...");
+
+		start.server.start();
+		start.server.join();
+	}
+
+	protected void initCmd(String[] args) throws ParseException
+	{
 		createOptions();
 		cmd = new BasicParser().parse(options,args);
+	}
 
-		if (cmd.hasOption("h"))
-			printUsage();
-
-		Server server = new Server();
-		SocketConnector connector = new SocketConnector();
-
+	protected Options createOptions()
+	{
+		options = new Options();
+		options.addOption("h",false,"print this message");
+		options.addOption("p",true,"set port");
+		options.addOption("ssl",false,"use ssl");
+		options.addOption("keystore",true,"set keystore");
+		options.addOption("password",true,"set keystore password");
+		options.addOption("jmx",false,"start mbean server");
+		return options;
+	}
+	
+	protected void initWebServer() throws MalformedURLException, IOException
+	{
 		if (!cmd.hasOption("ssl"))
 		{
+			SocketConnector connector = new SocketConnector();
 			connector.setPort(cmd.getOptionValue("p") == null ? 8080 : Integer.parseInt(cmd.getOptionValue("p")));
 			server.addConnector(connector);
 			System.out.println("Web server configured on http://localhost:" + connector.getPort());
 		}
 		else
 		{
-			String keyStore = getRequiredArg("keystore");
-			String password = getRequiredArg("password");
-			Resource keystore = Resource.newClassPathResource(keyStore);
+			String keystorePath = cmd.getOptionValue("keystore",DEFAULT_KEYSTORE_FILE);
+			String keystorePassword = cmd.getOptionValue("password",DEFAULT_KEYSTORE_PASSWORD);
+			if (DEFAULT_KEYSTORE_FILE.equals(keystorePath))
+				System.out.println("Using default keystore!");
+			Resource keystore = getResource(keystorePath);
 			if (keystore != null && keystore.exists())
 			{
+				SocketConnector connector = new SocketConnector();
 				connector.setConfidentialPort(cmd.getOptionValue("p") == null ? 8433 : Integer.parseInt(cmd.getOptionValue("p")));
 				SslContextFactory factory = new SslContextFactory();
 				factory.setKeyStoreResource(keystore);
-				factory.setKeyStorePassword(password);
+				factory.setKeyStorePassword(keystorePassword);
 				//factory.setNeedClientAuth(clientAuth);
 				//factory.setTrustStoreResource(truststore);
 				//factory.setTrustStorePassword(truststore.password);
@@ -79,14 +133,18 @@ public class Start
 				sslConnector.setPort(connector.getConfidentialPort());
 				//sslConnector.setAcceptors(4);
 				server.addConnector(sslConnector);
-				System.out.println("Web server configured on https://localhost:" + connector.getPort());
+				System.out.println("Web server configured on https://localhost:" + connector.getConfidentialPort());
 			}
 			else
-				System.out.println("Web server not available: keystore" + args[0] + " not found!");
+			{
+				System.out.println("Web server not available: keystore " + keystorePath + " not found!");
+				System.exit(1);
+			}
 		}
-		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		context.setContextPath("/");
+	}
 
+	protected void initJMX() throws Exception
+	{
 		if (cmd.hasOption("jmx"))
 		{
 			System.out.println("Starting mbean server...");
@@ -95,11 +153,28 @@ public class Start
 			server.getContainer().addEventListener(mBeanContainer);
 			mBeanContainer.start();
 		}
-		
+	}
+
+	protected void initWebContext() throws IOException
+	{
+		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		server.setHandler(context);
 
+		context.setContextPath("/");
+
+		if (cmd.hasOption("authentication"))
+		{
+			System.out.println("Configuring web server authentication:");
+			File file = new File(REALM_FILE);
+			if (file.exists())
+				System.out.println("Using file: " + file.getAbsoluteFile());
+			else
+				createRealmFile(file);
+			context.setSecurityHandler(getSecurityHandler());
+		}
+
 		context.setInitParameter("configuration","deployment");
-		context.setInitParameter("contextConfigLocation","classpath:applicationContext.xml");
+		context.setInitParameter("contextConfigLocation","classpath:nl/clockwork/ebms/admin/applicationContext.xml");
 
 		ServletHolder servletHolder = new ServletHolder(nl.clockwork.ebms.admin.web.ResourceServlet.class);
 		context.addServlet(servletHolder,"/css/*");
@@ -122,42 +197,64 @@ public class Start
 		
 		ContextLoaderListener listener = new ContextLoaderListener();
 		context.addEventListener(listener);
-		
-		System.out.println();
-		System.out.println("Starting web server...");
-
-		server.start();
-		server.join();
 	}
 
-	private static Options createOptions()
-	{
-		options = new Options();
-		options.addOption("h",false,"print this message");
-		options.addOption("p",true,"set port");
-		options.addOption("ssl",false,"use ssl");
-		options.addOption("keystore",true,"set keystore");
-		options.addOption("password",true,"set keystore password");
-		options.addOption("jmx",false,"start mbean server");
-		return options;
-	}
-	
-	private static String getRequiredArg(String arg)
-	{
-		String result = cmd.getOptionValue("keystore");
-		if (result == null)
-		{
-			System.out.println(arg + " is not set!");
-			System.out.println();
-			printUsage();
-		}
-		return result;
-	}
-	
-	private static void printUsage()
+	protected void printUsage()
 	{
 		HelpFormatter formatter = new HelpFormatter();
 		formatter.printHelp("Start",options,true);
 		System.exit(0);
 	}
+
+	protected Resource getResource(String path) throws MalformedURLException, IOException
+	{
+		Resource result = Resource.newResource(path);
+		return result.exists() ? result : Resource.newClassPathResource(path);
+	}
+
+	protected void createRealmFile(File file) throws IOException
+	{
+		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		String username = readLine("enter username: ",reader);
+		String password = readLine("enter password: ",reader);
+//		ConsoleReader consoleReader = new ConsoleReader();
+//		String username = consoleReader.readLine("enter username: ");
+//		String password = consoleReader.readLine("enter password: ");
+
+		System.out.println("Writing to file: " + file.getAbsoluteFile());
+//		consoleReader.println("Writing to file: " + file.getAbsoluteFile());
+		FileUtils.writeStringToFile(file,username + ": " + password + ",user",false);
+	}
+
+	private String readLine(String prompt, BufferedReader reader) throws IOException
+	{
+		String result = null;
+		while (StringUtils.isBlank(result))
+		{
+			System.out.print(prompt);
+			result = reader.readLine();
+		}
+		return result;
+	}
+
+	protected SecurityHandler getSecurityHandler()
+	{
+		ConstraintSecurityHandler security = new ConstraintSecurityHandler();
+
+		Constraint constraint = new Constraint();
+		constraint.setName("auth");
+		constraint.setAuthenticate(true);
+		constraint.setRoles(new String[]{"user","admin"});
+
+		ConstraintMapping mapping = new ConstraintMapping();
+		mapping.setPathSpec("/*");
+		mapping.setConstraint(constraint);
+
+		security.setConstraintMappings(Collections.singletonList(mapping));
+		security.setAuthenticator(new BasicAuthenticator());
+		security.setLoginService(new HashLoginService(REALM,REALM_FILE));
+
+		return security;
+	}
+
 }

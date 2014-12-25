@@ -15,8 +15,8 @@
  */
 package nl.clockwork.ebms.admin;
 
+import java.io.File;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -27,18 +27,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.management.MBeanServer;
-
 import nl.clockwork.ebms.admin.web.configuration.JdbcURL;
 
-import org.apache.commons.cli.BasicParser;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.DispatcherType;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.bio.SocketConnector;
@@ -59,61 +52,36 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.context.ContextLoaderListener;
 
-public class StartEmbedded
+public class StartEmbedded extends Start
 {
-	private static Options options;
-	private static CommandLine cmd;
-	private static Server server;
-	private static Map<String,String> properties;
+	protected Map<String,String> properties;
 
 	public static void main(String[] args) throws Exception
 	{
-		initCmd(args);
+		StartEmbedded start = new StartEmbedded();
+		start.initCmd(args);
 
-		if (cmd.hasOption("h"))
-			printUsage();
+		if (start.cmd.hasOption("h"))
+			start.printUsage();
 
-		properties = getProperties("applicationConfig.embedded.xml");
-		server = new Server();
+		start.properties = start.getProperties("nl/clockwork/ebms/admin/applicationConfig.embedded.xml");
+		start.server = new Server();
 
-		initHSQLDB();
-		initWebServer();
-		initEbMSServer();
-		initJMX();
-		initWebContext();
+		start.initHSQLDB();
+		start.initWebServer();
+		start.initEbMSServer();
+		start.initJMX();
+		start.initWebContext();
 
 		System.out.println("Starting web server...");
 		System.out.println();
 
-		server.start();
-		server.join();
+		start.server.start();
+		start.server.join();
 	}
 
-	private static String getRequiredArg(String arg)
-	{
-		String result = cmd.getOptionValue(arg);
-		if (result == null)
-		{
-			System.out.println(arg + " is not set!");
-			System.out.println();
-			printUsage();
-		}
-		return result;
-	}
-	
-	private static Resource getResource(String path) throws MalformedURLException, IOException
-	{
-		Resource result = Resource.newResource(path);
-		return result.exists() ? result : Resource.newClassPathResource(path);
-	}
-
-	private static void initCmd(String[] args) throws ParseException
-	{
-		createOptions();
-		cmd = new BasicParser().parse(options,args);
-	}
-
-	private static Options createOptions()
+	@Override
+	protected Options createOptions()
 	{
 		options = new Options();
 		options.addOption("h",false,"print this message");
@@ -121,20 +89,14 @@ public class StartEmbedded
 		options.addOption("ssl",false,"use ssl");
 		options.addOption("keystore",true,"set keystore");
 		options.addOption("password",true,"set keystore password");
+		options.addOption("authentication",false,"use basic authentication");
 		options.addOption("jmx",false,"start mbean server");
 		options.addOption("hsqldb",false,"start hsqldb server");
 		options.addOption("hsqldbDir",true,"set hsqldb location (default: hsqldb)");
 		return options;
 	}
 	
-	private static void printUsage()
-	{
-		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp("Start",options,true);
-		System.exit(0);
-	}
-	
-	private static Map<String,String> getProperties(String...files)
+	private Map<String,String> getProperties(String...files)
 	{
 		try (AbstractApplicationContext applicationContext = new ClassPathXmlApplicationContext(files))
 		{
@@ -143,7 +105,7 @@ public class StartEmbedded
 		}
 	}
 
-	private static void initHSQLDB() throws IOException, AclFormatException
+	private void initHSQLDB() throws IOException, AclFormatException
 	{
 		if ("org.hsqldb.jdbcDriver".equals(properties.get("ebms.jdbc.driverClassName")) && cmd.hasOption("hsqldb"))
 		{
@@ -156,10 +118,9 @@ public class StartEmbedded
 			System.out.println("Starting hsqldb...");
 			startHSQLDBServer(jdbcURL);
 		}
-		System.out.println();
 	}
 
-	public static void startHSQLDBServer(JdbcURL jdbcURL) throws IOException, AclFormatException
+	public void startHSQLDBServer(JdbcURL jdbcURL) throws IOException, AclFormatException
 	{
 		List<String> options = new ArrayList<String>();
 		options.add("-database.0");
@@ -171,7 +132,6 @@ public class StartEmbedded
 			options.add("-port");
 			options.add(jdbcURL.getPort().toString());
 		}
-		
 		HsqlProperties argProps = HsqlProperties.argArrayToProps(options.toArray(new String[0]),"server");
 		ServerProperties props = new EbMSServerProperties(ServerConstants.SC_PROTOCOL_HSQL);
 		props.addProperties(argProps);
@@ -184,7 +144,7 @@ public class StartEmbedded
 		initDatabase(server);
 	}
 
-	private static void initDatabase(org.hsqldb.server.Server server)
+	private void initDatabase(org.hsqldb.server.Server server)
 	{
 		Connection c = null;
     try
@@ -192,7 +152,7 @@ public class StartEmbedded
 			c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:" + server.getPort() + "/" + server.getDatabaseName(0,true), "sa", "");
 			if (!c.createStatement().executeQuery("select table_name from information_schema.tables where table_name = 'CPA'").next())
 			{
-				c.createStatement().executeUpdate(IOUtils.toString(StartEmbedded.class.getResourceAsStream("hsqldb.sql")));
+				c.createStatement().executeUpdate(IOUtils.toString(StartEmbedded.class.getResourceAsStream("/nl/clockwork/ebms/admin/sql/hsqldb.sql")));
 				System.out.println("EbMS tables created");
 			}
 			else
@@ -216,42 +176,7 @@ public class StartEmbedded
     }
 	}
 
-	private static void initWebServer() throws MalformedURLException, IOException
-	{
-		if (!cmd.hasOption("ssl"))
-		{
-			SocketConnector connector = new SocketConnector();
-			connector.setPort(cmd.getOptionValue("p") == null ? 8080 : Integer.parseInt(cmd.getOptionValue("p")));
-			server.addConnector(connector);
-			System.out.println("Web server configured on http://localhost:" + connector.getPort());
-		}
-		else
-		{
-			String keystorePath = getRequiredArg("keystore");
-			String keystorePassword = getRequiredArg("password");
-			Resource keystore = getResource(keystorePath);
-			if (keystore != null && keystore.exists())
-			{
-				SocketConnector connector = new SocketConnector();
-				connector.setConfidentialPort(cmd.getOptionValue("p") == null ? 8433 : Integer.parseInt(cmd.getOptionValue("p")));
-				SslContextFactory factory = new SslContextFactory();
-				factory.setKeyStoreResource(keystore);
-				factory.setKeyStorePassword(keystorePassword);
-				SslSocketConnector sslConnector = new SslSocketConnector(factory);
-				sslConnector.setPort(connector.getConfidentialPort());
-				//sslConnector.setAcceptors(4);
-				server.addConnector(sslConnector);
-				System.out.println("Web server configured on https://localhost:" + connector.getPort());
-			}
-			else
-			{
-				System.out.println("Web server not available: keystore " + keystorePath + " not found!");
-				System.exit(1);
-			}
-		}
-	}
-
-	private static void initEbMSServer() throws MalformedURLException, IOException
+	private void initEbMSServer() throws MalformedURLException, IOException
 	{
 		if (!"true".equals(properties.get("ebms.ssl")))
 		{
@@ -301,32 +226,27 @@ public class StartEmbedded
 		}
 	}
 
-	private static void initJMX() throws Exception
-	{
-		if (cmd.hasOption("jmx"))
-		{
-			System.out.println("Starting mbean server...");
-			startMBeanServer(server);
-		}
-	}
-
-	private static void startMBeanServer(Server server) throws Exception
-	{
-		MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-		MBeanContainer mBeanContainer = new MBeanContainer(mBeanServer);
-		server.getContainer().addEventListener(mBeanContainer);
-		mBeanContainer.start();
-	}
-
-	private static void initWebContext()
+	@Override
+	protected void initWebContext() throws IOException
 	{
 		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		server.setHandler(context);
 
 		context.setContextPath("/");
 
+		if (cmd.hasOption("authentication"))
+		{
+			System.out.println("Configuring web server authentication:");
+			File file = new File(REALM_FILE);
+			if (file.exists())
+				System.out.println("Using file: " + file.getAbsoluteFile());
+			else
+				createRealmFile(file);
+			context.setSecurityHandler(getSecurityHandler());
+		}
+
 		context.setInitParameter("configuration","deployment");
-		context.setInitParameter("contextConfigLocation","classpath:applicationContext.embedded.xml");
+		context.setInitParameter("contextConfigLocation","classpath:nl/clockwork/ebms/admin/applicationContext.embedded.xml");
 
 		ServletHolder servletHolder = new ServletHolder(nl.clockwork.ebms.admin.web.ResourceServlet.class);
 		context.addServlet(servletHolder,"/css/*");

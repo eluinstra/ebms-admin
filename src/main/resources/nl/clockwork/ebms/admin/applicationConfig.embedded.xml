@@ -24,8 +24,9 @@
 		<property name="ignoreResourceNotFound" value="true" />
 		<property name="locations"> 
 			<list>
-				<value>classpath:default.properties</value>   
-				<value>file:ebms-admin.properties</value>
+				<value>classpath:nl/clockwork/ebms/default.properties</value>   
+				<value>classpath:nl/clockwork/ebms/admin/default.properties</value>   
+				<value>file:ebms-admin.embedded.properties</value>
 			</list>
 		</property>
 	</bean>
