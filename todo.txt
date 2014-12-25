@@ -1,3 +1,5 @@
+- add create tables page for the different databases from console
+- add create password file page?
 - add reset button per field instead of per form
 
 - improve message filters
