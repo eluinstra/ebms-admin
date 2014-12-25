@@ -74,7 +74,6 @@ public class StartEmbedded extends Start
 		start.initWebContext();
 
 		System.out.println("Starting web server...");
-		System.out.println();
 
 		start.server.start();
 		start.server.join();

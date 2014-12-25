@@ -78,7 +78,6 @@ public class Start
 		start.initJMX();
 		start.initWebContext();
 
-		System.out.println();
 		System.out.println("Starting web server...");
 
 		start.server.start();
