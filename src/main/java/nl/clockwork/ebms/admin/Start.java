@@ -98,6 +98,7 @@ public class Start
 		options.addOption("ssl",false,"use ssl");
 		options.addOption("keystore",true,"set keystore");
 		options.addOption("password",true,"set keystore password");
+		options.addOption("authentication",false,"use basic authentication");
 		options.addOption("jmx",false,"start mbean server");
 		return options;
 	}
