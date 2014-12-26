@@ -44,7 +44,6 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.hsqldb.persist.HsqlProperties;
-import org.hsqldb.server.EbMSServerProperties;
 import org.hsqldb.server.ServerAcl.AclFormatException;
 import org.hsqldb.server.ServerConfiguration;
 import org.hsqldb.server.ServerConstants;
@@ -133,7 +132,7 @@ public class StartEmbedded extends Start
 			options.add(jdbcURL.getPort().toString());
 		}
 		HsqlProperties argProps = HsqlProperties.argArrayToProps(options.toArray(new String[0]),"server");
-		ServerProperties props = new EbMSServerProperties(ServerConstants.SC_PROTOCOL_HSQL);
+		ServerProperties props = new ServerProperties(ServerConstants.SC_PROTOCOL_HSQL,null);
 		props.addProperties(argProps);
 		ServerConfiguration.translateDefaultDatabaseProperty(props);
 		ServerConfiguration.translateDefaultNoSystemExitProperty(props);
