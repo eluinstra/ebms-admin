@@ -18,6 +18,7 @@ package nl.clockwork.ebms.admin;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -104,7 +105,7 @@ public class StartEmbedded extends Start
 		}
 	}
 
-	private void initHSQLDB() throws IOException, AclFormatException
+	private void initHSQLDB() throws IOException, AclFormatException, URISyntaxException
 	{
 		if ("org.hsqldb.jdbcDriver".equals(properties.get("ebms.jdbc.driverClassName")) && cmd.hasOption("hsqldb"))
 		{
@@ -119,7 +120,7 @@ public class StartEmbedded extends Start
 		}
 	}
 
-	public void startHSQLDBServer(JdbcURL jdbcURL) throws IOException, AclFormatException
+	public void startHSQLDBServer(JdbcURL jdbcURL) throws IOException, AclFormatException, URISyntaxException
 	{
 		List<String> options = new ArrayList<String>();
 		options.add("-database.0");
@@ -132,7 +133,7 @@ public class StartEmbedded extends Start
 			options.add(jdbcURL.getPort().toString());
 		}
 		HsqlProperties argProps = HsqlProperties.argArrayToProps(options.toArray(new String[0]),"server");
-		ServerProperties props = new ServerProperties(ServerConstants.SC_PROTOCOL_HSQL,null);
+		ServerProperties props = new ServerProperties(ServerConstants.SC_PROTOCOL_HSQL,new File(this.getClass().getResource("/nl/clockwork/ebms/admin/database/hsqldb.properties").toURI()));
 		props.addProperties(argProps);
 		ServerConfiguration.translateDefaultDatabaseProperty(props);
 		ServerConfiguration.translateDefaultNoSystemExitProperty(props);
@@ -151,7 +152,7 @@ public class StartEmbedded extends Start
 			c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:" + server.getPort() + "/" + server.getDatabaseName(0,true), "sa", "");
 			if (!c.createStatement().executeQuery("select table_name from information_schema.tables where table_name = 'CPA'").next())
 			{
-				c.createStatement().executeUpdate(IOUtils.toString(StartEmbedded.class.getResourceAsStream("/nl/clockwork/ebms/admin/sql/hsqldb.sql")));
+				c.createStatement().executeUpdate(IOUtils.toString(this.getClass().getResourceAsStream("/nl/clockwork/ebms/admin/database/hsqldb.sql")));
 				System.out.println("EbMS tables created");
 			}
 			else
