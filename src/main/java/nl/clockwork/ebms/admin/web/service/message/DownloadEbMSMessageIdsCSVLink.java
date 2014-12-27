@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
+import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.model.EbMSMessageContext;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
@@ -59,7 +60,7 @@ public class DownloadEbMSMessageIdsCSVLink extends Link<Void>
 		{
 			final ByteArrayOutputStream output = new ByteArrayOutputStream();
 			CSVPrinter printer = new CSVPrinter(new OutputStreamWriter(output),CSVFormat.DEFAULT);
-			List<String> messageIds = ebMSMessageService.getMessageIds(filter,null);
+			List<String> messageIds = Utils.toList(ebMSMessageService.getMessageIds(filter,null));
 			if (messageIds != null)
 				printMessagesToCSV(printer,messageIds);
 			printer.close();

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.service.CPAService;
 
 import org.apache.wicket.markup.repeater.data.IDataProvider;
@@ -38,7 +39,7 @@ public class CPADataProvider implements IDataProvider<String>
 	@Override
 	public Iterator<? extends String> iterator(long first, long count)
 	{
-		List<String> cpaIds = cpaService.getCPAIds();
+		List<String> cpaIds = Utils.toList(cpaService.getCPAIds());
 		return cpaIds == null ? new ArrayList<String>().iterator() : cpaIds.iterator();
 	}
 
@@ -51,7 +52,7 @@ public class CPADataProvider implements IDataProvider<String>
 	@Override
 	public long size()
 	{
-		List<String> cpaIds = cpaService.getCPAIds();
+		List<String> cpaIds = Utils.toList(cpaService.getCPAIds());
 		return cpaIds == null ? 0 : cpaIds.size();
 	}
 

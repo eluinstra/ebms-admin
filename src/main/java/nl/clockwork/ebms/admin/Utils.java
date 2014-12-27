@@ -20,6 +20,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -69,6 +71,11 @@ public class Utils
 		catch (IOException e)
 		{
 		}
+	}
+
+	public static List<String> toList(List<String> list)
+	{
+		return list == null ? new ArrayList<String>() : list;
 	}
 
 }

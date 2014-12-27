@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.model.EbMSMessageContext;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
@@ -41,7 +42,7 @@ public class MessageDataProvider implements IDataProvider<String>
 	@Override
 	public Iterator<? extends String> iterator(long first, long count)
 	{
-		List<String> messageIds = ebMSMessageService.getMessageIds(filter,(int)(first+count));
+		List<String> messageIds = Utils.toList(ebMSMessageService.getMessageIds(filter,(int)(first+count)));
 		return messageIds == null ? new ArrayList<String>().iterator() : messageIds.listIterator((int)first);
 	}
 
@@ -54,7 +55,7 @@ public class MessageDataProvider implements IDataProvider<String>
 	@Override
 	public long size()
 	{
-		List<String> messageIds = ebMSMessageService.getMessageIds(filter,null);
+		List<String> messageIds = Utils.toList(ebMSMessageService.getMessageIds(filter,null));
 		return messageIds == null ? 0 : messageIds.size();
 	}
 
