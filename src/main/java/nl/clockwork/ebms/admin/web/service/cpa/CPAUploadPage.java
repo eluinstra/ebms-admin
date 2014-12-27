@@ -140,6 +140,9 @@ public class CPAUploadPage extends BasePage
 					catch (Exception e)
 					{
 						logger.error("",e);
+						//QuickFix
+						if ("Could not send Message.".equals(e.getMessage()))
+							setResponsePage(new CPAsPage());
 						error(e.getMessage());
 					}
 				}
