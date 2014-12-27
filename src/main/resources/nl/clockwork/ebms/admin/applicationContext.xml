@@ -23,7 +23,7 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 		http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
  
-	<import resource="classpath:nl/clockwork/ebms/admin/applicationConfig.embedded.xml"/>
+	<import resource="classpath:nl/clockwork/ebms/admin/applicationConfig.xml"/>
 
 	<import resource="classpath:nl/clockwork/ebms/admin/datasource.xml"/>
 	<import resource="classpath:nl/clockwork/ebms/admin/dao.xml"/>
