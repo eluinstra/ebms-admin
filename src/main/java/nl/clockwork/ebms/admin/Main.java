@@ -31,7 +31,7 @@ public class Main
 		server.setHandler(context);
 
 		context.setInitParameter("configuration","deployment"); //"development"
-		context.setInitParameter("contextConfigLocation","classpath:applicationContext.xml");
+		context.setInitParameter("contextConfigLocation","classpath:nl/clockwork/ebms/admin/applicationContext.xml");
 
 		context.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
 		
