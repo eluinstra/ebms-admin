@@ -55,21 +55,15 @@ public class Utils
 		properties.list(new PrintWriter(writer,true));
 	}
 	
-	public static void writeProperties(Map<String,String> properties, Writer writer)
+	public static void writeProperties(Map<String,String> properties, Writer writer) throws IOException
 	{
-		try
+		Set<String> keySet = new TreeSet<String>(properties.keySet());
+		for (String key : keySet)
 		{
-			Set<String> keySet = new TreeSet<String>(properties.keySet());
-			for (String key : keySet)
-			{
-				writer.write(key);
-				writer.write(" = ");
-				writer.write(key.matches(".*(password|pwd).*") ? properties.get(key).replaceAll(".","*") : properties.get(key));
-				writer.write("\n");
-			}
-		}
-		catch (IOException e)
-		{
+			writer.write(key);
+			writer.write(" = ");
+			writer.write(key.matches(".*(password|pwd).*") ? properties.get(key).replaceAll(".","*") : properties.get(key));
+			writer.write("\n");
 		}
 	}
 
