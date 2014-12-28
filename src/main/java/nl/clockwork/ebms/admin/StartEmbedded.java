@@ -55,7 +55,7 @@ import org.hsqldb.server.ServerAcl.AclFormatException;
 import org.hsqldb.server.ServerConfiguration;
 import org.hsqldb.server.ServerConstants;
 import org.hsqldb.server.ServerProperties;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.context.ContextLoaderListener;
 
@@ -136,9 +136,11 @@ public class StartEmbedded
 	
 	private static Map<String,String> getProperties(String...files)
 	{
-		ApplicationContext applicationContext = new ClassPathXmlApplicationContext(files);
-		PropertyPlaceholderConfigurer properties = (PropertyPlaceholderConfigurer)applicationContext.getBean("propertyConfigurer");
-		return properties.getProperties();
+		try (AbstractApplicationContext applicationContext = new ClassPathXmlApplicationContext(files))
+		{
+			PropertyPlaceholderConfigurer properties = (PropertyPlaceholderConfigurer)applicationContext.getBean("propertyConfigurer");
+			return properties.getProperties();
+		}
 	}
 
 	private static void initHSQLDB() throws IOException, AclFormatException
