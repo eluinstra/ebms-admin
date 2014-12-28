@@ -108,12 +108,7 @@ public class DownloadEbMSMessageContentLink extends Link<EbMSMessageContent>
 				.setContentDisposition(ContentDisposition.ATTACHMENT)
 			);
 		}
-		catch (IOException e)
-		{
-			logger.error("",e);
-			error(e.getMessage());
-		}
-		catch (JAXBException e)
+		catch (IOException | JAXBException e)
 		{
 			logger.error("",e);
 			error(e.getMessage());

@@ -115,11 +115,7 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 								calendar.setTime(date);
 								return DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
 							}
-							catch (ParseException e)
-							{
-								throw new RuntimeException(e);
-							}
-							catch (DatatypeConfigurationException e)
+							catch (ParseException | DatatypeConfigurationException e)
 							{
 								throw new RuntimeException(e);
 							}
