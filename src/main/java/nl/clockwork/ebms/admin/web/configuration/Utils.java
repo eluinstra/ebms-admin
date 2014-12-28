@@ -51,22 +51,24 @@ public class Utils
 	
 	public static JdbcURL parseJdbcURL(String jdbcURL, JdbcURL model) throws MalformedURLException
 	{
-		Scanner scanner = new Scanner(jdbcURL);
-		String protocol = scanner.findInLine("(://|@|:@//)");
-		if (protocol != null)
+		try (Scanner scanner = new Scanner(jdbcURL))
 		{
-			String urlString = scanner.findInLine("[^/:]+(:\\d+){0,1}");
-			scanner.findInLine("(/|:|;databaseName=)");
-			String database = scanner.findInLine("[^;]*");
-			if (urlString != null)
+			String protocol = scanner.findInLine("(://|@|:@//)");
+			if (protocol != null)
 			{
-				URL url = new URL("http://" + urlString);
-				model.setHost(url.getHost());
-				model.setPort(url.getPort() == -1 ? null : url.getPort());
-				model.setDatabase(database);
+				String urlString = scanner.findInLine("[^/:]+(:\\d+){0,1}");
+				scanner.findInLine("(/|:|;databaseName=)");
+				String database = scanner.findInLine("[^;]*");
+				if (urlString != null)
+				{
+					URL url = new URL("http://" + urlString);
+					model.setHost(url.getHost());
+					model.setPort(url.getPort() == -1 ? null : url.getPort());
+					model.setDatabase(database);
+				}
 			}
+			return model;
 		}
-		return model;
 	}
 
   public static void testEbMSUrl(String uri) throws IOException
