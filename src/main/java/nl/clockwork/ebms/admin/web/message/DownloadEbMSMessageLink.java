@@ -62,9 +62,10 @@ public class DownloadEbMSMessageLink extends Link<Void>
 		try
 		{
 			final ByteArrayOutputStream output = new ByteArrayOutputStream();
-			ZipOutputStream zip = new ZipOutputStream(output);
-			ebMSDAO.writeMessageToZip(messageId, messageNr,zip);
-			zip.close();
+			try (ZipOutputStream zip = new ZipOutputStream(output))
+			{
+				ebMSDAO.writeMessageToZip(messageId, messageNr,zip);
+			}
 
 			IResourceStream resourceStream = new AbstractResourceStream()
 			{

@@ -119,8 +119,9 @@ public class Utils
     info.setProperty("user",username);
     if (password != null)
     	info.setProperty("password",password);
-    Connection connection = driver.connect(jdbcUrl,info);
-		connection.close();
+    try (Connection connection = driver.connect(jdbcUrl,info))
+    {
+    }
 	}
 
 }

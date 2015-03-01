@@ -56,9 +56,10 @@ public class DownloadEbMSMessagesCSVLink extends Link<Void>
 		try
 		{
 			final ByteArrayOutputStream output = new ByteArrayOutputStream();
-			CSVPrinter printer = new CSVPrinter(new OutputStreamWriter(output),CSVFormat.DEFAULT);
-			ebMSDAO.printMessagesToCSV(printer,filter);
-			printer.close();
+			try (CSVPrinter printer = new CSVPrinter(new OutputStreamWriter(output),CSVFormat.DEFAULT))
+			{
+				ebMSDAO.printMessagesToCSV(printer,filter);
+			}
 
 			IResourceStream resourceStream = new AbstractResourceStream()
 			{

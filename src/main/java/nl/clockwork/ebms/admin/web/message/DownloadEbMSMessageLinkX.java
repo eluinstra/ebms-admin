@@ -57,9 +57,10 @@ public class DownloadEbMSMessageLinkX extends Link<EbMSMessage>
 		{
 			EbMSMessage message = getModelObject();
 			final ByteArrayOutputStream output = new ByteArrayOutputStream();
-			ZipOutputStream zip = new ZipOutputStream(output);
-			writeMessageToZip(message,zip);
-			zip.close();
+			try (ZipOutputStream zip = new ZipOutputStream(output))
+			{
+				writeMessageToZip(message,zip);
+			}
 
 			IResourceStream resourceStream = new AbstractResourceStream()
 			{

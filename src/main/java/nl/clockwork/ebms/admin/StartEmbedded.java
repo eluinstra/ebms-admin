@@ -22,7 +22,6 @@ import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -147,10 +146,8 @@ public class StartEmbedded extends Start
 
 	private void initDatabase(org.hsqldb.server.Server server)
 	{
-		Connection c = null;
-    try
+    try (Connection c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:" + server.getPort() + "/" + server.getDatabaseName(0,true), "sa", ""))
 		{
-			c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:" + server.getPort() + "/" + server.getDatabaseName(0,true), "sa", "");
 			if (!c.createStatement().executeQuery("select table_name from information_schema.tables where table_name = 'CPA'").next())
 			{
 				c.createStatement().executeUpdate(IOUtils.toString(this.getClass().getResourceAsStream("/nl/clockwork/ebms/admin/database/hsqldb.sql")));
@@ -163,18 +160,6 @@ public class StartEmbedded extends Start
 		{
 			e.printStackTrace();
 		}
-    finally
-    {
-    	if (c != null)
-				try
-				{
-					c.close();
-				}
-				catch (SQLException e)
-				{
-					e.printStackTrace();
-				}
-    }
 	}
 
 	private void initEbMSServer() throws MalformedURLException, IOException

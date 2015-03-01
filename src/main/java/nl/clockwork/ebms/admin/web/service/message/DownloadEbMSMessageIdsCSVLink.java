@@ -59,11 +59,12 @@ public class DownloadEbMSMessageIdsCSVLink extends Link<Void>
 		try
 		{
 			final ByteArrayOutputStream output = new ByteArrayOutputStream();
-			CSVPrinter printer = new CSVPrinter(new OutputStreamWriter(output),CSVFormat.DEFAULT);
-			List<String> messageIds = Utils.toList(ebMSMessageService.getMessageIds(filter,null));
-			if (messageIds != null)
-				printMessagesToCSV(printer,messageIds);
-			printer.close();
+			try (CSVPrinter printer = new CSVPrinter(new OutputStreamWriter(output),CSVFormat.DEFAULT))
+			{
+				List<String> messageIds = Utils.toList(ebMSMessageService.getMessageIds(filter,null));
+				if (messageIds != null)
+					printMessagesToCSV(printer,messageIds);
+			}
 
 			IResourceStream resourceStream = new AbstractResourceStream()
 			{
