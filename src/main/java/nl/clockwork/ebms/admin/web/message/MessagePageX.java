@@ -92,7 +92,7 @@ public class MessagePageX extends BasePage
 				setResponsePage(new MessagePageX(ebMSDAO.findResponseMessage(message.getMessageId()),MessagePageX.this));
 			}
 		};
-		linkMessageError.setEnabled(EbMSMessageStatus.DELIVERY_ERROR.equals(message.getStatus()));
+		linkMessageError.setEnabled(EbMSMessageStatus.DELIVERY_FAILED.equals(message.getStatus()));
 		linkMessageError.add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus()))));
 		linkMessageError.add(new Label("status",message.getStatus()));
 		add(linkMessageError);

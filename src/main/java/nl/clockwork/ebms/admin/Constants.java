@@ -114,8 +114,8 @@ public class Constants
 		RECEIVE_STATUS("Received",Color.BLACK,new EbMSMessageStatus[]{EbMSMessageStatus.UNAUTHORIZED,EbMSMessageStatus.NOT_RECOGNIZED,EbMSMessageStatus.RECEIVED,EbMSMessageStatus.PROCESSED,EbMSMessageStatus.FORWARDED,EbMSMessageStatus.FAILED}),
 		SEND_STATUS_OK("Ok",Color.GREEN,new EbMSMessageStatus[]{EbMSMessageStatus.DELIVERED}),
 		SEND_STATUS_WARN("Warn",Color.ORANGE,new EbMSMessageStatus[]{EbMSMessageStatus.SENT}),
-		SEND_STATUS_NOK("Failed",Color.RED,new EbMSMessageStatus[]{EbMSMessageStatus.DELIVERY_ERROR,EbMSMessageStatus.DELIVERY_FAILED}),
-		SEND_STATUS("Sent",Color.BLUE,new EbMSMessageStatus[]{EbMSMessageStatus.SENT,EbMSMessageStatus.DELIVERED,EbMSMessageStatus.DELIVERY_ERROR,EbMSMessageStatus.DELIVERY_FAILED});
+		SEND_STATUS_NOK("Failed",Color.RED,new EbMSMessageStatus[]{EbMSMessageStatus.DELIVERY_FAILED,EbMSMessageStatus.EXPIRED}),
+		SEND_STATUS("Sent",Color.BLUE,new EbMSMessageStatus[]{EbMSMessageStatus.SENT,EbMSMessageStatus.DELIVERED,EbMSMessageStatus.DELIVERY_FAILED,EbMSMessageStatus.EXPIRED});
 		
 		private String name;
 		private Color color;
