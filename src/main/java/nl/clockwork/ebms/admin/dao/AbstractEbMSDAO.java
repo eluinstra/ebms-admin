@@ -271,7 +271,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		);
 	}
 
-	private List<EbMSAttachment> getAttachments(String messageId, int messageNr)
+	protected List<EbMSAttachment> getAttachments(String messageId, int messageNr)
 	{
 		return jdbcTemplate.query(
 			"select name, content_id, content_type" + 
@@ -451,40 +451,44 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				messageId,
 				messageNr
 			);
-
-			jdbcTemplate.query(
-				"select name, content_id, content_type, content" + 
-				" from ebms_attachment" + 
-				" where message_id = ?" +
-				" and message_nr = ?",
-				new ParameterizedRowMapper<Object>()
-				{
-					@Override
-					public Object mapRow(ResultSet rs, int rowNum) throws SQLException
-					{
-						try
-						{
-							ZipEntry entry = new ZipEntry("attachments/" + (StringUtils.isEmpty(rs.getString("name")) ? rs.getString("content_id") + Utils.getFileExtension(rs.getString("content_type")) : rs.getString("name")));
-							entry.setComment("Content-Type: " + rs.getString("content_type"));
-							zip.putNextEntry(entry);
-							zip.write(rs.getBytes("content"));
-							zip.closeEntry();
-							return null;
-						}
-						catch (IOException e)
-						{
-							throw new SQLException(e);
-						}
-					}
-				},
-				messageId,
-				messageNr
-			);
+			writeAttachmentsToZip(messageId, messageNr, zip);
 		}
 		catch (DataAccessException e)
 		{
 			throw new DAOException(e);
 		}
+	}
+
+	protected void writeAttachmentsToZip(String messageId, int messageNr, final ZipOutputStream zip)
+	{
+		jdbcTemplate.query(
+			"select name, content_id, content_type, content" + 
+			" from ebms_attachment" + 
+			" where message_id = ?" +
+			" and message_nr = ?",
+			new ParameterizedRowMapper<Object>()
+			{
+				@Override
+				public Object mapRow(ResultSet rs, int rowNum) throws SQLException
+				{
+					try
+					{
+						ZipEntry entry = new ZipEntry("attachments/" + (StringUtils.isEmpty(rs.getString("name")) ? rs.getString("content_id") + Utils.getFileExtension(rs.getString("content_type")) : rs.getString("name")));
+						entry.setComment("Content-Type: " + rs.getString("content_type"));
+						zip.putNextEntry(entry);
+						zip.write(rs.getBytes("content"));
+						zip.closeEntry();
+						return null;
+					}
+					catch (IOException e)
+					{
+						throw new SQLException(e);
+					}
+				}
+			},
+			messageId,
+			messageNr
+		);
 	}
 	
 	protected String getMessageFilter(EbMSMessageFilter messageFilter, List<Object> parameters)

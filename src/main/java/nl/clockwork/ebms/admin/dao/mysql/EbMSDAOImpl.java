@@ -15,17 +15,23 @@
  */
 package nl.clockwork.ebms.admin.dao.mysql;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import nl.clockwork.ebms.Constants.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.Constants.TimeUnit;
 import nl.clockwork.ebms.admin.dao.AbstractEbMSDAO;
+import nl.clockwork.ebms.admin.model.EbMSAttachment;
+import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -59,6 +65,51 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 	}
 
 	@Override
+	public EbMSAttachment findAttachment(String messageId, int messageNr, String contentId)
+	{
+		return jdbcTemplate.queryForObject(
+			"select a.name, a.content_id, a.content_type, a.content" + 
+			" from ebms_message m, ebms_attachment a" + 
+			" where m.message_id = ?" +
+			" and m.message_nr = ?" +
+			" and m.id = a.ebms_message_id" +
+			" and a.content_id = ?",
+			new ParameterizedRowMapper<EbMSAttachment>()
+			{
+				@Override
+				public EbMSAttachment mapRow(ResultSet rs, int rowNum) throws SQLException
+				{
+					return new EbMSAttachment(rs.getString("name"),rs.getString("content_id"),rs.getString("content_type"),rs.getBytes("content"));
+				}
+			},
+			messageId,
+			messageNr,
+			contentId
+		);
+	}
+
+	protected List<EbMSAttachment> getAttachments(String messageId, int messageNr)
+	{
+		return jdbcTemplate.query(
+			"select a.name, a.content_id, a.content_type" + 
+			" from ebms_message m, ebms_attachment a" + 
+			" where m.message_id = ?" +
+			" and m.message_nr = ?" +
+			" and m.id = a.ebms_message_id",
+			new ParameterizedRowMapper<EbMSAttachment>()
+			{
+				@Override
+				public EbMSAttachment mapRow(ResultSet rs, int rowNum) throws SQLException
+				{
+					return new EbMSAttachment(rs.getString("name"),rs.getString("content_id"),rs.getString("content_type"),null);
+				}
+			},
+			messageId,
+			messageNr
+		);
+	}
+
+	@Override
 	public HashMap<Date,Number> selectMessageTraffic(Date from, Date to, TimeUnit timeUnit, EbMSMessageStatus...status)
 	{
 		final HashMap<Date,Number> result = new HashMap<Date,Number>();
@@ -85,6 +136,39 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 		return result;
 	}
 
+	protected void writeAttachmentsToZip(String messageId, int messageNr, final ZipOutputStream zip)
+	{
+		jdbcTemplate.query(
+			"select a.name, a.content_id, a.content_type, a.content" + 
+			" from ebms_message m, ebms_attachment a" + 
+			" where m.message_id = ?" +
+			" and m.message_nr = ?" +
+			" and m.id = a.ebms_message_id",
+			new ParameterizedRowMapper<Object>()
+			{
+				@Override
+				public Object mapRow(ResultSet rs, int rowNum) throws SQLException
+				{
+					try
+					{
+						ZipEntry entry = new ZipEntry("attachments/" + (StringUtils.isEmpty(rs.getString("name")) ? rs.getString("content_id") + Utils.getFileExtension(rs.getString("content_type")) : rs.getString("name")));
+						entry.setComment("Content-Type: " + rs.getString("content_type"));
+						zip.putNextEntry(entry);
+						zip.write(rs.getBytes("content"));
+						zip.closeEntry();
+						return null;
+					}
+					catch (IOException e)
+					{
+						throw new SQLException(e);
+					}
+				}
+			},
+			messageId,
+			messageNr
+		);
+	}
+	
 	protected String getDateFormat(String timeUnitDateFormat)
 	{
 		if ("mm".equals(timeUnitDateFormat))
