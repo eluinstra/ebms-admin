@@ -17,6 +17,7 @@ package nl.clockwork.ebms.admin.dao.hsqldb;
 
 import java.util.List;
 
+import nl.clockwork.ebms.admin.Constants.Order;
 import nl.clockwork.ebms.admin.dao.AbstractEbMSDAO;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
 
@@ -41,12 +42,12 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 	}
 	
 	@Override
-	public String selectMessagesQuery(EbMSMessageFilter filter, long first, long count, List<Object> parameters)
+	public String selectMessagesQuery(EbMSMessageFilter filter, long first, long count, Order order, List<Object> parameters)
 	{
 		return new EbMSMessageRowMapper().getBaseQuery() +
 			" where 1 = 1" +
 			getMessageFilter(filter,parameters) +
-			" order by time_stamp desc" +
+			" order by time_stamp " + order.toString() +
 			" limit " + count + " offset " + first
 		;
 	}

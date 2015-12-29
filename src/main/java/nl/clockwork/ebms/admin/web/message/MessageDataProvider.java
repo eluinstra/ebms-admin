@@ -17,6 +17,7 @@ package nl.clockwork.ebms.admin.web.message;
 
 import java.util.Iterator;
 
+import nl.clockwork.ebms.admin.Constants.Order;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 
@@ -38,7 +39,7 @@ public class MessageDataProvider implements IDataProvider<EbMSMessage>
 	@Override
 	public Iterator<? extends EbMSMessage> iterator(long first, long count)
 	{
-		return ebMSDAO.selectMessages(filter,first,count).iterator();
+		return ebMSDAO.selectMessages(filter,first,count,Order.DESC).iterator();
 	}
 
 	@Override
@@ -50,7 +51,7 @@ public class MessageDataProvider implements IDataProvider<EbMSMessage>
 	@Override
 	public long size()
 	{
-		return (int)ebMSDAO.countMessages(filter);
+		return ebMSDAO.countMessages(filter);
 	}
 
 	@Override

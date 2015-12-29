@@ -49,7 +49,18 @@ public class Constants
 			return s;
 		}
 	}
-	
+
+	public enum Order
+	{
+		ASC, DESC;
+
+		@Override
+		public String toString()
+		{
+			return super.toString().toLowerCase();
+		}
+	}
+
 	public enum TimeUnit
 	{
 		HOUR(Period.minutes(1),Period.hours(1),DATETIME_HOUR_FORMAT,"mm"), DAY(Period.hours(1),Period.days(1),DATE_FORMAT,"HH")/*, WEEK(Period.days(1),Period.weeks(1),DATE_FORMAT,"dd"), MONTH(Period.weeks(1),Period.months(1),DATE_FORMAT,"ww")*/, MONTH(Period.days(1),Period.months(1),DATE_MONTH_FORMAT,"dd"), YEAR(Period.months(1),Period.years(1),DATE_YEAR_FORMAT,"MM");
