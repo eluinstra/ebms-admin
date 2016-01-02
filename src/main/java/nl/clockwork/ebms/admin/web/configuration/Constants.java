@@ -45,6 +45,7 @@ public class Constants
 	{
 		HSQLDB("org.hsqldb.jdbcDriver","jdbc:hsqldb:hsql://%s/%s","select 1 from information_schema.system_tables"),
 		MYSQL("com.mysql.jdbc.Driver","jdbc:mysql://%s/%s","select 1"),
+		MARIADB("org.mariadb.jdbc.Driver","jdbc:mysql://%s/%s","select 1"),
 		POSTGRESQL("org.postgresql.Driver","jdbc:postgresql://%s/%s","select 1"),
 		MSSQL("com.microsoft.sqlserver.jdbc.SQLServerDriver","jdbc:sqlserver://%s;databaseName=%s;","select 1"),
 		MSSQL_JTDS("net.sourceforge.jtds.jdbc.Driver","jdbc:jtds:sqlserver://%s/%s","select 1"),
