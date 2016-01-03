@@ -25,7 +25,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import nl.clockwork.ebms.Constants.EbMSMessageStatus;
-import nl.clockwork.ebms.admin.Constants.Order;
 import nl.clockwork.ebms.admin.Constants.TimeUnit;
 import nl.clockwork.ebms.admin.dao.AbstractEbMSDAO;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
@@ -55,12 +54,12 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 	}
 	
 	@Override
-	public String selectMessagesQuery(EbMSMessageFilter filter, long first, long count, Order order, List<Object> parameters)
+	public String selectMessagesQuery(EbMSMessageFilter filter, long first, long count, List<Object> parameters)
 	{
 		return new EbMSMessageRowMapper().getBaseQuery() +
 			" where 1 = 1" +
 			getMessageFilter(filter,parameters) +
-			" order by time_stamp " + order.toString() +
+			" order by time_stamp desc" +
 			" limit " + count + " offset " + first
 		;
 	}

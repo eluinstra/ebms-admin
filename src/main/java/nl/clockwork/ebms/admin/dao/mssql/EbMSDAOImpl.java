@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import nl.clockwork.ebms.Constants.EbMSMessageStatus;
-import nl.clockwork.ebms.admin.Constants.Order;
 import nl.clockwork.ebms.admin.Constants.TimeUnit;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
 
@@ -53,7 +52,7 @@ public class EbMSDAOImpl extends nl.clockwork.ebms.admin.dao.mysql.EbMSDAOImpl
 	}
 	
 	@Override
-	public String selectMessagesQuery(EbMSMessageFilter filter, long first, long count, Order order, List<Object> parameters)
+	public String selectMessagesQuery(EbMSMessageFilter filter, long first, long count, List<Object> parameters)
 	{
 		//return new EbMSMessageRowMapper().getBaseQuery() +
 		//	" where 1 = 1" +
@@ -62,7 +61,7 @@ public class EbMSDAOImpl extends nl.clockwork.ebms.admin.dao.mysql.EbMSDAOImpl
 		//	" offset " + first + " rows fetch " + count + " rows only"
 		//;
 		return "select a.* from (" +
-			new EbMSMessageRowMapper().getBaseQuery().replaceFirst("select ","select row_number() over (order by time_stamp " + order.toString() + ") as rn, ") +
+			new EbMSMessageRowMapper().getBaseQuery().replaceFirst("select ","select row_number() over (order by time_stamp desc) as rn, ") +
 			" where 1 = 1" +
 			getMessageFilter(filter,parameters) +
 			//") a where rn >= " + (first + 1) + " and rn < " + (first + 1 + count)

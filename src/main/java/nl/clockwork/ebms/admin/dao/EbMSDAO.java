@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.zip.ZipOutputStream;
 
 import nl.clockwork.ebms.Constants.EbMSMessageStatus;
-import nl.clockwork.ebms.admin.Constants.Order;
 import nl.clockwork.ebms.admin.Constants.TimeUnit;
 import nl.clockwork.ebms.admin.model.CPA;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
@@ -41,7 +40,7 @@ public interface EbMSDAO
 	EbMSMessage findMessage(String messageId, int messageNr);
 	EbMSMessage findResponseMessage(String messageId);
 	int countMessages(EbMSMessageFilter filter);
-	List<EbMSMessage> selectMessages(EbMSMessageFilter filter, long first, long count, Order order);
+	List<EbMSMessage> selectMessages(EbMSMessageFilter filter, long first, long count);
 
 	EbMSAttachment findAttachment(String messageId, int messageNr, String contentId);
 	

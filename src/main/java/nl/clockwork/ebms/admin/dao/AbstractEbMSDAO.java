@@ -29,7 +29,6 @@ import nl.clockwork.ebms.Constants;
 import nl.clockwork.ebms.Constants.EbMSEventStatus;
 import nl.clockwork.ebms.Constants.EbMSEventType;
 import nl.clockwork.ebms.Constants.EbMSMessageStatus;
-import nl.clockwork.ebms.admin.Constants.Order;
 import nl.clockwork.ebms.admin.Constants.TimeUnit;
 import nl.clockwork.ebms.admin.model.CPA;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
@@ -236,14 +235,14 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		);
 	}
 	
-	public abstract String selectMessagesQuery(EbMSMessageFilter filter, long first, long count, Order order, List<Object> parameters);
+	public abstract String selectMessagesQuery(EbMSMessageFilter filter, long first, long count, List<Object> parameters);
 	
 	@Override
-	public List<EbMSMessage> selectMessages(EbMSMessageFilter filter, long first, long count, Order order)
+	public List<EbMSMessage> selectMessages(EbMSMessageFilter filter, long first, long count)
 	{
 		List<Object> parameters = new ArrayList<Object>();
 		return jdbcTemplate.query(
-			selectMessagesQuery(filter,first,count,order,parameters),
+			selectMessagesQuery(filter,first,count,parameters),
 			parameters.toArray(new Object[0]),
 			new EbMSMessageRowMapper()
 		);
@@ -319,7 +318,8 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			" where cpa_id = ?" +
 			" and from_role in (?)" +
 			" and to_role in (?)" +
-			" and status = ?",
+			" and status = ?" +
+			" order by time_stamp desc",
 			String.class,
 			cpaId,
 			StringUtils.join(fromRole,","),
