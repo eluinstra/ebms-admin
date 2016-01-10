@@ -22,6 +22,7 @@ import java.util.Properties;
 import nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.EbMSCorePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.HttpPropertiesFormPanel.HttpPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.SignaturePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormModel;
 
@@ -54,6 +55,8 @@ public class EbMSCorePropertiesWriter
 		properties.setProperty("http.chunkedStreamingMode",Boolean.toString(httpProperties.isChunkedStreamingMode()));
 		if (httpProperties.getSsl())
 			write(properties,httpProperties.getSslProperties());
+		if (httpProperties.getProxy())
+			write(properties,httpProperties.getProxyProperties());
   }
 
 	protected void write(Properties properties, SslPropertiesFormModel sslProperties)
@@ -65,6 +68,15 @@ public class EbMSCorePropertiesWriter
  		properties.setProperty("keystore.password",StringUtils.defaultString(sslProperties.getKeystoreProperties().getPassword()));
  		properties.setProperty("truststore.path",StringUtils.defaultString(sslProperties.getTruststoreProperties().getUri()));
  		properties.setProperty("truststore.password",StringUtils.defaultString(sslProperties.getTruststoreProperties().getPassword()));
+  }
+
+	protected void write(Properties properties, ProxyPropertiesFormModel proxyProperties)
+  {
+		properties.setProperty("http.proxy.host",StringUtils.defaultString(proxyProperties.getHost()));
+		properties.setProperty("http.proxy.port",proxyProperties.getPort() == null ? "80" : proxyProperties.getPort().toString());
+		properties.setProperty("http.proxy.nonProxyHosts",StringUtils.defaultString(proxyProperties.getNonProxyHosts()));
+ 		properties.setProperty("http.proxy.username",StringUtils.defaultString(proxyProperties.getUsername()));
+ 		properties.setProperty("http.proxy.password",StringUtils.defaultString(proxyProperties.getPassword()));
   }
 
 	protected void write(Properties properties, SignaturePropertiesFormModel signatureProperties)

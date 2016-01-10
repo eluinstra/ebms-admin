@@ -25,6 +25,7 @@ import nl.clockwork.ebms.admin.web.configuration.Constants.JdbcDriver;
 import nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.EbMSCorePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.HttpPropertiesFormPanel.HttpPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.SignaturePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormModel;
 
@@ -54,9 +55,12 @@ public class EbMSCorePropertiesReader
 		httpProperties.setPort(properties.getProperty("ebms.port") == null ? null : new Integer(properties.getProperty("ebms.port")));
 		httpProperties.setPath(properties.getProperty("ebms.path"));
 		httpProperties.setSsl(new Boolean(properties.getProperty("ebms.ssl")));
+		httpProperties.setProxy(!StringUtils.isEmpty(properties.getProperty("http.proxy.host")));
 		httpProperties.setChunkedStreamingMode(new Boolean(properties.getProperty("http.chunkedStreamingMode")));
 		if (httpProperties.getSsl())
 			read(properties,httpProperties.getSslProperties());
+		if (httpProperties.getProxy())
+			read(properties,httpProperties.getProxyProperties());
 	}
 
 	protected void read(Properties properties, SslPropertiesFormModel sslProperties) throws MalformedURLException
@@ -68,6 +72,15 @@ public class EbMSCorePropertiesReader
 		sslProperties.getKeystoreProperties().setPassword(properties.getProperty("keystore.password"));
 		sslProperties.getTruststoreProperties().setUri(properties.getProperty("truststore.path"));
 		sslProperties.getTruststoreProperties().setPassword(properties.getProperty("truststore.password"));
+	}
+
+	protected void read(Properties properties, ProxyPropertiesFormModel proxyProperties) throws MalformedURLException
+	{
+		proxyProperties.setHost(StringUtils.defaultString(properties.getProperty("http.proxy.host")));
+		proxyProperties.setPort(Integer.getInteger(properties.getProperty("http.proxy.port")));
+		proxyProperties.setNonProxyHosts(StringUtils.defaultString(properties.getProperty("http.proxy.nonProxyHosts")));
+		proxyProperties.setUsername(properties.getProperty("http.proxy.username"));
+		proxyProperties.setPassword(properties.getProperty("http.proxy.password"));
 	}
 
 	protected void read(Properties properties, SignaturePropertiesFormModel signatureProperties) throws MalformedURLException

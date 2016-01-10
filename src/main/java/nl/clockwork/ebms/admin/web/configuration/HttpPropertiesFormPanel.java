@@ -18,6 +18,7 @@ package nl.clockwork.ebms.admin.web.configuration;
 import java.util.Locale;
 
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormModel;
 
 import org.apache.commons.logging.Log;
@@ -187,6 +188,41 @@ public class HttpPropertiesFormPanel extends Panel
 				}
 			};
 			add(sslProperties);
+
+			CheckBox proxy = new CheckBox("proxy")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.proxy",HttpPropertiesForm.this));
+				}
+			};
+			add(proxy);
+
+			proxy.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					target.add(HttpPropertiesForm.this);
+				}
+			});
+
+			ProxyPropertiesFormPanel proxyProperties = new ProxyPropertiesFormPanel("proxyProperties",new PropertyModel<ProxyPropertiesFormModel>(getModelObject(),"proxyProperties"))
+			{
+				private static final long serialVersionUID = 1L;
+				
+				@Override
+				public boolean isVisible()
+				{
+					return getModelObject().getProxy();
+				}
+			};
+			add(proxyProperties);
 		}
 	}
 
@@ -199,6 +235,8 @@ public class HttpPropertiesFormPanel extends Panel
 		private boolean chunkedStreamingMode = true;
 		private boolean ssl = true;
 		private SslPropertiesFormModel sslProperties = new SslPropertiesFormModel();
+		private boolean proxy;
+		private ProxyPropertiesFormModel proxyProperties = new ProxyPropertiesFormModel();
 
 		public String getProtocol()
 		{
@@ -251,6 +289,22 @@ public class HttpPropertiesFormPanel extends Panel
 		public void setSslProperties(SslPropertiesFormModel sslProperties)
 		{
 			this.sslProperties = sslProperties;
+		}
+		public boolean getProxy()
+		{
+			return proxy;
+		}
+		public void setProxy(boolean proxy)
+		{
+			this.proxy = proxy;
+		}
+		public ProxyPropertiesFormModel getProxyProperties()
+		{
+			return proxyProperties;
+		}
+		public void setProxyProperties(ProxyPropertiesFormModel proxyProperties)
+		{
+			this.proxyProperties = proxyProperties;
 		}
 	}
 	
