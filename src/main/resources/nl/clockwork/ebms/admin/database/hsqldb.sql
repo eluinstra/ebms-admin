@@ -16,14 +16,9 @@
 
 CREATE TABLE cpa
 (
-	cpa_id						VARCHAR(128)		NOT NULL UNIQUE,
-	cpa								CLOB						NOT NULL
-);
-
-CREATE TABLE url
-(
-	original_url 			VARCHAR(256)		NOT NULL UNIQUE,
-	destination_url		VARCHAR(256)		NOT NULL
+	cpa_id						VARCHAR(256)		NOT NULL UNIQUE,
+	cpa								CLOB						NOT NULL,
+	url								VARCHAR(256)		NULL
 );
 
 CREATE TABLE ebms_message

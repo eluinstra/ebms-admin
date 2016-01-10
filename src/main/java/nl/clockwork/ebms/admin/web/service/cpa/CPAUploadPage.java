@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -78,6 +79,18 @@ public class CPAUploadPage extends BasePage
 			cpaFile.setRequired(true);
 			add(new BootstrapFormComponentFeedbackBorder("cpaFeedback",cpaFile));
 			
+			final TextField<String> url = new TextField<String>("url")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.url",EditUploadForm.this));
+				}
+			};
+			add(url);
+
 			CheckBox overwrite = new CheckBox("overwrite")
 			{
 				private static final long serialVersionUID = 1L;
@@ -133,7 +146,7 @@ public class CPAUploadPage extends BasePage
 							FileUpload file = files.get(0);
 							//String contentType = file.getContentType();
 							//FIXME char encoding
-							cpaService.insertCPA(new String(file.getBytes()),EditUploadForm.this.getModelObject().isOverwrite());
+							cpaService.insertCPA(new String(file.getBytes()),EditUploadForm.this.getModelObject().getUrl(),EditUploadForm.this.getModelObject().isOverwrite());
 						}
 						setResponsePage(new CPAsPage());
 					}
@@ -155,6 +168,7 @@ public class CPAUploadPage extends BasePage
 	{
 		private static final long serialVersionUID = 1L;
 		private List<FileUpload> cpaFile;
+		private String url;
 		private boolean overwrite;
 		
 		public List<FileUpload> getCpaFile()
@@ -165,6 +179,16 @@ public class CPAUploadPage extends BasePage
 		public void setCpaFile(List<FileUpload> cpaFile)
 		{
 			this.cpaFile = cpaFile;
+		}
+		
+		public String getUrl()
+		{
+			return url;
+		}
+		
+		public void setUrl(String url)
+		{
+			this.url = url;
 		}
 		
 		public boolean isOverwrite()

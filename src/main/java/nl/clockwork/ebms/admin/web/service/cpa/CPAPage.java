@@ -31,16 +31,6 @@ public class CPAPage extends BasePage
 		TextArea<String> cpa_ = new TextArea<String>("cpa",Model.of(cpa));
 		cpa_.setEnabled(false);
 		add(cpa_);
-		add(new Link<Void>("edit")
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void onClick()
-			{
-				setResponsePage(new CPAEditPage(cpa,CPAPage.this));
-			}
-		});
 		add(new Link<Void>("back")
 		{
 			private static final long serialVersionUID = 1L;

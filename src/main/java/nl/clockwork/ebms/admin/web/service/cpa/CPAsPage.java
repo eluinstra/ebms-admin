@@ -22,6 +22,9 @@ import nl.clockwork.ebms.service.CPAService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
@@ -78,6 +81,21 @@ public class CPAsPage extends BasePage
 					link.add(new Label("cpaId",cpaId));
 					item.add(link);
 
+					final ModalWindow urlModalWindow = new UrlModalWindow("urlModalWindow",cpaService,cpaId,EditCPAsForm.this);
+					item.add(urlModalWindow);
+
+					AjaxButton editUrl = new AjaxButton("editUrl")
+					{
+						private static final long serialVersionUID = 1L;
+
+						@Override
+						protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+						{
+							urlModalWindow.show(target);
+						}
+					};
+					item.add(editUrl);
+
 					item.add(new DownloadCPALink("downloadCPA",cpaService,cpaId));
 
 					Button delete = new Button("delete",new ResourceModel("cmd.delete"))
@@ -126,7 +144,7 @@ public class CPAsPage extends BasePage
 				@Override
 				public void onClick()
 				{
-					setResponsePage(new CPAEditPage(CPAsPage.this));
+					setResponsePage(new CPAUploadPage());
 				}
 			});
 		}
