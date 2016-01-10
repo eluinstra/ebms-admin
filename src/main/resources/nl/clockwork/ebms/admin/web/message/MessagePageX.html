@@ -78,42 +78,59 @@
 				<p class="form-control-static"><wicket:container wicket:id="statusTime"/></p>
 			</div>
 		</div>
+		<div class="form-group" wicket:id="nextEvent">
+			<label class="col-lg-2 control-label"><wicket:message key="lbl.nextEvent"/></label>
+			<div class="col-lg-10 table-responsive">
+				<table class="table table-striped">
+					<tr>
+						<td>
+							<label><wicket:message key="lbl.timestamp"/></label>
+						</td>
+						<td>
+							<label><wicket:message key="lbl.retry"/></label>
+						</td>
+						<td>
+							<label><wicket:message key="lbl.timeToLive"/></label>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p class="form-control-static"><wicket:container wicket:id="timestamp"/></p>
+						</td>
+						<td>
+							<p class="form-control-static"><wicket:container wicket:id="retry"/></p>
+						</td>
+						<td>
+							<p class="form-control-static"><wicket:container wicket:id="timeToLive"/></p>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
 		<div class="form-group">
 			<label class="col-lg-2 control-label"><wicket:message key="lbl.events"/></label>
 			<div class="col-lg-10 table-responsive">
 				<table class="table table-striped">
 					<tr>
 						<td>
-							<label><wicket:message key="lbl.time"/></label>
-						</td>
-						<td>
-							<label><wicket:message key="lbl.type"/></label>
-						</td>
-						<td>
-							<label><wicket:message key="lbl.status"/></label>
-						</td>
-						<td>
-							<label><wicket:message key="lbl.statusTime"/></label>
+							<label><wicket:message key="lbl.timestamp"/></label>
 						</td>
 						<td>
 							<label><wicket:message key="lbl.uri"/></label>
 						</td>
+						<td>
+							<label><wicket:message key="lbl.status"/></label>
+						</td>
 					</tr>
 					<tr wicket:id="events">
 						<td>
-							<p class="form-control-static"><wicket:container wicket:id="time"/></p>
-						</td>
-						<td>
-							<p class="form-control-static"><wicket:container wicket:id="type"/></p>
-						</td>
-						<td>
-							<p class="form-control-static"><a href="#" wicket:id="showErrorMessageWindow"><wicket:container wicket:id="status"/></a></p><div wicket:id="errorMessageWindow"/>
-						</td>
-						<td>
-							<p class="form-control-static"><wicket:container wicket:id="statusTime"/></p>
+							<p class="form-control-static"><wicket:container wicket:id="timestamp"/></p>
 						</td>
 						<td>
 							<p class="form-control-static"><wicket:container wicket:id="uri"/></p>
+						</td>
+						<td>
+							<p class="form-control-static"><a href="#" wicket:id="showErrorMessageWindow"><wicket:container wicket:id="status"/></a></p><div wicket:id="errorMessageWindow"/>
 						</td>
 					</tr>
 				</table>

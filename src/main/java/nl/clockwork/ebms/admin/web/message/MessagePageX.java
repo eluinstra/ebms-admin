@@ -21,7 +21,7 @@ import nl.clockwork.ebms.Constants.EbMSEventStatus;
 import nl.clockwork.ebms.Constants.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
-import nl.clockwork.ebms.admin.model.EbMSEvent;
+import nl.clockwork.ebms.admin.model.EbMSEventLog;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
@@ -98,18 +98,29 @@ public class MessagePageX extends BasePage
 		add(linkMessageError);
 		add(new Label("statusTime",message.getStatusTime()));
 		
-		PropertyListView<EbMSEvent> events = 
-			new PropertyListView<EbMSEvent>("events",message.getEvents())
+		WebMarkupContainer nextEvent = new WebMarkupContainer("nextEvent");
+		nextEvent.setOutputMarkupId(true);
+		nextEvent.setVisible(message.getEvent() != null);
+		if (message.getEvent() != null)
+		{
+			nextEvent.add(DateLabel.forDatePattern("timestamp",new Model<Date>(message.getEvent().getTimestamp()),Constants.DATETIME_FORMAT));
+			nextEvent.add(new Label("retry",new Model<Integer>(message.getEvent().getRetries())));
+			nextEvent.add(DateLabel.forDatePattern("timeToLive",new Model<Date>(message.getEvent().getTimeToLive()),Constants.DATETIME_FORMAT));
+		}
+		add(nextEvent);
+
+		PropertyListView<EbMSEventLog> events = 
+			new PropertyListView<EbMSEventLog>("events",message.getEvents())
 			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				protected void populateItem(ListItem<EbMSEvent> item)
+				protected void populateItem(ListItem<EbMSEventLog> item)
 				{
 					final ModalWindow errorMessageModalWindow = new ErrorMessageModalWindow("errorMessageWindow",item.getModelObject().getErrorMessage());
+					item.add(DateLabel.forDatePattern("timestamp",new Model<Date>(item.getModelObject().getTimestamp()),Constants.DATETIME_FORMAT));
+					item.add(new Label("uri"));
 					item.add(errorMessageModalWindow);
-					item.add(DateLabel.forDatePattern("time",new Model<Date>(item.getModelObject().getTime()),Constants.DATETIME_FORMAT));
-					item.add(new Label("type"));
 					AjaxLink<Void> link = new AjaxLink<Void>("showErrorMessageWindow")
 					{
 						private static final long serialVersionUID = 1L;
@@ -123,8 +134,6 @@ public class MessagePageX extends BasePage
 					link.setEnabled(EbMSEventStatus.FAILED.equals(item.getModelObject().getStatus()));
 					link.add(new Label("status"));
 					item.add(link);
-					item.add(DateLabel.forDatePattern("statusTime",new Model<Date>(item.getModelObject().getStatusTime()),Constants.DATETIME_FORMAT));
-					item.add(new Label("uri"));
 				}
 			}
 		;

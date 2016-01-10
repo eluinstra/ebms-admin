@@ -27,12 +27,12 @@ import java.util.zip.ZipOutputStream;
 
 import nl.clockwork.ebms.Constants;
 import nl.clockwork.ebms.Constants.EbMSEventStatus;
-import nl.clockwork.ebms.Constants.EbMSEventType;
 import nl.clockwork.ebms.Constants.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.Constants.TimeUnit;
 import nl.clockwork.ebms.admin.model.CPA;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSEvent;
+import nl.clockwork.ebms.admin.model.EbMSEventLog;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
@@ -82,7 +82,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				" time_stamp," +
 				" cpa_id," +
 				" conversation_id," +
-				" sequence_nr," +
 				" message_id," +
 				" message_nr," +
 				" ref_to_message_id," +
@@ -104,7 +103,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			result.setTimestamp(rs.getTimestamp("time_stamp"));
 			result.setCpaId(rs.getString("cpa_id"));
 			result.setConversationId(rs.getString("conversation_id"));
-			result.setSequenceNr(rs.getLong("sequence_nr"));
 			result.setMessageId(rs.getString("message_id"));
 			result.setMessageNr(rs.getInt("message_nr"));
 			result.setRefToMessageId(rs.getString("ref_to_message_id"));
@@ -196,8 +194,9 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		result.setAttachments(getAttachments(messageId,messageNr));
 		for (EbMSAttachment attachment : result.getAttachments())
 			attachment.setMessage(result);
+		result.setEvent(getEvent(messageId));
 		result.setEvents(getEvents(messageId));
-		for (EbMSEvent event : result.getEvents())
+		for (EbMSEventLog event : result.getEvents())
 			event.setMessage(result);
 		return result;
 	}
@@ -217,7 +216,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		);
 		result.setAttachments(new ArrayList<EbMSAttachment>());
 		result.setEvents(getEvents(messageId));
-		for (EbMSEvent event : result.getEvents())
+		for (EbMSEventLog event : result.getEvents())
 			event.setMessage(result);
 		return result;
 	}
@@ -291,18 +290,43 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		);
 	}
 
-	private List<EbMSEvent> getEvents(String messageId)
+	private EbMSEvent getEvent(String messageId)
+	{
+		try
+		{
+			return jdbcTemplate.queryForObject(
+				"select time_to_live, time_stamp, retries" +
+				" from ebms_event" +
+				" where message_id = ?",
+				new ParameterizedRowMapper<EbMSEvent>()
+				{
+					@Override
+					public EbMSEvent mapRow(ResultSet rs, int rowNum) throws SQLException
+					{
+						return new EbMSEvent(rs.getTimestamp("time_to_live"),rs.getTimestamp("time_stamp"),rs.getInt("retries"));
+					}
+				},
+				messageId
+			);
+		}
+		catch (EmptyResultDataAccessException e)
+		{
+			return null;
+		}
+	}
+
+	private List<EbMSEventLog> getEvents(String messageId)
 	{
 		return jdbcTemplate.query(
-			"select message_id, time, type, status, status_time, uri, error_message" + 
-			" from ebms_event" + 
+			"select message_id, time_stamp, uri, status, error_message" + 
+			" from ebms_event_log" + 
 			" where message_id = ?",
-			new ParameterizedRowMapper<EbMSEvent>()
+			new ParameterizedRowMapper<EbMSEventLog>()
 			{
 				@Override
-				public EbMSEvent mapRow(ResultSet rs, int rowNum) throws SQLException
+				public EbMSEventLog mapRow(ResultSet rs, int rowNum) throws SQLException
 				{
-					return new EbMSEvent(rs.getTimestamp("time"),EbMSEventType.get(rs.getInt("type")),EbMSEventStatus.get(rs.getInt("status")),rs.getTimestamp("status_time"),rs.getString("uri"),rs.getString("error_message"));
+					return new EbMSEventLog(rs.getTimestamp("time_stamp"),rs.getString("uri"),EbMSEventStatus.get(rs.getInt("status")),rs.getString("error_message"));
 				}
 			},
 			messageId
@@ -395,7 +419,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 					{
 						printer.print(rs.getString("message_id"));
 						printer.print(rs.getInt("message_nr"));
-						printer.print(rs.getLong("sequence_nr"));
 						printer.print(rs.getString("ref_to_message_id"));
 						printer.print(rs.getString("conversation_id"));
 						printer.print(rs.getTimestamp("time_stamp"));
@@ -541,11 +564,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			{
 				parameters.add(messageFilter.getRefToMessageId());
 				result.append(" and ref_to_message_id = ?");
-			}
-			if (messageFilter.getSequenceNr() != null)
-			{
-				parameters.add(messageFilter.getSequenceNr());
-				result.append(" and sequence_nr = ?");
 			}
 			if (messageFilter.getStatuses().size() > 0)
 			{

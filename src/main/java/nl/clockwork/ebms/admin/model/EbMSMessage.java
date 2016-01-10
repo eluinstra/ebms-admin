@@ -29,7 +29,6 @@ public class EbMSMessage implements IClusterable
 	private Date timestamp;
 	private String cpaId;
 	private String conversationId;
-	private Long sequenceNr;
 	private String messageId;
 	private int messageNr;
 	private String refToMessageId;
@@ -42,7 +41,8 @@ public class EbMSMessage implements IClusterable
 	private EbMSMessageStatus status;
 	private Date statusTime;
 	private List<EbMSAttachment> attachments = new ArrayList<EbMSAttachment>();
-	private List<EbMSEvent> events = new ArrayList<EbMSEvent>();
+	private EbMSEvent event;
+	private List<EbMSEventLog> events = new ArrayList<EbMSEventLog>();
 
 	public Date getTimestamp()
 	{
@@ -72,16 +72,6 @@ public class EbMSMessage implements IClusterable
 	public void setConversationId(String conversationId)
 	{
 		this.conversationId = conversationId;
-	}
-
-	public Long getSequenceNr()
-	{
-		return sequenceNr;
-	}
-
-	public void setSequenceNr(Long sequenceNr)
-	{
-		this.sequenceNr = sequenceNr;
 	}
 
 	public String getMessageId()
@@ -204,12 +194,22 @@ public class EbMSMessage implements IClusterable
 		this.attachments = attachments;
 	}
 
-	public List<EbMSEvent> getEvents()
+	public EbMSEvent getEvent()
+	{
+		return event;
+	}
+
+	public void setEvent(EbMSEvent event)
+	{
+		this.event = event;
+	}
+
+	public List<EbMSEventLog> getEvents()
 	{
 		return events;
 	}
 	
-	public void setEvents(List<EbMSEvent> events)
+	public void setEvents(List<EbMSEventLog> events)
 	{
 		this.events = events;
 	}
