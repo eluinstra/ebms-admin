@@ -54,7 +54,17 @@ public class SslPropertiesFormPanel extends Panel
 		{
 			super(id,new CompoundPropertyModel<SslPropertiesFormModel>(model));
 
-			add(new CheckBoxMultipleChoice<String>("allowedCipherSuites",getModelObject().getDefaultCipherSuites()));
+			CheckBoxMultipleChoice<String> allowedCipherSuites = new CheckBoxMultipleChoice<String>("allowedCipherSuites",getModelObject().getDefaultCipherSuites())
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.allowedCipherSuites",SslPropertiesForm.this));
+				}
+			};
+			add(allowedCipherSuites);
 
 			CheckBox requireClientAuthentication = new CheckBox("requireClientAuthentication")
 			{
