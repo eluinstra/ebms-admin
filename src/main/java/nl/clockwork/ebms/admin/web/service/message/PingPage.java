@@ -55,6 +55,8 @@ public class PingPage extends BasePage
 	private CPAService cpaService;
 	@SpringBean(name="ebMSMessageService")
 	private EbMSMessageService ebMSMessageService;
+	@SpringBean(name="cleoPatch")
+	private Boolean cleoPatch;
 
 	public PingPage()
 	{
@@ -165,7 +167,7 @@ public class PingPage extends BasePage
 				}
 			};
 			fromRoles.setRequired(false).setOutputMarkupId(true);
-			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",fromRoles));
+			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",fromRoles).setVisible(cleoPatch));
 			
 			fromRoles.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
@@ -239,7 +241,7 @@ public class PingPage extends BasePage
 				}
 			};
 			toRoles.setRequired(false).setOutputMarkupId(true);
-			add(new BootstrapFormComponentFeedbackBorder("toRoleFeedback",toRoles));
+			add(new BootstrapFormComponentFeedbackBorder("toRoleFeedback",toRoles).setVisible(cleoPatch));
 			
 			toRoles.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{

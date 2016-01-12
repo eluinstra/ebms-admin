@@ -37,4 +37,8 @@
 		<constructor-arg value="${maxItemsPerPage}"/>
 	</bean>
 
+	<bean id="cleoPatch" class="java.lang.Boolean">
+		<constructor-arg value="${patch.cleo.enable}"/>
+	</bean>
+
 </beans>
