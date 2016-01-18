@@ -86,7 +86,9 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				" message_nr," +
 				" ref_to_message_id," +
 				" time_to_live," +
+				" from_party_id," +
 				" from_role," +
+				" to_party_id," +
 				" to_role," +
 				" service," +
 				" action," +
@@ -107,7 +109,9 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			result.setMessageNr(rs.getInt("message_nr"));
 			result.setRefToMessageId(rs.getString("ref_to_message_id"));
 			result.setTimeToLive(rs.getTimestamp("time_to_live"));
+			result.setFromPartyId(rs.getString("from_party_id"));
 			result.setFromRole(rs.getString("from_role"));
+			result.setToPartyId(rs.getString("to_party_id"));
 			result.setToRole(rs.getString("to_role"));
 			result.setService(rs.getString("service"));
 			result.setAction(rs.getString("action"));

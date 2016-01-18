@@ -33,7 +33,9 @@ public class EbMSMessage implements IClusterable
 	private int messageNr;
 	private String refToMessageId;
 	private Date timeToLive;
+	private String fromPartyId;
 	private String fromRole;
+	private String toPartyId;
 	private String toRole;
 	private String service;
 	private String action;
@@ -114,6 +116,16 @@ public class EbMSMessage implements IClusterable
 		this.timeToLive = timeToLive;
 	}
 
+	public String getFromPartyId()
+	{
+		return fromPartyId;
+	}
+
+	public void setFromPartyId(String fromPartyId)
+	{
+		this.fromPartyId = fromPartyId;
+	}
+
 	public String getFromRole()
 	{
 		return fromRole;
@@ -122,6 +134,16 @@ public class EbMSMessage implements IClusterable
 	public void setFromRole(String fromRole)
 	{
 		this.fromRole = fromRole;
+	}
+
+	public String getToPartyId()
+	{
+		return toPartyId;
+	}
+
+	public void setToPartyId(String toPartyId)
+	{
+		this.toPartyId = toPartyId;
 	}
 
 	public String getToRole()

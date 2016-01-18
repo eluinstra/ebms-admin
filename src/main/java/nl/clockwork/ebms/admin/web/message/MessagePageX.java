@@ -78,7 +78,9 @@ public class MessagePageX extends BasePage
 		add(link);
 		add(DateLabel.forDatePattern("timestamp",new Model<Date>(message.getTimestamp()),Constants.DATETIME_FORMAT));
 		add(new Label("cpaId",message.getCpaId()));
+		add(new Label("fromPartyId",message.getFromPartyId()));
 		add(new Label("fromRole",message.getFromRole()));
+		add(new Label("toPartyId",message.getToPartyId()));
 		add(new Label("toRole",message.getToRole()));
 		add(new Label("service",message.getService()));
 		add(new Label("action",message.getAction()));
@@ -99,7 +101,6 @@ public class MessagePageX extends BasePage
 		add(new Label("statusTime",message.getStatusTime()));
 		
 		WebMarkupContainer nextEvent = new WebMarkupContainer("nextEvent");
-		nextEvent.setOutputMarkupId(true);
 		nextEvent.setVisible(message.getEvent() != null);
 		if (message.getEvent() != null)
 		{
@@ -109,6 +110,8 @@ public class MessagePageX extends BasePage
 		}
 		add(nextEvent);
 
+		WebMarkupContainer eventLog = new WebMarkupContainer("eventLog");
+		eventLog.setVisible(message.getEvents().size() > 0);
 		PropertyListView<EbMSEventLog> events = 
 			new PropertyListView<EbMSEventLog>("events",message.getEvents())
 			{
@@ -137,7 +140,8 @@ public class MessagePageX extends BasePage
 				}
 			}
 		;
-		add(events);
+		eventLog.add(events);
+		add(eventLog);
 
 		WebMarkupContainer rawOutputContainer = new WebMarkupContainer("rawOutputContainer")
 		{
