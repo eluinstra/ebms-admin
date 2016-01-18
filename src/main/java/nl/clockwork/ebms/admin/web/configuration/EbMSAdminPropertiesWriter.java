@@ -38,12 +38,14 @@ public class EbMSAdminPropertiesWriter extends EbMSCorePropertiesWriter
 		{
 			case EBMS_ADMIN:
 				write(p,ebMSAdminProperties.getConsoleProperties());
+				write(p,ebMSAdminProperties.getCoreProperties());
 				write(p,ebMSAdminProperties.getServiceProperties());
 				write(p,ebMSAdminProperties.getJdbcProperties());
 				p.store(writer,"EbMS Admin properties");
 				break;
 			case EBMS_ADMIN_EMBEDDED:
 				write(p,ebMSAdminProperties.getConsoleProperties());
+				write(p,ebMSAdminProperties.getCoreProperties());
 				write(p,ebMSAdminProperties.getHttpProperties());
 				write(p,ebMSAdminProperties.getSignatureProperties());
 				write(p,ebMSAdminProperties.getJdbcProperties());

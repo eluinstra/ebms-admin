@@ -26,6 +26,7 @@ import nl.clockwork.ebms.admin.web.BootstrapPanelBorder;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.admin.web.configuration.ConsolePropertiesFormPanel.ConsolePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.Constants.PropertiesType;
+import nl.clockwork.ebms.admin.web.configuration.CorePropertiesFormPanel.CorePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.EbMSCorePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.HttpPropertiesFormPanel.HttpPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormModel;
@@ -78,6 +79,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 			
 			List<BootstrapPanelBorder> components = new ArrayList<BootstrapPanelBorder>();
 			components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("consoleProperties"),new ConsolePropertiesFormPanel("component",new PropertyModel<ConsolePropertiesFormModel>(getModelObject(),"consoleProperties"))));
+			components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("coreProperties"),new CorePropertiesFormPanel("component",new PropertyModel<CorePropertiesFormModel>(getModelObject(),"coreProperties"))));
 			if (PropertiesType.EBMS_ADMIN.equals(propertiesType))
 				components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("serviceProperties"),new ServicePropertiesFormPanel("component",new PropertyModel<ServicePropertiesFormModel>(getModelObject(),"serviceProperties"))));
 			if (PropertiesType.EBMS_ADMIN_EMBEDDED.equals(propertiesType))
@@ -119,6 +121,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 	{
 		private static final long serialVersionUID = 1L;
 		private ConsolePropertiesFormModel consoleProperties = new ConsolePropertiesFormModel();
+		private CorePropertiesFormModel coreProperties = new CorePropertiesFormModel();
 		private ServicePropertiesFormModel serviceProperties = new ServicePropertiesFormModel();
 		
 		public ConsolePropertiesFormModel getConsoleProperties()
@@ -128,6 +131,14 @@ public class EbMSAdminPropertiesPage extends BasePage
 		public void setConsoleProperties(ConsolePropertiesFormModel consoleProperties)
 		{
 			this.consoleProperties = consoleProperties;
+		}
+		public CorePropertiesFormModel getCoreProperties()
+		{
+			return coreProperties;
+		}
+		public void setCoreProperties(CorePropertiesFormModel coreProperties)
+		{
+			this.coreProperties = coreProperties;
 		}
 		public ServicePropertiesFormModel getServiceProperties()
 		{

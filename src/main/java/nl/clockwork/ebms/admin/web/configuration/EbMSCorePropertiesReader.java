@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Properties;
 
 import nl.clockwork.ebms.admin.web.configuration.Constants.JdbcDriver;
+import nl.clockwork.ebms.admin.web.configuration.CorePropertiesFormPanel.CorePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.EbMSCorePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.HttpPropertiesFormPanel.HttpPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormModel;
@@ -44,11 +45,17 @@ public class EbMSCorePropertiesReader
 	{
 		Properties properties = new Properties();
 		properties.load(reader);
+		read(properties,ebMSCoreProperties.getCoreProperties());
 		read(properties,ebMSCoreProperties.getHttpProperties());
 		read(properties,ebMSCoreProperties.getSignatureProperties());
 		read(properties,ebMSCoreProperties.getJdbcProperties());
 	}
 	
+	protected void read(Properties properties, CorePropertiesFormModel coreProperties) throws MalformedURLException
+	{
+		coreProperties.setCleoPatch(Boolean.parseBoolean(properties.getProperty("patch.cleo.enable")));
+	}
+
 	protected void read(Properties properties, HttpPropertiesFormModel httpProperties) throws MalformedURLException
 	{
 		//httpProperties.setHost(properties.getProperty("ebms.host"));

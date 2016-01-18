@@ -40,12 +40,14 @@ public class EbMSAdminPropertiesReader extends EbMSCorePropertiesReader
 			case EBMS_ADMIN:
 				properties.load(reader);
 				read(properties,ebMSAdminProperties.getConsoleProperties());
+				read(properties,ebMSAdminProperties.getCoreProperties());
 				read(properties,ebMSAdminProperties.getServiceProperties());
 				read(properties,ebMSAdminProperties.getJdbcProperties());
 				break;
 			case EBMS_ADMIN_EMBEDDED:
 				properties.load(reader);
 				read(properties,ebMSAdminProperties.getConsoleProperties());
+				read(properties,ebMSAdminProperties.getCoreProperties());
 				read(properties,ebMSAdminProperties.getHttpProperties());
 				read(properties,ebMSAdminProperties.getSignatureProperties());
 				read(properties,ebMSAdminProperties.getJdbcProperties());

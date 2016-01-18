@@ -24,6 +24,7 @@ import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapPanelBorder;
 import nl.clockwork.ebms.admin.web.ResetButton;
+import nl.clockwork.ebms.admin.web.configuration.CorePropertiesFormPanel.CorePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.HttpPropertiesFormPanel.HttpPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.SignaturePropertiesFormModel;
@@ -72,6 +73,7 @@ public class EbMSCorePropertiesPage extends BasePage
 			super(id,new CompoundPropertyModel<EbMSCorePropertiesFormModel>(model));
 			
 			List<BootstrapPanelBorder> components = new ArrayList<BootstrapPanelBorder>();
+			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("coreProperties"),new CorePropertiesFormPanel("component",new PropertyModel<CorePropertiesFormModel>(getModelObject(),"coreProperties"))));
 			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("httpProperties"),new HttpPropertiesFormPanel("component",new PropertyModel<HttpPropertiesFormModel>(getModelObject(),"httpProperties"))));
 			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("signatureProperties"),new SignaturePropertiesFormPanel("component",new PropertyModel<SignaturePropertiesFormModel>(getModelObject(),"signatureProperties"))));
 			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("jdbcProperties"),new JdbcPropertiesFormPanel("component",new PropertyModel<JdbcPropertiesFormModel>(getModelObject(),"jdbcProperties"))));
@@ -105,10 +107,19 @@ public class EbMSCorePropertiesPage extends BasePage
 	public static class EbMSCorePropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
+		private CorePropertiesFormModel coreProperties = new CorePropertiesFormModel();
 		private HttpPropertiesFormModel httpProperties = new HttpPropertiesFormModel();
 		private SignaturePropertiesFormModel signatureProperties = new SignaturePropertiesFormModel();
 		private JdbcPropertiesFormModel jdbcProperties = new JdbcPropertiesFormModel();
-		
+
+		public CorePropertiesFormModel getCoreProperties()
+		{
+			return coreProperties;
+		}
+		public void setCoreProperties(CorePropertiesFormModel coreProperties)
+		{
+			this.coreProperties = coreProperties;
+		}
 		public HttpPropertiesFormModel getHttpProperties()
 		{
 			return httpProperties;

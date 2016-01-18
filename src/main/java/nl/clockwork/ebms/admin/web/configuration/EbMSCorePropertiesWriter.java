@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Properties;
 
+import nl.clockwork.ebms.admin.web.configuration.CorePropertiesFormPanel.CorePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.EbMSCorePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.HttpPropertiesFormPanel.HttpPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormModel;
@@ -40,11 +41,17 @@ public class EbMSCorePropertiesWriter
 	public void write(EbMSCorePropertiesFormModel ebMSCoreProperties) throws IOException
 	{
 		Properties p = new Properties();
+		write(p,ebMSCoreProperties.getCoreProperties());
 		write(p,ebMSCoreProperties.getHttpProperties());
 		write(p,ebMSCoreProperties.getSignatureProperties());
 		write(p,ebMSCoreProperties.getJdbcProperties());
 		p.store(writer,"EbMS Core properties");
 	}
+
+  protected void write(Properties properties, CorePropertiesFormModel coreProperties)
+  {
+		properties.setProperty("patch.cleo.enable",Boolean.toString(coreProperties.getCleoPatch()));
+  }
 
 	protected void write(Properties properties, HttpPropertiesFormModel httpProperties)
   {
