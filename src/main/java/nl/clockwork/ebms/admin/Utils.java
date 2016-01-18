@@ -15,9 +15,8 @@
  */
 package nl.clockwork.ebms.admin;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -33,8 +32,7 @@ public class Utils
 	{
 		try
 		{
-			File file = new File(propertiesFile);
-			Properties properties = Utils.readProperties(new FileReader(file));
+			Properties properties = Utils.readProperties(Utils.class.getResourceAsStream(propertiesFile));
 			return properties.getProperty("artifactId") + "-" + properties.getProperty("version");
 		}
 		catch (Exception e)
@@ -43,10 +41,10 @@ public class Utils
 		}
 	}
 	
-	public static Properties readProperties(FileReader reader) throws IOException
+	public static Properties readProperties(InputStream inputStream) throws IOException
 	{
 		Properties properties = new Properties();
-		properties.load(reader);
+		properties.load(inputStream);
 		return properties;
 	}
 	

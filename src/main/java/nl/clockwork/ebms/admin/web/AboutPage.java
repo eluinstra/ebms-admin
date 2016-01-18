@@ -38,8 +38,8 @@ public class AboutPage extends BasePage
 	public AboutPage(final PageParameters parameters) throws FileNotFoundException, IOException
 	{
 		super(parameters);
-		add(new WebMarkupContainer("ebms-admin.version").add(new Label("version",Utils.readVersion("META-INF/maven/nl.clockwork.ebms.admin/ebms-admin/pom.properties"))));
-		add(new WebMarkupContainer("ebms-core.version").add(new Label("version",Utils.readVersion("META-INF/maven/nl.clockwork.ebms/ebms-core/pom.properties"))));
+		add(new WebMarkupContainer("ebms-admin.version").add(new Label("version",Utils.readVersion("/META-INF/maven/nl.clockwork.ebms.admin/ebms-admin/pom.properties"))));
+		add(new WebMarkupContainer("ebms-core.version").add(new Label("version",Utils.readVersion("/META-INF/maven/nl.clockwork.ebms/ebms-core/pom.properties"))));
 		Map<String,String> properties = propertyPlaceholderConfigurer.getProperties();
 		StringWriter writer = new StringWriter();
 		Utils.writeProperties(properties,writer);
