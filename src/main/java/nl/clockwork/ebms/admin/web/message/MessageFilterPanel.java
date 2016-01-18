@@ -119,8 +119,54 @@ public abstract class MessageFilterPanel extends Panel
 					{
 						MessageFilterFormModel model = MessageFilterForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						model.resetFromRoles(CPAUtils.getRoleNames(cpa));
-						model.resetToRoles(CPAUtils.getRoleNames(cpa));
+						model.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
+						model.resetFromRoles();
+						model.resetToPartyIds(CPAUtils.getPartyIds(cpa));
+						model.resetToRoles();
+						model.resetServices();
+						model.resetActions();
+						target.add(getFeedbackComponent());
+						target.add(getForm());
+					}
+					catch (JAXBException e)
+					{
+						logger.error("",e);
+						error(e.getMessage());
+					}
+				}
+      });
+
+			DropDownChoice<String> fromPartyIds = new DropDownChoice<String>("fromPartyIds",new PropertyModel<String>(this.getModelObject(),"fromRole.partyId"),new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.fromPartyId",MessageFilterForm.this));
+				}
+				
+				@Override
+				public boolean isEnabled()
+				{
+					return MessageFilterForm.this.getModelObject().getToRole() == null;
+				}
+			};
+			fromPartyIds.setOutputMarkupId(true);
+			add(fromPartyIds);
+			
+			fromPartyIds.add(new AjaxFormComponentUpdatingBehavior("onchange")
+      {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					try
+					{
+						MessageFilterFormModel model = MessageFilterForm.this.getModelObject();
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						model.resetFromRoles(CPAUtils.getRoleNames(cpa,model.getFromRole().getPartyId()));
 						model.resetServices();
 						model.resetActions();
 						target.add(getFeedbackComponent());
@@ -165,6 +211,50 @@ public abstract class MessageFilterPanel extends Panel
 						MessageFilterFormModel model = MessageFilterForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole().getRole()));
+						model.resetActions();
+						target.add(getFeedbackComponent());
+						target.add(getForm());
+					}
+					catch (JAXBException e)
+					{
+						logger.error("",e);
+						error(e.getMessage());
+					}
+				}
+      });
+
+			DropDownChoice<String> toPartyIds = new DropDownChoice<String>("toPartyIds",new PropertyModel<String>(this.getModelObject(),"toRole.partyId"),new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"))
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.toPartyId",MessageFilterForm.this));
+				}
+
+				@Override
+				public boolean isEnabled()
+				{
+					return MessageFilterForm.this.getModelObject().getFromRole() == null;
+				}
+			};
+			toPartyIds.setOutputMarkupId(true);
+			add(toPartyIds);
+			
+			toPartyIds.add(new AjaxFormComponentUpdatingBehavior("onchange")
+      {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					try
+					{
+						MessageFilterFormModel model = MessageFilterForm.this.getModelObject();
+						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToRole().getPartyId()));
+						model.resetServices();
 						model.resetActions();
 						target.add(getFeedbackComponent());
 						target.add(getForm());
@@ -390,11 +480,27 @@ public abstract class MessageFilterPanel extends Panel
 	public static class MessageFilterFormModel extends EbMSMessageFilter
 	{
 		private static final long serialVersionUID = 1L;
+		private List<String> fromPartyIds = new ArrayList<String>();
 		private List<String> fromRoles = new ArrayList<String>();
+		private List<String> toPartyIds = new ArrayList<String>();
 		private List<String> toRoles = new ArrayList<String>();
 		private List<String> services = new ArrayList<String>();
 		private List<String> actions = new ArrayList<String>();
 		
+		public List<String> getFromPartyIds()
+		{
+			return fromPartyIds;
+		}
+		public void resetFromPartyIds()
+		{
+			getFromPartyIds().clear();
+			setFromRole(null);
+		}
+		public void resetFromPartyIds(List<String> partyIds)
+		{
+			resetFromPartyIds();
+			getFromPartyIds().addAll(partyIds);
+		}
 		public List<String> getFromRoles()
 		{
 			return fromRoles;
@@ -402,12 +508,27 @@ public abstract class MessageFilterPanel extends Panel
 		public void resetFromRoles()
 		{
 			getFromRoles().clear();
-			setFromRole(null);
+			if (getFromRole() != null)
+				getFromRole().setRole(null);
 		}
 		public void resetFromRoles(ArrayList<String> roleNames)
 		{
 			resetFromRoles();
 			getFromRoles().addAll(roleNames);
+		}
+		public List<String> getToPartyIds()
+		{
+			return toPartyIds;
+		}
+		public void resetToPartyIds()
+		{
+			getToPartyIds().clear();
+			setToRole(null);
+		}
+		public void resetToPartyIds(List<String> partyIds)
+		{
+			resetToPartyIds();
+			getToPartyIds().addAll(partyIds);
 		}
 		public List<String> getToRoles()
 		{
@@ -416,7 +537,8 @@ public abstract class MessageFilterPanel extends Panel
 		public void resetToRoles()
 		{
 			getToRoles().clear();
-			setFromRole(null);
+			if (getToRole() != null)
+				getToRole().setRole(null);
 		}
 		public void resetToRoles(ArrayList<String> roleNames)
 		{
