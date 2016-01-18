@@ -61,7 +61,7 @@ public class ConsolePropertiesFormPanel extends Panel
 		}
 	}
 
-	public static class ConsolePropertiesFormModel extends JdbcURL implements IClusterable
+	public static class ConsolePropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		private int maxItemsPerPage = 20;
