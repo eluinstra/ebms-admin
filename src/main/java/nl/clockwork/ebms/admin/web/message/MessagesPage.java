@@ -137,7 +137,9 @@ public class MessagesPage extends BasePage
 				item.add(link);
 				item.add(DateLabel.forDatePattern("timestamp",new Model<Date>(message.getTimestamp()),Constants.DATETIME_FORMAT));
 				item.add(new Label("cpaId",message.getCpaId()));
+				item.add(new Label("fromPartyId",message.getFromPartyId()));
 				item.add(new Label("fromRole",message.getFromRole()));
+				item.add(new Label("toPartyId",message.getToPartyId()));
 				item.add(new Label("toRole",message.getToRole()));
 				item.add(new Label("service",message.getService()));
 				item.add(new Label("action",message.getAction()));
