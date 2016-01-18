@@ -550,11 +550,12 @@ public class SendMessagePageX extends BasePage
 		private List<String> services = new ArrayList<String>();
 		private List<String> actions = new ArrayList<String>();
 		private boolean rawInput;
-		private boolean extended;
+		private boolean extended = true;
 
 		public EbMSMessageContextModel()
 		{
 			setFromRole(new Role());
+			setToRole(new Role());
 		}
 		
 		public List<String> getFromPartyIds()

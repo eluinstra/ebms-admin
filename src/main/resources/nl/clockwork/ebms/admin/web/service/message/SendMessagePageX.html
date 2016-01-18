@@ -36,6 +36,12 @@
 				<select class="form-control" wicket:id="toRoles"/>
 			</div>
 		</div>
+		<div class="form-group">
+			<label wicket:for="extended" class="col-lg-2 control-label"><wicket:label/></label>
+			<div class="col-lg-10">
+				<input type="checkbox" wicket:id="extended" />
+			</div>
+		</div>
 		<div class="form-group" wicket:id="serviceFeedback">
 			<label wicket:for="services" class="col-lg-2 control-label"><wicket:label/></label>
 			<div class="col-lg-10">
@@ -73,12 +79,6 @@
 			</div>
 		</div>
 		<wicket:container wicket:id="dataSources"/>
-		<div class="form-group">
-			<label wicket:for="extended" class="col-lg-2 control-label"><wicket:label/></label>
-			<div class="col-lg-10">
-				<input type="checkbox" wicket:id="extended" />
-			</div>
-		</div>
 		<div class="form-group">
 			<div class="col-lg-offset-2 col-lg-10">
 				<input type="submit" class="btn btn-default" wicket:id="send" wicket:message="value:cmd.send"/>
