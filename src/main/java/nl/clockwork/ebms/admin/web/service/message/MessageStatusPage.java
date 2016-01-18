@@ -518,7 +518,7 @@ public class MessageStatusPage extends BasePage
 		public void resetFromRoles()
 		{
 			getFromRoles().clear();
-			//setFromRole(null);
+			setFromRole(null);
 		}
 		public void resetFromRoles(List<String> roleNames)
 		{
@@ -563,7 +563,7 @@ public class MessageStatusPage extends BasePage
 		public void resetToRoles()
 		{
 			getToRoles().clear();
-			//setToRole(null);
+			setToRole(null);
 		}
 		public void resetToRoles(ArrayList<String> roleNames)
 		{

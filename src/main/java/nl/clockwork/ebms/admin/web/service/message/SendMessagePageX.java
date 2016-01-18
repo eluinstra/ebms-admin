@@ -565,7 +565,7 @@ public class SendMessagePageX extends BasePage
 		public void resetFromPartyIds()
 		{
 			getFromPartyIds().clear();
-			//getFromRole().setPartyId(null);
+			getFromRole().setPartyId(null);
 		}
 		public void resetFromPartyIds(List<String> partyIds)
 		{
@@ -594,7 +594,7 @@ public class SendMessagePageX extends BasePage
 		public void resetToPartyIds()
 		{
 			getToPartyIds().clear();
-			//getToRole().setPartyId(null);
+			getToRole().setPartyId(null);
 		}
 		public void resetToPartyIds(List<String> partyIds)
 		{
