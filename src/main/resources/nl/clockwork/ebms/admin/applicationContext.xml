@@ -27,7 +27,6 @@
  
 	<import resource="classpath:nl/clockwork/ebms/admin/applicationConfig.xml"/>
 
-	<import resource="classpath:nl/clockwork/ebms/cache.xml" />
 	<import resource="classpath:nl/clockwork/ebms/admin/datasource.xml"/>
 	<import resource="classpath:nl/clockwork/ebms/admin/dao.xml"/>
 
