@@ -30,7 +30,7 @@ import java.util.Map;
 
 import javax.management.MBeanServer;
 
-import nl.clockwork.ebms.admin.web.ExtensionPageProvider;
+import nl.clockwork.ebms.admin.web.ExtensionProvider;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -177,9 +177,9 @@ public class Start
 		context.setInitParameter("configuration","deployment");
 
 		String contextConfigLocation = "classpath:nl/clockwork/ebms/admin/applicationContext.xml";
-		for (ExtensionPageProvider extensionPageProvider : ExtensionPageProvider.get())
-			if (!StringUtils.isEmpty(extensionPageProvider.getSpringConfigurationFile()))
-				contextConfigLocation = "," + extensionPageProvider.getSpringConfigurationFile();
+		for (ExtensionProvider extensionProvider : ExtensionProvider.get())
+			if (!StringUtils.isEmpty(extensionProvider.getSpringConfigurationFile()))
+				contextConfigLocation = "," + extensionProvider.getSpringConfigurationFile();
 
 		context.setInitParameter("contextConfigLocation",contextConfigLocation);
 

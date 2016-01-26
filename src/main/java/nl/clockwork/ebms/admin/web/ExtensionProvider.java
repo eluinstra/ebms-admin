@@ -21,13 +21,13 @@ import java.util.ServiceLoader;
 
 import nl.clockwork.ebms.admin.web.menu.MenuItem;
 
-public abstract class ExtensionPageProvider
+public abstract class ExtensionProvider
 {
-	public static List<ExtensionPageProvider> get()
+	public static List<ExtensionProvider> get()
 	{
-		ServiceLoader<ExtensionPageProvider> providers = ServiceLoader.load(ExtensionPageProvider.class);
-		List<ExtensionPageProvider> result = new ArrayList<ExtensionPageProvider>();
-		for (ExtensionPageProvider provider : providers)
+		ServiceLoader<ExtensionProvider> providers = ServiceLoader.load(ExtensionProvider.class);
+		List<ExtensionProvider> result = new ArrayList<ExtensionProvider>();
+		for (ExtensionProvider provider : providers)
 			result.add(provider);
 		return result;
 	}
