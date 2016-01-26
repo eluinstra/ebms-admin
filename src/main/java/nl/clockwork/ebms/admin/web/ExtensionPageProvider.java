@@ -32,6 +32,8 @@ public abstract class ExtensionPageProvider
 		return result;
 	}
 
+	public abstract String getSpringConfigurationFile();
+	public abstract String getHSQLDBFile();
 	public abstract List<MenuItem> getMenuItems();
 
 }

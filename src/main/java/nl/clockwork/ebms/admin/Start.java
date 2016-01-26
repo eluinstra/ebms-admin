@@ -30,6 +30,8 @@ import java.util.Map;
 
 import javax.management.MBeanServer;
 
+import nl.clockwork.ebms.admin.web.ExtensionPageProvider;
+
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
@@ -173,7 +175,13 @@ public class Start
 		}
 
 		context.setInitParameter("configuration","deployment");
-		context.setInitParameter("contextConfigLocation","classpath:nl/clockwork/ebms/admin/applicationContext.xml");
+
+		String contextConfigLocation = "classpath:nl/clockwork/ebms/admin/applicationContext.xml";
+		for (ExtensionPageProvider extensionPageProvider : ExtensionPageProvider.get())
+			if (!StringUtils.isEmpty(extensionPageProvider.getSpringConfigurationFile()))
+				contextConfigLocation = "," + extensionPageProvider.getSpringConfigurationFile();
+
+		context.setInitParameter("contextConfigLocation",contextConfigLocation);
 
 		ServletHolder servletHolder = new ServletHolder(nl.clockwork.ebms.admin.web.ResourceServlet.class);
 		context.addServlet(servletHolder,"/css/*");

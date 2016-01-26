@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import nl.clockwork.ebms.admin.web.ExtensionPageProvider;
 import nl.clockwork.ebms.admin.web.configuration.JdbcURL;
 
 import org.apache.commons.cli.Options;
@@ -151,6 +152,9 @@ public class StartEmbedded extends Start
 			if (!c.createStatement().executeQuery("select table_name from information_schema.tables where table_name = 'CPA'").next())
 			{
 				c.createStatement().executeUpdate(IOUtils.toString(this.getClass().getResourceAsStream("/nl/clockwork/ebms/admin/database/hsqldb.sql")));
+				for (ExtensionPageProvider extensionPageProvider : ExtensionPageProvider.get())
+					if (StringUtils.isEmpty(extensionPageProvider.getHSQLDBFile()))
+						c.createStatement().executeUpdate(IOUtils.toString(this.getClass().getResourceAsStream(extensionPageProvider.getHSQLDBFile())));
 				System.out.println("EbMS tables created");
 			}
 			else
@@ -229,7 +233,13 @@ public class StartEmbedded extends Start
 		}
 
 		context.setInitParameter("configuration","deployment");
-		context.setInitParameter("contextConfigLocation","classpath:nl/clockwork/ebms/admin/applicationContext.embedded.xml");
+
+		String contextConfigLocation = "classpath:nl/clockwork/ebms/admin/applicationContext.embedded.xml";
+		for (ExtensionPageProvider extensionPageProvider : ExtensionPageProvider.get())
+			if (!StringUtils.isEmpty(extensionPageProvider.getSpringConfigurationFile()))
+				contextConfigLocation = "," + extensionPageProvider.getSpringConfigurationFile();
+
+		context.setInitParameter("contextConfigLocation",contextConfigLocation);
 
 		ServletHolder servletHolder = new ServletHolder(nl.clockwork.ebms.admin.web.ResourceServlet.class);
 		context.addServlet(servletHolder,"/css/*");
