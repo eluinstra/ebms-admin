@@ -237,7 +237,7 @@ public class StartEmbedded extends Start
 		String contextConfigLocation = "classpath:nl/clockwork/ebms/admin/applicationContext.embedded.xml";
 		for (ExtensionProvider extensionProvider : ExtensionProvider.get())
 			if (!StringUtils.isEmpty(extensionProvider.getSpringConfigurationFile()))
-				contextConfigLocation = "," + extensionProvider.getSpringConfigurationFile();
+				contextConfigLocation += "," + extensionProvider.getSpringConfigurationFile();
 
 		context.setInitParameter("contextConfigLocation",contextConfigLocation);
 
