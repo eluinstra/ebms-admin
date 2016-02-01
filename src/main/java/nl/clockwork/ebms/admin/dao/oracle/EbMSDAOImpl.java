@@ -76,4 +76,10 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 			") where rn >= " + (first + 1)
 		;
 	}
+
+	protected String getDateFormat(String timeUnitDateFormat)
+	{
+		return super.getDateFormat(timeUnitDateFormat).toUpperCase();
+	}
+
 }

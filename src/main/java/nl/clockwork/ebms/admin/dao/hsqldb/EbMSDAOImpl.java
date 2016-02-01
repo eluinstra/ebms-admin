@@ -50,4 +50,10 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 			" limit " + count + " offset " + first
 		;
 	}
+
+	protected String getDateFormat(String timeUnitDateFormat)
+	{
+		return super.getDateFormat(timeUnitDateFormat).toUpperCase();
+	}
+
 }
