@@ -4,8 +4,8 @@
 show help:
 > java -cp ebms-admin-2.x.x.jar nl.clockwork.ebms.admin.Start -h
 
-start with hsqldb server:
-> java -cp ebms-admin-2.x.x.jar nl.clockwork.ebms.admin.Start -hsqldb
+start:
+> java -cp ebms-admin-2.x.x.jar nl.clockwork.ebms.admin.Start
 
 =====================================================
 = Start EbMS Admin Console with embedded EbMS adapter
