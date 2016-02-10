@@ -19,3 +19,6 @@ hooks
 /ebms-admin.embedded.properties
 /realm.properties
 
+# IntelliJ IDEA
+.idea
+*.iml

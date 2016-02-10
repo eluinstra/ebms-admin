@@ -66,6 +66,8 @@
 		<jetty.version>7.6.16.v20140903</jetty.version>
 		<spring.version>3.2.1.RELEASE</spring.version>
 		<cxf.version>2.7.14</cxf.version>
+		<release.repo.url>http://sourceforge.net</release.repo.url>
+		<snapshot.repo.url>http://sourceforge.net</snapshot.repo.url>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
@@ -418,4 +420,17 @@
 			<url>https://code.lds.org/nexus/content/groups/main-repo</url>
 		</repository>
 	</repositories>
-	</project>
+
+	<distributionManagement>
+		<repository>
+			<id>release.repo</id>
+			<name>Release repository</name>
+			<url>${release.repo.url}</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshot.repo</id>
+			<name>Snapshot repository</name>
+			<url>${snapshot.repo.url}</url>
+		</snapshotRepository>
+	</distributionManagement>
+</project>
