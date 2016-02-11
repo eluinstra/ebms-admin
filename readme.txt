@@ -24,7 +24,7 @@ Example using 2 ebms adapters:
 - create directory overheid
 - copy ebms-admin-2.x.x.jar to overheid
 - start admin console on port 8000 with a hsqldb server:
-> java -cp ebms-admin-2.x.x.jar nl.clockwork.ebms.admin.StartEmbedded -p 8000 -hsqldb
+> java -cp ebms-admin-2.x.x.jar nl.clockwork.ebms.admin.StartEmbedded -port 8000 -hsqldb
 
 - open web browser at http://localhost:8000
 - configure properties at http://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage
@@ -34,20 +34,6 @@ Example using 2 ebms adapters:
 	- save
 	- restart admin console
 - upload CPA cpaStubEBF.rm.https.signed.xml at http://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.service.cpa.CPAUploadPage
-
-- next you can:
-	- execute a ping the other adapter at http://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.service.message.PingPage
-		- CPA Id: CPA_EBFStub
-		- From Party: Overheid
-		- To Party: Logius
-	- send a message to the other adapter at http://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.service.message.SendMessagePageX
-		- CPA Id: CPA_EBFStub
-		- From Role: OVERHEID
-		- Service: urn:osb:services:osb:afleveren:1.1$1.0 urn:osb:services:osb:aanleveren:1.1$1.0
-		- Action: bevestigAfleveren
-		- Add a Data Source
-	- view traffic at http://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.message.TrafficPage
-		
 
 - create directory digipoort
 - copy ebms-admin-2.x.x.jar to digipoort
@@ -60,7 +46,20 @@ Example using 2 ebms adapters:
 	- restart admin console
 - upload CPA cpaStubEBF.rm.https.signed.xml at http://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.service.cpa.CPAUploadPage
 
-- next you can:
+- next from the overheid console you can:
+	- execute a ping the other adapter at http://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.service.message.PingPage
+		- CPA Id: CPA_EBFStub
+		- From Party: Overheid
+		- To Party: Logius
+	- send a message to the other adapter at http://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.service.message.SendMessagePageX
+		- CPA Id: CPA_EBFStub
+		- From Role: OVERHEID
+		- Service: urn:osb:services:osb:afleveren:1.1$1.0 urn:osb:services:osb:aanleveren:1.1$1.0
+		- Action: bevestigAfleveren
+		- Add a Data Source
+	- view traffic at http://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.message.TrafficPage
+		
+- next from the digipoort console you can:
 	- execute a ping the other adapter at http://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.service.message.PingPage
 		- CPA Id: CPA_EBFStub
 		- From Party: Logius
