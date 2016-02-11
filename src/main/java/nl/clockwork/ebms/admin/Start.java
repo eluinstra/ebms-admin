@@ -99,7 +99,8 @@ public class Start
 	{
 		options = new Options();
 		options.addOption("h",false,"print this message");
-		options.addOption("p",true,"set port");
+		options.addOption("host",true,"set host");
+		options.addOption("port",true,"set port");
 		options.addOption("ssl",false,"use ssl");
 		options.addOption("keystore",true,"set keystore");
 		options.addOption("password",true,"set keystore password");
@@ -113,9 +114,10 @@ public class Start
 		if (!cmd.hasOption("ssl"))
 		{
 			SocketConnector connector = new SocketConnector();
-			connector.setPort(cmd.getOptionValue("p") == null ? 8080 : Integer.parseInt(cmd.getOptionValue("p")));
+			connector.setHost(cmd.getOptionValue("host") == null ? "0.0.0.0" : cmd.getOptionValue("host"));
+			connector.setPort(cmd.getOptionValue("port") == null ? 8080 : Integer.parseInt(cmd.getOptionValue("port")));
 			server.addConnector(connector);
-			System.out.println("Web server configured on http://localhost:" + connector.getPort());
+			System.out.println("Web server configured on http://" + connector.getHost() + ":" + connector.getPort());
 		}
 		else
 		{
@@ -132,9 +134,10 @@ public class Start
 				factory.setKeyStoreResource(keystore);
 				factory.setKeyStorePassword(keystorePassword);
 				SslSocketConnector connector = new SslSocketConnector(factory);
-				connector.setPort(cmd.getOptionValue("p") == null ? 8433 : Integer.parseInt(cmd.getOptionValue("p")));
+				connector.setHost(cmd.getOptionValue("host") == null ? "0.0.0.0" : cmd.getOptionValue("host"));
+				connector.setPort(cmd.getOptionValue("port") == null ? 8433 : Integer.parseInt(cmd.getOptionValue("port")));
 				server.addConnector(connector);
-				System.out.println("Web server configured on https://localhost:" + connector.getPort());
+				System.out.println("Web server configured on https://" + connector.getHost() + ":" + connector.getPort());
 			}
 			else
 			{

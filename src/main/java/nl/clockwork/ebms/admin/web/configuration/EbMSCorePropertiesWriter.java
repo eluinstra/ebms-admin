@@ -55,7 +55,7 @@ public class EbMSCorePropertiesWriter
 
 	protected void write(Properties properties, HttpPropertiesFormModel httpProperties)
   {
-		//properties.setProperty("ebms.host",httpProperties.getHost());
+		properties.setProperty("ebms.host",httpProperties.getHost());
 		properties.setProperty("ebms.port",httpProperties.getPort() == null ? "" : httpProperties.getPort().toString());
 		properties.setProperty("ebms.path",httpProperties.getPath());
 		properties.setProperty("ebms.ssl",Boolean.toString(httpProperties.getSsl()));

@@ -86,7 +86,8 @@ public class StartEmbedded extends Start
 	{
 		options = new Options();
 		options.addOption("h",false,"print this message");
-		options.addOption("p",true,"set port");
+		options.addOption("host",true,"set host");
+		options.addOption("port",true,"set port");
 		options.addOption("ssl",false,"use ssl");
 		options.addOption("keystore",true,"set keystore");
 		options.addOption("password",true,"set keystore password");
@@ -171,9 +172,10 @@ public class StartEmbedded extends Start
 		if (!"true".equals(properties.get("ebms.ssl")))
 		{
 			SocketConnector connector = new SocketConnector();
+			connector.setHost(StringUtils.isEmpty(properties.get("ebms.host")) ? "0.0.0.0" : properties.get("ebms.host"));
 			connector.setPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
 			server.addConnector(connector);
-			System.out.println("EbMS service configured on http://localhost:" + connector.getPort() + properties.get("ebms.path"));
+			System.out.println("EbMS service configured on http://" + connector.getHost() + ":" + connector.getPort() + properties.get("ebms.path"));
 		}
 		else
 		{
@@ -201,9 +203,10 @@ public class StartEmbedded extends Start
 					}
 				}
 				SslSocketConnector connector = new SslSocketConnector(factory);
+				connector.setHost(StringUtils.isEmpty(properties.get("ebms.host")) ? "0.0.0.0" : properties.get("ebms.host"));
 				connector.setPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
 				server.addConnector(connector);
-				System.out.println("EbMS service configured on https://localhost:" + connector.getPort() + properties.get("ebms.path"));
+				System.out.println("EbMS service configured on https://" + connector.getHost() + ":" + connector.getPort() + properties.get("ebms.path"));
 			}
 			else
 			{

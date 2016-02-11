@@ -71,7 +71,6 @@ public class HttpPropertiesFormPanel extends Panel
 				}
 			};
 			host.setRequired(true);
-			host.setEnabled(false);
 			add(host);
 
 			TextField<Integer> port = new TextField<Integer>("port")
@@ -229,7 +228,7 @@ public class HttpPropertiesFormPanel extends Panel
 	public static class HttpPropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		private String host = "localhost";
+		private String host = "0.0.0.0";
 		private Integer port = 8888;
 		private String path = "/digipoortStub";
 		private boolean chunkedStreamingMode = true;
