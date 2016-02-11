@@ -26,7 +26,7 @@ import nl.clockwork.ebms.admin.Constants.TimeUnit;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.support.TransactionTemplate;
 
 public class EbMSDAOImpl extends nl.clockwork.ebms.admin.dao.mysql.EbMSDAOImpl
@@ -83,7 +83,7 @@ public class EbMSDAOImpl extends nl.clockwork.ebms.admin.dao.mysql.EbMSDAOImpl
 			(status.length == 0 ? " and status is not null" : " and status in (" + join(status,",") + ")") +
 			//" group by format(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "')",
 			" group by " + getDateFormat(timeUnit.getTimeUnitDateFormat()),
-			new ParameterizedRowMapper<Object>()
+			new RowMapper<Object>()
 			{
 				@Override
 				public Object mapRow(ResultSet rs, int rowNum) throws SQLException

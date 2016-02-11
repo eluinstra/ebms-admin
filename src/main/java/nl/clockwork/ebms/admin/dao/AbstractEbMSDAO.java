@@ -43,12 +43,12 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.support.TransactionTemplate;
 
 public abstract class AbstractEbMSDAO implements EbMSDAO
 {
-	public static class CPARowMapper implements ParameterizedRowMapper<CPA>
+	public static class CPARowMapper implements RowMapper<CPA>
 	{
 		public static String getBaseQuery()
 		{
@@ -62,7 +62,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		}
 	}
 	
-	public static class EbMSMessageRowMapper implements ParameterizedRowMapper<EbMSMessage>
+	public static class EbMSMessageRowMapper implements RowMapper<EbMSMessage>
 	{
 		private boolean detail;
 
@@ -153,7 +153,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	@Override
 	public int countCPAs()
 	{
-		return jdbcTemplate.queryForInt("select count(cpa_id) from cpa");
+		return jdbcTemplate.queryForObject("select count(cpa_id) from cpa",Integer.class);
 	}
 	
 	@Override
@@ -229,11 +229,12 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	public int countMessages(EbMSMessageFilter filter)
 	{
 		List<Object> parameters = new ArrayList<Object>();
-		return jdbcTemplate.queryForInt(
+		return jdbcTemplate.queryForObject(
 			"select count(message_id)" +
 			" from ebms_message" +
 			" where 1 = 1" +
 			getMessageFilter(filter,parameters),
+			Integer.class,
 			parameters.toArray(new Object[0])
 		);
 	}
@@ -260,7 +261,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			" where message_id = ?" +
 			" and message_nr = ?" +
 			" and content_id = ?",
-			new ParameterizedRowMapper<EbMSAttachment>()
+			new RowMapper<EbMSAttachment>()
 			{
 				@Override
 				public EbMSAttachment mapRow(ResultSet rs, int rowNum) throws SQLException
@@ -281,7 +282,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			" from ebms_attachment" + 
 			" where message_id = ?" +
 			" and message_nr = ?",
-			new ParameterizedRowMapper<EbMSAttachment>()
+			new RowMapper<EbMSAttachment>()
 			{
 				@Override
 				public EbMSAttachment mapRow(ResultSet rs, int rowNum) throws SQLException
@@ -302,7 +303,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				"select time_to_live, time_stamp, retries" +
 				" from ebms_event" +
 				" where message_id = ?",
-				new ParameterizedRowMapper<EbMSEvent>()
+				new RowMapper<EbMSEvent>()
 				{
 					@Override
 					public EbMSEvent mapRow(ResultSet rs, int rowNum) throws SQLException
@@ -325,7 +326,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			"select message_id, time_stamp, uri, status, error_message" + 
 			" from ebms_event_log" + 
 			" where message_id = ?",
-			new ParameterizedRowMapper<EbMSEventLog>()
+			new RowMapper<EbMSEventLog>()
 			{
 				@Override
 				public EbMSEventLog mapRow(ResultSet rs, int rowNum) throws SQLException
@@ -367,7 +368,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			" and time_stamp < ?" +
 			(status.length == 0 ? " and status is not null" : " and status in (" + join(status,",") + ")") +
 			" group by trunc(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "')",
-			new ParameterizedRowMapper<Object>()
+			new RowMapper<Object>()
 			{
 				@Override
 				public Object mapRow(ResultSet rs, int rowNum) throws SQLException
@@ -414,7 +415,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			getMessageFilter(filter,parameters) +
 			" order by time_stamp desc",
 			parameters.toArray(new Object[0]),
-			new ParameterizedRowMapper<Object>()
+			new RowMapper<Object>()
 			{
 				@Override
 				public Object mapRow(ResultSet rs, int rowNum) throws SQLException
@@ -457,7 +458,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				" from ebms_message" + 
 				" where message_id = ?" +
 				" and message_nr = ?",
-				new ParameterizedRowMapper<Object>()
+				new RowMapper<Object>()
 				{
 					@Override
 					public Object mapRow(ResultSet rs, int rowNum) throws SQLException
@@ -494,7 +495,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			" from ebms_attachment" + 
 			" where message_id = ?" +
 			" and message_nr = ?",
-			new ParameterizedRowMapper<Object>()
+			new RowMapper<Object>()
 			{
 				@Override
 				public Object mapRow(ResultSet rs, int rowNum) throws SQLException

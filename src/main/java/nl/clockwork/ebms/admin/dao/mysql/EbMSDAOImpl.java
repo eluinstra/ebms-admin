@@ -33,7 +33,7 @@ import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.support.TransactionTemplate;
 
 public class EbMSDAOImpl extends AbstractEbMSDAO
@@ -74,7 +74,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 			" and m.message_nr = ?" +
 			" and m.id = a.ebms_message_id" +
 			" and a.content_id = ?",
-			new ParameterizedRowMapper<EbMSAttachment>()
+			new RowMapper<EbMSAttachment>()
 			{
 				@Override
 				public EbMSAttachment mapRow(ResultSet rs, int rowNum) throws SQLException
@@ -96,7 +96,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 			" where m.message_id = ?" +
 			" and m.message_nr = ?" +
 			" and m.id = a.ebms_message_id",
-			new ParameterizedRowMapper<EbMSAttachment>()
+			new RowMapper<EbMSAttachment>()
 			{
 				@Override
 				public EbMSAttachment mapRow(ResultSet rs, int rowNum) throws SQLException
@@ -121,7 +121,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 			" and time_stamp < ?" +
 			(status.length == 0 ? " and status is not null" : " and status in (" + join(status,",") + ")") +
 			" group by date_format(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "')",
-			new ParameterizedRowMapper<Object>()
+			new RowMapper<Object>()
 			{
 				@Override
 				public Object mapRow(ResultSet rs, int rowNum) throws SQLException
@@ -144,7 +144,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 			" where m.message_id = ?" +
 			" and m.message_nr = ?" +
 			" and m.id = a.ebms_message_id",
-			new ParameterizedRowMapper<Object>()
+			new RowMapper<Object>()
 			{
 				@Override
 				public Object mapRow(ResultSet rs, int rowNum) throws SQLException

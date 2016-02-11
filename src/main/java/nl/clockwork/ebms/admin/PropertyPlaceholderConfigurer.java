@@ -30,7 +30,7 @@ public class PropertyPlaceholderConfigurer extends org.springframework.beans.fac
 	private Map<String,String> properties;
 
 	@Override
-	public void setLocations(Resource[] locations)
+	public void setLocations(Resource...locations)
 	{
 		overridePropertiesFile = locations[locations.length - 1];
 		super.setLocations(locations);
