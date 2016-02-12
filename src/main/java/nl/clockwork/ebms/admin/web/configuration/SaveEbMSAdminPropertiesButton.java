@@ -52,7 +52,7 @@ public class SaveEbMSAdminPropertiesButton extends Button
 			FileWriter writer = new FileWriter(file);
 			new EbMSAdminPropertiesWriter(writer).write(ebMSAdminPropertiesFormModel,propertiesType);
 			info(new StringResourceModel("properties.saved",getPage(),Model.of(file)).getString());
-			warn(new StringResourceModel("restart",getPage(),null).getString());
+			error(new StringResourceModel("restart",getPage(),null).getString());
 		}
 		catch (IOException e)
 		{
