@@ -245,6 +245,10 @@ public class HttpPropertiesFormPanel extends Panel
 		{
 			return host;
 		}
+		public void setHost(String host)
+		{
+			this.host = host;
+		}
 		public Integer getPort()
 		{
 			return port;

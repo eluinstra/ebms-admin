@@ -58,7 +58,7 @@ public class EbMSCorePropertiesReader
 
 	protected void read(Properties properties, HttpPropertiesFormModel httpProperties) throws MalformedURLException
 	{
-		//httpProperties.setHost(properties.getProperty("ebms.host"));
+		httpProperties.setHost(properties.getProperty("ebms.host"));
 		httpProperties.setPort(properties.getProperty("ebms.port") == null ? null : new Integer(properties.getProperty("ebms.port")));
 		httpProperties.setPath(properties.getProperty("ebms.path"));
 		httpProperties.setSsl(new Boolean(properties.getProperty("ebms.ssl")));
