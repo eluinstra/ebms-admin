@@ -153,6 +153,18 @@ public class HttpPropertiesFormPanel extends Panel
 			};
 			add(chunkedStreamingMode);
 
+			CheckBox base64Writer = new CheckBox("base64Writer")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public IModel<String> getLabel()
+				{
+					return Model.of(getLocalizer().getString("lbl.base64Writer",HttpPropertiesForm.this));
+				}
+			};
+			add(base64Writer);
+
 			CheckBox ssl = new CheckBox("ssl")
 			{
 				private static final long serialVersionUID = 1L;
@@ -232,6 +244,7 @@ public class HttpPropertiesFormPanel extends Panel
 		private Integer port = 8888;
 		private String path = "/digipoortStub";
 		private boolean chunkedStreamingMode = true;
+		private boolean base64Writer = true;
 		private boolean ssl = true;
 		private SslPropertiesFormModel sslProperties = new SslPropertiesFormModel();
 		private boolean proxy;
@@ -276,6 +289,14 @@ public class HttpPropertiesFormPanel extends Panel
 		public void setChunkedStreamingMode(boolean chunkedStreamingMode)
 		{
 			this.chunkedStreamingMode = chunkedStreamingMode;
+		}
+		public boolean isBase64Writer()
+		{
+			return base64Writer;
+		}
+		public void setBase64Writer(boolean base64Writer)
+		{
+			this.base64Writer = base64Writer;
 		}
 		public boolean getSsl()
 		{

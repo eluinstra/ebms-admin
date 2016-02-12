@@ -64,6 +64,7 @@ public class EbMSCorePropertiesReader
 		httpProperties.setSsl(new Boolean(properties.getProperty("ebms.ssl")));
 		httpProperties.setProxy(!StringUtils.isEmpty(properties.getProperty("http.proxy.host")));
 		httpProperties.setChunkedStreamingMode(new Boolean(properties.getProperty("http.chunkedStreamingMode")));
+		httpProperties.setBase64Writer(new Boolean(properties.getProperty("http.base64Writer")));
 		if (httpProperties.getSsl())
 			read(properties,httpProperties.getSslProperties());
 		if (httpProperties.getProxy())

@@ -60,6 +60,7 @@ public class EbMSCorePropertiesWriter
 		properties.setProperty("ebms.path",httpProperties.getPath());
 		properties.setProperty("ebms.ssl",Boolean.toString(httpProperties.getSsl()));
 		properties.setProperty("http.chunkedStreamingMode",Boolean.toString(httpProperties.isChunkedStreamingMode()));
+		properties.setProperty("http.base64Writer",Boolean.toString(httpProperties.isBase64Writer()));
 		if (httpProperties.getSsl())
 			write(properties,httpProperties.getSslProperties());
 		if (httpProperties.getProxy())
