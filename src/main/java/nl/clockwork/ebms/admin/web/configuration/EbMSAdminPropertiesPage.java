@@ -15,6 +15,8 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +42,10 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 public class EbMSAdminPropertiesPage extends BasePage
@@ -54,12 +58,28 @@ public class EbMSAdminPropertiesPage extends BasePage
 
 	public EbMSAdminPropertiesPage() throws IOException
 	{
-		this(new EbMSAdminPropertiesFormModel());
+		this(null);
 	}
 	public EbMSAdminPropertiesPage(EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel) throws IOException
 	{
 		propertiesType = PropertiesType.getPropertiesType(propertyPlaceholderConfigurer.getOverridePropertiesFile().getFilename());
 		add(new BootstrapFeedbackPanel("feedback"));
+		if (ebMSAdminPropertiesFormModel == null)
+		{
+			ebMSAdminPropertiesFormModel = new EbMSAdminPropertiesFormModel();
+			try
+			{
+				File file = new File(propertiesType.getPropertiesFile());
+				FileReader reader = new FileReader(file);
+				new EbMSAdminPropertiesReader(reader).read(ebMSAdminPropertiesFormModel,propertiesType);
+				this.info(new StringResourceModel("properties.loaded",this,Model.of(file)).getString());
+			}
+			catch (IOException e)
+			{
+				logger.error("",e);
+				error(e.getMessage());
+			}
+		}
 		add(new EbMSAdminPropertiesForm("form",ebMSAdminPropertiesFormModel));
 	}
 	
@@ -111,7 +131,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 				}
 			});
 			add(new DownloadEbMSAdminPropertiesButton("download",new ResourceModel("cmd.download"),getModelObject(),propertiesType));
-			add(new LoadEbMSAdminPropertiesButton("load",new ResourceModel("cmd.load"),getModelObject(),propertiesType));
+			//add(new LoadEbMSAdminPropertiesButton("load",new ResourceModel("cmd.load"),getModelObject(),propertiesType));
 			add(new SaveEbMSAdminPropertiesButton("save",new ResourceModel("cmd.save"),getModelObject(),propertiesType));
 			add(new ResetButton("reset",new ResourceModel("cmd.reset"),EbMSAdminPropertiesPage.class));
 		}
