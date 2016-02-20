@@ -15,14 +15,13 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
 import nl.clockwork.ebms.admin.Utils;
+import nl.clockwork.ebms.admin.web.message.ByteArrayResourceStream;
 import nl.clockwork.ebms.model.EbMSMessageContext;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
@@ -31,13 +30,9 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
-import org.apache.wicket.util.lang.Bytes;
-import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
-import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 
 public class DownloadEbMSMessageIdsCSVLink extends Link<Void>
 {
@@ -65,47 +60,8 @@ public class DownloadEbMSMessageIdsCSVLink extends Link<Void>
 				if (messageIds != null)
 					printMessagesToCSV(printer,messageIds);
 			}
-
-			IResourceStream resourceStream = new AbstractResourceStream()
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public String getContentType()
-				{
-					return "text/csv";
-				}
-				
-				@Override
-				public Bytes length()
-				{
-					return Bytes.bytes(output.size());
-				}
-				
-				@Override
-				public InputStream getInputStream() throws ResourceStreamNotFoundException
-				{
-					return new ByteArrayInputStream(output.toByteArray());
-				}
-				
-				@Override
-				public void close() throws IOException
-				{
-				}
-			}; 
-
-			getRequestCycle().scheduleRequestHandlerAfterCurrent(
-				new ResourceStreamRequestHandler(resourceStream)
-				{
-					@Override
-					public void respond(IRequestCycle requestCycle)
-					{
-						super.respond(requestCycle);
-					}
-				}
-				.setFileName("messages.csv")
-				.setContentDisposition(ContentDisposition.ATTACHMENT)
-			);
+			IResourceStream resourceStream = new ByteArrayResourceStream(output,"text/csv");
+			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}
 		catch (IOException e)
 		{
@@ -118,6 +74,13 @@ public class DownloadEbMSMessageIdsCSVLink extends Link<Void>
 	{
 		for (String messageId : messageIds)
 			printer.printRecord(messageId);
+	}
+
+	private ResourceStreamRequestHandler createRequestHandler(IResourceStream resourceStream)
+	{
+		return new ResourceStreamRequestHandler(resourceStream)
+		.setFileName("messages.csv")
+		.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 
 }

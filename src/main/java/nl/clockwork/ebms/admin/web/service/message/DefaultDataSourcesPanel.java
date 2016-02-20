@@ -35,6 +35,38 @@ import org.apache.wicket.util.io.IClusterable;
 
 public class DefaultDataSourcesPanel extends DataSourcesPanel
 {
+	private class EbMSDataSourceListView extends ListView<EbMSDataSource>
+	{
+		private DataSourcesForm dataSourcesForm;
+
+		public EbMSDataSourceListView(String id, DataSourcesForm dataSourcesForm)
+		{
+			super(id);
+			this.dataSourcesForm = dataSourcesForm;
+			setOutputMarkupId(true);
+		}
+
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		protected void populateItem(final ListItem<EbMSDataSource> item)
+		{
+			item.setModel(new CompoundPropertyModel<EbMSDataSource>(item.getModelObject()));
+			item.add(new Label("name"));
+			item.add(new Label("contentType"));
+			item.add(new AjaxButton("remove",new ResourceModel("cmd.remove"),dataSourcesForm)
+			{
+				private static final long serialVersionUID = 1L;
+				
+				@Override
+				protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+				{
+					dataSourcesForm.getModelObject().getDataSources().remove(item.getModelObject());
+					target.add(dataSourcesForm);
+				}
+			});
+		}
+	}
 	private static final long serialVersionUID = 1L;
 	protected Log logger = LogFactory.getLog(this.getClass());
 
@@ -51,37 +83,15 @@ public class DefaultDataSourcesPanel extends DataSourcesPanel
 		public DataSourcesForm(String id)
 		{
 			super(id,new CompoundPropertyModel<DataSourcesModel>(new DataSourcesModel()));
-
-			ListView<EbMSDataSource> dataSources = new ListView<EbMSDataSource>("dataSources")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void populateItem(final ListItem<EbMSDataSource> item)
-				{
-					item.setModel(new CompoundPropertyModel<EbMSDataSource>(item.getModelObject()));
-					item.add(new Label("name"));
-					item.add(new Label("contentType"));
-					item.add(new AjaxButton("remove",new ResourceModel("cmd.remove"),DataSourcesForm.this)
-					{
-						private static final long serialVersionUID = 1L;
-						
-						@Override
-						protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-						{
-							DataSourcesForm.this.getModelObject().getDataSources().remove(item.getModelObject());
-							target.add(DataSourcesForm.this);
-						}
-					});
-				}
-			};
-			dataSources.setOutputMarkupId(true);
-			add(dataSources);
-
+			add(new EbMSDataSourceListView("dataSources",DataSourcesForm.this));
 			final ModalWindow dataSourceModalWindow = new DataSourceModalWindow("dataSourceModelWindow",getModelObject().getDataSources(),DataSourcesForm.this);
 			add(dataSourceModalWindow);
-			
-			AjaxButton add = new AjaxButton("add")
+			add(createAddButton("add",dataSourceModalWindow));
+		}
+
+		private AjaxButton createAddButton(String id, final ModalWindow dataSourceModalWindow)
+		{
+			AjaxButton result = new AjaxButton(id)
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -91,9 +101,8 @@ public class DefaultDataSourcesPanel extends DataSourcesPanel
 					dataSourceModalWindow.show(target);
 				}
 			};
-			add(add);
+			return result;
 		}
-
 	}
 	
 	@Override

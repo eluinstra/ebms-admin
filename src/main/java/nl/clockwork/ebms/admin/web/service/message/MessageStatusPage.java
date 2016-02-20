@@ -28,7 +28,10 @@ import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.CheckBox;
+import nl.clockwork.ebms.admin.web.LocalizedStringResource;
 import nl.clockwork.ebms.admin.web.ResetButton;
+import nl.clockwork.ebms.admin.web.StringTextField;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
 import nl.clockwork.ebms.model.MessageStatus;
 import nl.clockwork.ebms.model.Party;
@@ -40,7 +43,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.Button;
-import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -86,8 +88,39 @@ public class MessageStatusPage extends BasePage
 		public MessageStatusForm(String id)
 		{
 			super(id,new CompoundPropertyModel<MessageStatusFormModel>(new MessageStatusFormModel()));
+			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",createCPAIdsChoice("cpaIds")));
+			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",createFromPartyIdsChoice("fromPartyIds")));
+			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",createFromRolesChoice("fromRoles")).setVisible(cleoPatch));
+			add(new BootstrapFormComponentFeedbackBorder("toPartyIdFeedback",createToPartyIdsChoice("toPartyIds")));
+			add(new BootstrapFormComponentFeedbackBorder("toRoleFeedback",createToRolesChoice("toRoles")).setVisible(cleoPatch));
+			final DropDownChoice<String> messageIds = createMessageIdsChoice("messageIds");
+			add(new BootstrapFormComponentFeedbackBorder("messageIdFeedback",messageIds,createMessageIdField("messageId")));
+			add(createManualChackBox("manual",messageIds));
+			Button ping = createCheckButton("check");
+			setDefaultButton(ping);
+			add(ping);
+			add(new ResetButton("reset",new ResourceModel("cmd.reset"),MessageStatusPage.class));
+		}
 
-			DropDownChoice<String> cpaIds = new DropDownChoice<String>("cpaIds",new PropertyModel<String>(this.getModelObject(),"cpaId"),Model.ofList(Utils.toList(cpaService.getCPAIds())))
+		protected List<String> getFromRoles(MessageStatusFormModel model)
+		{
+			if (model.getFromRole() != null)
+				return Arrays.asList(model.getFromRole());
+			else
+				return model.getFromRoles();
+		}
+
+		protected List<String> getToRoles(MessageStatusFormModel model)
+		{
+			if (model.getToRole() != null)
+				return Arrays.asList(model.getToRole());
+			else
+				return model.getToRoles();
+		}
+
+		private DropDownChoice<String> createCPAIdsChoice(String id)
+		{
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"cpaId"),Model.ofList(Utils.toList(cpaService.getCPAIds())))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -104,9 +137,7 @@ public class MessageStatusPage extends BasePage
 				}
 			};
 			//cpaIds.setRequired(true);
-			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",cpaIds));
-
-			cpaIds.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -135,8 +166,12 @@ public class MessageStatusPage extends BasePage
 					}
 				}
 			});
+			return result;
+		}
 
-			DropDownChoice<String> fromPartyIds = new DropDownChoice<String>("fromPartyIds",new PropertyModel<String>(this.getModelObject(),"fromPartyId"),new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"))
+		private DropDownChoice<String> createFromPartyIdsChoice(String id)
+		{
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"fromPartyId"),new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -158,10 +193,8 @@ public class MessageStatusPage extends BasePage
 					return !MessageStatusForm.this.getModelObject().getManual();
 				}
 			};
-			fromPartyIds.setOutputMarkupId(true);
-			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",fromPartyIds));
-			
-			fromPartyIds.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.setOutputMarkupId(true);
+			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -189,8 +222,12 @@ public class MessageStatusPage extends BasePage
 					}
 				}
 			});
+			return result;
+		}
 
-			DropDownChoice<String> fromRoles = new DropDownChoice<String>("fromRoles",new PropertyModel<String>(this.getModelObject(),"fromRole"),new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
+		private DropDownChoice<String> createFromRolesChoice(String id)
+		{
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"fromRole"),new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -206,10 +243,8 @@ public class MessageStatusPage extends BasePage
 					return !MessageStatusForm.this.getModelObject().getManual();
 				}
 			};
-			fromRoles.setRequired(false).setOutputMarkupId(true);
-			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",fromRoles).setVisible(cleoPatch));
-			
-			fromRoles.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.setRequired(false).setOutputMarkupId(true);
+			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -236,8 +271,12 @@ public class MessageStatusPage extends BasePage
 					}
 				}
 			});
+			return result;
+		}
 
-			DropDownChoice<String> toPartyIds = new DropDownChoice<String>("toPartyIds",new PropertyModel<String>(this.getModelObject(),"toPartyId"),new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"))
+		private DropDownChoice<String> createToPartyIdsChoice(String id)
+		{
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"toPartyId"),new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -259,10 +298,8 @@ public class MessageStatusPage extends BasePage
 					return !MessageStatusForm.this.getModelObject().getManual();
 				}
 			};
-			toPartyIds.setOutputMarkupId(true);
-			add(new BootstrapFormComponentFeedbackBorder("toPartyIdFeedback",toPartyIds));
-
-			toPartyIds.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.setOutputMarkupId(true);
+			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -287,8 +324,12 @@ public class MessageStatusPage extends BasePage
 					}
 				}
 			});
+			return result;
+		}
 
-			DropDownChoice<String> toRoles = new DropDownChoice<String>("toRoles",new PropertyModel<String>(this.getModelObject(),"toRole"),new PropertyModel<List<String>>(this.getModelObject(),"toRoles"))
+		private DropDownChoice<String> createToRolesChoice(String id)
+		{
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"toRole"),new PropertyModel<List<String>>(this.getModelObject(),"toRoles"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -304,10 +345,8 @@ public class MessageStatusPage extends BasePage
 					return !MessageStatusForm.this.getModelObject().getManual();
 				}
 			};
-			toRoles.setRequired(false).setOutputMarkupId(true);
-			add(new BootstrapFormComponentFeedbackBorder("toRoleFeedback",toRoles).setVisible(cleoPatch));
-			
-			toRoles.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.setRequired(false).setOutputMarkupId(true);
+			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -333,8 +372,12 @@ public class MessageStatusPage extends BasePage
 					}
 				}
 			});
+			return result;
+		}
 
-			final DropDownChoice<String> messageIds = new DropDownChoice<String>("messageIds",new PropertyModel<String>(this.getModelObject(),"messageId"),new PropertyModel<List<String>>(this.getModelObject(),"messageIds"))
+		private DropDownChoice<String> createMessageIdsChoice(String id)
+		{
+			final DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"messageId"),new PropertyModel<List<String>>(this.getModelObject(),"messageIds"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -350,42 +393,31 @@ public class MessageStatusPage extends BasePage
 					return !MessageStatusForm.this.getModelObject().getManual();
 				}
 			};
-			messageIds.setOutputMarkupPlaceholderTag(true);
-			messageIds.setRequired(true);
-			//add(new BootstrapFormComponentFeedbackBorder("messageIdFeedback",messageIds));
-			
-			final TextField<String> messageId = new TextField<String>("messageId")
+			result.setOutputMarkupPlaceholderTag(true);
+			result.setRequired(true);
+			return result;
+		}
+
+		private TextField<String> createMessageIdField(String id)
+		{
+			final TextField<String> result = new StringTextField(id,new LocalizedStringResource("lbl.messageId",MessageStatusForm.this))
 			{
 				private static final long serialVersionUID = 1L;
 
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.messageId",MessageStatusForm.this));
-				}
-				
 				@Override
 				public boolean isVisible()
 				{
 					return MessageStatusForm.this.getModelObject().getManual();
 				}
 			};
-			messageId.setRequired(true).setOutputMarkupPlaceholderTag(true);
-			add(new BootstrapFormComponentFeedbackBorder("messageIdFeedback",messageIds,messageId));
+			result.setRequired(true).setOutputMarkupPlaceholderTag(true);
+			return result;
+		}
 
-			CheckBox manual = new CheckBox("manual")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.manual",MessageStatusForm.this));
-				}
-			};
-			add(manual);
-			
-			manual.add(new AjaxFormComponentUpdatingBehavior("onchange")
+		private CheckBox createManualChackBox(String id, final DropDownChoice<String> messageIds)
+		{
+			CheckBox result = new CheckBox(id,new LocalizedStringResource("lbl.manual",MessageStatusForm.this));
+			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
       {
 				private static final long serialVersionUID = 1L;
 
@@ -403,8 +435,12 @@ public class MessageStatusPage extends BasePage
 					target.add(getPage().get("form"));
 				}
       });
+			return result;
+		}
 
-			Button ping = new Button("check",new ResourceModel("cmd.check"))
+		private Button createCheckButton(String id)
+		{
+			Button ping = new Button(id,new ResourceModel("cmd.check"))
 			{
 				private static final long serialVersionUID = 1L;
 	
@@ -432,26 +468,7 @@ public class MessageStatusPage extends BasePage
 					}
 				}
 			};
-			setDefaultButton(ping);
-			add(ping);
-
-			add(new ResetButton("reset",new ResourceModel("cmd.reset"),MessageStatusPage.class));
-		}
-
-		protected List<String> getFromRoles(MessageStatusFormModel model)
-		{
-			if (model.getFromRole() != null)
-				return Arrays.asList(model.getFromRole());
-			else
-				return model.getFromRoles();
-		}
-
-		protected List<String> getToRoles(MessageStatusFormModel model)
-		{
-			if (model.getToRole() != null)
-				return Arrays.asList(model.getToRole());
-			else
-				return model.getToRoles();
+			return ping;
 		}
 
 	}

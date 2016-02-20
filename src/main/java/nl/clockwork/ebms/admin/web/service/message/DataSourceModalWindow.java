@@ -19,6 +19,8 @@ import java.util.List;
 
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.LocalizedStringResource;
+import nl.clockwork.ebms.admin.web.StringTextField;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.model.EbMSDataSource;
 
@@ -30,7 +32,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -46,9 +47,21 @@ public class DataSourceModalWindow extends ModalWindow
 	public DataSourceModalWindow(String id, final List<EbMSDataSource> dataSources, final Component...components)
 	{
 		super(id);
-		//setTitle(getLocalizer().getString("dataSource",this));
 		setCssClassName(ModalWindow.CSS_CLASS_GRAY);
-		setContent(new DataSourcePanel(getContentId())
+		setContent(createDataSourcePanel(dataSources,components));
+		setCookieName("dataSource");
+		setCloseButtonCallback(new nl.clockwork.ebms.admin.web.CloseButtonCallback());
+	}
+
+	@Override
+	public IModel<String> getTitle()
+	{
+		return Model.of(getLocalizer().getString("dataSource",this));
+	}
+
+	private DataSourcePanel createDataSourcePanel(final List<EbMSDataSource> dataSources, final Component...components)
+	{
+		return new DataSourcePanel(getContentId())
 		{
 			private static final long serialVersionUID = 1L;
 
@@ -69,25 +82,9 @@ public class DataSourceModalWindow extends ModalWindow
 			{
 				return DataSourceModalWindow.this;
 			}
-		});
-		setCookieName("dataSource");
-		setCloseButtonCallback(new ModalWindow.CloseButtonCallback()
-		{
-			private static final long serialVersionUID = 1L;
-
-			public boolean onCloseButtonClicked(AjaxRequestTarget target)
-			{
-				return true;
-			}
-		});
+		};
 	}
 	
-	@Override
-	public IModel<String> getTitle()
-	{
-		return Model.of(getLocalizer().getString("dataSource",this));
-	}
-
 	public abstract class DataSourcePanel extends Panel
 	{
 		private static final long serialVersionUID = 1L;
@@ -110,10 +107,17 @@ public class DataSourceModalWindow extends ModalWindow
 			public DataSourceForm(String id)
 			{
 				super(id,new CompoundPropertyModel<DataSourceModel>(new DataSourceModel()));
-
 				add(new BootstrapFeedbackPanel("feedback"));
+				add(new BootstrapFormComponentFeedbackBorder("fileFeedback",createFileField("file")));
+				add(new StringTextField("name",new LocalizedStringResource("lbl.name",DataSourceForm.this)));
+				add(new StringTextField("contentType",new LocalizedStringResource("lbl.contentType",DataSourceForm.this)));
+				add(createAddButton("add"));
+				add(createCancelButton("cancel"));
+			}
 
-				FileUploadField file = new FileUploadField("file")
+			private FileUploadField createFileField(String id)
+			{
+				FileUploadField result = new FileUploadField(id)
 				{
 					private static final long serialVersionUID = 1L;
 
@@ -123,32 +127,13 @@ public class DataSourceModalWindow extends ModalWindow
 						return Model.of(getLocalizer().getString("lbl.file",DataSourceForm.this));
 					}
 				};
-				file.setRequired(true);
-				add(new BootstrapFormComponentFeedbackBorder("fileFeedback",file));
+				result.setRequired(true);
+				return result;
+			}
 
-				add(new TextField<String>("name")
-				{
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public IModel<String> getLabel()
-					{
-						return Model.of(getLocalizer().getString("lbl.name",DataSourceForm.this));
-					}
-				});
-
-				add(new TextField<String>("contentType")
-				{
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public IModel<String> getLabel()
-					{
-						return Model.of(getLocalizer().getString("lbl.contentType",DataSourceForm.this));
-					}
-				});
-
-				final AjaxButton add = new AjaxButton("add",new ResourceModel("cmd.add"))
+			private AjaxButton createAddButton(String id)
+			{
+				final AjaxButton result = new AjaxButton(id,new ResourceModel("cmd.add"))
 				{
 					private static final long serialVersionUID = 1L;
 
@@ -175,9 +160,12 @@ public class DataSourceModalWindow extends ModalWindow
 						}
 					}
 				};
-				add(add);
+				return result;
+			}
 
-				AjaxButton cancel = new AjaxButton("cancel",new ResourceModel("cmd.cancel"))
+			private AjaxButton createCancelButton(String id)
+			{
+				AjaxButton cancel = new AjaxButton(id,new ResourceModel("cmd.cancel"))
 				{
 					private static final long serialVersionUID = 1L;
 
@@ -188,9 +176,8 @@ public class DataSourceModalWindow extends ModalWindow
 					}
 				};
 				cancel.setDefaultFormProcessing(false);
-				add(cancel);
+				return cancel;
 			}
-
 		}
 	}
 

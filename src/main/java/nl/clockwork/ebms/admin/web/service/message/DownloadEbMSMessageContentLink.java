@@ -15,10 +15,8 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -28,6 +26,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
 import nl.clockwork.ebms.admin.web.Utils;
+import nl.clockwork.ebms.admin.web.message.ByteArrayResourceStream;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
 import nl.clockwork.ebms.model.EbMSMessageContent;
 import nl.clockwork.ebms.model.EbMSMessageContext;
@@ -37,14 +36,10 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.lang.Args;
-import org.apache.wicket.util.lang.Bytes;
-import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
-import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 
 public class DownloadEbMSMessageContentLink extends Link<EbMSMessageContent>
 {
@@ -67,47 +62,8 @@ public class DownloadEbMSMessageContentLink extends Link<EbMSMessageContent>
 			{
 				writeMessageToZip(messageContent,zip);
 			}
-
-			IResourceStream resourceStream = new AbstractResourceStream()
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public String getContentType()
-				{
-					return "application/zip";
-				}
-				
-				@Override
-				public Bytes length()
-				{
-					return Bytes.bytes(output.size());
-				}
-				
-				@Override
-				public InputStream getInputStream() throws ResourceStreamNotFoundException
-				{
-					return new ByteArrayInputStream(output.toByteArray());
-				}
-				
-				@Override
-				public void close() throws IOException
-				{
-				}
-			}; 
-
-			getRequestCycle().scheduleRequestHandlerAfterCurrent(
-				new ResourceStreamRequestHandler(resourceStream)
-				{
-					@Override
-					public void respond(IRequestCycle requestCycle)
-					{
-						super.respond(requestCycle);
-					}
-				}
-				.setFileName("messageContent." + messageContent.getContext().getMessageId() + ".zip")
-				.setContentDisposition(ContentDisposition.ATTACHMENT)
-			);
+			IResourceStream resourceStream = new ByteArrayResourceStream(output,"application/zip");
+			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(messageContent,resourceStream));
 		}
 		catch (IOException e)
 		{
@@ -135,6 +91,13 @@ public class DownloadEbMSMessageContentLink extends Link<EbMSMessageContent>
 			zip.write(dataSource.getContent());
 			zip.closeEntry();
 		}
+	}
+
+	private ResourceStreamRequestHandler createRequestHandler(EbMSMessageContent messageContent, IResourceStream resourceStream)
+	{
+		return new ResourceStreamRequestHandler(resourceStream)
+		.setFileName("messageContent." + messageContent.getContext().getMessageId() + ".zip")
+		.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 
 }

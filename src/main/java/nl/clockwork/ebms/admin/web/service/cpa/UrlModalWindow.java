@@ -18,6 +18,8 @@ package nl.clockwork.ebms.admin.web.service.cpa;
 import java.io.Serializable;
 
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.LocalizedStringResource;
+import nl.clockwork.ebms.admin.web.StringTextField;
 import nl.clockwork.ebms.service.CPAService;
 
 import org.apache.commons.logging.Log;
@@ -27,7 +29,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
@@ -41,11 +42,10 @@ public class UrlModalWindow extends ModalWindow
 	public UrlModalWindow(String id, final CPAService cpaService, final String cpaId, final Component...components)
 	{
 		super(id);
-		//setTitle(getLocalizer().getString("url",this));
 		setCssClassName(ModalWindow.CSS_CLASS_GRAY);
 		setContent(createUrlPanel(cpaService,cpaId,components));
 		setCookieName("url");
-		setCloseButtonCallback(createCloseButtonCallback());
+		setCloseButtonCallback(new nl.clockwork.ebms.admin.web.CloseButtonCallback());
 	}
 
 	@Override
@@ -80,19 +80,6 @@ public class UrlModalWindow extends ModalWindow
 		};
 	}
 	
-	private CloseButtonCallback createCloseButtonCallback()
-	{
-		return new ModalWindow.CloseButtonCallback()
-		{
-			private static final long serialVersionUID = 1L;
-
-			public boolean onCloseButtonClicked(AjaxRequestTarget target)
-			{
-				return true;
-			}
-		};
-	}
-
 	public abstract class UrlPanel extends Panel
 	{
 		private static final long serialVersionUID = 1L;
@@ -115,21 +102,15 @@ public class UrlModalWindow extends ModalWindow
 			public UrlForm(String id, String url)
 			{
 				super(id,new CompoundPropertyModel<UrlModel>(new UrlModel(url)));
-
 				add(new BootstrapFeedbackPanel("feedback"));
+				add(new StringTextField("url",new LocalizedStringResource("lbl.url",UrlForm.this)));
+				add(createSaveButton("save"));
+				add(createCancelButton("cancel"));
+			}
 
-				add(new TextField<String>("url")
-				{
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public IModel<String> getLabel()
-					{
-						return Model.of(getLocalizer().getString("lbl.url",UrlForm.this));
-					}
-				});
-
-				final AjaxButton add = new AjaxButton("save",new ResourceModel("cmd.save"))
+			private AjaxButton createSaveButton(String id)
+			{
+				AjaxButton result = new AjaxButton(id,new ResourceModel("cmd.save"))
 				{
 					private static final long serialVersionUID = 1L;
 
@@ -155,9 +136,12 @@ public class UrlModalWindow extends ModalWindow
 						}
 					}
 				};
-				add(add);
+				return result;
+			}
 
-				AjaxButton cancel = new AjaxButton("cancel",new ResourceModel("cmd.cancel"))
+			private AjaxButton createCancelButton(String id)
+			{
+				AjaxButton result = new AjaxButton(id,new ResourceModel("cmd.cancel"))
 				{
 					private static final long serialVersionUID = 1L;
 
@@ -167,8 +151,8 @@ public class UrlModalWindow extends ModalWindow
 						getWindow().close(target);
 					}
 				};
-				cancel.setDefaultFormProcessing(false);
-				add(cancel);
+				result.setDefaultFormProcessing(false);
+				return result;
 			}
 
 		}

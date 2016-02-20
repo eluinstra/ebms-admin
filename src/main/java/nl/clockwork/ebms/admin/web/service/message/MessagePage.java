@@ -16,10 +16,12 @@
 package nl.clockwork.ebms.admin.web.service.message;
 
 import java.util.Date;
+import java.util.List;
 
 import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.model.EbMSDataSource;
 import nl.clockwork.ebms.model.EbMSMessageContent;
 import nl.clockwork.ebms.service.EbMSMessageService;
@@ -39,6 +41,27 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 public class MessagePage extends BasePage
 {
+	private class EbMSDataSourcePropertyListView extends PropertyListView<EbMSDataSource>
+	{
+		private static final long serialVersionUID = 1L;
+		private int i = 1;
+
+		public EbMSDataSourcePropertyListView(String id, List<? extends EbMSDataSource> list)
+		{
+			super(id,list);
+		}
+
+		@Override
+		protected void populateItem(ListItem<EbMSDataSource> item)
+		{
+			EbMSDataSource dataSource = item.getModelObject();
+			if (StringUtils.isEmpty(dataSource.getName()))
+				dataSource.setName("dataSource." + i++);
+			item.add(new DownloadEbMSDataSourceLink("downloadDataSource",dataSource));
+			item.add(new Label("contentType"));
+		}
+	}
+
 	protected transient Log logger = LogFactory.getLog(this.getClass());
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="ebMSMessageService")
@@ -49,7 +72,30 @@ public class MessagePage extends BasePage
 		add(new BootstrapFeedbackPanel("feedback"));
 		add(new Label("messageId",messageContent.getContext().getMessageId()));
 		add(new Label("conversationId",messageContent.getContext().getConversationId()));
-		Link<Void> link = new Link<Void>("viewRefToMessageId")
+		add(createViewRefToMessageIdLink("viewRefToMessageId",messageContent));
+		add(DateLabel.forDatePattern("timestamp",new Model<Date>(messageContent.getContext().getTimestamp()),Constants.DATETIME_FORMAT));
+		add(new Label("cpaId",messageContent.getContext().getCpaId()));
+		add(new Label("fromPartyId",messageContent.getContext().getFromRole().getPartyId()));
+		add(new Label("fromRole",messageContent.getContext().getFromRole().getRole()));
+		add(new Label("toPartyId",messageContent.getContext().getToRole().getPartyId()));
+		add(new Label("toRole",messageContent.getContext().getToRole().getRole()));
+		add(new Label("service",messageContent.getContext().getService()));
+		add(new Label("action",messageContent.getContext().getAction()));
+		add(new EbMSDataSourcePropertyListView("dataSources",messageContent.getDataSources()));
+		add(new PageLink("back",responsePage));
+		add(new DownloadEbMSMessageContentLink("download",messageContent));
+		add(createProcessLink("process",messageContent,responsePage));
+	}
+
+	@Override
+	public String getPageTitle()
+	{
+		return getLocalizer().getString("message",this);
+	}
+
+	private Link<Void> createViewRefToMessageIdLink(String id, final EbMSMessageContent messageContent)
+	{
+		Link<Void> result = new Link<Void>(id)
 		{
 			private static final long serialVersionUID = 1L;
 
@@ -59,50 +105,13 @@ public class MessagePage extends BasePage
 				setResponsePage(new MessagePage(ebMSMessageService.getMessage(messageContent.getContext().getRefToMessageId(),null),MessagePage.this));
 			}
 		};
-		link.add(new Label("refToMessageId",messageContent.getContext().getRefToMessageId()));
-		add(link);
-		add(DateLabel.forDatePattern("timestamp",new Model<Date>(messageContent.getContext().getTimestamp()),Constants.DATETIME_FORMAT));
-		add(new Label("cpaId",messageContent.getContext().getCpaId()));
-		add(new Label("fromPartyId",messageContent.getContext().getFromRole().getPartyId()));
-		add(new Label("fromRole",messageContent.getContext().getFromRole().getRole()));
-		add(new Label("toPartyId",messageContent.getContext().getToRole().getPartyId()));
-		add(new Label("toRole",messageContent.getContext().getToRole().getRole()));
-		add(new Label("service",messageContent.getContext().getService()));
-		add(new Label("action",messageContent.getContext().getAction()));
-		
-		PropertyListView<EbMSDataSource> dataSources = 
-			new PropertyListView<EbMSDataSource>("dataSources",messageContent.getDataSources())
-			{
-				private static final long serialVersionUID = 1L;
-				private int i = 1;
-
-				@Override
-				protected void populateItem(ListItem<EbMSDataSource> item)
-				{
-					EbMSDataSource dataSource = item.getModelObject();
-					if (StringUtils.isEmpty(dataSource.getName()))
-						dataSource.setName("dataSource." + i++);
-					DownloadEbMSDataSourceLink link = new DownloadEbMSDataSourceLink("downloadDataSource",dataSource);
-					link.add(new Label("name"));
-					item.add(link);
-					item.add(new Label("contentType"));
-				}
-			}
-		;
-		add(dataSources);
-		
-		add(new Link<Void>("back")
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void onClick()
-			{
-				setResponsePage(responsePage);
-			}
-		});
-		add(new DownloadEbMSMessageContentLink("download",messageContent));
-		link = new Link<Void>("process")
+		result.add(new Label("refToMessageId",messageContent.getContext().getRefToMessageId()));
+		return result;
+	}
+	
+	private Link<Void> createProcessLink(String id, final EbMSMessageContent messageContent, final WebPage responsePage)
+	{
+		Link<Void> result = new Link<Void>(id)
 		{
 			private static final long serialVersionUID = 1L;
 
@@ -121,14 +130,8 @@ public class MessagePage extends BasePage
 				}
 			}
 		};
-		link.add(AttributeModifier.replace("onclick","return confirm('" + getLocalizer().getString("confirm",this) + "');"));
-		add(link);
-	}
-	
-	@Override
-	public String getPageTitle()
-	{
-		return getLocalizer().getString("message",this);
+		result.add(AttributeModifier.replace("onclick","return confirm('" + getLocalizer().getString("confirm",this) + "');"));
+		return result;
 	}
 
 }

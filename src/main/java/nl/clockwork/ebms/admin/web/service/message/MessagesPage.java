@@ -15,29 +15,68 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
-import java.util.Arrays;
-
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
+import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
+import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
+import nl.clockwork.ebms.admin.web.PageLink;
+import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.model.EbMSMessageContext;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
-import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 public class MessagesPage extends BasePage
 {
+	private class MessageDataView extends DataView<String>
+	{
+		protected MessageDataView(String id, IDataProvider<String> dataProvider)
+		{
+			super(id,dataProvider);
+			setOutputMarkupId(true);
+		}
+
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public long getItemsPerPage()
+		{
+			return maxItemsPerPage;
+		}
+
+		@Override
+		protected void populateItem(final Item<String> item)
+		{
+			final String messageId = item.getModelObject();
+			item.add(createViewLink("view",messageId));
+			item.add(AttributeModifier.replace("class",new OddOrEvenIndexStringModel(item.getIndex())));
+		}
+
+		private Link<Void> createViewLink(String id, final String messageId)
+		{
+			Link<Void> link = new Link<Void>(id)
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void onClick()
+				{
+					setResponsePage(new MessagePage(ebMSMessageService.getMessage(messageId,null),MessagesPage.this));
+				}
+			};
+			link.add(new Label("messageId",messageId));
+			return link;
+		}
+	}
+
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="ebMSMessageService")
 	private EbMSMessageService ebMSMessageService;
@@ -58,80 +97,14 @@ public class MessagesPage extends BasePage
 	public MessagesPage(EbMSMessageContext filter, final WebPage responsePage)
 	{
 		this.filter = filter;
-
 		final WebMarkupContainer container = new WebMarkupContainer("container");
-		container.setOutputMarkupId(true);
-
-		DataView<String> messages = new DataView<String>("messages",new MessageDataProvider(ebMSMessageService,this.filter))
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public long getItemsPerPage()
-			{
-				return maxItemsPerPage;
-			}
-
-			@Override
-			protected void populateItem(final Item<String> item)
-			{
-				final String messageId = item.getModelObject();
-				Link<Void> link = new Link<Void>("view")
-				{
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public void onClick()
-					{
-						setResponsePage(new MessagePage(ebMSMessageService.getMessage(messageId,null),MessagesPage.this));
-					}
-				};
-				link.add(new Label("messageId",messageId));
-				item.add(link);
-				item.add(AttributeModifier.replace("class",new AbstractReadOnlyModel<String>()
-				{
-					private static final long serialVersionUID = 1L;
-				
-					@Override
-					public String getObject()
-					{
-						return (item.getIndex() % 2 == 0) ? "even" : "odd";
-					}
-				}));
-			}
-		};
-		messages.setOutputMarkupId(true);
-		container.add(messages);
 		add(container);
-
+		DataView<String> messages = new MessageDataView("messages",new MessageDataProvider(ebMSMessageService,this.filter));
+		container.add(messages);
 		final BootstrapPagingNavigator navigator = new BootstrapPagingNavigator("navigator",messages);
 		add(navigator);
-
-		DropDownChoice<Integer> maxItemsPerPage = new DropDownChoice<Integer>("maxItemsPerPage",new PropertyModel<Integer>(this,"maxItemsPerPage"),Arrays.asList(5,10,15,20,25,50,100));
-		add(maxItemsPerPage);
-		maxItemsPerPage.add(new AjaxFormComponentUpdatingBehavior("onchange")
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected void onUpdate(AjaxRequestTarget target)
-			{
-				target.add(navigator);
-				target.add(container);
-			}
-			
-		});
-		
-		add(new Link<Void>("back")
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void onClick()
-			{
-				setResponsePage(responsePage);
-			}
-		}.setVisible(responsePage != null));
+		add(new MaxItemsPerPageChoice("maxItemsPerPage",new PropertyModel<Integer>(this,"maxItemsPerPage"),navigator,container));
+		add(new PageLink("back",responsePage).setVisible(responsePage != null));
 		add(new DownloadEbMSMessageIdsCSVLink("download",ebMSMessageService,filter));
 	}
 

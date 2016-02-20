@@ -24,15 +24,7 @@ import org.apache.wicket.model.Model;
 
 public class MenuPanel extends Panel
 {
-	private static final long serialVersionUID = 1L;
-
-	public MenuPanel(String id, List<MenuItem> menuItems)
-	{
-		super(id,Model.of(menuItems));
-		add(new Rows("rows",menuItems));
-	}
-	
-	public static class Rows extends ListView<MenuItem>
+	private class Rows extends ListView<MenuItem>
 	{
 		private static final long serialVersionUID = 1L;
 
@@ -52,7 +44,14 @@ public class MenuPanel extends Panel
 				item.add(new MenuItemPanel("row",menuItem)/*.setRenderBodyOnly(true)*/);
 			//item.setRenderBodyOnly(true);
 		}
-		
 	}
 
+	private static final long serialVersionUID = 1L;
+
+	public MenuPanel(String id, List<MenuItem> menuItems)
+	{
+		super(id,Model.of(menuItems));
+		add(new Rows("rows",menuItems));
+	}
+	
 }

@@ -15,25 +15,18 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.model.EbMSDataSource;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.encoding.UrlEncoder;
 import org.apache.wicket.util.lang.Args;
-import org.apache.wicket.util.lang.Bytes;
-import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
-import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 
 public class DownloadEbMSDataSourceLink extends Link<EbMSDataSource>
 {
@@ -42,6 +35,7 @@ public class DownloadEbMSDataSourceLink extends Link<EbMSDataSource>
 	public DownloadEbMSDataSourceLink(String id, EbMSDataSource ebMSDataSource)
 	{
 		super(id,Model.of(Args.notNull(ebMSDataSource,"ebMSDataSource")));
+		add(new Label("name"));
 	}
 
 	@Override
@@ -49,46 +43,15 @@ public class DownloadEbMSDataSourceLink extends Link<EbMSDataSource>
 	{
 		final EbMSDataSource ebMSDataSource = getModelObject();
 		String fileName = UrlEncoder.QUERY_INSTANCE.encode(StringUtils.isEmpty(ebMSDataSource.getName()) ? "ebMSDataSource" + Utils.getFileExtension(ebMSDataSource.getContentType()) : ebMSDataSource.getName(),getRequest().getCharset());
-		IResourceStream resourceStream = new AbstractResourceStream()
-		{
-			private static final long serialVersionUID = 1L;
+		IResourceStream resourceStream = new EbMSDataSourceResourceStream(ebMSDataSource);
+		getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName,resourceStream));
+	}
 
-			@Override
-			public String getContentType()
-			{
-				return ebMSDataSource.getContentType();
-			}
-			
-			@Override
-			public Bytes length()
-			{
-				return Bytes.bytes(ebMSDataSource.getContent().length);
-			}
-			
-			@Override
-			public InputStream getInputStream() throws ResourceStreamNotFoundException
-			{
-				return new ByteArrayInputStream(ebMSDataSource.getContent());
-			}
-			
-			@Override
-			public void close() throws IOException
-			{
-			}
-		}; 
-
-		getRequestCycle().scheduleRequestHandlerAfterCurrent(
-			new ResourceStreamRequestHandler(resourceStream)
-			{
-				@Override
-				public void respond(IRequestCycle requestCycle)
-				{
-					super.respond(requestCycle);
-				}
-			}
-			.setFileName(fileName)
-			.setContentDisposition(ContentDisposition.ATTACHMENT)
-		);
+	private ResourceStreamRequestHandler createRequestHandler(String fileName, IResourceStream resourceStream)
+	{
+		return new ResourceStreamRequestHandler(resourceStream)
+		.setFileName(fileName)
+		.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 
 }
