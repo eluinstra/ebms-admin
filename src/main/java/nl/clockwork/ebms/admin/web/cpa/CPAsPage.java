@@ -15,20 +15,15 @@
  */
 package nl.clockwork.ebms.admin.web.cpa;
 
-import java.util.Arrays;
-
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.model.CPA;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
+import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.Component;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
@@ -99,29 +94,13 @@ public class CPAsPage extends BasePage
 		container.add(cpas);
 		final BootstrapPagingNavigator navigator = new BootstrapPagingNavigator("navigator",cpas);
 		add(navigator);
-		add(createMaxItemsPerPageChoice("maxItemsPerPage",container,navigator));
+		add(new MaxItemsPerPageChoice("maxItemsPerPage",new PropertyModel<Integer>(this,"maxItemsPerPage"),container,navigator));
 	}
 
 	@Override
 	public String getPageTitle()
 	{
 		return getLocalizer().getString("cpas",this);
-	}
-
-	private DropDownChoice<Integer> createMaxItemsPerPageChoice(String id, final Component...components)
-	{
-		DropDownChoice<Integer> result = new DropDownChoice<Integer>(id,new PropertyModel<Integer>(this,"maxItemsPerPage"),Arrays.asList(5,10,15,20,25,50,100));
-		result.add(new AjaxFormComponentUpdatingBehavior("onchange")
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected void onUpdate(AjaxRequestTarget target)
-			{
-				target.add(components);
-			}
-		});
-		return result;
 	}
 
 }
