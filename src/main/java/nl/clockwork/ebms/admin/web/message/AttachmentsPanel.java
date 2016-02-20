@@ -30,6 +30,26 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 public class AttachmentsPanel extends Panel
 {
+	private class EbMSAttachmentPropertyListView extends PropertyListView<EbMSAttachment>
+	{
+		private static final long serialVersionUID = 1L;
+
+		public EbMSAttachmentPropertyListView(String id, List<? extends EbMSAttachment> list)
+		{
+			super(id,list);
+		}
+
+		@Override
+		protected void populateItem(ListItem<EbMSAttachment> item)
+		{
+			item.add(new Label("name"));
+			DownloadEbMSAttachmentLink link = new DownloadEbMSAttachmentLink("downloadAttachment",ebMSDAO,item.getModelObject());
+			link.add(new Label("contentId"));
+			item.add(link);
+			item.add(new Label("contentType"));
+		}
+	}
+
 	private static final long serialVersionUID = 1L;
 	protected Log logger = LogFactory.getLog(this.getClass());
 	@SpringBean(name="ebMSAdminDAO")
@@ -38,19 +58,7 @@ public class AttachmentsPanel extends Panel
 	public AttachmentsPanel(String id, List<EbMSAttachment> attachments)
 	{
 		super(id);
-		add(new PropertyListView<EbMSAttachment>("attachments",attachments)
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected void populateItem(ListItem<EbMSAttachment> item)
-			{
-				item.add(new Label("name"));
-				DownloadEbMSAttachmentLink link = new DownloadEbMSAttachmentLink("downloadAttachment",ebMSDAO,item.getModelObject());
-				link.add(new Label("contentId"));
-				item.add(link);
-				item.add(new Label("contentType"));
-			}
-		});
+		add(new EbMSAttachmentPropertyListView("attachments",attachments));
 	}
+
 }

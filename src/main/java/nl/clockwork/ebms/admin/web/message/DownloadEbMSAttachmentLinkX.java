@@ -15,10 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.web.Utils;
 
@@ -30,10 +26,7 @@ import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.encoding.UrlEncoder;
 import org.apache.wicket.util.lang.Args;
-import org.apache.wicket.util.lang.Bytes;
-import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
-import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 
 public class DownloadEbMSAttachmentLinkX extends Link<EbMSAttachment>
 {
@@ -49,46 +42,22 @@ public class DownloadEbMSAttachmentLinkX extends Link<EbMSAttachment>
 	{
 		final EbMSAttachment attachment = getModelObject();
 		String fileName = UrlEncoder.QUERY_INSTANCE.encode(StringUtils.isEmpty(attachment.getName()) ? attachment.getContentId() + Utils.getFileExtension(attachment.getContentType()) : attachment.getName(),getRequest().getCharset());
-		IResourceStream resourceStream = new AbstractResourceStream()
+		IResourceStream resourceStream = new AttachmentResourceStream(attachment);
+		getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName,resourceStream));
+	}
+
+	private ResourceStreamRequestHandler createRequestHandler(String fileName, IResourceStream resourceStream)
+	{
+		return new ResourceStreamRequestHandler(resourceStream)
 		{
-			private static final long serialVersionUID = 1L;
-
 			@Override
-			public String getContentType()
+			public void respond(IRequestCycle requestCycle)
 			{
-				return attachment.getContentType();
+				super.respond(requestCycle);
 			}
-			
-			@Override
-			public Bytes length()
-			{
-				return Bytes.bytes(attachment.getContent().length);
-			}
-			
-			@Override
-			public InputStream getInputStream() throws ResourceStreamNotFoundException
-			{
-				return new ByteArrayInputStream(attachment.getContent());
-			}
-			
-			@Override
-			public void close() throws IOException
-			{
-			}
-		}; 
-
-		getRequestCycle().scheduleRequestHandlerAfterCurrent(
-			new ResourceStreamRequestHandler(resourceStream)
-			{
-				@Override
-				public void respond(IRequestCycle requestCycle)
-				{
-					super.respond(requestCycle);
-				}
-			}
-			.setFileName(fileName)
-			.setContentDisposition(ContentDisposition.ATTACHMENT)
-		);
+		}
+		.setFileName(fileName)
+		.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 
 }

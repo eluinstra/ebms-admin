@@ -31,6 +31,7 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -39,6 +40,56 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 public class CPAsPage extends BasePage
 {
+	private class CPADataView extends DataView<CPA>
+	{
+		private static final long serialVersionUID = 1L;
+
+		protected CPADataView(String id, IDataProvider<CPA> dataProvider)
+		{
+			super(id,dataProvider);
+		}
+
+		@Override
+		public long getItemsPerPage()
+		{
+			return maxItemsPerPage;
+		}
+
+		@Override
+		protected void populateItem(final Item<CPA> item)
+		{
+			final CPA cpa = item.getModelObject();
+			Link<Void> link = new Link<Void>("view")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void onClick()
+				{
+					//setResponsePage(new CPAPage(ebMSDAO.getCPA(cpa.getId(),CPAsPage.this)));
+					setResponsePage(new CPAPage(cpa,CPAsPage.this));
+				}
+			};
+			link.add(new Label("cpaId",cpa.getCpaId()));
+			item.add(link);
+			item.add(AttributeModifier.replace("class",new AbstractReadOnlyModel<String>()
+			{
+				private static final long serialVersionUID = 1L;
+			
+				@Override
+				public String getObject()
+				{
+					return (item.getIndex() % 2 == 0) ? "even" : "odd";
+				}
+			}));
+		}
+
+//		@Override
+//		protected Item<CPA> newItem(String id, int index, IModel<CPA> model)
+//		{
+//			return new OddEvenItem<CPA>(id,index,model);
+//		}
+	}
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="ebMSAdminDAO")
 	private EbMSDAO ebMSDAO;
@@ -71,51 +122,7 @@ public class CPAsPage extends BasePage
 
 	private DataView<CPA> createCPAs(String id)
 	{
-		DataView<CPA> result = new DataView<CPA>(id,new CPADataProvider(ebMSDAO))
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public long getItemsPerPage()
-			{
-				return maxItemsPerPage;
-			}
-
-			@Override
-			protected void populateItem(final Item<CPA> item)
-			{
-				final CPA cpa = item.getModelObject();
-				Link<Void> link = new Link<Void>("view")
-				{
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public void onClick()
-					{
-						//setResponsePage(new CPAPage(ebMSDAO.getCPA(cpa.getId(),CPAsPage.this)));
-						setResponsePage(new CPAPage(cpa,CPAsPage.this));
-					}
-				};
-				link.add(new Label("cpaId",cpa.getCpaId()));
-				item.add(link);
-				item.add(AttributeModifier.replace("class",new AbstractReadOnlyModel<String>()
-				{
-					private static final long serialVersionUID = 1L;
-				
-					@Override
-					public String getObject()
-					{
-						return (item.getIndex() % 2 == 0) ? "even" : "odd";
-					}
-				}));
-			}
-
-//			@Override
-//			protected Item<CPA> newItem(String id, int index, IModel<CPA> model)
-//			{
-//				return new OddEvenItem<CPA>(id,index,model);
-//			}
-		};
+		DataView<CPA> result = new CPADataView(id,new CPADataProvider(ebMSDAO));
 		result.setOutputMarkupId(true);
 		return result;
 	}
