@@ -20,8 +20,8 @@ import nl.clockwork.ebms.admin.model.CPA;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
 import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
+import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
-import nl.clockwork.ebms.admin.web.message.OddOrEvenIndexStringModel;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;

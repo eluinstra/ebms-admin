@@ -1,7 +1,5 @@
 package nl.clockwork.ebms.admin.web;
 
-import nl.clockwork.ebms.admin.model.LocalizedStringResource;
-
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;

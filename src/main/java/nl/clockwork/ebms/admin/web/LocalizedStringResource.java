@@ -1,4 +1,4 @@
-package nl.clockwork.ebms.admin.model;
+package nl.clockwork.ebms.admin.web;
 
 import org.apache.wicket.Component;
 

@@ -20,7 +20,6 @@ import java.util.Date;
 import java.util.List;
 
 import nl.clockwork.ebms.admin.Constants.JQueryLocale;
-import nl.clockwork.ebms.admin.model.LocalizedStringResource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.MarkupContainer;
