@@ -15,15 +15,15 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.link.Link;
 
-public class BackLink extends Link<Void>
+public class PageClassLink extends Link<Void>
 {
 	private static final long serialVersionUID = 1L;
-	private WebPage page;
+	private Class<? extends Page> page;
 
-	public BackLink(String id, WebPage page)
+	public PageClassLink(String id, Class<? extends Page> page)
 	{
 		super(id);
 		this.page = page;

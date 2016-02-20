@@ -21,7 +21,7 @@ import java.util.List;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapDateTimePicker;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.admin.web.PageLink;
+import nl.clockwork.ebms.admin.web.PageClassLink;
 import nl.clockwork.ebms.service.CPAService;
 
 import org.apache.commons.logging.Log;
@@ -48,7 +48,7 @@ public abstract class MessageFilterPanel extends Panel
 		from  = messageFilterForm.getFrom();
 		to = messageFilterForm.getTo();
 		add(messageFilterForm);
-		add(new PageLink("clear",getPage().getClass()));
+		add(new PageClassLink("clear",getPage().getClass()));
 	}
 	
 	@Override

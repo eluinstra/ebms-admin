@@ -16,7 +16,7 @@
 package nl.clockwork.ebms.admin.web.cpa;
 
 import nl.clockwork.ebms.admin.model.CPA;
-import nl.clockwork.ebms.admin.web.BackLink;
+import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.BasePage;
 
 import org.apache.wicket.markup.html.WebPage;
@@ -32,7 +32,7 @@ public class CPAPage extends BasePage
 	{
 		add(new Label("cpaId",cpa.getCpaId()));
 		add(new TextArea<String>("cpa",Model.of(cpa.getCpa())).setEnabled(false));
-		add(new BackLink("back",responsePage));
+		add(new PageLink("back",responsePage));
 	}
 
 	@Override

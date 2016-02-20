@@ -59,28 +59,8 @@ class MessageFilterForm extends Form<MessageFilterFormModel>
 		add(from);
 		to = new BootstrapDateTimePicker("to",new LocalizedStringResource("lbl.to",MessageFilterForm.this),"dd-MM-yyyy",BootstrapDateTimePicker.Type.DATE);
 		add(to);
-
-		add(new Button("search",new ResourceModel("cmd.search"))
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void onSubmit()
-			{
-				setResponsePage(messageFilterPanel.getPage(MessageFilterForm.this.getModelObject()));
-			}
-		});
-		
-		add(new Button("reset",new ResourceModel("cmd.reset"))
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void onSubmit()
-			{
-				setResponsePage(getPage().getClass());
-			}
-		});
+		add(createSearchButton("search",messageFilterPanel));
+		add(createResetButton("reset"));
 
 	}
 
@@ -380,6 +360,34 @@ class MessageFilterForm extends Form<MessageFilterFormModel>
 				return true;
 			}
 		}.setMaxRows(4);
+	}
+
+	private Button createSearchButton(String id, final MessageFilterPanel messageFilterPanel)
+	{
+		return new Button(id,new ResourceModel("cmd.search"))
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onSubmit()
+			{
+				setResponsePage(messageFilterPanel.getPage(MessageFilterForm.this.getModelObject()));
+			}
+		};
+	}
+
+	private Button createResetButton(String id)
+	{
+		return new Button(id,new ResourceModel("cmd.reset"))
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onSubmit()
+			{
+				setResponsePage(getPage().getClass());
+			}
+		};
 	}
 
 	private Component getFeedbackComponent()

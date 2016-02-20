@@ -21,9 +21,9 @@ import org.apache.wicket.markup.html.link.Link;
 public class PageLink extends Link<Void>
 {
 	private static final long serialVersionUID = 1L;
-	private Class<? extends Page> page;
+	private Page page;
 
-	public PageLink(String id, Class<? extends Page> page)
+	public PageLink(String id, Page page)
 	{
 		super(id);
 		this.page = page;
