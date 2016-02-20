@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 import nl.clockwork.ebms.admin.Constants.JQueryLocale;
+import nl.clockwork.ebms.admin.model.LocalizedStringResource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.MarkupContainer;
@@ -29,6 +30,7 @@ import org.apache.wicket.markup.html.form.FormComponentPanel;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.internal.HtmlHeaderContainer;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 
 public class BootstrapDateTimePicker extends FormComponentPanel<Date>
@@ -42,32 +44,34 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 		H12, H24;
 	}
 	private static final long serialVersionUID = 1L;
+	private LocalizedStringResource localizedStringResource;
 	private String format;
 	private String formatJS;
-	private Type type = Type.DATE_TIME;
+	private Type type;
 	private HourFormat hourFormat;
 	private Date startDate;
 	private Date endDate;
 	private Date dateTime;
 	private TextField<Date> dateTimeField;
 
-	public BootstrapDateTimePicker(final String id)
+	public BootstrapDateTimePicker(final String id, LocalizedStringResource localizedStringResource)
 	{
-		this(id,(IModel<Date>)null);
+		this(id,localizedStringResource,(IModel<Date>)null);
 	}
-	public BootstrapDateTimePicker(final String id, String format)
+	public BootstrapDateTimePicker(final String id, LocalizedStringResource localizedStringResource, String format, Type type)
 	{
-		this(id,null,format);
+		this(id,localizedStringResource,null,format,type);
 	}
 	
-	public BootstrapDateTimePicker(final String id, IModel<Date> model)
+	public BootstrapDateTimePicker(final String id, LocalizedStringResource localizedStringResource, IModel<Date> model)
 	{
-		this(id,model,"dd-MM-yyyy HH:mm:ss");
+		this(id,localizedStringResource,model,"dd-MM-yyyy HH:mm:ss",Type.DATE_TIME);
 	}
 
-	public BootstrapDateTimePicker(final String id, IModel<Date> model, String format)
+	public BootstrapDateTimePicker(final String id, LocalizedStringResource localizedStringResource, IModel<Date> model, String format, Type type)
 	{
 		super(id,model);
+		this.localizedStringResource = localizedStringResource;
 		this.format = format;
 		this.hourFormat = format.contains("H") ? HourFormat.H24 : HourFormat.H12;
 		this.formatJS = format.replaceAll("H","h");
@@ -148,6 +152,12 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 		super.onBeforeRender();
 	}
 	
+	@Override
+	public IModel<String> getLabel()
+	{
+		return Model.of(getLocalizer().getString(localizedStringResource.getKey(),localizedStringResource.getComponent()));
+	}
+
 	public String getDateFormat()
 	{
 		return format;

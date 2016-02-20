@@ -21,11 +21,11 @@ import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.model.CPA;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
+import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.link.Link;
@@ -47,6 +47,7 @@ public class CPAsPage extends BasePage
 		protected CPADataView(String id, IDataProvider<CPA> dataProvider)
 		{
 			super(id,dataProvider);
+			setOutputMarkupId(true);
 		}
 
 		@Override
@@ -98,20 +99,13 @@ public class CPAsPage extends BasePage
 
 	public CPAsPage()
 	{
-		final WebMarkupContainer container = createContainer("container");
+		final WebMarkupContainer container = new WebMarkupContainer("container");
 		add(container);
-		DataView<CPA> cpas = createCPAs("cpas");
+		DataView<CPA> cpas = new CPADataView("cpas",new CPADataProvider(ebMSDAO));
 		container.add(cpas);
-		final BootstrapPagingNavigator navigator = createNavigator("navigator",cpas);
+		final BootstrapPagingNavigator navigator = new BootstrapPagingNavigator("navigator",cpas);
 		add(navigator);
-		add(createMaxItemsPerPage("maxItemsPerPage",container,navigator));
-	}
-
-	private WebMarkupContainer createContainer(String id)
-	{
-		final WebMarkupContainer result = new WebMarkupContainer(id);
-		result.setOutputMarkupId(true);
-		return result;
+		add(createMaxItemsPerPageChoice("maxItemsPerPage",container,navigator));
 	}
 
 	@Override
@@ -120,19 +114,7 @@ public class CPAsPage extends BasePage
 		return getLocalizer().getString("cpas",this);
 	}
 
-	private DataView<CPA> createCPAs(String id)
-	{
-		DataView<CPA> result = new CPADataView(id,new CPADataProvider(ebMSDAO));
-		result.setOutputMarkupId(true);
-		return result;
-	}
-
-	private BootstrapPagingNavigator createNavigator(String id, DataView<CPA> cpas)
-	{
-		return new BootstrapPagingNavigator(id,cpas);
-	}
-
-	private DropDownChoice<Integer> createMaxItemsPerPage(String id, final WebMarkupContainer container, final BootstrapPagingNavigator navigator)
+	private DropDownChoice<Integer> createMaxItemsPerPageChoice(String id, final WebMarkupContainer container, final BootstrapPagingNavigator navigator)
 	{
 		DropDownChoice<Integer> result = new DropDownChoice<Integer>(id,new PropertyModel<Integer>(this,"maxItemsPerPage"),Arrays.asList(5,10,15,20,25,50,100));
 		result.add(new AjaxFormComponentUpdatingBehavior("onchange")

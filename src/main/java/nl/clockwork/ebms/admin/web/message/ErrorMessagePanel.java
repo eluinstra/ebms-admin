@@ -30,7 +30,12 @@ public class ErrorMessagePanel extends Panel
 	{
 		super(window.getContentId(),model);
 		add(new MultiLineLabel("errorMessage",model));
-		add(new AjaxLink<Void>("close")
+		add(createClose("close",window));
+	}
+
+	private AjaxLink<Void> createClose(String id, final ModalWindow window)
+	{
+		return new AjaxLink<Void>(id)
 		{
 			private static final long serialVersionUID = 1L;
 
@@ -39,7 +44,7 @@ public class ErrorMessagePanel extends Panel
 			{
 				window.close(target);
 			}
-		});
+		};
 	}
 
 }
