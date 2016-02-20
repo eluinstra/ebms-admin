@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-import java.util.Arrays;
 import java.util.Date;
 
 import nl.clockwork.ebms.admin.Constants;
@@ -23,27 +22,99 @@ import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
+import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
+import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.Utils;
+import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.admin.web.message.MessageFilterPanel.MessageFilterFormModel;
 
 import org.apache.commons.lang.SerializationUtils;
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 public class TrafficPage extends BasePage
 {
+	private class EbMSMessageDataView extends DataView<EbMSMessage>
+	{
+		private static final long serialVersionUID = 1L;
+
+		protected EbMSMessageDataView(String id, IDataProvider<EbMSMessage> dataProvider)
+		{
+			super(id,dataProvider);
+			setOutputMarkupId(true);
+		}
+
+		@Override
+		public long getItemsPerPage()
+		{
+			return maxItemsPerPage;
+		}
+
+		@Override
+		protected void populateItem(final Item<EbMSMessage> item)
+		{
+			EbMSMessage message = item.getModelObject();
+			item.add(createViewLink("view",message));
+			item.add(createFilterConversationIdLink("filterConversationId",message));
+			item.add(DateLabel.forDatePattern("timestamp",new Model<Date>(message.getTimestamp()),Constants.DATETIME_FORMAT));
+			item.add(new Label("cpaId",message.getCpaId()));
+			item.add(new Label("fromPartyId",message.getFromPartyId()));
+			item.add(new Label("fromRole",message.getFromRole()));
+			item.add(new Label("toPartyId",message.getToPartyId()));
+			item.add(new Label("toRole",message.getToRole()));
+			item.add(new Label("service",message.getService()));
+			item.add(new Label("action",message.getAction()));
+			item.add(new Label("status",message.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus())))));
+			item.add(DateLabel.forDatePattern("statusTime",new Model<Date>(message.getStatusTime()),Constants.DATETIME_FORMAT));
+			item.add(AttributeModifier.replace("class",Model.of(Utils.getTableRowCssClass(message.getStatus()))));
+		}
+
+		private Link<Void> createViewLink(String id, final EbMSMessage message)
+		{
+			Link<Void> result = new Link<Void>(id)
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void onClick()
+				{
+					//setResponsePage(new MessagePageX(ebMSDAO.getMessage(message.getMessageId(),message.getMessageNr()),MessagesPage.this));
+					setResponsePage(new MessagePageX(message,TrafficPage.this));
+				}
+			};
+			result.add(new Label("messageId",message.getMessageId()));
+			return result;
+		}
+
+		private Link<Void> createFilterConversationIdLink(String id, final EbMSMessage message)
+		{
+			Link<Void> result = new Link<Void>(id)
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void onClick()
+				{
+					MessageFilterFormModel filter = (MessageFilterFormModel)SerializationUtils.clone(TrafficPage.this.filter);
+					filter.setConversationId(message.getConversationId());
+					setResponsePage(new TrafficPage(filter,TrafficPage.this));
+				}
+			};
+			result.add(new Label("conversationId",message.getConversationId()));
+			result.setEnabled(TrafficPage.this.filter.getConversationId() == null);
+			return result;
+		}
+	}
+
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="ebMSAdminDAO")
 	private EbMSDAO ebMSDAO;
@@ -66,8 +137,21 @@ public class TrafficPage extends BasePage
 		this.filter = filter;
 		filter.setMessageNr(0);
 		filter.setServiceMessage(false);
+		add(createMessageFilterPanel("messageFilter",filter));
+		WebMarkupContainer container = new WebMarkupContainer("container");
+		add(container);
+		DataView<EbMSMessage> messages = new EbMSMessageDataView("messages",new MessageDataProvider(ebMSDAO,this.filter));
+		container.add(messages);
+		BootstrapPagingNavigator navigator = new BootstrapPagingNavigator("navigator",messages);
+		add(navigator);
+		add(new MaxItemsPerPageChoice("maxItemsPerPage",new PropertyModel<Integer>(this,"maxItemsPerPage"),navigator,container));
+		add(new PageLink("back",responsePage).setVisible(responsePage != null));
+		add(new DownloadEbMSMessagesCSVLink("download",ebMSDAO,filter));
+	}
 
-		add(new MessageFilterPanel("messageFilter",(MessageFilterFormModel)filter)
+	private MessageFilterPanel createMessageFilterPanel(String id, EbMSMessageFilter filter)
+	{
+		return new MessageFilterPanel(id,(MessageFilterFormModel)filter)
 		{
 			private static final long serialVersionUID = 1L;
 
@@ -76,99 +160,7 @@ public class TrafficPage extends BasePage
 			{
 				return new TrafficPage(filter);
 			}
-		});
-		
-		final WebMarkupContainer container = new WebMarkupContainer("container");
-		container.setOutputMarkupId(true);
-
-		DataView<EbMSMessage> messages = new DataView<EbMSMessage>("messages",new MessageDataProvider(ebMSDAO,this.filter))
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public long getItemsPerPage()
-			{
-				return maxItemsPerPage;
-			}
-
-			@Override
-			protected void populateItem(final Item<EbMSMessage> item)
-			{
-				final EbMSMessage message = item.getModelObject();
-				Link<Void> link = new Link<Void>("view")
-				{
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public void onClick()
-					{
-						//setResponsePage(new MessagePageX(ebMSDAO.getMessage(message.getMessageId(),message.getMessageNr()),MessagesPage.this));
-						setResponsePage(new MessagePageX(message,TrafficPage.this));
-					}
-				};
-				link.add(new Label("messageId",message.getMessageId()));
-				item.add(link);
-				link = new Link<Void>("filterConversationId")
-				{
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public void onClick()
-					{
-						MessageFilterFormModel filter = (MessageFilterFormModel)SerializationUtils.clone(TrafficPage.this.filter);
-						filter.setConversationId(message.getConversationId());
-						setResponsePage(new TrafficPage(filter,TrafficPage.this));
-					}
-				};
-				link.add(new Label("conversationId",message.getConversationId()));
-				link.setEnabled(TrafficPage.this.filter.getConversationId() == null);
-				item.add(link);
-				item.add(DateLabel.forDatePattern("timestamp",new Model<Date>(message.getTimestamp()),Constants.DATETIME_FORMAT));
-				item.add(new Label("cpaId",message.getCpaId()));
-				item.add(new Label("fromPartyId",message.getFromPartyId()));
-				item.add(new Label("fromRole",message.getFromRole()));
-				item.add(new Label("toPartyId",message.getToPartyId()));
-				item.add(new Label("toRole",message.getToRole()));
-				item.add(new Label("service",message.getService()));
-				item.add(new Label("action",message.getAction()));
-				item.add(new Label("status",message.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus())))));
-				item.add(DateLabel.forDatePattern("statusTime",new Model<Date>(message.getStatusTime()),Constants.DATETIME_FORMAT));
-				item.add(AttributeModifier.replace("class",Model.of(Utils.getTableRowCssClass(message.getStatus()))));
-			}
 		};
-		messages.setOutputMarkupId(true);
-		container.add(messages);
-		add(container);
-
-		final BootstrapPagingNavigator navigator = new BootstrapPagingNavigator("navigator",messages);
-		add(navigator);
-
-		DropDownChoice<Integer> maxItemsPerPage = new DropDownChoice<Integer>("maxItemsPerPage",new PropertyModel<Integer>(this,"maxItemsPerPage"),Arrays.asList(5,10,15,20,25,50,100));
-		add(maxItemsPerPage);
-		maxItemsPerPage.add(new AjaxFormComponentUpdatingBehavior("onchange")
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected void onUpdate(AjaxRequestTarget target)
-			{
-				target.add(navigator);
-				target.add(container);
-			}
-			
-		});
-		
-		add(new Link<Void>("back")
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void onClick()
-			{
-				setResponsePage(responsePage);
-			}
-		}.setVisible(responsePage != null));
-		add(new DownloadEbMSMessagesCSVLink("download",ebMSDAO,filter));
 	}
 
 	@Override

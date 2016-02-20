@@ -137,9 +137,16 @@ public class TrafficChartPage extends BasePage
 		public TrafficChartForm(String id, TrafficChartFormModel model)
 		{
 			super(id,new CompoundPropertyModel<TrafficChartFormModel>(model));
+			add(createTimeUnitsChoice("timeUnits"));
+			add(createMinusLink("minus"));
+			add(createPlusLink("plus"));
+	    add(new Chart("chart",createOptions(model)));
+			add(createEbMSMessageTrafficChartOptions("ebMSMessageTrafficChartOptions"));
+		}
 
-			DropDownChoice<TimeUnit> timeUnits = 
-			new DropDownChoice<TimeUnit>("timeUnits",new PropertyModel<TimeUnit>(this.getModelObject(),"timeUnit"),new PropertyModel<List<TimeUnit>>(this.getModelObject(),"timeUnits"))
+		private DropDownChoice<TimeUnit> createTimeUnitsChoice(String id)
+		{
+			DropDownChoice<TimeUnit> result = new DropDownChoice<TimeUnit>(id,new PropertyModel<TimeUnit>(this.getModelObject(),"timeUnit"),new PropertyModel<List<TimeUnit>>(this.getModelObject(),"timeUnits"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -155,10 +162,8 @@ public class TrafficChartPage extends BasePage
 					return true;
 				}
 			};
-			timeUnits.setRequired(true);
-			add(timeUnits);
-
-			timeUnits.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.setRequired(true);
+			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -171,8 +176,12 @@ public class TrafficChartPage extends BasePage
 					target.add(chart);
 				}
 			});
+			return result;
+		}
 
-			add(new AjaxLink<Void>("minus")
+		private AjaxLink<Void> createMinusLink(String id)
+		{
+			return new AjaxLink<Void>(id)
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -184,9 +193,12 @@ public class TrafficChartPage extends BasePage
 					chart.setOptions(createOptions(model));
 					target.add(chart);
 				}
-			});
+			};
+		}
 
-			add(new AjaxLink<Void>("plus")
+		private AjaxLink<Void> createPlusLink(String id)
+		{
+			return new AjaxLink<Void>(id)
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -198,13 +210,12 @@ public class TrafficChartPage extends BasePage
 					chart.setOptions(createOptions(model));
 					target.add(chart);
 				}
-			});
+			};
+		}
 
-	    chart = new Chart("chart",createOptions(model));
-	    add(chart);
-
-			DropDownChoice<EbMSMessageTrafficChartOption> ebMSMessageTrafficChartOptions =
-			new DropDownChoice<EbMSMessageTrafficChartOption>("ebMSMessageTrafficChartOptions",new PropertyModel<EbMSMessageTrafficChartOption>(this.getModelObject(),"ebMSMessageTrafficChartOption"),new PropertyModel<List<EbMSMessageTrafficChartOption>>(this.getModelObject(),"ebMSMessageTrafficChartOptions"))
+		private DropDownChoice<EbMSMessageTrafficChartOption> createEbMSMessageTrafficChartOptions(String id)
+		{
+			DropDownChoice<EbMSMessageTrafficChartOption> ebMSMessageTrafficChartOptions = new DropDownChoice<EbMSMessageTrafficChartOption>(id,new PropertyModel<EbMSMessageTrafficChartOption>(this.getModelObject(),"ebMSMessageTrafficChartOption"),new PropertyModel<List<EbMSMessageTrafficChartOption>>(this.getModelObject(),"ebMSMessageTrafficChartOptions"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -221,8 +232,6 @@ public class TrafficChartPage extends BasePage
 				}
 			};
 			ebMSMessageTrafficChartOptions.setRequired(true);
-			add(ebMSMessageTrafficChartOptions);
-
 			ebMSMessageTrafficChartOptions.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;
@@ -235,6 +244,7 @@ public class TrafficChartPage extends BasePage
 					target.add(chart);
 				}
 			});
+			return ebMSMessageTrafficChartOptions;
 		}
 	}
 	

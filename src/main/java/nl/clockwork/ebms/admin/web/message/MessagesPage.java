@@ -37,7 +37,6 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
-import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -64,7 +63,26 @@ public class MessagesPage extends BasePage
 		protected void populateItem(final Item<EbMSMessage> item)
 		{
 			final EbMSMessage message = item.getModelObject();
-			Link<Void> link = new Link<Void>("view")
+			item.add(createViewLink("view",message));
+			item.add(new Label("messageNr",message.getMessageNr()));
+			item.add(createFilterConversationIdLink("filterConversationId",message));
+			item.add(createViewRefToMessageIdLink("viewRefToMessageId",message));
+			item.add(DateLabel.forDatePattern("timestamp",new Model<Date>(message.getTimestamp()),Constants.DATETIME_FORMAT));
+			item.add(new Label("cpaId",message.getCpaId()));
+			item.add(new Label("fromPartyId",message.getFromPartyId()));
+			item.add(new Label("fromRole",message.getFromRole()));
+			item.add(new Label("toPartyId",message.getToPartyId()));
+			item.add(new Label("toRole",message.getToRole()));
+			item.add(new Label("service",message.getService()));
+			item.add(new Label("action",message.getAction()));
+			item.add(new Label("status",message.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus())))));
+			item.add(DateLabel.forDatePattern("statusTime",new Model<Date>(message.getStatusTime()),Constants.DATETIME_FORMAT));
+			item.add(AttributeModifier.replace("class",new OddOrEvenIndexStringModel(item.getIndex())));
+		}
+
+		private Link<Void> createViewLink(String id, final EbMSMessage message)
+		{
+			Link<Void> result = new Link<Void>(id)
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -75,10 +93,13 @@ public class MessagesPage extends BasePage
 					setResponsePage(new MessagePage(message,MessagesPage.this));
 				}
 			};
-			link.add(new Label("messageId",message.getMessageId()));
-			item.add(link);
-			item.add(new Label("messageNr",message.getMessageNr()));
-			link = new Link<Void>("filterConversationId")
+			result.add(new Label("messageId",message.getMessageId()));
+			return result;
+		}
+
+		private Link<Void> createFilterConversationIdLink(String id, final EbMSMessage message)
+		{
+			Link<Void> result = new Link<Void>(id)
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -90,10 +111,14 @@ public class MessagesPage extends BasePage
 					setResponsePage(new MessagesPage(filter,MessagesPage.this));
 				}
 			};
-			link.add(new Label("conversationId",message.getConversationId()));
-			link.setEnabled(MessagesPage.this.filter.getConversationId() == null);
-			item.add(link);
-			link = new Link<Void>("viewRefToMessageId")
+			result.add(new Label("conversationId",message.getConversationId()));
+			result.setEnabled(MessagesPage.this.filter.getConversationId() == null);
+			return result;
+		}
+
+		private Link<Void> createViewRefToMessageIdLink(String id, final EbMSMessage message)
+		{
+			Link<Void> result = new Link<Void>(id)
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -103,30 +128,11 @@ public class MessagesPage extends BasePage
 					setResponsePage(new MessagePage(ebMSDAO.findMessage(message.getRefToMessageId()),MessagesPage.this));
 				}
 			};
-			link.add(new Label("refToMessageId",message.getRefToMessageId()));
-			item.add(link);
-			item.add(DateLabel.forDatePattern("timestamp",new Model<Date>(message.getTimestamp()),Constants.DATETIME_FORMAT));
-			item.add(new Label("cpaId",message.getCpaId()));
-			item.add(new Label("fromPartyId",message.getFromPartyId()));
-			item.add(new Label("fromRole",message.getFromRole()));
-			item.add(new Label("toPartyId",message.getToPartyId()));
-			item.add(new Label("toRole",message.getToRole()));
-			item.add(new Label("service",message.getService()));
-			item.add(new Label("action",message.getAction()));
-			item.add(new Label("status",message.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus())))));
-			item.add(DateLabel.forDatePattern("statusTime",new Model<Date>(message.getStatusTime()),Constants.DATETIME_FORMAT));
-			item.add(AttributeModifier.replace("class",new AbstractReadOnlyModel<String>()
-			{
-				private static final long serialVersionUID = 1L;
-			
-				@Override
-				public String getObject()
-				{
-					return (item.getIndex() % 2 == 0) ? "even" : "odd";
-				}
-			}));
+			result.add(new Label("refToMessageId",message.getRefToMessageId()));
+			return result;
 		}
 	}
+
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="ebMSAdminDAO")
 	private EbMSDAO ebMSDAO;
@@ -147,13 +153,12 @@ public class MessagesPage extends BasePage
 	public MessagesPage(EbMSMessageFilter filter, final WebPage responsePage)
 	{
 		this.filter = filter;
-
 		add(createMessageFilterPanel("messageFilter",filter));
-		final WebMarkupContainer container = new WebMarkupContainer("container");
+		WebMarkupContainer container = new WebMarkupContainer("container");
 		add(container);
 		DataView<EbMSMessage> messages = new EbMSMessageDataView("messages",new MessageDataProvider(ebMSDAO,this.filter));
 		container.add(messages);
-		final BootstrapPagingNavigator navigator = new BootstrapPagingNavigator("navigator",messages);
+		BootstrapPagingNavigator navigator = new BootstrapPagingNavigator("navigator",messages);
 		add(navigator);
 		add(new MaxItemsPerPageChoice("maxItemsPerPage",new PropertyModel<Integer>(this,"maxItemsPerPage"),container,navigator));
 		add(new PageLink("back",responsePage).setVisible(responsePage != null));

@@ -21,6 +21,7 @@ import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
 import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
+import nl.clockwork.ebms.admin.web.message.OddOrEvenIndexStringModel;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
@@ -28,7 +29,6 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
-import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -54,7 +54,13 @@ public class CPAsPage extends BasePage
 		protected void populateItem(final Item<CPA> item)
 		{
 			final CPA cpa = item.getModelObject();
-			Link<Void> link = new Link<Void>("view")
+			item.add(createViewLink("view",cpa));
+			item.add(AttributeModifier.replace("class",new OddOrEvenIndexStringModel(item.getIndex())));
+		}
+
+		private Link<Void> createViewLink(String id, final CPA cpa)
+		{
+			Link<Void> result = new Link<Void>(id)
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -65,18 +71,8 @@ public class CPAsPage extends BasePage
 					setResponsePage(new CPAPage(cpa,CPAsPage.this));
 				}
 			};
-			link.add(new Label("cpaId",cpa.getCpaId()));
-			item.add(link);
-			item.add(AttributeModifier.replace("class",new AbstractReadOnlyModel<String>()
-			{
-				private static final long serialVersionUID = 1L;
-			
-				@Override
-				public String getObject()
-				{
-					return (item.getIndex() % 2 == 0) ? "even" : "odd";
-				}
-			}));
+			result.add(new Label("cpaId",cpa.getCpaId()));
+			return result;
 		}
 	}
 
@@ -88,11 +84,11 @@ public class CPAsPage extends BasePage
 
 	public CPAsPage()
 	{
-		final WebMarkupContainer container = new WebMarkupContainer("container");
+		WebMarkupContainer container = new WebMarkupContainer("container");
 		add(container);
 		DataView<CPA> cpas = new CPADataView("cpas",new CPADataProvider(ebMSDAO));
 		container.add(cpas);
-		final BootstrapPagingNavigator navigator = new BootstrapPagingNavigator("navigator",cpas);
+		BootstrapPagingNavigator navigator = new BootstrapPagingNavigator("navigator",cpas);
 		add(navigator);
 		add(new MaxItemsPerPageChoice("maxItemsPerPage",new PropertyModel<Integer>(this,"maxItemsPerPage"),container,navigator));
 	}
