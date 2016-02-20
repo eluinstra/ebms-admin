@@ -53,8 +53,7 @@ public class CPAsPage extends BasePage
 		@Override
 		protected void populateItem(final Item<CPA> item)
 		{
-			final CPA cpa = item.getModelObject();
-			item.add(createViewLink("view",cpa));
+			item.add(createViewLink("view",item.getModelObject()));
 			item.add(AttributeModifier.replace("class",new OddOrEvenIndexStringModel(item.getIndex())));
 		}
 

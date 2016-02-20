@@ -63,7 +63,7 @@ public class MessagesPage extends BasePage
 		@Override
 		protected void populateItem(final Item<EbMSMessage> item)
 		{
-			final EbMSMessage message = item.getModelObject();
+			EbMSMessage message = item.getModelObject();
 			item.add(createViewLink("view",message));
 			item.add(new Label("messageNr",message.getMessageNr()));
 			item.add(createFilterConversationIdLink("filterConversationId",message));
