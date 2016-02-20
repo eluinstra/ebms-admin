@@ -15,14 +15,15 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
+import nl.clockwork.ebms.admin.web.CheckBox;
+import nl.clockwork.ebms.admin.web.LocalizedStringResource;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.util.io.IClusterable;
 
 public class CorePropertiesFormPanel extends Panel
@@ -43,18 +44,7 @@ public class CorePropertiesFormPanel extends Panel
 		public CorePropertiesForm(String id, final IModel<CorePropertiesFormModel> model)
 		{
 			super(id,new CompoundPropertyModel<CorePropertiesFormModel>(model));
-
-			CheckBox cleoPatch = new CheckBox("cleoPatch")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.cleoPatch",CorePropertiesForm.this));
-				}
-			};
-			add(cleoPatch);
+			add(new CheckBox("cleoPatch",new LocalizedStringResource("lbl.cleoPatch",CorePropertiesForm.this)));
 		}
 	}
 

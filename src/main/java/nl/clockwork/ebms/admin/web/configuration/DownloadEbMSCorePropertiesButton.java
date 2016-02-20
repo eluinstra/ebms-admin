@@ -15,9 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringWriter;
 
 import nl.clockwork.ebms.admin.web.configuration.Constants.PropertiesType;
@@ -27,13 +25,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
-import org.apache.wicket.util.lang.Bytes;
-import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
-import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 
 public class DownloadEbMSCorePropertiesButton extends Button
 {
@@ -54,52 +48,21 @@ public class DownloadEbMSCorePropertiesButton extends Button
 		{
 			final StringWriter writer = new StringWriter();
 			new EbMSCorePropertiesWriter(writer).write(ebMSCorePropertiesFormModel);
-			IResourceStream resourceStream = new AbstractResourceStream()
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public String getContentType()
-				{
-					return "plain/text";
-				}
-				
-				@Override
-				public Bytes length()
-				{
-					return Bytes.bytes(writer.getBuffer().length());
-				}
-				
-				@Override
-				public InputStream getInputStream() throws ResourceStreamNotFoundException
-				{
-					return new ByteArrayInputStream(writer.toString().getBytes());
-				}
-				
-				@Override
-				public void close() throws IOException
-				{
-				}
-			}; 
-
-			getRequestCycle().scheduleRequestHandlerAfterCurrent(
-				new ResourceStreamRequestHandler(resourceStream)
-				{
-					@Override
-					public void respond(IRequestCycle requestCycle)
-					{
-						super.respond(requestCycle);
-					}
-				}
-				.setFileName(PropertiesType.EBMS_CORE.getPropertiesFile())
-				.setContentDisposition(ContentDisposition.ATTACHMENT)
-			);
+			IResourceStream resourceStream = new StringWriterResourceStream(writer,"plain/text");
+			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}
 		catch (IOException e)
 		{
 			logger.error("",e);
 			error(e.getMessage());
 		}
+	}
+
+	private ResourceStreamRequestHandler createRequestHandler(IResourceStream resourceStream)
+	{
+		return new ResourceStreamRequestHandler(resourceStream)
+		.setFileName(PropertiesType.EBMS_CORE.getPropertiesFile())
+		.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 
 }

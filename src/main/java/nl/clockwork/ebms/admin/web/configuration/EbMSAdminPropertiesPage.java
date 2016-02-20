@@ -50,6 +50,23 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 public class EbMSAdminPropertiesPage extends BasePage
 {
+	private class ComponentsListView extends ListView<BootstrapPanelBorder>
+	{
+		private static final long serialVersionUID = 1L;
+
+		public ComponentsListView(String id, List<? extends BootstrapPanelBorder> list)
+		{
+			super(id,list);
+			setReuseItems(true);
+		}
+
+		@Override
+		protected void populateItem(ListItem<BootstrapPanelBorder> item)
+		{
+			item.add((BootstrapPanelBorder)item.getModelObject()); 
+		}
+	}
+
 	private static final long serialVersionUID = 1L;
 	protected transient Log logger = LogFactory.getLog(this.getClass());
 	@SpringBean(name="propertyConfigurer")
@@ -108,19 +125,16 @@ public class EbMSAdminPropertiesPage extends BasePage
 				components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("signatureProperties"),new SignaturePropertiesFormPanel("component",new PropertyModel<SignaturePropertiesFormModel>(getModelObject(),"signatureProperties"))));
 			}
 			components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("jdbcProperties"),new JdbcPropertiesFormPanel("component",new PropertyModel<JdbcPropertiesFormModel>(getModelObject(),"jdbcProperties"))));
-			add(new ListView<BootstrapPanelBorder>("components",components)
-			{
-				private static final long serialVersionUID = 1L;
+			add(new ComponentsListView("components",components));
+			add(createValidateButton("validate"));
+			add(new DownloadEbMSAdminPropertiesButton("download",new ResourceModel("cmd.download"),getModelObject(),propertiesType));
+			add(new SaveEbMSAdminPropertiesButton("save",new ResourceModel("cmd.save"),getModelObject(),propertiesType));
+			add(new ResetButton("reset",new ResourceModel("cmd.reset"),EbMSAdminPropertiesPage.class));
+		}
 
-				@Override
-				protected void populateItem(ListItem<BootstrapPanelBorder> item)
-				{
-					item.add((BootstrapPanelBorder)item.getModelObject()); 
-				}
-			}.setReuseItems(true));
-			
-			
-			add(new Button("validate")
+		private Button createValidateButton(String id)
+		{
+			return new Button(id)
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -129,11 +143,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 				{
 					info(EbMSAdminPropertiesPage.this.getString("validate.ok"));
 				}
-			});
-			add(new DownloadEbMSAdminPropertiesButton("download",new ResourceModel("cmd.download"),getModelObject(),propertiesType));
-			//add(new LoadEbMSAdminPropertiesButton("load",new ResourceModel("cmd.load"),getModelObject(),propertiesType));
-			add(new SaveEbMSAdminPropertiesButton("save",new ResourceModel("cmd.save"),getModelObject(),propertiesType));
-			add(new ResetButton("reset",new ResourceModel("cmd.reset"),EbMSAdminPropertiesPage.class));
+			};
 		}
 	}
 

@@ -24,7 +24,7 @@ import org.apache.wicket.model.Model;
 
 public class MenuPanel extends Panel
 {
-	private class Rows extends ListView<MenuItem>
+	public static class Rows extends ListView<MenuItem>
 	{
 		private static final long serialVersionUID = 1L;
 
