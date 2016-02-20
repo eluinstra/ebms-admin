@@ -77,8 +77,20 @@ public class PingPage extends BasePage
 		public PingForm(String id)
 		{
 			super(id,new CompoundPropertyModel<PingFormModel>(new PingFormModel()));
+			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",createCPAIdsChoice("cpaIds")));
+			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",createFromPartyIdsChoice("fromPartyIds")));
+			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",createFromRolesChoice()).setVisible(cleoPatch));
+			add(new BootstrapFormComponentFeedbackBorder("toPartyIdFeedback",createToPartyIdsChoice("toPartyIds")));
+			add(new BootstrapFormComponentFeedbackBorder("toRoleFeedback",createToRolesChoice("toRoles")).setVisible(cleoPatch));
+			Button ping = createPingButton("ping");
+			setDefaultButton(ping);
+			add(ping);
+			add(new ResetButton("reset",new ResourceModel("cmd.reset"),PingPage.class));
+		}
 
-			DropDownChoice<String> cpaIds = new DropDownChoice<String>("cpaIds",new PropertyModel<String>(this.getModelObject(),"cpaId"),Model.ofList(Utils.toList(cpaService.getCPAIds())))
+		private DropDownChoice<String> createCPAIdsChoice(String id)
+		{
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"cpaId"),Model.ofList(Utils.toList(cpaService.getCPAIds())))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -88,10 +100,8 @@ public class PingPage extends BasePage
 					return Model.of(getLocalizer().getString("lbl.cpaId",PingForm.this));
 				}
 			};
-			cpaIds.setRequired(true);
-			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",cpaIds));
-
-			cpaIds.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.setRequired(true);
+			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -116,8 +126,12 @@ public class PingPage extends BasePage
 					}
 				}
 			});
+			return result;
+		}
 
-			DropDownChoice<String> fromPartyIds = new DropDownChoice<String>("fromPartyIds",new PropertyModel<String>(this.getModelObject(),"fromPartyId"),new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"))
+		private DropDownChoice<String> createFromPartyIdsChoice(String id)
+		{
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"fromPartyId"),new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -127,10 +141,8 @@ public class PingPage extends BasePage
 					return Model.of(getLocalizer().getString("lbl.fromPartyId",PingForm.this));
 				}
 			};
-			fromPartyIds.setRequired(true).setOutputMarkupId(true);
-			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",fromPartyIds));
-			
-			fromPartyIds.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.setRequired(true).setOutputMarkupId(true);
+			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -155,8 +167,12 @@ public class PingPage extends BasePage
 					}
 				}
 			});
+			return result;
+		}
 
-			DropDownChoice<String> fromRoles = new DropDownChoice<String>("fromRoles",new PropertyModel<String>(this.getModelObject(),"fromRole"),new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
+		private DropDownChoice<String> createFromRolesChoice()
+		{
+			DropDownChoice<String> result = new DropDownChoice<String>("fromRoles",new PropertyModel<String>(this.getModelObject(),"fromRole"),new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -166,10 +182,8 @@ public class PingPage extends BasePage
 					return Model.of(getLocalizer().getString("lbl.fromRole",PingForm.this));
 				}
 			};
-			fromRoles.setRequired(false).setOutputMarkupId(true);
-			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",fromRoles).setVisible(cleoPatch));
-			
-			fromRoles.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.setRequired(false).setOutputMarkupId(true);
+			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -193,8 +207,12 @@ public class PingPage extends BasePage
 					}
 				}
 			});
+			return result;
+		}
 
-			DropDownChoice<String> toPartyIds = new DropDownChoice<String>("toPartyIds",new PropertyModel<String>(this.getModelObject(),"toPartyId"),new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"))
+		private DropDownChoice<String> createToPartyIdsChoice(String id)
+		{
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"toPartyId"),new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -204,10 +222,8 @@ public class PingPage extends BasePage
 					return Model.of(getLocalizer().getString("lbl.toPartyId",PingForm.this));
 				}
 			};
-			toPartyIds.setRequired(true).setOutputMarkupId(true);
-			add(new BootstrapFormComponentFeedbackBorder("toPartyIdFeedback",toPartyIds));
-
-			toPartyIds.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.setRequired(true).setOutputMarkupId(true);
+			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -229,8 +245,12 @@ public class PingPage extends BasePage
 					}
 				}
 			});
+			return result;
+		}
 
-			DropDownChoice<String> toRoles = new DropDownChoice<String>("toRoles",new PropertyModel<String>(this.getModelObject(),"toRole"),new PropertyModel<List<String>>(this.getModelObject(),"toRoles"))
+		private DropDownChoice<String> createToRolesChoice(String id)
+		{
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"toRole"),new PropertyModel<List<String>>(this.getModelObject(),"toRoles"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -240,10 +260,8 @@ public class PingPage extends BasePage
 					return Model.of(getLocalizer().getString("lbl.toRole",PingForm.this));
 				}
 			};
-			toRoles.setRequired(false).setOutputMarkupId(true);
-			add(new BootstrapFormComponentFeedbackBorder("toRoleFeedback",toRoles).setVisible(cleoPatch));
-			
-			toRoles.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.setRequired(false).setOutputMarkupId(true);
+			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -266,8 +284,12 @@ public class PingPage extends BasePage
 					}
 				}
 			});
+			return result;
+		}
 
-			Button ping = new Button("ping",new ResourceModel("cmd.ping"))
+		private Button createPingButton(String id)
+		{
+			Button result = new Button(id,new ResourceModel("cmd.ping"))
 			{
 				private static final long serialVersionUID = 1L;
 	
@@ -287,12 +309,9 @@ public class PingPage extends BasePage
 					}
 				}
 			};
-
-			setDefaultButton(ping);
-			add(ping);
-
-			add(new ResetButton("reset",new ResourceModel("cmd.reset"),PingPage.class));
+			return result;
 		}
+
 	}
 
 	public class PingFormModel implements IClusterable

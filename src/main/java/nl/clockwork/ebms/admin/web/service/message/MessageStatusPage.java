@@ -95,10 +95,10 @@ public class MessageStatusPage extends BasePage
 			add(new BootstrapFormComponentFeedbackBorder("toRoleFeedback",createToRolesChoice("toRoles")).setVisible(cleoPatch));
 			final DropDownChoice<String> messageIds = createMessageIdsChoice("messageIds");
 			add(new BootstrapFormComponentFeedbackBorder("messageIdFeedback",messageIds,createMessageIdField("messageId")));
-			add(createManualChackBox("manual",messageIds));
-			Button ping = createCheckButton("check");
-			setDefaultButton(ping);
-			add(ping);
+			add(createManualCheckBox("manual",messageIds));
+			Button check = createCheckButton("check");
+			setDefaultButton(check);
+			add(check);
 			add(new ResetButton("reset",new ResourceModel("cmd.reset"),MessageStatusPage.class));
 		}
 
@@ -414,7 +414,7 @@ public class MessageStatusPage extends BasePage
 			return result;
 		}
 
-		private CheckBox createManualChackBox(String id, final DropDownChoice<String> messageIds)
+		private CheckBox createManualCheckBox(String id, final DropDownChoice<String> messageIds)
 		{
 			CheckBox result = new CheckBox(id,new LocalizedStringResource("lbl.manual",MessageStatusForm.this));
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
@@ -440,7 +440,7 @@ public class MessageStatusPage extends BasePage
 
 		private Button createCheckButton(String id)
 		{
-			Button ping = new Button(id,new ResourceModel("cmd.check"))
+			Button result = new Button(id,new ResourceModel("cmd.check"))
 			{
 				private static final long serialVersionUID = 1L;
 	
@@ -468,7 +468,7 @@ public class MessageStatusPage extends BasePage
 					}
 				}
 			};
-			return ping;
+			return result;
 		}
 
 	}
