@@ -20,15 +20,16 @@ import java.util.List;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.CheckBox;
+import nl.clockwork.ebms.admin.web.LocalizedStringResource;
 import nl.clockwork.ebms.admin.web.ResetButton;
+import nl.clockwork.ebms.admin.web.StringTextField;
 import nl.clockwork.ebms.service.CPAService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.form.Button;
-import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -65,8 +66,17 @@ public class CPAUploadPage extends BasePage
 		{
 			super(id,new CompoundPropertyModel<EditUploadFormModel>(new EditUploadFormModel()));
 			setMultiPart(true);
+			add(new BootstrapFormComponentFeedbackBorder("cpaFeedback",createCPAFileField("cpaFile")));
+			add(new StringTextField("url",new LocalizedStringResource("lbl.url",EditUploadForm.this)));
+			add(new CheckBox("overwrite",new LocalizedStringResource("lbl.overwrite",EditUploadForm.this)));
+			add(createValidateButton("validate"));
+			add(createUploadButton("upload"));
+			add(new ResetButton("reset",new ResourceModel("cmd.reset"),CPAUploadPage.class));
+		}
 
-			FileUploadField cpaFile = new FileUploadField("cpaFile")
+		private FileUploadField createCPAFileField(String id)
+		{
+			FileUploadField result = new FileUploadField(id)
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -76,34 +86,13 @@ public class CPAUploadPage extends BasePage
 					return Model.of(getLocalizer().getString("lbl.cpa",EditUploadForm.this));
 				}
 			};
-			cpaFile.setRequired(true);
-			add(new BootstrapFormComponentFeedbackBorder("cpaFeedback",cpaFile));
-			
-			final TextField<String> url = new TextField<String>("url")
-			{
-				private static final long serialVersionUID = 1L;
+			result.setRequired(true);
+			return result;
+		}
 
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.url",EditUploadForm.this));
-				}
-			};
-			add(url);
-
-			CheckBox overwrite = new CheckBox("overwrite")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.overwrite",EditUploadForm.this));
-				}
-			};
-			add(overwrite);
-
-			Button validate = new Button("validate",new ResourceModel("cmd.validate"))
+		private Button createValidateButton(String id)
+		{
+			Button result = new Button(id,new ResourceModel("cmd.validate"))
 			{
 				private static final long serialVersionUID = 1L;
 	
@@ -129,9 +118,12 @@ public class CPAUploadPage extends BasePage
 					}
 				}
 			};
-			add(validate);
+			return result;
+		}
 
-			Button upload = new Button("upload",new ResourceModel("cmd.upload"))
+		private Button createUploadButton(String id)
+		{
+			Button result = new Button(id,new ResourceModel("cmd.upload"))
 			{
 				private static final long serialVersionUID = 1L;
 	
@@ -157,10 +149,8 @@ public class CPAUploadPage extends BasePage
 					}
 				}
 			};
-			setDefaultButton(upload);
-			add(upload);
-
-			add(new ResetButton("reset",new ResourceModel("cmd.reset"),CPAUploadPage.class));
+			setDefaultButton(result);
+			return result;
 		}
 	}
 	

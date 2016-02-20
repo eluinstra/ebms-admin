@@ -43,7 +43,20 @@ public class UrlModalWindow extends ModalWindow
 		super(id);
 		//setTitle(getLocalizer().getString("url",this));
 		setCssClassName(ModalWindow.CSS_CLASS_GRAY);
-		setContent(new UrlPanel(getContentId(),cpaService.getURL(cpaId))
+		setContent(createUrlPanel(cpaService,cpaId,components));
+		setCookieName("url");
+		setCloseButtonCallback(createCloseButtonCallback());
+	}
+
+	@Override
+	public IModel<String> getTitle()
+	{
+		return Model.of(getLocalizer().getString("url",this));
+	}
+
+	private UrlPanel createUrlPanel(final CPAService cpaService, final String cpaId, final Component...components)
+	{
+		return new UrlPanel(getContentId(),cpaService.getURL(cpaId))
 		{
 			private static final long serialVersionUID = 1L;
 
@@ -64,9 +77,12 @@ public class UrlModalWindow extends ModalWindow
 			{
 				return UrlModalWindow.this;
 			}
-		});
-		setCookieName("url");
-		setCloseButtonCallback(new ModalWindow.CloseButtonCallback()
+		};
+	}
+	
+	private CloseButtonCallback createCloseButtonCallback()
+	{
+		return new ModalWindow.CloseButtonCallback()
 		{
 			private static final long serialVersionUID = 1L;
 
@@ -74,13 +90,7 @@ public class UrlModalWindow extends ModalWindow
 			{
 				return true;
 			}
-		});
-	}
-	
-	@Override
-	public IModel<String> getTitle()
-	{
-		return Model.of(getLocalizer().getString("url",this));
+		};
 	}
 
 	public abstract class UrlPanel extends Panel

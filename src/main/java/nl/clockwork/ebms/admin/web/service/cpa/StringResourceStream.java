@@ -1,7 +1,6 @@
-package nl.clockwork.ebms.admin.web.message;
+package nl.clockwork.ebms.admin.web.service.cpa;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -9,15 +8,15 @@ import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 
-public class ByteArrayResourceStream extends AbstractResourceStream
+public class StringResourceStream extends AbstractResourceStream
 {
 	private static final long serialVersionUID = 1L;
-	private ByteArrayOutputStream stream;
+	private String s;
 	private String contentType;
-	
-	public ByteArrayResourceStream(ByteArrayOutputStream stream, String contentType)
+
+	public StringResourceStream(String s, String contentType)
 	{
-		this.stream = stream;
+		this.s = s;
 		this.contentType = contentType;
 	}
 
@@ -30,13 +29,13 @@ public class ByteArrayResourceStream extends AbstractResourceStream
 	@Override
 	public Bytes length()
 	{
-		return Bytes.bytes(stream.size());
+		return Bytes.bytes(s.length());
 	}
 	
 	@Override
 	public InputStream getInputStream() throws ResourceStreamNotFoundException
 	{
-		return new ByteArrayInputStream(stream.toByteArray());
+		return new ByteArrayInputStream(s.getBytes());
 	}
 	
 	@Override

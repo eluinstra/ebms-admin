@@ -15,21 +15,13 @@
  */
 package nl.clockwork.ebms.admin.web.service.cpa;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import nl.clockwork.ebms.service.CPAService;
 
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
-import org.apache.wicket.util.lang.Bytes;
-import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
-import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 
 public class DownloadCPALink extends Link<String>
 {
@@ -47,46 +39,15 @@ public class DownloadCPALink extends Link<String>
 	{
 		String cpaId = getModelObject();
 		final String cpa = cpaService.getCPA(cpaId);
-		IResourceStream resourceStream = new AbstractResourceStream()
-		{
-			private static final long serialVersionUID = 1L;
+		IResourceStream resourceStream = new StringResourceStream(cpa,"text/xml");
+		getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(cpaId,resourceStream));
+	}
 
-			@Override
-			public String getContentType()
-			{
-				return "text/xml";
-			}
-			
-			@Override
-			public Bytes length()
-			{
-				return Bytes.bytes(cpa.length());
-			}
-			
-			@Override
-			public InputStream getInputStream() throws ResourceStreamNotFoundException
-			{
-				return new ByteArrayInputStream(cpa.getBytes());
-			}
-			
-			@Override
-			public void close() throws IOException
-			{
-			}
-		}; 
-
-		getRequestCycle().scheduleRequestHandlerAfterCurrent(
-			new ResourceStreamRequestHandler(resourceStream)
-			{
-				@Override
-				public void respond(IRequestCycle requestCycle)
-				{
-					super.respond(requestCycle);
-				}
-			}
-			.setFileName("cpa." + cpaId + ".xml")
-			.setContentDisposition(ContentDisposition.ATTACHMENT)
-		);
+	private ResourceStreamRequestHandler createRequestHandler(String cpaId, IResourceStream resourceStream)
+	{
+		return new ResourceStreamRequestHandler(resourceStream)
+		.setFileName("cpa." + cpaId + ".xml")
+		.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 
 }

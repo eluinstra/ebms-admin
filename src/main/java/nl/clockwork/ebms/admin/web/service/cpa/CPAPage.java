@@ -16,10 +16,10 @@
 package nl.clockwork.ebms.admin.web.service.cpa;
 
 import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.PageLink;
 
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.form.TextArea;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
 
 public class CPAPage extends BasePage
@@ -28,19 +28,8 @@ public class CPAPage extends BasePage
 
 	public CPAPage(final String cpa, final WebPage responsePage)
 	{
-		TextArea<String> cpa_ = new TextArea<String>("cpa",Model.of(cpa));
-		cpa_.setEnabled(false);
-		add(cpa_);
-		add(new Link<Void>("back")
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void onClick()
-			{
-				setResponsePage(responsePage);
-			}
-		});
+		add(new TextArea<String>("cpa",Model.of(cpa)).setEnabled(false));
+		add(new PageLink("back",responsePage));
 	}
 	
 	@Override

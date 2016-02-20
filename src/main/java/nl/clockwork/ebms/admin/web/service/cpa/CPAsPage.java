@@ -17,27 +17,115 @@ package nl.clockwork.ebms.admin.web.service.cpa;
 
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
+import nl.clockwork.ebms.admin.web.PageClassLink;
+import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.service.CPAService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
-import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 public class CPAsPage extends BasePage
 {
+	private class CPAIdsDataView extends DataView<String>
+	{
+		private Component[] components;
+
+		protected CPAIdsDataView(String id, IDataProvider<String> dataProvider,Component...components)
+		{
+			super(id,dataProvider);
+			this.components = components;
+			setOutputMarkupId(true);
+		}
+
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		protected void populateItem(final Item<String> item)
+		{
+			String cpaId = item.getModelObject();
+			item.add(createViewLink("view",cpaId));
+			ModalWindow urlModalWindow = new UrlModalWindow("urlModalWindow",cpaService,cpaId,components);
+			item.add(urlModalWindow);
+			item.add(createEditUrl("editUrl",urlModalWindow));
+			item.add(new DownloadCPALink("downloadCPA",cpaService,cpaId));
+			item.add(createDeleteButton("delete"));
+			item.add(AttributeModifier.replace("class",new OddOrEvenIndexStringModel(item.getIndex())));
+		}
+
+		private Link<Void> createViewLink(String id, final String cpaId)
+		{
+			Link<Void> result = new Link<Void>(id)
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void onClick()
+				{
+					setResponsePage(new CPAPage(cpaService.getCPA(cpaId),CPAsPage.this));
+				}
+			};
+			result.add(new Label("cpaId",cpaId));
+			return result;
+		}
+
+		private AjaxButton createEditUrl(String id, final ModalWindow urlModalWindow)
+		{
+			AjaxButton result = new AjaxButton(id)
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+				{
+					urlModalWindow.show(target);
+				}
+			};
+			return result;
+		}
+
+		private Button createDeleteButton(String id)
+		{
+			Button result = new Button(id,new ResourceModel("cmd.delete"))
+			{
+				private static final long serialVersionUID = 1L;
+	
+				@Override
+				public void onSubmit()
+				{
+					try
+					{
+						String cpaId = (String)getParent().getDefaultModelObject();
+						cpaService.deleteCPA(cpaId);
+						setResponsePage(new CPAsPage());
+					}
+					catch (Exception e)
+					{
+						logger.error("",e);
+						error(e.getMessage());
+					}
+				}
+			};
+			result.add(AttributeModifier.replace("onclick","return confirm('" + getLocalizer().getString("confirm",this) + "');"));
+			return result;
+		}
+
+	}
+
 	private static final long serialVersionUID = 1L;
 	private Log logger = LogFactory.getLog(this.getClass());
 	@SpringBean(name="cpaService")
@@ -56,97 +144,10 @@ public class CPAsPage extends BasePage
 		public EditCPAsForm(String id)
 		{
 			super(id);
-
 			WebMarkupContainer container = new WebMarkupContainer("container");
-			container.setOutputMarkupId(true);
-
-			DataView<String> cpaIds = new DataView<String>("cpaIds",new CPADataProvider(cpaService))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void populateItem(final Item<String> item)
-				{
-					final String cpaId = item.getModelObject();
-					Link<Void> link = new Link<Void>("view")
-					{
-						private static final long serialVersionUID = 1L;
-
-						@Override
-						public void onClick()
-						{
-							setResponsePage(new CPAPage(cpaService.getCPA(cpaId),CPAsPage.this));
-						}
-					};
-					link.add(new Label("cpaId",cpaId));
-					item.add(link);
-
-					final ModalWindow urlModalWindow = new UrlModalWindow("urlModalWindow",cpaService,cpaId,EditCPAsForm.this);
-					item.add(urlModalWindow);
-
-					AjaxButton editUrl = new AjaxButton("editUrl")
-					{
-						private static final long serialVersionUID = 1L;
-
-						@Override
-						protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-						{
-							urlModalWindow.show(target);
-						}
-					};
-					item.add(editUrl);
-
-					item.add(new DownloadCPALink("downloadCPA",cpaService,cpaId));
-
-					Button delete = new Button("delete",new ResourceModel("cmd.delete"))
-					{
-						private static final long serialVersionUID = 1L;
-			
-						@Override
-						public void onSubmit()
-						{
-							try
-							{
-								String cpaId = (String)getParent().getDefaultModelObject();
-								cpaService.deleteCPA(cpaId);
-								setResponsePage(new CPAsPage());
-							}
-							catch (Exception e)
-							{
-								logger.error("",e);
-								error(e.getMessage());
-							}
-						}
-					};
-					delete.add(AttributeModifier.replace("onclick","return confirm('" + getLocalizer().getString("confirm",this) + "');"));
-					item.add(delete);
-
-					item.add(AttributeModifier.replace("class",new AbstractReadOnlyModel<String>()
-					{
-						private static final long serialVersionUID = 1L;
-					
-						@Override
-						public String getObject()
-						{
-							return (item.getIndex() % 2 == 0) ? "even" : "odd";
-						}
-					}));
-				}
-			};
-			cpaIds.setOutputMarkupId(true);
-
-			container.add(cpaIds);
 			add(container);
-			add(new Link<Void>("new")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void onClick()
-				{
-					setResponsePage(new CPAUploadPage());
-				}
-			});
+			container.add(new CPAIdsDataView("cpaIds",new CPADataProvider(cpaService),EditCPAsForm.this));
+			add(new PageClassLink("new",CPAUploadPage.class));
 		}
 	}
 	
