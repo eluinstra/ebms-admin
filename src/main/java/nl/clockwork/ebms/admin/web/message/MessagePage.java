@@ -25,14 +25,16 @@ import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSEventLog;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.Utils;
+import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -55,18 +57,7 @@ public class MessagePage extends BasePage
 		add(new Label("messageId",message.getMessageId()));
 		add(new Label("messageNr",message.getMessageNr()));
 		add(new Label("conversationId",message.getConversationId()));
-		Link<Void> link = new Link<Void>("viewRefToMessageId")
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void onClick()
-			{
-				setResponsePage(new MessagePage(ebMSDAO.findMessage(message.getRefToMessageId()),MessagePage.this));
-			}
-		};
-		link.add(new Label("refToMessageId",message.getRefToMessageId()));
-		add(link);
+		add(createRefToMessageIdLink("viewRefToMessageId",message));
 		add(DateLabel.forDatePattern("timestamp",new Model<Date>(message.getTimestamp()),Constants.DATETIME_FORMAT));
 		add(new Label("cpaId",message.getCpaId()));
 		add(new Label("fromPartyId",message.getFromPartyId()));
@@ -75,133 +66,18 @@ public class MessagePage extends BasePage
 		add(new Label("toRole",message.getToRole()));
 		add(new Label("service",message.getService()));
 		add(new Label("action",message.getAction()));
-		AjaxLink<Void> linkMessageError = new AjaxLink<Void>("viewMessageError")
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void onClick(AjaxRequestTarget target)
-			{
-				setResponsePage(new MessagePage(ebMSDAO.findResponseMessage(message.getMessageId()),MessagePage.this));
-			}
-		};
-		linkMessageError.setEnabled(EbMSMessageStatus.DELIVERY_FAILED.equals(message.getStatus()));
-		linkMessageError.add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus()))));
-		linkMessageError.add(new Label("status",message.getStatus()));
-		add(linkMessageError);
+		add(createViewMessageErrorLink("viewMessageError",message));
 		add(new Label("statusTime",message.getStatusTime()));
-		
-		PropertyListView<EbMSAttachment> attachments = 
-			new PropertyListView<EbMSAttachment>("attachments",message.getAttachments())
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void populateItem(ListItem<EbMSAttachment> item)
-				{
-					item.add(new Label("name"));
-					DownloadEbMSAttachmentLink link = new DownloadEbMSAttachmentLink("downloadAttachment",ebMSDAO,item.getModelObject());
-					link.add(new Label("contentId"));
-					item.add(link);
-					item.add(new Label("contentType"));
-				}
-			}
-		;
-		add(attachments);
-
-		WebMarkupContainer nextEvent = new WebMarkupContainer("nextEvent");
-		nextEvent.setOutputMarkupId(true);
-		nextEvent.setVisible(message.getEvent() != null);
-		if (message.getEvent() != null)
-		{
-			nextEvent.add(DateLabel.forDatePattern("timestamp",new Model<Date>(message.getEvent().getTimestamp()),Constants.DATETIME_FORMAT));
-			nextEvent.add(new Label("retry",new Model<Integer>(message.getEvent().getRetries())));
-			nextEvent.add(DateLabel.forDatePattern("timeToLive",new Model<Date>(message.getEvent().getTimeToLive()),Constants.DATETIME_FORMAT));
-		}
-		add(nextEvent);
-
-		PropertyListView<EbMSEventLog> events = 
-				new PropertyListView<EbMSEventLog>("events",message.getEvents())
-				{
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					protected void populateItem(ListItem<EbMSEventLog> item)
-					{
-						final ModalWindow errorMessageModalWindow = new ErrorMessageModalWindow("errorMessageWindow",item.getModelObject().getErrorMessage());
-						item.add(DateLabel.forDatePattern("timestamp",new Model<Date>(item.getModelObject().getTimestamp()),Constants.DATETIME_FORMAT));
-						item.add(new Label("uri"));
-						item.add(errorMessageModalWindow);
-						AjaxLink<Void> link = new AjaxLink<Void>("showErrorMessageWindow")
-						{
-							private static final long serialVersionUID = 1L;
-
-							@Override
-							public void onClick(AjaxRequestTarget target)
-							{
-								errorMessageModalWindow.show(target);
-							}
-						};
-						link.setEnabled(EbMSEventStatus.FAILED.equals(item.getModelObject().getStatus()));
-						link.add(new Label("status"));
-						item.add(link);
-					}
-				}
-			;
-			add(events);
-
-		add(new Link<Void>("back")
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void onClick()
-			{
-				setResponsePage(responsePage);
-			}
-		});
-
+		add(createAttachmentsView("attachments",message));
+		add(createNextEventContainer("nextEvent",message));
+		add(createEventsView("events",message));
+		add(new PageLink("back",responsePage));
 		add(new DownloadEbMSMessageLink("download",ebMSDAO,message));
-
-		final TextArea<String> content = new TextArea<String>("content",Model.of(message.getContent()))
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public boolean isVisible()
-			{
-				return showContent;
-			}
-		};
-		content.setOutputMarkupPlaceholderTag(true);
-		content.setEnabled(false);
+		TextArea<String> content = createContentField("content",message);
 		add(content);
-
-		AjaxLink<String> toggleContent = new AjaxLink<String>("toggleContent")
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void onClick(AjaxRequestTarget target)
-			{
-				showContent = !showContent;
-				target.add(this);
-				target.add(content);
-			}
-		};
-		toggleContent.add(new Label("label",new Model<String>()
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public String getObject()
-			{
-				return MessagePage.this.getLocalizer().getString(showContent ? "cmd.hide" : "cmd.show",MessagePage.this);
-			}
-		}));
-		add(toggleContent);
+		add(createToggleContentLink("toggleContent",content));
 	}
-	
+
 	@Override
 	public String getPageTitle()
 	{
@@ -241,21 +117,143 @@ public class MessagePage extends BasePage
 		}
 	}
 
-//	@Override
-//	public void renderHead(IHeaderResponse response)
-//	{
-//		super.renderHead(response);
-//		response.render(CssReferenceHeaderItem.forReference(new TextTemplateResourceReference(this.getClass(),"style.css","text/css",new LoadableDetachableModel<Map<String,Object>>()
-//		{
-//			private static final long serialVersionUID = 1L;
-//
-//			public Map<String,Object> load()
-//			{
-//				final Map<String,Object> vars = new HashMap<String,Object>();
-//				vars.put("showContent",MessagePage.this.getLocalizer().getString("cmd.show",MessagePage.this));
-//				vars.put("hide",MessagePage.this.getLocalizer().getString("cmd.hide",MessagePage.this));
-//				return vars;
-//			}
-//		}),"screen"));
-//	}
+	private Link<Void> createRefToMessageIdLink(String id, final EbMSMessage message)
+	{
+		Link<Void> result = new Link<Void>(id)
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick()
+			{
+				setResponsePage(new MessagePage(ebMSDAO.findMessage(message.getRefToMessageId()),MessagePage.this));
+			}
+		};
+		result.add(new Label("refToMessageId",message.getRefToMessageId()));
+		return result;
+	}
+	
+	private AjaxLink<Void> createViewMessageErrorLink(String id, final EbMSMessage message)
+	{
+		AjaxLink<Void> result = new AjaxLink<Void>(id)
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick(AjaxRequestTarget target)
+			{
+				setResponsePage(new MessagePage(ebMSDAO.findResponseMessage(message.getMessageId()),MessagePage.this));
+			}
+		};
+		result.setEnabled(EbMSMessageStatus.DELIVERY_FAILED.equals(message.getStatus()));
+		result.add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus()))));
+		result.add(new Label("status",message.getStatus()));
+		return result;
+	}
+
+	private PropertyListView<EbMSAttachment> createAttachmentsView(String id, final EbMSMessage message)
+	{
+		return new PropertyListView<EbMSAttachment>(id,message.getAttachments())
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void populateItem(ListItem<EbMSAttachment> item)
+			{
+				item.add(new Label("name"));
+				DownloadEbMSAttachmentLink link = new DownloadEbMSAttachmentLink("downloadAttachment",ebMSDAO,item.getModelObject());
+				link.add(new Label("contentId"));
+				item.add(link);
+				item.add(new Label("contentType"));
+			}
+		};
+	}
+
+	private WebMarkupContainer createNextEventContainer(String id, final EbMSMessage message)
+	{
+		WebMarkupContainer result = new WebMarkupContainer(id);
+		result.setVisible(message.getEvent() != null);
+		if (message.getEvent() != null)
+		{
+			result.add(DateLabel.forDatePattern("timestamp",new Model<Date>(message.getEvent().getTimestamp()),Constants.DATETIME_FORMAT));
+			result.add(new Label("retry",new Model<Integer>(message.getEvent().getRetries())));
+			result.add(DateLabel.forDatePattern("timeToLive",new Model<Date>(message.getEvent().getTimeToLive()),Constants.DATETIME_FORMAT));
+		}
+		return result;
+	}
+
+	private PropertyListView<EbMSEventLog> createEventsView(String id, final EbMSMessage message)
+	{
+		return new PropertyListView<EbMSEventLog>(id,message.getEvents())
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void populateItem(ListItem<EbMSEventLog> item)
+			{
+				final ModalWindow errorMessageModalWindow = new ErrorMessageModalWindow("errorMessageWindow",item.getModelObject().getErrorMessage());
+				item.add(DateLabel.forDatePattern("timestamp",new Model<Date>(item.getModelObject().getTimestamp()),Constants.DATETIME_FORMAT));
+				item.add(new Label("uri"));
+				item.add(errorMessageModalWindow);
+				AjaxLink<Void> link = new AjaxLink<Void>("showErrorMessageWindow")
+				{
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					public void onClick(AjaxRequestTarget target)
+					{
+						errorMessageModalWindow.show(target);
+					}
+				};
+				link.setEnabled(EbMSEventStatus.FAILED.equals(item.getModelObject().getStatus()));
+				link.add(new Label("status"));
+				item.add(link);
+			}
+		};
+	}
+
+	private TextArea<String> createContentField(String id, final EbMSMessage message)
+	{
+		TextArea<String> result = new TextArea<String>(id,Model.of(message.getContent()))
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public boolean isVisible()
+			{
+				return showContent;
+			}
+		};
+		result.setOutputMarkupPlaceholderTag(true);
+		result.setEnabled(false);
+		return result;
+	}
+
+	private AjaxLink<String> createToggleContentLink(String id, final Component content)
+	{
+		AjaxLink<String> result = new AjaxLink<String>(id)
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick(AjaxRequestTarget target)
+			{
+				showContent = !showContent;
+				target.add(this);
+				target.add(content);
+			}
+		};
+		result.add(new Label("label",new Model<String>()
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public String getObject()
+			{
+				return MessagePage.this.getLocalizer().getString(showContent ? "cmd.hide" : "cmd.show",MessagePage.this);
+			}
+		}));
+		return result;
+	}
+
 }

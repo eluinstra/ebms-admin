@@ -24,6 +24,7 @@ import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.basic.Label;
@@ -35,8 +36,6 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-//import org.apache.wicket.markup.repeater.OddEvenItem;
-//import org.apache.wicket.model.IModel;
 
 public class CPAsPage extends BasePage
 {
@@ -84,13 +83,8 @@ public class CPAsPage extends BasePage
 				}
 			}));
 		}
-
-//		@Override
-//		protected Item<CPA> newItem(String id, int index, IModel<CPA> model)
-//		{
-//			return new OddEvenItem<CPA>(id,index,model);
-//		}
 	}
+
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="ebMSAdminDAO")
 	private EbMSDAO ebMSDAO;
@@ -114,7 +108,7 @@ public class CPAsPage extends BasePage
 		return getLocalizer().getString("cpas",this);
 	}
 
-	private DropDownChoice<Integer> createMaxItemsPerPageChoice(String id, final WebMarkupContainer container, final BootstrapPagingNavigator navigator)
+	private DropDownChoice<Integer> createMaxItemsPerPageChoice(String id, final Component...components)
 	{
 		DropDownChoice<Integer> result = new DropDownChoice<Integer>(id,new PropertyModel<Integer>(this,"maxItemsPerPage"),Arrays.asList(5,10,15,20,25,50,100));
 		result.add(new AjaxFormComponentUpdatingBehavior("onchange")
@@ -124,8 +118,7 @@ public class CPAsPage extends BasePage
 			@Override
 			protected void onUpdate(AjaxRequestTarget target)
 			{
-				target.add(navigator);
-				target.add(container);
+				target.add(components);
 			}
 		});
 		return result;
