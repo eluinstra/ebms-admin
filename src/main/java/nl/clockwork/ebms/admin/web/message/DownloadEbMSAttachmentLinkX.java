@@ -21,7 +21,6 @@ import nl.clockwork.ebms.admin.web.Utils;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.encoding.UrlEncoder;
@@ -49,13 +48,6 @@ public class DownloadEbMSAttachmentLinkX extends Link<EbMSAttachment>
 	private ResourceStreamRequestHandler createRequestHandler(String fileName, IResourceStream resourceStream)
 	{
 		return new ResourceStreamRequestHandler(resourceStream)
-		{
-			@Override
-			public void respond(IRequestCycle requestCycle)
-			{
-				super.respond(requestCycle);
-			}
-		}
 		.setFileName(fileName)
 		.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}

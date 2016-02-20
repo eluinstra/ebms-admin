@@ -29,7 +29,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.lang.Args;
@@ -56,7 +55,7 @@ public class DownloadEbMSMessageLinkX extends Link<EbMSMessage>
 			{
 				writeMessageToZip(message,zip);
 			}
-			IResourceStream resourceStream = new ZipResourceStream(output);
+			IResourceStream resourceStream = new ByteArrayResourceStream(output,"application/zip");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(message,resourceStream));
 		}
 		catch (IOException e)
@@ -85,13 +84,6 @@ public class DownloadEbMSMessageLinkX extends Link<EbMSMessage>
 	private ResourceStreamRequestHandler createRequestHandler(EbMSMessage message, IResourceStream resourceStream)
 	{
 		return new ResourceStreamRequestHandler(resourceStream)
-		{
-			@Override
-			public void respond(IRequestCycle requestCycle)
-			{
-				super.respond(requestCycle);
-			}
-		}
 		.setFileName("message." + message.getMessageId() + "." + message.getMessageNr() + ".zip")
 		.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}

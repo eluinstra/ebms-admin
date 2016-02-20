@@ -9,20 +9,22 @@ import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 
-public class ZipResourceStream extends AbstractResourceStream
+public class ByteArrayResourceStream extends AbstractResourceStream
 {
 	private static final long serialVersionUID = 1L;
 	private ByteArrayOutputStream zipStream;
+	private String contentType;
 	
-	public ZipResourceStream(ByteArrayOutputStream zipStream)
+	public ByteArrayResourceStream(ByteArrayOutputStream zipStream, String contentType)
 	{
 		this.zipStream = zipStream;
+		this.contentType = contentType;
 	}
 
 	@Override
 	public String getContentType()
 	{
-		return "application/zip";
+		return contentType;
 	}
 	
 	@Override

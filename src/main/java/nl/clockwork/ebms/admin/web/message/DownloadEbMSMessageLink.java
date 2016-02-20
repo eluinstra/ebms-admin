@@ -25,7 +25,6 @@ import nl.clockwork.ebms.admin.model.EbMSMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.resource.IResourceStream;
@@ -61,7 +60,7 @@ public class DownloadEbMSMessageLink extends Link<Void>
 			{
 				ebMSDAO.writeMessageToZip(messageId, messageNr,zip);
 			}
-			IResourceStream resourceStream = new ZipResourceStream(output);
+			IResourceStream resourceStream = new ByteArrayResourceStream(output,"application/zip");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}
 		catch (IOException e)
@@ -74,13 +73,6 @@ public class DownloadEbMSMessageLink extends Link<Void>
 	private ResourceStreamRequestHandler createRequestHandler(IResourceStream resourceStream)
 	{
 		return new ResourceStreamRequestHandler(resourceStream)
-		{
-			@Override
-			public void respond(IRequestCycle requestCycle)
-			{
-				super.respond(requestCycle);
-			}
-		}
 		.setFileName("message." + messageId + "." + messageNr + ".zip")
 		.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}

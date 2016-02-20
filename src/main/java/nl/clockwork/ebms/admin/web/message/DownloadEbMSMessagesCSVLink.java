@@ -15,10 +15,8 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
 
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
@@ -28,13 +26,9 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
-import org.apache.wicket.util.lang.Bytes;
-import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
-import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 
 public class DownloadEbMSMessagesCSVLink extends Link<Void>
 {
@@ -60,53 +54,21 @@ public class DownloadEbMSMessagesCSVLink extends Link<Void>
 			{
 				ebMSDAO.printMessagesToCSV(printer,filter);
 			}
-
-			IResourceStream resourceStream = new AbstractResourceStream()
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public String getContentType()
-				{
-					return "text/csv";
-				}
-				
-				@Override
-				public Bytes length()
-				{
-					return Bytes.bytes(output.size());
-				}
-				
-				@Override
-				public InputStream getInputStream() throws ResourceStreamNotFoundException
-				{
-					return new ByteArrayInputStream(output.toByteArray());
-				}
-				
-				@Override
-				public void close() throws IOException
-				{
-				}
-			}; 
-
-			getRequestCycle().scheduleRequestHandlerAfterCurrent(
-				new ResourceStreamRequestHandler(resourceStream)
-				{
-					@Override
-					public void respond(IRequestCycle requestCycle)
-					{
-						super.respond(requestCycle);
-					}
-				}
-				.setFileName("messages.csv")
-				.setContentDisposition(ContentDisposition.ATTACHMENT)
-			);
+			IResourceStream resourceStream = new ByteArrayResourceStream(output,"text/csv");
+			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}
 		catch (IOException e)
 		{
 			logger.error("",e);
 			error(e.getMessage());
 		}
+	}
+
+	private ResourceStreamRequestHandler createRequestHandler(IResourceStream resourceStream)
+	{
+		return new ResourceStreamRequestHandler(resourceStream)
+		.setFileName("messages.csv")
+		.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 
 }
