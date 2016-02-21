@@ -140,7 +140,8 @@ public class TrafficChartPage extends BasePage
 			add(createTimeUnitsChoice("timeUnits"));
 			add(createMinusLink("minus"));
 			add(createPlusLink("plus"));
-	    add(new Chart("chart",createOptions(model)));
+	    chart = new Chart("chart",createOptions(model));
+			add(chart);
 			add(createEbMSMessageTrafficChartOptions("ebMSMessageTrafficChartOptions"));
 		}
 

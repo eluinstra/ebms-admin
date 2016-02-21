@@ -21,13 +21,13 @@ import java.util.List;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapDateTimePicker;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.admin.web.PageClassLink;
 import nl.clockwork.ebms.service.CPAService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -48,7 +48,21 @@ public abstract class MessageFilterPanel extends Panel
 		from  = messageFilterForm.getFrom();
 		to = messageFilterForm.getTo();
 		add(messageFilterForm);
-		add(new PageClassLink("clear",getPage().getClass()));
+		add(createClearLink("clear"));
+	}
+
+	private Link<Void> createClearLink(String id)
+	{
+		return new Link<Void>(id)
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick()
+			{
+				setResponsePage(getPage().getClass());
+			}
+		};
 	}
 	
 	@Override
