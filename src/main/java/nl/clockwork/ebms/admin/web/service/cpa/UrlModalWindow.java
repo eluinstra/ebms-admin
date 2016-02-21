@@ -19,7 +19,7 @@ import java.io.Serializable;
 
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.LocalizedStringResource;
-import nl.clockwork.ebms.admin.web.StringTextField;
+import nl.clockwork.ebms.admin.web.TextField;
 import nl.clockwork.ebms.service.CPAService;
 
 import org.apache.commons.logging.Log;
@@ -103,7 +103,7 @@ public class UrlModalWindow extends ModalWindow
 			{
 				super(id,new CompoundPropertyModel<UrlModel>(new UrlModel(url)));
 				add(new BootstrapFeedbackPanel("feedback"));
-				add(new StringTextField("url",new LocalizedStringResource("lbl.url",UrlForm.this)));
+				add(new TextField<String>("url",new LocalizedStringResource("lbl.url",UrlForm.this)));
 				add(createSaveButton("save"));
 				add(createCancelButton("cancel"));
 			}

@@ -23,7 +23,7 @@ import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.CheckBox;
 import nl.clockwork.ebms.admin.web.LocalizedStringResource;
 import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.admin.web.StringTextField;
+import nl.clockwork.ebms.admin.web.TextField;
 import nl.clockwork.ebms.service.CPAService;
 
 import org.apache.commons.logging.Log;
@@ -67,7 +67,7 @@ public class CPAUploadPage extends BasePage
 			super(id,new CompoundPropertyModel<EditUploadFormModel>(new EditUploadFormModel()));
 			setMultiPart(true);
 			add(new BootstrapFormComponentFeedbackBorder("cpaFeedback",createCPAFileField("cpaFile")));
-			add(new StringTextField("url",new LocalizedStringResource("lbl.url",EditUploadForm.this)));
+			add(new TextField<String>("url",new LocalizedStringResource("lbl.url",EditUploadForm.this)));
 			add(new CheckBox("overwrite",new LocalizedStringResource("lbl.overwrite",EditUploadForm.this)));
 			add(createValidateButton("validate"));
 			add(createUploadButton("upload"));

@@ -19,10 +19,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.IntegerTextField;
 import nl.clockwork.ebms.admin.web.LocalizedStringResource;
 import nl.clockwork.ebms.admin.web.PasswordTextField;
-import nl.clockwork.ebms.admin.web.StringTextField;
+import nl.clockwork.ebms.admin.web.TextField;
 import nl.clockwork.ebms.admin.web.configuration.Constants.JdbcDriver;
 
 import org.apache.commons.logging.Log;
@@ -33,7 +32,6 @@ import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
@@ -65,9 +63,9 @@ public class JdbcPropertiesFormPanel extends Panel
 			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",createHostsField("host")));
 			add(new BootstrapFormComponentFeedbackBorder("portFeedback",createPortField("port")));
 			add(new BootstrapFormComponentFeedbackBorder("databaseFeedback",createDatabaseField("database")));
-			add(new StringTextField("url",new LocalizedStringResource("lbl.url",JdbcPropertiesFormPanel.this)).setOutputMarkupId(true).setEnabled(false));
+			add(new TextField<String>("url",new LocalizedStringResource("lbl.url",JdbcPropertiesFormPanel.this)).setOutputMarkupId(true).setEnabled(false));
 			add(createTestButton("test",model));
-			add(new BootstrapFormComponentFeedbackBorder("usernameFeedback",new StringTextField("username",new LocalizedStringResource("lbl.username",JdbcPropertiesFormPanel.this)).setRequired(true)));
+			add(new BootstrapFormComponentFeedbackBorder("usernameFeedback",new TextField<String>("username",new LocalizedStringResource("lbl.username",JdbcPropertiesFormPanel.this)).setRequired(true)));
 			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",new PasswordTextField("password",new LocalizedStringResource("lbl.password",JdbcPropertiesFormPanel.this)).setResetPassword(false).setRequired(false)));
 		}
 
@@ -99,7 +97,7 @@ public class JdbcPropertiesFormPanel extends Panel
 
 		private TextField<String> createHostsField(String id)
 		{
-			TextField<String> result = new StringTextField(id,new LocalizedStringResource("lbl.host",JdbcPropertiesFormPanel.this));
+			TextField<String> result = new TextField<String>(id,new LocalizedStringResource("lbl.host",JdbcPropertiesFormPanel.this));
 			result.setRequired(true);
 			result.add(new OnChangeAjaxBehavior()
 			{
@@ -116,7 +114,7 @@ public class JdbcPropertiesFormPanel extends Panel
 
 		private TextField<Integer> createPortField(String id)
 		{
-			TextField<Integer> result = new IntegerTextField(id,new LocalizedStringResource("lbl.port",JdbcPropertiesFormPanel.this));
+			TextField<Integer> result = new TextField<Integer>(id,new LocalizedStringResource("lbl.port",JdbcPropertiesFormPanel.this));
 			result.add(new OnChangeAjaxBehavior()
 			{
 				private static final long serialVersionUID = 1L;
@@ -132,7 +130,7 @@ public class JdbcPropertiesFormPanel extends Panel
 
 		private TextField<String> createDatabaseField(String id)
 		{
-			TextField<String> result = new StringTextField(id,new LocalizedStringResource("lbl.database",JdbcPropertiesFormPanel.this));
+			TextField<String> result = new TextField<String>(id,new LocalizedStringResource("lbl.database",JdbcPropertiesFormPanel.this));
 			result.setRequired(true);
 			result.add(new OnChangeAjaxBehavior()
 			{

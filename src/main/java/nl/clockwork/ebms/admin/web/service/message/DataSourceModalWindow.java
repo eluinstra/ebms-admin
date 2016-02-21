@@ -20,7 +20,7 @@ import java.util.List;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.LocalizedStringResource;
-import nl.clockwork.ebms.admin.web.StringTextField;
+import nl.clockwork.ebms.admin.web.TextField;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.model.EbMSDataSource;
 
@@ -109,8 +109,8 @@ public class DataSourceModalWindow extends ModalWindow
 				super(id,new CompoundPropertyModel<DataSourceModel>(new DataSourceModel()));
 				add(new BootstrapFeedbackPanel("feedback"));
 				add(new BootstrapFormComponentFeedbackBorder("fileFeedback",createFileField("file")));
-				add(new StringTextField("name",new LocalizedStringResource("lbl.name",DataSourceForm.this)));
-				add(new StringTextField("contentType",new LocalizedStringResource("lbl.contentType",DataSourceForm.this)));
+				add(new TextField<String>("name",new LocalizedStringResource("lbl.name",DataSourceForm.this)));
+				add(new TextField<String>("contentType",new LocalizedStringResource("lbl.contentType",DataSourceForm.this)));
 				add(createAddButton("add"));
 				add(createCancelButton("cancel"));
 			}

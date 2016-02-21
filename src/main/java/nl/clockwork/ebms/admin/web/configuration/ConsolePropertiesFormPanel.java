@@ -16,8 +16,8 @@
 package nl.clockwork.ebms.admin.web.configuration;
 
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.IntegerTextField;
 import nl.clockwork.ebms.admin.web.LocalizedStringResource;
+import nl.clockwork.ebms.admin.web.TextField;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,7 +45,7 @@ public class ConsolePropertiesFormPanel extends Panel
 		public ConsolePropertiesForm(String id, final IModel<ConsolePropertiesFormModel> model)
 		{
 			super(id,new CompoundPropertyModel<ConsolePropertiesFormModel>(model));
-			add(new BootstrapFormComponentFeedbackBorder("maxItemsPerPageFeedback",new IntegerTextField("maxItemsPerPage",new LocalizedStringResource("lbl.maxItemsPerPage",ConsolePropertiesForm.this)).setRequired(true)));
+			add(new BootstrapFormComponentFeedbackBorder("maxItemsPerPageFeedback",new TextField<Integer>("maxItemsPerPage",new LocalizedStringResource("lbl.maxItemsPerPage",ConsolePropertiesForm.this)).setRequired(true)));
 		}
 	}
 

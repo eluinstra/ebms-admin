@@ -16,10 +16,9 @@
 package nl.clockwork.ebms.admin.web.configuration;
 
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.IntegerTextField;
 import nl.clockwork.ebms.admin.web.LocalizedStringResource;
 import nl.clockwork.ebms.admin.web.PasswordTextField;
-import nl.clockwork.ebms.admin.web.StringTextField;
+import nl.clockwork.ebms.admin.web.TextField;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -47,10 +46,10 @@ public class ProxyPropertiesFormPanel extends Panel
 		public ProxyPropertiesForm(String id, final IModel<ProxyPropertiesFormModel> model)
 		{
 			super(id,new CompoundPropertyModel<ProxyPropertiesFormModel>(model));
-			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",new StringTextField("host",new LocalizedStringResource("lbl.host",ProxyPropertiesForm.this)).setRequired(true)));
-			add(new BootstrapFormComponentFeedbackBorder("portFeedback",new IntegerTextField("port",new LocalizedStringResource("lbl.port",ProxyPropertiesForm.this))));
-			add(new StringTextField("nonProxyHosts",new LocalizedStringResource("lbl.nonProxyHosts",ProxyPropertiesForm.this)));
-			add(new StringTextField("username",new LocalizedStringResource("lbl.username",ProxyPropertiesForm.this)));
+			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",new TextField<String>("host",new LocalizedStringResource("lbl.host",ProxyPropertiesForm.this)).setRequired(true)));
+			add(new BootstrapFormComponentFeedbackBorder("portFeedback",new TextField<Integer>("port",new LocalizedStringResource("lbl.port",ProxyPropertiesForm.this))));
+			add(new TextField<String>("nonProxyHosts",new LocalizedStringResource("lbl.nonProxyHosts",ProxyPropertiesForm.this)));
+			add(new TextField<String>("username",new LocalizedStringResource("lbl.username",ProxyPropertiesForm.this)));
 			add(new PasswordTextField("password",new LocalizedStringResource("lbl.password",ProxyPropertiesForm.this)).setResetPassword(false).setRequired(false));
 		}
 	}

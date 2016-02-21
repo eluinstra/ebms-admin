@@ -31,7 +31,7 @@ import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.CheckBox;
 import nl.clockwork.ebms.admin.web.LocalizedStringResource;
 import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.admin.web.StringTextField;
+import nl.clockwork.ebms.admin.web.TextField;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
 import nl.clockwork.ebms.model.MessageStatus;
 import nl.clockwork.ebms.model.Party;
@@ -45,7 +45,6 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -400,7 +399,7 @@ public class MessageStatusPage extends BasePage
 
 		private TextField<String> createMessageIdField(String id)
 		{
-			final TextField<String> result = new StringTextField(id,new LocalizedStringResource("lbl.messageId",MessageStatusForm.this))
+			final TextField<String> result = new TextField<String>(id,new LocalizedStringResource("lbl.messageId",MessageStatusForm.this))
 			{
 				private static final long serialVersionUID = 1L;
 
