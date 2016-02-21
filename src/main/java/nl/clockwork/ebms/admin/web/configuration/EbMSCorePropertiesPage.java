@@ -43,6 +43,23 @@ import org.apache.wicket.util.io.IClusterable;
 
 public class EbMSCorePropertiesPage extends BasePage
 {
+	private class ComponentsListView extends ListView<BootstrapPanelBorder>
+	{
+		private static final long serialVersionUID = 1L;
+
+		public ComponentsListView(String id, List<? extends BootstrapPanelBorder> list)
+		{
+			super(id,list);
+			setReuseItems(true);
+		}
+
+		@Override
+		protected void populateItem(ListItem<BootstrapPanelBorder> item)
+		{
+			item.add((BootstrapPanelBorder)item.getModelObject()); 
+		}
+	}
+
 	private static final long serialVersionUID = 1L;
 	protected transient Log logger = LogFactory.getLog(this.getClass());
 	@SpringBean(name="propertyConfigurer")
@@ -77,19 +94,15 @@ public class EbMSCorePropertiesPage extends BasePage
 			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("httpProperties"),new HttpPropertiesFormPanel("component",new PropertyModel<HttpPropertiesFormModel>(getModelObject(),"httpProperties"))));
 			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("signatureProperties"),new SignaturePropertiesFormPanel("component",new PropertyModel<SignaturePropertiesFormModel>(getModelObject(),"signatureProperties"))));
 			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("jdbcProperties"),new JdbcPropertiesFormPanel("component",new PropertyModel<JdbcPropertiesFormModel>(getModelObject(),"jdbcProperties"))));
-			add(new ListView<BootstrapPanelBorder>("components",components)
-			{
-				private static final long serialVersionUID = 1L;
+			add(new ComponentsListView("components",components));
+			add(createValidateButton("validate"));
+			add(new DownloadEbMSCorePropertiesButton("download",new ResourceModel("cmd.download"),getModelObject()));
+			add(new ResetButton("reset",new ResourceModel("cmd.reset"),EbMSCorePropertiesPage.class));
+		}
 
-				@Override
-				protected void populateItem(ListItem<BootstrapPanelBorder> item)
-				{
-					item.add((BootstrapPanelBorder)item.getModelObject()); 
-				}
-			}.setReuseItems(true));
-			
-			
-			add(new Button("validate")
+		private Button createValidateButton(String id)
+		{
+			return new Button(id)
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -98,9 +111,7 @@ public class EbMSCorePropertiesPage extends BasePage
 				{
 					info(EbMSCorePropertiesPage.this.getString("validate.ok"));
 				}
-			});
-			add(new DownloadEbMSCorePropertiesButton("download",new ResourceModel("cmd.download"),getModelObject()));
-			add(new ResetButton("reset",new ResourceModel("cmd.reset"),EbMSCorePropertiesPage.class));
+			};
 		}
 	}
 

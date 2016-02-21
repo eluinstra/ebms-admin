@@ -18,6 +18,10 @@ package nl.clockwork.ebms.admin.web.configuration;
 import java.util.Locale;
 
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.CheckBox;
+import nl.clockwork.ebms.admin.web.IntegerTextField;
+import nl.clockwork.ebms.admin.web.LocalizedStringResource;
+import nl.clockwork.ebms.admin.web.StringTextField;
 import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormModel;
 
@@ -27,13 +31,11 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.convert.converter.AbstractConverter;
@@ -57,35 +59,38 @@ public class HttpPropertiesFormPanel extends Panel
 		public HttpPropertiesForm(String id, final IModel<HttpPropertiesFormModel> model)
 		{
 			super(id,new CompoundPropertyModel<HttpPropertiesFormModel>(model));
-			
 			add(new Label("protocol")); 
+			add(new StringTextField("host",new LocalizedStringResource("lbl.host",HttpPropertiesForm.this)).setRequired(true));
+			add(new BootstrapFormComponentFeedbackBorder("portFeedback",createPortField("port")));
+			add(new BootstrapFormComponentFeedbackBorder("pathFeedback",createPathField("path")));
+			add(new StringTextField("url",new LocalizedStringResource("lbl.url",HttpPropertiesForm.this)).setOutputMarkupId(true).setEnabled(false));
+			add(new CheckBox("chunkedStreamingMode",new LocalizedStringResource("lbl.chunkedStreamingMode",HttpPropertiesForm.this)));
+			add(new CheckBox("base64Writer",new LocalizedStringResource("lbl.base64Writer",HttpPropertiesForm.this)));
+			add(CreateSslCheckBox("ssl"));
+			add(createSslPropertiesPanel("sslProperties"));
+			add(createProxyCheckBox("proxy"));
+			add(createProxyPropertiesPanel("proxyProperties"));
+		}
 
-			TextField<String> host = new TextField<String>("host")
-			{
+		private IntegerTextField createPortField(String id)
+		{
+			IntegerTextField result = new IntegerTextField(id,new LocalizedStringResource("lbl.port",HttpPropertiesForm.this));
+			result.add(new OnChangeAjaxBehavior()
+	    {
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public IModel<String> getLabel()
+				protected void onUpdate(AjaxRequestTarget target)
 				{
-					return Model.of(getLocalizer().getString("lbl.host",HttpPropertiesForm.this));
+					target.add(HttpPropertiesForm.this.get("url"));
 				}
-			};
-			host.setRequired(true);
-			add(host);
+	    });
+			return result;
+		}
 
-			TextField<Integer> port = new TextField<Integer>("port")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.port",HttpPropertiesForm.this));
-				}
-			};
-			add(new BootstrapFormComponentFeedbackBorder("portFeedback",port));
-
-			TextField<String> path = new TextField<String>("path")
+		private TextField<String> createPathField(String id)
+		{
+			TextField<String> result = new StringTextField(id,new LocalizedStringResource("lbl.path",HttpPropertiesForm.this))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -95,89 +100,25 @@ public class HttpPropertiesFormPanel extends Panel
 				{
 					return (IConverter<C>)new PathConverter();
 				}
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.path",HttpPropertiesForm.this));
-				}
 			};
-			path.setRequired(true);
-			add(new BootstrapFormComponentFeedbackBorder("pathFeedback",path));
-
-			final TextField<String> url = new TextField<String>("url")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.url",HttpPropertiesForm.this));
-				}
-			};
-			url.setOutputMarkupId(true);
-			url.setEnabled(false);
-			add(url);
-
-			port.add(new OnChangeAjaxBehavior()
+			result.setRequired(true);
+			result.add(new OnChangeAjaxBehavior()
 	    {
 				private static final long serialVersionUID = 1L;
 
 				@Override
 				protected void onUpdate(AjaxRequestTarget target)
 				{
-					target.add(url);
+					target.add(HttpPropertiesForm.this.get("url"));
 				}
 	    });
+			return result;
+		}
 
-			path.add(new OnChangeAjaxBehavior()
-	    {
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					target.add(url);
-				}
-	    });
-
-			CheckBox chunkedStreamingMode = new CheckBox("chunkedStreamingMode")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.chunkedStreamingMode",HttpPropertiesForm.this));
-				}
-			};
-			add(chunkedStreamingMode);
-
-			CheckBox base64Writer = new CheckBox("base64Writer")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.base64Writer",HttpPropertiesForm.this));
-				}
-			};
-			add(base64Writer);
-
-			CheckBox ssl = new CheckBox("ssl")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.ssl",HttpPropertiesForm.this));
-				}
-			};
-			add(ssl);
-
-			ssl.add(new AjaxFormComponentUpdatingBehavior("onchange")
+		private CheckBox CreateSslCheckBox(String id)
+		{
+			CheckBox result = new CheckBox(id,new LocalizedStringResource("lbl.ssl",HttpPropertiesForm.this));
+			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -187,8 +128,12 @@ public class HttpPropertiesFormPanel extends Panel
 					target.add(HttpPropertiesForm.this);
 				}
 			});
+			return result;
+		}
 
-			final SslPropertiesFormPanel sslProperties = new SslPropertiesFormPanel("sslProperties",new PropertyModel<SslPropertiesFormModel>(getModelObject(),"sslProperties"))
+		private SslPropertiesFormPanel createSslPropertiesPanel(String id)
+		{
+			SslPropertiesFormPanel result = new SslPropertiesFormPanel(id,new PropertyModel<SslPropertiesFormModel>(getModelObject(),"sslProperties"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -198,21 +143,13 @@ public class HttpPropertiesFormPanel extends Panel
 					return getModelObject().getSsl();
 				}
 			};
-			add(sslProperties);
+			return result;
+		}
 
-			CheckBox proxy = new CheckBox("proxy")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.proxy",HttpPropertiesForm.this));
-				}
-			};
-			add(proxy);
-
-			proxy.add(new AjaxFormComponentUpdatingBehavior("onchange")
+		private CheckBox createProxyCheckBox(String id)
+		{
+			CheckBox result = new CheckBox(id,new LocalizedStringResource("lbl.proxy",HttpPropertiesForm.this));
+			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -222,8 +159,12 @@ public class HttpPropertiesFormPanel extends Panel
 					target.add(HttpPropertiesForm.this);
 				}
 			});
+			return result;
+		}
 
-			ProxyPropertiesFormPanel proxyProperties = new ProxyPropertiesFormPanel("proxyProperties",new PropertyModel<ProxyPropertiesFormModel>(getModelObject(),"proxyProperties"))
+		private ProxyPropertiesFormPanel createProxyPropertiesPanel(String id)
+		{
+			ProxyPropertiesFormPanel result = new ProxyPropertiesFormPanel(id,new PropertyModel<ProxyPropertiesFormModel>(getModelObject(),"proxyProperties"))
 			{
 				private static final long serialVersionUID = 1L;
 				
@@ -233,8 +174,9 @@ public class HttpPropertiesFormPanel extends Panel
 					return getModelObject().getProxy();
 				}
 			};
-			add(proxyProperties);
+			return result;
 		}
+
 	}
 
 	public static class HttpPropertiesFormModel implements IClusterable
