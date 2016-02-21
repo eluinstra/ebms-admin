@@ -137,7 +137,7 @@ public class TrafficChartPage extends BasePage
 		public TrafficChartForm(String id, TrafficChartFormModel model)
 		{
 			super(id,new CompoundPropertyModel<TrafficChartFormModel>(model));
-			add(createTimeUnitsChoice("timeUnits"));
+			add(createTimeUnitChoice("timeUnit"));
 			add(createMinusLink("minus"));
 			add(createPlusLink("plus"));
 	    chart = new Chart("chart",createOptions(model));
@@ -145,9 +145,9 @@ public class TrafficChartPage extends BasePage
 			add(createEbMSMessageTrafficChartOptions("ebMSMessageTrafficChartOptions"));
 		}
 
-		private DropDownChoice<TimeUnit> createTimeUnitsChoice(String id)
+		private DropDownChoice<TimeUnit> createTimeUnitChoice(String id)
 		{
-			DropDownChoice<TimeUnit> result = new DropDownChoice<TimeUnit>(id,new PropertyModel<TimeUnit>(this.getModelObject(),"timeUnit"),new PropertyModel<List<TimeUnit>>(this.getModelObject(),"timeUnits"))
+			DropDownChoice<TimeUnit> result = new DropDownChoice<TimeUnit>(id,new PropertyModel<List<TimeUnit>>(this.getModelObject(),"timeUnits"))
 			{
 				private static final long serialVersionUID = 1L;
 

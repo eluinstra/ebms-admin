@@ -289,9 +289,9 @@ public class SendMessagePageX extends BasePage
 			return result;
 		}
 
-		private BootstrapFormComponentFeedbackBorder createToPartyIdFeedbackBorder(String id, DropDownChoice<String> toPartyIdsChoice)
+		private BootstrapFormComponentFeedbackBorder createToPartyIdFeedbackBorder(String id, DropDownChoice<String> toPartyIdChoice)
 		{
-			return new BootstrapFormComponentFeedbackBorder(id,toPartyIdsChoice)
+			return new BootstrapFormComponentFeedbackBorder(id,toPartyIdChoice)
 			{
 				private static final long serialVersionUID = 1L;
 				

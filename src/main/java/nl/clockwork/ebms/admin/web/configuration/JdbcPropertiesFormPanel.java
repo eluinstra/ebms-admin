@@ -59,7 +59,7 @@ public class JdbcPropertiesFormPanel extends Panel
 		public JdbcPropertiesForm(String id, final IModel<JdbcPropertiesFormModel> model)
 		{
 			super(id,new CompoundPropertyModel<JdbcPropertiesFormModel>(model));
-			add(new BootstrapFormComponentFeedbackBorder("driverFeedback",createDriversChoice("drivers",model)));
+			add(new BootstrapFormComponentFeedbackBorder("driverFeedback",createDriverChoice("driver",model)));
 			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",createHostsField("host")));
 			add(new BootstrapFormComponentFeedbackBorder("portFeedback",createPortField("port")));
 			add(new BootstrapFormComponentFeedbackBorder("databaseFeedback",createDatabaseField("database")));
@@ -69,9 +69,9 @@ public class JdbcPropertiesFormPanel extends Panel
 			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",new PasswordTextField("password",new LocalizedStringResource("lbl.password",JdbcPropertiesFormPanel.this)).setResetPassword(false).setRequired(false)));
 		}
 
-		private DropDownChoice<JdbcDriver> createDriversChoice(String id, final IModel<JdbcPropertiesFormModel> model)
+		private DropDownChoice<JdbcDriver> createDriverChoice(String id, final IModel<JdbcPropertiesFormModel> model)
 		{
-			DropDownChoice<JdbcDriver> result = new DropDownChoice<JdbcDriver>(id,new PropertyModel<JdbcDriver>(model.getObject(),"driver"),new PropertyModel<List<JdbcDriver>>(model.getObject(),"drivers"))
+			DropDownChoice<JdbcDriver> result = new DropDownChoice<JdbcDriver>(id,new PropertyModel<List<JdbcDriver>>(model.getObject(),"drivers"))
 			{
 				private static final long serialVersionUID = 1L;
 

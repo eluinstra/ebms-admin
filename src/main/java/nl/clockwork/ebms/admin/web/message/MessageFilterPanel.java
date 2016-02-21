@@ -400,7 +400,7 @@ public abstract class MessageFilterPanel extends Panel
 
 		private ListMultipleChoice<EbMSMessageStatus> createStatusesChoice(String id)
 		{
-			return new ListMultipleChoice<EbMSMessageStatus>(id,new PropertyModel<List<EbMSMessageStatus>>(this.getModelObject(),"statuses"),Model.ofList(Arrays.asList(EbMSMessageStatus.values())))
+			return new ListMultipleChoice<EbMSMessageStatus>(id,Model.ofList(Arrays.asList(EbMSMessageStatus.values())))
 			{
 				private static final long serialVersionUID = 1L;
 
