@@ -134,10 +134,6 @@ public class MessageStatusPage extends BasePage
 						model.resetFromRoles(CPAUtils.getRoleNames(cpa));
 						model.resetToPartyIds();
 						model.resetToRoles();
-						//model.resetMessageId();
-//						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENT,EbMSMessageStatus.EXPIRED));
-//						if (model.getMessageIds().size() == 0)
-//							info("No messages found");
 						target.add(getPage().get("feedback"));
 						target.add(getPage().get("form"));
 					}
