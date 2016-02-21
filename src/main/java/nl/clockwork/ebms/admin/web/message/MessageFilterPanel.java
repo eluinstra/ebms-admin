@@ -101,13 +101,13 @@ public abstract class MessageFilterPanel extends Panel
 		public MessageFilterForm(String id, MessageFilterFormModel model)
 		{
 			super(id,new CompoundPropertyModel<MessageFilterFormModel>(model));
-			add(createCPAIdsChoice("cpaIds"));
-			add(createFromPartyIdsChoice("fromPartyIds"));
-			add(createFromRolesChoice("fromRoles"));
-			add(createToPartyIdsChoice("toPartyIds"));
-			add(createToRolesChoice("toRoles"));
-			add(createServicesChoice("services"));
-			add(createActionsChoice("actions"));
+			add(createCPAIdChoice("cpaId"));
+			add(createFromPartyIdChoice("fromRole.partyId"));
+			add(createFromRoleChoice("fromRole.role"));
+			add(createToPartyIdChoice("toRole.partyId"));
+			add(createToRoleChoice("toRole.role"));
+			add(createServiceChoice("service"));
+			add(createActionChoice("action"));
 			add(new TextField<String>("conversationId",new LocalizedStringResource("lbl.conversationId",MessageFilterForm.this)));
 			add(new TextField<String>("messageId",new LocalizedStringResource("lbl.messageId",MessageFilterForm.this)));
 			add(new TextField<String>("refToMessageId",new LocalizedStringResource("lbl.refToMessageId",MessageFilterForm.this)));
@@ -120,9 +120,9 @@ public abstract class MessageFilterPanel extends Panel
 			add(createResetButton("reset"));
 		}
 
-		private DropDownChoice<String> createCPAIdsChoice(String id)
+		private DropDownChoice<String> createCPAIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"cpaId"),Model.ofList(Utils.toList(cpaService.getCPAIds())))
+			DropDownChoice<String> result = new DropDownChoice<String>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -162,9 +162,9 @@ public abstract class MessageFilterPanel extends Panel
 			return result;
 		}
 
-		private DropDownChoice<String> createFromPartyIdsChoice(String id)
+		private DropDownChoice<String> createFromPartyIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"fromRole.partyId"),new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"))
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -208,9 +208,9 @@ public abstract class MessageFilterPanel extends Panel
 			return result;
 		}
 
-		private DropDownChoice<String> createFromRolesChoice(String id)
+		private DropDownChoice<String> createFromRoleChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"fromRole.role"),new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -253,9 +253,9 @@ public abstract class MessageFilterPanel extends Panel
 			return result;
 		}
 
-		private DropDownChoice<String> createToPartyIdsChoice(String id)
+		private DropDownChoice<String> createToPartyIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"toRole.partyId"),new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"))
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -299,9 +299,9 @@ public abstract class MessageFilterPanel extends Panel
 			return result;
 		}
 
-		private DropDownChoice<String> createToRolesChoice(String id)
+		private DropDownChoice<String> createToRoleChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"toRole.role"),new PropertyModel<List<String>>(this.getModelObject(),"toRoles"))
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toRoles"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -344,9 +344,9 @@ public abstract class MessageFilterPanel extends Panel
 			return result;
 		}
 
-		private DropDownChoice<String> createServicesChoice(String id)
+		private DropDownChoice<String> createServiceChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"service"),new PropertyModel<List<String>>(this.getModelObject(),"services"))
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"services"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -382,9 +382,9 @@ public abstract class MessageFilterPanel extends Panel
 			return result;
 		}
 
-		private DropDownChoice<String> createActionsChoice(String id)
+		private DropDownChoice<String> createActionChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"action"),new PropertyModel<List<String>>(this.getModelObject(),"actions"))
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"actions"))
 			{
 				private static final long serialVersionUID = 1L;
 
