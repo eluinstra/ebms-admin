@@ -31,6 +31,7 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
@@ -57,8 +58,7 @@ public class HttpPropertiesFormPanel extends Panel
 		public HttpPropertiesForm(String id, final IModel<HttpPropertiesFormModel> model)
 		{
 			super(id,new CompoundPropertyModel<HttpPropertiesFormModel>(model));
-			add(new Label("protocol")); 
-			add(new TextField<String>("host",new LocalizedStringResource("lbl.host",HttpPropertiesForm.this)).setRequired(true));
+			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",createHostField("host")).add(new Label("protocol")));
 			add(new BootstrapFormComponentFeedbackBorder("portFeedback",createPortField("port")));
 			add(new BootstrapFormComponentFeedbackBorder("pathFeedback",createPathField("path")));
 			add(new TextField<String>("url",new LocalizedStringResource("lbl.url",HttpPropertiesForm.this)).setOutputMarkupId(true).setEnabled(false));
@@ -68,6 +68,23 @@ public class HttpPropertiesFormPanel extends Panel
 			add(createSslPropertiesPanel("sslProperties"));
 			add(createProxyCheckBox("proxy"));
 			add(createProxyPropertiesPanel("proxyProperties"));
+		}
+
+		private FormComponent<String> createHostField(String id)
+		{
+			TextField<String> result = new TextField<String>(id,new LocalizedStringResource("lbl.host",HttpPropertiesForm.this));
+			result.add(new OnChangeAjaxBehavior()
+	    {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					target.add(HttpPropertiesForm.this.get("url"));
+				}
+	    });
+			result.setRequired(true);
+			return result;
 		}
 
 		private TextField<Integer> createPortField(String id)
