@@ -16,13 +16,14 @@
 package nl.clockwork.ebms.admin.web.configuration;
 
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.LocalizedStringResource;
+import nl.clockwork.ebms.admin.web.PasswordTextField;
+import nl.clockwork.ebms.admin.web.StringTextField;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.PasswordTextField;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
@@ -56,35 +57,14 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 		public JavaKeyStorePropertiesForm(String id, final IModel<JavaKeyStorePropertiesFormModel> model)
 		{
 			super(id,new CompoundPropertyModel<JavaKeyStorePropertiesFormModel>(model));
+			add(new BootstrapFormComponentFeedbackBorder("uriFeedback",new StringTextField("uri",new LocalizedStringResource("lbl.uri",JavaKeyStorePropertiesForm.this)).setRequired(required)));
+			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",new PasswordTextField("password",new LocalizedStringResource("lbl.password",JavaKeyStorePropertiesForm.this)).setResetPassword(false).setRequired(required)));
+			add(createTestButton("test",model));
+		}
 
-			TextField<String> uri = new TextField<String>("uri")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.uri",JavaKeyStorePropertiesForm.this));
-				}
-			};
-			uri.setRequired(required);
-			add(new BootstrapFormComponentFeedbackBorder("uriFeedback",uri));
-
-			PasswordTextField password = new PasswordTextField("password")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.password",JavaKeyStorePropertiesForm.this));
-				}
-			};
-			password.setRequired(required);
-			password.setResetPassword(false);
-			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",password));
-
-			add(new Button("test",new ResourceModel("cmd.test"))
+		private Button createTestButton(String id, final IModel<JavaKeyStorePropertiesFormModel> model)
+		{
+			return new Button(id,new ResourceModel("cmd.test"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -103,7 +83,7 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 						error(new StringResourceModel("test.nok",JavaKeyStorePropertiesForm.this,Model.of(e)).getString());
 					}
 				}
-			});
+			};
 		}
 	}
 

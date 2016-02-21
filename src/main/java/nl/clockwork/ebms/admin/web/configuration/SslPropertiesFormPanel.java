@@ -21,11 +21,12 @@ import java.util.List;
 
 import javax.net.ssl.SSLServerSocketFactory;
 
+import nl.clockwork.ebms.admin.web.CheckBox;
+import nl.clockwork.ebms.admin.web.LocalizedStringResource;
 import nl.clockwork.ebms.admin.web.configuration.JavaKeyStorePropertiesFormPanel.JavaKeyStorePropertiesFormModel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.CheckBoxMultipleChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -53,8 +54,16 @@ public class SslPropertiesFormPanel extends Panel
 		public SslPropertiesForm(String id, final IModel<SslPropertiesFormModel> model)
 		{
 			super(id,new CompoundPropertyModel<SslPropertiesFormModel>(model));
+			add(createAllowesCipherSuitesChoice("allowedCipherSuites"));
+			add(new CheckBox("requireClientAuthentication",new LocalizedStringResource("lbl.requireClientAuthentication",SslPropertiesForm.this)));
+			add(new CheckBox("verifyHostnames",new LocalizedStringResource("lbl.verifyHostnames",SslPropertiesForm.this)));
+			add(new KeystorePropertiesFormPanel("keystoreProperties",new PropertyModel<JavaKeyStorePropertiesFormModel>(getModelObject(),"keystoreProperties")));
+			add(new TruststorePropertiesFormPanel("truststoreProperties",new PropertyModel<JavaKeyStorePropertiesFormModel>(getModelObject(),"truststoreProperties")));
+		}
 
-			CheckBoxMultipleChoice<String> allowedCipherSuites = new CheckBoxMultipleChoice<String>("allowedCipherSuites",getModelObject().getDefaultCipherSuites())
+		private CheckBoxMultipleChoice<String> createAllowesCipherSuitesChoice(String id)
+		{
+			return new CheckBoxMultipleChoice<String>(id,getModelObject().getDefaultCipherSuites())
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -64,34 +73,6 @@ public class SslPropertiesFormPanel extends Panel
 					return Model.of(getLocalizer().getString("lbl.allowedCipherSuites",SslPropertiesForm.this));
 				}
 			};
-			add(allowedCipherSuites);
-
-			CheckBox requireClientAuthentication = new CheckBox("requireClientAuthentication")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.requireClientAuthentication",SslPropertiesForm.this));
-				}
-			};
-			add(requireClientAuthentication);
-
-			CheckBox verifyHostnames = new CheckBox("verifyHostnames")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.verifyHostnames",SslPropertiesForm.this));
-				}
-			};
-			add(verifyHostnames);
-
-			add(new KeystorePropertiesFormPanel("keystoreProperties",new PropertyModel<JavaKeyStorePropertiesFormModel>(getModelObject(),"keystoreProperties")));
-			add(new TruststorePropertiesFormPanel("truststoreProperties",new PropertyModel<JavaKeyStorePropertiesFormModel>(getModelObject(),"truststoreProperties")));
 		}
 	}
 

@@ -19,6 +19,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.IntegerTextField;
+import nl.clockwork.ebms.admin.web.LocalizedStringResource;
+import nl.clockwork.ebms.admin.web.PasswordTextField;
+import nl.clockwork.ebms.admin.web.StringTextField;
 import nl.clockwork.ebms.admin.web.configuration.Constants.JdbcDriver;
 
 import org.apache.commons.logging.Log;
@@ -29,7 +33,6 @@ import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -58,7 +61,19 @@ public class JdbcPropertiesFormPanel extends Panel
 		public JdbcPropertiesForm(String id, final IModel<JdbcPropertiesFormModel> model)
 		{
 			super(id,new CompoundPropertyModel<JdbcPropertiesFormModel>(model));
-			DropDownChoice<JdbcDriver> drivers = new DropDownChoice<JdbcDriver>("drivers",new PropertyModel<JdbcDriver>(model.getObject(),"driver"),new PropertyModel<List<JdbcDriver>>(model.getObject(),"drivers"))
+			add(new BootstrapFormComponentFeedbackBorder("driverFeedback",createDriversChoice("drivers",model)));
+			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",createHostsField("host")));
+			add(new BootstrapFormComponentFeedbackBorder("portFeedback",createPortField("port")));
+			add(new BootstrapFormComponentFeedbackBorder("databaseFeedback",createDatabaseField("database")));
+			add(new StringTextField("url",new LocalizedStringResource("lbl.url",JdbcPropertiesFormPanel.this)).setOutputMarkupId(true).setEnabled(false));
+			add(createTestButton("test",model));
+			add(new BootstrapFormComponentFeedbackBorder("usernameFeedback",new StringTextField("username",new LocalizedStringResource("lbl.username",JdbcPropertiesFormPanel.this)).setRequired(true)));
+			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",new PasswordTextField("password",new LocalizedStringResource("lbl.password",JdbcPropertiesFormPanel.this)).setResetPassword(false).setRequired(false)));
+		}
+
+		private DropDownChoice<JdbcDriver> createDriversChoice(String id, final IModel<JdbcPropertiesFormModel> model)
+		{
+			DropDownChoice<JdbcDriver> result = new DropDownChoice<JdbcDriver>(id,new PropertyModel<JdbcDriver>(model.getObject(),"driver"),new PropertyModel<List<JdbcDriver>>(model.getObject(),"drivers"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -68,10 +83,8 @@ public class JdbcPropertiesFormPanel extends Panel
 					return Model.of(getLocalizer().getString("lbl.driver",JdbcPropertiesFormPanel.this));
 				}
 			};
-			drivers.setRequired(true);
-			add(new BootstrapFormComponentFeedbackBorder("driverFeedback",drivers));
-
-			drivers.add(new OnChangeAjaxBehavior()
+			result.setRequired(true);
+			result.add(new OnChangeAjaxBehavior()
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -81,21 +94,14 @@ public class JdbcPropertiesFormPanel extends Panel
 					target.add(getUrlComponent());
 				}
 			});
+			return result;
+		}
 
-			TextField<String> host = new TextField<String>("host")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.host",JdbcPropertiesFormPanel.this));
-				}
-			};
-			host.setRequired(true);
-			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",host));
-
-			host.add(new OnChangeAjaxBehavior()
+		private TextField<String> createHostsField(String id)
+		{
+			TextField<String> result = new StringTextField(id,new LocalizedStringResource("lbl.host",JdbcPropertiesFormPanel.this));
+			result.setRequired(true);
+			result.add(new OnChangeAjaxBehavior()
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -105,20 +111,13 @@ public class JdbcPropertiesFormPanel extends Panel
 					target.add(getUrlComponent());
 				}
 			});
+			return result;
+		}
 
-			TextField<Integer> port = new TextField<Integer>("port")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.port",JdbcPropertiesFormPanel.this));
-				}
-			};
-			add(new BootstrapFormComponentFeedbackBorder("portFeedback",port));
-
-			port.add(new OnChangeAjaxBehavior()
+		private TextField<Integer> createPortField(String id)
+		{
+			TextField<Integer> result = new IntegerTextField(id,new LocalizedStringResource("lbl.port",JdbcPropertiesFormPanel.this));
+			result.add(new OnChangeAjaxBehavior()
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -128,21 +127,14 @@ public class JdbcPropertiesFormPanel extends Panel
 					target.add(getUrlComponent());
 				}
 			});
+			return result;
+		}
 
-			TextField<String> database = new TextField<String>("database")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.database",JdbcPropertiesFormPanel.this));
-				}
-			};
-			database.setRequired(true);
-			add(new BootstrapFormComponentFeedbackBorder("databaseFeedback",database));
-
-			database.add(new OnChangeAjaxBehavior()
+		private TextField<String> createDatabaseField(String id)
+		{
+			TextField<String> result = new StringTextField(id,new LocalizedStringResource("lbl.database",JdbcPropertiesFormPanel.this));
+			result.setRequired(true);
+			result.add(new OnChangeAjaxBehavior()
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -152,22 +144,12 @@ public class JdbcPropertiesFormPanel extends Panel
 					target.add(getUrlComponent());
 				}
 			});
+			return result;
+		}
 
-			final TextField<String> url = new TextField<String>("url")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.url",JdbcPropertiesFormPanel.this));
-				}
-			};
-			url.setOutputMarkupId(true);
-			url.setEnabled(false);
-			add(url);
-			
-			Button test = new Button("test",new ResourceModel("cmd.test"))
+		private Button createTestButton(String id, final IModel<JdbcPropertiesFormModel> model)
+		{
+			Button result = new Button(id,new ResourceModel("cmd.test"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -187,34 +169,7 @@ public class JdbcPropertiesFormPanel extends Panel
 					}
 				}
 			};
-			add(test);
-			
-			TextField<String> username = new TextField<String>("username")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.username",JdbcPropertiesFormPanel.this));
-				}
-			};
-			username.setRequired(true);
-			add(new BootstrapFormComponentFeedbackBorder("usernameFeedback",username));
-
-			PasswordTextField password = new PasswordTextField("password")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.password",JdbcPropertiesFormPanel.this));
-				}
-			};
-			password.setResetPassword(false);
-			password.setRequired(false);
-			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",password));
+			return result;
 		}
 
 		private Component getUrlComponent()

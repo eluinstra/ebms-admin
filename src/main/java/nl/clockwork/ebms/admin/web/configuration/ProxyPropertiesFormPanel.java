@@ -16,16 +16,17 @@
 package nl.clockwork.ebms.admin.web.configuration;
 
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.IntegerTextField;
+import nl.clockwork.ebms.admin.web.LocalizedStringResource;
+import nl.clockwork.ebms.admin.web.PasswordTextField;
+import nl.clockwork.ebms.admin.web.StringTextField;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.PasswordTextField;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.util.io.IClusterable;
 
 public class ProxyPropertiesFormPanel extends Panel
@@ -46,69 +47,11 @@ public class ProxyPropertiesFormPanel extends Panel
 		public ProxyPropertiesForm(String id, final IModel<ProxyPropertiesFormModel> model)
 		{
 			super(id,new CompoundPropertyModel<ProxyPropertiesFormModel>(model));
-
-			TextField<String> host = new TextField<String>("host")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.host",ProxyPropertiesForm.this));
-				}
-			};
-			host.setRequired(true);
-			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",host));
-
-			TextField<Integer> port = new TextField<Integer>("port")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.port",ProxyPropertiesForm.this));
-				}
-			};
-			add(new BootstrapFormComponentFeedbackBorder("portFeedback",port));
-
-			TextField<String> nonProxyHosts = new TextField<String>("nonProxyHosts")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.nonProxyHosts",ProxyPropertiesForm.this));
-				}
-			};
-			add(nonProxyHosts);
-
-			TextField<String> username = new TextField<String>("username")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.username",ProxyPropertiesForm.this));
-				}
-			};
-			add(username);
-
-			PasswordTextField password = new PasswordTextField("password")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.password",ProxyPropertiesForm.this));
-				}
-			};
-			password.setResetPassword(false);
-			password.setRequired(false);
-			add(password);
+			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",new StringTextField("host",new LocalizedStringResource("lbl.host",ProxyPropertiesForm.this)).setRequired(true)));
+			add(new BootstrapFormComponentFeedbackBorder("portFeedback",new IntegerTextField("port",new LocalizedStringResource("lbl.port",ProxyPropertiesForm.this))));
+			add(new StringTextField("nonProxyHosts",new LocalizedStringResource("lbl.nonProxyHosts",ProxyPropertiesForm.this)));
+			add(new StringTextField("username",new LocalizedStringResource("lbl.username",ProxyPropertiesForm.this)));
+			add(new PasswordTextField("password",new LocalizedStringResource("lbl.password",ProxyPropertiesForm.this)).setResetPassword(false).setRequired(false));
 		}
 	}
 

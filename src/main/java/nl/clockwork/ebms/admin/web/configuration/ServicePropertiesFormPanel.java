@@ -16,12 +16,13 @@
 package nl.clockwork.ebms.admin.web.configuration;
 
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.LocalizedStringResource;
+import nl.clockwork.ebms.admin.web.StringTextField;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
@@ -48,21 +49,13 @@ public class ServicePropertiesFormPanel extends Panel
 		public ServicePropertiesForm(String id, final IModel<ServicePropertiesFormModel> model)
 		{
 			super(id,new CompoundPropertyModel<ServicePropertiesFormModel>(model));
+			add(new BootstrapFormComponentFeedbackBorder("urlFeedback",new StringTextField("url",new LocalizedStringResource("lbl.url",ServicePropertiesForm.this)).setRequired(true)));
+			add(createTestButton("test",model));
+		}
 
-			TextField<String> url = new TextField<String>("url")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.url",ServicePropertiesForm.this));
-				}
-			};
-			url.setRequired(true);
-			add(new BootstrapFormComponentFeedbackBorder("urlFeedback",url));
-
-			Button test = new Button("test",new ResourceModel("cmd.test"))
+		private Button createTestButton(String id, final IModel<ServicePropertiesFormModel> model)
+		{
+			Button result = new Button(id,new ResourceModel("cmd.test"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -82,7 +75,7 @@ public class ServicePropertiesFormPanel extends Panel
 					}
 				}
 			};
-			add(test);
+			return result;
 		}
 	}
 
