@@ -105,6 +105,7 @@ public class UrlModalWindow extends ModalWindow
 				add(new BootstrapFeedbackPanel("feedback"));
 				add(new TextField<String>("url",new LocalizedStringResource("lbl.url",UrlForm.this)));
 				add(createSaveButton("save"));
+				add(createClearButton("clear"));
 				add(createCancelButton("cancel"));
 			}
 
@@ -130,6 +131,26 @@ public class UrlModalWindow extends ModalWindow
 					protected void onError(AjaxRequestTarget target, Form<?> form)
 					{
 						super.onError(target,form);
+						if (target != null)
+						{
+							target.add(form);
+						}
+					}
+				};
+				return result;
+			}
+
+			private AjaxButton createClearButton(String id)
+			{
+				AjaxButton result = new AjaxButton(id,new ResourceModel("cmd.clear"))
+				{
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+					{
+						UrlModel model = UrlForm.this.getModelObject();
+						model.setUrl(null);
 						if (target != null)
 						{
 							target.add(form);
@@ -167,10 +188,13 @@ public class UrlModalWindow extends ModalWindow
 		{
 			this.url = url;
 		}
-
 		public String getUrl()
 		{
 			return url;
+		}
+		public void setUrl(String url)
+		{
+			this.url = url;
 		}
 	}
 }
