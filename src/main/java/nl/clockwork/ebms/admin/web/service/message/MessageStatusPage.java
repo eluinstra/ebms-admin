@@ -86,11 +86,11 @@ public class MessageStatusPage extends BasePage
 		public MessageStatusForm(String id)
 		{
 			super(id,new CompoundPropertyModel<MessageStatusFormModel>(new MessageStatusFormModel()));
-			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",createCPAIdsChoice("cpaIds")));
-			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",createFromPartyIdsChoice("fromPartyIds")).setVisible(cleoPatch));
-			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",createFromRolesChoice("fromRoles")));
-			add(new BootstrapFormComponentFeedbackBorder("toPartyIdFeedback",createToPartyIdsChoice("toPartyIds")).setVisible(cleoPatch));
-			add(new BootstrapFormComponentFeedbackBorder("toRoleFeedback",createToRolesChoice("toRoles")));
+			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",createCPAIdChoice("cpaId")));
+			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",createFromPartyIdChoice("fromPartyId")).setVisible(cleoPatch));
+			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",createFromRoleChoice("fromRole")));
+			add(new BootstrapFormComponentFeedbackBorder("toPartyIdFeedback",createToPartyIdChoice("toPartyId")).setVisible(cleoPatch));
+			add(new BootstrapFormComponentFeedbackBorder("toRoleFeedback",createToRoleChoice("toRole")));
 			final DropDownChoice<String> messageIds = createMessageIdsChoice("messageIds");
 			add(new BootstrapFormComponentFeedbackBorder("messageIdFeedback",messageIds,createMessageIdField("messageId")));
 			add(createManualCheckBox("manual",messageIds));
@@ -100,9 +100,9 @@ public class MessageStatusPage extends BasePage
 			add(new ResetButton("reset",new ResourceModel("cmd.reset"),MessageStatusPage.class));
 		}
 
-		private DropDownChoice<String> createCPAIdsChoice(String id)
+		private DropDownChoice<String> createCPAIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"cpaId"),Model.ofList(Utils.toList(cpaService.getCPAIds())))
+			DropDownChoice<String> result = new DropDownChoice<String>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -113,7 +113,7 @@ public class MessageStatusPage extends BasePage
 				}
 
 				@Override
-				public boolean isRequired()
+				public boolean isEnabled()
 				{
 					return !MessageStatusForm.this.getModelObject().getManual();
 				}
@@ -147,9 +147,9 @@ public class MessageStatusPage extends BasePage
 			return result;
 		}
 
-		private DropDownChoice<String> createFromPartyIdsChoice(String id)
+		private DropDownChoice<String> createFromPartyIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"fromPartyId"),new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"))
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -203,9 +203,9 @@ public class MessageStatusPage extends BasePage
 			return result;
 		}
 
-		private DropDownChoice<String> createFromRolesChoice(String id)
+		private DropDownChoice<String> createFromRoleChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"fromRole"),new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -252,9 +252,9 @@ public class MessageStatusPage extends BasePage
 			return result;
 		}
 
-		private DropDownChoice<String> createToPartyIdsChoice(String id)
+		private DropDownChoice<String> createToPartyIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"toPartyId"),new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"))
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -305,9 +305,9 @@ public class MessageStatusPage extends BasePage
 			return result;
 		}
 
-		private DropDownChoice<String> createToRolesChoice(String id)
+		private DropDownChoice<String> createToRoleChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"toRole"),new PropertyModel<List<String>>(this.getModelObject(),"toRoles"))
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toRoles"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -465,7 +465,7 @@ public class MessageStatusPage extends BasePage
 		private String toRole;
 		private List<String> messageIds = new ArrayList<String>();
 		private String messageId;
-		private boolean manual;
+		private boolean manual = true;
 		
 		public String getCpaId()
 		{

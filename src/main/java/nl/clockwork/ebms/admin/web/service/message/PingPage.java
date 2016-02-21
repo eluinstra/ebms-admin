@@ -77,20 +77,20 @@ public class PingPage extends BasePage
 		public PingForm(String id)
 		{
 			super(id,new CompoundPropertyModel<PingFormModel>(new PingFormModel()));
-			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",createCPAIdsChoice("cpaIds")));
-			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",createFromPartyIdsChoice("fromPartyIds")));
-			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",createFromRolesChoice()).setVisible(cleoPatch));
-			add(new BootstrapFormComponentFeedbackBorder("toPartyIdFeedback",createToPartyIdsChoice("toPartyIds")));
-			add(new BootstrapFormComponentFeedbackBorder("toRoleFeedback",createToRolesChoice("toRoles")).setVisible(cleoPatch));
+			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",createCPAIdChoice("cpaId")));
+			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",createFromPartyIdChoice("fromPartyId")));
+			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",createFromRoleChoice("fromRole")).setVisible(cleoPatch));
+			add(new BootstrapFormComponentFeedbackBorder("toPartyIdFeedback",createToPartyIdChoice("toPartyId")));
+			add(new BootstrapFormComponentFeedbackBorder("toRoleFeedback",createToRoleChoice("toRole")).setVisible(cleoPatch));
 			Button ping = createPingButton("ping");
 			setDefaultButton(ping);
 			add(ping);
 			add(new ResetButton("reset",new ResourceModel("cmd.reset"),PingPage.class));
 		}
 
-		private DropDownChoice<String> createCPAIdsChoice(String id)
+		private DropDownChoice<String> createCPAIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"cpaId"),Model.ofList(Utils.toList(cpaService.getCPAIds())))
+			DropDownChoice<String> result = new DropDownChoice<String>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -129,9 +129,9 @@ public class PingPage extends BasePage
 			return result;
 		}
 
-		private DropDownChoice<String> createFromPartyIdsChoice(String id)
+		private DropDownChoice<String> createFromPartyIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"fromPartyId"),new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"))
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -170,9 +170,9 @@ public class PingPage extends BasePage
 			return result;
 		}
 
-		private DropDownChoice<String> createFromRolesChoice()
+		private DropDownChoice<String> createFromRoleChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>("fromRoles",new PropertyModel<String>(this.getModelObject(),"fromRole"),new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -210,9 +210,9 @@ public class PingPage extends BasePage
 			return result;
 		}
 
-		private DropDownChoice<String> createToPartyIdsChoice(String id)
+		private DropDownChoice<String> createToPartyIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"toPartyId"),new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"))
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -248,9 +248,9 @@ public class PingPage extends BasePage
 			return result;
 		}
 
-		private DropDownChoice<String> createToRolesChoice(String id)
+		private DropDownChoice<String> createToRoleChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"toRole"),new PropertyModel<List<String>>(this.getModelObject(),"toRoles"))
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toRoles"))
 			{
 				private static final long serialVersionUID = 1L;
 

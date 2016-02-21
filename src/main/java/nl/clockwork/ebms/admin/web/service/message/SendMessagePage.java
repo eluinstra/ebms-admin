@@ -86,11 +86,11 @@ public class SendMessagePage extends BasePage
 		{
 			super(id,new CompoundPropertyModel<EbMSMessageContextModel>(new EbMSMessageContextModel()));
 			setMultiPart(true);
-			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",createCPAIdsChoice("cpaIds")));
-			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",createFromPartyIdsChoice("fromPartyIds")));
-			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",createFromRolesChoice("fromRoles")));
-			add(new BootstrapFormComponentFeedbackBorder("serviceFeedback",createServicesChoice("services")));
-			add(new BootstrapFormComponentFeedbackBorder("actionFeedback",createActionsChoice("actions")));
+			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",createCPAIdChoice("cpaId")));
+			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",createFromPartyIdChoice("fromRole.partyId")));
+			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",createFromRoleChoice("fromRole.role")));
+			add(new BootstrapFormComponentFeedbackBorder("serviceFeedback",createServiceChoice("service")));
+			add(new BootstrapFormComponentFeedbackBorder("actionFeedback",createActionChoice("action")));
 			add(new TextField<String>("conversationId",new LocalizedStringResource("lbl.conversationId",MessageForm.this)));
 			add(new TextField<String>("messageId",new LocalizedStringResource("lbl.messageId",MessageForm.this)));
 			add(new TextField<String>("refToMessageId",new LocalizedStringResource("lbl.refToMessageId",MessageForm.this)));
@@ -101,9 +101,9 @@ public class SendMessagePage extends BasePage
 			add(new ResetButton("reset",new ResourceModel("cmd.reset"),SendMessagePage.class));
 		}
 
-		private DropDownChoice<String> createCPAIdsChoice(String id)
+		private DropDownChoice<String> createCPAIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"cpaId"),Model.ofList(Utils.toList(cpaService.getCPAIds())))
+			DropDownChoice<String> result = new DropDownChoice<String>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -143,9 +143,9 @@ public class SendMessagePage extends BasePage
 			return result;
 		}
 
-		private DropDownChoice<String> createFromPartyIdsChoice(String id)
+		private DropDownChoice<String> createFromPartyIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"fromRole.partyId"),new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"))
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -184,9 +184,9 @@ public class SendMessagePage extends BasePage
 			return result;
 		}
 
-		private DropDownChoice<String> createFromRolesChoice(String id)
+		private DropDownChoice<String> createFromRoleChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"fromRole.role"),new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -226,9 +226,9 @@ public class SendMessagePage extends BasePage
 			return result;
 		}
 
-		private DropDownChoice<String> createServicesChoice(String id)
+		private DropDownChoice<String> createServiceChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"service"),new PropertyModel<List<String>>(this.getModelObject(),"services"))
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"services"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -266,9 +266,9 @@ public class SendMessagePage extends BasePage
 			return result;
 		}
 
-		private DropDownChoice<String> createActionsChoice(String id)
+		private DropDownChoice<String> createActionChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"action"),new PropertyModel<List<String>>(this.getModelObject(),"actions"))
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"actions"))
 			{
 				private static final long serialVersionUID = 1L;
 
