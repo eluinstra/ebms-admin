@@ -531,13 +531,29 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			}
 			if (messageFilter.getFromRole() != null)
 			{
-				parameters.add(messageFilter.getFromRole());
-				result.append(" and from_role = ?");
+				if (messageFilter.getFromRole().getPartyId() != null)
+				{
+					parameters.add(messageFilter.getFromRole().getPartyId());
+					result.append(" and from_party_id = ?");
+				}
+				if (messageFilter.getFromRole().getRole() != null)
+				{
+					parameters.add(messageFilter.getFromRole().getRole());
+					result.append(" and from_role = ?");
+				}
 			}
 			if (messageFilter.getToRole() != null)
 			{
-				parameters.add(messageFilter.getToRole());
-				result.append(" and to_role = ?");
+				if (messageFilter.getToRole().getPartyId() != null)
+				{
+					parameters.add(messageFilter.getToRole().getPartyId());
+					result.append(" and to_party_id = ?");
+				}
+				if (messageFilter.getToRole().getRole() != null)
+				{
+					parameters.add(messageFilter.getToRole().getRole());
+					result.append(" and to_role = ?");
+				}
 			}
 			if (messageFilter.getService() != null)
 			{

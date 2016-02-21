@@ -74,7 +74,7 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 		this.format = format;
 		this.hourFormat = format.contains("H") ? HourFormat.H24 : HourFormat.H12;
 		this.formatJS = format.replaceAll("H","h");
-		setType(Date.class);
+		setType(type);
 		
 		MarkupContainer dateTimePicker = new MarkupContainer("dateTimePicker")
 		{
