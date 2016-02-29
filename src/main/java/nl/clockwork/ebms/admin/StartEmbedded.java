@@ -154,7 +154,7 @@ public class StartEmbedded extends Start
 			{
 				c.createStatement().executeUpdate(IOUtils.toString(this.getClass().getResourceAsStream("/nl/clockwork/ebms/admin/database/hsqldb.sql")));
 				for (ExtensionProvider extensionProvider : ExtensionProvider.get())
-					if (StringUtils.isEmpty(extensionProvider.getHSQLDBFile()))
+					if (!StringUtils.isEmpty(extensionProvider.getHSQLDBFile()))
 						c.createStatement().executeUpdate(IOUtils.toString(this.getClass().getResourceAsStream(extensionProvider.getHSQLDBFile())));
 				System.out.println("EbMS tables created");
 			}
