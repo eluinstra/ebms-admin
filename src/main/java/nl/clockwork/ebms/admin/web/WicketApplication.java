@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import nl.clockwork.ebms.admin.web.menu.MenuDivider;
 import nl.clockwork.ebms.admin.web.menu.MenuItem;
 import nl.clockwork.ebms.admin.web.menu.MenuLinkItem;
 
@@ -65,8 +66,9 @@ public class WicketApplication extends WebApplication
 		MenuItem advanced = new MenuItem("3","advanced");
 		new MenuLinkItem(advanced,"1","traffic",nl.clockwork.ebms.admin.web.message.TrafficPage.class);
 		new MenuLinkItem(advanced,"2","trafficChart",nl.clockwork.ebms.admin.web.message.TrafficChartPage.class);
-		new MenuLinkItem(advanced,"3","cpas",nl.clockwork.ebms.admin.web.cpa.CPAsPage.class);
-		new MenuLinkItem(advanced,"4","messages",nl.clockwork.ebms.admin.web.message.MessagesPage.class);
+		new MenuDivider(advanced,"3");
+		new MenuLinkItem(advanced,"4","cpas",nl.clockwork.ebms.admin.web.cpa.CPAsPage.class);
+		new MenuLinkItem(advanced,"5","messages",nl.clockwork.ebms.admin.web.message.MessagesPage.class);
 		menuItems.add(advanced);
 
 		MenuItem configuration = new MenuItem("4","configuration");
@@ -79,9 +81,14 @@ public class WicketApplication extends WebApplication
 		{
 			MenuItem extensions = new MenuItem("5","extensions");
 			menuItems.add(extensions);
+			int i = 1;
 			for (ExtensionProvider provider : extensionProviders)
+			{
+				MenuItem epmi = new MenuItem("" + i++,provider.getName());
+				extensions.addChild(epmi);
 				for (MenuItem menuItem : provider.getMenuItems())
-					extensions.addChild(menuItem);
+					epmi.addChild(menuItem);
+			}
 		}
 
 		List<MessageProvider> messageProviders = MessageProvider.get();

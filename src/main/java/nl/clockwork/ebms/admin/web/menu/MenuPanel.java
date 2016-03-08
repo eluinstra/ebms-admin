@@ -24,13 +24,15 @@ import org.apache.wicket.model.Model;
 
 public class MenuPanel extends Panel
 {
-	public static class Rows extends ListView<MenuItem>
+	public static class MenuItems extends ListView<MenuItem>
 	{
 		private static final long serialVersionUID = 1L;
+		private int level;
 
-		public Rows(String id, List<? extends MenuItem> list)
+		public MenuItems(String id, List<? extends MenuItem> list, int level)
 		{
 			super(id,list);
+			this.level = level;
 			setRenderBodyOnly(true);
 		}
 
@@ -39,9 +41,11 @@ public class MenuPanel extends Panel
 		{
 			MenuItem menuItem = item.getModelObject();
 			if (menuItem instanceof MenuLinkItem)
-				item.add(new MenuLinkItemPanel("row",(MenuLinkItem)menuItem)/*.setRenderBodyOnly(true)*/);
+				item.add(new MenuLinkItemPanel("menuItem",(MenuLinkItem)menuItem)/*.setRenderBodyOnly(true)*/);
+			else if (menuItem instanceof MenuDivider)
+				item.add(new MenuDividerPanel("menuItem"));
 			else
-				item.add(new MenuItemPanel("row",menuItem)/*.setRenderBodyOnly(true)*/);
+				item.add(new MenuItemPanel("menuItem",menuItem,level)/*.setRenderBodyOnly(true)*/);
 			//item.setRenderBodyOnly(true);
 		}
 	}
@@ -51,7 +55,7 @@ public class MenuPanel extends Panel
 	public MenuPanel(String id, List<MenuItem> menuItems)
 	{
 		super(id,Model.of(menuItems));
-		add(new Rows("rows",menuItems));
+		add(new MenuItems("menuItems",menuItems,0));
 	}
 	
 }

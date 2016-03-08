@@ -16,8 +16,10 @@
 package nl.clockwork.ebms.admin.web.menu;
 
 import nl.clockwork.ebms.admin.web.Utils;
-import nl.clockwork.ebms.admin.web.menu.MenuPanel.Rows;
+import nl.clockwork.ebms.admin.web.WebMarkupContainer;
+import nl.clockwork.ebms.admin.web.menu.MenuPanel.MenuItems;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
@@ -27,16 +29,20 @@ public class MenuItemPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
 
-	public MenuItemPanel(String id, MenuItem menuItem)
+	public MenuItemPanel(String id, MenuItem menuItem, int level)
 	{
-		this(id,Model.of(menuItem));
+		this(id,Model.of(menuItem),level);
 	}
 	
-	public MenuItemPanel(String id, IModel<MenuItem> model)
+	public MenuItemPanel(String id, IModel<MenuItem> model, int level)
 	{
 		super(id,model);
-		add(new Rows("rows",model.getObject().getChildren()));
-		add(new Label("name",Utils.getResourceString(this.getClass(),model.getObject().getName())));
+		WebMarkupContainer menuItem = new WebMarkupContainer("menuListItem");
+		menuItem.add(new AttributeModifier("class",new Model<String>(level < 1 ? "dropdown" : "dropdown-submenu")));
+		add(menuItem);
+		menuItem.add(new Label("name",Utils.getResourceString(this.getClass(),model.getObject().getName())));
+		menuItem.add(new WebMarkupContainer("menuItemCaret").setVisible(level < 1));
+		menuItem.add(new MenuItems("menuItems",model.getObject().getChildren(),level + 1));
 	}
 
 }
