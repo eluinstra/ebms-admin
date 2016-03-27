@@ -23,7 +23,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 public class CPADataModel extends LoadableDetachableModel<CPA>
 {
 	private static final long serialVersionUID = 1L;
-	private EbMSDAO ebMSDAO;
+	private final EbMSDAO ebMSDAO;
 	private final String cpaId;
 
 	public CPADataModel(EbMSDAO ebMSDAO, CPA cpa)
@@ -38,15 +38,10 @@ public class CPADataModel extends LoadableDetachableModel<CPA>
 		this.cpaId = cpaId;
 	}
 
-	protected EbMSDAO getEbMSDAO()
-	{
-		return ebMSDAO;
-	}
-
 	@Override
 	protected CPA load()
 	{
-		return getEbMSDAO().findCPA(cpaId);
+		return ebMSDAO.findCPA(cpaId);
 	}
 
 	@Override

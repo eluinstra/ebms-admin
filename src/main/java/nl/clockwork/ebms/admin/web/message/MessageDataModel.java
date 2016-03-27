@@ -23,7 +23,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 public class MessageDataModel extends LoadableDetachableModel<EbMSMessage>
 {
 	private static final long serialVersionUID = 1L;
-	private EbMSDAO ebMSDAO;
+	private final EbMSDAO ebMSDAO;
 	private final String messageId;
 	private final int messageNr;
 
@@ -41,15 +41,10 @@ public class MessageDataModel extends LoadableDetachableModel<EbMSMessage>
 		this.messageNr = messageNr;
 	}
 
-	protected EbMSDAO getEbMSDAO()
-	{
-		return ebMSDAO;
-	}
-
 	@Override
 	protected EbMSMessage load()
 	{
-		return getEbMSDAO().findMessage(messageId,messageNr);
+		return ebMSDAO.findMessage(messageId,messageNr);
 	}
 
 	@Override
