@@ -87,35 +87,6 @@
 				<p class="form-control-static"><wicket:container wicket:id="statusTime"/></p>
 			</div>
 		</div>
-		<div class="form-group">
-			<label class="col-lg-2 control-label"><wicket:message key="lbl.attachments"/></label>
-			<div class="col-lg-10 table-responsive">
-				<table class="table table-striped">
-					<tr>
-						<td>
-							<label><wicket:message key="lbl.name"/></label>
-						</td>
-						<td>
-							<label><wicket:message key="lbl.contentId"/></label>
-						</td>
-						<td>
-							<label><wicket:message key="lbl.contentType"/></label>
-						</td>
-					</tr>
-					<tr wicket:id="attachments">
-						<td>
-							<p class="form-control-static"><wicket:container wicket:id="name"/></p>
-						</td>
-						<td>
-							<p class="form-control-static"><a href="#" wicket:id="downloadAttachment"><wicket:container wicket:id="contentId"/></a></p>
-						</td>
-						<td>
-							<p class="form-control-static"><wicket:container wicket:id="contentType"/></p>
-						</td>
-					</tr>
-				</table>
-			</div>
-		</div>
 		<div class="form-group" wicket:id="nextEvent">
 			<label class="col-lg-2 control-label"><wicket:message key="lbl.nextEvent"/></label>
 			<div class="col-lg-10 table-responsive">
@@ -133,19 +104,19 @@
 					</tr>
 					<tr>
 						<td>
-							<p class="form-control-static"><wicket:container wicket:id="timestamp"/></p>
+							<p class="form-control-static"><wicket:container wicket:id="event.timestamp"/></p>
 						</td>
 						<td>
-							<p class="form-control-static"><wicket:container wicket:id="retry"/></p>
+							<p class="form-control-static"><wicket:container wicket:id="event.retries"/></p>
 						</td>
 						<td>
-							<p class="form-control-static"><wicket:container wicket:id="timeToLive"/></p>
+							<p class="form-control-static"><wicket:container wicket:id="event.timeToLive"/></p>
 						</td>
 					</tr>
 				</table>
 			</div>
 		</div>
-		<div class="form-group">
+		<div class="form-group"  wicket:id="eventLog">
 			<label class="col-lg-2 control-label"><wicket:message key="lbl.eventLog"/></label>
 			<div class="col-lg-10 table-responsive">
 				<table class="table table-striped">
@@ -174,6 +145,7 @@
 				</table>
 			</div>
 		</div>
+		<wicket:container wicket:id="attachments"/>
 		<div class="form-group">
 			<div class="col-lg-offset-2 col-lg-10">
 				<a class="btn btn-default" href="#" wicket:id="back"><wicket:message key="cmd.back"/></a>

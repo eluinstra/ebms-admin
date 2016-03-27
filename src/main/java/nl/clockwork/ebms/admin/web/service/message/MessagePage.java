@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
-import java.util.Date;
 import java.util.List;
 
 import nl.clockwork.ebms.admin.Constants;
@@ -30,16 +29,18 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.IGenericComponent;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PropertyListView;
-import org.apache.wicket.model.Model;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-public class MessagePage extends BasePage
+public class MessagePage extends BasePage implements IGenericComponent<EbMSMessageContent>
 {
 	private class EbMSDataSourcePropertyListView extends PropertyListView<EbMSDataSource>
 	{
@@ -69,18 +70,19 @@ public class MessagePage extends BasePage
 
 	public MessagePage(final EbMSMessageContent messageContent, final WebPage responsePage)
 	{
+		setModel(new CompoundPropertyModel<EbMSMessageContent>(messageContent));
 		add(new BootstrapFeedbackPanel("feedback"));
-		add(new Label("messageId",messageContent.getContext().getMessageId()));
-		add(new Label("conversationId",messageContent.getContext().getConversationId()));
+		add(new Label("context.messageId"));
+		add(new Label("context.conversationId"));
 		add(createViewRefToMessageIdLink("viewRefToMessageId",messageContent));
-		add(DateLabel.forDatePattern("timestamp",new Model<Date>(messageContent.getContext().getTimestamp()),Constants.DATETIME_FORMAT));
-		add(new Label("cpaId",messageContent.getContext().getCpaId()));
-		add(new Label("fromPartyId",messageContent.getContext().getFromRole().getPartyId()));
-		add(new Label("fromRole",messageContent.getContext().getFromRole().getRole()));
-		add(new Label("toPartyId",messageContent.getContext().getToRole().getPartyId()));
-		add(new Label("toRole",messageContent.getContext().getToRole().getRole()));
-		add(new Label("service",messageContent.getContext().getService()));
-		add(new Label("action",messageContent.getContext().getAction()));
+		add(DateLabel.forDatePattern("context.timestamp",Constants.DATETIME_FORMAT));
+		add(new Label("context.cpaId"));
+		add(new Label("context.fromRole.partyId"));
+		add(new Label("context.fromRole.role"));
+		add(new Label("context.toRole.partyId"));
+		add(new Label("context.toRole.role"));
+		add(new Label("context.service"));
+		add(new Label("context.action"));
 		add(new EbMSDataSourcePropertyListView("dataSources",messageContent.getDataSources()));
 		add(new PageLink("back",responsePage));
 		add(new DownloadEbMSMessageContentLink("download",messageContent));
@@ -105,7 +107,7 @@ public class MessagePage extends BasePage
 				setResponsePage(new MessagePage(ebMSMessageService.getMessage(messageContent.getContext().getRefToMessageId(),null),MessagePage.this));
 			}
 		};
-		result.add(new Label("refToMessageId",messageContent.getContext().getRefToMessageId()));
+		result.add(new Label("context.refToMessageId"));
 		return result;
 	}
 	
@@ -132,6 +134,31 @@ public class MessagePage extends BasePage
 		};
 		result.add(AttributeModifier.replace("onclick","return confirm('" + getLocalizer().getString("confirm",this) + "');"));
 		return result;
+	}
+
+	@Override
+	public EbMSMessageContent getModelObject()
+	{
+		return (EbMSMessageContent)getDefaultModelObject();
+	}
+
+	@Override
+	public void setModelObject(EbMSMessageContent object)
+	{
+		setDefaultModelObject(object);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public IModel<EbMSMessageContent> getModel()
+	{
+		return (IModel<EbMSMessageContent>)getDefaultModel();
+	}
+
+	@Override
+	public void setModel(IModel<EbMSMessageContent> model)
+	{
+		setDefaultModel(model);
 	}
 
 }

@@ -15,13 +15,10 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-import java.util.Date;
-
 import nl.clockwork.ebms.Constants.EbMSEventStatus;
 import nl.clockwork.ebms.Constants.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
-import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSEventLog;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.BasePage;
@@ -31,6 +28,7 @@ import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
+import org.apache.wicket.IGenericComponent;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
@@ -41,11 +39,12 @@ import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PropertyListView;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-public class MessagePage extends BasePage
+public class MessagePage extends BasePage implements IGenericComponent<EbMSMessage>
 {
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="ebMSAdminDAO")
@@ -54,23 +53,24 @@ public class MessagePage extends BasePage
 
 	public MessagePage(final EbMSMessage message, final WebPage responsePage)
 	{
-		add(new Label("messageId",message.getMessageId()));
-		add(new Label("messageNr",message.getMessageNr()));
-		add(new Label("conversationId",message.getConversationId()));
+		setModel(new CompoundPropertyModel<EbMSMessage>(message));
+		add(new Label("messageId"));
+		add(new Label("messageNr"));
+		add(new Label("conversationId"));
 		add(createRefToMessageIdLink("viewRefToMessageId",message));
-		add(DateLabel.forDatePattern("timestamp",new Model<Date>(message.getTimestamp()),Constants.DATETIME_FORMAT));
-		add(new Label("cpaId",message.getCpaId()));
-		add(new Label("fromPartyId",message.getFromPartyId()));
-		add(new Label("fromRole",message.getFromRole()));
-		add(new Label("toPartyId",message.getToPartyId()));
-		add(new Label("toRole",message.getToRole()));
-		add(new Label("service",message.getService()));
-		add(new Label("action",message.getAction()));
+		add(DateLabel.forDatePattern("timestamp",Constants.DATETIME_FORMAT));
+		add(new Label("cpaId"));
+		add(new Label("fromPartyId"));
+		add(new Label("fromRole"));
+		add(new Label("toPartyId"));
+		add(new Label("toRole"));
+		add(new Label("service"));
+		add(new Label("action"));
 		add(createViewMessageErrorLink("viewMessageError",message));
-		add(new Label("statusTime",message.getStatusTime()));
-		add(createAttachmentsView("attachments",message));
+		add(new Label("statusTime"));
+		add(new AttachmentsPanel("attachments",message.getAttachments()).setVisible(message.getAttachments().size() > 0));
 		add(createNextEventContainer("nextEvent",message));
-		add(createEventsView("events",message));
+		add(createEventLogContainer("eventLog",message));
 		add(new PageLink("back",responsePage));
 		add(new DownloadEbMSMessageLink("download",ebMSDAO,message));
 		TextArea<String> content = createContentField("content",message);
@@ -129,7 +129,7 @@ public class MessagePage extends BasePage
 				setResponsePage(new MessagePage(ebMSDAO.findMessage(message.getRefToMessageId()),MessagePage.this));
 			}
 		};
-		result.add(new Label("refToMessageId",message.getRefToMessageId()));
+		result.add(new Label("refToMessageId"));
 		return result;
 	}
 	
@@ -147,26 +147,8 @@ public class MessagePage extends BasePage
 		};
 		result.setEnabled(EbMSMessageStatus.DELIVERY_FAILED.equals(message.getStatus()));
 		result.add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus()))));
-		result.add(new Label("status",message.getStatus()));
+		result.add(new Label("status"));
 		return result;
-	}
-
-	private PropertyListView<EbMSAttachment> createAttachmentsView(String id, final EbMSMessage message)
-	{
-		return new PropertyListView<EbMSAttachment>(id,message.getAttachments())
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected void populateItem(ListItem<EbMSAttachment> item)
-			{
-				item.add(new Label("name"));
-				DownloadEbMSAttachmentLink link = new DownloadEbMSAttachmentLink("downloadAttachment",ebMSDAO,item.getModelObject());
-				link.add(new Label("contentId"));
-				item.add(link);
-				item.add(new Label("contentType"));
-			}
-		};
 	}
 
 	private WebMarkupContainer createNextEventContainer(String id, final EbMSMessage message)
@@ -175,16 +157,18 @@ public class MessagePage extends BasePage
 		result.setVisible(message.getEvent() != null);
 		if (message.getEvent() != null)
 		{
-			result.add(DateLabel.forDatePattern("timestamp",new Model<Date>(message.getEvent().getTimestamp()),Constants.DATETIME_FORMAT));
-			result.add(new Label("retry",new Model<Integer>(message.getEvent().getRetries())));
-			result.add(DateLabel.forDatePattern("timeToLive",new Model<Date>(message.getEvent().getTimeToLive()),Constants.DATETIME_FORMAT));
+			result.add(DateLabel.forDatePattern("event.timestamp",Constants.DATETIME_FORMAT));
+			result.add(new Label("event.retries"));
+			result.add(DateLabel.forDatePattern("event.timeToLive",Constants.DATETIME_FORMAT));
 		}
 		return result;
 	}
 
-	private PropertyListView<EbMSEventLog> createEventsView(String id, final EbMSMessage message)
+	private WebMarkupContainer createEventLogContainer(String id, final EbMSMessage message)
 	{
-		return new PropertyListView<EbMSEventLog>(id,message.getEvents())
+		WebMarkupContainer eventLog = new WebMarkupContainer(id);
+		eventLog.setVisible(message.getEvents().size() > 0);
+		PropertyListView<EbMSEventLog> events = new PropertyListView<EbMSEventLog>("events",message.getEvents())
 		{
 			private static final long serialVersionUID = 1L;
 
@@ -192,7 +176,7 @@ public class MessagePage extends BasePage
 			protected void populateItem(ListItem<EbMSEventLog> item)
 			{
 				final ModalWindow errorMessageModalWindow = new ErrorMessageModalWindow("errorMessageWindow",item.getModelObject().getErrorMessage());
-				item.add(DateLabel.forDatePattern("timestamp",new Model<Date>(item.getModelObject().getTimestamp()),Constants.DATETIME_FORMAT));
+				item.add(DateLabel.forDatePattern("timestamp",Constants.DATETIME_FORMAT));
 				item.add(new Label("uri"));
 				item.add(errorMessageModalWindow);
 				AjaxLink<Void> link = new AjaxLink<Void>("showErrorMessageWindow")
@@ -210,6 +194,8 @@ public class MessagePage extends BasePage
 				item.add(link);
 			}
 		};
+		eventLog.add(events);
+		return eventLog;
 	}
 
 	private TextArea<String> createContentField(String id, final EbMSMessage message)
@@ -254,6 +240,31 @@ public class MessagePage extends BasePage
 			}
 		}));
 		return result;
+	}
+
+	@Override
+	public EbMSMessage getModelObject()
+	{
+		return (EbMSMessage)getDefaultModelObject();
+	}
+
+	@Override
+	public void setModelObject(EbMSMessage object)
+	{
+		setDefaultModelObject(object);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public IModel<EbMSMessage> getModel()
+	{
+		return (IModel<EbMSMessage>)getDefaultModel();
+	}
+
+	@Override
+	public void setModel(IModel<EbMSMessage> model)
+	{
+		setDefaultModel(model);
 	}
 
 }
