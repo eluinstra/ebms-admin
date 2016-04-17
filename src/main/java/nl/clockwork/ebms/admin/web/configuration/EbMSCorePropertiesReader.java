@@ -77,6 +77,7 @@ public class EbMSCorePropertiesReader
 	{
 		sslProperties.setOverrideDefaultProtocols(!StringUtils.isEmpty(properties.getProperty("https.enabledProtocols")));
 		sslProperties.setEnabledProtocols(Arrays.asList(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.enabledProtocols",""),','))));
+		sslProperties.setOverrideDefaultCipherSuites(!StringUtils.isEmpty(properties.getProperty("https.allowedCipherSuites")));
 		sslProperties.setEnabledCipherSuites(Arrays.asList(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.allowedCipherSuites",""),','))));
 		sslProperties.setRequireClientAuthentication(new Boolean(properties.getProperty("https.requireClientAuthentication")));
 		sslProperties.setVerifyHostnames(new Boolean(properties.getProperty("https.verifyHostnames")));

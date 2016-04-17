@@ -57,7 +57,8 @@ public class SslPropertiesFormPanel extends Panel
 			super(id,new CompoundPropertyModel<SslPropertiesFormModel>(model));
 			add(createOverrideDefaultProtocolsCheckBox("overrideDefaultProtocols"));
 			add(createEnabledProtocolsContainer("enabledProtocolsContainer"));
-			add(createEnabledCipherSuitesChoice("enabledCipherSuites"));
+			add(createOverrideDefaultCipherSuitesCheckBox("overrideDefaultCipherSuites"));
+			add(createEnabledCipherSuitesContainer("enabledCipherSuitesContainer"));
 			add(new CheckBox("requireClientAuthentication",new LocalizedStringResource("lbl.requireClientAuthentication",SslPropertiesForm.this)));
 			add(new CheckBox("verifyHostnames",new LocalizedStringResource("lbl.verifyHostnames",SslPropertiesForm.this)));
 			add(new KeystorePropertiesFormPanel("keystoreProperties",new PropertyModel<JavaKeyStorePropertiesFormModel>(getModelObject(),"keystoreProperties")));
@@ -107,18 +108,47 @@ public class SslPropertiesFormPanel extends Panel
 			return result;
 		}
 
-		private CheckBoxMultipleChoice<String> createEnabledCipherSuitesChoice(String id)
+		private CheckBox createOverrideDefaultCipherSuitesCheckBox(String id)
 		{
-			return new CheckBoxMultipleChoice<String>(id,getModelObject().getSupportedCipherSuites())
+			CheckBox result = new CheckBox(id,new LocalizedStringResource("lbl.overrideDefaultCipherSuites",SslPropertiesForm.this));
+			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public IModel<String> getLabel()
+				protected void onUpdate(AjaxRequestTarget target)
 				{
-					return Model.of(getLocalizer().getString("lbl.enabledCipherSuites",SslPropertiesForm.this));
+					target.add(SslPropertiesForm.this);
+				}
+			});
+			return result;
+		}
+
+		private WebMarkupContainer createEnabledCipherSuitesContainer(String id)
+		{
+			WebMarkupContainer result = new WebMarkupContainer(id)
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public boolean isVisible()
+				{
+					return getModelObject().isOverrideDefaultCipherSuites();
 				}
 			};
+			result.add(
+				new CheckBoxMultipleChoice<String>("enabledCipherSuites",getModelObject().getSupportedCipherSuites())
+				{
+					private static final long serialVersionUID = 1L;
+	
+					@Override
+					public IModel<String> getLabel()
+					{
+						return Model.of(getLocalizer().getString("lbl.enabledCipherSuites",SslPropertiesForm.this));
+					}
+				}
+			);
+			return result;
 		}
 	}
 
@@ -128,6 +158,7 @@ public class SslPropertiesFormPanel extends Panel
 		private boolean overrideDefaultProtocols = false;
 		private List<String> supportedProtocols = Arrays.asList(Utils.getSupportedSSLProtocols());
 		private List<String> enabledProtocols = new ArrayList<String>();
+		private boolean overrideDefaultCipherSuites = true;
 		private List<String> supportedCipherSuites = Arrays.asList(Utils.getSupportedSSLCipherSuites());
 		private List<String> enabledCipherSuites = new ArrayList<String>(Arrays.asList(new String[]{"TLS_DHE_RSA_WITH_AES_128_CBC_SHA","TLS_RSA_WITH_AES_128_CBC_SHA"}));
 		private boolean requireClientAuthentication = true;
@@ -154,6 +185,14 @@ public class SslPropertiesFormPanel extends Panel
 		public void setEnabledProtocols(List<String> enabledProtocols)
 		{
 			this.enabledProtocols = enabledProtocols;
+		}
+		public boolean isOverrideDefaultCipherSuites()
+		{
+			return overrideDefaultCipherSuites;
+		}
+		public void setOverrideDefaultCipherSuites(boolean overrideDefaultCipherSuites)
+		{
+			this.overrideDefaultCipherSuites = overrideDefaultCipherSuites;
 		}
 		public List<String> getSupportedCipherSuites()
 		{
