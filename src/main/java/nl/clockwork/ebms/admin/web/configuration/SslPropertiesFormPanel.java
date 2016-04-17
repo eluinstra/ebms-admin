@@ -55,7 +55,7 @@ public class SslPropertiesFormPanel extends Panel
 		public SslPropertiesForm(String id, final IModel<SslPropertiesFormModel> model)
 		{
 			super(id,new CompoundPropertyModel<SslPropertiesFormModel>(model));
-			add(createOverrideEnabledProtocolsCheckBox("overrideEnabledProtocols"));
+			add(createOverrideDefaultProtocolsCheckBox("overrideDefaultProtocols"));
 			add(createEnabledProtocolsContainer("enabledProtocolsContainer"));
 			add(createEnabledCipherSuitesChoice("enabledCipherSuites"));
 			add(new CheckBox("requireClientAuthentication",new LocalizedStringResource("lbl.requireClientAuthentication",SslPropertiesForm.this)));
@@ -64,9 +64,9 @@ public class SslPropertiesFormPanel extends Panel
 			add(new TruststorePropertiesFormPanel("truststoreProperties",new PropertyModel<JavaKeyStorePropertiesFormModel>(getModelObject(),"truststoreProperties")));
 		}
 
-		private CheckBox createOverrideEnabledProtocolsCheckBox(String id)
+		private CheckBox createOverrideDefaultProtocolsCheckBox(String id)
 		{
-			CheckBox result = new CheckBox(id,new LocalizedStringResource("lbl.overrideEnabledProtocols",SslPropertiesForm.this));
+			CheckBox result = new CheckBox(id,new LocalizedStringResource("lbl.overrideDefaultProtocols",SslPropertiesForm.this));
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;
@@ -89,7 +89,7 @@ public class SslPropertiesFormPanel extends Panel
 				@Override
 				public boolean isVisible()
 				{
-					return getModelObject().isOverrideEnabledProtocols();
+					return getModelObject().isOverrideDefaultProtocols();
 				}
 			};
 			result.add(
@@ -125,9 +125,9 @@ public class SslPropertiesFormPanel extends Panel
 	public static class SslPropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		private boolean overrideEnabledProtocols = false;
+		private boolean overrideDefaultProtocols = false;
 		private List<String> supportedProtocols = Arrays.asList(Utils.getSupportedSSLProtocols());
-		private List<String> enabledProtocols = new ArrayList<String>(Arrays.asList(new String[]{"SSLv2Hello","SSLv3","TLSv1"}));
+		private List<String> enabledProtocols = new ArrayList<String>();
 		private List<String> supportedCipherSuites = Arrays.asList(Utils.getSupportedSSLCipherSuites());
 		private List<String> enabledCipherSuites = new ArrayList<String>(Arrays.asList(new String[]{"TLS_DHE_RSA_WITH_AES_128_CBC_SHA","TLS_RSA_WITH_AES_128_CBC_SHA"}));
 		private boolean requireClientAuthentication = true;
@@ -135,13 +135,13 @@ public class SslPropertiesFormPanel extends Panel
 		private JavaKeyStorePropertiesFormModel keystoreProperties = new JavaKeyStorePropertiesFormModel();
 		private JavaKeyStorePropertiesFormModel truststoreProperties = new JavaKeyStorePropertiesFormModel();
 
-		public boolean isOverrideEnabledProtocols()
+		public boolean isOverrideDefaultProtocols()
 		{
-			return overrideEnabledProtocols;
+			return overrideDefaultProtocols;
 		}
-		public void setOverrideEnabledProtocols(boolean overrideEnabledProtocols)
+		public void setOverrideDefaultProtocols(boolean overrideDefaultProtocols)
 		{
-			this.overrideEnabledProtocols = overrideEnabledProtocols;
+			this.overrideDefaultProtocols = overrideDefaultProtocols;
 		}
 		public List<String> getSupportedProtocols()
 		{
