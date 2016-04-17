@@ -21,12 +21,16 @@ import java.util.List;
 
 import nl.clockwork.ebms.admin.web.CheckBox;
 import nl.clockwork.ebms.admin.web.LocalizedStringResource;
+import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.admin.web.configuration.JavaKeyStorePropertiesFormPanel.JavaKeyStorePropertiesFormModel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.CheckBoxMultipleChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.validation.IFormValidator;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
@@ -52,7 +56,8 @@ public class SslPropertiesFormPanel extends Panel
 		public SslPropertiesForm(String id, final IModel<SslPropertiesFormModel> model)
 		{
 			super(id,new CompoundPropertyModel<SslPropertiesFormModel>(model));
-			add(createEnabledProtocolsChoice("enabledProtocols"));
+			add(createOverrideEnabledProtocolsCheckBox("overrideEnabledProtocols"));
+			add(createEnabledProtocolsContainer("enabledProtocolsContainer"));
 			add(createEnabledCipherSuitesChoice("enabledCipherSuites"));
 			add(new CheckBox("requireClientAuthentication",new LocalizedStringResource("lbl.requireClientAuthentication",SslPropertiesForm.this)));
 			add(new CheckBox("verifyHostnames",new LocalizedStringResource("lbl.verifyHostnames",SslPropertiesForm.this)));
@@ -60,18 +65,47 @@ public class SslPropertiesFormPanel extends Panel
 			add(new TruststorePropertiesFormPanel("truststoreProperties",new PropertyModel<JavaKeyStorePropertiesFormModel>(getModelObject(),"truststoreProperties")));
 		}
 
-		private CheckBoxMultipleChoice<String> createEnabledProtocolsChoice(String id)
+		private CheckBox createOverrideEnabledProtocolsCheckBox(String id)
 		{
-			return new CheckBoxMultipleChoice<String>(id,getModelObject().getSupportedProtocols())
+			CheckBox result = new CheckBox(id,new LocalizedStringResource("lbl.overrideEnabledProtocols",SslPropertiesForm.this));
+			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public IModel<String> getLabel()
+				protected void onUpdate(AjaxRequestTarget target)
 				{
-					return Model.of(getLocalizer().getString("lbl.enabledProtocols",SslPropertiesForm.this));
+					target.add(SslPropertiesForm.this);
+				}
+			});
+			return result;
+		}
+
+		private WebMarkupContainer createEnabledProtocolsContainer(String id)
+		{
+			WebMarkupContainer result = new WebMarkupContainer(id)
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public boolean isVisible()
+				{
+					return getModelObject().isOverrideEnabledProtocols();
 				}
 			};
+			result.add(
+				new CheckBoxMultipleChoice<String>("enabledProtocols",getModelObject().getSupportedProtocols())
+				{
+					private static final long serialVersionUID = 1L;
+	
+					@Override
+					public IModel<String> getLabel()
+					{
+						return Model.of(getLocalizer().getString("lbl.enabledProtocols",SslPropertiesForm.this));
+					}
+				}
+			);
+			return result;
 		}
 
 		private CheckBoxMultipleChoice<String> createEnabledCipherSuitesChoice(String id)
@@ -92,6 +126,7 @@ public class SslPropertiesFormPanel extends Panel
 	public static class SslPropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
+		private boolean overrideEnabledProtocols = false;
 		private List<String> supportedProtocols = Arrays.asList(Utils.getSupportedSSLProtocols());
 		private List<String> enabledProtocols = new ArrayList<String>(Arrays.asList(new String[]{"SSLv2Hello","SSLv3","TLSv1"}));
 		private List<String> supportedCipherSuites = Arrays.asList(Utils.getSupportedSSLCipherSuites());
@@ -101,6 +136,14 @@ public class SslPropertiesFormPanel extends Panel
 		private JavaKeyStorePropertiesFormModel keystoreProperties = new JavaKeyStorePropertiesFormModel();
 		private JavaKeyStorePropertiesFormModel truststoreProperties = new JavaKeyStorePropertiesFormModel();
 
+		public boolean isOverrideEnabledProtocols()
+		{
+			return overrideEnabledProtocols;
+		}
+		public void setOverrideEnabledProtocols(boolean overrideEnabledProtocols)
+		{
+			this.overrideEnabledProtocols = overrideEnabledProtocols;
+		}
 		public List<String> getSupportedProtocols()
 		{
 			return supportedProtocols;
