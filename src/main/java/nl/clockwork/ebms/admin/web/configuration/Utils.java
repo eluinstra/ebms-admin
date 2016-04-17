@@ -33,12 +33,39 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Scanner;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 public class Utils
 {
+	private static SSLEngine sslEngine;
+	static 
+	{
+		try
+		{
+			SSLContext sslContext = SSLContext.getInstance("TLS");
+			sslContext.init(null,null,null);
+			sslEngine = sslContext.createSSLEngine();
+		}
+		catch (Exception e)
+		{
+		}
+	}
+
+	public static String[] getSupportedSSLProtocols()
+	{
+		return sslEngine.getSupportedProtocols();
+	}
+
+	public static String[] getSupportedSSLCipherSuites()
+	{
+		return sslEngine.getSupportedCipherSuites();
+	}
+
 	public static String createURL(String hostname, int port)
 	{
 		return hostname + (port == -1 ? "" : ":" + port); 

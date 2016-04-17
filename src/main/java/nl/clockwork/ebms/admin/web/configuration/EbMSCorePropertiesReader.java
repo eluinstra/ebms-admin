@@ -75,7 +75,8 @@ public class EbMSCorePropertiesReader
 
 	protected void read(Properties properties, SslPropertiesFormModel sslProperties) throws MalformedURLException
 	{
-		sslProperties.setAllowedCipherSuites(Arrays.asList(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.allowedCipherSuites"),','))));
+		sslProperties.setEnabledProtocols(Arrays.asList(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.enabledProtocols",""),','))));
+		sslProperties.setEnabledCipherSuites(Arrays.asList(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.allowedCipherSuites",""),','))));
 		sslProperties.setRequireClientAuthentication(new Boolean(properties.getProperty("https.requireClientAuthentication")));
 		sslProperties.setVerifyHostnames(new Boolean(properties.getProperty("https.verifyHostnames")));
 		sslProperties.getKeystoreProperties().setUri(properties.getProperty("keystore.path"));
