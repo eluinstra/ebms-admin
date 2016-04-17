@@ -53,6 +53,8 @@ public class EbMSCorePropertiesReader
 	
 	protected void read(Properties properties, CorePropertiesFormModel coreProperties) throws MalformedURLException
 	{
+		coreProperties.setDigipoortPatch(Boolean.parseBoolean(properties.getProperty("patch.digipoort.enable")));
+		coreProperties.setOraclePatch(Boolean.parseBoolean(properties.getProperty("patch.oracle.enable")));
 		coreProperties.setCleoPatch(Boolean.parseBoolean(properties.getProperty("patch.cleo.enable")));
 	}
 

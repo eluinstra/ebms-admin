@@ -50,7 +50,9 @@ public class EbMSCorePropertiesWriter
 
   protected void write(Properties properties, CorePropertiesFormModel coreProperties)
   {
-		properties.setProperty("patch.cleo.enable",Boolean.toString(coreProperties.getCleoPatch()));
+		properties.setProperty("patch.digipoort.enable",Boolean.toString(coreProperties.isDigipoortPatch()));
+		properties.setProperty("patch.oracle.enable",Boolean.toString(coreProperties.isOraclePatch()));
+		properties.setProperty("patch.cleo.enable",Boolean.toString(coreProperties.isCleoPatch()));
   }
 
 	protected void write(Properties properties, HttpPropertiesFormModel httpProperties)

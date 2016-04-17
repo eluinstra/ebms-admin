@@ -44,6 +44,8 @@ public class CorePropertiesFormPanel extends Panel
 		public CorePropertiesForm(String id, final IModel<CorePropertiesFormModel> model)
 		{
 			super(id,new CompoundPropertyModel<CorePropertiesFormModel>(model));
+			add(new CheckBox("digipoortPatch",new LocalizedStringResource("lbl.digipoortPatch",CorePropertiesForm.this)));
+			add(new CheckBox("oraclePatch",new LocalizedStringResource("lbl.oraclePatch",CorePropertiesForm.this)));
 			add(new CheckBox("cleoPatch",new LocalizedStringResource("lbl.cleoPatch",CorePropertiesForm.this)));
 		}
 	}
@@ -51,9 +53,27 @@ public class CorePropertiesFormPanel extends Panel
 	public static class CorePropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
+		private boolean digipoortPatch = true;
+		private boolean oraclePatch = true;
 		private boolean cleoPatch = false;
 
-		public boolean getCleoPatch()
+		public boolean isDigipoortPatch()
+		{
+			return digipoortPatch;
+		}
+		public void setDigipoortPatch(boolean digipoortPatch)
+		{
+			this.digipoortPatch = digipoortPatch;
+		}
+		public boolean isOraclePatch()
+		{
+			return oraclePatch;
+		}
+		public void setOraclePatch(boolean oraclePatch)
+		{
+			this.oraclePatch = oraclePatch;
+		}
+		public boolean isCleoPatch()
 		{
 			return cleoPatch;
 		}
