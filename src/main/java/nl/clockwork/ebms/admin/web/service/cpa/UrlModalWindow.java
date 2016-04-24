@@ -18,8 +18,6 @@ package nl.clockwork.ebms.admin.web.service.cpa;
 import java.io.Serializable;
 
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.admin.web.LocalizedStringResource;
-import nl.clockwork.ebms.admin.web.TextField;
 import nl.clockwork.ebms.service.CPAService;
 
 import org.apache.commons.logging.Log;
@@ -29,6 +27,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
@@ -103,7 +102,7 @@ public class UrlModalWindow extends ModalWindow
 			{
 				super(id,new CompoundPropertyModel<UrlModel>(new UrlModel(url)));
 				add(new BootstrapFeedbackPanel("feedback"));
-				add(new TextField<String>("url",new LocalizedStringResource("lbl.url",UrlForm.this)));
+				add(new TextField<String>("url").setLabel(new ResourceModel("lbl.url")));
 				add(createSaveButton("save"));
 				add(createClearButton("clear"));
 				add(createCancelButton("cancel"));

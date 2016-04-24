@@ -90,16 +90,8 @@ public class PingPage extends BasePage
 
 		private DropDownChoice<String> createCPAIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.cpaId",PingForm.this));
-				}
-			};
+			DropDownChoice<String> result = new DropDownChoice<String>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())));
+			result.setLabel(new ResourceModel("lbl.cpaId"));
 			result.setRequired(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
@@ -131,16 +123,8 @@ public class PingPage extends BasePage
 
 		private DropDownChoice<String> createFromPartyIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.fromPartyId",PingForm.this));
-				}
-			};
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"));
+			result.setLabel(new ResourceModel("lbl.fromPartyId"));
 			result.setRequired(true).setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
@@ -172,16 +156,8 @@ public class PingPage extends BasePage
 
 		private DropDownChoice<String> createFromRoleChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.fromRole",PingForm.this));
-				}
-			};
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"));
+			result.setLabel(new ResourceModel("lbl.fromRole"));
 			result.setRequired(false).setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
@@ -212,16 +188,8 @@ public class PingPage extends BasePage
 
 		private DropDownChoice<String> createToPartyIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.toPartyId",PingForm.this));
-				}
-			};
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"));
+			result.setLabel(new ResourceModel("lbl.toPartyId"));
 			result.setRequired(true).setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
@@ -250,16 +218,8 @@ public class PingPage extends BasePage
 
 		private DropDownChoice<String> createToRoleChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toRoles"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.toRole",PingForm.this));
-				}
-			};
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toRoles"));
+			result.setLabel(new ResourceModel("lbl.toRole"));
 			result.setRequired(false).setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{

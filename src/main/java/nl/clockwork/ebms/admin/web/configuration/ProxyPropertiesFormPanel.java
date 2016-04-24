@@ -16,16 +16,16 @@
 package nl.clockwork.ebms.admin.web.configuration;
 
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.LocalizedStringResource;
-import nl.clockwork.ebms.admin.web.PasswordTextField;
-import nl.clockwork.ebms.admin.web.TextField;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.PasswordTextField;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.util.io.IClusterable;
 
 public class ProxyPropertiesFormPanel extends Panel
@@ -46,11 +46,11 @@ public class ProxyPropertiesFormPanel extends Panel
 		public ProxyPropertiesForm(String id, final IModel<ProxyPropertiesFormModel> model)
 		{
 			super(id,new CompoundPropertyModel<ProxyPropertiesFormModel>(model));
-			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",new TextField<String>("host",new LocalizedStringResource("lbl.host",ProxyPropertiesForm.this)).setRequired(true)));
-			add(new BootstrapFormComponentFeedbackBorder("portFeedback",new TextField<Integer>("port",new LocalizedStringResource("lbl.port",ProxyPropertiesForm.this))));
-			add(new TextField<String>("nonProxyHosts",new LocalizedStringResource("lbl.nonProxyHosts",ProxyPropertiesForm.this)));
-			add(new TextField<String>("username",new LocalizedStringResource("lbl.username",ProxyPropertiesForm.this)));
-			add(new PasswordTextField("password",new LocalizedStringResource("lbl.password",ProxyPropertiesForm.this)).setResetPassword(false).setRequired(false));
+			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",new TextField<String>("host").setLabel(new ResourceModel("lbl.host")).setRequired(true)));
+			add(new BootstrapFormComponentFeedbackBorder("portFeedback",new TextField<Integer>("port").setLabel(new ResourceModel("lbl.port"))));
+			add(new TextField<String>("nonProxyHosts").setLabel(new ResourceModel("lbl.nonProxyHosts")));
+			add(new TextField<String>("username").setLabel(new ResourceModel("lbl.username")));
+			add(new PasswordTextField("password").setResetPassword(false).setLabel(new ResourceModel("lbl.password")).setRequired(false));
 		}
 	}
 

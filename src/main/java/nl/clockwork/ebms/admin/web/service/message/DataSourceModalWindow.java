@@ -19,8 +19,6 @@ import java.util.List;
 
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.LocalizedStringResource;
-import nl.clockwork.ebms.admin.web.TextField;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.model.EbMSDataSource;
 
@@ -32,6 +30,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -109,24 +108,16 @@ public class DataSourceModalWindow extends ModalWindow
 				super(id,new CompoundPropertyModel<DataSourceModel>(new DataSourceModel()));
 				add(new BootstrapFeedbackPanel("feedback"));
 				add(new BootstrapFormComponentFeedbackBorder("fileFeedback",createFileField("file")));
-				add(new TextField<String>("name",new LocalizedStringResource("lbl.name",DataSourceForm.this)));
-				add(new TextField<String>("contentType",new LocalizedStringResource("lbl.contentType",DataSourceForm.this)));
+				add(new TextField<String>("name").setLabel(new ResourceModel("lbl.name")));
+				add(new TextField<String>("contentType").setLabel(new ResourceModel("lbl.contentType")));
 				add(createAddButton("add"));
 				add(createCancelButton("cancel"));
 			}
 
 			private FileUploadField createFileField(String id)
 			{
-				FileUploadField result = new FileUploadField(id)
-				{
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public IModel<String> getLabel()
-					{
-						return Model.of(getLocalizer().getString("lbl.file",DataSourceForm.this));
-					}
-				};
+				FileUploadField result = new FileUploadField(id);
+				result.setLabel(new ResourceModel("lbl.file"));
 				result.setRequired(true);
 				return result;
 			}

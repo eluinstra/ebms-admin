@@ -16,15 +16,15 @@
 package nl.clockwork.ebms.admin.web.configuration;
 
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.LocalizedStringResource;
-import nl.clockwork.ebms.admin.web.TextField;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.util.io.IClusterable;
 
 public class ConsolePropertiesFormPanel extends Panel
@@ -45,7 +45,7 @@ public class ConsolePropertiesFormPanel extends Panel
 		public ConsolePropertiesForm(String id, final IModel<ConsolePropertiesFormModel> model)
 		{
 			super(id,new CompoundPropertyModel<ConsolePropertiesFormModel>(model));
-			add(new BootstrapFormComponentFeedbackBorder("maxItemsPerPageFeedback",new TextField<Integer>("maxItemsPerPage",new LocalizedStringResource("lbl.maxItemsPerPage",ConsolePropertiesForm.this)).setRequired(true)));
+			add(new BootstrapFormComponentFeedbackBorder("maxItemsPerPageFeedback",new TextField<Integer>("maxItemsPerPage").setLabel(new ResourceModel("lbl.maxItemsPerPage")).setRequired(true)));
 		}
 	}
 

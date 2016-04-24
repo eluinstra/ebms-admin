@@ -49,6 +49,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 public class MessagePageX extends BasePage implements IGenericComponent<EbMSMessage>
@@ -232,16 +233,8 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 				return WicketApplication.get().getMessageViewPanels().containsKey(MessageProvider.createId(message.getService(),message.getAction()));
 			}
 		};
-		CheckBox rawOutput = new CheckBox("rawOutput",new PropertyModel<Boolean>(this,"rawOutput"))
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public IModel<String> getLabel()
-			{
-				return Model.of(getLocalizer().getString("lbl.rawOutput",MessagePageX.this));
-			}
-		};
+		CheckBox rawOutput = new CheckBox("rawOutput",new PropertyModel<Boolean>(this,"rawOutput"));
+		rawOutput.setLabel(new ResourceModel("lbl.rawOutput"));
 		rawOutput.add(new AjaxFormComponentUpdatingBehavior("onchange")
 		{
 			private static final long serialVersionUID = 1L;

@@ -27,10 +27,7 @@ import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.CheckBox;
-import nl.clockwork.ebms.admin.web.LocalizedStringResource;
 import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.admin.web.TextField;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
 import nl.clockwork.ebms.model.MessageStatus;
 import nl.clockwork.ebms.model.Party;
@@ -42,10 +39,11 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
@@ -107,18 +105,13 @@ public class MessageStatusPage extends BasePage
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.cpaId",MessageStatusForm.this));
-				}
-
-				@Override
 				public boolean isEnabled()
 				{
 					return !MessageStatusForm.this.getModelObject().getManual();
 				}
 			};
-			//cpaIds.setRequired(true);
+			result.setLabel(new ResourceModel("lbl.cpaId"));
+			//result.setRequired(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;
@@ -154,12 +147,6 @@ public class MessageStatusPage extends BasePage
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.fromPartyId",MessageStatusForm.this));
-				}
-				
-				@Override
 				public boolean isEnabled()
 				{
 					return !MessageStatusForm.this.getModelObject().getManual();
@@ -171,6 +158,7 @@ public class MessageStatusPage extends BasePage
 					return !MessageStatusForm.this.getModelObject().getManual();
 				}
 			};
+			result.setLabel(new ResourceModel("lbl.fromPartyId"));
 			result.setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
@@ -210,17 +198,12 @@ public class MessageStatusPage extends BasePage
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.fromRole",MessageStatusForm.this));
-				}
-				
-				@Override
 				public boolean isEnabled()
 				{
 					return !MessageStatusForm.this.getModelObject().getManual();
 				}
 			};
+			result.setLabel(new ResourceModel("lbl.fromRole"));
 			result.setRequired(false).setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
@@ -259,12 +242,6 @@ public class MessageStatusPage extends BasePage
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.toPartyId",MessageStatusForm.this));
-				}
-				
-				@Override
 				public boolean isEnabled()
 				{
 					return !MessageStatusForm.this.getModelObject().getManual();
@@ -276,6 +253,7 @@ public class MessageStatusPage extends BasePage
 					return !MessageStatusForm.this.getModelObject().getManual();
 				}
 			};
+			result.setLabel(new ResourceModel("lbl.toPartyId"));
 			result.setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
@@ -312,17 +290,12 @@ public class MessageStatusPage extends BasePage
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.toRole",MessageStatusForm.this));
-				}
-				
-				@Override
 				public boolean isEnabled()
 				{
 					return !MessageStatusForm.this.getModelObject().getManual();
 				}
 			};
+			result.setLabel(new ResourceModel("lbl.toRole"));
 			result.setRequired(false).setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
@@ -360,17 +333,12 @@ public class MessageStatusPage extends BasePage
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.messageId",MessageStatusForm.this));
-				}
-				
-				@Override
 				public boolean isVisible()
 				{
 					return !MessageStatusForm.this.getModelObject().getManual();
 				}
 			};
+			result.setLabel(new ResourceModel("lbl.messageId"));
 			result.setOutputMarkupPlaceholderTag(true);
 			result.setRequired(true);
 			return result;
@@ -378,7 +346,7 @@ public class MessageStatusPage extends BasePage
 
 		private TextField<String> createMessageIdField(String id)
 		{
-			final TextField<String> result = new TextField<String>(id,new LocalizedStringResource("lbl.messageId",MessageStatusForm.this))
+			final TextField<String> result = new TextField<String>(id)
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -388,13 +356,15 @@ public class MessageStatusPage extends BasePage
 					return MessageStatusForm.this.getModelObject().getManual();
 				}
 			};
+			result.setLabel(new ResourceModel("lbl.messageId"));
 			result.setRequired(true).setOutputMarkupPlaceholderTag(true);
 			return result;
 		}
 
 		private CheckBox createManualCheckBox(String id, final DropDownChoice<String> messageIds)
 		{
-			CheckBox result = new CheckBox(id,new LocalizedStringResource("lbl.manual",MessageStatusForm.this));
+			CheckBox result = new CheckBox(id);
+			result.setLabel(new ResourceModel("lbl.manual"));
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
       {
 				private static final long serialVersionUID = 1L;

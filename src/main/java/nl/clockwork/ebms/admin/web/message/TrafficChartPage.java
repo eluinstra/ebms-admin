@@ -39,6 +39,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IClusterable;
 import org.joda.time.DateTime;
@@ -152,17 +153,12 @@ public class TrafficChartPage extends BasePage
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.timeUnit",TrafficChartForm.this));
-				}
-				
-				@Override
 				protected boolean localizeDisplayValues()
 				{
 					return true;
 				}
 			};
+			result.setLabel(new ResourceModel("lbl.timeUnit"));
 			result.setRequired(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
@@ -221,17 +217,12 @@ public class TrafficChartPage extends BasePage
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.ebMSMessageTrafficChartOption",TrafficChartForm.this));
-				}
-				
-				@Override
 				protected boolean localizeDisplayValues()
 				{
 					return true;
 				}
 			};
+			ebMSMessageTrafficChartOptions.setLabel(new ResourceModel("lbl.ebMSMessageTrafficChartOption"));
 			ebMSMessageTrafficChartOptions.setRequired(true);
 			ebMSMessageTrafficChartOptions.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{

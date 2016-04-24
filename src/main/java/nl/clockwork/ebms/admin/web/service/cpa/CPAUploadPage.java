@@ -20,21 +20,18 @@ import java.util.List;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.CheckBox;
-import nl.clockwork.ebms.admin.web.LocalizedStringResource;
 import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.admin.web.TextField;
 import nl.clockwork.ebms.service.CPAService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IClusterable;
@@ -67,8 +64,8 @@ public class CPAUploadPage extends BasePage
 			super(id,new CompoundPropertyModel<EditUploadFormModel>(new EditUploadFormModel()));
 			setMultiPart(true);
 			add(new BootstrapFormComponentFeedbackBorder("cpaFeedback",createCPAFileField("cpaFile")));
-			add(new TextField<String>("url",new LocalizedStringResource("lbl.url",EditUploadForm.this)));
-			add(new CheckBox("overwrite",new LocalizedStringResource("lbl.overwrite",EditUploadForm.this)));
+			add(new TextField<String>("url").setLabel(new ResourceModel("lbl.url")));
+			add(new CheckBox("overwrite").setLabel(new ResourceModel("lbl.overwrite")));
 			add(createValidateButton("validate"));
 			add(createUploadButton("upload"));
 			add(new ResetButton("reset",new ResourceModel("cmd.reset"),CPAUploadPage.class));
@@ -76,16 +73,8 @@ public class CPAUploadPage extends BasePage
 
 		private FileUploadField createCPAFileField(String id)
 		{
-			FileUploadField result = new FileUploadField(id)
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.cpa",EditUploadForm.this));
-				}
-			};
+			FileUploadField result = new FileUploadField(id);
+			result.setLabel(new ResourceModel("lbl.cpa"));
 			result.setRequired(true);
 			return result;
 		}

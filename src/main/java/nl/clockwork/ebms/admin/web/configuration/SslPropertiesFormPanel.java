@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import nl.clockwork.ebms.admin.web.CheckBox;
-import nl.clockwork.ebms.admin.web.LocalizedStringResource;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.admin.web.configuration.JavaKeyStorePropertiesFormPanel.JavaKeyStorePropertiesFormModel;
 
@@ -28,13 +26,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.CheckBoxMultipleChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.util.io.IClusterable;
 
 public class SslPropertiesFormPanel extends Panel
@@ -59,15 +58,16 @@ public class SslPropertiesFormPanel extends Panel
 			add(createEnabledProtocolsContainer("enabledProtocolsContainer"));
 			add(createOverrideDefaultCipherSuitesCheckBox("overrideDefaultCipherSuites"));
 			add(createEnabledCipherSuitesContainer("enabledCipherSuitesContainer"));
-			add(new CheckBox("requireClientAuthentication",new LocalizedStringResource("lbl.requireClientAuthentication",SslPropertiesForm.this)));
-			add(new CheckBox("verifyHostnames",new LocalizedStringResource("lbl.verifyHostnames",SslPropertiesForm.this)));
+			add(new CheckBox("requireClientAuthentication").setLabel(new ResourceModel("lbl.requireClientAuthentication")));
+			add(new CheckBox("verifyHostnames").setLabel(new ResourceModel("lbl.verifyHostnames")));
 			add(new KeystorePropertiesFormPanel("keystoreProperties",new PropertyModel<JavaKeyStorePropertiesFormModel>(getModelObject(),"keystoreProperties")));
 			add(new TruststorePropertiesFormPanel("truststoreProperties",new PropertyModel<JavaKeyStorePropertiesFormModel>(getModelObject(),"truststoreProperties")));
 		}
 
 		private CheckBox createOverrideDefaultProtocolsCheckBox(String id)
 		{
-			CheckBox result = new CheckBox(id,new LocalizedStringResource("lbl.overrideDefaultProtocols",SslPropertiesForm.this));
+			CheckBox result = new CheckBox(id);
+			result.setLabel(new ResourceModel("lbl.overrideDefaultProtocols"));
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;
@@ -94,23 +94,15 @@ public class SslPropertiesFormPanel extends Panel
 				}
 			};
 			result.add(
-				new CheckBoxMultipleChoice<String>("enabledProtocols",getModelObject().getSupportedProtocols())
-				{
-					private static final long serialVersionUID = 1L;
-	
-					@Override
-					public IModel<String> getLabel()
-					{
-						return Model.of(getLocalizer().getString("lbl.enabledProtocols",SslPropertiesForm.this));
-					}
-				}
+				new CheckBoxMultipleChoice<String>("enabledProtocols",getModelObject().getSupportedProtocols()).setLabel(new ResourceModel("lbl.enabledProtocols"))
 			);
 			return result;
 		}
 
 		private CheckBox createOverrideDefaultCipherSuitesCheckBox(String id)
 		{
-			CheckBox result = new CheckBox(id,new LocalizedStringResource("lbl.overrideDefaultCipherSuites",SslPropertiesForm.this));
+			CheckBox result = new CheckBox(id);
+			result.setLabel(new ResourceModel("lbl.overrideDefaultCipherSuites"));
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;
@@ -137,16 +129,7 @@ public class SslPropertiesFormPanel extends Panel
 				}
 			};
 			result.add(
-				new CheckBoxMultipleChoice<String>("enabledCipherSuites",getModelObject().getSupportedCipherSuites())
-				{
-					private static final long serialVersionUID = 1L;
-	
-					@Override
-					public IModel<String> getLabel()
-					{
-						return Model.of(getLocalizer().getString("lbl.enabledCipherSuites",SslPropertiesForm.this));
-					}
-				}
+				new CheckBoxMultipleChoice<String>("enabledCipherSuites",getModelObject().getSupportedCipherSuites()).setLabel(new ResourceModel("lbl.enabledCipherSuites"))
 			);
 			return result;
 		}

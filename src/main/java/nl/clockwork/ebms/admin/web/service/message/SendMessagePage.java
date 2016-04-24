@@ -25,9 +25,7 @@ import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.LocalizedStringResource;
 import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.admin.web.TextField;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
 import nl.clockwork.ebms.model.EbMSDataSource;
 import nl.clockwork.ebms.model.EbMSMessageContent;
@@ -46,10 +44,10 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
@@ -91,9 +89,9 @@ public class SendMessagePage extends BasePage
 			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",createFromRoleChoice("fromRole.role")));
 			add(new BootstrapFormComponentFeedbackBorder("serviceFeedback",createServiceChoice("service")));
 			add(new BootstrapFormComponentFeedbackBorder("actionFeedback",createActionChoice("action")));
-			add(new TextField<String>("conversationId",new LocalizedStringResource("lbl.conversationId",MessageForm.this)));
-			add(new TextField<String>("messageId",new LocalizedStringResource("lbl.messageId",MessageForm.this)));
-			add(new TextField<String>("refToMessageId",new LocalizedStringResource("lbl.refToMessageId",MessageForm.this)));
+			add(new TextField<String>("conversationId").setLabel(new ResourceModel("lbl.conversationId")));
+			add(new TextField<String>("messageId").setLabel(new ResourceModel("lbl.messageId")));
+			add(new TextField<String>("refToMessageId").setLabel(new ResourceModel("lbl.refToMessageId")));
 			add(new DataSourcesForm("form",getModelObject().getDataSources()));
 			Button send = createSendButton("send");
 			setDefaultButton(send);
@@ -103,16 +101,8 @@ public class SendMessagePage extends BasePage
 
 		private DropDownChoice<String> createCPAIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.cpaId",MessageForm.this));
-				}
-			};
+			DropDownChoice<String> result = new DropDownChoice<String>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())));
+			result.setLabel(new ResourceModel("lbl.cpaId"));
 			result.setRequired(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
@@ -145,16 +135,8 @@ public class SendMessagePage extends BasePage
 
 		private DropDownChoice<String> createFromPartyIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.fromPartyId",MessageForm.this));
-				}
-			};
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"));
+			result.setLabel(new ResourceModel("lbl.fromPartyId"));
 			result.setRequired(false).setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
@@ -186,16 +168,8 @@ public class SendMessagePage extends BasePage
 
 		private DropDownChoice<String> createFromRoleChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.fromRole",MessageForm.this));
-				}
-			};
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"));
+			result.setLabel(new ResourceModel("lbl.fromRole"));
 			result.setRequired(true).setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
@@ -228,16 +202,8 @@ public class SendMessagePage extends BasePage
 
 		private DropDownChoice<String> createServiceChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"services"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.service",MessageForm.this));
-				}
-			};
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"services"));
+			result.setLabel(new ResourceModel("lbl.service"));
 			result.setRequired(true);
 			result.setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
@@ -268,16 +234,8 @@ public class SendMessagePage extends BasePage
 
 		private DropDownChoice<String> createActionChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"actions"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.action",MessageForm.this));
-				}
-			};
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"actions"));
+			result.setLabel(new ResourceModel("lbl.action"));
 			result.setRequired(true);
 			result.setOutputMarkupId(true);
 			return result;

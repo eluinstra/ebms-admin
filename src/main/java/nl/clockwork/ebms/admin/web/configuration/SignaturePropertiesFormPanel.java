@@ -15,19 +15,19 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-import nl.clockwork.ebms.admin.web.CheckBox;
-import nl.clockwork.ebms.admin.web.LocalizedStringResource;
 import nl.clockwork.ebms.admin.web.configuration.JavaKeyStorePropertiesFormPanel.JavaKeyStorePropertiesFormModel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.util.io.IClusterable;
 
 public class SignaturePropertiesFormPanel extends Panel
@@ -54,7 +54,8 @@ public class SignaturePropertiesFormPanel extends Panel
 
 		private CheckBox createSigningCheckBox(String id)
 		{
-			CheckBox result = new CheckBox(id,new LocalizedStringResource("lbl.signing",SignaturePropertiesForm.this));
+			CheckBox result = new CheckBox(id);
+			result.setLabel(new ResourceModel("lbl.signing"));
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;

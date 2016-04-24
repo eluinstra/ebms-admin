@@ -15,15 +15,14 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-import nl.clockwork.ebms.admin.web.CheckBox;
-import nl.clockwork.ebms.admin.web.LocalizedStringResource;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.util.io.IClusterable;
 
 public class CorePropertiesFormPanel extends Panel
@@ -44,9 +43,9 @@ public class CorePropertiesFormPanel extends Panel
 		public CorePropertiesForm(String id, final IModel<CorePropertiesFormModel> model)
 		{
 			super(id,new CompoundPropertyModel<CorePropertiesFormModel>(model));
-			add(new CheckBox("digipoortPatch",new LocalizedStringResource("lbl.digipoortPatch",CorePropertiesForm.this)));
-			add(new CheckBox("oraclePatch",new LocalizedStringResource("lbl.oraclePatch",CorePropertiesForm.this)));
-			add(new CheckBox("cleoPatch",new LocalizedStringResource("lbl.cleoPatch",CorePropertiesForm.this)));
+			add(new CheckBox("digipoortPatch").setLabel(new ResourceModel("lbl.digipoortPatch")));
+			add(new CheckBox("oraclePatch").setLabel(new ResourceModel("lbl.oraclePatch")));
+			add(new CheckBox("cleoPatch").setLabel(new ResourceModel("lbl.cleoPatch")));
 		}
 	}
 

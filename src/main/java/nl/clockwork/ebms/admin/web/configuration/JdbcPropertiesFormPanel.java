@@ -19,9 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.LocalizedStringResource;
-import nl.clockwork.ebms.admin.web.PasswordTextField;
-import nl.clockwork.ebms.admin.web.TextField;
 import nl.clockwork.ebms.admin.web.configuration.Constants.JdbcDriver;
 
 import org.apache.commons.logging.Log;
@@ -32,6 +29,8 @@ import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.PasswordTextField;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
@@ -63,24 +62,16 @@ public class JdbcPropertiesFormPanel extends Panel
 			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",createHostsField("host")));
 			add(new BootstrapFormComponentFeedbackBorder("portFeedback",createPortField("port")));
 			add(new BootstrapFormComponentFeedbackBorder("databaseFeedback",createDatabaseField("database")));
-			add(new TextField<String>("url",new LocalizedStringResource("lbl.url",JdbcPropertiesFormPanel.this)).setOutputMarkupId(true).setEnabled(false));
+			add(new TextField<String>("url").setLabel(new ResourceModel("lbl.url")).setOutputMarkupId(true).setEnabled(false));
 			add(createTestButton("test",model));
-			add(new BootstrapFormComponentFeedbackBorder("usernameFeedback",new TextField<String>("username",new LocalizedStringResource("lbl.username",JdbcPropertiesFormPanel.this)).setRequired(true)));
-			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",new PasswordTextField("password",new LocalizedStringResource("lbl.password",JdbcPropertiesFormPanel.this)).setResetPassword(false).setRequired(false)));
+			add(new BootstrapFormComponentFeedbackBorder("usernameFeedback",new TextField<String>("username").setLabel(new ResourceModel("lbl.username")).setRequired(true)));
+			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",new PasswordTextField("password").setResetPassword(false).setLabel(new ResourceModel("lbl.password")).setRequired(false)));
 		}
 
 		private DropDownChoice<JdbcDriver> createDriverChoice(String id, final IModel<JdbcPropertiesFormModel> model)
 		{
-			DropDownChoice<JdbcDriver> result = new DropDownChoice<JdbcDriver>(id,new PropertyModel<List<JdbcDriver>>(model.getObject(),"drivers"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.driver",JdbcPropertiesFormPanel.this));
-				}
-			};
+			DropDownChoice<JdbcDriver> result = new DropDownChoice<JdbcDriver>(id,new PropertyModel<List<JdbcDriver>>(model.getObject(),"drivers"));
+			result.setLabel(new ResourceModel("lbl.driver"));
 			result.setRequired(true);
 			result.add(new OnChangeAjaxBehavior()
 			{
@@ -97,7 +88,8 @@ public class JdbcPropertiesFormPanel extends Panel
 
 		private TextField<String> createHostsField(String id)
 		{
-			TextField<String> result = new TextField<String>(id,new LocalizedStringResource("lbl.host",JdbcPropertiesFormPanel.this));
+			TextField<String> result = new TextField<String>(id);
+			result.setLabel(new ResourceModel("lbl.host"));
 			result.setRequired(true);
 			result.add(new OnChangeAjaxBehavior()
 			{
@@ -114,7 +106,8 @@ public class JdbcPropertiesFormPanel extends Panel
 
 		private TextField<Integer> createPortField(String id)
 		{
-			TextField<Integer> result = new TextField<Integer>(id,new LocalizedStringResource("lbl.port",JdbcPropertiesFormPanel.this));
+			TextField<Integer> result = new TextField<Integer>(id);
+			result.setLabel(new ResourceModel("lbl.port"));
 			result.add(new OnChangeAjaxBehavior()
 			{
 				private static final long serialVersionUID = 1L;
@@ -130,7 +123,8 @@ public class JdbcPropertiesFormPanel extends Panel
 
 		private TextField<String> createDatabaseField(String id)
 		{
-			TextField<String> result = new TextField<String>(id,new LocalizedStringResource("lbl.database",JdbcPropertiesFormPanel.this));
+			TextField<String> result = new TextField<String>(id);
+			result.setLabel(new ResourceModel("lbl.database"));
 			result.setRequired(true);
 			result.add(new OnChangeAjaxBehavior()
 			{

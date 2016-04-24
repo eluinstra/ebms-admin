@@ -18,9 +18,6 @@ package nl.clockwork.ebms.admin.web.configuration;
 import java.util.Locale;
 
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.CheckBox;
-import nl.clockwork.ebms.admin.web.LocalizedStringResource;
-import nl.clockwork.ebms.admin.web.TextField;
 import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormModel;
 
@@ -30,12 +27,15 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.convert.converter.AbstractConverter;
 import org.apache.wicket.util.io.IClusterable;
@@ -61,9 +61,9 @@ public class HttpPropertiesFormPanel extends Panel
 			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",createHostField("host")).add(new Label("protocol")));
 			add(new BootstrapFormComponentFeedbackBorder("portFeedback",createPortField("port")));
 			add(new BootstrapFormComponentFeedbackBorder("pathFeedback",createPathField("path")));
-			add(new TextField<String>("url",new LocalizedStringResource("lbl.url",HttpPropertiesForm.this)).setOutputMarkupId(true).setEnabled(false));
-			add(new CheckBox("chunkedStreamingMode",new LocalizedStringResource("lbl.chunkedStreamingMode",HttpPropertiesForm.this)));
-			add(new CheckBox("base64Writer",new LocalizedStringResource("lbl.base64Writer",HttpPropertiesForm.this)));
+			add(new TextField<String>("url").setLabel(new ResourceModel("lbl.url")).setOutputMarkupId(true).setEnabled(false));
+			add(new CheckBox("chunkedStreamingMode").setLabel(new ResourceModel("lbl.chunkedStreamingMode")));
+			add(new CheckBox("base64Writer").setLabel(new ResourceModel("lbl.base64Writer")));
 			add(CreateSslCheckBox("ssl"));
 			add(createSslPropertiesPanel("sslProperties"));
 			add(createProxyCheckBox("proxy"));
@@ -72,7 +72,8 @@ public class HttpPropertiesFormPanel extends Panel
 
 		private FormComponent<String> createHostField(String id)
 		{
-			TextField<String> result = new TextField<String>(id,new LocalizedStringResource("lbl.host",HttpPropertiesForm.this));
+			TextField<String> result = new TextField<String>(id);
+			result.setLabel(new ResourceModel("lbl.host"));
 			result.add(new OnChangeAjaxBehavior()
 	    {
 				private static final long serialVersionUID = 1L;
@@ -89,7 +90,8 @@ public class HttpPropertiesFormPanel extends Panel
 
 		private TextField<Integer> createPortField(String id)
 		{
-			TextField<Integer> result = new TextField<Integer>(id,new LocalizedStringResource("lbl.port",HttpPropertiesForm.this));
+			TextField<Integer> result = new TextField<Integer>(id);
+			result.setLabel(new ResourceModel("lbl.port"));
 			result.add(new OnChangeAjaxBehavior()
 	    {
 				private static final long serialVersionUID = 1L;
@@ -105,7 +107,7 @@ public class HttpPropertiesFormPanel extends Panel
 
 		private TextField<String> createPathField(String id)
 		{
-			TextField<String> result = new TextField<String>(id,new LocalizedStringResource("lbl.path",HttpPropertiesForm.this))
+			TextField<String> result = new TextField<String>(id)
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -116,6 +118,7 @@ public class HttpPropertiesFormPanel extends Panel
 					return (IConverter<C>)new PathConverter();
 				}
 			};
+			result.setLabel(new ResourceModel("lbl.path"));
 			result.setRequired(true);
 			result.add(new OnChangeAjaxBehavior()
 	    {
@@ -132,7 +135,8 @@ public class HttpPropertiesFormPanel extends Panel
 
 		private CheckBox CreateSslCheckBox(String id)
 		{
-			CheckBox result = new CheckBox(id,new LocalizedStringResource("lbl.ssl",HttpPropertiesForm.this));
+			CheckBox result = new CheckBox(id);
+			result.setLabel(new ResourceModel("lbl.ssl"));
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;
@@ -163,7 +167,8 @@ public class HttpPropertiesFormPanel extends Panel
 
 		private CheckBox createProxyCheckBox(String id)
 		{
-			CheckBox result = new CheckBox(id,new LocalizedStringResource("lbl.proxy",HttpPropertiesForm.this));
+			CheckBox result = new CheckBox(id);
+			result.setLabel(new ResourceModel("lbl.proxy"));
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;

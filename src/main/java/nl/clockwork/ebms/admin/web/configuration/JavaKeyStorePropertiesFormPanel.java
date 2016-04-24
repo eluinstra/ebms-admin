@@ -16,14 +16,13 @@
 package nl.clockwork.ebms.admin.web.configuration;
 
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.LocalizedStringResource;
-import nl.clockwork.ebms.admin.web.PasswordTextField;
-import nl.clockwork.ebms.admin.web.TextField;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.PasswordTextField;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
@@ -57,8 +56,8 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 		public JavaKeyStorePropertiesForm(String id, final IModel<JavaKeyStorePropertiesFormModel> model)
 		{
 			super(id,new CompoundPropertyModel<JavaKeyStorePropertiesFormModel>(model));
-			add(new BootstrapFormComponentFeedbackBorder("uriFeedback",new TextField<String>("uri",new LocalizedStringResource("lbl.uri",JavaKeyStorePropertiesForm.this)).setRequired(required)));
-			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",new PasswordTextField("password",new LocalizedStringResource("lbl.password",JavaKeyStorePropertiesForm.this)).setResetPassword(false).setRequired(required)));
+			add(new BootstrapFormComponentFeedbackBorder("uriFeedback",new TextField<String>("uri").setLabel(new ResourceModel("lbl.uri")).setRequired(required)));
+			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",new PasswordTextField("password").setResetPassword(false).setLabel(new ResourceModel("lbl.password")).setRequired(required)));
 			add(createTestButton("test",model));
 		}
 

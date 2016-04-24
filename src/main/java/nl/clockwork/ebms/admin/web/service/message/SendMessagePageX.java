@@ -25,11 +25,8 @@ import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.CheckBox;
-import nl.clockwork.ebms.admin.web.LocalizedStringResource;
 import nl.clockwork.ebms.admin.web.MessageProvider;
 import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.admin.web.TextField;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.admin.web.WicketApplication;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
@@ -44,10 +41,11 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
@@ -92,9 +90,9 @@ public class SendMessagePageX extends BasePage
 			add(createToRoleFeedbackBorder("toRoleFeedback",createToRoleChoice("toRole.role")));
 			add(new BootstrapFormComponentFeedbackBorder("serviceFeedback",createServiceChoice("service")));
 			add(new BootstrapFormComponentFeedbackBorder("actionFeedback",createActionChoice("action")));
-			add(new TextField<String>("conversationId",new LocalizedStringResource("lbl.conversationId",MessageForm.this)));
-			add(new TextField<String>("messageId",new LocalizedStringResource("lbl.messageId",MessageForm.this)));
-			add(new TextField<String>("refToMessageId",new LocalizedStringResource("lbl.refToMessageId",MessageForm.this)));
+			add(new TextField<String>("conversationId").setLabel(new ResourceModel("lbl.conversationId")));
+			add(new TextField<String>("messageId").setLabel(new ResourceModel("lbl.messageId")));
+			add(new TextField<String>("refToMessageId").setLabel(new ResourceModel("lbl.refToMessageId")));
 			WebMarkupContainer rawInputContainer = createRawInputContainer();
 			add(rawInputContainer);
 			rawInputContainer.add(createRawInputCheckBox("rawInput"));
@@ -108,16 +106,8 @@ public class SendMessagePageX extends BasePage
 
 		private DropDownChoice<String> createCPAIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.cpaId",MessageForm.this));
-				}
-			};
+			DropDownChoice<String> result = new DropDownChoice<String>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())));
+			result.setLabel(new ResourceModel("lbl.cpaId"));
 			result.setRequired(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
@@ -155,16 +145,8 @@ public class SendMessagePageX extends BasePage
 
 		private DropDownChoice<String> createFromPartyIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.fromPartyId",MessageForm.this));
-				}
-			};
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"));
+			result.setLabel(new ResourceModel("lbl.fromPartyId"));
 			result.setRequired(false).setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
@@ -202,16 +184,8 @@ public class SendMessagePageX extends BasePage
 
 		private DropDownChoice<String> createFromRoleChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.fromRole",MessageForm.this));
-				}
-			};
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"));
+			result.setLabel(new ResourceModel("lbl.fromRole"));
 			result.setRequired(true).setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
@@ -248,16 +222,8 @@ public class SendMessagePageX extends BasePage
 
 		private DropDownChoice<String> createToPartyIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.toPartyId",MessageForm.this));
-				}
-			};
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"));
+			result.setLabel(new ResourceModel("lbl.toPartyId"));
 			result.setRequired(true).setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
@@ -305,16 +271,8 @@ public class SendMessagePageX extends BasePage
 
 		private DropDownChoice<String> createToRoleChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toRoles"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.toRole",MessageForm.this));
-				}
-			};
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toRoles"));
+			result.setLabel(new ResourceModel("lbl.toRole"));
 			result.setRequired(true).setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
@@ -362,16 +320,8 @@ public class SendMessagePageX extends BasePage
 
 		private DropDownChoice<String> createServiceChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"services"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.service",MessageForm.this));
-				}
-			};
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"services"));
+			result.setLabel(new ResourceModel("lbl.service"));
 			result.setRequired(true);
 			result.setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
@@ -402,16 +352,8 @@ public class SendMessagePageX extends BasePage
 
 		private DropDownChoice<String> createActionChoice(String id)
 		{
-			DropDownChoice<String> actions = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"actions"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.action",MessageForm.this));
-				}
-			};
+			DropDownChoice<String> actions = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"actions"));
+			actions.setLabel(new ResourceModel("lbl.action"));
 			actions.setRequired(true);
 			actions.setOutputMarkupId(true);
 			actions.add(new AjaxFormComponentUpdatingBehavior("onchange")
@@ -451,7 +393,8 @@ public class SendMessagePageX extends BasePage
 
 		private CheckBox createRawInputCheckBox(String id)
 		{
-			CheckBox result = new CheckBox(id,new LocalizedStringResource("lbl.rawInput",MessageForm.this));
+			CheckBox result = new CheckBox(id);
+			result.setLabel(new ResourceModel("lbl.rawInput"));
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;
@@ -473,7 +416,8 @@ public class SendMessagePageX extends BasePage
 
 		private CheckBox createExtendedCheckBox(String id)
 		{
-			CheckBox result = new CheckBox(id,new LocalizedStringResource("lbl.extended",MessageForm.this));
+			CheckBox result = new CheckBox(id);
+			result.setLabel(new ResourceModel("lbl.extended"));
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
       {
 				private static final long serialVersionUID = 1L;

@@ -27,8 +27,6 @@ import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapDateTimePicker;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.admin.web.LocalizedStringResource;
-import nl.clockwork.ebms.admin.web.TextField;
 import nl.clockwork.ebms.common.XMLMessageBuilder;
 import nl.clockwork.ebms.service.CPAService;
 import nl.clockwork.ebms.service.EbMSMessageService;
@@ -44,10 +42,10 @@ import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.ListMultipleChoice;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
@@ -108,13 +106,15 @@ public abstract class MessageFilterPanel extends Panel
 			add(createToRoleChoice("toRole.role"));
 			add(createServiceChoice("service"));
 			add(createActionChoice("action"));
-			add(new TextField<String>("conversationId",new LocalizedStringResource("lbl.conversationId",MessageFilterForm.this)));
-			add(new TextField<String>("messageId",new LocalizedStringResource("lbl.messageId",MessageFilterForm.this)));
-			add(new TextField<String>("refToMessageId",new LocalizedStringResource("lbl.refToMessageId",MessageFilterForm.this)));
+			add(new TextField<String>("conversationId").setLabel(new ResourceModel("lbl.conversationId")));
+			add(new TextField<String>("messageId").setLabel(new ResourceModel("lbl.messageId")));
+			add(new TextField<String>("refToMessageId").setLabel(new ResourceModel("lbl.refToMessageId")));
 			add(createStatusesChoice("statuses"));
-			from = new BootstrapDateTimePicker("from",new LocalizedStringResource("lbl.from",MessageFilterForm.this),"dd-MM-yyyy",BootstrapDateTimePicker.Type.DATE);
+			from = new BootstrapDateTimePicker("from","dd-MM-yyyy",BootstrapDateTimePicker.Type.DATE);
+			from.setLabel(new ResourceModel("lbl.from"));
 			add(from);
-			to = new BootstrapDateTimePicker("to",new LocalizedStringResource("lbl.to",MessageFilterForm.this),"dd-MM-yyyy",BootstrapDateTimePicker.Type.DATE);
+			to = new BootstrapDateTimePicker("to","dd-MM-yyyy",BootstrapDateTimePicker.Type.DATE);
+			to.setLabel(new ResourceModel("lbl.to"));
 			add(to);
 			add(createSearchButton("search"));
 			add(createResetButton("reset"));
@@ -122,16 +122,8 @@ public abstract class MessageFilterPanel extends Panel
 
 		private DropDownChoice<String> createCPAIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.cpaId",MessageFilterForm.this));
-				}
-			};
+			DropDownChoice<String> result = new DropDownChoice<String>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())));
+			result.setLabel(new ResourceModel("lbl.cpaId"));
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
       {
 				private static final long serialVersionUID = 1L;
@@ -169,17 +161,12 @@ public abstract class MessageFilterPanel extends Panel
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.fromPartyId",MessageFilterForm.this));
-				}
-				
-				@Override
 				public boolean isEnabled()
 				{
 					return MessageFilterForm.this.getModelObject().getToRole() == null;
 				}
 			};
+			result.setLabel(new ResourceModel("lbl.fromPartyId"));
 			result.setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
       {
@@ -215,17 +202,12 @@ public abstract class MessageFilterPanel extends Panel
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.fromRole",MessageFilterForm.this));
-				}
-				
-				@Override
 				public boolean isEnabled()
 				{
 					return MessageFilterForm.this.getModelObject().getToRole() == null;
 				}
 			};
+			result.setLabel(new ResourceModel("lbl.fromRole"));
 			result.setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
       {
@@ -260,17 +242,12 @@ public abstract class MessageFilterPanel extends Panel
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.toPartyId",MessageFilterForm.this));
-				}
-
-				@Override
 				public boolean isEnabled()
 				{
 					return MessageFilterForm.this.getModelObject().getFromRole() == null;
 				}
 			};
+			result.setLabel(new ResourceModel("lbl.toPartyId"));
 			result.setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
       {
@@ -306,17 +283,12 @@ public abstract class MessageFilterPanel extends Panel
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.toRole",MessageFilterForm.this));
-				}
-
-				@Override
 				public boolean isEnabled()
 				{
 					return MessageFilterForm.this.getModelObject().getFromRole() == null;
 				}
 			};
+			result.setLabel(new ResourceModel("lbl.toRole"));
 			result.setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
       {
@@ -346,16 +318,8 @@ public abstract class MessageFilterPanel extends Panel
 
 		private DropDownChoice<String> createServiceChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"services"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.service",MessageFilterForm.this));
-				}
-			};
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"services"));
+			result.setLabel(new ResourceModel("lbl.service"));
 			result.setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
       {
@@ -384,38 +348,27 @@ public abstract class MessageFilterPanel extends Panel
 
 		private DropDownChoice<String> createActionChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"actions"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.action",MessageFilterForm.this));
-				}
-			};
+			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"actions"));
+			result.setLabel(new ResourceModel("lbl.action"));
 			result.setOutputMarkupId(true);
 			return result;
 		}
 
 		private ListMultipleChoice<EbMSMessageStatus> createStatusesChoice(String id)
 		{
-			return new ListMultipleChoice<EbMSMessageStatus>(id,Model.ofList(Arrays.asList(EbMSMessageStatus.values())))
+			ListMultipleChoice<EbMSMessageStatus> result = new ListMultipleChoice<EbMSMessageStatus>(id,Model.ofList(Arrays.asList(EbMSMessageStatus.values())))
 			{
 				private static final long serialVersionUID = 1L;
 
-				@Override
-				public IModel<String> getLabel()
-				{
-					return Model.of(getLocalizer().getString("lbl.status",MessageFilterForm.this));
-				}
-				
 				@Override
 				protected boolean localizeDisplayValues()
 				{
 					return true;
 				}
-			}.setMaxRows(4);
+			};
+			result.setLabel(new ResourceModel("lbl.status"));
+			result.setMaxRows(4);
+			return result;
 		}
 
 		private Button createSearchButton(String id)
