@@ -143,6 +143,12 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 			}
 			
 			@Override
+			public IModel<String> getLabel()
+			{
+				return BootstrapXMLGregorianCalendarDateTimePicker.this.getLabel();
+			}
+
+			@Override
 			public boolean isRequired()
 			{
 				return BootstrapXMLGregorianCalendarDateTimePicker.this.isRequired();
