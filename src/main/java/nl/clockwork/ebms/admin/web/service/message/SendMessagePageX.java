@@ -466,14 +466,9 @@ public class SendMessagePageX extends BasePage
 					try
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
-						if (dataSources.getDataSources().size() > 0)
-						{
-							EbMSMessageContent messageContent = new EbMSMessageContent(model,dataSources.getDataSources());
-							String messageId = ebMSMessageService.sendMessage(messageContent);
-							info(new StringResourceModel("sendMessage.ok",Model.of(messageId)).getString());
-						}
-						else
-							error(new StringResourceModel("sendMessage.dataSourcesRequired",new ResourceModel("lbl.dataSources")).getString());
+						EbMSMessageContent messageContent = new EbMSMessageContent(model,dataSources.getDataSources());
+						String messageId = ebMSMessageService.sendMessage(messageContent);
+						info(new StringResourceModel("sendMessage.ok",Model.of(messageId)).getString());
 					}
 					catch (Exception e)
 					{
