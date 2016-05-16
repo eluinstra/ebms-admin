@@ -117,7 +117,7 @@ public class Start
 			connector.setHost(cmd.getOptionValue("host") == null ? "0.0.0.0" : cmd.getOptionValue("host"));
 			connector.setPort(cmd.getOptionValue("port") == null ? 8080 : Integer.parseInt(cmd.getOptionValue("port")));
 			server.addConnector(connector);
-			System.out.println("Web server configured on http://" + connector.getHost() + ":" + connector.getPort());
+			System.out.println("Web server configured on http://" + getHost(connector.getHost()) + ":" + connector.getPort());
 		}
 		else
 		{
@@ -137,7 +137,7 @@ public class Start
 				connector.setHost(cmd.getOptionValue("host") == null ? "0.0.0.0" : cmd.getOptionValue("host"));
 				connector.setPort(cmd.getOptionValue("port") == null ? 8433 : Integer.parseInt(cmd.getOptionValue("port")));
 				server.addConnector(connector);
-				System.out.println("Web server configured on https://" + connector.getHost() + ":" + connector.getPort());
+				System.out.println("Web server configured on https://" + getHost(connector.getHost()) + ":" + connector.getPort());
 			}
 			else
 			{
@@ -280,6 +280,11 @@ public class Start
 		security.setLoginService(new HashLoginService(REALM,REALM_FILE));
 
 		return security;
+	}
+
+	protected String getHost(String host)
+	{
+		return "0.0.0.0".equals(host) ? "localhost" : host;
 	}
 
 }

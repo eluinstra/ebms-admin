@@ -175,7 +175,7 @@ public class StartEmbedded extends Start
 			connector.setHost(StringUtils.isEmpty(properties.get("ebms.host")) ? "0.0.0.0" : properties.get("ebms.host"));
 			connector.setPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
 			server.addConnector(connector);
-			System.out.println("EbMS service configured on http://" + connector.getHost() + ":" + connector.getPort() + properties.get("ebms.path"));
+			System.out.println("EbMS service configured on http://" + getHost(connector.getHost()) + ":" + connector.getPort() + properties.get("ebms.path"));
 		}
 		else
 		{
