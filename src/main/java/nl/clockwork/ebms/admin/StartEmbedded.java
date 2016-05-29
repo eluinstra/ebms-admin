@@ -183,6 +183,8 @@ public class StartEmbedded extends Start
 			if (keystore != null && keystore.exists())
 			{
 				SslContextFactory factory = new SslContextFactory();
+				if (!StringUtils.isEmpty(properties.get("https.enabledProtocols")))
+					factory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(properties.get("https.enabledProtocols"),',')));
 				if (!StringUtils.isEmpty(properties.get("https.enabledCipherSuites")))
 					factory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(properties.get("https.enabledCipherSuites"),',')));
 				factory.setKeyStoreResource(keystore);
