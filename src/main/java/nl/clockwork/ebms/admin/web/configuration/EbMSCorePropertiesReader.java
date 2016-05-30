@@ -81,6 +81,7 @@ public class EbMSCorePropertiesReader
 		sslProperties.setEnabledCipherSuites(Arrays.asList(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.enabledCipherSuites",""),','))));
 		sslProperties.setRequireClientAuthentication(new Boolean(properties.getProperty("https.requireClientAuthentication")));
 		sslProperties.setVerifyHostnames(new Boolean(properties.getProperty("https.verifyHostnames")));
+		sslProperties.setValidate(new Boolean(properties.getProperty("https.validate")));
 		sslProperties.getKeystoreProperties().setUri(properties.getProperty("keystore.path"));
 		sslProperties.getKeystoreProperties().setPassword(properties.getProperty("keystore.password"));
 		sslProperties.getTruststoreProperties().setUri(properties.getProperty("truststore.path"));

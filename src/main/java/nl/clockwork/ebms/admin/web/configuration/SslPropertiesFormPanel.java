@@ -60,6 +60,7 @@ public class SslPropertiesFormPanel extends Panel
 			add(createEnabledCipherSuitesContainer("enabledCipherSuitesContainer"));
 			add(new CheckBox("requireClientAuthentication").setLabel(new ResourceModel("lbl.requireClientAuthentication")));
 			add(new CheckBox("verifyHostnames").setLabel(new ResourceModel("lbl.verifyHostnames")));
+			add(new CheckBox("validate").setLabel(new ResourceModel("lbl.validate")));
 			add(new KeystorePropertiesFormPanel("keystoreProperties",new PropertyModel<JavaKeyStorePropertiesFormModel>(getModelObject(),"keystoreProperties")));
 			add(new TruststorePropertiesFormPanel("truststoreProperties",new PropertyModel<JavaKeyStorePropertiesFormModel>(getModelObject(),"truststoreProperties")));
 		}
@@ -146,6 +147,7 @@ public class SslPropertiesFormPanel extends Panel
 		private List<String> enabledCipherSuites = new ArrayList<String>(Arrays.asList(new String[]{"TLS_DHE_RSA_WITH_AES_128_CBC_SHA","TLS_RSA_WITH_AES_128_CBC_SHA"}));
 		private boolean requireClientAuthentication = true;
 		private boolean verifyHostnames = false;
+		private boolean validate = true;
 		private JavaKeyStorePropertiesFormModel keystoreProperties = new JavaKeyStorePropertiesFormModel();
 		private JavaKeyStorePropertiesFormModel truststoreProperties = new JavaKeyStorePropertiesFormModel();
 
@@ -204,6 +206,14 @@ public class SslPropertiesFormPanel extends Panel
 		public void setVerifyHostnames(boolean verifyHostnames)
 		{
 			this.verifyHostnames = verifyHostnames;
+		}
+		public boolean getValidate()
+		{
+			return validate;
+		}
+		public void setValidate(boolean validate)
+		{
+			this.validate = validate;
 		}
 		public JavaKeyStorePropertiesFormModel getKeystoreProperties()
 		{
