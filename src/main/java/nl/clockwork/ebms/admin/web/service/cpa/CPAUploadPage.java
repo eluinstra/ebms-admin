@@ -127,7 +127,7 @@ public class CPAUploadPage extends BasePage
 							FileUpload file = files.get(0);
 							//String contentType = file.getContentType();
 							//FIXME char encoding
-							cpaService.insertCPA(new String(file.getBytes()),EditUploadForm.this.getModelObject().getUrl(),EditUploadForm.this.getModelObject().isOverwrite());
+							cpaService.insertCPA(new String(file.getBytes()),EditUploadForm.this.getModelObject().isOverwrite());
 						}
 						setResponsePage(new CPAsPage());
 					}
