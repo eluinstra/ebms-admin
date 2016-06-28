@@ -69,6 +69,7 @@ public class StartEmbedded extends Start
 		start.properties = start.getProperties("nl/clockwork/ebms/admin/applicationConfig.embedded.xml");
 		start.server = new Server();
 
+		start.initSystemProperties();
 		start.initHSQLDB();
 		start.initWebServer();
 		start.initEbMSServer();
@@ -105,6 +106,12 @@ public class StartEmbedded extends Start
 			PropertyPlaceholderConfigurer properties = (PropertyPlaceholderConfigurer)applicationContext.getBean("propertyConfigurer");
 			return properties.getProperties();
 		}
+	}
+
+	private void initSystemProperties()
+	{
+		System.setProperty("https.protocols",properties.get("https.enabledProtocols"));
+		System.setProperty("https.cipherSuites",properties.get("https.enabledCipherSuites"));
 	}
 
 	private void initHSQLDB() throws IOException, AclFormatException, URISyntaxException
