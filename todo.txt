@@ -1,3 +1,6 @@
+- resend
+- sequenceNr
+
 - add upload button on EbMS Core Properties page?
 - add create tables page for the different databases from console
 - add create password file page?
