@@ -101,6 +101,7 @@ public class Start
 		options.addOption("h",false,"print this message");
 		options.addOption("host",true,"set host");
 		options.addOption("port",true,"set port");
+		options.addOption("path",true,"set path");
 		options.addOption("ssl",false,"use ssl");
 		options.addOption("keystore",true,"set keystore");
 		options.addOption("password",true,"set keystore password");
@@ -117,7 +118,7 @@ public class Start
 			connector.setHost(cmd.getOptionValue("host") == null ? "0.0.0.0" : cmd.getOptionValue("host"));
 			connector.setPort(cmd.getOptionValue("port") == null ? 8080 : Integer.parseInt(cmd.getOptionValue("port")));
 			server.addConnector(connector);
-			System.out.println("Web server configured on http://" + getHost(connector.getHost()) + ":" + connector.getPort());
+			System.out.println("Web server configured on http://" + getHost(connector.getHost()) + ":" + connector.getPort() + getPath());
 		}
 		else
 		{
@@ -147,6 +148,11 @@ public class Start
 		}
 	}
 
+	protected String getPath()
+	{
+		return cmd.getOptionValue("path") == null ? "/" : cmd.getOptionValue("path");
+	}
+
 	protected void initJMX() throws Exception
 	{
 		if (cmd.hasOption("jmx"))
@@ -164,7 +170,7 @@ public class Start
 		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		server.setHandler(context);
 
-		context.setContextPath("/");
+		context.setContextPath(getPath());
 
 		if (cmd.hasOption("authentication"))
 		{
