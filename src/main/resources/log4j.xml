@@ -67,8 +67,13 @@
 		<appender-ref ref="ASYNC"/>
 	</logger>
 
-	<logger name="httpclient.wire" additivity="false">
-		<level value="warn"/>
+	<logger name="org.apache.http.headers" additivity="false">
+		<level value="info"/>
+		<appender-ref ref="ASYNC"/>
+	</logger>
+
+	<logger name="org.apache.http.wire" additivity="false">
+		<level value="debug"/>
 		<appender-ref ref="ASYNC"/>
 	</logger>
 
