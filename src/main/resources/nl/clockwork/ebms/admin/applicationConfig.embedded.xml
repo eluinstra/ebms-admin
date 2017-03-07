@@ -22,6 +22,7 @@
 
 	<bean id="propertyConfigurer" class="nl.clockwork.ebms.admin.PropertyPlaceholderConfigurer">
 		<property name="ignoreResourceNotFound" value="true" />
+		<property name="systemPropertiesMode" value="2" />
 		<property name="locations"> 
 			<list>
 				<value>classpath:nl/clockwork/ebms/default.properties</value>   

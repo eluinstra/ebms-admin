@@ -72,9 +72,9 @@ public class EbMSCorePropertiesWriter
 	protected void write(Properties properties, SslPropertiesFormModel sslProperties)
   {
 		if (sslProperties.isOverrideDefaultProtocols())
-			properties.setProperty("https.enabledProtocols",StringUtils.join(sslProperties.getEnabledProtocols(),','));
+			properties.setProperty("https.protocols",StringUtils.join(sslProperties.getEnabledProtocols(),','));
 		if (sslProperties.isOverrideDefaultCipherSuites())
-			properties.setProperty("https.enabledCipherSuites",StringUtils.join(sslProperties.getEnabledCipherSuites(),','));
+			properties.setProperty("https.cipherSuites",StringUtils.join(sslProperties.getEnabledCipherSuites(),','));
 		properties.setProperty("https.requireClientAuthentication",Boolean.toString(sslProperties.getRequireClientAuthentication()));
 		properties.setProperty("https.verifyHostnames",Boolean.toString(sslProperties.getVerifyHostnames()));
 		properties.setProperty("https.validate",Boolean.toString(sslProperties.getValidate()));

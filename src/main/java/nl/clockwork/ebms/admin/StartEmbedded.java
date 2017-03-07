@@ -67,8 +67,13 @@ public class StartEmbedded extends Start
 			start.printUsage();
 
 		start.properties = start.getProperties("nl/clockwork/ebms/admin/applicationConfig.embedded.xml");
-		start.server = new Server();
 
+		if (!StringUtils.isEmpty(start.properties.get("https.protocols")))
+			System.setProperty("https.protocols",start.properties.get("https.protocols"));
+		if (!StringUtils.isEmpty(start.properties.get("https.cipherSuites")))
+			System.setProperty("https.cipherSuites",start.properties.get("https.cipherSuites"));
+
+		start.server = new Server();
 		start.initHSQLDB();
 		start.initWebServer();
 		start.initEbMSServer();
@@ -183,10 +188,10 @@ public class StartEmbedded extends Start
 			if (keystore != null && keystore.exists())
 			{
 				SslContextFactory factory = new SslContextFactory();
-				if (!StringUtils.isEmpty(properties.get("https.enabledProtocols")))
-					factory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(properties.get("https.enabledProtocols"),',')));
-				if (!StringUtils.isEmpty(properties.get("https.enabledCipherSuites")))
-					factory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(properties.get("https.enabledCipherSuites"),',')));
+				if (!StringUtils.isEmpty(properties.get("https.protocols")))
+					factory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(properties.get("https.protocols"),',')));
+				if (!StringUtils.isEmpty(properties.get("https.cipherSuites")))
+					factory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(properties.get("https.cipherSuites"),',')));
 				factory.setKeyStoreResource(keystore);
 				factory.setKeyStorePassword(properties.get("keystore.password"));
 				if ("true".equals(properties.get("https.requireClientAuthentication")))

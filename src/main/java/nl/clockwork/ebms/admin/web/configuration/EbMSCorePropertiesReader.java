@@ -75,10 +75,10 @@ public class EbMSCorePropertiesReader
 
 	protected void read(Properties properties, SslPropertiesFormModel sslProperties) throws MalformedURLException
 	{
-		sslProperties.setOverrideDefaultProtocols(!StringUtils.isEmpty(properties.getProperty("https.enabledProtocols")));
-		sslProperties.setEnabledProtocols(Arrays.asList(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.enabledProtocols",""),','))));
-		sslProperties.setOverrideDefaultCipherSuites(!StringUtils.isEmpty(properties.getProperty("https.enabledCipherSuites")));
-		sslProperties.setEnabledCipherSuites(Arrays.asList(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.enabledCipherSuites",""),','))));
+		sslProperties.setOverrideDefaultProtocols(!StringUtils.isEmpty(properties.getProperty("https.protocols")));
+		sslProperties.setEnabledProtocols(Arrays.asList(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.protocols",""),','))));
+		sslProperties.setOverrideDefaultCipherSuites(!StringUtils.isEmpty(properties.getProperty("https.cipherSuites")));
+		sslProperties.setEnabledCipherSuites(Arrays.asList(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.cipherSuites",""),','))));
 		sslProperties.setRequireClientAuthentication(new Boolean(properties.getProperty("https.requireClientAuthentication")));
 		sslProperties.setVerifyHostnames(new Boolean(properties.getProperty("https.verifyHostnames")));
 		sslProperties.setValidate(new Boolean(properties.getProperty("https.validate")));
