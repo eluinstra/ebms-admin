@@ -175,7 +175,7 @@ public class MessageStatusPage extends BasePage
 						model.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,model.getFromPartyId()));
 						if (model.getFromRole() != null)
 							model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToPartyId()));
-						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENT,EbMSMessageStatus.EXPIRED));
+						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENDING,EbMSMessageStatus.EXPIRED));
 						if (model.getMessageIds().size() == 0)
 							info("No messages found");
 						target.add(getPage().get("feedback"));
@@ -219,7 +219,7 @@ public class MessageStatusPage extends BasePage
 						model.resetFromPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getFromRole()));
 						model.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,model.getFromPartyId()));
 						model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToPartyId()));
-						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENT,EbMSMessageStatus.EXPIRED));
+						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENDING,EbMSMessageStatus.EXPIRED));
 						if (model.getMessageIds().size() == 0)
 							info("No messages found");
 						target.add(getPage().get("feedback"));
@@ -267,7 +267,7 @@ public class MessageStatusPage extends BasePage
 						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToPartyId()));
-						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENT,EbMSMessageStatus.EXPIRED));
+						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENDING,EbMSMessageStatus.EXPIRED));
 						if (model.getMessageIds().size() == 0)
 							info("No messages found");
 						target.add(getPage().get("feedback"));
@@ -310,7 +310,7 @@ public class MessageStatusPage extends BasePage
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						if (model.getToPartyId() == null)
 							model.resetToPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getToRole()));
-						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENT,EbMSMessageStatus.EXPIRED));
+						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENDING,EbMSMessageStatus.EXPIRED));
 						if (model.getMessageIds().size() == 0)
 							info("No messages found");
 						target.add(getPage().get("feedback"));
@@ -375,7 +375,7 @@ public class MessageStatusPage extends BasePage
 					if (messageIds.isVisible())
 					{
 						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
-						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENT,EbMSMessageStatus.EXPIRED));
+						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENDING,EbMSMessageStatus.EXPIRED));
 						if (model.getMessageIds().size() == 0)
 							info("No messages found");
 					}

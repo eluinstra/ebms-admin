@@ -113,9 +113,9 @@ public class Constants
 		RECEIVE_STATUS_NOK("Failed",Color.RED,new EbMSMessageStatus[]{EbMSMessageStatus.UNAUTHORIZED,EbMSMessageStatus.NOT_RECOGNIZED,EbMSMessageStatus.FAILED}),
 		RECEIVE_STATUS("Received",Color.BLACK,new EbMSMessageStatus[]{EbMSMessageStatus.UNAUTHORIZED,EbMSMessageStatus.NOT_RECOGNIZED,EbMSMessageStatus.RECEIVED,EbMSMessageStatus.PROCESSED,EbMSMessageStatus.FORWARDED,EbMSMessageStatus.FAILED}),
 		SEND_STATUS_OK("Ok",Color.GREEN,new EbMSMessageStatus[]{EbMSMessageStatus.DELIVERED}),
-		SEND_STATUS_WARN("Warn",Color.ORANGE,new EbMSMessageStatus[]{EbMSMessageStatus.SENT}),
+		SEND_STATUS_WARN("Warn",Color.ORANGE,new EbMSMessageStatus[]{EbMSMessageStatus.SENDING}),
 		SEND_STATUS_NOK("Failed",Color.RED,new EbMSMessageStatus[]{EbMSMessageStatus.DELIVERY_FAILED,EbMSMessageStatus.EXPIRED}),
-		SEND_STATUS("Sent",Color.BLUE,new EbMSMessageStatus[]{EbMSMessageStatus.SENT,EbMSMessageStatus.DELIVERED,EbMSMessageStatus.DELIVERY_FAILED,EbMSMessageStatus.EXPIRED});
+		SEND_STATUS("Sending",Color.BLUE,new EbMSMessageStatus[]{EbMSMessageStatus.SENDING,EbMSMessageStatus.DELIVERED,EbMSMessageStatus.DELIVERY_FAILED,EbMSMessageStatus.EXPIRED});
 		
 		private String name;
 		private Color color;
@@ -145,7 +145,7 @@ public class Constants
 	{
 		ALL("All Messages",new EbMSMessageTrafficChartSerie[]{EbMSMessageTrafficChartSerie.RECEIVE_STATUS,EbMSMessageTrafficChartSerie.SEND_STATUS}),
 		RECEIVED("Received Messages",new EbMSMessageTrafficChartSerie[]{EbMSMessageTrafficChartSerie.RECEIVE_STATUS_NOK,EbMSMessageTrafficChartSerie.RECEIVE_STATUS_WARN,EbMSMessageTrafficChartSerie.RECEIVE_STATUS_OK,EbMSMessageTrafficChartSerie.RECEIVE_STATUS}),
-		SENT("Sent Messages",new EbMSMessageTrafficChartSerie[]{EbMSMessageTrafficChartSerie.SEND_STATUS_NOK,EbMSMessageTrafficChartSerie.SEND_STATUS_WARN,EbMSMessageTrafficChartSerie.SEND_STATUS_OK,EbMSMessageTrafficChartSerie.SEND_STATUS});
+		SENT("Sending Messages",new EbMSMessageTrafficChartSerie[]{EbMSMessageTrafficChartSerie.SEND_STATUS_NOK,EbMSMessageTrafficChartSerie.SEND_STATUS_WARN,EbMSMessageTrafficChartSerie.SEND_STATUS_OK,EbMSMessageTrafficChartSerie.SEND_STATUS});
 		
 		private String title;
 		private EbMSMessageTrafficChartSerie[] ebMSMessageTrafficChartSeries;
