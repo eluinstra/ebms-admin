@@ -52,6 +52,7 @@ public class EbMSAdminPropertiesReader extends EbMSCorePropertiesReader
 				read(properties,ebMSAdminProperties.getCoreProperties());
 				read(properties,ebMSAdminProperties.getHttpProperties());
 				read(properties,ebMSAdminProperties.getSignatureProperties());
+				read(properties,ebMSAdminProperties.getEncryptionProperties());
 				read(properties,ebMSAdminProperties.getJdbcProperties());
 				break;
 			case EBMS_CORE:

@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import nl.clockwork.ebms.admin.web.configuration.CorePropertiesFormPanel.CorePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.EbMSCorePropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.EncryptionPropertiesFormPanel.EncryptionPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.HttpPropertiesFormPanel.HttpPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyPropertiesFormModel;
@@ -44,6 +45,7 @@ public class EbMSCorePropertiesWriter
 		write(p,ebMSCoreProperties.getCoreProperties());
 		write(p,ebMSCoreProperties.getHttpProperties());
 		write(p,ebMSCoreProperties.getSignatureProperties());
+		write(p,ebMSCoreProperties.getEncryptionProperties());
 		write(p,ebMSCoreProperties.getJdbcProperties());
 		p.store(writer,"EbMS Core properties");
 	}
@@ -100,6 +102,15 @@ public class EbMSCorePropertiesWriter
   	{
   		properties.setProperty("signature.keystore.path",StringUtils.defaultString(signatureProperties.getKeystoreProperties().getUri()));
   		properties.setProperty("signature.keystore.password",StringUtils.defaultString(signatureProperties.getKeystoreProperties().getPassword()));
+  	}
+  }
+
+	protected void write(Properties properties, EncryptionPropertiesFormModel encryptionProperties)
+  {
+  	if (encryptionProperties.getEncryption())
+  	{
+  		properties.setProperty("encryption.keystore.path",StringUtils.defaultString(encryptionProperties.getKeystoreProperties().getUri()));
+  		properties.setProperty("encryption.keystore.password",StringUtils.defaultString(encryptionProperties.getKeystoreProperties().getPassword()));
   	}
   }
 

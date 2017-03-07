@@ -48,6 +48,7 @@ public class EbMSAdminPropertiesWriter extends EbMSCorePropertiesWriter
 				write(p,ebMSAdminProperties.getCoreProperties());
 				write(p,ebMSAdminProperties.getHttpProperties());
 				write(p,ebMSAdminProperties.getSignatureProperties());
+				write(p,ebMSAdminProperties.getEncryptionProperties());
 				write(p,ebMSAdminProperties.getJdbcProperties());
 				p.store(writer,"EbMS Admin Embedded properties");
 				break;

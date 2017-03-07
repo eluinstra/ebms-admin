@@ -24,6 +24,7 @@ import java.util.Properties;
 import nl.clockwork.ebms.admin.web.configuration.Constants.JdbcDriver;
 import nl.clockwork.ebms.admin.web.configuration.CorePropertiesFormPanel.CorePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.EbMSCorePropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.EncryptionPropertiesFormPanel.EncryptionPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.HttpPropertiesFormPanel.HttpPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyPropertiesFormModel;
@@ -49,6 +50,7 @@ public class EbMSCorePropertiesReader
 		read(properties,ebMSCoreProperties.getCoreProperties());
 		read(properties,ebMSCoreProperties.getHttpProperties());
 		read(properties,ebMSCoreProperties.getSignatureProperties());
+		read(properties,ebMSCoreProperties.getEncryptionProperties());
 		read(properties,ebMSCoreProperties.getJdbcProperties());
 	}
 	
@@ -101,11 +103,16 @@ public class EbMSCorePropertiesReader
 
 	protected void read(Properties properties, SignaturePropertiesFormModel signatureProperties) throws MalformedURLException
 	{
-		if (signatureProperties.getSigning())
-		{
-			signatureProperties.getKeystoreProperties().setUri(properties.getProperty("signature.keystore.path"));
-			signatureProperties.getKeystoreProperties().setPassword(properties.getProperty("signature.keystore.password"));
-		}
+		signatureProperties.setSigning(!StringUtils.isEmpty(properties.getProperty("signature.keystore.path")));
+		signatureProperties.getKeystoreProperties().setUri(properties.getProperty("signature.keystore.path"));
+		signatureProperties.getKeystoreProperties().setPassword(properties.getProperty("signature.keystore.password"));
+	}
+
+	protected void read(Properties properties, EncryptionPropertiesFormModel encryptionProperties) throws MalformedURLException
+	{
+		encryptionProperties.setEncryption(!StringUtils.isEmpty(properties.getProperty("encryption.keystore.path")));
+		encryptionProperties.getKeystoreProperties().setUri(properties.getProperty("encryption.keystore.path"));
+		encryptionProperties.getKeystoreProperties().setPassword(properties.getProperty("encryption.keystore.password"));
 	}
 
 	protected void read(Properties properties, JdbcPropertiesFormModel jdbcProperties) throws MalformedURLException

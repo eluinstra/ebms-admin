@@ -25,6 +25,7 @@ import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapPanelBorder;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.admin.web.configuration.CorePropertiesFormPanel.CorePropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.EncryptionPropertiesFormPanel.EncryptionPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.HttpPropertiesFormPanel.HttpPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.SignaturePropertiesFormModel;
@@ -93,6 +94,7 @@ public class EbMSCorePropertiesPage extends BasePage
 			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("coreProperties"),new CorePropertiesFormPanel("component",new PropertyModel<CorePropertiesFormModel>(getModelObject(),"coreProperties"))));
 			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("httpProperties"),new HttpPropertiesFormPanel("component",new PropertyModel<HttpPropertiesFormModel>(getModelObject(),"httpProperties"))));
 			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("signatureProperties"),new SignaturePropertiesFormPanel("component",new PropertyModel<SignaturePropertiesFormModel>(getModelObject(),"signatureProperties"))));
+			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("encryptionProperties"),new EncryptionPropertiesFormPanel("component",new PropertyModel<EncryptionPropertiesFormModel>(getModelObject(),"encryptionProperties"))));
 			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("jdbcProperties"),new JdbcPropertiesFormPanel("component",new PropertyModel<JdbcPropertiesFormModel>(getModelObject(),"jdbcProperties"))));
 			add(new ComponentsListView("components",components));
 			add(createValidateButton("validate"));
@@ -121,6 +123,7 @@ public class EbMSCorePropertiesPage extends BasePage
 		private CorePropertiesFormModel coreProperties = new CorePropertiesFormModel();
 		private HttpPropertiesFormModel httpProperties = new HttpPropertiesFormModel();
 		private SignaturePropertiesFormModel signatureProperties = new SignaturePropertiesFormModel();
+		private EncryptionPropertiesFormModel encryptionProperties = new EncryptionPropertiesFormModel();
 		private JdbcPropertiesFormModel jdbcProperties = new JdbcPropertiesFormModel();
 
 		public CorePropertiesFormModel getCoreProperties()
@@ -146,6 +149,14 @@ public class EbMSCorePropertiesPage extends BasePage
 		public void setSignatureProperties(SignaturePropertiesFormModel signatureProperties)
 		{
 			this.signatureProperties = signatureProperties;
+		}
+		public EncryptionPropertiesFormModel getEncryptionProperties()
+		{
+			return encryptionProperties;
+		}
+		public void setEncryptionProperties(EncryptionPropertiesFormModel encryptionProperties)
+		{
+			this.encryptionProperties = encryptionProperties;
 		}
 		public JdbcPropertiesFormModel getJdbcProperties()
 		{
