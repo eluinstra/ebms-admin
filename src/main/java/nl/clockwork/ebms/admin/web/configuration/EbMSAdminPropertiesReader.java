@@ -20,6 +20,8 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
+
 import nl.clockwork.ebms.admin.web.configuration.ConsolePropertiesFormPanel.ConsolePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.Constants.PropertiesType;
 import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormModel;
@@ -61,6 +63,7 @@ public class EbMSAdminPropertiesReader extends EbMSCorePropertiesReader
 	protected void read(Properties properties, ConsolePropertiesFormModel consoleProperties) throws MalformedURLException
 	{
 		consoleProperties.setMaxItemsPerPage(Integer.parseInt(properties.getProperty("maxItemsPerPage")));
+		consoleProperties.setLog4jPropertiesFile(StringUtils.defaultString(properties.getProperty("log4j.file")).replaceFirst("file:",""));
 	}
 
 	protected void read(Properties properties, ServicePropertiesFormModel serviceProperties) throws MalformedURLException

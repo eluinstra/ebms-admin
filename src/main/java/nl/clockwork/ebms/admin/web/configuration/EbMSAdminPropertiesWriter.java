@@ -60,6 +60,7 @@ public class EbMSAdminPropertiesWriter extends EbMSCorePropertiesWriter
   protected void write(Properties properties, ConsolePropertiesFormModel consoleProperties)
   {
 		properties.setProperty("maxItemsPerPage",Integer.toString(consoleProperties.getMaxItemsPerPage()));
+		properties.setProperty("log4j.file",consoleProperties.getLog4jPropertiesFile() != null ? "file:" + consoleProperties.getLog4jPropertiesFile() : "");
   }
 
   protected void write(Properties properties, ServicePropertiesFormModel serviceProperties)

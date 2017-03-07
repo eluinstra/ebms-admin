@@ -46,6 +46,7 @@ public class ConsolePropertiesFormPanel extends Panel
 		{
 			super(id,new CompoundPropertyModel<ConsolePropertiesFormModel>(model));
 			add(new BootstrapFormComponentFeedbackBorder("maxItemsPerPageFeedback",new TextField<Integer>("maxItemsPerPage").setLabel(new ResourceModel("lbl.maxItemsPerPage")).setRequired(true)));
+			add(new BootstrapFormComponentFeedbackBorder("log4jPropertiesFileFeedback",new TextField<String>("log4jPropertiesFile").setLabel(new ResourceModel("lbl.log4jPropertiesFile"))));
 		}
 	}
 
@@ -53,6 +54,7 @@ public class ConsolePropertiesFormPanel extends Panel
 	{
 		private static final long serialVersionUID = 1L;
 		private int maxItemsPerPage = 20;
+		private String log4jPropertiesFile;
 
 		public int getMaxItemsPerPage()
 		{
@@ -61,6 +63,14 @@ public class ConsolePropertiesFormPanel extends Panel
 		public void setMaxItemsPerPage(int maxItemsPerPage)
 		{
 			this.maxItemsPerPage = maxItemsPerPage;
+		}
+		public String getLog4jPropertiesFile()
+		{
+			return log4jPropertiesFile;
+		}
+		public void setLog4jPropertiesFile(String log4jPropertiesFile)
+		{
+			this.log4jPropertiesFile = log4jPropertiesFile;
 		}
 	}
 }
