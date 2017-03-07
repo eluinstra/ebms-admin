@@ -17,6 +17,7 @@ hooks
 /hsqldb
 /ebms-admin.properties
 /ebms-admin.embedded.properties
+/log4j.xml
 /realm.properties
 
 # IntelliJ IDEA
