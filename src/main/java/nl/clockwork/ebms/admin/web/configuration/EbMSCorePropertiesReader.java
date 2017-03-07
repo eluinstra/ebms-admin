@@ -29,6 +29,7 @@ import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPro
 import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.SignaturePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormModel;
+import nl.clockwork.ebms.client.EbMSHttpClientFactory.EbMSHttpClientType;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -56,6 +57,7 @@ public class EbMSCorePropertiesReader
 		coreProperties.setDigipoortPatch(Boolean.parseBoolean(properties.getProperty("patch.digipoort.enable")));
 		coreProperties.setOraclePatch(Boolean.parseBoolean(properties.getProperty("patch.oracle.enable")));
 		coreProperties.setCleoPatch(Boolean.parseBoolean(properties.getProperty("patch.cleo.enable")));
+		coreProperties.setHttpClient(properties.getProperty("http.client") != null ? EbMSHttpClientType.valueOf(properties.getProperty("http.client")) : null);
 	}
 
 	protected void read(Properties properties, HttpPropertiesFormModel httpProperties) throws MalformedURLException

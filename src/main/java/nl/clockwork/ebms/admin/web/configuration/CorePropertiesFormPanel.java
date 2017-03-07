@@ -15,13 +15,21 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
+import java.util.Arrays;
+import java.util.List;
+
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.client.EbMSHttpClientFactory.EbMSHttpClientType;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.util.io.IClusterable;
 
@@ -46,6 +54,15 @@ public class CorePropertiesFormPanel extends Panel
 			add(new CheckBox("digipoortPatch").setLabel(new ResourceModel("lbl.digipoortPatch")));
 			add(new CheckBox("oraclePatch").setLabel(new ResourceModel("lbl.oraclePatch")));
 			add(new CheckBox("cleoPatch").setLabel(new ResourceModel("lbl.cleoPatch")));
+			add(new BootstrapFormComponentFeedbackBorder("httpClientFeedback",createHttpClientChoice("httpClient",model)));
+		}
+
+		private DropDownChoice<EbMSHttpClientType> createHttpClientChoice(String id, IModel<CorePropertiesFormModel> model)
+		{
+			DropDownChoice<EbMSHttpClientType> result = new DropDownChoice<EbMSHttpClientType>(id,new PropertyModel<List<EbMSHttpClientType>>(model.getObject(),"httpClients"));
+			result.setLabel(new ResourceModel("lbl.httpClient"));
+			result.setRequired(true);
+			return result;
 		}
 	}
 
@@ -55,6 +72,7 @@ public class CorePropertiesFormPanel extends Panel
 		private boolean digipoortPatch = true;
 		private boolean oraclePatch = true;
 		private boolean cleoPatch = false;
+		private EbMSHttpClientType httpClient = EbMSHttpClientType.DEFAULT;
 
 		public boolean isDigipoortPatch()
 		{
@@ -79,6 +97,18 @@ public class CorePropertiesFormPanel extends Panel
 		public void setCleoPatch(boolean cleoPatch)
 		{
 			this.cleoPatch = cleoPatch;
+		}
+		public List<EbMSHttpClientType> getHttpClients()
+		{
+			return Arrays.asList(EbMSHttpClientType.values());
+		}
+		public EbMSHttpClientType getHttpClient()
+		{
+			return httpClient;
+		}
+		public void setHttpClient(EbMSHttpClientType httpClient)
+		{
+			this.httpClient = httpClient;
 		}
 	}
 }

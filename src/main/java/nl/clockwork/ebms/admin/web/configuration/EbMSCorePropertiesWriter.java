@@ -53,6 +53,7 @@ public class EbMSCorePropertiesWriter
 		properties.setProperty("patch.digipoort.enable",Boolean.toString(coreProperties.isDigipoortPatch()));
 		properties.setProperty("patch.oracle.enable",Boolean.toString(coreProperties.isOraclePatch()));
 		properties.setProperty("patch.cleo.enable",Boolean.toString(coreProperties.isCleoPatch()));
+		properties.setProperty("http.client",coreProperties.getHttpClient().name());
   }
 
 	protected void write(Properties properties, HttpPropertiesFormModel httpProperties)
