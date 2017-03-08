@@ -3,7 +3,7 @@
 <body>
 <wicket:panel>
 	<form wicket:id="form">
-		<div class="form-group">
+		<div class="form-group" wicket:id="overrideDefaultProtocolsContainer">
 			<label wicket:for="overrideDefaultProtocols" class="col-lg-2 control-label"><wicket:label/></label>
 			<div class="col-lg-10">
 				<input type="checkbox" wicket:id="overrideDefaultProtocols" />
@@ -15,7 +15,7 @@
 				<wicket:container wicket:id="enabledProtocols"></wicket:container>
 			</div>
 		</div>
-		<div class="form-group">
+		<div class="form-group" wicket:id="overrideDefaultCipherSuitesContainer">
 			<label wicket:for="overrideDefaultCipherSuites" class="col-lg-2 control-label"><wicket:label/></label>
 			<div class="col-lg-10">
 				<input type="checkbox" wicket:id="overrideDefaultCipherSuites" />

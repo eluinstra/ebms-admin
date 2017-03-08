@@ -26,9 +26,9 @@ import nl.clockwork.ebms.admin.web.configuration.ServicePropertiesFormPanel.Serv
 
 public class EbMSAdminPropertiesWriter extends EbMSCorePropertiesWriter
 {
-  public EbMSAdminPropertiesWriter(Writer writer)
+  public EbMSAdminPropertiesWriter(Writer writer, boolean enableSslOverridePropeties)
 	{
-		super(writer);
+		super(writer,enableSslOverridePropeties);
 	}
 
 	public void write(EbMSAdminPropertiesFormModel ebMSAdminProperties, PropertiesType propertiesType) throws IOException
@@ -46,7 +46,7 @@ public class EbMSAdminPropertiesWriter extends EbMSCorePropertiesWriter
 			case EBMS_ADMIN_EMBEDDED:
 				write(p,ebMSAdminProperties.getConsoleProperties());
 				write(p,ebMSAdminProperties.getCoreProperties());
-				write(p,ebMSAdminProperties.getHttpProperties());
+				write(p,ebMSAdminProperties.getHttpProperties(),enableSslOverridePropeties);
 				write(p,ebMSAdminProperties.getSignatureProperties());
 				write(p,ebMSAdminProperties.getEncryptionProperties());
 				write(p,ebMSAdminProperties.getJdbcProperties());

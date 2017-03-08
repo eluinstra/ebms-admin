@@ -47,7 +47,7 @@ public class DownloadEbMSCorePropertiesButton extends Button
 		try
 		{
 			final StringWriter writer = new StringWriter();
-			new EbMSCorePropertiesWriter(writer).write(ebMSCorePropertiesFormModel);
+			new EbMSCorePropertiesWriter(writer,false).write(ebMSCorePropertiesFormModel);
 			IResourceStream resourceStream = new StringWriterResourceStream(writer,"plain/text");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}

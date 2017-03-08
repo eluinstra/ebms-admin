@@ -33,17 +33,19 @@ import org.apache.commons.lang.StringUtils;
 public class EbMSCorePropertiesWriter
 {
 	protected Writer writer;
+	protected boolean enableSslOverridePropeties;
 
-  public EbMSCorePropertiesWriter(Writer writer)
+  public EbMSCorePropertiesWriter(Writer writer, boolean enableSslOverridePropeties)
 	{
 		this.writer = writer;
+		this.enableSslOverridePropeties = enableSslOverridePropeties;
 	}
 
 	public void write(EbMSCorePropertiesFormModel ebMSCoreProperties) throws IOException
 	{
 		Properties p = new Properties();
 		write(p,ebMSCoreProperties.getCoreProperties());
-		write(p,ebMSCoreProperties.getHttpProperties());
+		write(p,ebMSCoreProperties.getHttpProperties(),enableSslOverridePropeties);
 		write(p,ebMSCoreProperties.getSignatureProperties());
 		write(p,ebMSCoreProperties.getEncryptionProperties());
 		write(p,ebMSCoreProperties.getJdbcProperties());
@@ -58,7 +60,7 @@ public class EbMSCorePropertiesWriter
 		properties.setProperty("http.client",coreProperties.getHttpClient().name());
   }
 
-	protected void write(Properties properties, HttpPropertiesFormModel httpProperties)
+	protected void write(Properties properties, HttpPropertiesFormModel httpProperties, boolean enableSslOverridePropeties)
   {
 		properties.setProperty("ebms.host",httpProperties.getHost());
 		properties.setProperty("ebms.port",httpProperties.getPort() == null ? "" : httpProperties.getPort().toString());
@@ -67,16 +69,16 @@ public class EbMSCorePropertiesWriter
 		properties.setProperty("http.chunkedStreamingMode",Boolean.toString(httpProperties.isChunkedStreamingMode()));
 		properties.setProperty("http.base64Writer",Boolean.toString(httpProperties.isBase64Writer()));
 		if (httpProperties.getSsl())
-			write(properties,httpProperties.getSslProperties());
+			write(properties,httpProperties.getSslProperties(),enableSslOverridePropeties);
 		if (httpProperties.getProxy())
 			write(properties,httpProperties.getProxyProperties());
   }
 
-	protected void write(Properties properties, SslPropertiesFormModel sslProperties)
+	protected void write(Properties properties, SslPropertiesFormModel sslProperties, boolean enableSslOverridePropeties)
   {
-		if (sslProperties.isOverrideDefaultProtocols())
+		if (enableSslOverridePropeties && sslProperties.isOverrideDefaultProtocols())
 			properties.setProperty("https.protocols",StringUtils.join(sslProperties.getEnabledProtocols(),','));
-		if (sslProperties.isOverrideDefaultCipherSuites())
+		if (enableSslOverridePropeties && sslProperties.isOverrideDefaultCipherSuites())
 			properties.setProperty("https.cipherSuites",StringUtils.join(sslProperties.getEnabledCipherSuites(),','));
 		properties.setProperty("https.requireClientAuthentication",Boolean.toString(sslProperties.getRequireClientAuthentication()));
 		properties.setProperty("https.verifyHostnames",Boolean.toString(sslProperties.getVerifyHostnames()));

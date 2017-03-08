@@ -122,7 +122,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 				components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("serviceProperties"),new ServicePropertiesFormPanel("component",new PropertyModel<ServicePropertiesFormModel>(getModelObject(),"serviceProperties"))));
 			if (PropertiesType.EBMS_ADMIN_EMBEDDED.equals(propertiesType))
 			{
-				components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("httpProperties"),new HttpPropertiesFormPanel("component",new PropertyModel<HttpPropertiesFormModel>(getModelObject(),"httpProperties"))));
+				components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("httpProperties"),new HttpPropertiesFormPanel("component",new PropertyModel<HttpPropertiesFormModel>(getModelObject(),"httpProperties"),true)));
 				components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("signatureProperties"),new SignaturePropertiesFormPanel("component",new PropertyModel<SignaturePropertiesFormModel>(getModelObject(),"signatureProperties"))));
 				components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("encryptionProperties"),new EncryptionPropertiesFormPanel("component",new PropertyModel<EncryptionPropertiesFormModel>(getModelObject(),"encryptionProperties"))));
 			}

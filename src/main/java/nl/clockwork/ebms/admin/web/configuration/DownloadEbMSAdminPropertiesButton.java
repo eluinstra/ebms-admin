@@ -49,7 +49,7 @@ public class DownloadEbMSAdminPropertiesButton extends Button
 		try
 		{
 			final StringWriter writer = new StringWriter();
-			new EbMSAdminPropertiesWriter(writer).write(ebMSAdminPropertiesFormModel,propertiesType);
+			new EbMSAdminPropertiesWriter(writer,true).write(ebMSAdminPropertiesFormModel,propertiesType);
 			IResourceStream resourceStream = new StringWriterResourceStream(writer,"plain/text");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}

@@ -45,17 +45,17 @@ public class HttpPropertiesFormPanel extends Panel
 	private static final long serialVersionUID = 1L;
 	protected transient Log logger = LogFactory.getLog(this.getClass());
 
-	public HttpPropertiesFormPanel(String id, final IModel<HttpPropertiesFormModel> model)
+	public HttpPropertiesFormPanel(String id, final IModel<HttpPropertiesFormModel> model, boolean enableSslOverridePropeties)
 	{
 		super(id,model);
-		add(new HttpPropertiesForm("form",model));
+		add(new HttpPropertiesForm("form",model,enableSslOverridePropeties));
 	}
 
 	public class HttpPropertiesForm extends Form<HttpPropertiesFormModel>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public HttpPropertiesForm(String id, final IModel<HttpPropertiesFormModel> model)
+		public HttpPropertiesForm(String id, final IModel<HttpPropertiesFormModel> model, boolean enableSslOverridePropeties)
 		{
 			super(id,new CompoundPropertyModel<HttpPropertiesFormModel>(model));
 			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",createHostField("host")).add(new Label("protocol")));
@@ -65,7 +65,7 @@ public class HttpPropertiesFormPanel extends Panel
 			add(new CheckBox("chunkedStreamingMode").setLabel(new ResourceModel("lbl.chunkedStreamingMode")));
 			add(new CheckBox("base64Writer").setLabel(new ResourceModel("lbl.base64Writer")));
 			add(CreateSslCheckBox("ssl"));
-			add(createSslPropertiesPanel("sslProperties"));
+			add(createSslPropertiesPanel("sslProperties",enableSslOverridePropeties));
 			add(createProxyCheckBox("proxy"));
 			add(createProxyPropertiesPanel("proxyProperties"));
 		}
@@ -150,9 +150,9 @@ public class HttpPropertiesFormPanel extends Panel
 			return result;
 		}
 
-		private SslPropertiesFormPanel createSslPropertiesPanel(String id)
+		private SslPropertiesFormPanel createSslPropertiesPanel(String id, boolean enableSslOverridePropeties)
 		{
-			SslPropertiesFormPanel result = new SslPropertiesFormPanel(id,new PropertyModel<SslPropertiesFormModel>(getModelObject(),"sslProperties"))
+			SslPropertiesFormPanel result = new SslPropertiesFormPanel(id,new PropertyModel<SslPropertiesFormModel>(getModelObject(),"sslProperties"),enableSslOverridePropeties)
 			{
 				private static final long serialVersionUID = 1L;
 

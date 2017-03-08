@@ -41,23 +41,23 @@ public class SslPropertiesFormPanel extends Panel
 	private static final long serialVersionUID = 1L;
 	protected transient Log logger = LogFactory.getLog(this.getClass());
 
-	public SslPropertiesFormPanel(String id, final IModel<SslPropertiesFormModel> model)
+	public SslPropertiesFormPanel(String id, final IModel<SslPropertiesFormModel> model, boolean enableSslOverridePropeties)
 	{
 		super(id,model);
-		add(new SslPropertiesForm("form",model));
+		add(new SslPropertiesForm("form",model,enableSslOverridePropeties));
 	}
 
 	public class SslPropertiesForm extends Form<SslPropertiesFormModel>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public SslPropertiesForm(String id, final IModel<SslPropertiesFormModel> model)
+		public SslPropertiesForm(String id, final IModel<SslPropertiesFormModel> model, boolean enableSslOverridePropeties)
 		{
 			super(id,new CompoundPropertyModel<SslPropertiesFormModel>(model));
-			add(createOverrideDefaultProtocolsCheckBox("overrideDefaultProtocols"));
-			add(createEnabledProtocolsContainer("enabledProtocolsContainer"));
-			add(createOverrideDefaultCipherSuitesCheckBox("overrideDefaultCipherSuites"));
-			add(createEnabledCipherSuitesContainer("enabledCipherSuitesContainer"));
+			add(createOverrideDefaultProtocolsContainer("overrideDefaultProtocolsContainer",enableSslOverridePropeties));
+			add(createEnabledProtocolsContainer("enabledProtocolsContainer",enableSslOverridePropeties));
+			add(createOverrideDefaultCipherSuitesContainer("overrideDefaultCipherSuitesContainer",enableSslOverridePropeties));
+			add(createEnabledCipherSuitesContainer("enabledCipherSuitesContainer",enableSslOverridePropeties));
 			add(new CheckBox("requireClientAuthentication").setLabel(new ResourceModel("lbl.requireClientAuthentication")));
 			add(new CheckBox("verifyHostnames").setLabel(new ResourceModel("lbl.verifyHostnames")));
 			add(new CheckBox("validate").setLabel(new ResourceModel("lbl.validate")));
@@ -65,11 +65,13 @@ public class SslPropertiesFormPanel extends Panel
 			add(new TruststorePropertiesFormPanel("truststoreProperties",new PropertyModel<JavaKeyStorePropertiesFormModel>(getModelObject(),"truststoreProperties")));
 		}
 
-		private CheckBox createOverrideDefaultProtocolsCheckBox(String id)
+		private WebMarkupContainer createOverrideDefaultProtocolsContainer(String id, boolean enableSslOverridePropeties)
 		{
-			CheckBox result = new CheckBox(id);
-			result.setLabel(new ResourceModel("lbl.overrideDefaultProtocols"));
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			WebMarkupContainer result = new WebMarkupContainer(id);
+			result.setVisible(enableSslOverridePropeties);
+			CheckBox checkBox = new CheckBox("overrideDefaultProtocols");
+			checkBox.setLabel(new ResourceModel("lbl.overrideDefaultProtocols"));
+			checkBox.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -79,10 +81,11 @@ public class SslPropertiesFormPanel extends Panel
 					target.add(SslPropertiesForm.this);
 				}
 			});
+			result.add(checkBox);
 			return result;
 		}
 
-		private WebMarkupContainer createEnabledProtocolsContainer(String id)
+		private WebMarkupContainer createEnabledProtocolsContainer(String id, final boolean enableSslOverridePropeties)
 		{
 			WebMarkupContainer result = new WebMarkupContainer(id)
 			{
@@ -91,7 +94,7 @@ public class SslPropertiesFormPanel extends Panel
 				@Override
 				public boolean isVisible()
 				{
-					return getModelObject().isOverrideDefaultProtocols();
+					return enableSslOverridePropeties && getModelObject().isOverrideDefaultProtocols();
 				}
 			};
 			result.add(
@@ -100,11 +103,13 @@ public class SslPropertiesFormPanel extends Panel
 			return result;
 		}
 
-		private CheckBox createOverrideDefaultCipherSuitesCheckBox(String id)
+		private WebMarkupContainer createOverrideDefaultCipherSuitesContainer(String id, boolean enableSslOverridePropeties)
 		{
-			CheckBox result = new CheckBox(id);
-			result.setLabel(new ResourceModel("lbl.overrideDefaultCipherSuites"));
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			WebMarkupContainer result = new WebMarkupContainer(id);
+			result.setVisible(enableSslOverridePropeties);
+			CheckBox checkBox = new CheckBox("overrideDefaultCipherSuites");
+			checkBox.setLabel(new ResourceModel("lbl.overrideDefaultCipherSuites"));
+			checkBox.add(new AjaxFormComponentUpdatingBehavior("onchange")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -114,10 +119,11 @@ public class SslPropertiesFormPanel extends Panel
 					target.add(SslPropertiesForm.this);
 				}
 			});
+			result.add(checkBox);
 			return result;
 		}
 
-		private WebMarkupContainer createEnabledCipherSuitesContainer(String id)
+		private WebMarkupContainer createEnabledCipherSuitesContainer(String id, final boolean enableSslOverridePropeties)
 		{
 			WebMarkupContainer result = new WebMarkupContainer(id)
 			{
@@ -126,7 +132,7 @@ public class SslPropertiesFormPanel extends Panel
 				@Override
 				public boolean isVisible()
 				{
-					return getModelObject().isOverrideDefaultCipherSuites();
+					return enableSslOverridePropeties && getModelObject().isOverrideDefaultCipherSuites();
 				}
 			};
 			result.add(
