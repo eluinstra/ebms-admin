@@ -68,6 +68,7 @@ public class StartEmbedded extends Start
 
 		start.properties = start.getProperties("nl/clockwork/ebms/admin/applicationConfig.embedded.xml");
 
+		System.setProperty("javax.net.ssl.trustStore","");
 		if (!StringUtils.isEmpty(start.properties.get("https.protocols")))
 			System.setProperty("https.protocols",start.properties.get("https.protocols"));
 		if (!StringUtils.isEmpty(start.properties.get("https.cipherSuites")))
