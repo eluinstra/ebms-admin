@@ -29,6 +29,7 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.CheckBoxMultipleChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
@@ -58,10 +59,11 @@ public class SslPropertiesFormPanel extends Panel
 			add(createEnabledProtocolsContainer("enabledProtocolsContainer",enableSslOverridePropeties));
 			add(createOverrideDefaultCipherSuitesContainer("overrideDefaultCipherSuitesContainer",enableSslOverridePropeties));
 			add(createEnabledCipherSuitesContainer("enabledCipherSuitesContainer",enableSslOverridePropeties));
-			add(new CheckBox("requireClientAuthentication").setLabel(new ResourceModel("lbl.requireClientAuthentication")));
+			add(createClientAuthenticationRequiredCheckBox("requireClientAuthentication"));
 			add(new CheckBox("verifyHostnames").setLabel(new ResourceModel("lbl.verifyHostnames")));
 			add(new CheckBox("validate").setLabel(new ResourceModel("lbl.validate")));
 			add(new KeystorePropertiesFormPanel("keystoreProperties",new PropertyModel<JavaKeyStorePropertiesFormModel>(getModelObject(),"keystoreProperties")));
+			add(createClientKeystorePropertiesFormPanel("clientKeystoreProperties"));
 			add(new TruststorePropertiesFormPanel("truststoreProperties",new PropertyModel<JavaKeyStorePropertiesFormModel>(getModelObject(),"truststoreProperties")));
 		}
 
@@ -140,6 +142,37 @@ public class SslPropertiesFormPanel extends Panel
 			);
 			return result;
 		}
+
+		private FormComponent<Boolean> createClientAuthenticationRequiredCheckBox(String id)
+		{
+			CheckBox result = new CheckBox(id);
+			result.setLabel(new ResourceModel("lbl.requireClientAuthentication"));
+			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					target.add(SslPropertiesForm.this);
+				}
+			});
+			return result;
+		}
+
+		private ClientKeystorePropertiesFormPanel createClientKeystorePropertiesFormPanel(String id)
+		{
+			return new ClientKeystorePropertiesFormPanel(id,new PropertyModel<JavaKeyStorePropertiesFormModel>(getModelObject(),"clientKeystoreProperties"))
+			{
+				private static final long serialVersionUID = 1L;
+				
+				@Override
+				public boolean isVisible()
+				{
+					return getModelObject().getRequireClientAuthentication();
+				}
+			};
+		}
 	}
 
 	public static class SslPropertiesFormModel implements IClusterable
@@ -148,14 +181,15 @@ public class SslPropertiesFormPanel extends Panel
 		private boolean overrideDefaultProtocols = false;
 		private List<String> supportedProtocols = Arrays.asList(Utils.getSupportedSSLProtocols());
 		private List<String> enabledProtocols = new ArrayList<String>();
-		private boolean overrideDefaultCipherSuites = true;
+		private boolean overrideDefaultCipherSuites = false;
 		private List<String> supportedCipherSuites = Arrays.asList(Utils.getSupportedSSLCipherSuites());
-		private List<String> enabledCipherSuites = new ArrayList<String>(Arrays.asList(new String[]{"TLS_DHE_RSA_WITH_AES_128_CBC_SHA","TLS_RSA_WITH_AES_128_CBC_SHA"}));
+		private List<String> enabledCipherSuites = new ArrayList<String>();
 		private boolean requireClientAuthentication = true;
 		private boolean verifyHostnames = false;
 		private boolean validate = true;
 		private JavaKeyStorePropertiesFormModel keystoreProperties = new JavaKeyStorePropertiesFormModel();
 		private JavaKeyStorePropertiesFormModel truststoreProperties = new JavaKeyStorePropertiesFormModel();
+		private JavaKeyStorePropertiesFormModel clientKeystoreProperties = new JavaKeyStorePropertiesFormModel();
 
 		public boolean isOverrideDefaultProtocols()
 		{
@@ -236,6 +270,14 @@ public class SslPropertiesFormPanel extends Panel
 		public void setTruststoreProperties(JavaKeyStorePropertiesFormModel truststoreProperties)
 		{
 			this.truststoreProperties = truststoreProperties;
+		}
+		public JavaKeyStorePropertiesFormModel getClientKeystoreProperties()
+		{
+			return clientKeystoreProperties;
+		}
+		public void setClientKeystoreProperties(JavaKeyStorePropertiesFormModel clientKeystoreProperties)
+		{
+			this.clientKeystoreProperties = clientKeystoreProperties;
 		}
 	}
 }

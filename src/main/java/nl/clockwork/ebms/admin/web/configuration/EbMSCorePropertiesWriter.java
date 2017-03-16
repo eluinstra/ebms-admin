@@ -85,6 +85,8 @@ public class EbMSCorePropertiesWriter
 		properties.setProperty("https.validate",Boolean.toString(sslProperties.getValidate()));
  		properties.setProperty("keystore.path",StringUtils.defaultString(sslProperties.getKeystoreProperties().getUri()));
  		properties.setProperty("keystore.password",StringUtils.defaultString(sslProperties.getKeystoreProperties().getPassword()));
+		properties.setProperty("client.keystore.path",StringUtils.defaultString(sslProperties.getClientKeystoreProperties().getUri()));
+		properties.setProperty("client.keystore.password",StringUtils.defaultString(sslProperties.getClientKeystoreProperties().getPassword()));
  		properties.setProperty("truststore.path",StringUtils.defaultString(sslProperties.getTruststoreProperties().getUri()));
  		properties.setProperty("truststore.password",StringUtils.defaultString(sslProperties.getTruststoreProperties().getPassword()));
   }
