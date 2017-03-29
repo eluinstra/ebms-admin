@@ -402,8 +402,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		return result.toString();
 	}
 	
-
-	
 	@Override
 	public void printMessagesToCSV(final CSVPrinter printer, EbMSMessageFilter filter)
 	{

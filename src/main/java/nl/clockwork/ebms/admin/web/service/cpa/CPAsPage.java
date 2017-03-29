@@ -25,10 +25,6 @@ import nl.clockwork.ebms.service.CPAService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.Component;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
@@ -43,12 +39,9 @@ public class CPAsPage extends BasePage
 {
 	private class CPAIdsDataView extends DataView<String>
 	{
-		private Component[] components;
-
-		protected CPAIdsDataView(String id, IDataProvider<String> dataProvider,Component...components)
+		protected CPAIdsDataView(String id, IDataProvider<String> dataProvider)
 		{
 			super(id,dataProvider);
-			this.components = components;
 			setOutputMarkupId(true);
 		}
 
@@ -59,9 +52,6 @@ public class CPAsPage extends BasePage
 		{
 			String cpaId = item.getModelObject();
 			item.add(createViewLink("view",cpaId));
-			ModalWindow urlModalWindow = new UrlModalWindow("urlModalWindow",cpaService,cpaId,components);
-			item.add(urlModalWindow);
-			item.add(createEditUrl("editUrl",urlModalWindow));
 			item.add(new DownloadCPALink("downloadCPA",cpaService,cpaId));
 			item.add(createDeleteButton("delete"));
 			item.add(AttributeModifier.replace("class",new OddOrEvenIndexStringModel(item.getIndex())));
@@ -80,21 +70,6 @@ public class CPAsPage extends BasePage
 				}
 			};
 			result.add(new Label("cpaId",cpaId));
-			return result;
-		}
-
-		private AjaxButton createEditUrl(String id, final ModalWindow urlModalWindow)
-		{
-			AjaxButton result = new AjaxButton(id)
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-				{
-					urlModalWindow.show(target);
-				}
-			};
 			return result;
 		}
 
@@ -146,7 +121,7 @@ public class CPAsPage extends BasePage
 			super(id);
 			WebMarkupContainer container = new WebMarkupContainer("container");
 			add(container);
-			container.add(new CPAIdsDataView("cpaIds",new CPADataProvider(cpaService),EditCPAsForm.this));
+			container.add(new CPAIdsDataView("cpaIds",new CPADataProvider(cpaService)));
 			add(new PageClassLink("new",CPAUploadPage.class));
 		}
 	}
