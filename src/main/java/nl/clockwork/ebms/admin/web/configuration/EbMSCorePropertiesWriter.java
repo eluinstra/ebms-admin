@@ -58,6 +58,8 @@ public class EbMSCorePropertiesWriter
 		properties.setProperty("patch.oracle.enable",Boolean.toString(coreProperties.isOraclePatch()));
 		properties.setProperty("patch.cleo.enable",Boolean.toString(coreProperties.isCleoPatch()));
 		properties.setProperty("http.client",coreProperties.getHttpClient().name());
+		properties.setProperty("eventListener",coreProperties.getEventListener().name());
+		properties.setProperty("jms.brokerURL",coreProperties.getActiveMQConfigFile());
   }
 
 	protected void write(Properties properties, HttpPropertiesFormModel httpProperties, boolean enableSslOverridePropeties)

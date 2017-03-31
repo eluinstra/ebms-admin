@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
 public class EmptyDataSourcesPanel extends DataSourcesPanel
 {
 	private static final long serialVersionUID = 1L;
-	protected Log logger = LogFactory.getLog(this.getClass());
+	protected transient Log logger = LogFactory.getLog(this.getClass());
 
 	public EmptyDataSourcesPanel(String id)
 	{

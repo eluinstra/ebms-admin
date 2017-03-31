@@ -82,7 +82,7 @@ public class UrlModalWindow extends ModalWindow
 	public abstract class UrlPanel extends Panel
 	{
 		private static final long serialVersionUID = 1L;
-		protected Log logger = LogFactory.getLog(this.getClass());
+		protected transient Log logger = LogFactory.getLog(this.getClass());
 
 		public UrlPanel(String id, String url)
 		{

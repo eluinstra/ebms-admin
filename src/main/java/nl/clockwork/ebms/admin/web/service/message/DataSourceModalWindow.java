@@ -87,7 +87,7 @@ public class DataSourceModalWindow extends ModalWindow
 	public abstract class DataSourcePanel extends Panel
 	{
 		private static final long serialVersionUID = 1L;
-		protected Log logger = LogFactory.getLog(this.getClass());
+		protected transient Log logger = LogFactory.getLog(this.getClass());
 
 		public DataSourcePanel(String id)
 		{

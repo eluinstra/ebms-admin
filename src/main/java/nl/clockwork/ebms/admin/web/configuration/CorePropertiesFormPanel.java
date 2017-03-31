@@ -19,13 +19,18 @@ import java.util.Arrays;
 import java.util.List;
 
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.client.EbMSHttpClientFactory.EbMSHttpClientType;
+import nl.clockwork.ebms.event.EventListenerFactory.EventListenerType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
@@ -55,6 +60,25 @@ public class CorePropertiesFormPanel extends Panel
 			add(new CheckBox("oraclePatch").setLabel(new ResourceModel("lbl.oraclePatch")));
 			add(new CheckBox("cleoPatch").setLabel(new ResourceModel("lbl.cleoPatch")));
 			add(new BootstrapFormComponentFeedbackBorder("httpClientFeedback",createHttpClientChoice("httpClient",model)));
+			add(new BootstrapFormComponentFeedbackBorder("eventListenerFeedback",createEventListenerChoice("eventListener",model)));
+			add(createActiveMQConfigFileContainer("activeMQConfigFileContainer"));
+		}
+
+		private WebMarkupContainer createActiveMQConfigFileContainer(String id)
+		{
+			WebMarkupContainer result = new WebMarkupContainer(id)
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public boolean isVisible()
+				{
+					return EventListenerType.SIMPLE_JMS.equals(CorePropertiesForm.this.getModelObject().eventListener) || EventListenerType.JMS.equals(CorePropertiesForm.this.getModelObject().eventListener);
+				}
+			};
+			result.add(new BootstrapFormComponentFeedbackBorder("activeMQConfigFileFeedback",new TextField<String>("activeMQConfigFile").setLabel(new ResourceModel("lbl.activeMQConfigFile"))));
+			result.add(new DownloadActiveMQFileLink("downloadActiveMQFile"));
+			return result;
 		}
 
 		private DropDownChoice<EbMSHttpClientType> createHttpClientChoice(String id, IModel<CorePropertiesFormModel> model)
@@ -62,6 +86,24 @@ public class CorePropertiesFormPanel extends Panel
 			DropDownChoice<EbMSHttpClientType> result = new DropDownChoice<EbMSHttpClientType>(id,new PropertyModel<List<EbMSHttpClientType>>(model.getObject(),"httpClients"));
 			result.setLabel(new ResourceModel("lbl.httpClient"));
 			result.setRequired(true);
+			return result;
+		}
+
+		private DropDownChoice<EventListenerType> createEventListenerChoice(String id, IModel<CorePropertiesFormModel> model)
+		{
+			DropDownChoice<EventListenerType> result = new DropDownChoice<EventListenerType>(id,new PropertyModel<List<EventListenerType>>(model.getObject(),"eventListeners"));
+			result.setLabel(new ResourceModel("lbl.eventListener"));
+			result.setRequired(true);
+			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					target.add(CorePropertiesForm.this);
+				}
+			});
 			return result;
 		}
 	}
@@ -73,6 +115,8 @@ public class CorePropertiesFormPanel extends Panel
 		private boolean oraclePatch = true;
 		private boolean cleoPatch = false;
 		private EbMSHttpClientType httpClient = EbMSHttpClientType.DEFAULT;
+		private EventListenerType eventListener = EventListenerType.DEFAULT;
+		private String activeMQConfigFile = "vm://localhost?brokerConfig=xbean:classpath:nl/clockwork/ebms/activemq.xml";
 
 		public boolean isDigipoortPatch()
 		{
@@ -109,6 +153,26 @@ public class CorePropertiesFormPanel extends Panel
 		public void setHttpClient(EbMSHttpClientType httpClient)
 		{
 			this.httpClient = httpClient;
+		}
+		public List<EventListenerType> getEventListeners()
+		{
+			return Arrays.asList(EventListenerType.values());
+		}
+		public EventListenerType getEventListener()
+		{
+			return eventListener;
+		}
+		public void setEventListener(EventListenerType eventListener)
+		{
+			this.eventListener = eventListener;
+		}
+		public String getActiveMQConfigFile()
+		{
+			return activeMQConfigFile;
+		}
+		public void setActiveMQConfigFile(String activeMQConfigFile)
+		{
+			this.activeMQConfigFile = activeMQConfigFile;
 		}
 	}
 }

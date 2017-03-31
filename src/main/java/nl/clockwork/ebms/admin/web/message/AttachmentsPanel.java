@@ -51,7 +51,7 @@ public class AttachmentsPanel extends Panel
 	}
 
 	private static final long serialVersionUID = 1L;
-	protected Log logger = LogFactory.getLog(this.getClass());
+	protected transient Log logger = LogFactory.getLog(this.getClass());
 	@SpringBean(name="ebMSAdminDAO")
 	private EbMSDAO ebMSDAO;
 

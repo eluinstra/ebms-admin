@@ -31,6 +31,7 @@ import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyP
 import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.SignaturePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormModel;
 import nl.clockwork.ebms.client.EbMSHttpClientFactory.EbMSHttpClientType;
+import nl.clockwork.ebms.event.EventListenerFactory.EventListenerType;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -60,6 +61,8 @@ public class EbMSCorePropertiesReader
 		coreProperties.setOraclePatch(Boolean.parseBoolean(properties.getProperty("patch.oracle.enable")));
 		coreProperties.setCleoPatch(Boolean.parseBoolean(properties.getProperty("patch.cleo.enable")));
 		coreProperties.setHttpClient(properties.getProperty("http.client") != null ? EbMSHttpClientType.valueOf(properties.getProperty("http.client")) : null);
+		coreProperties.setEventListener(properties.getProperty("eventListener") != null ? EventListenerType.valueOf(properties.getProperty("eventListener")) : null);
+		coreProperties.setActiveMQConfigFile(properties.getProperty("jms.brokerURL"));
 	}
 
 	protected void read(Properties properties, HttpPropertiesFormModel httpProperties) throws MalformedURLException

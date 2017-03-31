@@ -102,7 +102,7 @@ public class CPAsPage extends BasePage
 	}
 
 	private static final long serialVersionUID = 1L;
-	private Log logger = LogFactory.getLog(this.getClass());
+	protected transient Log logger = LogFactory.getLog(this.getClass());
 	@SpringBean(name="cpaService")
 	private CPAService cpaService;
 

@@ -26,7 +26,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 public abstract class DataSourcesPanel extends Panel implements DataSources
 {
 	private static final long serialVersionUID = 1L;
-	protected Log logger = LogFactory.getLog(this.getClass());
+	protected transient Log logger = LogFactory.getLog(this.getClass());
 
 	public DataSourcesPanel(String id)
 	{
