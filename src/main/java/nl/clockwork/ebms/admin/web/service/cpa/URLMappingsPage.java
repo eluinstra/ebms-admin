@@ -71,8 +71,7 @@ public class URLMappingsPage extends BasePage
 					try
 					{
 						URLMapping urlMapping = (URLMapping)getParent().getDefaultModelObject();
-						cpaService.setURLMapping(urlMapping);
-						setResponsePage(new URLMappingsPage());
+						setResponsePage(new URLMappingPage(urlMapping));
 					}
 					catch (Exception e)
 					{

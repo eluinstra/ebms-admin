@@ -47,7 +47,7 @@ public class URLMappingPage extends BasePage
 	public URLMappingPage(URLMapping urlMapping)
 	{
 		add(new BootstrapFeedbackPanel("feedback"));
-		add(new EditURLMappingForm("form"));
+		add(new EditURLMappingForm("form",urlMapping));
 	}
 
 	@Override
@@ -60,9 +60,9 @@ public class URLMappingPage extends BasePage
 	{
 		private static final long serialVersionUID = 1L;
 
-		public EditURLMappingForm(String id)
+		public EditURLMappingForm(String id, URLMapping urlMapping)
 		{
-			super(id,new CompoundPropertyModel<URLMappingFormModel>(new URLMappingFormModel()));
+			super(id,new CompoundPropertyModel<URLMappingFormModel>(new URLMappingFormModel(urlMapping)));
 			add(new BootstrapFormComponentFeedbackBorder("sourceFeedback",new TextField<String>("urlMapping.source").setRequired(true).setLabel(new ResourceModel("lbl.source"))));
 			add(new BootstrapFormComponentFeedbackBorder("destinationFeedback",new TextField<String>("urlMapping.destination").setRequired(true).setLabel(new ResourceModel("lbl.destination"))));
 			add(createSetButton("set"));
@@ -101,6 +101,10 @@ public class URLMappingPage extends BasePage
 		private static final long serialVersionUID = 1L;
 		private URLMapping urlMapping;
 		
+		public URLMappingFormModel(URLMapping urlMapping)
+		{
+			this.urlMapping = urlMapping;
+		}
 		public URLMapping getUrlMapping()
 		{
 			return urlMapping;
