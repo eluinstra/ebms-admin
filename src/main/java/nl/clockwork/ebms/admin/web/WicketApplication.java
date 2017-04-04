@@ -52,7 +52,7 @@ public class WicketApplication extends WebApplication
 		
 		MenuItem cpa = new MenuItem("1","cpaService");
 		new MenuLinkItem(cpa,"1","cpas",nl.clockwork.ebms.admin.web.service.cpa.CPAsPage.class);
-		new MenuLinkItem(cpa,"2","cpa",nl.clockwork.ebms.admin.web.service.cpa.CPAUploadPage.class);
+		new MenuLinkItem(cpa,"2","urlMappings",nl.clockwork.ebms.admin.web.service.cpa.URLMappingsPage.class);
 		menuItems.add(cpa);
 
 		MenuItem message = new MenuItem("2","messageService");

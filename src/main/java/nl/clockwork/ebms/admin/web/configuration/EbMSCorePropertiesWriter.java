@@ -123,7 +123,7 @@ public class EbMSCorePropertiesWriter
 	protected void write(Properties properties, JdbcPropertiesFormModel jdbcProperties)
   {
 		properties.setProperty("ebms.jdbc.driverClassName",jdbcProperties.getDriver().getDriverClassName());
-		properties.setProperty("ebms.jdbc.url",jdbcProperties.getURL());
+		properties.setProperty("ebms.jdbc.url",jdbcProperties.getUrl());
 		properties.setProperty("ebms.jdbc.username",jdbcProperties.getUsername());
 		properties.setProperty("ebms.jdbc.password",StringUtils.defaultString(jdbcProperties.getPassword()));
 		properties.setProperty("ebms.pool.preferredTestQuery",jdbcProperties.getDriver().getPreferredTestQuery());

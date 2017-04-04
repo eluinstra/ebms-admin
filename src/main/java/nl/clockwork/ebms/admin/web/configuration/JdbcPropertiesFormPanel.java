@@ -151,7 +151,7 @@ public class JdbcPropertiesFormPanel extends Panel
 					try
 					{
 						JdbcPropertiesFormModel m = model.getObject();
-						Utils.testJdbcConnection(m.getDriver().getDriverClassName(),m.getURL(),m.getUsername(),m.getPassword());
+						Utils.testJdbcConnection(m.getDriver().getDriverClassName(),m.getUrl(),m.getUsername(),m.getPassword());
 						info(JdbcPropertiesForm.this.getString("test.ok"));
 					}
 					catch (Exception e)
@@ -189,7 +189,7 @@ public class JdbcPropertiesFormPanel extends Panel
 		{
 			this.driver = driver;
 		}
-		public String getURL()
+		public String getUrl()
 		{
 			//return driver.createJdbcURL(getHost(),getPort(),getDatabase());
 			return JdbcDriver.createJdbcURL(driver.getURLExpr(),getHost(),getPort(),getDatabase());

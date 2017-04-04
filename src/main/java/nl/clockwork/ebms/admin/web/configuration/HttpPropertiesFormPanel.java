@@ -240,7 +240,7 @@ public class HttpPropertiesFormPanel extends Panel
 		{
 			this.path = path;
 		}
-		public String getURL()
+		public String getUrl()
 		{
 			return getProtocol() + host + (port == null ? "" : ":" + port.toString()) + path;
 		}
