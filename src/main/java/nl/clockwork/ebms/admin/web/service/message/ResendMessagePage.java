@@ -94,8 +94,8 @@ public class ResendMessagePage extends BasePage
 					try
 					{
 						ResendMessageFormModel model = MessageStatusForm.this.getModelObject();
-						ebMSMessageService.resendMessage(model.getMessageId());
-						info(new StringResourceModel("resendMessage.ok",Model.of(model.getMessageId())).getString());
+						String messageId = ebMSMessageService.resendMessage(model.getMessageId());
+						info(new StringResourceModel("resendMessage.ok",Model.of(messageId)).getString());
 					}
 					catch (Exception e)
 					{
