@@ -80,7 +80,7 @@ public class JdbcPropertiesFormPanel extends Panel
 				@Override
 				protected void onUpdate(AjaxRequestTarget target)
 				{
-					target.add(getUrlComponent());
+					target.add(getURLComponent());
 				}
 			});
 			return result;
@@ -98,7 +98,7 @@ public class JdbcPropertiesFormPanel extends Panel
 				@Override
 				protected void onUpdate(AjaxRequestTarget target)
 				{
-					target.add(getUrlComponent());
+					target.add(getURLComponent());
 				}
 			});
 			return result;
@@ -115,7 +115,7 @@ public class JdbcPropertiesFormPanel extends Panel
 				@Override
 				protected void onUpdate(AjaxRequestTarget target)
 				{
-					target.add(getUrlComponent());
+					target.add(getURLComponent());
 				}
 			});
 			return result;
@@ -133,7 +133,7 @@ public class JdbcPropertiesFormPanel extends Panel
 				@Override
 				protected void onUpdate(AjaxRequestTarget target)
 				{
-					target.add(getUrlComponent());
+					target.add(getURLComponent());
 				}
 			});
 			return result;
@@ -151,7 +151,7 @@ public class JdbcPropertiesFormPanel extends Panel
 					try
 					{
 						JdbcPropertiesFormModel m = model.getObject();
-						Utils.testJdbcConnection(m.getDriver().getDriverClassName(),m.getUrl(),m.getUsername(),m.getPassword());
+						Utils.testJdbcConnection(m.getDriver().getDriverClassName(),m.getURL(),m.getUsername(),m.getPassword());
 						info(JdbcPropertiesForm.this.getString("test.ok"));
 					}
 					catch (Exception e)
@@ -164,7 +164,7 @@ public class JdbcPropertiesFormPanel extends Panel
 			return result;
 		}
 
-		private Component getUrlComponent()
+		private Component getURLComponent()
 		{
 			return this.get("url");
 		}
@@ -189,10 +189,10 @@ public class JdbcPropertiesFormPanel extends Panel
 		{
 			this.driver = driver;
 		}
-		public String getUrl()
+		public String getURL()
 		{
 			//return driver.createJdbcURL(getHost(),getPort(),getDatabase());
-			return JdbcDriver.createJdbcURL(driver.getUrlExpr(),getHost(),getPort(),getDatabase());
+			return JdbcDriver.createJdbcURL(driver.getURLExpr(),getHost(),getPort(),getDatabase());
 		}
 		public String getUsername()
 		{

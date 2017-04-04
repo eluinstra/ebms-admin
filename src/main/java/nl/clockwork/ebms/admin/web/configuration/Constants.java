@@ -66,7 +66,7 @@ public class Constants
 		{
 			return driverClassName;
 		}
-		public String getUrlExpr()
+		public String getURLExpr()
 		{
 			return urlExpr;
 		}

@@ -66,7 +66,7 @@ public class EbMSAdminPropertiesWriter extends EbMSCorePropertiesWriter
 
   protected void write(Properties properties, ServicePropertiesFormModel serviceProperties)
   {
-		properties.setProperty("service.ebms.url",serviceProperties.getUrl());
+		properties.setProperty("service.ebms.url",serviceProperties.getURL());
   }
 
 }

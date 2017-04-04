@@ -64,7 +64,7 @@ public class ServicePropertiesFormPanel extends Panel
 					try
 					{
 						ServicePropertiesFormModel m = model.getObject();
-						Utils.testEbMSUrl(m.getUrl());
+						Utils.testEbMSUrl(m.getURL());
 						info(ServicePropertiesForm.this.getString("test.ok"));
 					}
 					catch (Exception e)
@@ -83,7 +83,7 @@ public class ServicePropertiesFormPanel extends Panel
 		private static final long serialVersionUID = 1L;
 		private String url = "http://localhost:8089/adapter";
 
-		public String getUrl()
+		public String getURL()
 		{
 			return url;
 		}
