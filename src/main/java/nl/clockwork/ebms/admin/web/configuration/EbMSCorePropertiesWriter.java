@@ -59,7 +59,7 @@ public class EbMSCorePropertiesWriter
 		properties.setProperty("patch.cleo.enable",Boolean.toString(coreProperties.isCleoPatch()));
 		properties.setProperty("http.client",coreProperties.getHttpClient().name());
 		properties.setProperty("eventListener",coreProperties.getEventListener().name());
-		properties.setProperty("jms.brokerURL",coreProperties.getActiveMQConfigFile());
+		properties.setProperty("jms.brokerURL",coreProperties.getActiveMQConfigFile() == null ? "" : coreProperties.getActiveMQConfigFile());
   }
 
 	protected void write(Properties properties, HttpPropertiesFormModel httpProperties, boolean enableSslOverridePropeties)
