@@ -15,6 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
+import nl.clockwork.ebms.Constants.EbMSMessageEventType;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
 import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
@@ -22,6 +23,7 @@ import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.model.EbMSMessageContext;
+import nl.clockwork.ebms.model.EbMSMessageEvent;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
 import org.apache.wicket.AttributeModifier;
@@ -35,11 +37,11 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-public class MessagesPage extends BasePage
+public class MessageEventsPage extends BasePage
 {
-	private class MessageDataView extends DataView<String>
+	private class MessageEventDataView extends DataView<EbMSMessageEvent>
 	{
-		protected MessageDataView(String id, IDataProvider<String> dataProvider)
+		protected MessageEventDataView(String id, IDataProvider<EbMSMessageEvent> dataProvider)
 		{
 			super(id,dataProvider);
 			setOutputMarkupId(true);
@@ -54,14 +56,15 @@ public class MessagesPage extends BasePage
 		}
 
 		@Override
-		protected void populateItem(final Item<String> item)
+		protected void populateItem(final Item<EbMSMessageEvent> item)
 		{
-			final String messageId = item.getModelObject();
-			item.add(createViewLink("view",messageId,new Label("messageId",messageId)));
+			final EbMSMessageEvent messageEvent = item.getModelObject();
+			item.add(createViewLink("view",messageEvent,new Label("messageId",messageEvent.getMessageId())));
+			item.add(new Label("type",messageEvent.getType()));
 			item.add(AttributeModifier.replace("class",new OddOrEvenIndexStringModel(item.getIndex())));
 		}
 
-		private Link<Void> createViewLink(String id, final String messageId, Component...components)
+		private Link<Void> createViewLink(String id, final EbMSMessageEvent messageEvent, Component...components)
 		{
 			Link<Void> link = new Link<Void>(id)
 			{
@@ -70,7 +73,7 @@ public class MessagesPage extends BasePage
 				@Override
 				public void onClick()
 				{
-					setResponsePage(new MessagePage(ebMSMessageService.getMessage(messageId,null),MessagesPage.this,
+					setResponsePage(new MessagePage(ebMSMessageService.getMessage(messageEvent.getMessageId(),null),MessageEventsPage.this,
 					new MessageProcessor()
 					{
 						private static final long serialVersionUID = 1L;
@@ -78,7 +81,7 @@ public class MessagesPage extends BasePage
 						@Override
 						public void processMessage(String messageId)
 						{
-							ebMSMessageService.processMessage(messageId);
+							ebMSMessageService.processMessageEvent(messageId);
 						}
 					}));
 				}
@@ -94,34 +97,36 @@ public class MessagesPage extends BasePage
 	@SpringBean(name="maxItemsPerPage")
 	private Integer maxItemsPerPage;
 	private EbMSMessageContext filter;
+	private EbMSMessageEventType[] eventTypes;
 
-	public MessagesPage()
+	public MessageEventsPage()
 	{
-		this(new EbMSMessageContext());
+		this(new EbMSMessageContext(),EbMSMessageEventType.values());
 	}
 
-	public MessagesPage(EbMSMessageContext filter)
+	public MessageEventsPage(EbMSMessageContext filter, EbMSMessageEventType[] eventTypes)
 	{
-		this(filter,null);
+		this(filter,eventTypes,null);
 	}
 
-	public MessagesPage(EbMSMessageContext filter, final WebPage responsePage)
+	public MessageEventsPage(EbMSMessageContext filter, EbMSMessageEventType[] eventTypes, final WebPage responsePage)
 	{
 		this.filter = filter;
+		this.eventTypes = eventTypes;
 		final WebMarkupContainer container = new WebMarkupContainer("container");
 		add(container);
-		DataView<String> messages = new MessageDataView("messages",new MessageDataProvider(ebMSMessageService,this.filter));
-		container.add(messages);
-		final BootstrapPagingNavigator navigator = new BootstrapPagingNavigator("navigator",messages);
+		DataView<EbMSMessageEvent> messageEvents = new MessageEventDataView("messageEvents",new MessageEventDataProvider(ebMSMessageService,this.filter,this.eventTypes));
+		container.add(messageEvents);
+		final BootstrapPagingNavigator navigator = new BootstrapPagingNavigator("navigator",messageEvents);
 		add(navigator);
 		add(new MaxItemsPerPageChoice("maxItemsPerPage",new PropertyModel<Integer>(this,"maxItemsPerPage"),navigator,container));
 		add(new PageLink("back",responsePage).setVisible(responsePage != null));
-		add(new DownloadEbMSMessageIdsCSVLink("download",ebMSMessageService,filter));
+		add(new DownloadEbMSMessageEventsCSVLink("download",ebMSMessageService,filter,EbMSMessageEventType.values()));
 	}
 
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("messages",this);
+		return getLocalizer().getString("messageEvents",this);
 	}
 }

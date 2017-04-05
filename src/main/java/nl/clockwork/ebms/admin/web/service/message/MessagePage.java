@@ -68,13 +68,13 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 	@SpringBean(name="ebMSMessageService")
 	private EbMSMessageService ebMSMessageService;
 
-	public MessagePage(final EbMSMessageContent messageContent, final WebPage responsePage)
+	public MessagePage(EbMSMessageContent messageContent, WebPage responsePage, MessageProcessor messageProcessor)
 	{
 		setModel(new CompoundPropertyModel<EbMSMessageContent>(messageContent));
 		add(new BootstrapFeedbackPanel("feedback"));
 		add(new Label("context.messageId"));
 		add(new Label("context.conversationId"));
-		add(createViewRefToMessageIdLink("viewRefToMessageId",messageContent));
+		add(createViewRefToMessageIdLink("viewRefToMessageId",messageProcessor, messageContent));
 		add(DateLabel.forDatePattern("context.timestamp",Constants.DATETIME_FORMAT));
 		add(new Label("context.cpaId"));
 		add(new Label("context.fromRole.partyId"));
@@ -86,7 +86,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		add(new EbMSDataSourcePropertyListView("dataSources",messageContent.getDataSources()));
 		add(new PageLink("back",responsePage));
 		add(new DownloadEbMSMessageContentLink("download",messageContent));
-		add(createProcessLink("process",messageContent,responsePage));
+		add(createProcessLink("process",messageContent,messageProcessor,responsePage));
 	}
 
 	@Override
@@ -95,7 +95,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		return getLocalizer().getString("message",this);
 	}
 
-	private Link<Void> createViewRefToMessageIdLink(String id, final EbMSMessageContent messageContent)
+	private Link<Void> createViewRefToMessageIdLink(String id, final MessageProcessor messageProcessor, final EbMSMessageContent messageContent)
 	{
 		Link<Void> result = new Link<Void>(id)
 		{
@@ -104,14 +104,14 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 			@Override
 			public void onClick()
 			{
-				setResponsePage(new MessagePage(ebMSMessageService.getMessage(messageContent.getContext().getRefToMessageId(),null),MessagePage.this));
+				setResponsePage(new MessagePage(ebMSMessageService.getMessage(messageContent.getContext().getRefToMessageId(),null),MessagePage.this,messageProcessor));
 			}
 		};
 		result.add(new Label("context.refToMessageId"));
 		return result;
 	}
 	
-	private Link<Void> createProcessLink(String id, final EbMSMessageContent messageContent, final WebPage responsePage)
+	private Link<Void> createProcessLink(String id, final EbMSMessageContent messageContent, final MessageProcessor messageProcessor, final WebPage responsePage)
 	{
 		Link<Void> result = new Link<Void>(id)
 		{
@@ -122,7 +122,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 			{
 				try
 				{
-					ebMSMessageService.processMessage(messageContent.getContext().getMessageId());
+					messageProcessor.processMessage(messageContent.getContext().getMessageId());
 					setResponsePage(responsePage);
 				}
 				catch (Exception e)

@@ -52,16 +52,21 @@ public class WicketApplication extends WebApplication
 		
 		MenuItem cpa = new MenuItem("1","cpaService");
 		new MenuLinkItem(cpa,"1","cpas",nl.clockwork.ebms.admin.web.service.cpa.CPAsPage.class);
-		new MenuLinkItem(cpa,"2","urlMappings",nl.clockwork.ebms.admin.web.service.cpa.URLMappingsPage.class);
+		new MenuDivider(cpa,"2");
+		new MenuLinkItem(cpa,"3","urlMappings",nl.clockwork.ebms.admin.web.service.cpa.URLMappingsPage.class);
 		menuItems.add(cpa);
 
 		MenuItem message = new MenuItem("2","messageService");
 		new MenuLinkItem(message,"1","ping",nl.clockwork.ebms.admin.web.service.message.PingPage.class);
-		new MenuLinkItem(message,"2","messages",nl.clockwork.ebms.admin.web.service.message.MessagesPage.class);
-		//new MenuLinkItem(message,"3","messageSend",nl.clockwork.ebms.admin.web.service.message.SendMessagePage.class);
-		new MenuLinkItem(message,"3","messageSend",nl.clockwork.ebms.admin.web.service.message.SendMessagePageX.class);
-		new MenuLinkItem(message,"4","messageResend",nl.clockwork.ebms.admin.web.service.message.ResendMessagePage.class);
-		new MenuLinkItem(message,"5","messageStatus",nl.clockwork.ebms.admin.web.service.message.MessageStatusPage.class);
+		new MenuDivider(message,"2");
+		new MenuLinkItem(message,"3","messages",nl.clockwork.ebms.admin.web.service.message.MessagesPage.class);
+		new MenuLinkItem(message,"4","messageEvents",nl.clockwork.ebms.admin.web.service.message.MessageEventsPage.class);
+		new MenuDivider(message,"5");
+		//new MenuLinkItem(message,"6","messageSend",nl.clockwork.ebms.admin.web.service.message.SendMessagePage.class);
+		new MenuLinkItem(message,"6","messageSend",nl.clockwork.ebms.admin.web.service.message.SendMessagePageX.class);
+		new MenuLinkItem(message,"7","messageResend",nl.clockwork.ebms.admin.web.service.message.ResendMessagePage.class);
+		new MenuDivider(message,"8");
+		new MenuLinkItem(message,"9","messageStatus",nl.clockwork.ebms.admin.web.service.message.MessageStatusPage.class);
 		menuItems.add(message);
 
 		MenuItem advanced = new MenuItem("3","advanced");
@@ -74,7 +79,8 @@ public class WicketApplication extends WebApplication
 
 		MenuItem configuration = new MenuItem("4","configuration");
 		new MenuLinkItem(configuration,"1","ebMSAdminProperties",nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.class);
-		new MenuLinkItem(configuration,"2","ebMSCoreProperties",nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.class);
+		new MenuDivider(configuration,"2");
+		new MenuLinkItem(configuration,"3","ebMSCoreProperties",nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.class);
 		menuItems.add(configuration);
 
 		List<ExtensionProvider> extensionProviders = ExtensionProvider.get();
