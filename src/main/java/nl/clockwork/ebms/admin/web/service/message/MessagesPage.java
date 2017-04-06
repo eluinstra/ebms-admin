@@ -122,6 +122,6 @@ public class MessagesPage extends BasePage
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("messages",this);
+		return getLocalizer().getString("receivedMessages",this);
 	}
 }
