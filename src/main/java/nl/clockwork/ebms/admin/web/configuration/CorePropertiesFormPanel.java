@@ -25,6 +25,7 @@ import nl.clockwork.ebms.event.EventListenerFactory.EventListenerType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -43,28 +44,36 @@ public class CorePropertiesFormPanel extends Panel
 	private static final long serialVersionUID = 1L;
 	protected transient Log logger = LogFactory.getLog(this.getClass());
 
-	public CorePropertiesFormPanel(String id, final IModel<CorePropertiesFormModel> model)
+	public CorePropertiesFormPanel(String id, final IModel<CorePropertiesFormModel> model, boolean enableConsoleProperties)
 	{
 		super(id,model);
-		add(new CorePropertiesForm("form",model));
+		add(new CorePropertiesForm("form",model,enableConsoleProperties));
 	}
 
 	public class CorePropertiesForm extends Form<CorePropertiesFormModel>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public CorePropertiesForm(String id, final IModel<CorePropertiesFormModel> model)
+		public CorePropertiesForm(String id, final IModel<CorePropertiesFormModel> model, boolean enableConsoleProperties)
 		{
 			super(id,new CompoundPropertyModel<CorePropertiesFormModel>(model));
-			add(new CheckBox("digipoortPatch").setLabel(new ResourceModel("lbl.digipoortPatch")));
-			add(new CheckBox("oraclePatch").setLabel(new ResourceModel("lbl.oraclePatch")));
+			add(createContainer("digipoortPatchContainer",enableConsoleProperties,new CheckBox("digipoortPatch").setLabel(new ResourceModel("lbl.digipoortPatch"))));
+			add(createContainer("oraclePatchContainer",enableConsoleProperties,new CheckBox("oraclePatch").setLabel(new ResourceModel("lbl.oraclePatch"))));
 			add(new CheckBox("cleoPatch").setLabel(new ResourceModel("lbl.cleoPatch")));
-			add(new BootstrapFormComponentFeedbackBorder("httpClientFeedback",createHttpClientChoice("httpClient",model)));
-			add(new BootstrapFormComponentFeedbackBorder("eventListenerFeedback",createEventListenerChoice("eventListener",model)));
-			add(createActiveMQConfigFileContainer("activeMQConfigFileContainer"));
+			add(createContainer("httpClientContainer",enableConsoleProperties,new BootstrapFormComponentFeedbackBorder("httpClientFeedback",createHttpClientChoice("httpClient",model))));
+			add(createContainer("eventListenerContainer",enableConsoleProperties,new BootstrapFormComponentFeedbackBorder("eventListenerFeedback",createEventListenerChoice("eventListener",model))));
+			add(createActiveMQConfigFileContainer("activeMQConfigFileContainer",enableConsoleProperties));
 		}
 
-		private WebMarkupContainer createActiveMQConfigFileContainer(String id)
+		private WebMarkupContainer createContainer(String id, boolean enableConsoleProperties, Component...components)
+		{
+			WebMarkupContainer result = new WebMarkupContainer(id);
+			result.setVisible(!enableConsoleProperties);
+			result.add(components);
+			return result;
+		}
+
+		private WebMarkupContainer createActiveMQConfigFileContainer(String id, final boolean enableConsoleProperties)
 		{
 			WebMarkupContainer result = new WebMarkupContainer(id)
 			{
@@ -73,7 +82,7 @@ public class CorePropertiesFormPanel extends Panel
 				@Override
 				public boolean isVisible()
 				{
-					return EventListenerType.SIMPLE_JMS.equals(CorePropertiesForm.this.getModelObject().eventListener) || EventListenerType.JMS.equals(CorePropertiesForm.this.getModelObject().eventListener);
+					return !enableConsoleProperties && (EventListenerType.SIMPLE_JMS.equals(CorePropertiesForm.this.getModelObject().eventListener) || EventListenerType.JMS.equals(CorePropertiesForm.this.getModelObject().eventListener));
 				}
 			};
 			result.add(new BootstrapFormComponentFeedbackBorder("activeMQConfigFileFeedback",new TextField<String>("activeMQConfigFile").setLabel(new ResourceModel("lbl.activeMQConfigFile"))));

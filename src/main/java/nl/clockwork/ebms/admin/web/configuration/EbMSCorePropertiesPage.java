@@ -91,7 +91,7 @@ public class EbMSCorePropertiesPage extends BasePage
 			super(id,new CompoundPropertyModel<EbMSCorePropertiesFormModel>(model));
 			
 			List<BootstrapPanelBorder> components = new ArrayList<BootstrapPanelBorder>();
-			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("coreProperties"),new CorePropertiesFormPanel("component",new PropertyModel<CorePropertiesFormModel>(getModelObject(),"coreProperties"))));
+			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("coreProperties"),new CorePropertiesFormPanel("component",new PropertyModel<CorePropertiesFormModel>(getModelObject(),"coreProperties"),false)));
 			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("httpProperties"),new HttpPropertiesFormPanel("component",new PropertyModel<HttpPropertiesFormModel>(getModelObject(),"httpProperties"),false)));
 			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("signatureProperties"),new SignaturePropertiesFormPanel("component",new PropertyModel<SignaturePropertiesFormModel>(getModelObject(),"signatureProperties"))));
 			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("encryptionProperties"),new EncryptionPropertiesFormPanel("component",new PropertyModel<EncryptionPropertiesFormModel>(getModelObject(),"encryptionProperties"))));

@@ -3,16 +3,20 @@
 <body>
 <wicket:panel>
 	<form wicket:id="form">
-		<div class="form-group">
-			<label wicket:for="digipoortPatch" class="col-lg-2 control-label"><wicket:label/></label>
-			<div class="col-lg-10">
-				<input type="checkbox" wicket:id="digipoortPatch"/>
+		<div wicket:id="digipoortPatchContainer">
+			<div class="form-group">
+				<label wicket:for="digipoortPatch" class="col-lg-2 control-label"><wicket:label/></label>
+				<div class="col-lg-10">
+					<input type="checkbox" wicket:id="digipoortPatch"/>
+				</div>
 			</div>
 		</div>
-		<div class="form-group">
-			<label wicket:for="oraclePatch" class="col-lg-2 control-label"><wicket:label/></label>
-			<div class="col-lg-10">
-				<input type="checkbox" wicket:id="oraclePatch"/>
+		<div wicket:id="oraclePatchContainer">
+			<div class="form-group">
+				<label wicket:for="oraclePatch" class="col-lg-2 control-label"><wicket:label/></label>
+				<div class="col-lg-10">
+					<input type="checkbox" wicket:id="oraclePatch"/>
+				</div>
 			</div>
 		</div>
 		<div class="form-group">
@@ -21,16 +25,20 @@
 				<input type="checkbox" wicket:id="cleoPatch"/>
 			</div>
 		</div>
-		<div class="form-group" wicket:id="httpClientFeedback">
-			<label wicket:for="httpClient" class="col-lg-2 control-label"><wicket:label/></label>
-			<div class="col-lg-10">
-				<select class="form-control" wicket:id="httpClient"/>
+		<div wicket:id="httpClientContainer">
+			<div class="form-group" wicket:id="httpClientFeedback">
+				<label wicket:for="httpClient" class="col-lg-2 control-label"><wicket:label/></label>
+				<div class="col-lg-10">
+					<select class="form-control" wicket:id="httpClient"/>
+				</div>
 			</div>
 		</div>
-		<div class="form-group" wicket:id="eventListenerFeedback">
-			<label wicket:for="eventListener" class="col-lg-2 control-label"><wicket:label/></label>
-			<div class="col-lg-10">
-				<select class="form-control" wicket:id="eventListener"/>
+		<div wicket:id="eventListenerContainer">
+			<div class="form-group" wicket:id="eventListenerFeedback">
+				<label wicket:for="eventListener" class="col-lg-2 control-label"><wicket:label/></label>
+				<div class="col-lg-10">
+					<select class="form-control" wicket:id="eventListener"/>
+				</div>
 			</div>
 		</div>
 		<div wicket:id="activeMQConfigFileContainer">

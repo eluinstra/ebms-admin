@@ -117,7 +117,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 			
 			List<BootstrapPanelBorder> components = new ArrayList<BootstrapPanelBorder>();
 			components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("consoleProperties"),new ConsolePropertiesFormPanel("component",new PropertyModel<ConsolePropertiesFormModel>(getModelObject(),"consoleProperties"))));
-			components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("coreProperties"),new CorePropertiesFormPanel("component",new PropertyModel<CorePropertiesFormModel>(getModelObject(),"coreProperties"))));
+			components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("coreProperties"),new CorePropertiesFormPanel("component",new PropertyModel<CorePropertiesFormModel>(getModelObject(),"coreProperties"),PropertiesType.EBMS_ADMIN.equals(propertiesType))));
 			if (PropertiesType.EBMS_ADMIN.equals(propertiesType))
 				components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("serviceProperties"),new ServicePropertiesFormPanel("component",new PropertyModel<ServicePropertiesFormModel>(getModelObject(),"serviceProperties"))));
 			if (PropertiesType.EBMS_ADMIN_EMBEDDED.equals(propertiesType))
