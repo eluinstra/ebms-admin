@@ -60,6 +60,9 @@ public class EbMSCorePropertiesWriter
 		properties.setProperty("http.client",coreProperties.getHttpClient().name());
 		properties.setProperty("eventListener",coreProperties.getEventListener().name());
 		properties.setProperty("jms.brokerURL",coreProperties.getActiveMQConfigFile() == null ? "" : coreProperties.getActiveMQConfigFile());
+		properties.setProperty("ebmsMessage.deleteContentOnProcessed",Boolean.toString(coreProperties.isDeleteMessageContentOnProcessed()));
+		properties.setProperty("ebmsMessage.storeDuplicate",Boolean.toString(coreProperties.isStoreDuplicateMessage()));
+		properties.setProperty("ebmsMessage.storeDuplicateContent",Boolean.toString(coreProperties.isStoreDuplicateMessageContent()));
   }
 
 	protected void write(Properties properties, HttpPropertiesFormModel httpProperties, boolean enableSslOverridePropeties)

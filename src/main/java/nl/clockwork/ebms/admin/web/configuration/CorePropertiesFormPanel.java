@@ -60,6 +60,9 @@ public class CorePropertiesFormPanel extends Panel
 			add(createContainer("digipoortPatchContainer",enableConsoleProperties,new CheckBox("digipoortPatch").setLabel(new ResourceModel("lbl.digipoortPatch"))));
 			add(createContainer("oraclePatchContainer",enableConsoleProperties,new CheckBox("oraclePatch").setLabel(new ResourceModel("lbl.oraclePatch"))));
 			add(new CheckBox("cleoPatch").setLabel(new ResourceModel("lbl.cleoPatch")));
+			add(createContainer("deleteMessageContentOnProcessedContainer",enableConsoleProperties,new CheckBox("deleteMessageContentOnProcessed").setLabel(new ResourceModel("lbl.deleteMessageContentOnProcessed"))));
+			add(createContainer("storeDuplicateMessageContainer",enableConsoleProperties,new CheckBox("storeDuplicateMessage").setLabel(new ResourceModel("lbl.storeDuplicateMessage"))));
+			add(createContainer("storeDuplicateMessageContentContainer",enableConsoleProperties,new CheckBox("storeDuplicateMessageContent").setLabel(new ResourceModel("lbl.storeDuplicateMessageContent"))));
 			add(createContainer("httpClientContainer",enableConsoleProperties,new BootstrapFormComponentFeedbackBorder("httpClientFeedback",createHttpClientChoice("httpClient",model))));
 			add(createContainer("eventListenerContainer",enableConsoleProperties,new BootstrapFormComponentFeedbackBorder("eventListenerFeedback",createEventListenerChoice("eventListener",model))));
 			add(createActiveMQConfigFileContainer("activeMQConfigFileContainer",enableConsoleProperties));
@@ -126,6 +129,9 @@ public class CorePropertiesFormPanel extends Panel
 		private EbMSHttpClientType httpClient = EbMSHttpClientType.DEFAULT;
 		private EventListenerType eventListener = EventListenerType.DEFAULT;
 		private String activeMQConfigFile = "vm://localhost?brokerConfig=xbean:classpath:nl/clockwork/ebms/activemq.xml";
+		private boolean deleteMessageContentOnProcessed = false;
+		private boolean storeDuplicateMessage = true;
+		private boolean storeDuplicateMessageContent = true;
 
 		public boolean isDigipoortPatch()
 		{
@@ -182,6 +188,30 @@ public class CorePropertiesFormPanel extends Panel
 		public void setActiveMQConfigFile(String activeMQConfigFile)
 		{
 			this.activeMQConfigFile = activeMQConfigFile;
+		}
+		public boolean isDeleteMessageContentOnProcessed()
+		{
+			return deleteMessageContentOnProcessed;
+		}
+		public void setDeleteMessageContentOnProcessed(boolean deleteMessageContentOnProcessed)
+		{
+			this.deleteMessageContentOnProcessed = deleteMessageContentOnProcessed;
+		}
+		public boolean isStoreDuplicateMessage()
+		{
+			return storeDuplicateMessage;
+		}
+		public void setStoreDuplicateMessage(boolean storeDuplicateMessage)
+		{
+			this.storeDuplicateMessage = storeDuplicateMessage;
+		}
+		public boolean isStoreDuplicateMessageContent()
+		{
+			return storeDuplicateMessageContent;
+		}
+		public void setStoreDuplicateMessageContent(boolean storeDuplicateMessageContent)
+		{
+			this.storeDuplicateMessageContent = storeDuplicateMessageContent;
 		}
 	}
 }
