@@ -119,6 +119,8 @@ public class Start
 			connector.setPort(cmd.getOptionValue("port") == null ? 8080 : Integer.parseInt(cmd.getOptionValue("port")));
 			server.addConnector(connector);
 			System.out.println("Web server configured on http://" + getHost(connector.getHost()) + ":" + connector.getPort() + getPath());
+			if (cmd.hasOption("soap"))
+				System.out.println("SOAP service configured on http://" + getHost(connector.getHost()) + ":" + connector.getPort() + "/service");
 		}
 		else
 		{
@@ -138,7 +140,9 @@ public class Start
 				connector.setHost(cmd.getOptionValue("host") == null ? "0.0.0.0" : cmd.getOptionValue("host"));
 				connector.setPort(cmd.getOptionValue("port") == null ? 8433 : Integer.parseInt(cmd.getOptionValue("port")));
 				server.addConnector(connector);
-				System.out.println("Web server configured on https://" + getHost(connector.getHost()) + ":" + connector.getPort());
+				System.out.println("Web server configured on https://" + getHost(connector.getHost()) + ":" + connector.getPort() + getPath());
+				if (cmd.hasOption("soap"))
+					System.out.println("SOAP service configured on https://" + getHost(connector.getHost()) + ":" + connector.getPort() + "/service");
 			}
 			else
 			{

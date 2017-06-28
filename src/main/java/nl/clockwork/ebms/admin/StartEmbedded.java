@@ -101,6 +101,7 @@ public class StartEmbedded extends Start
 		options.addOption("jmx",false,"start mbean server");
 		options.addOption("hsqldb",false,"start hsqldb server");
 		options.addOption("hsqldbDir",true,"set hsqldb location (default: hsqldb)");
+		options.addOption("soap",false,"start soap service");
 		return options;
 	}
 	
@@ -259,6 +260,9 @@ public class StartEmbedded extends Start
 		context.addServlet(servletHolder,"/js/*");
 
 		context.addServlet(nl.clockwork.ebms.servlet.EbMSServlet.class,properties.get("ebms.path"));
+
+		if (cmd.hasOption("soap"))
+			context.addServlet(org.apache.cxf.transport.servlet.CXFServlet.class,"/service/*");
 
 		context.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
 		
