@@ -160,13 +160,24 @@ public class StartEmbedded extends Start
 			if (!c.createStatement().executeQuery("select table_name from information_schema.tables where table_name = 'CPA'").next())
 			{
 				c.createStatement().executeUpdate(IOUtils.toString(this.getClass().getResourceAsStream("/nl/clockwork/ebms/admin/database/hsqldb.sql")));
-				for (ExtensionProvider extensionProvider : ExtensionProvider.get())
-					if (!StringUtils.isEmpty(extensionProvider.getHSQLDBFile()))
-						c.createStatement().executeUpdate(IOUtils.toString(this.getClass().getResourceAsStream(extensionProvider.getHSQLDBFile())));
 				System.out.println("EbMS tables created");
 			}
 			else
 				System.out.println("EbMS tables already exist");
+			for (ExtensionProvider extensionProvider : ExtensionProvider.get())
+				if (!StringUtils.isEmpty(extensionProvider.getHSQLDBFile()))
+					try
+					{
+						c.createStatement().executeUpdate(IOUtils.toString(this.getClass().getResourceAsStream(extensionProvider.getHSQLDBFile())));
+						System.out.println(extensionProvider.getName() + " tables created");
+					}
+					catch (Exception e)
+					{
+						if (e.getMessage().contains("already exists"))
+							System.out.println(extensionProvider.getName() + " tables already exist");
+						else
+							e.printStackTrace();
+					}
 		}
 		catch (Exception e)
 		{
