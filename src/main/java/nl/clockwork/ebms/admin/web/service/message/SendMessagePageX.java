@@ -36,6 +36,7 @@ import nl.clockwork.ebms.model.Role;
 import nl.clockwork.ebms.service.CPAService;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -86,8 +87,8 @@ public class SendMessagePageX extends BasePage
 			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",createCPAIdChoice("cpaId")));
 			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",createFromPartyIdChoice("fromRole.partyId")));
 			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",createFromRoleChoice("fromRole.role")));
-			add(createToPartyIdFeedbackBorder("toPartyIdFeedback",createToPartyIdChoice("toRole.partyId")));
-			add(createToRoleFeedbackBorder("toRoleFeedback",createToRoleChoice("toRole.role")));
+			add(new BootstrapFormComponentFeedbackBorder("toPartyIdFeedback",createToPartyIdChoice("toRole.partyId")));
+			add(new BootstrapFormComponentFeedbackBorder("toRoleFeedback",createToRoleChoice("toRole.role")));
 			add(new BootstrapFormComponentFeedbackBorder("serviceFeedback",createServiceChoice("service")));
 			add(new BootstrapFormComponentFeedbackBorder("actionFeedback",createActionChoice("action")));
 			add(new TextField<String>("conversationId").setLabel(new ResourceModel("lbl.conversationId")));
@@ -97,7 +98,6 @@ public class SendMessagePageX extends BasePage
 			add(rawInputContainer);
 			rawInputContainer.add(createRawInputCheckBox("rawInput"));
 			add(dataSources = new EmptyDataSourcesPanel("dataSources"));
-			add(createExtendedCheckBox("extended"));
 			Button send = createSendButton("send");
 			setDefaultButton(send);
 			add(send);
@@ -121,12 +121,9 @@ public class SendMessagePageX extends BasePage
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
-						model.resetFromRoles(CPAUtils.getRoleNames(cpa));
-						if (model.extended)
-						{
-							model.resetToPartyIds();
-							model.resetToRoles();
-						}
+						model.resetFromRoles();
+						model.resetToPartyIds();
+						model.resetToRoles();
 						model.resetServices();
 						model.resetActions();
 						dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
@@ -160,13 +157,9 @@ public class SendMessagePageX extends BasePage
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetFromRoles(CPAUtils.getRoleNames(cpa,model.getFromRole().getPartyId()));
-						if (model.extended)
-						{
-							if (model.getFromRole().getRole() != null)
-								model.resetToRoles(CPAUtils.getOtherRoleNames(cpa,model.getFromRole().getPartyId(),model.getFromRole().getRole()));
-							model.resetToPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getToRole().getRole()));
-						}
-						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole().getRole()));
+						model.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,model.getFromRole().getPartyId()));
+						model.resetToRoles(CPAUtils.getOtherRoleNamesByPartyId(cpa,model.getFromRole().getPartyId()));
+						model.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,model.getFromRole().getPartyId(),model.getFromRole().getRole()),CPAUtils.getServiceNamesCanReceive(cpa,model.getToRole().getPartyId(),model.getToRole().getRole())));
 						model.resetActions();
 						dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 						target.add(getPage().get("feedback"));
@@ -198,13 +191,7 @@ public class SendMessagePageX extends BasePage
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						model.resetFromPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getFromRole().getRole()));
-						if (model.extended)
-						{
-							model.resetToRoles(CPAUtils.getOtherRoleNames(cpa,model.getFromRole().getPartyId(),model.getFromRole().getRole()));
-							model.resetToPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getToRole().getRole()));
-						}
-						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole().getRole()));
+						model.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,model.getFromRole().getPartyId(),model.getFromRole().getRole()),CPAUtils.getServiceNamesCanReceive(cpa,model.getToRole().getPartyId(),model.getToRole().getRole())));
 						model.resetActions();
 						dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 						target.add(getPage().get("feedback"));
@@ -236,10 +223,8 @@ public class SendMessagePageX extends BasePage
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						if (model.extended)
-							if (model.getToRole().getRole() == null)
-								model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToRole().getPartyId()));
-						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole().getRole()));
+						model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToRole().getPartyId()));
+						model.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,model.getFromRole().getPartyId(),model.getFromRole().getRole()),CPAUtils.getServiceNamesCanReceive(cpa,model.getToRole().getPartyId(),model.getToRole().getRole())));
 						model.resetActions();
 						dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 						target.add(getPage().get("feedback"));
@@ -253,20 +238,6 @@ public class SendMessagePageX extends BasePage
 				}
 			});
 			return result;
-		}
-
-		private BootstrapFormComponentFeedbackBorder createToPartyIdFeedbackBorder(String id, DropDownChoice<String> toPartyIdChoice)
-		{
-			return new BootstrapFormComponentFeedbackBorder(id,toPartyIdChoice)
-			{
-				private static final long serialVersionUID = 1L;
-				
-				@Override
-				public boolean isVisible()
-				{
-					return MessageForm.this.getModelObject().extended;
-				}
-			};
 		}
 
 		private DropDownChoice<String> createToRoleChoice(String id)
@@ -285,10 +256,7 @@ public class SendMessagePageX extends BasePage
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						if (model.extended)
-//							if (model.getToRole().getPartyId() == null)
-								model.resetToPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getToRole().getRole()));
-						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole().getRole()));
+						model.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,model.getFromRole().getPartyId(),model.getFromRole().getRole()),CPAUtils.getServiceNamesCanReceive(cpa,model.getToRole().getPartyId(),model.getToRole().getRole())));
 						model.resetActions();
 						dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 						target.add(getPage().get("feedback"));
@@ -302,20 +270,6 @@ public class SendMessagePageX extends BasePage
 				}
 			});
 			return result;
-		}
-
-		private BootstrapFormComponentFeedbackBorder createToRoleFeedbackBorder(String id, DropDownChoice<String> toRoleChoice)
-		{
-			return new BootstrapFormComponentFeedbackBorder(id,toRoleChoice)
-			{
-				private static final long serialVersionUID = 1L;
-				
-				@Override
-				public boolean isVisible()
-				{
-					return MessageForm.this.getModelObject().extended;
-				}
-			};
 		}
 
 		private DropDownChoice<String> createServiceChoice(String id)
@@ -335,7 +289,7 @@ public class SendMessagePageX extends BasePage
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
 						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						model.resetActions(CPAUtils.getFromActionNames(cpa,model.getFromRole().getRole(),model.getService()));
+						model.resetActions(ListUtils.intersection(CPAUtils.getFromActionNamesCanSend(cpa,model.getFromRole().getPartyId(),model.getFromRole().getRole(),model.getService()),CPAUtils.getFromActionNamesCanReceive(cpa,model.getToRole().getPartyId(),model.getToRole().getRole(),model.getService())));
 						dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 						target.add(getPage().get("feedback"));
 						target.add(getPage().get("form"));
@@ -414,46 +368,6 @@ public class SendMessagePageX extends BasePage
 			return result;
 		}
 
-		private CheckBox createExtendedCheckBox(String id)
-		{
-			CheckBox result = new CheckBox(id);
-			result.setLabel(new ResourceModel("lbl.extended"));
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
-      {
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					try
-					{
-						EbMSMessageContextModel model = MessageForm.this.getModelObject();
-						if (model.extended)
-						{
-							model.setToRole(new Role());
-							if (model.getCpaId() != null)
-							{
-								CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-								if (model.getFromRole().getRole() != null)
-									model.resetToRoles(CPAUtils.getOtherRoleNames(cpa,model.getFromRole().getPartyId(),model.getFromRole().getRole()));
-								model.resetToPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getToRole().getRole()));
-							}
-						}
-						else
-							model.setToRole(null);
-						target.add(getPage().get("feedback"));
-						target.add(getPage().get("form"));
-					}
-					catch (JAXBException e)
-					{
-						logger.error("",e);
-						error(e.getMessage());
-					}
-				}
-      });
-			return result;
-		}
-
 		private Button createSendButton(String id)
 		{
 			Button result = new Button(id,new ResourceModel("cmd.send"))
@@ -492,7 +406,6 @@ public class SendMessagePageX extends BasePage
 		private List<String> services = new ArrayList<String>();
 		private List<String> actions = new ArrayList<String>();
 		private boolean rawInput;
-		private boolean extended = true;
 
 		public EbMSMessageContextModel()
 		{
@@ -594,14 +507,6 @@ public class SendMessagePageX extends BasePage
 		public void setRawInput(boolean rawInput)
 		{
 			this.rawInput = rawInput;
-		}
-		public boolean getExtended()
-		{
-			return extended;
-		}
-		public void setExtended(boolean extended)
-		{
-			this.extended = extended;
 		}
 	}
 }

@@ -61,6 +61,16 @@ public class CPAUtils
 		return result;
 	}
 	
+	public static List<String> getOtherRoleNamesByPartyId(CollaborationProtocolAgreement cpa, String partyId)
+	{
+		LinkedHashSet<String> result = new LinkedHashSet<String>();
+		for (PartyInfo partyInfo : cpa.getPartyInfo())
+			if (!partyId.equals(toString(partyInfo.getPartyId().get(0))))
+				for (CollaborationRole role : partyInfo.getCollaborationRole())
+					result.add(role.getRole().getName());
+		return new ArrayList<String>(result);
+	}
+
 	public static ArrayList<String> getRoleNames(CollaborationProtocolAgreement cpa)
 	{
 		LinkedHashSet<String> result = new LinkedHashSet<String>();
@@ -110,6 +120,37 @@ public class CPAUtils
 		return result;
 	}
 	
+	public static List<String> getServiceNamesCanSend(CollaborationProtocolAgreement cpa, String partyId, String roleName)
+	{
+		List<String> result = new ArrayList<String>();
+		List<CollaborationRole> roles = findRoles(cpa,partyId,roleName);
+		for (CollaborationRole role : roles)
+			if (role.getServiceBinding().getCanSend().size() > 0)
+				result.add(getServiceName(role.getServiceBinding().getService()));
+		return result;
+	}
+
+	public static List<String> getServiceNamesCanReceive(CollaborationProtocolAgreement cpa, String partyId, String roleName)
+	{
+		List<String> result = new ArrayList<String>();
+		List<CollaborationRole> roles = findRoles(cpa,partyId,roleName);
+		for (CollaborationRole role : roles)
+			if (role.getServiceBinding().getCanReceive().size() > 0)
+				result.add(getServiceName(role.getServiceBinding().getService()));
+		return result;
+	}
+
+	private static List<CollaborationRole> findRoles(CollaborationProtocolAgreement cpa, String partyId, String roleName)
+	{
+		ArrayList<CollaborationRole> result = new ArrayList<CollaborationRole>();
+		for (PartyInfo partyInfo : cpa.getPartyInfo())
+			if (partyId == null || !partyId.equals(partyInfo.getPartyId().get(0)))
+				for (CollaborationRole role : partyInfo.getCollaborationRole())
+					if (role.getRole().getName().equals(roleName))
+						result.add(role);
+		return result;
+	}
+	
 	public static String getServiceName(ServiceType service)
 	{
 		return (service.getType() == null ? "" : service.getType() + ":") + service.getValue();
@@ -120,10 +161,40 @@ public class CPAUtils
 		return getServiceName(service).equals(serviceName);
 	}
 
+	public static List<String> getFromActionNamesCanSend(CollaborationProtocolAgreement cpa, String partyId, String roleName, String serviceName)
+	{
+		List<String> result = new ArrayList<String>();
+		List<CollaborationRole> roles = findRolesByService(cpa,partyId,roleName,serviceName);
+		for (CollaborationRole role : roles)
+			for (CanSend canSend : role.getServiceBinding().getCanSend())
+				result.add(canSend.getThisPartyActionBinding().getAction());
+		return result;
+	}
+
+	public static List<String> getFromActionNamesCanReceive(CollaborationProtocolAgreement cpa, String partyId, String roleName, String serviceName)
+	{
+		List<String> result = new ArrayList<String>();
+		List<CollaborationRole> roles = findRolesByService(cpa,partyId,roleName,serviceName);
+		for (CollaborationRole role : roles)
+			for (CanReceive canReceive : role.getServiceBinding().getCanReceive())
+				result.add(canReceive.getThisPartyActionBinding().getAction());
+		return result;
+	}
+
+	private static List<CollaborationRole> findRolesByService(CollaborationProtocolAgreement cpa, String partyId, String roleName, String serviceName)
+	{
+		List<CollaborationRole> result = new ArrayList<CollaborationRole>();
+		List<CollaborationRole> roles = findRoles(cpa,partyId,roleName);
+		for (CollaborationRole role : roles)
+			if (getServiceName(role.getServiceBinding().getService()).equals(serviceName))
+				result.add(role);
+		return result;
+	}
+
 	public static List<String> getFromActionNames(CollaborationProtocolAgreement cpa, String roleName, String serviceName)
 	{
 		List<String> result = new ArrayList<String>();
-		List<CollaborationRole> roles = findRoles(cpa,roleName,serviceName);
+		List<CollaborationRole> roles = findRolesByService(cpa,roleName,serviceName);
 		for (CollaborationRole role : roles)
 			for (CanSend canSend : role.getServiceBinding().getCanSend())
 				result.add(canSend.getThisPartyActionBinding().getAction());
@@ -133,14 +204,14 @@ public class CPAUtils
 	public static List<String> getToActionNames(CollaborationProtocolAgreement cpa, String roleName, String serviceName)
 	{
 		List<String> result = new ArrayList<String>();
-		List<CollaborationRole> roles = findRoles(cpa,roleName,serviceName);
+		List<CollaborationRole> roles = findRolesByService(cpa,roleName,serviceName);
 		for (CollaborationRole role : roles)
 			for (CanReceive canReceive : role.getServiceBinding().getCanReceive())
 				result.add(canReceive.getThisPartyActionBinding().getAction());
 		return result;
 	}
 	
-	private static List<CollaborationRole> findRoles(CollaborationProtocolAgreement cpa, String roleName, String serviceName)
+	private static List<CollaborationRole> findRolesByService(CollaborationProtocolAgreement cpa, String roleName, String serviceName)
 	{
 		List<CollaborationRole> result = new ArrayList<CollaborationRole>();
 		List<CollaborationRole> roles = findRoles(cpa,roleName);
