@@ -58,7 +58,7 @@ public class EbMSCorePropertiesWriter
 		properties.setProperty("patch.oracle.enable",Boolean.toString(coreProperties.isOraclePatch()));
 		properties.setProperty("patch.cleo.enable",Boolean.toString(coreProperties.isCleoPatch()));
 		properties.setProperty("http.client",coreProperties.getHttpClient().name());
-		properties.setProperty("eventListener",coreProperties.getEventListener().name());
+		properties.setProperty("eventListener.type",coreProperties.getEventListener().name());
 		properties.setProperty("jms.brokerURL",coreProperties.getActiveMQConfigFile() == null ? "" : coreProperties.getActiveMQConfigFile());
 		properties.setProperty("ebmsMessage.deleteContentOnProcessed",Boolean.toString(coreProperties.isDeleteMessageContentOnProcessed()));
 		properties.setProperty("ebmsMessage.storeDuplicate",Boolean.toString(coreProperties.isStoreDuplicateMessage()));

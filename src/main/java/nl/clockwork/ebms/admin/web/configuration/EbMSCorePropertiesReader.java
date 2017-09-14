@@ -61,7 +61,7 @@ public class EbMSCorePropertiesReader
 		coreProperties.setOraclePatch(Boolean.parseBoolean(properties.getProperty("patch.oracle.enable")));
 		coreProperties.setCleoPatch(Boolean.parseBoolean(properties.getProperty("patch.cleo.enable")));
 		coreProperties.setHttpClient(properties.getProperty("http.client") != null ? EbMSHttpClientType.valueOf(properties.getProperty("http.client")) : null);
-		coreProperties.setEventListener(properties.getProperty("eventListener") != null ? EventListenerType.valueOf(properties.getProperty("eventListener")) : null);
+		coreProperties.setEventListener(properties.getProperty("eventListener.type") != null ? EventListenerType.valueOf(properties.getProperty("eventListener.type")) : null);
 		coreProperties.setActiveMQConfigFile(properties.getProperty("jms.brokerURL"));
 		coreProperties.setDeleteMessageContentOnProcessed(Boolean.parseBoolean(properties.getProperty("ebmsMessage.deleteContentOnProcessed")));
 		coreProperties.setStoreDuplicateMessage(Boolean.parseBoolean(properties.getProperty("ebmsMessage.storeDuplicate")));
