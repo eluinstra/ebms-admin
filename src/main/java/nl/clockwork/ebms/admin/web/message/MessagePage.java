@@ -145,7 +145,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 				setResponsePage(new MessagePage(ebMSDAO.findResponseMessage(message.getMessageId()),MessagePage.this));
 			}
 		};
-		result.setEnabled(EbMSMessageStatus.DELIVERY_FAILED.equals(message.getStatus()));
+		result.setEnabled(EbMSMessageStatus.DELIVERY_FAILED.equals(message.getStatus()) ? ebMSDAO.existsResponseMessage(message.getMessageId()) : false);
 		result.add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus()))));
 		result.add(new Label("status"));
 		return result;

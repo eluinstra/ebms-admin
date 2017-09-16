@@ -206,6 +206,21 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 
 	@Override
+	public boolean existsResponseMessage(String messageId)
+	{
+		return jdbcTemplate.queryForObject(
+			"select count(*) from ebms_message" + 
+			" where ref_to_message_id = ?" +
+			" and message_nr = ?" +
+			" and service = ?",
+			Integer.class,
+			messageId,
+			0,
+			Constants.EBMS_SERVICE_URI
+		) > 0;
+	}
+
+	@Override
 	public EbMSMessage findResponseMessage(String messageId)
 	{
 		EbMSMessage result = jdbcTemplate.queryForObject(
