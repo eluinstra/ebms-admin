@@ -133,7 +133,7 @@ public class DataSourceModalWindow extends ModalWindow
 					{
 						DataSourceModel model = DataSourceForm.this.getModelObject();
 						for (FileUpload file : model.getFile())
-							addDataSource(new EbMSDataSource(StringUtils.isBlank(model.getName()) ? file.getClientFileName() : model.getName(),null,StringUtils.isBlank(model.getContentType()) ? Utils.getContentType(file.getClientFileName()) : model.getContentType(),file.getBytes()));
+							addDataSource(new EbMSDataSource(StringUtils.isBlank(model.getName()) ? file.getClientFileName() : model.getName(),StringUtils.isBlank(model.getContentType()) ? Utils.getContentType(file.getClientFileName()) : model.getContentType(),file.getBytes()));
 						if (target != null)
 						{
 							target.add(getComponents());
