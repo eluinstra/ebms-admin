@@ -89,6 +89,7 @@ public class CorePropertiesFormPanel extends Panel
 				}
 			};
 			result.add(new BootstrapFormComponentFeedbackBorder("activeMQConfigFileFeedback",new TextField<String>("activeMQConfigFile").setLabel(new ResourceModel("lbl.activeMQConfigFile"))));
+			result.add(new CheckBox("jmsVirtualTopics").setLabel(new ResourceModel("lbl.jmsVirtualTopics")));
 			result.add(new DownloadActiveMQFileLink("downloadActiveMQFile"));
 			return result;
 		}
@@ -132,6 +133,7 @@ public class CorePropertiesFormPanel extends Panel
 		private boolean deleteMessageContentOnProcessed = false;
 		private boolean storeDuplicateMessage = true;
 		private boolean storeDuplicateMessageContent = true;
+		private boolean jmsVirtualTopics = false;
 
 		public boolean isDigipoortPatch()
 		{
@@ -213,5 +215,12 @@ public class CorePropertiesFormPanel extends Panel
 		{
 			this.storeDuplicateMessageContent = storeDuplicateMessageContent;
 		}
+		public boolean isJmsVirtualTopics() {
+			return jmsVirtualTopics;
+		}
+		public void setJmsVirtualTopics(boolean jmsVirtualTopics) {
+			this.jmsVirtualTopics = jmsVirtualTopics;
+		}
+
 	}
 }

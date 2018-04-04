@@ -63,6 +63,7 @@ public class EbMSCorePropertiesReader
 		coreProperties.setHttpClient(properties.getProperty("http.client") != null ? EbMSHttpClientType.valueOf(properties.getProperty("http.client")) : null);
 		coreProperties.setEventListener(properties.getProperty("eventListener.type") != null ? EventListenerType.valueOf(properties.getProperty("eventListener.type")) : null);
 		coreProperties.setActiveMQConfigFile(properties.getProperty("jms.brokerURL"));
+		coreProperties.setJmsVirtualTopics(Boolean.parseBoolean(properties.getProperty("jms.virtualTopics")));
 		coreProperties.setDeleteMessageContentOnProcessed(Boolean.parseBoolean(properties.getProperty("ebmsMessage.deleteContentOnProcessed")));
 		coreProperties.setStoreDuplicateMessage(Boolean.parseBoolean(properties.getProperty("ebmsMessage.storeDuplicate")));
 		coreProperties.setStoreDuplicateMessageContent(Boolean.parseBoolean(properties.getProperty("ebmsMessage.storeDuplicateContent")));
