@@ -59,8 +59,10 @@ public class EbMSCorePropertiesWriter
 		properties.setProperty("patch.cleo.enable",Boolean.toString(coreProperties.isCleoPatch()));
 		properties.setProperty("http.client",coreProperties.getHttpClient().name());
 		properties.setProperty("eventListener.type",coreProperties.getEventListener().name());
-		properties.setProperty("jms.brokerURL",coreProperties.getActiveMQConfigFile() == null ? "" : coreProperties.getActiveMQConfigFile());
+		properties.setProperty("jms.brokerURL",coreProperties.getJmsBrokerUrl() == null ? "" : coreProperties.getJmsBrokerUrl());
 		properties.setProperty("jms.virtualTopics", Boolean.toString(coreProperties.isJmsVirtualTopics()));
+		properties.setProperty("jms.broker.start", Boolean.toString(coreProperties.isStartEmbeddedBroker()));
+		properties.setProperty("jms.broker.config",coreProperties.getActiveMQConfigFile() == null ? "" : coreProperties.getActiveMQConfigFile());
 		properties.setProperty("ebmsMessage.deleteContentOnProcessed",Boolean.toString(coreProperties.isDeleteMessageContentOnProcessed()));
 		properties.setProperty("ebmsMessage.storeDuplicate",Boolean.toString(coreProperties.isStoreDuplicateMessage()));
 		properties.setProperty("ebmsMessage.storeDuplicateContent",Boolean.toString(coreProperties.isStoreDuplicateMessageContent()));

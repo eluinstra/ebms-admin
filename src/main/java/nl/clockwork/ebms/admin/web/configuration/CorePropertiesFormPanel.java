@@ -65,7 +65,7 @@ public class CorePropertiesFormPanel extends Panel
 			add(createContainer("storeDuplicateMessageContentContainer",enableConsoleProperties,new CheckBox("storeDuplicateMessageContent").setLabel(new ResourceModel("lbl.storeDuplicateMessageContent"))));
 			add(createContainer("httpClientContainer",enableConsoleProperties,new BootstrapFormComponentFeedbackBorder("httpClientFeedback",createHttpClientChoice("httpClient",model))));
 			add(createContainer("eventListenerContainer",enableConsoleProperties,new BootstrapFormComponentFeedbackBorder("eventListenerFeedback",createEventListenerChoice("eventListener",model))));
-			add(createActiveMQConfigFileContainer("activeMQConfigFileContainer",enableConsoleProperties));
+			add(createJmsContainer("jmsContainer",enableConsoleProperties));
 		}
 
 		private WebMarkupContainer createContainer(String id, boolean enableConsoleProperties, Component...components)
@@ -73,6 +73,37 @@ public class CorePropertiesFormPanel extends Panel
 			WebMarkupContainer result = new WebMarkupContainer(id);
 			result.setVisible(!enableConsoleProperties);
 			result.add(components);
+			return result;
+		}
+
+		private WebMarkupContainer createJmsContainer(String id, final boolean enableConsoleProperties)
+		{
+			WebMarkupContainer result = new WebMarkupContainer(id)
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public boolean isVisible()
+				{
+					return !enableConsoleProperties && (EventListenerType.SIMPLE_JMS.equals(CorePropertiesForm.this.getModelObject().eventListener) || EventListenerType.JMS.equals(CorePropertiesForm.this.getModelObject().eventListener));
+				}
+			};
+			result.add(new BootstrapFormComponentFeedbackBorder("jmsBrokerUrlFeedback",new TextField<String>("jmsBrokerUrl").setLabel(new ResourceModel("lbl.jmsBrokerUrl"))));
+			result.add(new CheckBox("jmsVirtualTopics").setLabel(new ResourceModel("lbl.jmsVirtualTopics")));
+			CheckBox checkBox = new CheckBox("startEmbeddedBroker");
+			checkBox.setLabel(new ResourceModel("lbl.startEmbeddedBroker"));
+			checkBox.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target)
+				{
+					target.add(CorePropertiesForm.this);
+				}
+			});
+			result.add(checkBox);
+			result.add(createActiveMQConfigFileContainer("activeMQConfigFileContainer",enableConsoleProperties));
 			return result;
 		}
 
@@ -85,11 +116,10 @@ public class CorePropertiesFormPanel extends Panel
 				@Override
 				public boolean isVisible()
 				{
-					return !enableConsoleProperties && (EventListenerType.SIMPLE_JMS.equals(CorePropertiesForm.this.getModelObject().eventListener) || EventListenerType.JMS.equals(CorePropertiesForm.this.getModelObject().eventListener));
+					return !enableConsoleProperties && CorePropertiesForm.this.getModelObject().startEmbeddedBroker;
 				}
 			};
 			result.add(new BootstrapFormComponentFeedbackBorder("activeMQConfigFileFeedback",new TextField<String>("activeMQConfigFile").setLabel(new ResourceModel("lbl.activeMQConfigFile"))));
-			result.add(new CheckBox("jmsVirtualTopics").setLabel(new ResourceModel("lbl.jmsVirtualTopics")));
 			result.add(new DownloadActiveMQFileLink("downloadActiveMQFile"));
 			return result;
 		}
@@ -129,11 +159,13 @@ public class CorePropertiesFormPanel extends Panel
 		private boolean cleoPatch = false;
 		private EbMSHttpClientType httpClient = EbMSHttpClientType.DEFAULT;
 		private EventListenerType eventListener = EventListenerType.DEFAULT;
-		private String activeMQConfigFile = "vm://localhost?brokerConfig=xbean:classpath:nl/clockwork/ebms/activemq.xml";
+		private String jmsBrokerUrl = "vm://localhost";
+		private boolean jmsVirtualTopics = false;
+		private boolean startEmbeddedBroker = true;
+		private String activeMQConfigFile = "classpath:nl/clockwork/ebms/activemq.xml";
 		private boolean deleteMessageContentOnProcessed = false;
 		private boolean storeDuplicateMessage = true;
 		private boolean storeDuplicateMessageContent = true;
-		private boolean jmsVirtualTopics = false;
 
 		public boolean isDigipoortPatch()
 		{
@@ -183,6 +215,30 @@ public class CorePropertiesFormPanel extends Panel
 		{
 			this.eventListener = eventListener;
 		}
+		public void setJmsBrokerUrl(String jmsBrokerUrl)
+		{
+			this.jmsBrokerUrl = jmsBrokerUrl;
+		}
+		public String getJmsBrokerUrl()
+		{
+			return jmsBrokerUrl;
+		}
+		public boolean isJmsVirtualTopics()
+		{
+			return jmsVirtualTopics;
+		}
+		public void setJmsVirtualTopics(boolean jmsVirtualTopics)
+		{
+			this.jmsVirtualTopics = jmsVirtualTopics;
+		}
+		public void setStartEmbeddedBroker(boolean startEmbeddedBroker)
+		{
+			this.startEmbeddedBroker = startEmbeddedBroker;
+		}
+		public boolean isStartEmbeddedBroker()
+		{
+			return startEmbeddedBroker;
+		}
 		public String getActiveMQConfigFile()
 		{
 			return activeMQConfigFile;
@@ -215,12 +271,5 @@ public class CorePropertiesFormPanel extends Panel
 		{
 			this.storeDuplicateMessageContent = storeDuplicateMessageContent;
 		}
-		public boolean isJmsVirtualTopics() {
-			return jmsVirtualTopics;
-		}
-		public void setJmsVirtualTopics(boolean jmsVirtualTopics) {
-			this.jmsVirtualTopics = jmsVirtualTopics;
-		}
-
 	}
 }

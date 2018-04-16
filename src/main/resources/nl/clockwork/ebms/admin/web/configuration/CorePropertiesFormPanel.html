@@ -41,11 +41,11 @@
 				</div>
 			</div>
 		</div>
-		<div wicket:id="activeMQConfigFileContainer">
-			<div class="form-group" wicket:id="activeMQConfigFileFeedback">
-				<label wicket:for="activeMQConfigFile" class="col-lg-2 control-label"><wicket:label/></label>
+		<div wicket:id="jmsContainer">
+			<div class="form-group" wicket:id="jmsBrokerUrlFeedback">
+				<label wicket:for="jmsBrokerUrl" class="col-lg-2 control-label"><wicket:label/></label>
 				<div class="col-lg-10">
-					<input type="text" class="form-control" wicket:id="activeMQConfigFile"/>
+					<input type="text" class="form-control" wicket:id="jmsBrokerUrl"/>
 				</div>
 			</div>
 			<div class="form-group">
@@ -55,9 +55,23 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<div class="col-lg-2 control-label"/>
+				<label wicket:for="startEmbeddedBroker" class="col-lg-2 control-label"><wicket:label/></label>
 				<div class="col-lg-10">
-					<p class="form-control-static"><a href="#" wicket:id="downloadActiveMQFile"><wicket:message key="lbl.activeMQFile"/></a></p>
+					<input type="checkbox" wicket:id="startEmbeddedBroker"/>
+				</div>
+			</div>
+			<div wicket:id="activeMQConfigFileContainer">
+				<div class="form-group" wicket:id="activeMQConfigFileFeedback">
+					<label wicket:for="activeMQConfigFile" class="col-lg-2 control-label"><wicket:label/></label>
+					<div class="col-lg-10">
+						<input type="text" class="form-control" wicket:id="activeMQConfigFile"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-lg-2 control-label"/>
+					<div class="col-lg-10">
+						<p class="form-control-static"><a href="#" wicket:id="downloadActiveMQFile"><wicket:message key="lbl.activeMQFile"/></a></p>
+					</div>
 				</div>
 			</div>
 		</div>
