@@ -15,24 +15,17 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 
-import org.apache.wicket.util.file.File;
-import org.apache.wicket.util.lang.Bytes;
-import org.apache.wicket.util.resource.AbstractResourceStream;
-import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
+import org.apache.wicket.core.util.resource.PackageResourceStream;
 
-public class ActiveMQFileResourceStream extends AbstractResourceStream
+public class ActiveMQFileResourceStream extends PackageResourceStream
 {
 	private static final long serialVersionUID = 1L;
-	private File file;
 
 	public ActiveMQFileResourceStream() throws URISyntaxException
 	{
-		file = new File(getClass().getResource("/nl/clockwork/ebms/activemq.xml").toURI());
+		super(ActiveMQFileResourceStream.class,"/nl/clockwork/ebms/activemq.xml");
 	}
 	
 	@Override
@@ -41,27 +34,4 @@ public class ActiveMQFileResourceStream extends AbstractResourceStream
 		return "text/xml";
 	}
 	
-	@Override
-	public Bytes length()
-	{
-		return Bytes.bytes(file.length());
-	}
-	
-	@Override
-	public InputStream getInputStream() throws ResourceStreamNotFoundException
-	{
-		try
-		{
-			return file.inputStream();
-		}
-		catch (FileNotFoundException e)
-		{
-			throw new ResourceStreamNotFoundException(e);
-		}
-	}
-	
-	@Override
-	public void close() throws IOException
-	{
-	}
 }
