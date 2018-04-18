@@ -85,7 +85,7 @@ public class CorePropertiesFormPanel extends Panel
 				@Override
 				public boolean isVisible()
 				{
-					return !enableConsoleProperties && (EventListenerType.SIMPLE_JMS.equals(CorePropertiesForm.this.getModelObject().eventListener) || EventListenerType.JMS.equals(CorePropertiesForm.this.getModelObject().eventListener));
+					return !enableConsoleProperties && (EventListenerType.SIMPLE_JMS.equals(CorePropertiesForm.this.getModelObject().eventListener) || EventListenerType.JMS.equals(CorePropertiesForm.this.getModelObject().eventListener) || EventListenerType.JMS_TEXT.equals(CorePropertiesForm.this.getModelObject().eventListener));
 				}
 			};
 			result.add(new BootstrapFormComponentFeedbackBorder("jmsBrokerUrlFeedback",new TextField<String>("jmsBrokerUrl").setLabel(new ResourceModel("lbl.jmsBrokerUrl"))));
