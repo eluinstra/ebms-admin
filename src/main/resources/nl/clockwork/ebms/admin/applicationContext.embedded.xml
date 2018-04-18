@@ -35,9 +35,9 @@
 	<jaxws:endpoint implementor="#cpaService" address="/cpa" />
 
 	<jaxws:endpoint implementor="#ebMSMessageService" address="/ebms">
-		<jaxws:properties>
-			<entry key="mtom-enabled" value="true" />
-		</jaxws:properties>
+<!-- 		<jaxws:properties> -->
+<!-- 			<entry key="mtom-enabled" value="true" /> -->
+<!-- 		</jaxws:properties> -->
 	</jaxws:endpoint>
 
 	<context:component-scan base-package="nl.clockwork.ebms.admin" />
