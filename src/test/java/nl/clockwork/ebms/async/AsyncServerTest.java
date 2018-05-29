@@ -1,0 +1,169 @@
+package nl.clockwork.ebms.async;
+/**
+ * Copyright 2011 Clockwork
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static org.junit.Assert.fail;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
+
+import org.apache.commons.io.FileUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.github.tomakehurst.wiremock.WireMockServer;
+
+import nl.clockwork.ebms.model.EbMSMessageContent;
+import nl.clockwork.ebms.model.EbMSMessageContext;
+import nl.clockwork.ebms.model.Party;
+import nl.clockwork.ebms.model.Role;
+import nl.clockwork.ebms.service.CPAServiceException;
+
+public class AsyncServerTest {
+	private WireMockServer wireMockServer = new WireMockServer(8088);
+	TestServer ts = new TestServer();;
+
+	@Before
+	public void setup() throws Exception
+	{
+		wireMockServer.start();
+		ts.start();
+	}
+	
+	@Test
+	public void test() throws InterruptedException, CPAServiceException, IOException
+	{
+		File cpaForTest = new File("./resources/CPAs/cpaStubEBF.be.http.unsigned.xml");
+		// load CPA using soap client
+		System.out.println("Inserting CPA");
+		String cpaId = ts.getCPAService().insertCPA(FileUtils.readFileToString(cpaForTest), true);
+
+		// trying a ping
+		Party fromParty = new Party("urn:osb:oin:00000000000000000000", "DIGIPOORT");
+		Party toParty = new Party("urn:osb:oin:00000000000000000001", "OVERHEID");
+		
+		// setup mock response
+		wireMockServer.stubFor(post(urlEqualTo("/overheidStub"))
+				.willReturn(aResponse()
+						.withStatus(200)
+						.withHeader("Content-Type","text/xml; charset=UTF-8")
+						.withHeader("SOAPAction", "ebXML")
+						.withBody("<ns1:Envelope xmlns:ns1=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ns3=\"http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd\" xmlns:ns4=\"http://www.w3.org/1999/xlink\" xmlns:ns5=\"http://www.w3.org/2000/09/xmldsig#\">\r\n" + 
+								"    <ns1:Header>\r\n" + 
+								"        <ns3:MessageHeader ns1:mustUnderstand=\"1\" ns3:version=\"2.0\">\r\n" + 
+								"            <ns3:From>\r\n" + 
+								"                <ns3:PartyId ns3:type=\"urn:osb:oin\">00000000000000000001</ns3:PartyId>\r\n" + 
+								"            </ns3:From>\r\n" + 
+								"            <ns3:To>\r\n" + 
+								"                <ns3:PartyId ns3:type=\"urn:osb:oin\">00000000000000000000</ns3:PartyId>\r\n" + 
+								"            </ns3:To>\r\n" + 
+								"            <ns3:CPAId>" + cpaId + "</ns3:CPAId>\r\n" + 
+								"            <ns3:ConversationId>b0c9e910-e765-4883-b1a3-12e29a5fc7f1</ns3:ConversationId>\r\n" + 
+								"            <ns3:Service>urn:oasis:names:tc:ebxml-msg:service</ns3:Service>\r\n" + 
+								"            <ns3:Action>Pong</ns3:Action>\r\n" + 
+								"            <ns3:MessageData>\r\n" + 
+								"                <ns3:MessageId>b0c9e910-e765-4883-b1a3-12e29a5fc7f1@localhost</ns3:MessageId>\r\n" + 
+								"                <ns3:Timestamp>2018-05-29T10:38:44Z</ns3:Timestamp>\r\n" + 
+								"            </ns3:MessageData>\r\n" + 
+								"        </ns3:MessageHeader>\r\n" + 
+								"    </ns1:Header>\r\n" + 
+								"    <ns1:Body/>\r\n" + 
+								"</ns1:Envelope>")));
+		
+		try
+		{
+			System.out.println("trying ping");
+			ts.getEbmsService().ping(cpaId, fromParty, toParty);
+			System.out.println("Ping success");
+		} catch (Exception e)
+		{
+			fail("Ping exception caught " + e.getMessage());
+		}
+		
+		
+		// setup mock response
+		System.out.println("Send message");
+		String conversationId = UUID.randomUUID().toString();
+		String messageId = UUID.randomUUID().toString();
+		String replyMessageId = UUID.randomUUID().toString();
+		wireMockServer.stubFor(post(urlEqualTo("/overheidStub"))
+				.willReturn(aResponse()
+						.withStatus(200)
+						.withHeader("Content-Type","text/xml; charset=UTF-8")
+						.withHeader("SOAPAction", "ebXML")
+						.withBody("<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:eb=\"http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd\" xmlns:ns5=\"http://www.w3.org/2000/09/xmldsig#\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\r\n" + 
+								"    <soap:Header>\r\n" + 
+								"        <eb:MessageHeader eb:version=\"2.0\" soap:mustUnderstand=\"1\">\r\n" + 
+								"            <eb:From>\r\n" + 
+								"                <eb:PartyId eb:type=\"urn:osb:oin\">00000000000000000001</eb:PartyId>\r\n" + 
+								"            </eb:From>\r\n" + 
+								"            <eb:To>\r\n" + 
+								"                <eb:PartyId eb:type=\"urn:osb:oin\">00000000000000000000</eb:PartyId>\r\n" + 
+								"            </eb:To>\r\n" + 
+								"            <eb:CPAId>"+cpaId+"</eb:CPAId>\r\n" + 
+								"            <eb:ConversationId>"+conversationId +"</eb:ConversationId>\r\n" + 
+								"            <eb:Service>urn:oasis:names:tc:ebxml-msg:service</eb:Service>\r\n" + 
+								"            <eb:Action>Acknowledgment</eb:Action>\r\n" + 
+								"            <eb:MessageData>\r\n" + 
+								"                <eb:MessageId>"+ replyMessageId +"@localhost</eb:MessageId>\r\n" + 
+								"                <eb:Timestamp>2018-04-18T11:10:17Z</eb:Timestamp>\r\n" + 
+								"                <eb:RefToMessageId>"+messageId +"@localhost</eb:RefToMessageId>\r\n" + 
+								"            </eb:MessageData>\r\n" + 
+								"        </eb:MessageHeader>\r\n" + 
+								"        <eb:Acknowledgment eb:version=\"2.0\" soap:actor=\"urn:oasis:names:tc:ebxml-msg:actor:toPartyMSH\" soap:mustUnderstand=\"1\">\r\n" + 
+								"            <eb:Timestamp>2018-04-18T11:10:17Z</eb:Timestamp>\r\n" + 
+								"            <eb:RefToMessageId>" + messageId + "@localhost</eb:RefToMessageId>\r\n" + 
+								"            <eb:From>\r\n" + 
+								"                <eb:PartyId eb:type=\"urn:osb:oin\">00000000000000000001</eb:PartyId>\r\n" + 
+								"            </eb:From>\r\n" + 
+								"        </eb:Acknowledgment>\r\n" + 
+								"    </soap:Header>\r\n" + 
+								"    <soap:Body/>\r\n" + 
+								"</soap:Envelope>")));
+		
+		EbMSMessageContent testMessage = new EbMSMessageContent();
+		testMessage.setContext(new EbMSMessageContext());
+		testMessage.getContext().setConversationId(UUID.randomUUID().toString());
+		testMessage.getContext().setMessageId(messageId);
+		testMessage.getContext().setCpaId(cpaId);
+		testMessage.getContext().setFromRole(new Role("urn:osb:oin:00000000000000000000", "DIGIPOORT"));
+		testMessage.getContext().setToRole(new Role("urn:osb:oin:00000000000000000001", "OVERHEID"));
+		testMessage.getContext().setService("urn:osb:services:osb:afleveren:1.1$1.0");
+		testMessage.getContext().setAction("afleveren");
+//		testMessage.getContext().setTimestamp(new Date());
+		ts.getEbmsService().sendMessage(testMessage);
+
+		
+		
+		Thread.sleep(60000*2); // wait 2 minutes
+	}
+	
+	@After
+	public void tearDown() throws Exception
+	{
+		if (ts != null)
+			ts.stop();
+		if (wireMockServer != null)
+			wireMockServer.stop();
+	}
+}
