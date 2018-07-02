@@ -20,26 +20,40 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.oasis_open.committees.ebxml_msg.schema.msg_header_2_0.AckRequested;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 
 import nl.clockwork.ebms.Constants.EbMSMessageStatus;
+import nl.clockwork.ebms.client.apache.EbMSHttpClient;
 import nl.clockwork.ebms.event.TestMessageRegistry;
+import nl.clockwork.ebms.model.EbMSDocument;
 import nl.clockwork.ebms.model.EbMSMessageContent;
 import nl.clockwork.ebms.model.EbMSMessageContext;
 import nl.clockwork.ebms.model.Party;
 import nl.clockwork.ebms.model.Role;
+import nl.clockwork.ebms.processor.EbMSProcessorException;
 import nl.clockwork.ebms.service.CPAServiceException;
+import nl.clockwork.ebms.service.EbMSMessageServiceException;
 
 public class AsyncServerTest {
 	private static WireMockServer wireMockServer = new WireMockServer(8088);
@@ -54,61 +68,86 @@ public class AsyncServerTest {
 		cpaInsert();
 	}
 
-//	@Test
 	public static void cpaInsert() throws CPAServiceException, IOException
 	{
 		File cpaForTest = new File("./resources/CPAs/cpaStubEBF.be.http.unsigned.xml");
-		// load CPA using soap client
 		cpaId = ts.getCPAService().insertCPA(FileUtils.readFileToString(cpaForTest), true);
 		assertEquals("cpaStubEBF.be.http.unsigned", cpaId);
+	}
+	
+	// simple sleep test, to keep the server running for manual testing
+	//@Test
+	public void sleep() throws InterruptedException
+	{
+		Thread.sleep(1500000);
 	}
 	
 	@Test
 	public void pingTest()
 	{
-		Party fromParty = new Party("urn:osb:oin:00000000000000000000", "DIGIPOORT");
-		Party toParty = new Party("urn:osb:oin:00000000000000000001", "OVERHEID");
-		
-		// setup mock response
 		wireMockServer.stubFor(post(urlEqualTo("/overheidStub"))
 				.willReturn(aResponse()
 						.withStatus(200)
 						.withHeader("Content-Type","text/xml; charset=UTF-8")
 						.withHeader("SOAPAction", "ebXML")
-						.withBody("<ns1:Envelope xmlns:ns1=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ns3=\"http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd\" xmlns:ns4=\"http://www.w3.org/1999/xlink\" xmlns:ns5=\"http://www.w3.org/2000/09/xmldsig#\">\r\n" + 
-								"    <ns1:Header>\r\n" + 
-								"        <ns3:MessageHeader ns1:mustUnderstand=\"1\" ns3:version=\"2.0\">\r\n" + 
-								"            <ns3:From>\r\n" + 
-								"                <ns3:PartyId ns3:type=\"urn:osb:oin\">00000000000000000001</ns3:PartyId>\r\n" + 
-								"            </ns3:From>\r\n" + 
-								"            <ns3:To>\r\n" + 
-								"                <ns3:PartyId ns3:type=\"urn:osb:oin\">00000000000000000000</ns3:PartyId>\r\n" + 
-								"            </ns3:To>\r\n" + 
-								"            <ns3:CPAId>" + cpaId + "</ns3:CPAId>\r\n" + 
-								"            <ns3:ConversationId>b0c9e910-e765-4883-b1a3-12e29a5fc7f1</ns3:ConversationId>\r\n" + 
-								"            <ns3:Service>urn:oasis:names:tc:ebxml-msg:service</ns3:Service>\r\n" + 
-								"            <ns3:Action>Pong</ns3:Action>\r\n" + 
-								"            <ns3:MessageData>\r\n" + 
-								"                <ns3:MessageId>b0c9e910-e765-4883-b1a3-12e29a5fc7f1@localhost</ns3:MessageId>\r\n" + 
-								"                <ns3:Timestamp>2018-05-29T10:38:44Z</ns3:Timestamp>\r\n" + 
-								"            </ns3:MessageData>\r\n" + 
-								"        </ns3:MessageHeader>\r\n" + 
-								"    </ns1:Header>\r\n" + 
-								"    <ns1:Body/>\r\n" + 
+						.withBody("<ns1:Envelope xmlns:ns1=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ns3=\"http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd\" xmlns:ns4=\"http://www.w3.org/1999/xlink\" xmlns:ns5=\"http://www.w3.org/2000/09/xmldsig#\">" + 
+								"    <ns1:Header>" + 
+								"        <ns3:MessageHeader ns1:mustUnderstand=\"1\" ns3:version=\"2.0\">" + 
+								"            <ns3:From>" + 
+								"                <ns3:PartyId ns3:type=\"urn:osb:oin\">00000000000000000001</ns3:PartyId>" + 
+								"            </ns3:From>" + 
+								"            <ns3:To>" + 
+								"                <ns3:PartyId ns3:type=\"urn:osb:oin\">00000000000000000000</ns3:PartyId>" + 
+								"            </ns3:To>" + 
+								"            <ns3:CPAId>" + cpaId + "</ns3:CPAId>" + 
+								"            <ns3:ConversationId></ns3:ConversationId>" + 
+								"            <ns3:Service>urn:oasis:names:tc:ebxml-msg:service</ns3:Service>" + 
+								"            <ns3:Action>Pong</ns3:Action>" + 
+								"            <ns3:MessageData>" + 
+								"                <ns3:MessageId></ns3:MessageId>" + 
+								"                <ns3:Timestamp>2018-05-29T10:38:44Z</ns3:Timestamp>" + 
+								"            </ns3:MessageData>" + 
+								"        </ns3:MessageHeader>" + 
+								"    </ns1:Header>" + 
+								"    <ns1:Body/>" + 
 								"</ns1:Envelope>")));
 		
-		try
-		{
-			ts.getEbmsService().ping(cpaId, fromParty, toParty);
-		} catch (Exception e)
-		{
-			fail("Ping exception caught " + e.getMessage());
-		}	
+		ts.getEbmsService().ping(cpaId
+				, new Party("urn:osb:oin:00000000000000000000", "DIGIPOORT")
+				, new Party("urn:osb:oin:00000000000000000001", "OVERHEID"));
 	}
 	
 	
 	@Test
-	public void deliveredTest() throws InterruptedException, CPAServiceException, IOException
+	public void pingFailedTest()
+	{
+		wireMockServer.stubFor(post(urlEqualTo("/overheidStub"))
+				.willReturn(aResponse()
+						.withStatus(500)
+						.withHeader("Content-Type","text/xml; charset=UTF-8")
+						.withHeader("SOAPAction", "ebXML")
+						.withBody("<ns1:Envelope xmlns:ns1=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ns3=\"http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd\" xmlns:ns4=\"http://www.w3.org/1999/xlink\" xmlns:ns5=\"http://www.w3.org/2000/09/xmldsig#\">" + 
+								"    <ns1:Body>" + 
+								"        <ns1:Fault>" + 
+								"            <faultcode>ns1:Client</faultcode>" + 
+								"            <faultstring>CPA " + cpaId + " not found!</faultstring>" + 
+								"        </ns1:Fault>" + 
+								"    </ns1:Body>" + 
+								"</ns1:Envelope>")));
+		try
+		{
+			ts.getEbmsService().ping(cpaId
+					, new Party("urn:osb:oin:00000000000000000000", "DIGIPOORT")
+					, new Party("urn:osb:oin:00000000000000000001", "OVERHEID"));
+			fail("No exception thrown");
+		} catch (EbMSMessageServiceException e)
+		{
+			assert(e.getMessage().contains("CPA " + cpaId + " not found!"));
+		}
+	}
+	
+	@Test
+	public void deliveredTest() throws InterruptedException, CPAServiceException, IOException, ParserConfigurationException, SAXException, EbMSProcessorException
 	{
 		// setup mock response
 		String messageId = UUID.randomUUID().toString();
@@ -132,6 +171,7 @@ public class AsyncServerTest {
 		ts.getEbmsService().sendMessage(testMessage);
 		assertEquals(EbMSMessageStatus.DELIVERED, 
 				TestMessageRegistry.getInstance().waitFor(testMessage.getContext().getMessageId()));
+		
 	}
 	
 	@Test
@@ -158,22 +198,89 @@ public class AsyncServerTest {
 		assertEquals(EbMSMessageStatus.DELIVERY_FAILED, 
 				TestMessageRegistry.getInstance().waitFor(testMessage.getContext().getMessageId()));
 	}
-	
-	public void acknowledgementTest()
+
+	private Document stringToDocument (String message) throws ParserConfigurationException, SAXException, IOException
 	{
-		// send ack to ebms server
-		
-		// how to verify ??
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		return dBuilder.parse(new ByteArrayInputStream(message.getBytes()));	
+	}
+	
+	@Test
+	public void unknownAckTest() throws ParserConfigurationException, SAXException, IOException
+	{
+		String messageId = UUID.randomUUID().toString();
+
+		// send ack to ebms server (from "stub"), but there's no AckRequest in DB..
+		EbMSHttpClient httpc = new EbMSHttpClient();
+		Document message = stringToDocument("<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:eb=\"http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd\" xmlns:ns5=\"http://www.w3.org/2000/09/xmldsig#\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">" + 
+				"    <soap:Header>" + 
+				"        <eb:MessageHeader eb:version=\"2.0\" soap:mustUnderstand=\"1\">" + 
+				"            <eb:From><eb:PartyId eb:type=\"urn:osb:oin\">00000000000000000001</eb:PartyId></eb:From>" + 
+				"            <eb:To><eb:PartyId eb:type=\"urn:osb:oin\">00000000000000000000</eb:PartyId></eb:To>" + 
+				"            <eb:CPAId>cpaStubEBF.be.http.unsigned</eb:CPAId>" + 
+				"            <eb:ConversationId>" + messageId + "</eb:ConversationId>" + 
+				"            <eb:Service>urn:oasis:names:tc:ebxml-msg:service</eb:Service>" + 
+				"            <eb:Action>Acknowledgment</eb:Action>" + 
+				"            <eb:MessageData>" + 
+				"                <eb:MessageId>" + UUID.randomUUID().toString() + "@localhost</eb:MessageId>" + 
+				"                <eb:Timestamp>2018-04-18T11:10:17Z</eb:Timestamp>" + 
+				"                <eb:RefToMessageId>512425b0-aee3-4fdc-9e4e-d2ce337b12b1@localhost</eb:RefToMessageId>" + 
+				"            </eb:MessageData>" + 
+				"        </eb:MessageHeader>" + 
+				"        <eb:Acknowledgment eb:version=\"2.0\" soap:actor=\"urn:oasis:names:tc:ebxml-msg:actor:toPartyMSH\" soap:mustUnderstand=\"1\">" + 
+				"            <eb:Timestamp>2018-04-18T11:10:17Z</eb:Timestamp>" + 
+				"            <eb:RefToMessageId>" + messageId + "@localhost</eb:RefToMessageId>" + 
+				"            <eb:From>" + 
+				"                <eb:PartyId eb:type=\"urn:osb:oin\">00000000000000000001</eb:PartyId>" + 
+				"            </eb:From>" + 
+				"        </eb:Acknowledgment>" + 
+				"    </soap:Header>" + 
+				"    <soap:Body/>" + 
+				"</soap:Envelope>");
+		EbMSDocument document = new EbMSDocument("1234", message);
+		try {
+			EbMSDocument response = httpc.sendMessage(ts.getEbmsEndpoint(), document);
+			fail("missing exception");
+		} catch (EbMSProcessorException e) {
+			assertTrue(e.getMessage().contains("StatusCode: 500"));
+		}
 	}
 
-	
-	public void unknownAckTest()
+	@Test
+	public void clientPing() throws ParserConfigurationException, SAXException, IOException, EbMSProcessorException
 	{
-		// send ack of unknown message to ebms server
-		
-		// how to verify ??
-	}
+		String messageId = UUID.randomUUID().toString();
 
+		// send ack to ebms server (from "stub")
+		EbMSHttpClient httpc = new EbMSHttpClient();
+		Document message = stringToDocument("<ns1:Envelope xmlns:ns1=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ns3=\"http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd\" xmlns:ns4=\"http://www.w3.org/1999/xlink\" xmlns:ns5=\"http://www.w3.org/2000/09/xmldsig#\">\r\n" + 
+				"    <ns1:Header>\r\n" + 
+				"        <ns3:MessageHeader ns1:mustUnderstand=\"1\" ns3:version=\"2.0\">\r\n" + 
+				"            <ns3:From>\r\n" + 
+				"                <ns3:PartyId ns3:type=\"urn:osb:oin\">00000000000000000001</ns3:PartyId>\r\n" + 
+				"            </ns3:From>\r\n" + 
+				"            <ns3:To>\r\n" + 
+				"                <ns3:PartyId ns3:type=\"urn:osb:oin\">00000000000000000000</ns3:PartyId>\r\n" + 
+				"            </ns3:To>\r\n" + 
+				"            <ns3:CPAId>" + cpaId + "</ns3:CPAId>\r\n" + 
+				"            <ns3:ConversationId>" + messageId + "</ns3:ConversationId>\r\n" + 
+				"            <ns3:Service>urn:oasis:names:tc:ebxml-msg:service</ns3:Service>\r\n" + 
+				"            <ns3:Action>Ping</ns3:Action>\r\n" + 
+				"            <ns3:MessageData>\r\n" + 
+				"                <ns3:MessageId>\" + messageId + \"@localhost</ns3:MessageId>\r\n" + 
+				"                <ns3:Timestamp>2018-07-02T22:02:38Z</ns3:Timestamp>\r\n" + 
+				"            </ns3:MessageData>\r\n" + 
+				"        </ns3:MessageHeader>\r\n" + 
+				"    </ns1:Header>\r\n" + 
+				"    <ns1:Body/>\r\n" + 
+				"</ns1:Envelope>");
+		EbMSDocument document = new EbMSDocument("4321", message);
+		EbMSDocument response = httpc.sendMessage(ts.getEbmsEndpoint(), document); // Fails in log due to CPA id not available ?!
+		fail("Test incorrect based on serverlog");
+	}
+	
+	
 	
 	@AfterClass
 	public static void tearDown() throws Exception
