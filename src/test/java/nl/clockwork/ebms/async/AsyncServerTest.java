@@ -42,6 +42,8 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.matching.RequestPattern;
+import com.github.tomakehurst.wiremock.verification.FindRequestsResult;
 
 import nl.clockwork.ebms.Constants.EbMSMessageStatus;
 import nl.clockwork.ebms.client.apache.EbMSHttpClient;
@@ -70,9 +72,9 @@ public class AsyncServerTest {
 
 	public static void cpaInsert() throws CPAServiceException, IOException
 	{
-		File cpaForTest = new File("./resources/CPAs/cpaStubEBF.be.http.unsigned.xml");
+		File cpaForTest = new File("./resources/CPAs/cpaStubEBF.rm.http.unsigned.xml");
 		cpaId = ts.getCPAService().insertCPA(FileUtils.readFileToString(cpaForTest), true);
-		assertEquals("cpaStubEBF.be.http.unsigned", cpaId);
+		assertEquals("cpaStubEBF.rm.http.unsigned", cpaId);
 	}
 	
 	// simple sleep test, to keep the server running for manual testing
@@ -169,16 +171,53 @@ public class AsyncServerTest {
 		testMessage.getContext().setAction("afleveren");
 //		testMessage.getContext().setTimestamp(new Date());
 		ts.getEbmsService().sendMessage(testMessage);
+		
+		// send ack to ebms server (from "stub")
+		EbMSHttpClient httpc = new EbMSHttpClient();
+		Document message = stringToDocument("<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:eb=\"http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd\" xmlns:ns5=\"http://www.w3.org/2000/09/xmldsig#\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\r\n" + 
+				"    <soap:Header>\r\n" + 
+				"        <eb:MessageHeader eb:version=\"2.0\" soap:mustUnderstand=\"1\">\r\n" + 
+				"            <eb:From>\r\n" + 
+				"                <eb:PartyId eb:type=\"urn:osb:oin\">00000000000000000001</eb:PartyId>\r\n" + 
+				"            </eb:From>\r\n" + 
+				"            <eb:To>\r\n" + 
+				"                <eb:PartyId eb:type=\"urn:osb:oin\">00000000000000000000</eb:PartyId>\r\n" + 
+				"            </eb:To>\r\n" + 
+				"            <eb:CPAId>" + cpaId + "</eb:CPAId>\r\n" + 
+				"            <eb:ConversationId>" + messageId + "</eb:ConversationId>\r\n" + 
+				"            <eb:Service>urn:oasis:names:tc:ebxml-msg:service</eb:Service>\r\n" + 
+				"            <eb:Action>Acknowledgment</eb:Action>\r\n" + 
+				"            <eb:MessageData>\r\n" + 
+				"                <eb:MessageId>" + UUID.randomUUID().toString() + "@localhost</eb:MessageId>\r\n" + 
+				"                <eb:Timestamp>2018-07-03T22:18:03Z</eb:Timestamp>\r\n" + 
+				"                <eb:RefToMessageId>"+ messageId + "@localhost</eb:RefToMessageId>\r\n" + 
+				"            </eb:MessageData>\r\n" + 
+				"        </eb:MessageHeader>\r\n" + 
+				"        <eb:Acknowledgment eb:version=\"2.0\" soap:actor=\"urn:oasis:names:tc:ebxml-msg:actor:toPartyMSH\" soap:mustUnderstand=\"1\">\r\n" + 
+				"            <eb:Timestamp>2018-07-03T22:18:03Z</eb:Timestamp>\r\n" + 
+				"            <eb:RefToMessageId>"+ messageId +"@localhost</eb:RefToMessageId>\r\n" + 
+				"            <eb:From>\r\n" + 
+				"                <eb:PartyId eb:type=\"urn:osb:oin\">00000000000000000001</eb:PartyId>\r\n" + 
+				"            </eb:From>\r\n" + 
+				"        </eb:Acknowledgment>\r\n" + 
+				"    </soap:Header>\r\n" + 
+				"    <soap:Body/>\r\n" + 
+				"</soap:Envelope>");
+		EbMSDocument document = new EbMSDocument("1234", message);
+		EbMSDocument response = httpc.sendMessage(ts.getEbmsEndpoint(), document);
+	
+		// response sent, now wait for delivered status
 		assertEquals(EbMSMessageStatus.DELIVERED, 
 				TestMessageRegistry.getInstance().waitFor(testMessage.getContext().getMessageId()));
 		
 	}
 	
 	@Test
-	public void deliveryFailTest() throws InterruptedException, CPAServiceException, IOException
+	public void deliveryFailTest() throws InterruptedException, CPAServiceException, IOException, ParserConfigurationException, SAXException, EbMSProcessorException
 	{
 		// setup mock response
 		String messageId = UUID.randomUUID().toString();
+		wireMockServer.resetMappings();
 		wireMockServer.stubFor(post(urlEqualTo("/overheidStub"))
 				.willReturn(aResponse()
 						.withStatus(500)
@@ -195,6 +234,34 @@ public class AsyncServerTest {
 		testMessage.getContext().setAction("afleveren");
 //		testMessage.getContext().setTimestamp(new Date());
 		ts.getEbmsService().sendMessage(testMessage);
+		
+		// send MessageError to ebms server (from "stub")
+		EbMSHttpClient httpc = new EbMSHttpClient();
+		Document message = stringToDocument("<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:eb=\"http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd\" xmlns:ns5=\"http://www.w3.org/2000/09/xmldsig#\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\r\n" + 
+				"    <soap:Header>\r\n" + 
+				"        <eb:MessageHeader eb:version=\"2.0\" soap:mustUnderstand=\"1\">\r\n" + 
+				"            <eb:From>\r\n" + 
+				"                <eb:PartyId eb:type=\"urn:osb:oin\">00000000000000000001</eb:PartyId>\r\n" + 
+				"            </eb:From>\r\n" + 
+				"            <eb:To>\r\n" + 
+				"                <eb:PartyId eb:type=\"urn:osb:oin\">00000000000000000000</eb:PartyId>\r\n" + 
+				"            </eb:To>\r\n" + 
+				"            <eb:CPAId>" + cpaId + "</eb:CPAId>\r\n" + 
+				"            <eb:ConversationId>" + messageId + "</eb:ConversationId>\r\n" + 
+				"            <eb:Service>urn:oasis:names:tc:ebxml-msg:service</eb:Service>\r\n" + 
+				"            <eb:Action>MessageError</eb:Action>\r\n" + 
+				"            <eb:MessageData>\r\n" + 
+				"                <eb:MessageId>" + UUID.randomUUID().toString() + "@localhost</eb:MessageId>\r\n" + 
+				"                <eb:Timestamp>2018-07-03T22:18:03Z</eb:Timestamp>\r\n" + 
+				"                <eb:RefToMessageId>"+ messageId + "@localhost</eb:RefToMessageId>\r\n" + 
+				"            </eb:MessageData>\r\n" + 
+				"        </eb:MessageHeader>\r\n" + 
+				"    </soap:Header>\r\n" + 
+				"    <soap:Body/>\r\n" + 
+				"</soap:Envelope>");
+		EbMSDocument document = new EbMSDocument("1234", message);
+		EbMSDocument response = httpc.sendMessage(ts.getEbmsEndpoint(), document);
+
 		assertEquals(EbMSMessageStatus.DELIVERY_FAILED, 
 				TestMessageRegistry.getInstance().waitFor(testMessage.getContext().getMessageId()));
 	}
@@ -248,9 +315,16 @@ public class AsyncServerTest {
 	}
 
 	@Test
-	public void clientPing() throws ParserConfigurationException, SAXException, IOException, EbMSProcessorException
+	public void clientPing() throws ParserConfigurationException, SAXException, IOException, EbMSProcessorException, InterruptedException
 	{
 		String messageId = UUID.randomUUID().toString();
+		
+		// accept Pong
+		wireMockServer.resetMappings();
+		wireMockServer.stubFor(post(urlEqualTo("/overheidStub"))
+				.willReturn(aResponse()
+						.withStatus(200)
+						.withBody("")));
 
 		// send ack to ebms server (from "stub")
 		EbMSHttpClient httpc = new EbMSHttpClient();
@@ -268,7 +342,7 @@ public class AsyncServerTest {
 				"            <ns3:Service>urn:oasis:names:tc:ebxml-msg:service</ns3:Service>\r\n" + 
 				"            <ns3:Action>Ping</ns3:Action>\r\n" + 
 				"            <ns3:MessageData>\r\n" + 
-				"                <ns3:MessageId>\" + messageId + \"@localhost</ns3:MessageId>\r\n" + 
+				"                <ns3:MessageId>" + messageId + "@localhost</ns3:MessageId>\r\n" + 
 				"                <ns3:Timestamp>2018-07-02T22:02:38Z</ns3:Timestamp>\r\n" + 
 				"            </ns3:MessageData>\r\n" + 
 				"        </ns3:MessageHeader>\r\n" + 
@@ -276,11 +350,14 @@ public class AsyncServerTest {
 				"    <ns1:Body/>\r\n" + 
 				"</ns1:Envelope>");
 		EbMSDocument document = new EbMSDocument("4321", message);
-		EbMSDocument response = httpc.sendMessage(ts.getEbmsEndpoint(), document); // Fails in log due to CPA id not available ?!
-		fail("Test incorrect based on serverlog");
+		httpc.sendMessage(ts.getEbmsEndpoint(), document); // Fails in log due to CPA id not available ?!
+		
+		Thread.sleep(3000);
+		// check if Pong was received
+		FindRequestsResult result = wireMockServer.findRequestsMatching(RequestPattern.everything());
+		assertEquals(1, result.getRequests().size());
+		assert(result.getRequests().get(0).getBodyAsString().contains("Pong"));
 	}
-	
-	
 	
 	@AfterClass
 	public static void tearDown() throws Exception
