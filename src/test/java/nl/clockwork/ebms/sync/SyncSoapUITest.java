@@ -27,8 +27,8 @@ public class SyncSoapUITest
 			public void run() {
 				super.run();
 				try {
-					StartEmbedded.main(new String[] {"-soap", "-hsqldb", "-port", "8080"});
-					this.sleep(10000); // wait for startup (replace by polling url)
+					//StartEmbedded.main(new String[] {"-soap", "-hsqldb", "-port", "8080"});
+					StartEmbedded.main(new String[] {"-hsqldb", "-soap"});
 					
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -40,6 +40,7 @@ public class SyncSoapUITest
 	
 	@Test
 	public void testRunner() throws Exception {
+			Thread.sleep(10000);
 		  WsdlProject project = new WsdlProject( "src/test/resources/EbMS-soapui-project.xml" ); 
 		  TestSuite testSuite = project.getTestSuiteByName( "TestSuite EbMS Sync" ); 
 		  TestCase testCase = testSuite.getTestCaseByName( "TestCase EbMS" );
