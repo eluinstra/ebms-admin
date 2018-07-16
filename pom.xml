@@ -243,8 +243,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.smartbear.soapui</groupId>
-			<artifactId>soapui</artifactId>
-			<version>5.4.0</version>
+			<artifactId>soapui-maven-plugin</artifactId>
+			<version>5.1.3</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
