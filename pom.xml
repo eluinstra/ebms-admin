@@ -357,6 +357,63 @@
 					</execution>
 				</executions>
 			</plugin>
+       <plugin>
+            <groupId>com.bazaarvoice.maven.plugins</groupId>
+            <artifactId>process-exec-maven-plugin</artifactId>
+            <version>0.7</version>
+            <executions>
+                <execution>
+                    <id>ebms-admin-start</id>
+                    <phase>pre-integration-test</phase>
+                    <goals>
+                        <goal>start</goal>
+                    </goals>
+                    <configuration>
+                        <name>ebms-admin</name>
+                        <workingDir>ebmsadmin</workingDir>
+                        <waitForInterrupt>false</waitForInterrupt>
+                        <healthcheckUrl>http://localhost:8080/service/cpa?wsdl</healthcheckUrl>
+                        <arguments>
+                            <argument>java</argument>
+                            <argument>-classpath</argument>
+                            <argument>${project.build.directory}/${project.build.finalName}.jar</argument>
+                            <argument>nl.clockwork.ebms.admin.StartEmbedded</argument>
+                            <argument>-hsqldb</argument>
+                            <argument>-soap</argument>
+                        </arguments>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>stop-all</id>
+                    <phase>post-integration-test</phase>
+                    <goals>
+                        <goal>stop-all</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+		    <plugin>
+		        <groupId>com.smartbear.soapui</groupId>
+		        <artifactId>soapui-maven-plugin</artifactId>
+		        <version>5.4.0</version>
+		        <configuration>
+		            <projectFile>src/test/resources/EbMS-soapui-project.xml</projectFile>
+		            <testSuite>TestSuite EbMS Sync</testSuite>
+		            <junitReport>true</junitReport>
+		            <outputFolder>target/soapui/output</outputFolder>
+		            <projectProperties>
+		            </projectProperties>
+		        </configuration>
+		        <executions>
+		        	<execution>
+		        		<id>sync-tests</id>
+		        		<goals>
+		        			<goal>test</goal>
+		        		</goals>
+		        		<phase>integration-test</phase>
+		        	</execution>
+		        </executions>
+		    </plugin>
 			<!--plugin>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-codegen-plugin</artifactId>
