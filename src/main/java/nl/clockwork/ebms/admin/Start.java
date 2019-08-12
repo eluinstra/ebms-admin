@@ -88,7 +88,7 @@ public class Start
 		start.initWebServer();
 		start.initJMX();
 		XmlWebApplicationContext context = new XmlWebApplicationContext();
-		context.setConfigLocations(createConfigLocations("classpath:nl/clockwork/ebms/admin/applicationContext.xml"));
+		context.setConfigLocations(getConfigLocations("classpath:nl/clockwork/ebms/admin/applicationContext.xml"));
 		ContextLoaderListener contextLoaderListener = new ContextLoaderListener(context);
 		start.initWebContext(contextLoaderListener);
 
@@ -96,16 +96,6 @@ public class Start
 
 		start.server.start();
 		start.server.join();
-	}
-
-	protected static String[] createConfigLocations(String configLocation)
-	{
-		List<String> result = new ArrayList<>(); 
-		result.add(configLocation);
-		for (ExtensionProvider extensionProvider : ExtensionProvider.get())
-			if (!StringUtils.isEmpty(extensionProvider.getSpringConfigurationFile()))
-				result.add(extensionProvider.getSpringConfigurationFile());
-		return result.toArray(new String[]{});
 	}
 
 	protected void initCmd(String[] args) throws ParseException
@@ -129,6 +119,16 @@ public class Start
 		return options;
 	}
 	
+	protected static String[] getConfigLocations(String configLocation)
+	{
+		List<String> result = new ArrayList<>(); 
+		result.add(configLocation);
+		for (ExtensionProvider extensionProvider : ExtensionProvider.get())
+			if (!StringUtils.isEmpty(extensionProvider.getSpringConfigurationFile()))
+				result.add(extensionProvider.getSpringConfigurationFile());
+		return result.toArray(new String[]{});
+	}
+
 	protected void initWebServer() throws MalformedURLException, IOException
 	{
 		if (!cmd.hasOption("ssl"))
