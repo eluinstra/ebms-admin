@@ -28,7 +28,6 @@ import java.util.Map;
 import org.apache.commons.cli.Options;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.resource.Resource;
@@ -74,7 +73,7 @@ public class StartEmbedded extends Start
 		start.initEbMSServer();
 		start.initJMX();
 		XmlWebApplicationContext context = new XmlWebApplicationContext();
-		context.setConfigLocations(createConfigLocations("classpath:nl/clockwork/ebms/admin/applicationContext.embedded.xml"));
+		context.setConfigLocations(getConfigLocations("classpath:nl/clockwork/ebms/admin/applicationContext.embedded.xml"));
 		ContextLoaderListener contextLoaderListener = new ContextLoaderListener(context);
 		start.initWebContext(contextLoaderListener);
 		start.initEbMSContext(contextLoaderListener);
