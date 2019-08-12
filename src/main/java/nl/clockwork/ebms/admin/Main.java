@@ -15,9 +15,12 @@
  */
 package nl.clockwork.ebms.admin;
 
+import java.util.EnumSet;
+
+import javax.servlet.DispatcherType;
+
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.FilterMapping;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.springframework.web.context.ContextLoaderListener;
 
@@ -38,7 +41,7 @@ public class Main
 		FilterHolder filterHolder = new FilterHolder(org.apache.wicket.protocol.http.WicketFilter.class); 
 		filterHolder.setInitParameter("applicationClassName","nl.clockwork.ebms.admin.web.WicketApplication");
 		filterHolder.setInitParameter("filterMappingUrlPattern","/*");
-		context.addFilter(filterHolder,"/*",FilterMapping.DEFAULT);
+		context.addFilter(filterHolder,"/*",EnumSet.of(DispatcherType.REQUEST));
 		
 		ContextLoaderListener listener = new ContextLoaderListener();
 		context.addEventListener(listener);

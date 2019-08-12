@@ -63,7 +63,7 @@
 	<properties>
 		<jdk.version>1.7</jdk.version>
 		<wicket.version>6.18.0</wicket.version>
-		<jetty.version>7.6.18.v20150929</jetty.version>
+		<jetty.version>9.2.28.v20190418</jetty.version><!-- 9.3.27.v20190418 -->
 		<spring.version>4.1.4.RELEASE</spring.version>
 		<cxf.version>2.7.14</cxf.version>
 		<release.repo.url>http://sourceforge.net</release.repo.url>
@@ -78,8 +78,8 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.jetty.aggregate</groupId>
-			<artifactId>jetty-all-server</artifactId>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
 			<version>${jetty.version}</version>
 			<exclusions>
 				<exclusion>
@@ -87,6 +87,16 @@
 					<groupId>org.eclipse.jetty.orbit</groupId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-jmx</artifactId>
+			<version>${jetty.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>

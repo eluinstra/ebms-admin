@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -23,25 +22,15 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import nl.clockwork.ebms.admin.web.ExtensionProvider;
-import nl.clockwork.ebms.admin.web.configuration.JdbcURL;
 
 import org.apache.commons.cli.Options;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.jetty.server.DispatcherType;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.bio.SocketConnector;
-import org.eclipse.jetty.server.ssl.SslSocketConnector;
-import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
-import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.hsqldb.persist.HsqlProperties;
@@ -53,6 +42,10 @@ import org.hsqldb.server.ServerProperties;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.support.XmlWebApplicationContext;
+
+import nl.clockwork.ebms.admin.web.ExtensionProvider;
+import nl.clockwork.ebms.admin.web.configuration.JdbcURL;
 
 public class StartEmbedded extends Start
 {
@@ -66,6 +59,8 @@ public class StartEmbedded extends Start
 		if (start.cmd.hasOption("h"))
 			start.printUsage();
 
+		start.server.setHandler(start.handlerCollection);
+
 		start.properties = start.getProperties("nl/clockwork/ebms/admin/applicationConfig.embedded.xml");
 
 		System.setProperty("javax.net.ssl.trustStore","");
@@ -74,12 +69,15 @@ public class StartEmbedded extends Start
 		if (!StringUtils.isEmpty(start.properties.get("https.cipherSuites")))
 			System.setProperty("https.cipherSuites",start.properties.get("https.cipherSuites"));
 
-		start.server = new Server();
 		start.initHSQLDB();
 		start.initWebServer();
 		start.initEbMSServer();
 		start.initJMX();
-		start.initWebContext();
+		XmlWebApplicationContext context = new XmlWebApplicationContext();
+		context.setConfigLocations(createConfigLocations("classpath:nl/clockwork/ebms/admin/applicationContext.embedded.xml"));
+		ContextLoaderListener contextLoaderListener = new ContextLoaderListener(context);
+		start.initWebContext(contextLoaderListener);
+		start.initEbMSContext(contextLoaderListener);
 
 		System.out.println("Starting web server...");
 
@@ -189,9 +187,10 @@ public class StartEmbedded extends Start
 	{
 		if (!"true".equals(properties.get("ebms.ssl")))
 		{
-			SocketConnector connector = new SocketConnector();
+			ServerConnector connector = new ServerConnector(this.server);
 			connector.setHost(StringUtils.isEmpty(properties.get("ebms.host")) ? "0.0.0.0" : properties.get("ebms.host"));
 			connector.setPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
+			connector.setName("ebms");
 			server.addConnector(connector);
 			System.out.println("EbMS service configured on http://" + getHost(connector.getHost()) + ":" + connector.getPort() + properties.get("ebms.path"));
 		}
@@ -222,9 +221,10 @@ public class StartEmbedded extends Start
 						System.exit(1);
 					}
 				}
-				SslSocketConnector connector = new SslSocketConnector(factory);
+				ServerConnector connector = new ServerConnector(this.server,factory);
 				connector.setHost(StringUtils.isEmpty(properties.get("ebms.host")) ? "0.0.0.0" : properties.get("ebms.host"));
 				connector.setPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
+				connector.setName("ebms");
 				server.addConnector(connector);
 				System.out.println("EbMS service configured on https://" + connector.getHost() + ":" + connector.getPort() + properties.get("ebms.path"));
 			}
@@ -236,60 +236,19 @@ public class StartEmbedded extends Start
 		}
 	}
 
-	@Override
-	protected void initWebContext() throws IOException, NoSuchAlgorithmException
+	protected void initEbMSContext(ContextLoaderListener contextLoaderListener) throws IOException, NoSuchAlgorithmException
 	{
-		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		server.setHandler(context);
+		ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+		handler.setVirtualHosts(new String[] {"@ebms"});
+		handlerCollection.addHandler(handler);
 
-		context.setContextPath("/");
+		handler.setContextPath("/");
 
-		if (cmd.hasOption("authentication"))
-		{
-			System.out.println("Configuring web server authentication:");
-			File file = new File(REALM_FILE);
-			if (file.exists())
-				System.out.println("Using file: " + file.getAbsoluteFile());
-			else
-				createRealmFile(file);
-			context.setSecurityHandler(getSecurityHandler());
-		}
+		handler.addServlet(nl.clockwork.ebms.servlet.EbMSServlet.class,properties.get("ebms.path"));
 
-		context.setInitParameter("configuration","deployment");
-
-		String contextConfigLocation = "classpath:nl/clockwork/ebms/admin/applicationContext.embedded.xml";
-		for (ExtensionProvider extensionProvider : ExtensionProvider.get())
-			if (!StringUtils.isEmpty(extensionProvider.getSpringConfigurationFile()))
-				contextConfigLocation += "," + extensionProvider.getSpringConfigurationFile();
-
-		context.setInitParameter("contextConfigLocation",contextConfigLocation);
-
-		ServletHolder servletHolder = new ServletHolder(nl.clockwork.ebms.admin.web.ResourceServlet.class);
-		context.addServlet(servletHolder,"/css/*");
-		context.addServlet(servletHolder,"/fonts/*");
-		context.addServlet(servletHolder,"/images/*");
-		context.addServlet(servletHolder,"/js/*");
-
-		context.addServlet(nl.clockwork.ebms.servlet.EbMSServlet.class,properties.get("ebms.path"));
-
-		if (cmd.hasOption("soap"))
-			context.addServlet(org.apache.cxf.transport.servlet.CXFServlet.class,"/service/*");
-
-		context.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
+		handler.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
 		
-		FilterHolder filterHolder = new FilterHolder(org.apache.wicket.protocol.http.WicketFilter.class); 
-		filterHolder.setInitParameter("applicationClassName","nl.clockwork.ebms.admin.web.WicketApplication");
-		filterHolder.setInitParameter("filterMappingUrlPattern","/*");
-		context.addFilter(filterHolder,"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
-		
-		ErrorPageErrorHandler errorHandler = new ErrorPageErrorHandler();
-		context.setErrorHandler(errorHandler);
-		Map<String,String> errorPages = new HashMap<String,String>();
-		errorPages.put("404","/404");
-		errorHandler.setErrorPages(errorPages);
-		
-		ContextLoaderListener listener = new ContextLoaderListener();
-		context.addEventListener(listener);
+		handler.addEventListener(contextLoaderListener);
 	}
 
 }

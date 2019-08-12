@@ -23,14 +23,15 @@ import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import javax.management.MBeanServer;
-
-import nl.clockwork.ebms.admin.web.ExtensionProvider;
+import javax.management.remote.JMXServiceURL;
+import javax.servlet.DispatcherType;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -40,24 +41,28 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jetty.jmx.ConnectorServer;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
-import org.eclipse.jetty.server.DispatcherType;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.bio.SocketConnector;
-import org.eclipse.jetty.server.ssl.SslSocketConnector;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.support.XmlWebApplicationContext;
+
+import nl.clockwork.ebms.admin.web.ExtensionProvider;
 
 public class Start
 {
@@ -67,7 +72,8 @@ public class Start
 	protected final String REALM_FILE = "realm.properties";
 	protected Options options;
 	protected CommandLine cmd;
-	protected Server server;
+	protected Server server = new Server();
+	protected ContextHandlerCollection handlerCollection = new ContextHandlerCollection();
 
 	public static void main(String[] args) throws Exception
 	{
@@ -77,16 +83,29 @@ public class Start
 		if (start.cmd.hasOption("h"))
 			start.printUsage();
 
-		start.server = new Server();
+		start.server.setHandler(start.handlerCollection);
 
 		start.initWebServer();
 		start.initJMX();
-		start.initWebContext();
+		XmlWebApplicationContext context = new XmlWebApplicationContext();
+		context.setConfigLocations(createConfigLocations("classpath:nl/clockwork/ebms/admin/applicationContext.xml"));
+		ContextLoaderListener contextLoaderListener = new ContextLoaderListener(context);
+		start.initWebContext(contextLoaderListener);
 
 		System.out.println("Starting web server...");
 
 		start.server.start();
 		start.server.join();
+	}
+
+	protected static String[] createConfigLocations(String configLocation)
+	{
+		List<String> result = new ArrayList<>(); 
+		result.add(configLocation);
+		for (ExtensionProvider extensionProvider : ExtensionProvider.get())
+			if (!StringUtils.isEmpty(extensionProvider.getSpringConfigurationFile()))
+				result.add(extensionProvider.getSpringConfigurationFile());
+		return result.toArray(new String[]{});
 	}
 
 	protected void initCmd(String[] args) throws ParseException
@@ -114,9 +133,10 @@ public class Start
 	{
 		if (!cmd.hasOption("ssl"))
 		{
-			SocketConnector connector = new SocketConnector();
+			ServerConnector connector = new ServerConnector(this.server);
 			connector.setHost(cmd.getOptionValue("host") == null ? "0.0.0.0" : cmd.getOptionValue("host"));
 			connector.setPort(cmd.getOptionValue("port") == null ? 8080 : Integer.parseInt(cmd.getOptionValue("port")));
+			connector.setName("web");
 			server.addConnector(connector);
 			System.out.println("Web server configured on http://" + getHost(connector.getHost()) + ":" + connector.getPort() + getPath());
 			if (cmd.hasOption("soap"))
@@ -136,9 +156,10 @@ public class Start
 				SslContextFactory factory = new SslContextFactory();
 				factory.setKeyStoreResource(keystore);
 				factory.setKeyStorePassword(keystorePassword);
-				SslSocketConnector connector = new SslSocketConnector(factory);
+				ServerConnector connector = new ServerConnector(this.server,factory);
 				connector.setHost(cmd.getOptionValue("host") == null ? "0.0.0.0" : cmd.getOptionValue("host"));
 				connector.setPort(cmd.getOptionValue("port") == null ? 8433 : Integer.parseInt(cmd.getOptionValue("port")));
+				connector.setName("web");
 				server.addConnector(connector);
 				System.out.println("Web server configured on https://" + getHost(connector.getHost()) + ":" + connector.getPort() + getPath());
 				if (cmd.hasOption("soap"))
@@ -162,19 +183,22 @@ public class Start
 		if (cmd.hasOption("jmx"))
 		{
 			System.out.println("Starting mbean server...");
-			MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-			MBeanContainer mBeanContainer = new MBeanContainer(mBeanServer);
-			server.getContainer().addEventListener(mBeanContainer);
-			mBeanContainer.start();
+			MBeanContainer mBeanContainer = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
+			server.addBean(mBeanContainer);
+			server.addBean(Log.getLog());
+			JMXServiceURL jmxURL = new JMXServiceURL("rmi",null,1999,"/jndi/rmi:///jmxrmi");
+			ConnectorServer jmxServer = new ConnectorServer(jmxURL,"org.eclipse.jetty.jmx:name=rmiconnectorserver");
+			server.addBean(jmxServer);
 		}
 	}
 
-	protected void initWebContext() throws Exception
+	protected void initWebContext(ContextLoaderListener contextLoaderListener) throws Exception
 	{
-		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		server.setHandler(context);
+		ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+		handler.setVirtualHosts(new String[] {"@web"});
+		handlerCollection.addHandler(handler);
 
-		context.setContextPath(getPath());
+		handler.setContextPath(getPath());
 
 		if (cmd.hasOption("authentication"))
 		{
@@ -184,39 +208,31 @@ public class Start
 				System.out.println("Using file: " + file.getAbsoluteFile());
 			else
 				createRealmFile(file);
-			context.setSecurityHandler(getSecurityHandler());
+			handler.setSecurityHandler(getSecurityHandler());
 		}
 
-		context.setInitParameter("configuration","deployment");
-
-		String contextConfigLocation = "classpath:nl/clockwork/ebms/admin/applicationContext.xml";
-		for (ExtensionProvider extensionProvider : ExtensionProvider.get())
-			if (!StringUtils.isEmpty(extensionProvider.getSpringConfigurationFile()))
-				contextConfigLocation = "," + extensionProvider.getSpringConfigurationFile();
-
-		context.setInitParameter("contextConfigLocation",contextConfigLocation);
+		handler.setInitParameter("configuration","deployment");
 
 		ServletHolder servletHolder = new ServletHolder(nl.clockwork.ebms.admin.web.ResourceServlet.class);
-		context.addServlet(servletHolder,"/css/*");
-		context.addServlet(servletHolder,"/fonts/*");
-		context.addServlet(servletHolder,"/images/*");
-		context.addServlet(servletHolder,"/js/*");
+		handler.addServlet(servletHolder,"/css/*");
+		handler.addServlet(servletHolder,"/fonts/*");
+		handler.addServlet(servletHolder,"/images/*");
+		handler.addServlet(servletHolder,"/js/*");
 
-		context.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
+		handler.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
 		
 		FilterHolder filterHolder = new FilterHolder(org.apache.wicket.protocol.http.WicketFilter.class); 
 		filterHolder.setInitParameter("applicationClassName","nl.clockwork.ebms.admin.web.WicketApplication");
 		filterHolder.setInitParameter("filterMappingUrlPattern","/*");
-		context.addFilter(filterHolder,"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
+		handler.addFilter(filterHolder,"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
 		
 		ErrorPageErrorHandler errorHandler = new ErrorPageErrorHandler();
-		context.setErrorHandler(errorHandler);
+		handler.setErrorHandler(errorHandler);
 		Map<String,String> errorPages = new HashMap<String,String>();
 		errorPages.put("404","/404");
 		errorHandler.setErrorPages(errorPages);
 		
-		ContextLoaderListener listener = new ContextLoaderListener();
-		context.addEventListener(listener);
+		handler.addEventListener(contextLoaderListener);
 	}
 
 	protected void printUsage()
