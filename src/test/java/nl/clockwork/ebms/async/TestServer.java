@@ -20,27 +20,34 @@ import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.management.MBeanServer;
+import javax.management.remote.JMXServiceURL;
+import javax.servlet.DispatcherType;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
+import org.eclipse.jetty.jmx.ConnectorServer;
 import org.eclipse.jetty.jmx.MBeanContainer;
-import org.eclipse.jetty.server.DispatcherType;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.bio.SocketConnector;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.resource.Resource;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.support.XmlWebApplicationContext;
 
 import nl.clockwork.ebms.admin.PropertyPlaceholderConfigurer;
 import nl.clockwork.ebms.admin.web.ExtensionProvider;
@@ -87,7 +94,7 @@ public class TestServer
 		{
 			JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean(); 
 			factory.setServiceClass(CPAService.class); 
-			factory.setAddress(String.format("http://%s:%d%s/service/cpa", "localhost", server.getConnectors()[0].getPort(), getPath())); 
+			factory.setAddress(String.format("http://%s:%d%s/service/cpa", "localhost", 8080, getPath())); 
 			cpaService = (CPAService) factory.create();
 		}
 
@@ -101,7 +108,7 @@ public class TestServer
 	
 	public String getEbmsServiceUrl()
 	{
-		return String.format("http://%s:%d%s/service/ebms", "localhost", server.getConnectors()[0].getPort(), getPath());
+		return String.format("http://%s:%d%s/service/ebms", "localhost", 8080, getPath());
 	}
 	
 	public EbMSMessageService getEbmsService()
@@ -156,64 +163,76 @@ public class TestServer
 	protected void initJMX() throws Exception
 	{
 		System.out.println("Starting mbean server...");
-		MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-		MBeanContainer mBeanContainer = new MBeanContainer(mBeanServer);
-		server.getContainer().addEventListener(mBeanContainer);
-		mBeanContainer.start();
+		MBeanContainer mBeanContainer = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
+		server.addBean(mBeanContainer);
+		server.addBean(Log.getLog());
+		JMXServiceURL jmxURL = new JMXServiceURL("rmi",null,1999,"/jndi/rmi:///jmxrmi");
+		ConnectorServer jmxServer = new ConnectorServer(jmxURL,"org.eclipse.jetty.jmx:name=rmiconnectorserver");
+		server.addBean(jmxServer);
 	}
 
 	protected void initWebContext() throws Exception
 	{
+		XmlWebApplicationContext context = new XmlWebApplicationContext();
+		context.setConfigLocations(new String[]{"classpath:nl/clockwork/ebms/admin/applicationContext.embedded.xml"});
+		ContextLoaderListener contextLoaderListener = new ContextLoaderListener(context);
+
 		// add connector 1 (webinterface / service)
-		SocketConnector connector = new SocketConnector();
+		ServerConnector connector = new ServerConnector(this.server);
 		connector.setHost("0.0.0.0");
 		connector.setPort(8080);
+		connector.setName("web");
 		server.addConnector(connector);
 		// add connector 2 (ebms)
-		SocketConnector ebmsConnector = new SocketConnector();
+		ServerConnector ebmsConnector = new ServerConnector(this.server);
 		ebmsConnector.setHost(StringUtils.isEmpty(properties.get("ebms.host")) ? "0.0.0.0" : properties.get("ebms.host"));
 		ebmsConnector.setPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
+		connector.setName("ebms");
 		server.addConnector(ebmsConnector);
 		System.out.println("EbMS service configured on " + getEbmsEndpoint());
 		System.out.println("Web server configured on http://" + getHost(connector.getHost()) + ":" + connector.getPort() + getPath());
 		System.out.println("SOAP service configured on http://" + getHost(connector.getHost()) + ":" + connector.getPort() + getPath() + "/service");
 		
-		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		server.setHandler(context);
+		ContextHandlerCollection handlerCollection = new ContextHandlerCollection();
+		server.setHandler(handlerCollection);
+		
+		ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+		handler.setVirtualHosts(new String[] {"@web"});
+		handlerCollection.addHandler(handler);
 
-		context.setContextPath(getPath());
-		context.setInitParameter("configuration", "deployment");
+		ServletContextHandler ebMSHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+		ebMSHandler.setVirtualHosts(new String[] {"@ebms"});
+		handlerCollection.addHandler(ebMSHandler);
 
-		String contextConfigLocation = "classpath:nl/clockwork/ebms/admin/applicationContext.embedded.xml";
-		for (ExtensionProvider extensionProvider : ExtensionProvider.get())
-			if (!StringUtils.isEmpty(extensionProvider.getSpringConfigurationFile()))
-				contextConfigLocation = "," + extensionProvider.getSpringConfigurationFile();
+		handler.setContextPath(getPath());
+		handler.setInitParameter("configuration", "deployment");
 
-		context.setInitParameter("contextConfigLocation", contextConfigLocation);
+		ebMSHandler.setContextPath("/");
 
 		ServletHolder servletHolder = new ServletHolder(nl.clockwork.ebms.admin.web.ResourceServlet.class);
-		context.addServlet(servletHolder,"/css/*");
-		context.addServlet(servletHolder,"/fonts/*");
-		context.addServlet(servletHolder,"/images/*");
-		context.addServlet(servletHolder,"/js/*");
+		handler.addServlet(servletHolder,"/css/*");
+		handler.addServlet(servletHolder,"/fonts/*");
+		handler.addServlet(servletHolder,"/images/*");
+		handler.addServlet(servletHolder,"/js/*");
 
-		context.addServlet(org.apache.cxf.transport.servlet.CXFServlet.class, "/service/*");
-		context.addServlet(nl.clockwork.ebms.servlet.EbMSServlet.class, "/digipoortStub" /*properties.get("ebms.path")*/);
-		context.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
+		handler.addServlet(org.apache.cxf.transport.servlet.CXFServlet.class, "/service/*");
+		handler.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
+		ebMSHandler.addServlet(nl.clockwork.ebms.servlet.EbMSServlet.class, "/digipoortStub" /*properties.get("ebms.path")*/);
+		ebMSHandler.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
 		
 		FilterHolder filterHolder = new FilterHolder(org.apache.wicket.protocol.http.WicketFilter.class); 
 		filterHolder.setInitParameter("applicationClassName","nl.clockwork.ebms.admin.web.WicketApplication");
 		filterHolder.setInitParameter("filterMappingUrlPattern","/*");
-		context.addFilter(filterHolder,"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
+		handler.addFilter(filterHolder,"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
 		
 		ErrorPageErrorHandler errorHandler = new ErrorPageErrorHandler();
-		context.setErrorHandler(errorHandler);
+		handler.setErrorHandler(errorHandler);
 		Map<String,String> errorPages = new HashMap<String,String>();
 		errorPages.put("404","/404");
 		errorHandler.setErrorPages(errorPages);
 		
-		ContextLoaderListener listener = new ContextLoaderListener();
-		context.addEventListener(listener);
+		handler.addEventListener(contextLoaderListener);
+		ebMSHandler.addEventListener(contextLoaderListener);
 	}
 
 	protected Resource getResource(String path) throws MalformedURLException, IOException
