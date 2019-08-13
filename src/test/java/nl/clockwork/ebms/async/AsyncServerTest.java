@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
-import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -37,7 +36,6 @@ import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.oasis_open.committees.ebxml_msg.schema.msg_header_2_0.AckRequested;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -204,7 +202,7 @@ public class AsyncServerTest {
 				"    <soap:Body/>\r\n" + 
 				"</soap:Envelope>");
 		EbMSDocument document = new EbMSDocument("1234", message);
-		EbMSDocument response = httpc.sendMessage(ts.getEbmsEndpoint(), document);
+		httpc.sendMessage(ts.getEbmsEndpoint(), document);
 	
 		// response sent, now wait for delivered status
 		assertEquals(EbMSMessageStatus.DELIVERED, 
@@ -260,7 +258,7 @@ public class AsyncServerTest {
 				"    <soap:Body/>\r\n" + 
 				"</soap:Envelope>");
 		EbMSDocument document = new EbMSDocument("1234", message);
-		EbMSDocument response = httpc.sendMessage(ts.getEbmsEndpoint(), document);
+		httpc.sendMessage(ts.getEbmsEndpoint(), document);
 
 		assertEquals(EbMSMessageStatus.DELIVERY_FAILED, 
 				TestMessageRegistry.getInstance().waitFor(testMessage.getContext().getMessageId()));
@@ -307,7 +305,7 @@ public class AsyncServerTest {
 				"</soap:Envelope>");
 		EbMSDocument document = new EbMSDocument("1234", message);
 		try {
-			EbMSDocument response = httpc.sendMessage(ts.getEbmsEndpoint(), document);
+			httpc.sendMessage(ts.getEbmsEndpoint(), document);
 			fail("missing exception");
 		} catch (EbMSProcessorException e) {
 			assertTrue(e.getMessage().contains("StatusCode: 500"));

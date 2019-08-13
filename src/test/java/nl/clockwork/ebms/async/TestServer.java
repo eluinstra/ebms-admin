@@ -20,13 +20,10 @@ import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import javax.management.MBeanServer;
 import javax.management.remote.JMXServiceURL;
 import javax.servlet.DispatcherType;
 
@@ -50,7 +47,6 @@ import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
 import nl.clockwork.ebms.admin.PropertyPlaceholderConfigurer;
-import nl.clockwork.ebms.admin.web.ExtensionProvider;
 import nl.clockwork.ebms.service.CPAService;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
