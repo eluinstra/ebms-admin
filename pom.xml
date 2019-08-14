@@ -61,7 +61,7 @@
 		</license>
 	</licenses>
 	<properties>
-		<jdk.version>1.7</jdk.version>
+		<jdk.version>1.8</jdk.version>
 		<wicket.version>6.18.0</wicket.version>
 		<jetty.version>9.2.28.v20190418</jetty.version><!-- 9.3.27.v20190418 -->
 		<spring.version>4.1.4.RELEASE</spring.version>
