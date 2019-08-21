@@ -18,6 +18,7 @@ package nl.clockwork.ebms.admin;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -27,7 +28,7 @@ import java.util.Map;
 
 import org.apache.commons.cli.Options;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.resource.Resource;
@@ -156,7 +157,7 @@ public class StartEmbedded extends Start
 		{
 			if (!c.createStatement().executeQuery("select table_name from information_schema.tables where table_name = 'CPA'").next())
 			{
-				c.createStatement().executeUpdate(IOUtils.toString(this.getClass().getResourceAsStream("/nl/clockwork/ebms/admin/database/hsqldb.sql")));
+				c.createStatement().executeUpdate(IOUtils.toString(this.getClass().getResourceAsStream("/nl/clockwork/ebms/admin/database/hsqldb.sql"),Charset.defaultCharset()));
 				System.out.println("EbMS tables created");
 			}
 			else
@@ -165,7 +166,7 @@ public class StartEmbedded extends Start
 				if (!StringUtils.isEmpty(extensionProvider.getHSQLDBFile()))
 					try
 					{
-						c.createStatement().executeUpdate(IOUtils.toString(this.getClass().getResourceAsStream(extensionProvider.getHSQLDBFile())));
+						c.createStatement().executeUpdate(IOUtils.toString(this.getClass().getResourceAsStream(extensionProvider.getHSQLDBFile()),Charset.defaultCharset()));
 						System.out.println(extensionProvider.getName() + " tables created");
 					}
 					catch (Exception e)

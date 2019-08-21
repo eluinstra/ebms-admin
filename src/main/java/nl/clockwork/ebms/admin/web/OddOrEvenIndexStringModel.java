@@ -15,9 +15,9 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.model.IModel;
 
-public class OddOrEvenIndexStringModel extends AbstractReadOnlyModel<String>
+public class OddOrEvenIndexStringModel implements IModel<String>
 {
 	private static final long serialVersionUID = 1L;
 	private int index;

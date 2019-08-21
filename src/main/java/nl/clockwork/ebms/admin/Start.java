@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
+import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,14 +34,14 @@ import java.util.Map;
 import javax.management.remote.JMXServiceURL;
 import javax.servlet.DispatcherType;
 
-import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.jmx.ConnectorServer;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.security.ConstraintMapping;
@@ -101,7 +102,7 @@ public class Start
 	protected void initCmd(String[] args) throws ParseException
 	{
 		createOptions();
-		cmd = new BasicParser().parse(options,args);
+		cmd = new DefaultParser().parse(options,args);
 	}
 
 	protected Options createOptions()
@@ -254,7 +255,7 @@ public class Start
 		String username = readLine("enter username: ",reader);
 		String password = readPassword(reader);
 		System.out.println("Writing to file: " + file.getAbsoluteFile());
-		FileUtils.writeStringToFile(file,username + ": " + password + ",user",false);
+		FileUtils.writeStringToFile(file,username + ": " + password + ",user",Charset.defaultCharset(),false);
 	}
 
 	private String readLine(String prompt, BufferedReader reader) throws IOException

@@ -55,7 +55,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 	{
 		private static final long serialVersionUID = 1L;
 
-		public ComponentsListView(String id, List<? extends BootstrapPanelBorder> list)
+		public ComponentsListView(String id, List<BootstrapPanelBorder> list)
 		{
 			super(id,list);
 			setReuseItems(true);

@@ -22,7 +22,7 @@ import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.model.EbMSDataSource;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Component;
@@ -129,7 +129,7 @@ public class DataSourceModalWindow extends ModalWindow
 					private static final long serialVersionUID = 1L;
 
 					@Override
-					protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+					protected void onSubmit(AjaxRequestTarget target)
 					{
 						DataSourceModel model = DataSourceForm.this.getModelObject();
 						for (FileUpload file : model.getFile())
@@ -142,12 +142,12 @@ public class DataSourceModalWindow extends ModalWindow
 					}
 
 					@Override
-					protected void onError(AjaxRequestTarget target, Form<?> form)
+					protected void onError(AjaxRequestTarget target)
 					{
-						super.onError(target,form);
+						super.onError(target);
 						if (target != null)
 						{
-							target.add(form);
+							target.add(DataSourceForm.this);
 						}
 					}
 				};
@@ -161,7 +161,7 @@ public class DataSourceModalWindow extends ModalWindow
 					private static final long serialVersionUID = 1L;
 
 					@Override
-					protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+					protected void onSubmit(AjaxRequestTarget target)
 					{
 						getWindow().close(target);
 					}

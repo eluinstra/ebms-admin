@@ -17,6 +17,20 @@ package nl.clockwork.ebms.admin.web.service.message;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.IGenericComponent;
+import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.PropertyListView;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.wicketstuff.datetime.markup.html.basic.DateLabel;
+
 import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
@@ -25,29 +39,14 @@ import nl.clockwork.ebms.model.EbMSDataSource;
 import nl.clockwork.ebms.model.EbMSMessageContent;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.IGenericComponent;
-import org.apache.wicket.datetime.markup.html.basic.DateLabel;
-import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.PropertyListView;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-
-public class MessagePage extends BasePage implements IGenericComponent<EbMSMessageContent>
+public class MessagePage extends BasePage implements IGenericComponent<EbMSMessageContent,MessagePage>
 {
 	private class EbMSDataSourcePropertyListView extends PropertyListView<EbMSDataSource>
 	{
 		private static final long serialVersionUID = 1L;
 		private int i = 1;
 
-		public EbMSDataSourcePropertyListView(String id, List<? extends EbMSDataSource> list)
+		public EbMSDataSourcePropertyListView(String id, List<EbMSDataSource> list)
 		{
 			super(id,list);
 		}
@@ -134,31 +133,6 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		};
 		result.add(AttributeModifier.replace("onclick","return confirm('" + getLocalizer().getString("confirm",this) + "');"));
 		return result;
-	}
-
-	@Override
-	public EbMSMessageContent getModelObject()
-	{
-		return (EbMSMessageContent)getDefaultModelObject();
-	}
-
-	@Override
-	public void setModelObject(EbMSMessageContent object)
-	{
-		setDefaultModelObject(object);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public IModel<EbMSMessageContent> getModel()
-	{
-		return (IModel<EbMSMessageContent>)getDefaultModel();
-	}
-
-	@Override
-	public void setModel(IModel<EbMSMessageContent> model)
-	{
-		setDefaultModel(model);
 	}
 
 }

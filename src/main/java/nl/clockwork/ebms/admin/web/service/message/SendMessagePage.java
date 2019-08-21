@@ -26,7 +26,7 @@ import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.common.XMLMessageBuilder;
+import nl.clockwork.ebms.common.JAXBParser;
 import nl.clockwork.ebms.model.EbMSDataSource;
 import nl.clockwork.ebms.model.EbMSMessageContent;
 import nl.clockwork.ebms.model.EbMSMessageContext;
@@ -114,7 +114,7 @@ public class SendMessagePage extends BasePage
 					try
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
 						model.resetFromRoles(CPAUtils.getRoleNames(cpa));
 						model.resetServices();
@@ -148,7 +148,7 @@ public class SendMessagePage extends BasePage
 					try
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetFromRoles(CPAUtils.getRoleNames(cpa,model.getFromRole().getPartyId()));
 						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole().getRole()));
 						model.resetActions();
@@ -181,7 +181,7 @@ public class SendMessagePage extends BasePage
 					try
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						if (model.getFromRole().getPartyId() == null)
 							model.resetFromPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getFromRole().getRole()));
 						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole().getRole()));
@@ -216,7 +216,7 @@ public class SendMessagePage extends BasePage
 					try
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetActions(CPAUtils.getFromActionNames(cpa,model.getFromRole().getRole(),model.getService()));
 						model.resetDataSources();
 						target.add(getPage().get("feedback"));
@@ -350,7 +350,7 @@ public class SendMessagePage extends BasePage
 		}
 	}
 
-	public class DataSourcesForm extends Form<List<? extends EbMSDataSource>>
+	public class DataSourcesForm extends Form<List<EbMSDataSource>>
 	{
 		private static final long serialVersionUID = 1L;
 
@@ -373,7 +373,7 @@ public class SendMessagePage extends BasePage
 						private static final long serialVersionUID = 1L;
 						
 						@Override
-						protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+						protected void onSubmit(AjaxRequestTarget target)
 						{
 							DataSourcesForm.this.getModelObject().remove(item.getModelObject());
 							target.add(DataSourcesForm.this);
@@ -392,7 +392,7 @@ public class SendMessagePage extends BasePage
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+				protected void onSubmit(AjaxRequestTarget target)
 				{
 					dataSourceModalWindow.show(target);
 				}

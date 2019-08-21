@@ -27,18 +27,18 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import nl.clockwork.ebms.admin.Constants.JQueryLocale;
-
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.form.FormComponentPanel;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.internal.HtmlHeaderContainer;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.convert.converter.AbstractConverter;
+
+import nl.clockwork.ebms.admin.Constants.JQueryLocale;
 
 public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPanel<XMLGregorianCalendar>
 {
@@ -175,9 +175,8 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 	}
 	
 	@Override
-	public void renderHead(HtmlHeaderContainer container)
+	public void renderHead(IHeaderResponse response)
 	{
-		org.apache.wicket.markup.head.IHeaderResponse response = container.getHeaderResponse();
 		List<String> options = new ArrayList<String>();
 		if (formatJS != null)
 			options.add("format: '" + formatJS + "'");
@@ -194,11 +193,11 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 		if (endDate != null)
 			options.add("endDate: new Date(" + endDate.getTime() + ")");
 		response.render(OnDomReadyHeaderItem.forScript("$(function () {$('#" + getDateTimePickerId() + "').datetimepicker({" + StringUtils.join(options,",") + "});});"));
-		super.renderHead(container);
+		super.renderHead(response);
 	}
 	
 	@Override
-	protected void convertInput()
+	public void convertInput()
 	{
 		dateTime = dateTimeField.getConvertedInput();
 		setConvertedInput(dateTime);

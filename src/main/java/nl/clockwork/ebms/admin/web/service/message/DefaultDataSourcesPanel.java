@@ -59,7 +59,7 @@ public class DefaultDataSourcesPanel extends DataSourcesPanel
 				private static final long serialVersionUID = 1L;
 				
 				@Override
-				protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+				protected void onSubmit(AjaxRequestTarget target)
 				{
 					dataSourcesForm.getModelObject().getDataSources().remove(item.getModelObject());
 					target.add(dataSourcesForm);
@@ -96,7 +96,7 @@ public class DefaultDataSourcesPanel extends DataSourcesPanel
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+				protected void onSubmit(AjaxRequestTarget target)
 				{
 					dataSourceModalWindow.show(target);
 				}

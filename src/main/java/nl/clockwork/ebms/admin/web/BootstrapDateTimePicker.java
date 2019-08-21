@@ -19,17 +19,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import nl.clockwork.ebms.admin.Constants.JQueryLocale;
-
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.form.FormComponentPanel;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.internal.HtmlHeaderContainer;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
+
+import nl.clockwork.ebms.admin.Constants.JQueryLocale;
 
 public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 {
@@ -112,9 +112,8 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 	}
 	
 	@Override
-	public void renderHead(HtmlHeaderContainer container)
+	public void renderHead(IHeaderResponse response)
 	{
-		org.apache.wicket.markup.head.IHeaderResponse response = container.getHeaderResponse();
 		List<String> options = new ArrayList<String>();
 		if (formatJS != null)
 			options.add("format: '" + formatJS + "'");
@@ -131,11 +130,11 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 		if (endDate != null)
 			options.add("endDate: new Date(" + endDate.getTime() + ")");
 		response.render(OnDomReadyHeaderItem.forScript("$(function () {$('#" + getDateTimePickerId() + "').datetimepicker({" + StringUtils.join(options,",") + "});});"));
-		super.renderHead(container);
+		super.renderHead(response);
 	}
 	
 	@Override
-	protected void convertInput()
+	public void convertInput()
 	{
 		dateTime = dateTimeField.getConvertedInput();
 		setConvertedInput(dateTime);

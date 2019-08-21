@@ -29,7 +29,7 @@ import nl.clockwork.ebms.admin.web.MessageProvider;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.admin.web.WicketApplication;
-import nl.clockwork.ebms.common.XMLMessageBuilder;
+import nl.clockwork.ebms.common.JAXBParser;
 import nl.clockwork.ebms.model.EbMSMessageContent;
 import nl.clockwork.ebms.model.EbMSMessageContext;
 import nl.clockwork.ebms.model.Role;
@@ -119,7 +119,7 @@ public class SendMessagePageX extends BasePage
 					try
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
 						model.resetFromRoles();
 						model.resetToPartyIds();
@@ -155,7 +155,7 @@ public class SendMessagePageX extends BasePage
 					try
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetFromRoles(CPAUtils.getRoleNames(cpa,model.getFromRole().getPartyId()));
 						model.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,model.getFromRole().getPartyId()));
 						model.resetToRoles(CPAUtils.getOtherRoleNamesByPartyId(cpa,model.getFromRole().getPartyId()));
@@ -190,7 +190,7 @@ public class SendMessagePageX extends BasePage
 					try
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,model.getFromRole().getPartyId(),model.getFromRole().getRole()),CPAUtils.getServiceNamesCanReceive(cpa,model.getToRole().getPartyId(),model.getToRole().getRole())));
 						model.resetActions();
 						dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
@@ -222,7 +222,7 @@ public class SendMessagePageX extends BasePage
 					try
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToRole().getPartyId()));
 						model.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,model.getFromRole().getPartyId(),model.getFromRole().getRole()),CPAUtils.getServiceNamesCanReceive(cpa,model.getToRole().getPartyId(),model.getToRole().getRole())));
 						model.resetActions();
@@ -255,7 +255,7 @@ public class SendMessagePageX extends BasePage
 					try
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,model.getFromRole().getPartyId(),model.getFromRole().getRole()),CPAUtils.getServiceNamesCanReceive(cpa,model.getToRole().getPartyId(),model.getToRole().getRole())));
 						model.resetActions();
 						dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
@@ -288,7 +288,7 @@ public class SendMessagePageX extends BasePage
 					try
 					{
 						EbMSMessageContextModel model = MessageForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetActions(ListUtils.intersection(CPAUtils.getFromActionNamesCanSend(cpa,model.getFromRole().getPartyId(),model.getFromRole().getRole(),model.getService()),CPAUtils.getFromActionNamesCanReceive(cpa,model.getToRole().getPartyId(),model.getToRole().getRole(),model.getService())));
 						dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 						target.add(getPage().get("feedback"));

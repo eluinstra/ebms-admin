@@ -27,7 +27,7 @@ import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapDateTimePicker;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.common.XMLMessageBuilder;
+import nl.clockwork.ebms.common.JAXBParser;
 import nl.clockwork.ebms.service.CPAService;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
@@ -134,7 +134,7 @@ public abstract class MessageFilterPanel extends Panel
 					try
 					{
 						MessageFilterFormModel model = MessageFilterForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
 						model.resetFromRoles();
 						model.resetToPartyIds(CPAUtils.getPartyIds(cpa));
@@ -178,7 +178,7 @@ public abstract class MessageFilterPanel extends Panel
 					try
 					{
 						MessageFilterFormModel model = MessageFilterForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetFromRoles(CPAUtils.getRoleNames(cpa,model.getFromRole().getPartyId()));
 						model.resetServices();
 						model.resetActions();
@@ -219,7 +219,7 @@ public abstract class MessageFilterPanel extends Panel
 					try
 					{
 						MessageFilterFormModel model = MessageFilterForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole().getRole()));
 						model.resetActions();
 						target.add(getFeedbackComponent());
@@ -259,7 +259,7 @@ public abstract class MessageFilterPanel extends Panel
 					try
 					{
 						MessageFilterFormModel model = MessageFilterForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToRole().getPartyId()));
 						model.resetServices();
 						model.resetActions();
@@ -300,7 +300,7 @@ public abstract class MessageFilterPanel extends Panel
 					try
 					{
 						MessageFilterFormModel model = MessageFilterForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetServices(CPAUtils.getServiceNames(cpa,model.getToRole().getRole()));
 						model.resetActions();
 						target.add(getFeedbackComponent());
@@ -331,7 +331,7 @@ public abstract class MessageFilterPanel extends Panel
 					try
 					{
 						MessageFilterFormModel model = MessageFilterForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetActions(model.getFromRole() == null ? CPAUtils.getToActionNames(cpa,model.getToRole().getRole(),model.getService()) : CPAUtils.getFromActionNames(cpa,model.getFromRole().getRole(),model.getService()));
 						target.add(getFeedbackComponent());
 						target.add(getForm());

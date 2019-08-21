@@ -28,7 +28,7 @@ import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyP
 import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.SignaturePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormModel;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class EbMSCorePropertiesWriter
 {

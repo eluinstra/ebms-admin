@@ -29,7 +29,7 @@ public class MenuPanel extends Panel
 		private static final long serialVersionUID = 1L;
 		private int level;
 
-		public MenuItems(String id, List<? extends MenuItem> list, int level)
+		public MenuItems(String id, List<MenuItem> list, int level)
 		{
 			super(id,list);
 			this.level = level;

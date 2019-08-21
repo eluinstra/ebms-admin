@@ -26,7 +26,7 @@ import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.common.XMLMessageBuilder;
+import nl.clockwork.ebms.common.JAXBParser;
 import nl.clockwork.ebms.model.Party;
 import nl.clockwork.ebms.service.CPAService;
 import nl.clockwork.ebms.service.EbMSMessageService;
@@ -102,7 +102,7 @@ public class PingPage extends BasePage
 					try
 					{
 						PingFormModel model = PingForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
 						model.resetFromRoles(CPAUtils.getRoleNames(cpa));
 						model.resetToPartyIds();
@@ -135,7 +135,7 @@ public class PingPage extends BasePage
 					try
 					{
 						PingFormModel model = PingForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetFromRoles(CPAUtils.getRoleNames(cpa,model.getFromPartyId()));
 						model.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,model.getFromPartyId()));
 						if (model.getFromRole() != null)
@@ -168,7 +168,7 @@ public class PingPage extends BasePage
 					try
 					{
 						PingFormModel model = PingForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetFromPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getFromRole()));
 						model.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,model.getFromPartyId()));
 						model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToPartyId()));
@@ -200,7 +200,7 @@ public class PingPage extends BasePage
 					try
 					{
 						PingFormModel model = PingForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToPartyId()));
 						target.add(getPage().get("feedback"));
 						target.add(getPage().get("form"));
@@ -230,7 +230,7 @@ public class PingPage extends BasePage
 					try
 					{
 						PingFormModel model = PingForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = XMLMessageBuilder.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 						if (model.getToPartyId() == null)
 							model.resetToPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getToRole()));
 						target.add(getPage().get("feedback"));

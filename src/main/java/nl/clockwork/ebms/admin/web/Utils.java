@@ -20,7 +20,7 @@ import java.util.List;
 
 import nl.clockwork.ebms.Constants.EbMSMessageStatus;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.resource.loader.IStringResourceLoader;
 
 public class Utils

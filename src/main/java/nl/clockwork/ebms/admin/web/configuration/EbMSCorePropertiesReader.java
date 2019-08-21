@@ -33,7 +33,7 @@ import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPrope
 import nl.clockwork.ebms.client.EbMSHttpClientFactory.EbMSHttpClientType;
 import nl.clockwork.ebms.event.EventListenerFactory.EventListenerType;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class EbMSCorePropertiesReader
 {
