@@ -94,7 +94,7 @@ public class CPAUtils
 	{
 		LinkedHashSet<String> result = new LinkedHashSet<String>();
 		for (PartyInfo partyInfo : cpa.getPartyInfo())
-			if (partyId == null || !partyId.equals(partyInfo.getPartyId().get(0)))
+			if (partyId == null || !partyId.equals(toString(partyInfo.getPartyId().get(0))))
 				for (CollaborationRole role : partyInfo.getCollaborationRole())
 					if (roleName == null || !roleName.equals(role.getRole().getName()))
 						result.add(role.getRole().getName());
@@ -144,7 +144,7 @@ public class CPAUtils
 	{
 		ArrayList<CollaborationRole> result = new ArrayList<CollaborationRole>();
 		for (PartyInfo partyInfo : cpa.getPartyInfo())
-			if (partyId == null || !partyId.equals(partyInfo.getPartyId().get(0)))
+			if (partyId == null || !partyId.equals(toString(partyInfo.getPartyId().get(0))))
 				for (CollaborationRole role : partyInfo.getCollaborationRole())
 					if (role.getRole().getName().equals(roleName))
 						result.add(role);
