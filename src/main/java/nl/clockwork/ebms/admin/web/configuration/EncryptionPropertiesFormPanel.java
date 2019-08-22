@@ -56,7 +56,7 @@ public class EncryptionPropertiesFormPanel extends Panel
 		{
 			CheckBox result = new CheckBox(id);
 			result.setLabel(new ResourceModel("lbl.encryption"));
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 

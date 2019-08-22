@@ -158,7 +158,7 @@ public class TrafficChartPage extends BasePage
 			};
 			result.setLabel(new ResourceModel("lbl.timeUnit"));
 			result.setRequired(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -222,7 +222,7 @@ public class TrafficChartPage extends BasePage
 			};
 			ebMSMessageTrafficChartOptions.setLabel(new ResourceModel("lbl.ebMSMessageTrafficChartOption"));
 			ebMSMessageTrafficChartOptions.setRequired(true);
-			ebMSMessageTrafficChartOptions.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			ebMSMessageTrafficChartOptions.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 

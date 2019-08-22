@@ -235,7 +235,7 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 		};
 		CheckBox rawOutput = new CheckBox("rawOutput",new PropertyModel<Boolean>(this,"rawOutput"));
 		rawOutput.setLabel(new ResourceModel("lbl.rawOutput"));
-		rawOutput.add(new AjaxFormComponentUpdatingBehavior("onchange")
+		rawOutput.add(new AjaxFormComponentUpdatingBehavior("change")
 		{
 			private static final long serialVersionUID = 1L;
 

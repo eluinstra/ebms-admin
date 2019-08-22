@@ -56,7 +56,7 @@ public class SignaturePropertiesFormPanel extends Panel
 		{
 			CheckBox result = new CheckBox(id);
 			result.setLabel(new ResourceModel("lbl.signing"));
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 

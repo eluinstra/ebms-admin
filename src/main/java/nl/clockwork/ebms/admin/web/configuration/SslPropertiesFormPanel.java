@@ -73,7 +73,7 @@ public class SslPropertiesFormPanel extends Panel
 			result.setVisible(enableSslOverridePropeties);
 			CheckBox checkBox = new CheckBox("overrideDefaultProtocols");
 			checkBox.setLabel(new ResourceModel("lbl.overrideDefaultProtocols"));
-			checkBox.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			checkBox.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -111,7 +111,7 @@ public class SslPropertiesFormPanel extends Panel
 			result.setVisible(enableSslOverridePropeties);
 			CheckBox checkBox = new CheckBox("overrideDefaultCipherSuites");
 			checkBox.setLabel(new ResourceModel("lbl.overrideDefaultCipherSuites"));
-			checkBox.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			checkBox.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -147,7 +147,7 @@ public class SslPropertiesFormPanel extends Panel
 		{
 			CheckBox result = new CheckBox(id);
 			result.setLabel(new ResourceModel("lbl.requireClientAuthentication"));
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 

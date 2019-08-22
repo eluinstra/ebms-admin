@@ -109,7 +109,7 @@ public class SendMessagePageX extends BasePage
 			DropDownChoice<String> result = new DropDownChoice<String>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())));
 			result.setLabel(new ResourceModel("lbl.cpaId"));
 			result.setRequired(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -145,7 +145,7 @@ public class SendMessagePageX extends BasePage
 			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"));
 			result.setLabel(new ResourceModel("lbl.fromPartyId"));
 			result.setRequired(false).setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -180,7 +180,7 @@ public class SendMessagePageX extends BasePage
 			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"));
 			result.setLabel(new ResourceModel("lbl.fromRole"));
 			result.setRequired(true).setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -212,7 +212,7 @@ public class SendMessagePageX extends BasePage
 			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"));
 			result.setLabel(new ResourceModel("lbl.toPartyId"));
 			result.setRequired(true).setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -245,7 +245,7 @@ public class SendMessagePageX extends BasePage
 			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toRoles"));
 			result.setLabel(new ResourceModel("lbl.toRole"));
 			result.setRequired(true).setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -278,7 +278,7 @@ public class SendMessagePageX extends BasePage
 			result.setLabel(new ResourceModel("lbl.service"));
 			result.setRequired(true);
 			result.setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -310,7 +310,7 @@ public class SendMessagePageX extends BasePage
 			actions.setLabel(new ResourceModel("lbl.action"));
 			actions.setRequired(true);
 			actions.setOutputMarkupId(true);
-			actions.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			actions.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -349,7 +349,7 @@ public class SendMessagePageX extends BasePage
 		{
 			CheckBox result = new CheckBox(id);
 			result.setLabel(new ResourceModel("lbl.rawInput"));
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 

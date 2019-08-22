@@ -112,7 +112,7 @@ public class MessageStatusPage extends BasePage
 			};
 			result.setLabel(new ResourceModel("lbl.cpaId"));
 			//result.setRequired(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -160,7 +160,7 @@ public class MessageStatusPage extends BasePage
 			};
 			result.setLabel(new ResourceModel("lbl.fromPartyId"));
 			result.setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -205,7 +205,7 @@ public class MessageStatusPage extends BasePage
 			};
 			result.setLabel(new ResourceModel("lbl.fromRole"));
 			result.setRequired(false).setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -255,7 +255,7 @@ public class MessageStatusPage extends BasePage
 			};
 			result.setLabel(new ResourceModel("lbl.toPartyId"));
 			result.setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -297,7 +297,7 @@ public class MessageStatusPage extends BasePage
 			};
 			result.setLabel(new ResourceModel("lbl.toRole"));
 			result.setRequired(false).setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -365,7 +365,7 @@ public class MessageStatusPage extends BasePage
 		{
 			CheckBox result = new CheckBox(id);
 			result.setLabel(new ResourceModel("lbl.manual"));
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
       {
 				private static final long serialVersionUID = 1L;
 

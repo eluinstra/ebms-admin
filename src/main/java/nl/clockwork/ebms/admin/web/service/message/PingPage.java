@@ -92,7 +92,7 @@ public class PingPage extends BasePage
 			DropDownChoice<String> result = new DropDownChoice<String>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())));
 			result.setLabel(new ResourceModel("lbl.cpaId"));
 			result.setRequired(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -125,7 +125,7 @@ public class PingPage extends BasePage
 			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"));
 			result.setLabel(new ResourceModel("lbl.fromPartyId"));
 			result.setRequired(true).setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -158,7 +158,7 @@ public class PingPage extends BasePage
 			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"));
 			result.setLabel(new ResourceModel("lbl.fromRole"));
 			result.setRequired(false).setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -190,7 +190,7 @@ public class PingPage extends BasePage
 			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"));
 			result.setLabel(new ResourceModel("lbl.toPartyId"));
 			result.setRequired(true).setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -220,7 +220,7 @@ public class PingPage extends BasePage
 			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toRoles"));
 			result.setLabel(new ResourceModel("lbl.toRole"));
 			result.setRequired(false).setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 

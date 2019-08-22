@@ -124,7 +124,7 @@ public abstract class MessageFilterPanel extends Panel
 		{
 			DropDownChoice<String> result = new DropDownChoice<String>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())));
 			result.setLabel(new ResourceModel("lbl.cpaId"));
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
       {
 				private static final long serialVersionUID = 1L;
 
@@ -168,7 +168,7 @@ public abstract class MessageFilterPanel extends Panel
 			};
 			result.setLabel(new ResourceModel("lbl.fromPartyId"));
 			result.setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
       {
 				private static final long serialVersionUID = 1L;
 
@@ -209,7 +209,7 @@ public abstract class MessageFilterPanel extends Panel
 			};
 			result.setLabel(new ResourceModel("lbl.fromRole"));
 			result.setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
       {
 				private static final long serialVersionUID = 1L;
 
@@ -249,7 +249,7 @@ public abstract class MessageFilterPanel extends Panel
 			};
 			result.setLabel(new ResourceModel("lbl.toPartyId"));
 			result.setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
       {
 				private static final long serialVersionUID = 1L;
 
@@ -290,7 +290,7 @@ public abstract class MessageFilterPanel extends Panel
 			};
 			result.setLabel(new ResourceModel("lbl.toRole"));
 			result.setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
       {
 				private static final long serialVersionUID = 1L;
 
@@ -321,7 +321,7 @@ public abstract class MessageFilterPanel extends Panel
 			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"services"));
 			result.setLabel(new ResourceModel("lbl.service"));
 			result.setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
       {
 				private static final long serialVersionUID = 1L;
 

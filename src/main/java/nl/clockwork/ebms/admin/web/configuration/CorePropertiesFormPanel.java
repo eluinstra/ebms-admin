@@ -92,7 +92,7 @@ public class CorePropertiesFormPanel extends Panel
 			result.add(new CheckBox("jmsVirtualTopics").setLabel(new ResourceModel("lbl.jmsVirtualTopics")));
 			CheckBox checkBox = new CheckBox("startEmbeddedBroker");
 			checkBox.setLabel(new ResourceModel("lbl.startEmbeddedBroker"));
-			checkBox.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			checkBox.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -137,7 +137,7 @@ public class CorePropertiesFormPanel extends Panel
 			DropDownChoice<EventListenerType> result = new DropDownChoice<EventListenerType>(id,new PropertyModel<List<EventListenerType>>(model.getObject(),"eventListeners"));
 			result.setLabel(new ResourceModel("lbl.eventListener"));
 			result.setRequired(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("onchange")
+			result.add(new AjaxFormComponentUpdatingBehavior("change")
 			{
 				private static final long serialVersionUID = 1L;
 
