@@ -24,18 +24,18 @@ import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.management.remote.JMXServiceURL;
 import javax.servlet.DispatcherType;
 
-import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -122,11 +122,11 @@ public class Start
 	
 	protected static String[] getConfigLocations(String configLocation)
 	{
-		List<String> result = new ArrayList<>(); 
-		result.add(configLocation);
-		for (ExtensionProvider extensionProvider : ExtensionProvider.get())
-			if (!StringUtils.isEmpty(extensionProvider.getSpringConfigurationFile()))
-				result.add(extensionProvider.getSpringConfigurationFile());
+		List<String> result = ExtensionProvider.get().stream()
+				.filter(p -> !StringUtils.isEmpty(p.getSpringConfigurationFile()))
+				.map(p -> p.getSpringConfigurationFile())
+				.collect(Collectors.toList());
+		result.add(0,configLocation);
 		return result.toArray(new String[]{});
 	}
 

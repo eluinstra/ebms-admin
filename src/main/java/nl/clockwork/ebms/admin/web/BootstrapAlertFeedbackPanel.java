@@ -16,6 +16,7 @@
 package nl.clockwork.ebms.admin.web;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.feedback.FeedbackMessage;
@@ -43,10 +44,7 @@ public class BootstrapAlertFeedbackPanel extends FeedbackPanel
 		
 		public static ErrorLevel getErrorLevel(int errorCode)
 		{
-			for (ErrorLevel errorLevel : ErrorLevel.values())
-				if (errorCode == errorLevel.errorCode)
-					return errorLevel;
-			return null;
+			return Arrays.stream(ErrorLevel.values()).filter(e -> errorCode == e.errorCode).findFirst().orElse(null);
 		}
 		
 		public String getCssClass()

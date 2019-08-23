@@ -19,9 +19,11 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -196,12 +198,10 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			messageNr
 		);
 		result.setAttachments(getAttachments(messageId,messageNr));
-		for (EbMSAttachment attachment : result.getAttachments())
-			attachment.setMessage(result);
+		result.getAttachments().forEach(a -> a.setMessage(result));
 		result.setEvent(getEvent(messageId));
 		result.setEvents(getEvents(messageId));
-		for (EbMSEventLog event : result.getEvents())
-			event.setMessage(result);
+		result.getEvents().forEach(e -> e.setMessage(result));
 		return result;
 	}
 
@@ -235,8 +235,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		);
 		result.setAttachments(new ArrayList<EbMSAttachment>());
 		result.setEvents(getEvents(messageId));
-		for (EbMSEventLog event : result.getEvents())
-			event.setMessage(result);
+		result.getEvents().forEach(e -> e.setMessage(result));
 		return result;
 	}
 
@@ -407,14 +406,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 
 	protected String join(EbMSMessageStatus[] array, String delimiter)
 	{
-		StringBuffer result = new StringBuffer();
-		if (array.length > 0)
-		{
-			for (EbMSMessageStatus s : array)
-				result.append(s.id()).append(delimiter);
-			result.delete(result.length() - 1,result.length() - 1 + delimiter.length());
-		}
-		return result.toString();
+		return Arrays.stream(array).map(s -> Integer.toString(s.id())).collect(Collectors.joining(delimiter));
 	}
 	
 	@Override
@@ -600,10 +592,8 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			}
 			if (messageFilter.getStatuses().size() > 0)
 			{
-				List<Integer> ids = new ArrayList<Integer>();
-				for (EbMSMessageStatus status : messageFilter.getStatuses())
-					ids.add(status.id());
-				result.append(" and status in (" + StringUtils.join(ids,',') + ")");
+				String ids = messageFilter.getStatuses().stream().map(s -> Integer.toString(s.id())).collect(Collectors.joining(","));
+				result.append(" and status in (" + ids + ")");
 			}
 			if (messageFilter.getServiceMessage() != null)
 			{

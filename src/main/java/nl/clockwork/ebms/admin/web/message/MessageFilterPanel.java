@@ -452,7 +452,7 @@ public abstract class MessageFilterPanel extends Panel
 			if (getFromRole() != null)
 				getFromRole().setRole(null);
 		}
-		public void resetFromRoles(ArrayList<String> roleNames)
+		public void resetFromRoles(List<String> roleNames)
 		{
 			resetFromRoles();
 			getFromRoles().addAll(roleNames);
@@ -481,7 +481,7 @@ public abstract class MessageFilterPanel extends Panel
 			if (getToRole() != null)
 				getToRole().setRole(null);
 		}
-		public void resetToRoles(ArrayList<String> roleNames)
+		public void resetToRoles(List<String> roleNames)
 		{
 			resetToRoles();
 			getToRoles().addAll(roleNames);

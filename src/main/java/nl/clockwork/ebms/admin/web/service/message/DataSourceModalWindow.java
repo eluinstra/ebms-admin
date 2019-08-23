@@ -132,8 +132,10 @@ public class DataSourceModalWindow extends ModalWindow
 					protected void onSubmit(AjaxRequestTarget target)
 					{
 						DataSourceModel model = DataSourceForm.this.getModelObject();
-						for (FileUpload file : model.getFile())
-							addDataSource(new EbMSDataSource(StringUtils.isBlank(model.getName()) ? file.getClientFileName() : model.getName(),null,StringUtils.isBlank(model.getContentType()) ? Utils.getContentType(file.getClientFileName()) : model.getContentType(),file.getBytes()));
+						model.getFile().forEach(f -> addDataSource(new EbMSDataSource(
+									StringUtils.isBlank(model.getName()) ? f.getClientFileName() : model.getName(),
+									StringUtils.isBlank(model.getContentType()) ? Utils.getContentType(f.getClientFileName()) : model.getContentType(),
+									f.getBytes())));
 						if (target != null)
 						{
 							target.add(getComponents());

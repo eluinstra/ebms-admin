@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import nl.clockwork.ebms.admin.web.menu.MenuDivider;
 import nl.clockwork.ebms.admin.web.menu.MenuItem;
@@ -88,25 +89,18 @@ public class WicketApplication extends WebApplication
 		{
 			MenuItem extensions = new MenuItem("5","extensions");
 			menuItems.add(extensions);
-			int i = 1;
-			for (ExtensionProvider provider : extensionProviders)
+			AtomicInteger i = new AtomicInteger(1);
+			extensionProviders.forEach(p ->
 			{
-				MenuItem epmi = new MenuItem("" + i++,provider.getName());
+				MenuItem epmi = new MenuItem("" + i.getAndIncrement(),p.getName());
 				extensions.addChild(epmi);
-				for (MenuItem menuItem : provider.getMenuItems())
-					epmi.addChild(menuItem);
-			}
+				p.getMenuItems().forEach(m -> epmi.addChild(m));
+			});
 		}
 
 		List<MessageProvider> messageProviders = MessageProvider.get();
-		for (MessageProvider provider : messageProviders)
-			for (MessageProvider.MessageViewPanel messagePanel : provider.getMessageViewPanels())
-				messageViewPanels.put(messagePanel.getId(),messagePanel);
-
-		for (MessageProvider provider : messageProviders)
-			for (MessageProvider.MessageEditPanel messagePanel : provider.getMessageEditPanels())
-				messageEditPanels.put(messagePanel.getId(),messagePanel);
-
+		messageProviders.forEach(p ->p.getMessageViewPanels().forEach(vp -> messageViewPanels.put(vp.getId(),vp)));
+		messageProviders.forEach(p -> p.getMessageEditPanels().forEach(ep -> messageEditPanels.put(ep.getId(),ep)));
 		MenuItem about = new MenuLinkItem("6","about",nl.clockwork.ebms.admin.web.AboutPage.class);
 		menuItems.add(about);
 	}

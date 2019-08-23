@@ -15,6 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
+import java.util.Arrays;
 
 public class Constants
 {
@@ -34,10 +35,7 @@ public class Constants
 		}
 		public static PropertiesType getPropertiesType(String propertiesFile)
 		{
-			for (PropertiesType propertiesType : PropertiesType.values())
-				if (propertiesType.propertiesFile.equals(propertiesFile))
-					return propertiesType;
-			return null;
+			return Arrays.stream(PropertiesType.values()).filter(p -> p.propertiesFile.equals(propertiesFile)).findFirst().orElse(null);
 		}
 	}
 	
@@ -76,10 +74,7 @@ public class Constants
 		}
 		public static JdbcDriver getJdbcDriver(String driverClassName)
 		{
-			for (JdbcDriver jdbcDriver : JdbcDriver.values())
-				if (jdbcDriver.driverClassName.equals(driverClassName))
-					return jdbcDriver;
-			return null;
+			return Arrays.stream(JdbcDriver.values()).filter(j -> j.driverClassName.equals(driverClassName)).findFirst().orElse(null);
 		}
 		public String createJdbcURL(String hostname, Integer port, String database)
 		{

@@ -28,13 +28,7 @@ public class Utils
 	public static String getResourceString(Class<?> clazz, String propertyName)
 	{
 		List<IStringResourceLoader> loaders = WicketApplication.get().getResourceSettings().getStringResourceLoaders();
-		for (IStringResourceLoader loader: loaders)
-		{
-			String value = loader.loadStringResource(clazz,propertyName,null,null,null);
-			if (StringUtils.isNotBlank(value))
-				return value;
-		}
-		return propertyName;
+		return loaders.stream().map(l -> l.loadStringResource(clazz,propertyName,null,null,null)).filter(s -> StringUtils.isNotBlank(s)).findFirst().orElse(propertyName);
 	}
 
 	public static String getContentType(String pathInfo)

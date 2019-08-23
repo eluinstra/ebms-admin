@@ -462,7 +462,7 @@ public class MessageStatusPage extends BasePage
 			getFromPartyIds().clear();
 			setFromPartyId(null);
 		}
-		public void resetFromPartyIds(ArrayList<String> partyIds)
+		public void resetFromPartyIds(List<String> partyIds)
 		{
 			resetFromPartyIds();
 			getFromPartyIds().addAll(partyIds);
@@ -530,7 +530,7 @@ public class MessageStatusPage extends BasePage
 			getToRoles().clear();
 			setToRole(null);
 		}
-		public void resetToRoles(ArrayList<String> roleNames)
+		public void resetToRoles(List<String> roleNames)
 		{
 			resetToRoles();
 			getToRoles().addAll(roleNames);

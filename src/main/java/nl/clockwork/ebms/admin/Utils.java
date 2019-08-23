@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
-import java.util.TreeSet;
+
+import nl.clockwork.ebms.ThrowingConsumer;
 
 public class Utils
 {
@@ -55,14 +55,15 @@ public class Utils
 	
 	public static void writeProperties(Map<String,String> properties, Writer writer) throws IOException
 	{
-		Set<String> keySet = new TreeSet<String>(properties.keySet());
-		for (String key : keySet)
+		properties.entrySet().forEach(ThrowingConsumer.throwingConsumerWrapper(e ->
 		{
+			String key = e.getKey();
+			String value = e.getValue();
 			writer.write(key);
 			writer.write(" = ");
-			writer.write(key.matches(".*(password|pwd).*") ? properties.get(key).replaceAll(".","*") : properties.get(key));
+			writer.write(key.matches(".*(password|pwd).*") ? value.replaceAll(".","*") : value);
 			writer.write("\n");
-		}
+		}));
 	}
 
 	public static <T> List<T> toList(List<T> list)

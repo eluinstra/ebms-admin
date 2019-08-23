@@ -16,9 +16,9 @@
 package nl.clockwork.ebms.admin;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -40,9 +40,7 @@ public class PropertyPlaceholderConfigurer extends org.springframework.beans.fac
 	protected void processProperties(ConfigurableListableBeanFactory beanFactoryToProcess, Properties properties) throws BeansException
 	{
 		super.processProperties(beanFactoryToProcess,properties);
-		this.properties = new HashMap<String,String>();
-		for (Object key: properties.keySet())
-			this.properties.put(key.toString(),resolvePlaceholder(key.toString(),properties));
+		this.properties = properties.entrySet().stream().collect(Collectors.toMap(e -> (String)e.getKey(),e -> (String)e.getValue()));
 	}
 	
 	@Override

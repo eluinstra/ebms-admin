@@ -21,6 +21,7 @@ import java.io.OutputStreamWriter;
 import java.util.List;
 
 import nl.clockwork.ebms.Constants.EbMSMessageEventType;
+import nl.clockwork.ebms.ThrowingConsumer;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.message.ByteArrayResourceStream;
 import nl.clockwork.ebms.model.EbMSMessageContext;
@@ -76,8 +77,7 @@ public class DownloadEbMSMessageEventsCSVLink extends Link<Void>
 
 	private void printMessagesToCSV(CSVPrinter printer, List<EbMSMessageEvent> messageEvents) throws IOException
 	{
-		for (EbMSMessageEvent messageEvent : messageEvents)
-			printer.printRecord(messageEvent.getMessageId(),messageEvent.getType().name());
+		messageEvents.forEach(ThrowingConsumer.throwingConsumerWrapper(e -> printer.printRecord(e.getMessageId(),e.getType().name())));
 	}
 
 	private ResourceStreamRequestHandler createRequestHandler(IResourceStream resourceStream)

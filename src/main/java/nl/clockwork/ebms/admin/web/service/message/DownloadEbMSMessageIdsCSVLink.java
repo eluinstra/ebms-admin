@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
+import nl.clockwork.ebms.ThrowingConsumer;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.message.ByteArrayResourceStream;
 import nl.clockwork.ebms.model.EbMSMessageContext;
@@ -72,8 +73,7 @@ public class DownloadEbMSMessageIdsCSVLink extends Link<Void>
 
 	private void printMessagesToCSV(CSVPrinter printer, List<String> messageIds) throws IOException
 	{
-		for (String messageId : messageIds)
-			printer.printRecord(messageId);
+		messageIds.forEach(ThrowingConsumer.throwingConsumerWrapper(id -> printer.printRecord(id)));
 	}
 
 	private ResourceStreamRequestHandler createRequestHandler(IResourceStream resourceStream)

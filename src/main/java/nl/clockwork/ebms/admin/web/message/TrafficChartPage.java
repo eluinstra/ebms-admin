@@ -21,14 +21,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
-import nl.clockwork.ebms.Constants.EbMSMessageStatus;
-import nl.clockwork.ebms.admin.Constants.EbMSMessageTrafficChartOption;
-import nl.clockwork.ebms.admin.Constants.EbMSMessageTrafficChartSerie;
-import nl.clockwork.ebms.admin.Constants.TimeUnit;
-import nl.clockwork.ebms.admin.dao.EbMSDAO;
-import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import java.util.stream.Collectors;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -53,6 +46,13 @@ import com.googlecode.wickedcharts.highcharts.options.Title;
 import com.googlecode.wickedcharts.highcharts.options.VerticalAlignment;
 import com.googlecode.wickedcharts.highcharts.options.series.SimpleSeries;
 import com.googlecode.wickedcharts.wicket6.highcharts.Chart;
+
+import nl.clockwork.ebms.Constants.EbMSMessageStatus;
+import nl.clockwork.ebms.admin.Constants.EbMSMessageTrafficChartOption;
+import nl.clockwork.ebms.admin.Constants.TimeUnit;
+import nl.clockwork.ebms.admin.dao.EbMSDAO;
+import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 
 public class TrafficChartPage extends BasePage
 {
@@ -84,9 +84,7 @@ public class TrafficChartPage extends BasePage
 			from = from.plus(model.timeUnit.getTimeUnit());
 		}
 
-		List<String> dateString = new ArrayList<String>();
-		for (Date date : dates)
-			dateString.add(new SimpleDateFormat(model.timeUnit.getTimeUnitDateFormat()).format(date));
+		List<String> dateString = dates.stream().map(d -> new SimpleDateFormat(model.timeUnit.getTimeUnitDateFormat()).format(d)).collect(Collectors.toList());
 
 		Options result = new Options();
 		result.setChartOptions(new ChartOptions().setType(SeriesType.LINE));
@@ -94,13 +92,11 @@ public class TrafficChartPage extends BasePage
 		result.setxAxis(new Axis().setCategories(dateString));
 		result.setyAxis(new Axis().setTitle(new Title("Messages")));
 		result.setLegend(new Legend().setLayout(LegendLayout.VERTICAL).setAlign(HorizontalAlignment.RIGHT).setVerticalAlign(VerticalAlignment.TOP).setX(0).setY(1000).setBorderWidth(0));
-
-		for (EbMSMessageTrafficChartSerie status : model.getEbMSMessageTrafficChartOption().getEbMSMessageTrafficChartSeries())
-		{
-			List<Number> receivedMessages = getMessages(dates,model,status.getEbMSMessageStatuses());
-			result.addSeries(new SimpleSeries().setName(status.getName()).setColor(status.getColor()).setData(receivedMessages));
-		}
-		
+		result.setSeries(Arrays.stream(model.getEbMSMessageTrafficChartOption().getEbMSMessageTrafficChartSeries()).map(s -> 
+			{
+				List<Number> receivedMessages = getMessages(dates,model,s.getEbMSMessageStatuses());
+				return new SimpleSeries().setName(s.getName()).setColor(s.getColor()).setData(receivedMessages);
+			}).collect(Collectors.toList()));
 		return result;
 	}
 
@@ -113,14 +109,8 @@ public class TrafficChartPage extends BasePage
 
 	private List<Number> getMessages(List<Date> dates, TrafficChartFormModel model, EbMSMessageStatus...status)
 	{
-		List<Number> result = new ArrayList<Number>();
 		HashMap<Date,Number> messageTraffic = ebMSDAO.selectMessageTraffic(model.from,new DateTime(model.from.getTime()).plus(model.timeUnit.getPeriod()).toDate(),model.timeUnit,status);
-		for (Date date : dates)
-			if (messageTraffic.containsKey(date))
-				result.add(messageTraffic.get(date));
-			else
-				result.add(0);
-		return result;
+		return dates.stream().map(d -> messageTraffic.containsKey(d) ? messageTraffic.get(d) : 0).collect(Collectors.toList());
 	}
 
 	@Override

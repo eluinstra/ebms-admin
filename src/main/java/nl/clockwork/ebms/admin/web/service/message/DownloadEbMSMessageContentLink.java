@@ -25,6 +25,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
+import nl.clockwork.ebms.ThrowingConsumer;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.message.ByteArrayResourceStream;
 import nl.clockwork.ebms.common.JAXBParser;
@@ -83,14 +84,14 @@ public class DownloadEbMSMessageContentLink extends Link<EbMSMessageContent>
 		zip.putNextEntry(entry);
 		zip.write(JAXBParser.getInstance(EbMSMessageContext.class).handle(new JAXBElement<EbMSMessageContext>(new QName("http://www.clockwork.nl/ebms/2.0","messageContext"),EbMSMessageContext.class,messageContent.getContext())).getBytes());
 		zip.closeEntry();
-		for (nl.clockwork.ebms.model.EbMSDataSource dataSource : messageContent.getDataSources())
+		messageContent.getDataSources().forEach(ThrowingConsumer.throwingConsumerWrapper(d ->
 		{
-			entry = new ZipEntry("datasources/" + (StringUtils.isEmpty(dataSource.getName()) ? UUID.randomUUID() + Utils.getFileExtension(dataSource.getContentType()) : dataSource.getName()));
-			entry.setComment("Content-Type: " + dataSource.getContentType());
-			zip.putNextEntry(entry);
-			zip.write(dataSource.getContent());
+			ZipEntry e = new ZipEntry("datasources/" + (StringUtils.isEmpty(d.getName()) ? UUID.randomUUID() + Utils.getFileExtension(d.getContentType()) : d.getName()));
+			entry.setComment("Content-Type: " + d.getContentType());
+			zip.putNextEntry(e);
+			zip.write(d.getContent());
 			zip.closeEntry();
-		}
+		}));
 	}
 
 	private ResourceStreamRequestHandler createRequestHandler(EbMSMessageContent messageContent, IResourceStream resourceStream)

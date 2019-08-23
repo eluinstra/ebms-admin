@@ -20,10 +20,6 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import nl.clockwork.ebms.admin.model.EbMSAttachment;
-import nl.clockwork.ebms.admin.model.EbMSMessage;
-import nl.clockwork.ebms.admin.web.Utils;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.common.util.StringUtils;
@@ -33,6 +29,10 @@ import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.resource.IResourceStream;
+
+import nl.clockwork.ebms.ThrowingConsumer;
+import nl.clockwork.ebms.admin.model.EbMSMessage;
+import nl.clockwork.ebms.admin.web.Utils;
 
 public class DownloadEbMSMessageLinkX extends Link<EbMSMessage>
 {
@@ -71,14 +71,14 @@ public class DownloadEbMSMessageLinkX extends Link<EbMSMessage>
 		zip.putNextEntry(entry);
 		zip.write(message.getContent().getBytes());
 		zip.closeEntry();
-		for (EbMSAttachment attachment : message.getAttachments())
+		message.getAttachments().forEach(ThrowingConsumer.throwingConsumerWrapper(a ->
 		{
-			entry = new ZipEntry("attachments/" + (StringUtils.isEmpty(attachment.getName()) ? attachment.getContentId() + Utils.getFileExtension(attachment.getContentType()) : attachment.getName()));
-			entry.setComment("Content-Type: " + attachment.getContentType());
-			zip.putNextEntry(entry);
-			zip.write(attachment.getContent());
+			ZipEntry e = new ZipEntry("attachments/" + (StringUtils.isEmpty(a.getName()) ? a.getContentId() + Utils.getFileExtension(a.getContentType()) : a.getName()));
+			entry.setComment("Content-Type: " + a.getContentType());
+			zip.putNextEntry(e);
+			zip.write(a.getContent());
 			zip.closeEntry();
-		}
+		}));
 	}
 
 	private ResourceStreamRequestHandler createRequestHandler(EbMSMessage message, IResourceStream resourceStream)
