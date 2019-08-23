@@ -77,7 +77,7 @@ public class TrafficChartPage extends BasePage
 		DateTime from = new DateTime(model.from.getTime());
 		DateTime to = from.plus(model.timeUnit.getPeriod());
 
-		List<Date> dates = new ArrayList<Date>();
+		List<Date> dates = new ArrayList<>();
 		while (from.isBefore(to))
 		{
 			dates.add(from.toDate());
@@ -125,7 +125,7 @@ public class TrafficChartPage extends BasePage
 		
 		public TrafficChartForm(String id, TrafficChartFormModel model)
 		{
-			super(id,new CompoundPropertyModel<TrafficChartFormModel>(model));
+			super(id,new CompoundPropertyModel<>(model));
 			add(createTimeUnitChoice("timeUnit"));
 			add(createMinusLink("minus"));
 			add(createPlusLink("plus"));

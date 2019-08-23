@@ -82,7 +82,7 @@ public class DownloadEbMSMessageContentLink extends Link<EbMSMessageContent>
 	{
 		ZipEntry entry = new ZipEntry("messageContext.xml");
 		zip.putNextEntry(entry);
-		zip.write(JAXBParser.getInstance(EbMSMessageContext.class).handle(new JAXBElement<EbMSMessageContext>(new QName("http://www.clockwork.nl/ebms/2.0","messageContext"),EbMSMessageContext.class,messageContent.getContext())).getBytes());
+		zip.write(JAXBParser.getInstance(EbMSMessageContext.class).handle(new JAXBElement<>(new QName("http://www.clockwork.nl/ebms/2.0","messageContext"),EbMSMessageContext.class,messageContent.getContext())).getBytes());
 		zip.closeEntry();
 		messageContent.getDataSources().forEach(ThrowingConsumer.throwingConsumerWrapper(d ->
 		{

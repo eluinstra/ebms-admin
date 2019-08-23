@@ -88,14 +88,14 @@ public class EbMSCorePropertiesPage extends BasePage
 
 		public EbMSCorePropertiesForm(String id, EbMSCorePropertiesFormModel model)
 		{
-			super(id,new CompoundPropertyModel<EbMSCorePropertiesFormModel>(model));
+			super(id,new CompoundPropertyModel<>(model));
 			
-			List<BootstrapPanelBorder> components = new ArrayList<BootstrapPanelBorder>();
-			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("coreProperties"),new CorePropertiesFormPanel("component",new PropertyModel<CorePropertiesFormModel>(getModelObject(),"coreProperties"),false)));
-			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("httpProperties"),new HttpPropertiesFormPanel("component",new PropertyModel<HttpPropertiesFormModel>(getModelObject(),"httpProperties"),false)));
-			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("signatureProperties"),new SignaturePropertiesFormPanel("component",new PropertyModel<SignaturePropertiesFormModel>(getModelObject(),"signatureProperties"))));
-			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("encryptionProperties"),new EncryptionPropertiesFormPanel("component",new PropertyModel<EncryptionPropertiesFormModel>(getModelObject(),"encryptionProperties"))));
-			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("jdbcProperties"),new JdbcPropertiesFormPanel("component",new PropertyModel<JdbcPropertiesFormModel>(getModelObject(),"jdbcProperties"))));
+			List<BootstrapPanelBorder> components = new ArrayList<>();
+			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("coreProperties"),new CorePropertiesFormPanel("component",new PropertyModel<>(getModelObject(),"coreProperties"),false)));
+			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("httpProperties"),new HttpPropertiesFormPanel("component",new PropertyModel<>(getModelObject(),"httpProperties"),false)));
+			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("signatureProperties"),new SignaturePropertiesFormPanel("component",new PropertyModel<>(getModelObject(),"signatureProperties"))));
+			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("encryptionProperties"),new EncryptionPropertiesFormPanel("component",new PropertyModel<>(getModelObject(),"encryptionProperties"))));
+			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("jdbcProperties"),new JdbcPropertiesFormPanel("component",new PropertyModel<>(getModelObject(),"jdbcProperties"))));
 			add(new ComponentsListView("components",components));
 			add(createValidateButton("validate"));
 			add(new DownloadEbMSCorePropertiesButton("download",new ResourceModel("cmd.download"),getModelObject()));

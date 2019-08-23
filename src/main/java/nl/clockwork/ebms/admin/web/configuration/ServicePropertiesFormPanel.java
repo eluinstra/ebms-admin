@@ -47,7 +47,7 @@ public class ServicePropertiesFormPanel extends Panel
 
 		public ServicePropertiesForm(String id, final IModel<ServicePropertiesFormModel> model)
 		{
-			super(id,new CompoundPropertyModel<ServicePropertiesFormModel>(model));
+			super(id,new CompoundPropertyModel<>(model));
 			add(new BootstrapFormComponentFeedbackBorder("urlFeedback",new TextField<String>("url").setLabel(new ResourceModel("lbl.url")).setRequired(true)));
 			add(createTestButton("test",model));
 		}

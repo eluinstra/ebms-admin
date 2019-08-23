@@ -26,7 +26,7 @@ public abstract class ExtensionProvider
 	public static List<ExtensionProvider> get()
 	{
 		ServiceLoader<ExtensionProvider> providers = ServiceLoader.load(ExtensionProvider.class);
-		List<ExtensionProvider> result = new ArrayList<ExtensionProvider>();
+		List<ExtensionProvider> result = new ArrayList<>();
 		for (ExtensionProvider provider : providers)
 			result.add(provider);
 		return result;

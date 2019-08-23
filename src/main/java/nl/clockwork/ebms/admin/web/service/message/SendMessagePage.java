@@ -82,7 +82,7 @@ public class SendMessagePage extends BasePage
 
 		public MessageForm(String id)
 		{
-			super(id,new CompoundPropertyModel<EbMSMessageContextModel>(new EbMSMessageContextModel()));
+			super(id,new CompoundPropertyModel<>(new EbMSMessageContextModel()));
 			setMultiPart(true);
 			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",createCPAIdChoice("cpaId")));
 			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",createFromPartyIdChoice("fromRole.partyId")));
@@ -101,7 +101,7 @@ public class SendMessagePage extends BasePage
 
 		private DropDownChoice<String> createCPAIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())));
+			DropDownChoice<String> result = new DropDownChoice<>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())));
 			result.setLabel(new ResourceModel("lbl.cpaId"));
 			result.setRequired(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("change")
@@ -135,7 +135,7 @@ public class SendMessagePage extends BasePage
 
 		private DropDownChoice<String> createFromPartyIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"));
+			DropDownChoice<String> result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"));
 			result.setLabel(new ResourceModel("lbl.fromPartyId"));
 			result.setRequired(false).setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("change")
@@ -168,7 +168,7 @@ public class SendMessagePage extends BasePage
 
 		private DropDownChoice<String> createFromRoleChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"));
+			DropDownChoice<String> result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"));
 			result.setLabel(new ResourceModel("lbl.fromRole"));
 			result.setRequired(true).setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("change")
@@ -202,7 +202,7 @@ public class SendMessagePage extends BasePage
 
 		private DropDownChoice<String> createServiceChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"services"));
+			DropDownChoice<String> result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"services"));
 			result.setLabel(new ResourceModel("lbl.service"));
 			result.setRequired(true);
 			result.setOutputMarkupId(true);
@@ -234,7 +234,7 @@ public class SendMessagePage extends BasePage
 
 		private DropDownChoice<String> createActionChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"actions"));
+			DropDownChoice<String> result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"actions"));
 			result.setLabel(new ResourceModel("lbl.action"));
 			result.setRequired(true);
 			result.setOutputMarkupId(true);
@@ -272,11 +272,11 @@ public class SendMessagePage extends BasePage
 	public class EbMSMessageContextModel extends EbMSMessageContext
 	{
 		private static final long serialVersionUID = 1L;
-		private List<String> fromPartyIds = new ArrayList<String>();
-		private List<String> fromRoles = new ArrayList<String>();
-		private List<String> services = new ArrayList<String>();
-		private List<String> actions = new ArrayList<String>();
-		private List<EbMSDataSource> dataSources = new ArrayList<EbMSDataSource>();
+		private List<String> fromPartyIds = new ArrayList<>();
+		private List<String> fromRoles = new ArrayList<>();
+		private List<String> services = new ArrayList<>();
+		private List<String> actions = new ArrayList<>();
+		private List<EbMSDataSource> dataSources = new ArrayList<>();
 
 		public EbMSMessageContextModel()
 		{
@@ -365,7 +365,7 @@ public class SendMessagePage extends BasePage
 				@Override
 				protected void populateItem(final ListItem<EbMSDataSource> item)
 				{
-					item.setModel(new CompoundPropertyModel<EbMSDataSource>(item.getModelObject()));
+					item.setModel(new CompoundPropertyModel<>(item.getModelObject()));
 					item.add(new Label("name"));
 					item.add(new Label("contentType"));
 					item.add(new AjaxButton("remove",new ResourceModel("cmd.remove"),DataSourcesForm.this)

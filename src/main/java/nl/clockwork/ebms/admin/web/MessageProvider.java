@@ -30,7 +30,7 @@ public abstract class MessageProvider
 	public static List<MessageProvider> get()
 	{
 		ServiceLoader<MessageProvider> providers = ServiceLoader.load(MessageProvider.class);
-		List<MessageProvider> result = new ArrayList<MessageProvider>();
+		List<MessageProvider> result = new ArrayList<>();
 		for (MessageProvider provider : providers)
 			result.add(provider);
 		return result;

@@ -98,7 +98,7 @@ public abstract class MessageFilterPanel extends Panel
 
 		public MessageFilterForm(String id, MessageFilterFormModel model)
 		{
-			super(id,new CompoundPropertyModel<MessageFilterFormModel>(model));
+			super(id,new CompoundPropertyModel<>(model));
 			add(createCPAIdChoice("cpaId"));
 			add(createFromPartyIdChoice("fromRole.partyId"));
 			add(createFromRoleChoice("fromRole.role"));
@@ -122,7 +122,7 @@ public abstract class MessageFilterPanel extends Panel
 
 		private DropDownChoice<String> createCPAIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())));
+			DropDownChoice<String> result = new DropDownChoice<>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())));
 			result.setLabel(new ResourceModel("lbl.cpaId"));
 			result.add(new AjaxFormComponentUpdatingBehavior("change")
       {
@@ -318,7 +318,7 @@ public abstract class MessageFilterPanel extends Panel
 
 		private DropDownChoice<String> createServiceChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"services"));
+			DropDownChoice<String> result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"services"));
 			result.setLabel(new ResourceModel("lbl.service"));
 			result.setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("change")
@@ -348,7 +348,7 @@ public abstract class MessageFilterPanel extends Panel
 
 		private DropDownChoice<String> createActionChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"actions"));
+			DropDownChoice<String> result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"actions"));
 			result.setLabel(new ResourceModel("lbl.action"));
 			result.setOutputMarkupId(true);
 			return result;
@@ -421,12 +421,12 @@ public abstract class MessageFilterPanel extends Panel
 	public static class MessageFilterFormModel extends EbMSMessageFilter
 	{
 		private static final long serialVersionUID = 1L;
-		private List<String> fromPartyIds = new ArrayList<String>();
-		private List<String> fromRoles = new ArrayList<String>();
-		private List<String> toPartyIds = new ArrayList<String>();
-		private List<String> toRoles = new ArrayList<String>();
-		private List<String> services = new ArrayList<String>();
-		private List<String> actions = new ArrayList<String>();
+		private List<String> fromPartyIds = new ArrayList<>();
+		private List<String> fromRoles = new ArrayList<>();
+		private List<String> toPartyIds = new ArrayList<>();
+		private List<String> toRoles = new ArrayList<>();
+		private List<String> services = new ArrayList<>();
+		private List<String> actions = new ArrayList<>();
 		
 		public List<String> getFromPartyIds()
 		{

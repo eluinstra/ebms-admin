@@ -82,7 +82,7 @@ public class SendMessagePageX extends BasePage
 
 		public MessageForm(String id)
 		{
-			super(id,new CompoundPropertyModel<EbMSMessageContextModel>(new EbMSMessageContextModel()));
+			super(id,new CompoundPropertyModel<>(new EbMSMessageContextModel()));
 			setMultiPart(true);
 			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",createCPAIdChoice("cpaId")));
 			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",createFromPartyIdChoice("fromRole.partyId")));
@@ -106,7 +106,7 @@ public class SendMessagePageX extends BasePage
 
 		private DropDownChoice<String> createCPAIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())));
+			DropDownChoice<String> result = new DropDownChoice<>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())));
 			result.setLabel(new ResourceModel("lbl.cpaId"));
 			result.setRequired(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("change")
@@ -142,7 +142,7 @@ public class SendMessagePageX extends BasePage
 
 		private DropDownChoice<String> createFromPartyIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"));
+			DropDownChoice<String> result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"));
 			result.setLabel(new ResourceModel("lbl.fromPartyId"));
 			result.setRequired(false).setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("change")
@@ -177,7 +177,7 @@ public class SendMessagePageX extends BasePage
 
 		private DropDownChoice<String> createFromRoleChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"));
+			DropDownChoice<String> result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"));
 			result.setLabel(new ResourceModel("lbl.fromRole"));
 			result.setRequired(true).setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("change")
@@ -209,7 +209,7 @@ public class SendMessagePageX extends BasePage
 
 		private DropDownChoice<String> createToPartyIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"));
+			DropDownChoice<String> result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"));
 			result.setLabel(new ResourceModel("lbl.toPartyId"));
 			result.setRequired(true).setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("change")
@@ -242,7 +242,7 @@ public class SendMessagePageX extends BasePage
 
 		private DropDownChoice<String> createToRoleChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toRoles"));
+			DropDownChoice<String> result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"toRoles"));
 			result.setLabel(new ResourceModel("lbl.toRole"));
 			result.setRequired(true).setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("change")
@@ -274,7 +274,7 @@ public class SendMessagePageX extends BasePage
 
 		private DropDownChoice<String> createServiceChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"services"));
+			DropDownChoice<String> result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"services"));
 			result.setLabel(new ResourceModel("lbl.service"));
 			result.setRequired(true);
 			result.setOutputMarkupId(true);
@@ -306,7 +306,7 @@ public class SendMessagePageX extends BasePage
 
 		private DropDownChoice<String> createActionChoice(String id)
 		{
-			DropDownChoice<String> actions = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"actions"));
+			DropDownChoice<String> actions = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"actions"));
 			actions.setLabel(new ResourceModel("lbl.action"));
 			actions.setRequired(true);
 			actions.setOutputMarkupId(true);
@@ -399,12 +399,12 @@ public class SendMessagePageX extends BasePage
 	public class EbMSMessageContextModel extends EbMSMessageContext
 	{
 		private static final long serialVersionUID = 1L;
-		private List<String> fromPartyIds = new ArrayList<String>();
-		private List<String> fromRoles = new ArrayList<String>();
-		private List<String> toPartyIds = new ArrayList<String>();
-		private List<String> toRoles = new ArrayList<String>();
-		private List<String> services = new ArrayList<String>();
-		private List<String> actions = new ArrayList<String>();
+		private List<String> fromPartyIds = new ArrayList<>();
+		private List<String> fromRoles = new ArrayList<>();
+		private List<String> toPartyIds = new ArrayList<>();
+		private List<String> toRoles = new ArrayList<>();
+		private List<String> services = new ArrayList<>();
+		private List<String> actions = new ArrayList<>();
 		private boolean rawInput;
 
 		public EbMSMessageContextModel()

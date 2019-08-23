@@ -89,7 +89,7 @@ public class CPAsPage extends BasePage
 		container.add(cpas);
 		BootstrapPagingNavigator navigator = new BootstrapPagingNavigator("navigator",cpas);
 		add(navigator);
-		add(new MaxItemsPerPageChoice("maxItemsPerPage",new PropertyModel<Integer>(this,"maxItemsPerPage"),container,navigator));
+		add(new MaxItemsPerPageChoice("maxItemsPerPage",new PropertyModel<>(this,"maxItemsPerPage"),container,navigator));
 	}
 
 	@Override

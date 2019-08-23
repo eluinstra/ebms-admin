@@ -63,7 +63,7 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 
 	public MessagePageX(final EbMSMessage message, final WebPage responsePage)
 	{
-		setModel(new CompoundPropertyModel<EbMSMessage>(message));
+		setModel(new CompoundPropertyModel<>(message));
 		add(new BootstrapFeedbackPanel("feedback"));
 		add(new Label("messageId"));
 		add(new Label("messageNr"));
@@ -136,7 +136,7 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 		@Override
 		public IModel<String> getTitle()
 		{
-			return new Model<String>(getLocalizer().getString("eventError",this));
+			return new Model<>(getLocalizer().getString("eventError",this));
 		}
 	}
 
@@ -233,7 +233,7 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 				return WicketApplication.get().getMessageViewPanels().containsKey(MessageProvider.createId(message.getService(),message.getAction()));
 			}
 		};
-		CheckBox rawOutput = new CheckBox("rawOutput",new PropertyModel<Boolean>(this,"rawOutput"));
+		CheckBox rawOutput = new CheckBox("rawOutput",new PropertyModel<>(this,"rawOutput"));
 		rawOutput.setLabel(new ResourceModel("lbl.rawOutput"));
 		rawOutput.add(new AjaxFormComponentUpdatingBehavior("change")
 		{

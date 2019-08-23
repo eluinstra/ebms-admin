@@ -113,20 +113,20 @@ public class EbMSAdminPropertiesPage extends BasePage
 
 		public EbMSAdminPropertiesForm(String id, EbMSAdminPropertiesFormModel model)
 		{
-			super(id,new CompoundPropertyModel<EbMSAdminPropertiesFormModel>(model));
+			super(id,new CompoundPropertyModel<>(model));
 			
-			List<BootstrapPanelBorder> components = new ArrayList<BootstrapPanelBorder>();
-			components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("consoleProperties"),new ConsolePropertiesFormPanel("component",new PropertyModel<ConsolePropertiesFormModel>(getModelObject(),"consoleProperties"))));
-			components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("coreProperties"),new CorePropertiesFormPanel("component",new PropertyModel<CorePropertiesFormModel>(getModelObject(),"coreProperties"),PropertiesType.EBMS_ADMIN.equals(propertiesType))));
+			List<BootstrapPanelBorder> components = new ArrayList<>();
+			components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("consoleProperties"),new ConsolePropertiesFormPanel("component",new PropertyModel<>(getModelObject(),"consoleProperties"))));
+			components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("coreProperties"),new CorePropertiesFormPanel("component",new PropertyModel<>(getModelObject(),"coreProperties"),PropertiesType.EBMS_ADMIN.equals(propertiesType))));
 			if (PropertiesType.EBMS_ADMIN.equals(propertiesType))
-				components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("serviceProperties"),new ServicePropertiesFormPanel("component",new PropertyModel<ServicePropertiesFormModel>(getModelObject(),"serviceProperties"))));
+				components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("serviceProperties"),new ServicePropertiesFormPanel("component",new PropertyModel<>(getModelObject(),"serviceProperties"))));
 			if (PropertiesType.EBMS_ADMIN_EMBEDDED.equals(propertiesType))
 			{
-				components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("httpProperties"),new HttpPropertiesFormPanel("component",new PropertyModel<HttpPropertiesFormModel>(getModelObject(),"httpProperties"),true)));
-				components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("signatureProperties"),new SignaturePropertiesFormPanel("component",new PropertyModel<SignaturePropertiesFormModel>(getModelObject(),"signatureProperties"))));
-				components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("encryptionProperties"),new EncryptionPropertiesFormPanel("component",new PropertyModel<EncryptionPropertiesFormModel>(getModelObject(),"encryptionProperties"))));
+				components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("httpProperties"),new HttpPropertiesFormPanel("component",new PropertyModel<>(getModelObject(),"httpProperties"),true)));
+				components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("signatureProperties"),new SignaturePropertiesFormPanel("component",new PropertyModel<>(getModelObject(),"signatureProperties"))));
+				components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("encryptionProperties"),new EncryptionPropertiesFormPanel("component",new PropertyModel<>(getModelObject(),"encryptionProperties"))));
 			}
-			components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("jdbcProperties"),new JdbcPropertiesFormPanel("component",new PropertyModel<JdbcPropertiesFormModel>(getModelObject(),"jdbcProperties"))));
+			components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("jdbcProperties"),new JdbcPropertiesFormPanel("component",new PropertyModel<>(getModelObject(),"jdbcProperties"))));
 			add(new ComponentsListView("components",components));
 			add(createValidateButton("validate"));
 			add(new DownloadEbMSAdminPropertiesButton("download",new ResourceModel("cmd.download"),getModelObject(),propertiesType));

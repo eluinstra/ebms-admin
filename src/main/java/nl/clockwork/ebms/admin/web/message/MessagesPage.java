@@ -68,7 +68,7 @@ public class MessagesPage extends BasePage
 			item.add(new Label("messageNr",message.getMessageNr()));
 			item.add(createFilterConversationIdLink("filterConversationId",message));
 			item.add(createViewRefToMessageIdLink("viewRefToMessageId",message));
-			item.add(DateLabel.forDatePattern("timestamp",new Model<Date>(message.getTimestamp()),Constants.DATETIME_FORMAT));
+			item.add(DateLabel.forDatePattern("timestamp",new Model<>(message.getTimestamp()),Constants.DATETIME_FORMAT));
 			item.add(new Label("cpaId",message.getCpaId()));
 			item.add(new Label("fromPartyId",message.getFromPartyId()));
 			item.add(new Label("fromRole",message.getFromRole()));
@@ -77,7 +77,7 @@ public class MessagesPage extends BasePage
 			item.add(new Label("service",message.getService()));
 			item.add(new Label("action",message.getAction()));
 			item.add(new Label("status",message.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus())))));
-			item.add(DateLabel.forDatePattern("statusTime",new Model<Date>(message.getStatusTime()),Constants.DATETIME_FORMAT));
+			item.add(DateLabel.forDatePattern("statusTime",new Model<>(message.getStatusTime()),Constants.DATETIME_FORMAT));
 			item.add(AttributeModifier.replace("class",new OddOrEvenIndexStringModel(item.getIndex())));
 		}
 
@@ -161,7 +161,7 @@ public class MessagesPage extends BasePage
 		container.add(messages);
 		BootstrapPagingNavigator navigator = new BootstrapPagingNavigator("navigator",messages);
 		add(navigator);
-		add(new MaxItemsPerPageChoice("maxItemsPerPage",new PropertyModel<Integer>(this,"maxItemsPerPage"),container,navigator));
+		add(new MaxItemsPerPageChoice("maxItemsPerPage",new PropertyModel<>(this,"maxItemsPerPage"),container,navigator));
 		add(new PageLink("back",responsePage).setVisible(responsePage != null));
 		add(new DownloadEbMSMessagesCSVLink("download",ebMSDAO,filter));
 	}

@@ -81,7 +81,7 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 		dateTimePicker.setOutputMarkupId(true);
 		add(dateTimePicker);
 
-		dateTimeField = new DateTextField("dateTime",new PropertyModel<Date>(this,"dateTime"),format)
+		dateTimeField = new DateTextField("dateTime",new PropertyModel<>(this,"dateTime"),format)
 		{
 			private static final long serialVersionUID = 1L;
 
@@ -114,7 +114,7 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 	@Override
 	public void renderHead(IHeaderResponse response)
 	{
-		List<String> options = new ArrayList<String>();
+		List<String> options = new ArrayList<>();
 		if (formatJS != null)
 			options.add("format: '" + formatJS + "'");
 		if (!Type.DATE_TIME.equals(type) & !Type.DATE.equals(type))

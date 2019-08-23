@@ -57,7 +57,7 @@ public class JdbcPropertiesFormPanel extends Panel
 
 		public JdbcPropertiesForm(String id, final IModel<JdbcPropertiesFormModel> model)
 		{
-			super(id,new CompoundPropertyModel<JdbcPropertiesFormModel>(model));
+			super(id,new CompoundPropertyModel<>(model));
 			add(new BootstrapFormComponentFeedbackBorder("driverFeedback",createDriverChoice("driver",model)));
 			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",createHostsField("host")));
 			add(new BootstrapFormComponentFeedbackBorder("portFeedback",createPortField("port")));
@@ -70,7 +70,7 @@ public class JdbcPropertiesFormPanel extends Panel
 
 		private DropDownChoice<JdbcDriver> createDriverChoice(String id, final IModel<JdbcPropertiesFormModel> model)
 		{
-			DropDownChoice<JdbcDriver> result = new DropDownChoice<JdbcDriver>(id,new PropertyModel<List<JdbcDriver>>(model.getObject(),"drivers"));
+			DropDownChoice<JdbcDriver> result = new DropDownChoice<>(id,new PropertyModel<List<JdbcDriver>>(model.getObject(),"drivers"));
 			result.setLabel(new ResourceModel("lbl.driver"));
 			result.setRequired(true);
 			result.add(new OnChangeAjaxBehavior()
@@ -88,7 +88,7 @@ public class JdbcPropertiesFormPanel extends Panel
 
 		private TextField<String> createHostsField(String id)
 		{
-			TextField<String> result = new TextField<String>(id);
+			TextField<String> result = new TextField<>(id);
 			result.setLabel(new ResourceModel("lbl.host"));
 			result.setRequired(true);
 			result.add(new OnChangeAjaxBehavior()
@@ -106,7 +106,7 @@ public class JdbcPropertiesFormPanel extends Panel
 
 		private TextField<Integer> createPortField(String id)
 		{
-			TextField<Integer> result = new TextField<Integer>(id);
+			TextField<Integer> result = new TextField<>(id);
 			result.setLabel(new ResourceModel("lbl.port"));
 			result.add(new OnChangeAjaxBehavior()
 			{
@@ -123,7 +123,7 @@ public class JdbcPropertiesFormPanel extends Panel
 
 		private TextField<String> createDatabaseField(String id)
 		{
-			TextField<String> result = new TextField<String>(id);
+			TextField<String> result = new TextField<>(id);
 			result.setLabel(new ResourceModel("lbl.database"));
 			result.setRequired(true);
 			result.add(new OnChangeAjaxBehavior()

@@ -47,7 +47,7 @@ public class EncryptionPropertiesFormPanel extends Panel
 
 		public EncryptionPropertiesForm(String id, final IModel<EncryptionPropertiesFormModel> model)
 		{
-			super(id,new CompoundPropertyModel<EncryptionPropertiesFormModel>(model));
+			super(id,new CompoundPropertyModel<>(model));
 			add(createEncryptionCheckBox("encryption"));
 			add(createKeystorePropertiesPanel("keystoreProperties"));
 		}
@@ -71,7 +71,7 @@ public class EncryptionPropertiesFormPanel extends Panel
 
 		private JavaKeyStorePropertiesFormPanel createKeystorePropertiesPanel(String id)
 		{
-			return new JavaKeyStorePropertiesFormPanel(id,new PropertyModel<JavaKeyStorePropertiesFormModel>(getModelObject(),"keystoreProperties"),false)
+			return new JavaKeyStorePropertiesFormPanel(id,new PropertyModel<>(getModelObject(),"keystoreProperties"),false)
 			{
 				private static final long serialVersionUID = 1L;
 

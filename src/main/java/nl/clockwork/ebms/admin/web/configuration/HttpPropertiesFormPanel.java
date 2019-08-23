@@ -57,7 +57,7 @@ public class HttpPropertiesFormPanel extends Panel
 
 		public HttpPropertiesForm(String id, final IModel<HttpPropertiesFormModel> model, boolean enableSslOverridePropeties)
 		{
-			super(id,new CompoundPropertyModel<HttpPropertiesFormModel>(model));
+			super(id,new CompoundPropertyModel<>(model));
 			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",createHostField("host")).add(new Label("protocol")));
 			add(new BootstrapFormComponentFeedbackBorder("portFeedback",createPortField("port")));
 			add(new BootstrapFormComponentFeedbackBorder("pathFeedback",createPathField("path")));
@@ -72,7 +72,7 @@ public class HttpPropertiesFormPanel extends Panel
 
 		private FormComponent<String> createHostField(String id)
 		{
-			TextField<String> result = new TextField<String>(id);
+			TextField<String> result = new TextField<>(id);
 			result.setLabel(new ResourceModel("lbl.host"));
 			result.add(new OnChangeAjaxBehavior()
 	    {
@@ -90,7 +90,7 @@ public class HttpPropertiesFormPanel extends Panel
 
 		private TextField<Integer> createPortField(String id)
 		{
-			TextField<Integer> result = new TextField<Integer>(id);
+			TextField<Integer> result = new TextField<>(id);
 			result.setLabel(new ResourceModel("lbl.port"));
 			result.add(new OnChangeAjaxBehavior()
 	    {
@@ -152,7 +152,7 @@ public class HttpPropertiesFormPanel extends Panel
 
 		private SslPropertiesFormPanel createSslPropertiesPanel(String id, boolean enableSslOverridePropeties)
 		{
-			SslPropertiesFormPanel result = new SslPropertiesFormPanel(id,new PropertyModel<SslPropertiesFormModel>(getModelObject(),"sslProperties"),enableSslOverridePropeties)
+			SslPropertiesFormPanel result = new SslPropertiesFormPanel(id,new PropertyModel<>(getModelObject(),"sslProperties"),enableSslOverridePropeties)
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -184,7 +184,7 @@ public class HttpPropertiesFormPanel extends Panel
 
 		private ProxyPropertiesFormPanel createProxyPropertiesPanel(String id)
 		{
-			ProxyPropertiesFormPanel result = new ProxyPropertiesFormPanel(id,new PropertyModel<ProxyPropertiesFormModel>(getModelObject(),"proxyProperties"))
+			ProxyPropertiesFormPanel result = new ProxyPropertiesFormPanel(id,new PropertyModel<>(getModelObject(),"proxyProperties"))
 			{
 				private static final long serialVersionUID = 1L;
 				

@@ -62,7 +62,7 @@ public class URLMappingPage extends BasePage
 
 		public EditURLMappingForm(String id, URLMapping urlMapping)
 		{
-			super(id,new CompoundPropertyModel<URLMappingFormModel>(new URLMappingFormModel(urlMapping)));
+			super(id,new CompoundPropertyModel<>(new URLMappingFormModel(urlMapping)));
 			add(new BootstrapFormComponentFeedbackBorder("sourceFeedback",new TextField<String>("urlMapping.source").setRequired(true).setLabel(new ResourceModel("lbl.source"))));
 			add(new BootstrapFormComponentFeedbackBorder("destinationFeedback",new TextField<String>("urlMapping.destination").setRequired(true).setLabel(new ResourceModel("lbl.destination"))));
 			add(createSetButton("set"));

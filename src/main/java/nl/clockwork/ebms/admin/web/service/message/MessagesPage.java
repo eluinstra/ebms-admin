@@ -114,7 +114,7 @@ public class MessagesPage extends BasePage
 		container.add(messages);
 		final BootstrapPagingNavigator navigator = new BootstrapPagingNavigator("navigator",messages);
 		add(navigator);
-		add(new MaxItemsPerPageChoice("maxItemsPerPage",new PropertyModel<Integer>(this,"maxItemsPerPage"),navigator,container));
+		add(new MaxItemsPerPageChoice("maxItemsPerPage",new PropertyModel<>(this,"maxItemsPerPage"),navigator,container));
 		add(new PageLink("back",responsePage).setVisible(responsePage != null));
 		add(new DownloadEbMSMessageIdsCSVLink("download",ebMSMessageService,filter));
 	}

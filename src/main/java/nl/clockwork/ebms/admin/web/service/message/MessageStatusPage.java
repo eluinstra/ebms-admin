@@ -83,7 +83,7 @@ public class MessageStatusPage extends BasePage
 
 		public MessageStatusForm(String id)
 		{
-			super(id,new CompoundPropertyModel<MessageStatusFormModel>(new MessageStatusFormModel()));
+			super(id,new CompoundPropertyModel<>(new MessageStatusFormModel()));
 			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",createCPAIdChoice("cpaId")));
 			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",createFromPartyIdChoice("fromPartyId")).setVisible(cleoPatch));
 			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",createFromRoleChoice("fromRole")));
@@ -425,15 +425,15 @@ public class MessageStatusPage extends BasePage
 	{
 		private static final long serialVersionUID = 1L;
 		private String cpaId;
-		private List<String> fromPartyIds = new ArrayList<String>();
+		private List<String> fromPartyIds = new ArrayList<>();
 		private String fromPartyId;
-		private List<String> fromRoles = new ArrayList<String>();
+		private List<String> fromRoles = new ArrayList<>();
 		private String fromRole;
-		private List<String> toPartyIds = new ArrayList<String>();
+		private List<String> toPartyIds = new ArrayList<>();
 		private String toPartyId;
-		private List<String> toRoles = new ArrayList<String>();
+		private List<String> toRoles = new ArrayList<>();
 		private String toRole;
-		private List<String> messageIds = new ArrayList<String>();
+		private List<String> messageIds = new ArrayList<>();
 		private String messageId;
 		private boolean manual = true;
 		

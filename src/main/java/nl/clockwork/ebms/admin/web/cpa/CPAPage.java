@@ -31,7 +31,7 @@ public class CPAPage extends BasePage implements IGenericComponent<CPA,CPAPage>
 
 	public CPAPage(final CPA cpa, final WebPage responsePage)
 	{
-		setModel(new CompoundPropertyModel<CPA>(cpa));
+		setModel(new CompoundPropertyModel<>(cpa));
 		add(new Label("cpaId"));
 		add(new TextArea<String>("cpa").setEnabled(false));
 		add(new PageLink("back",responsePage));

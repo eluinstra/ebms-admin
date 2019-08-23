@@ -229,7 +229,7 @@ public class Start
 		
 		ErrorPageErrorHandler errorHandler = new ErrorPageErrorHandler();
 		handler.setErrorHandler(errorHandler);
-		Map<String,String> errorPages = new HashMap<String,String>();
+		Map<String,String> errorPages = new HashMap<>();
 		errorPages.put("404","/404");
 		errorHandler.setErrorPages(errorPages);
 		

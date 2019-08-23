@@ -54,7 +54,7 @@ public class SslPropertiesFormPanel extends Panel
 
 		public SslPropertiesForm(String id, final IModel<SslPropertiesFormModel> model, boolean enableSslOverridePropeties)
 		{
-			super(id,new CompoundPropertyModel<SslPropertiesFormModel>(model));
+			super(id,new CompoundPropertyModel<>(model));
 			add(createOverrideDefaultProtocolsContainer("overrideDefaultProtocolsContainer",enableSslOverridePropeties));
 			add(createEnabledProtocolsContainer("enabledProtocolsContainer",enableSslOverridePropeties));
 			add(createOverrideDefaultCipherSuitesContainer("overrideDefaultCipherSuitesContainer",enableSslOverridePropeties));
@@ -62,9 +62,9 @@ public class SslPropertiesFormPanel extends Panel
 			add(createClientAuthenticationRequiredCheckBox("requireClientAuthentication"));
 			add(new CheckBox("verifyHostnames").setLabel(new ResourceModel("lbl.verifyHostnames")));
 			add(new CheckBox("validate").setLabel(new ResourceModel("lbl.validate")));
-			add(new KeystorePropertiesFormPanel("keystoreProperties",new PropertyModel<JavaKeyStorePropertiesFormModel>(getModelObject(),"keystoreProperties")));
+			add(new KeystorePropertiesFormPanel("keystoreProperties",new PropertyModel<>(getModelObject(),"keystoreProperties")));
 			add(createClientKeystorePropertiesFormPanel("clientKeystoreProperties"));
-			add(new TruststorePropertiesFormPanel("truststoreProperties",new PropertyModel<JavaKeyStorePropertiesFormModel>(getModelObject(),"truststoreProperties")));
+			add(new TruststorePropertiesFormPanel("truststoreProperties",new PropertyModel<>(getModelObject(),"truststoreProperties")));
 		}
 
 		private WebMarkupContainer createOverrideDefaultProtocolsContainer(String id, boolean enableSslOverridePropeties)
@@ -162,7 +162,7 @@ public class SslPropertiesFormPanel extends Panel
 
 		private ClientKeystorePropertiesFormPanel createClientKeystorePropertiesFormPanel(String id)
 		{
-			return new ClientKeystorePropertiesFormPanel(id,new PropertyModel<JavaKeyStorePropertiesFormModel>(getModelObject(),"clientKeystoreProperties"))
+			return new ClientKeystorePropertiesFormPanel(id,new PropertyModel<>(getModelObject(),"clientKeystoreProperties"))
 			{
 				private static final long serialVersionUID = 1L;
 				
@@ -180,10 +180,10 @@ public class SslPropertiesFormPanel extends Panel
 		private static final long serialVersionUID = 1L;
 		private boolean overrideDefaultProtocols = false;
 		private List<String> supportedProtocols = Arrays.asList(Utils.getSupportedSSLProtocols());
-		private List<String> enabledProtocols = new ArrayList<String>();
+		private List<String> enabledProtocols = new ArrayList<>();
 		private boolean overrideDefaultCipherSuites = false;
 		private List<String> supportedCipherSuites = Arrays.asList(Utils.getSupportedSSLCipherSuites());
-		private List<String> enabledCipherSuites = new ArrayList<String>();
+		private List<String> enabledCipherSuites = new ArrayList<>();
 		private boolean requireClientAuthentication = true;
 		private boolean verifyHostnames = false;
 		private boolean validate = true;

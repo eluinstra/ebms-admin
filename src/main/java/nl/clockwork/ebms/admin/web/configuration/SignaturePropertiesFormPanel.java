@@ -47,7 +47,7 @@ public class SignaturePropertiesFormPanel extends Panel
 
 		public SignaturePropertiesForm(String id, final IModel<SignaturePropertiesFormModel> model)
 		{
-			super(id,new CompoundPropertyModel<SignaturePropertiesFormModel>(model));
+			super(id,new CompoundPropertyModel<>(model));
 			add(createSigningCheckBox("signing"));
 			add(createKeystorePropertiesPanel("keystoreProperties"));
 		}
@@ -71,7 +71,7 @@ public class SignaturePropertiesFormPanel extends Panel
 
 		private JavaKeyStorePropertiesFormPanel createKeystorePropertiesPanel(String id)
 		{
-			return new JavaKeyStorePropertiesFormPanel(id,new PropertyModel<JavaKeyStorePropertiesFormModel>(getModelObject(),"keystoreProperties"),false)
+			return new JavaKeyStorePropertiesFormPanel(id,new PropertyModel<>(getModelObject(),"keystoreProperties"),false)
 			{
 				private static final long serialVersionUID = 1L;
 

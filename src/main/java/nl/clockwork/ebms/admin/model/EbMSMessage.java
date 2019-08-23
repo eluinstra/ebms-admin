@@ -42,9 +42,9 @@ public class EbMSMessage implements IClusterable
 	private String content;
 	private EbMSMessageStatus status;
 	private Date statusTime;
-	private List<EbMSAttachment> attachments = new ArrayList<EbMSAttachment>();
+	private List<EbMSAttachment> attachments = new ArrayList<>();
 	private EbMSEvent event;
-	private List<EbMSEventLog> events = new ArrayList<EbMSEventLog>();
+	private List<EbMSEventLog> events = new ArrayList<>();
 
 	public Date getTimestamp()
 	{

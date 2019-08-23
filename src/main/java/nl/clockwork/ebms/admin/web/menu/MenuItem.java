@@ -27,7 +27,7 @@ public class MenuItem implements IClusterable
 	private String id;
 	private String name;
 	private MenuItem parent;
-	private List<MenuItem> children = new ArrayList<MenuItem>();
+	private List<MenuItem> children = new ArrayList<>();
 
 	public MenuItem(String id, String name)
 	{

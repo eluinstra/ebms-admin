@@ -36,7 +36,7 @@ public class EmptyDataSourcesPanel extends DataSourcesPanel
 	@Override
 	public List<EbMSDataSource> getDataSources()
 	{
-		return new ArrayList<EbMSDataSource>();
+		return new ArrayList<>();
 	}
 
 }

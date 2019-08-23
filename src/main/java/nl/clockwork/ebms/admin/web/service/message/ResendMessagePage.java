@@ -66,7 +66,7 @@ public class ResendMessagePage extends BasePage
 
 		public MessageStatusForm(String id)
 		{
-			super(id,new CompoundPropertyModel<ResendMessageFormModel>(new ResendMessageFormModel()));
+			super(id,new CompoundPropertyModel<>(new ResendMessageFormModel()));
 			add(new BootstrapFormComponentFeedbackBorder("messageIdFeedback",createMessageIdField("messageId")));
 			Button resend = createResendButton("resend");
 			setDefaultButton(resend);
@@ -76,7 +76,7 @@ public class ResendMessagePage extends BasePage
 
 		private TextField<String> createMessageIdField(String id)
 		{
-			final TextField<String> result = new TextField<String>(id);
+			final TextField<String> result = new TextField<>(id);
 			result.setLabel(new ResourceModel("lbl.messageId"));
 			result.setRequired(true).setOutputMarkupPlaceholderTag(true);
 			return result;

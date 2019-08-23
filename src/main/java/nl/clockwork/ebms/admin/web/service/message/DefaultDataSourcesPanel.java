@@ -51,7 +51,7 @@ public class DefaultDataSourcesPanel extends DataSourcesPanel
 		@Override
 		protected void populateItem(final ListItem<EbMSDataSource> item)
 		{
-			item.setModel(new CompoundPropertyModel<EbMSDataSource>(item.getModelObject()));
+			item.setModel(new CompoundPropertyModel<>(item.getModelObject()));
 			item.add(new Label("name"));
 			item.add(new Label("contentType"));
 			item.add(new AjaxButton("remove",new ResourceModel("cmd.remove"),dataSourcesForm)
@@ -82,7 +82,7 @@ public class DefaultDataSourcesPanel extends DataSourcesPanel
 
 		public DataSourcesForm(String id)
 		{
-			super(id,new CompoundPropertyModel<DataSourcesModel>(new DataSourcesModel()));
+			super(id,new CompoundPropertyModel<>(new DataSourcesModel()));
 			add(new EbMSDataSourceListView("dataSources",DataSourcesForm.this));
 			final ModalWindow dataSourceModalWindow = new DataSourceModalWindow("dataSourceModelWindow",getModelObject().getDataSources(),DataSourcesForm.this);
 			add(dataSourceModalWindow);
@@ -114,7 +114,7 @@ public class DefaultDataSourcesPanel extends DataSourcesPanel
 	public static class DataSourcesModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		private List<EbMSDataSource> dataSources = new ArrayList<EbMSDataSource>();
+		private List<EbMSDataSource> dataSources = new ArrayList<>();
 
 		public List<EbMSDataSource> getDataSources()
 		{

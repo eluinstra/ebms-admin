@@ -65,7 +65,7 @@ public class TrafficPage extends BasePage
 			EbMSMessage message = item.getModelObject();
 			item.add(createViewLink("view",message));
 			item.add(createFilterConversationIdLink("filterConversationId",message));
-			item.add(DateLabel.forDatePattern("timestamp",new Model<Date>(message.getTimestamp()),Constants.DATETIME_FORMAT));
+			item.add(DateLabel.forDatePattern("timestamp",new Model<>(message.getTimestamp()),Constants.DATETIME_FORMAT));
 			item.add(new Label("cpaId",message.getCpaId()));
 			item.add(new Label("fromPartyId",message.getFromPartyId()));
 			item.add(new Label("fromRole",message.getFromRole()));
@@ -74,7 +74,7 @@ public class TrafficPage extends BasePage
 			item.add(new Label("service",message.getService()));
 			item.add(new Label("action",message.getAction()));
 			item.add(new Label("status",message.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus())))));
-			item.add(DateLabel.forDatePattern("statusTime",new Model<Date>(message.getStatusTime()),Constants.DATETIME_FORMAT));
+			item.add(DateLabel.forDatePattern("statusTime",new Model<>(message.getStatusTime()),Constants.DATETIME_FORMAT));
 			item.add(AttributeModifier.replace("class",Model.of(Utils.getTableRowCssClass(message.getStatus()))));
 		}
 
@@ -144,7 +144,7 @@ public class TrafficPage extends BasePage
 		container.add(messages);
 		BootstrapPagingNavigator navigator = new BootstrapPagingNavigator("navigator",messages);
 		add(navigator);
-		add(new MaxItemsPerPageChoice("maxItemsPerPage",new PropertyModel<Integer>(this,"maxItemsPerPage"),navigator,container));
+		add(new MaxItemsPerPageChoice("maxItemsPerPage",new PropertyModel<>(this,"maxItemsPerPage"),navigator,container));
 		add(new PageLink("back",responsePage).setVisible(responsePage != null));
 		add(new DownloadEbMSMessagesCSVLink("download",ebMSDAO,filter));
 	}

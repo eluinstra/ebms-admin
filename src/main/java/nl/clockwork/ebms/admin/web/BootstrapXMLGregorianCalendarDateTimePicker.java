@@ -91,7 +91,7 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 		dateTimePicker.setOutputMarkupId(true);
 		add(dateTimePicker);
 
-		dateTimeField = new TextField<XMLGregorianCalendar>("dateTime",new PropertyModel<XMLGregorianCalendar>(this,"dateTime"))
+		dateTimeField = new TextField<XMLGregorianCalendar>("dateTime",new PropertyModel<>(this,"dateTime"))
 		{
 			private static final long serialVersionUID = 1L;
 
@@ -177,7 +177,7 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 	@Override
 	public void renderHead(IHeaderResponse response)
 	{
-		List<String> options = new ArrayList<String>();
+		List<String> options = new ArrayList<>();
 		if (formatJS != null)
 			options.add("format: '" + formatJS + "'");
 		if (!Type.DATE_TIME.equals(type) & !Type.DATE.equals(type))

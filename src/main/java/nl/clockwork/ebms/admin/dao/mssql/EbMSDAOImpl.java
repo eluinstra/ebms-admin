@@ -72,7 +72,7 @@ public class EbMSDAOImpl extends nl.clockwork.ebms.admin.dao.mysql.EbMSDAOImpl
 	@Override
 	public HashMap<Date,Number> selectMessageTraffic(Date from, Date to, TimeUnit timeUnit, EbMSMessageStatus...status)
 	{
-		final HashMap<Date,Number> result = new HashMap<Date,Number>();
+		final HashMap<Date,Number> result = new HashMap<>();
 		jdbcTemplate.query(
 			//"select format(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "') time, count(*) nr" + 
 			//"select parse(format(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "'),'yyyy-MM-dd hh:mm:ss') time, count(*) nr" + 

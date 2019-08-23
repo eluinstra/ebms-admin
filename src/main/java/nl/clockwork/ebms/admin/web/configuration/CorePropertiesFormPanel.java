@@ -56,7 +56,7 @@ public class CorePropertiesFormPanel extends Panel
 
 		public CorePropertiesForm(String id, final IModel<CorePropertiesFormModel> model, boolean enableConsoleProperties)
 		{
-			super(id,new CompoundPropertyModel<CorePropertiesFormModel>(model));
+			super(id,new CompoundPropertyModel<>(model));
 			add(createContainer("digipoortPatchContainer",enableConsoleProperties,new CheckBox("digipoortPatch").setLabel(new ResourceModel("lbl.digipoortPatch"))));
 			add(createContainer("oraclePatchContainer",enableConsoleProperties,new CheckBox("oraclePatch").setLabel(new ResourceModel("lbl.oraclePatch"))));
 			add(new CheckBox("cleoPatch").setLabel(new ResourceModel("lbl.cleoPatch")));
@@ -126,7 +126,7 @@ public class CorePropertiesFormPanel extends Panel
 
 		private DropDownChoice<EbMSHttpClientType> createHttpClientChoice(String id, IModel<CorePropertiesFormModel> model)
 		{
-			DropDownChoice<EbMSHttpClientType> result = new DropDownChoice<EbMSHttpClientType>(id,new PropertyModel<List<EbMSHttpClientType>>(model.getObject(),"httpClients"));
+			DropDownChoice<EbMSHttpClientType> result = new DropDownChoice<>(id,new PropertyModel<List<EbMSHttpClientType>>(model.getObject(),"httpClients"));
 			result.setLabel(new ResourceModel("lbl.httpClient"));
 			result.setRequired(true);
 			return result;
@@ -134,7 +134,7 @@ public class CorePropertiesFormPanel extends Panel
 
 		private DropDownChoice<EventListenerType> createEventListenerChoice(String id, IModel<CorePropertiesFormModel> model)
 		{
-			DropDownChoice<EventListenerType> result = new DropDownChoice<EventListenerType>(id,new PropertyModel<List<EventListenerType>>(model.getObject(),"eventListeners"));
+			DropDownChoice<EventListenerType> result = new DropDownChoice<>(id,new PropertyModel<List<EventListenerType>>(model.getObject(),"eventListeners"));
 			result.setLabel(new ResourceModel("lbl.eventListener"));
 			result.setRequired(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("change")

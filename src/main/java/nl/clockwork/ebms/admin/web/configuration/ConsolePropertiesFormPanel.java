@@ -44,7 +44,7 @@ public class ConsolePropertiesFormPanel extends Panel
 
 		public ConsolePropertiesForm(String id, final IModel<ConsolePropertiesFormModel> model)
 		{
-			super(id,new CompoundPropertyModel<ConsolePropertiesFormModel>(model));
+			super(id,new CompoundPropertyModel<>(model));
 			add(new BootstrapFormComponentFeedbackBorder("maxItemsPerPageFeedback",new TextField<Integer>("maxItemsPerPage").setLabel(new ResourceModel("lbl.maxItemsPerPage")).setRequired(true)));
 			add(new BootstrapFormComponentFeedbackBorder("log4jPropertiesFileFeedback",new TextField<String>("log4jPropertiesFile").setLabel(new ResourceModel("lbl.log4jPropertiesFile"))));
 			add(new DownloadLog4jFileLink("downloadLog4jFile"));

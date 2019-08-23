@@ -60,7 +60,7 @@ public class CPAUploadPage extends BasePage
 
 		public EditUploadForm(String id)
 		{
-			super(id,new CompoundPropertyModel<EditUploadFormModel>(new EditUploadFormModel()));
+			super(id,new CompoundPropertyModel<>(new EditUploadFormModel()));
 			setMultiPart(true);
 			add(new BootstrapFormComponentFeedbackBorder("cpaFeedback",createCPAFileField("cpaFile")));
 			add(new CheckBox("overwrite").setLabel(new ResourceModel("lbl.overwrite")));

@@ -69,7 +69,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 
 	public MessagePage(EbMSMessageContent messageContent, WebPage responsePage, MessageProcessor messageProcessor)
 	{
-		setModel(new CompoundPropertyModel<EbMSMessageContent>(messageContent));
+		setModel(new CompoundPropertyModel<>(messageContent));
 		add(new BootstrapFeedbackPanel("feedback"));
 		add(new Label("context.messageId"));
 		add(new Label("context.conversationId"));

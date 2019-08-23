@@ -27,7 +27,7 @@ public class EbMSMessageFilter extends EbMSMessageContext
 	private static final long serialVersionUID = 1L;
 	private Integer messageNr;
 	private Boolean serviceMessage;
-	private List<EbMSMessageStatus> statuses = new ArrayList<EbMSMessageStatus>();
+	private List<EbMSMessageStatus> statuses = new ArrayList<>();
 	private Date from;
 	private Date to;
 

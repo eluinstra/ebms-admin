@@ -55,7 +55,7 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 
 		public JavaKeyStorePropertiesForm(String id, final IModel<JavaKeyStorePropertiesFormModel> model)
 		{
-			super(id,new CompoundPropertyModel<JavaKeyStorePropertiesFormModel>(model));
+			super(id,new CompoundPropertyModel<>(model));
 			add(new BootstrapFormComponentFeedbackBorder("uriFeedback",new TextField<String>("uri").setLabel(new ResourceModel("lbl.uri")).setRequired(required)));
 			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",new PasswordTextField("password").setResetPassword(false).setLabel(new ResourceModel("lbl.password")).setRequired(required)));
 			add(createTestButton("test",model));

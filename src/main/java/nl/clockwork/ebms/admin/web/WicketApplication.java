@@ -42,9 +42,9 @@ import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
  */
 public class WicketApplication extends WebApplication
 {
-	public List<MenuItem> menuItems = new ArrayList<MenuItem>();
-	public Map<String,MessageProvider.MessageViewPanel> messageViewPanels = new HashMap<String,MessageProvider.MessageViewPanel>();
-	public Map<String,MessageProvider.MessageEditPanel> messageEditPanels = new HashMap<String,MessageProvider.MessageEditPanel>();
+	public List<MenuItem> menuItems = new ArrayList<>();
+	public Map<String,MessageProvider.MessageViewPanel> messageViewPanels = new HashMap<>();
+	public Map<String,MessageProvider.MessageEditPanel> messageEditPanels = new HashMap<>();
 	
 	public WicketApplication()
 	{

@@ -68,7 +68,7 @@ public class Utils
 
 	public static <T> List<T> toList(List<T> list)
 	{
-		return list == null ? new ArrayList<T>() : list;
+		return list == null ? new ArrayList<>() : list;
 	}
 
 }

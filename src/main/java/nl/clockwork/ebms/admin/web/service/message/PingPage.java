@@ -75,7 +75,7 @@ public class PingPage extends BasePage
 
 		public PingForm(String id)
 		{
-			super(id,new CompoundPropertyModel<PingFormModel>(new PingFormModel()));
+			super(id,new CompoundPropertyModel<>(new PingFormModel()));
 			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",createCPAIdChoice("cpaId")));
 			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",createFromPartyIdChoice("fromPartyId")));
 			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",createFromRoleChoice("fromRole")).setVisible(cleoPatch));
@@ -89,7 +89,7 @@ public class PingPage extends BasePage
 
 		private DropDownChoice<String> createCPAIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())));
+			DropDownChoice<String> result = new DropDownChoice<>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())));
 			result.setLabel(new ResourceModel("lbl.cpaId"));
 			result.setRequired(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("change")
@@ -122,7 +122,7 @@ public class PingPage extends BasePage
 
 		private DropDownChoice<String> createFromPartyIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"));
+			DropDownChoice<String> result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"));
 			result.setLabel(new ResourceModel("lbl.fromPartyId"));
 			result.setRequired(true).setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("change")
@@ -155,7 +155,7 @@ public class PingPage extends BasePage
 
 		private DropDownChoice<String> createFromRoleChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"));
+			DropDownChoice<String> result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"));
 			result.setLabel(new ResourceModel("lbl.fromRole"));
 			result.setRequired(false).setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("change")
@@ -187,7 +187,7 @@ public class PingPage extends BasePage
 
 		private DropDownChoice<String> createToPartyIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"));
+			DropDownChoice<String> result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"));
 			result.setLabel(new ResourceModel("lbl.toPartyId"));
 			result.setRequired(true).setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("change")
@@ -217,7 +217,7 @@ public class PingPage extends BasePage
 
 		private DropDownChoice<String> createToRoleChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toRoles"));
+			DropDownChoice<String> result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"toRoles"));
 			result.setLabel(new ResourceModel("lbl.toRole"));
 			result.setRequired(false).setOutputMarkupId(true);
 			result.add(new AjaxFormComponentUpdatingBehavior("change")
@@ -277,13 +277,13 @@ public class PingPage extends BasePage
 	{
 		private static final long serialVersionUID = 1L;
 		private String cpaId;
-		private List<String> fromPartyIds = new ArrayList<String>();
+		private List<String> fromPartyIds = new ArrayList<>();
 		private String fromPartyId;
-		private List<String> fromRoles = new ArrayList<String>();
+		private List<String> fromRoles = new ArrayList<>();
 		private String fromRole;
-		private List<String> toPartyIds = new ArrayList<String>();
+		private List<String> toPartyIds = new ArrayList<>();
 		private String toPartyId;
-		private List<String> toRoles = new ArrayList<String>();
+		private List<String> toRoles = new ArrayList<>();
 		private String toRole;
 		
 		public String getCpaId()

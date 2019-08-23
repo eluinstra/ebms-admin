@@ -53,7 +53,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 
 	public MessagePage(final EbMSMessage message, final WebPage responsePage)
 	{
-		setModel(new CompoundPropertyModel<EbMSMessage>(message));
+		setModel(new CompoundPropertyModel<>(message));
 		add(new Label("messageId"));
 		add(new Label("messageNr"));
 		add(new Label("conversationId"));
@@ -113,7 +113,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		@Override
 		public IModel<String> getTitle()
 		{
-			return new Model<String>(getLocalizer().getString("eventError",this));
+			return new Model<>(getLocalizer().getString("eventError",this));
 		}
 	}
 

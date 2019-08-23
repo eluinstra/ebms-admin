@@ -129,7 +129,7 @@ public class StartEmbedded extends Start
 
 	public void startHSQLDBServer(JdbcURL jdbcURL) throws IOException, AclFormatException, URISyntaxException
 	{
-		List<String> options = new ArrayList<String>();
+		List<String> options = new ArrayList<>();
 		options.add("-database.0");
 		options.add((cmd.hasOption("hsqldbDir") ? "file:" + cmd.getOptionValue("hsqldbDir") : "file:hsqldb") + "/" + jdbcURL.getDatabase());
 		options.add("-dbname.0");

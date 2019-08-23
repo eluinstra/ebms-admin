@@ -233,7 +233,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			0,
 			Constants.EBMS_SERVICE_URI
 		);
-		result.setAttachments(new ArrayList<EbMSAttachment>());
+		result.setAttachments(new ArrayList<>());
 		result.setEvents(getEvents(messageId));
 		result.getEvents().forEach(e -> e.setMessage(result));
 		return result;
@@ -242,7 +242,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	@Override
 	public int countMessages(EbMSMessageFilter filter)
 	{
-		List<Object> parameters = new ArrayList<Object>();
+		List<Object> parameters = new ArrayList<>();
 		return jdbcTemplate.queryForObject(
 			"select count(message_id)" +
 			" from ebms_message" +
@@ -258,7 +258,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	@Override
 	public List<EbMSMessage> selectMessages(EbMSMessageFilter filter, long first, long count)
 	{
-		List<Object> parameters = new ArrayList<Object>();
+		List<Object> parameters = new ArrayList<>();
 		return jdbcTemplate.query(
 			selectMessagesQuery(filter,first,count,parameters),
 			parameters.toArray(new Object[0]),
@@ -373,7 +373,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	@Override
 	public HashMap<Date,Number> selectMessageTraffic(Date from, Date to, TimeUnit timeUnit, EbMSMessageStatus...status)
 	{
-		final HashMap<Date,Number> result = new HashMap<Date,Number>();
+		final HashMap<Date,Number> result = new HashMap<>();
 		jdbcTemplate.query(
 			"select trunc(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "') time, count(*) nr" + 
 			" from ebms_message" + 
@@ -412,7 +412,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	@Override
 	public void printMessagesToCSV(final CSVPrinter printer, EbMSMessageFilter filter)
 	{
-		List<Object> parameters = new ArrayList<Object>();
+		List<Object> parameters = new ArrayList<>();
 		jdbcTemplate.query(
 			new EbMSMessageRowMapper().getBaseQuery() +
 			" where 1 = 1" +

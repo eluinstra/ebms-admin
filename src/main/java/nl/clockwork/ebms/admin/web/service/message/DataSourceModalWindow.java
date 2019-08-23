@@ -105,7 +105,7 @@ public class DataSourceModalWindow extends ModalWindow
 
 			public DataSourceForm(String id)
 			{
-				super(id,new CompoundPropertyModel<DataSourceModel>(new DataSourceModel()));
+				super(id,new CompoundPropertyModel<>(new DataSourceModel()));
 				add(new BootstrapFeedbackPanel("feedback"));
 				add(new BootstrapFormComponentFeedbackBorder("fileFeedback",createFileField("file")));
 				add(new TextField<String>("name").setLabel(new ResourceModel("lbl.name")));

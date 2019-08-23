@@ -112,7 +112,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 	@Override
 	public HashMap<Date,Number> selectMessageTraffic(Date from, Date to, TimeUnit timeUnit, EbMSMessageStatus...status)
 	{
-		final HashMap<Date,Number> result = new HashMap<Date,Number>();
+		final HashMap<Date,Number> result = new HashMap<>();
 		jdbcTemplate.query(
 			//"select date_format(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "') time, count(*) nr" + 
 			"select str_to_date(date_format(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "'),'%Y-%m-%d %k:%i:%s') time, count(*) nr" + 

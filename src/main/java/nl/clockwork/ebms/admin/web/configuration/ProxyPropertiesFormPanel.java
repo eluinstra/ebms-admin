@@ -45,7 +45,7 @@ public class ProxyPropertiesFormPanel extends Panel
 
 		public ProxyPropertiesForm(String id, final IModel<ProxyPropertiesFormModel> model)
 		{
-			super(id,new CompoundPropertyModel<ProxyPropertiesFormModel>(model));
+			super(id,new CompoundPropertyModel<>(model));
 			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",new TextField<String>("host").setLabel(new ResourceModel("lbl.host")).setRequired(true)));
 			add(new BootstrapFormComponentFeedbackBorder("portFeedback",new TextField<Integer>("port").setLabel(new ResourceModel("lbl.port"))));
 			add(new TextField<String>("nonProxyHosts").setLabel(new ResourceModel("lbl.nonProxyHosts")));
