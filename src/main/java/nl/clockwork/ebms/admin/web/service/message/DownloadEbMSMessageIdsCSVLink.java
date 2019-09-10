@@ -20,12 +20,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
-import nl.clockwork.ebms.ThrowingConsumer;
-import nl.clockwork.ebms.admin.Utils;
-import nl.clockwork.ebms.admin.web.message.ByteArrayResourceStream;
-import nl.clockwork.ebms.model.EbMSMessageContext;
-import nl.clockwork.ebms.service.EbMSMessageService;
-
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.logging.Log;
@@ -34,6 +28,11 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.resource.IResourceStream;
+
+import nl.clockwork.ebms.admin.Utils;
+import nl.clockwork.ebms.admin.web.message.ByteArrayResourceStream;
+import nl.clockwork.ebms.model.EbMSMessageContext;
+import nl.clockwork.ebms.service.EbMSMessageService;
 
 public class DownloadEbMSMessageIdsCSVLink extends Link<Void>
 {
@@ -73,7 +72,8 @@ public class DownloadEbMSMessageIdsCSVLink extends Link<Void>
 
 	private void printMessagesToCSV(CSVPrinter printer, List<String> messageIds) throws IOException
 	{
-		messageIds.forEach(ThrowingConsumer.throwingConsumerWrapper(id -> printer.printRecord(id)));
+		for (String id: messageIds)
+			printer.printRecord(id);
 	}
 
 	private ResourceStreamRequestHandler createRequestHandler(IResourceStream resourceStream)

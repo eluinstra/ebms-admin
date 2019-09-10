@@ -30,7 +30,7 @@ import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.resource.IResourceStream;
 
-import nl.clockwork.ebms.ThrowingConsumer;
+import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.Utils;
 
@@ -71,14 +71,14 @@ public class DownloadEbMSMessageLinkX extends Link<EbMSMessage>
 		zip.putNextEntry(entry);
 		zip.write(message.getContent().getBytes());
 		zip.closeEntry();
-		message.getAttachments().forEach(ThrowingConsumer.throwingConsumerWrapper(a ->
+		for (EbMSAttachment a: message.getAttachments())
 		{
 			ZipEntry e = new ZipEntry("attachments/" + (StringUtils.isEmpty(a.getName()) ? a.getContentId() + Utils.getFileExtension(a.getContentType()) : a.getName()));
 			entry.setComment("Content-Type: " + a.getContentType());
 			zip.putNextEntry(e);
 			zip.write(a.getContent());
 			zip.closeEntry();
-		}));
+		}
 	}
 
 	private ResourceStreamRequestHandler createRequestHandler(EbMSMessage message, IResourceStream resourceStream)

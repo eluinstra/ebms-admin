@@ -25,13 +25,6 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
-import nl.clockwork.ebms.ThrowingConsumer;
-import nl.clockwork.ebms.admin.web.Utils;
-import nl.clockwork.ebms.admin.web.message.ByteArrayResourceStream;
-import nl.clockwork.ebms.common.JAXBParser;
-import nl.clockwork.ebms.model.EbMSMessageContent;
-import nl.clockwork.ebms.model.EbMSMessageContext;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.common.util.StringUtils;
@@ -41,6 +34,13 @@ import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.resource.IResourceStream;
+
+import nl.clockwork.ebms.admin.web.Utils;
+import nl.clockwork.ebms.admin.web.message.ByteArrayResourceStream;
+import nl.clockwork.ebms.common.JAXBParser;
+import nl.clockwork.ebms.model.EbMSDataSource;
+import nl.clockwork.ebms.model.EbMSMessageContent;
+import nl.clockwork.ebms.model.EbMSMessageContext;
 
 public class DownloadEbMSMessageContentLink extends Link<EbMSMessageContent>
 {
@@ -84,14 +84,14 @@ public class DownloadEbMSMessageContentLink extends Link<EbMSMessageContent>
 		zip.putNextEntry(entry);
 		zip.write(JAXBParser.getInstance(EbMSMessageContext.class).handle(new JAXBElement<>(new QName("http://www.clockwork.nl/ebms/2.0","messageContext"),EbMSMessageContext.class,messageContent.getContext())).getBytes());
 		zip.closeEntry();
-		messageContent.getDataSources().forEach(ThrowingConsumer.throwingConsumerWrapper(d ->
+		for (EbMSDataSource dataSource: messageContent.getDataSources())
 		{
-			ZipEntry e = new ZipEntry("datasources/" + (StringUtils.isEmpty(d.getName()) ? UUID.randomUUID() + Utils.getFileExtension(d.getContentType()) : d.getName()));
-			entry.setComment("Content-Type: " + d.getContentType());
+			ZipEntry e = new ZipEntry("datasources/" + (StringUtils.isEmpty(dataSource.getName()) ? UUID.randomUUID() + Utils.getFileExtension(dataSource.getContentType()) : dataSource.getName()));
+			entry.setComment("Content-Type: " + dataSource.getContentType());
 			zip.putNextEntry(e);
-			zip.write(d.getContent());
+			zip.write(dataSource.getContent());
 			zip.closeEntry();
-		}));
+		}
 	}
 
 	private ResourceStreamRequestHandler createRequestHandler(EbMSMessageContent messageContent, IResourceStream resourceStream)
