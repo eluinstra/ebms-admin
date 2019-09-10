@@ -15,20 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-import java.util.Date;
-
-import nl.clockwork.ebms.admin.Constants;
-import nl.clockwork.ebms.admin.dao.EbMSDAO;
-import nl.clockwork.ebms.admin.model.EbMSMessage;
-import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
-import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
-import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
-import nl.clockwork.ebms.admin.web.PageLink;
-import nl.clockwork.ebms.admin.web.Utils;
-import nl.clockwork.ebms.admin.web.WebMarkupContainer;
-import nl.clockwork.ebms.admin.web.message.MessageFilterPanel.MessageFilterFormModel;
-
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.WebPage;
@@ -41,6 +27,18 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.wicketstuff.datetime.markup.html.basic.DateLabel;
+
+import nl.clockwork.ebms.admin.Constants;
+import nl.clockwork.ebms.admin.dao.EbMSDAO;
+import nl.clockwork.ebms.admin.model.EbMSMessage;
+import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
+import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
+import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
+import nl.clockwork.ebms.admin.web.PageLink;
+import nl.clockwork.ebms.admin.web.Utils;
+import nl.clockwork.ebms.admin.web.WebMarkupContainer;
+import nl.clockwork.ebms.admin.web.message.MessageFilterPanel.MessageFilterFormModel;
 
 public class MessagesPage extends BasePage
 {

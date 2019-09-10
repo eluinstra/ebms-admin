@@ -21,21 +21,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.clockwork.ebms.admin.PropertyPlaceholderConfigurer;
-import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.admin.web.BootstrapPanelBorder;
-import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.admin.web.configuration.ConsolePropertiesFormPanel.ConsolePropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.Constants.PropertiesType;
-import nl.clockwork.ebms.admin.web.configuration.CorePropertiesFormPanel.CorePropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.EbMSCorePropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.EncryptionPropertiesFormPanel.EncryptionPropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.HttpPropertiesFormPanel.HttpPropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.ServicePropertiesFormPanel.ServicePropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.SignaturePropertiesFormModel;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.form.Button;
@@ -48,6 +33,17 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+
+import nl.clockwork.ebms.admin.PropertyPlaceholderConfigurer;
+import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.BootstrapPanelBorder;
+import nl.clockwork.ebms.admin.web.ResetButton;
+import nl.clockwork.ebms.admin.web.configuration.ConsolePropertiesFormPanel.ConsolePropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.Constants.PropertiesType;
+import nl.clockwork.ebms.admin.web.configuration.CorePropertiesFormPanel.CorePropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.EbMSCorePropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.ServicePropertiesFormPanel.ServicePropertiesFormModel;
 
 public class EbMSAdminPropertiesPage extends BasePage
 {
