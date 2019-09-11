@@ -92,11 +92,11 @@ public class TrafficChartPage extends BasePage
 		result.setxAxis(new Axis().setCategories(dateString));
 		result.setyAxis(new Axis().setTitle(new Title("Messages")));
 		result.setLegend(new Legend().setLayout(LegendLayout.VERTICAL).setAlign(HorizontalAlignment.RIGHT).setVerticalAlign(VerticalAlignment.TOP).setX(0).setY(1000).setBorderWidth(0));
-		result.setSeries(Arrays.stream(model.getEbMSMessageTrafficChartOption().getEbMSMessageTrafficChartSeries()).map(s -> 
-			{
-				List<Number> receivedMessages = getMessages(dates,model,s.getEbMSMessageStatuses());
-				return new SimpleSeries().setName(s.getName()).setColor(s.getColor()).setData(receivedMessages);
-			}).collect(Collectors.toList()));
+		result.setSeries(Arrays.stream(model.getEbMSMessageTrafficChartOption().getEbMSMessageTrafficChartSeries())
+				.map(s -> new SimpleSeries().setName(s.getName())
+						.setColor(s.getColor())
+						.setData(getMessages(dates,model,s.getEbMSMessageStatuses())))
+				.collect(Collectors.toList()));
 		return result;
 	}
 

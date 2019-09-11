@@ -164,25 +164,27 @@ public class StartEmbedded extends Start
 				System.out.println("EbMS tables already exist");
 			ExtensionProvider.get().stream()
 					.filter(p -> StringUtils.isNotEmpty(p.getHSQLDBFile()))
-					.forEach(p ->
-					{
-						try
-						{
-							c.createStatement().executeUpdate(IOUtils.toString(this.getClass().getResourceAsStream(p.getHSQLDBFile()),Charset.defaultCharset()));
-							System.out.println(p.getName() + " tables created");
-						}
-						catch (Exception e)
-						{
-							if (e.getMessage().contains("already exists"))
-								System.out.println(p.getName() + " tables already exist");
-							else
-								e.printStackTrace();
-						}
-					});
+					.forEach(p -> executeSQLFile(c,p));
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
+		}
+	}
+
+	private void executeSQLFile(Connection c, ExtensionProvider provider)
+	{
+		try
+		{
+			c.createStatement().executeUpdate(IOUtils.toString(this.getClass().getResourceAsStream(provider.getHSQLDBFile()),Charset.defaultCharset()));
+			System.out.println(provider.getName() + " tables created");
+		}
+		catch (Exception e)
+		{
+			if (e.getMessage().contains("already exists"))
+				System.out.println(provider.getName() + " tables already exist");
+			else
+				e.printStackTrace();
 		}
 	}
 
