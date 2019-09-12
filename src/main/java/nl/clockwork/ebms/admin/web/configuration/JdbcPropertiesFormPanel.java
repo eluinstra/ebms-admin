@@ -18,14 +18,12 @@ package nl.clockwork.ebms.admin.web.configuration;
 import java.util.Arrays;
 import java.util.List;
 
-import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.configuration.Constants.JdbcDriver;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
+import org.apache.wicket.feedback.ContainerFeedbackMessageFilter;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -40,6 +38,10 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.io.IClusterable;
 
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.configuration.Constants.JdbcDriver;
+
 public class JdbcPropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
@@ -48,7 +50,9 @@ public class JdbcPropertiesFormPanel extends Panel
 	public JdbcPropertiesFormPanel(String id, final IModel<JdbcPropertiesFormModel> model)
 	{
 		super(id,model);
-		add(new JdbcPropertiesForm("form",model));
+		JdbcPropertiesForm jdbcPropertiesForm = new JdbcPropertiesForm("form",model);
+		add(new BootstrapFeedbackPanel("feedback",new ContainerFeedbackMessageFilter(jdbcPropertiesForm)).setOutputMarkupId(true));
+		add(jdbcPropertiesForm);
 	}
 
 	public class JdbcPropertiesForm extends Form<JdbcPropertiesFormModel>
@@ -80,10 +84,26 @@ public class JdbcPropertiesFormPanel extends Panel
 				@Override
 				protected void onUpdate(AjaxRequestTarget target)
 				{
+					if (model.getObject().getDriver().getDriverClassName().equals(Constants.JdbcDriver.ORACLE.getDriverClassName()) && classExists(Constants.JdbcDriver.ORACLE.getDriverClassName()))
+						error(JdbcPropertiesForm.this.getString("driver.oracle.missing"));
+					target.add(JdbcPropertiesFormPanel.this.get("feedback"));
 					target.add(getURLComponent());
 				}
 			});
 			return result;
+		}
+
+		private boolean classExists(String className)
+		{
+			try
+			{
+				Class.forName(className);
+				return true;
+			}
+			catch (ClassNotFoundException e)
+			{
+				return false;
+			}
 		}
 
 		private TextField<String> createHostsField(String id)
@@ -160,6 +180,7 @@ public class JdbcPropertiesFormPanel extends Panel
 						error(new StringResourceModel("test.nok",JdbcPropertiesForm.this,Model.of(e)).getString());
 					}
 				}
+
 			};
 			return result;
 		}

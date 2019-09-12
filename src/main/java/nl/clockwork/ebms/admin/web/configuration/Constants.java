@@ -46,7 +46,6 @@ public class Constants
 		MARIADB("org.mariadb.jdbc.Driver","jdbc:mysql://%s/%s","select 1"),
 		POSTGRESQL("org.postgresql.Driver","jdbc:postgresql://%s/%s","select 1"),
 		MSSQL("com.microsoft.sqlserver.jdbc.SQLServerDriver","jdbc:sqlserver://%s;databaseName=%s;","select 1"),
-		MSSQL_JTDS("net.sourceforge.jtds.jdbc.Driver","jdbc:jtds:sqlserver://%s/%s","select 1"),
 		ORACLE("oracle.jdbc.OracleDriver","jdbc:oracle:thin:@//%s/%s","select 1 from dual"),
 		ORACLE_("oracle.jdbc.OracleDriver","jdbc:oracle:thin:@%s:%s","select 1 from dual");
 		
