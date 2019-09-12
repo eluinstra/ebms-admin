@@ -42,6 +42,7 @@ public class CPAUtils
 				.flatMap(p -> p.getCollaborationRole().stream()
 						.filter(r -> roleName == null || roleName.equals(r.getRole().getName()))
 						.map(r -> toString(p.getPartyId().get(0))))
+				.distinct()
 				.collect(Collectors.toList());
 	}
 
@@ -56,12 +57,13 @@ public class CPAUtils
 				.filter(p -> !partyId.equals(toString(p.getPartyId().get(0)))).
 				flatMap(p -> p.getCollaborationRole().stream()
 						.map(r -> r.getRole().getName()))
+				.distinct()
 				.collect(Collectors.toList());
 	}
 
 	public static List<String> getRoleNames(CollaborationProtocolAgreement cpa)
 	{
-		return cpa.getPartyInfo().stream().flatMap(p -> p.getCollaborationRole().stream().map(r -> r.getRole().getName())).collect(Collectors.toList());
+		return cpa.getPartyInfo().stream().flatMap(p -> p.getCollaborationRole().stream().map(r -> r.getRole().getName())).distinct().collect(Collectors.toList());
 	}
 
 	public static List<String> getRoleNames(CollaborationProtocolAgreement cpa, String partyId)
@@ -70,6 +72,7 @@ public class CPAUtils
 				.filter(p -> partyId == null || partyId.equals(toString(p.getPartyId().get(0))))
 				.flatMap(p -> p.getCollaborationRole().stream()
 						.map(r -> r.getRole().getName()))
+				.distinct()
 				.collect(Collectors.toList());
 	}
 
@@ -80,6 +83,7 @@ public class CPAUtils
 				.flatMap(p -> p.getCollaborationRole().stream()
 						.filter(r -> roleName == null || !roleName.equals(r.getRole().getName()))
 						.map(r -> r.getRole().getName()))
+				.distinct()
 				.collect(Collectors.toList());
 	}
 
