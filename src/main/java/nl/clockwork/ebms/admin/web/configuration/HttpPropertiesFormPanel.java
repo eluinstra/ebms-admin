@@ -204,7 +204,7 @@ public class HttpPropertiesFormPanel extends Panel
 		private static final long serialVersionUID = 1L;
 		private String host = "0.0.0.0";
 		private Integer port = 8888;
-		private String path = "/digipoortStub";
+		private String path = "/ebms";
 		private boolean chunkedStreamingMode = true;
 		private boolean base64Writer = true;
 		private boolean ssl = true;
