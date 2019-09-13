@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+
+	<Appenders>
+		<Console name="STDOUT">
+			<PatternLayout pattern="%d [%t] %-5p %c - %m%n" />
+		</Console>
+		<RollingFile name="File" 
+			fileName="logs/ebms-admin.log"
+			filePattern="logs/ebms-admin-%d{yyyy-MM-dd}.log">
+			<PatternLayout pattern="%d [%t] %-5p %c - %m%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1"/>
+			</Policies>                               
+		</RollingFile>
+	</Appenders>
+
+	<Loggers>
+
+		<AsyncRoot level="INFO">
+			<AppenderRef ref="File" />
+		</AsyncRoot>
+
+		<AsyncLogger name="nl.clockwork.ebms" level="INFO" />
+
+		<AsyncLogger name="nl.clockwork.ebms.client" level="DEBUG" />
+
+		<AsyncLogger name="nl.clockwork.ebms.server" level="DEBUG" />
+
+		<AsyncLogger name="nl.clockwork.ebms.job" level="INFO" />
+
+		<AsyncLogger name="org.apache" level="WARN" />
+
+		<AsyncLogger name="org.apache.http.headers" level="WARN" />
+
+		<AsyncLogger name="org.apache.http.wire" level="WARN" />
+
+		<AsyncLogger name="org.apache.wicket" level="WARN" />
+
+		<AsyncLogger name="org.apache.wicket.protocol.http.HttpSessionStore" level="DEBUG" />
+
+		<AsyncLogger name="org.apache.wicket.version" level="DEBUG" />
+
+		<AsyncLogger name="org.apache.wicket.RequestCycle" level="WARN" />
+
+		<AsyncLogger name="org.springframework.beans.factory" level="WARN" />
+
+		<AsyncLogger name="org.springframework.jdbc" level="WARN" />
+
+		<AsyncLogger name="com.mchange.v2" level="WARN" />
+
+	</Loggers>
+
+</Configuration>
