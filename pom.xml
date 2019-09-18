@@ -426,6 +426,11 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.2</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
 				<version>3.2.1</version>
 				<configuration>
@@ -536,6 +541,23 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
 				<version>2.7</version>
+				<configuration>
+					<instrumentation>
+						<ignores>
+							<ignore>nl.clockwork.ebms.admin.dao.*</ignore>
+						</ignores>
+					</instrumentation>
+					<systemProperties>
+						<property>
+							<name>net.sourceforge.cobertura.datafile</name>
+							<value>${basedir}/target/cobertura/cobertura.ser</value>
+						</property>
+					</systemProperties>
+					<formats>
+						<format>html</format>
+						<format>xml</format>
+					</formats>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
