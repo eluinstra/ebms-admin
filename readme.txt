@@ -16,6 +16,9 @@ show help:
 start with hsqldb server:
 > java -cp ebms-admin-2.x.x.jar nl.clockwork.ebms.admin.StartEmbedded -hsqldb
 
+start with hsqldb server and a different log4j2 file:
+> java -Dlog4j.configurationFile=path/to/log4j2.xml -cp ebms-admin-2.x.x.jar nl.clockwork.ebms.admin.StartEmbedded -hsqldb
+
 ========================================================
 = Start 2 EbMS Admin Consoles with embedded EbMS adapter
 ========================================================

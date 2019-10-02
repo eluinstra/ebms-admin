@@ -40,8 +40,8 @@ public class DownloadLog4jFileLink extends Link<Void>
 	{
 		try
 		{
-			String fileName = UrlEncoder.QUERY_INSTANCE.encode("log4j.xml",getRequest().getCharset());
-			IResourceStream resourceStream = new Log4jFileResourceStream(); 
+			String fileName = UrlEncoder.QUERY_INSTANCE.encode("log4j2.xml",getRequest().getCharset());
+			IResourceStream resourceStream = new XMLFileResourceStream("/log4j2.xml");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName,resourceStream));
 		}
 		catch (URISyntaxException e)

@@ -13,25 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.clockwork.ebms.admin.web.configuration;
+package nl.clockwork.ebms.admin;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.apache.wicket.core.util.resource.PackageResourceStream;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
 
-public class Log4jFileResourceStream extends PackageResourceStream
+public class Log4j2Configurer
 {
-	private static final long serialVersionUID = 1L;
+	public static void initLogging(String uri) throws URISyntaxException
+	{
+		if (StringUtils.isNotEmpty(uri))
+		{
+			LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
+			context.setConfigLocation(new URI(uri));
+		}
+	}
 
-	public Log4jFileResourceStream() throws URISyntaxException
-	{
-		super(Log4jFileResourceStream.class,"/log4j.xml");
-	}
-	
-	@Override
-	public String getContentType()
-	{
-		return "text/xml";
-	}
-	
 }
