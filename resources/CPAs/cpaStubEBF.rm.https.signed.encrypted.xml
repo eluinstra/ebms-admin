@@ -541,8 +541,7 @@
 				<tns:ReliableMessaging>
 					<tns:Retries>5</tns:Retries>
 					<tns:RetryInterval>PT5M</tns:RetryInterval>
-					<tns:MessageOrderSemantics>NotGuaranteed
-					</tns:MessageOrderSemantics>
+					<tns:MessageOrderSemantics>NotGuaranteed</tns:MessageOrderSemantics>
 				</tns:ReliableMessaging>
 				<tns:PersistDuration>PT30M</tns:PersistDuration>
 				<tns:SenderNonRepudiation>
@@ -561,8 +560,7 @@
 				<tns:ReliableMessaging>
 					<tns:Retries>5</tns:Retries>
 					<tns:RetryInterval>PT5M</tns:RetryInterval>
-					<tns:MessageOrderSemantics>NotGuaranteed
-					</tns:MessageOrderSemantics>
+					<tns:MessageOrderSemantics>NotGuaranteed</tns:MessageOrderSemantics>
 				</tns:ReliableMessaging>
 				<tns:PersistDuration>PT30M</tns:PersistDuration>
 				<tns:ReceiverNonRepudiation>
