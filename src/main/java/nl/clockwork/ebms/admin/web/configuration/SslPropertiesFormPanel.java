@@ -61,7 +61,7 @@ public class SslPropertiesFormPanel extends Panel
 			add(createEnabledCipherSuitesContainer("enabledCipherSuitesContainer",enableSslOverridePropeties));
 			add(createClientAuthenticationRequiredCheckBox("requireClientAuthentication"));
 			add(new CheckBox("verifyHostnames").setLabel(new ResourceModel("lbl.verifyHostnames")));
-			add(new CheckBox("validate").setLabel(new ResourceModel("lbl.validate")));
+			add(new CheckBox("requireSSLAuthentication").setLabel(new ResourceModel("lbl.requireSSLAuthentication")));
 			add(new KeystorePropertiesFormPanel("keystoreProperties",new PropertyModel<>(getModelObject(),"keystoreProperties")));
 			add(createClientKeystorePropertiesFormPanel("clientKeystoreProperties"));
 			add(new TruststorePropertiesFormPanel("truststoreProperties",new PropertyModel<>(getModelObject(),"truststoreProperties")));
@@ -186,7 +186,7 @@ public class SslPropertiesFormPanel extends Panel
 		private List<String> enabledCipherSuites = new ArrayList<>();
 		private boolean requireClientAuthentication = true;
 		private boolean verifyHostnames = false;
-		private boolean validate = true;
+		private boolean requireSSLAuthentication = true;
 		private JavaKeyStorePropertiesFormModel keystoreProperties = new JavaKeyStorePropertiesFormModel();
 		private JavaKeyStorePropertiesFormModel truststoreProperties = new JavaKeyStorePropertiesFormModel();
 		private JavaKeyStorePropertiesFormModel clientKeystoreProperties = new JavaKeyStorePropertiesFormModel();
@@ -247,13 +247,13 @@ public class SslPropertiesFormPanel extends Panel
 		{
 			this.verifyHostnames = verifyHostnames;
 		}
-		public boolean getValidate()
+		public boolean getRequireSSLAuthentication()
 		{
-			return validate;
+			return requireSSLAuthentication;
 		}
-		public void setValidate(boolean validate)
+		public void setRequireSSLAuthentication(boolean requireSSLAuthentication)
 		{
-			this.validate = validate;
+			this.requireSSLAuthentication = requireSSLAuthentication;
 		}
 		public JavaKeyStorePropertiesFormModel getKeystoreProperties()
 		{
