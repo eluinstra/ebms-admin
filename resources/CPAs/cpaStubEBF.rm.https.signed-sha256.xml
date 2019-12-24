@@ -224,7 +224,7 @@
 		<tns:DocExchange tns:docExchangeId="DIGIPOORT_SIGNED_BestEffort">
 			<tns:ebXMLSenderBinding tns:version="2.0">
 				<tns:SenderNonRepudiation>
-					<tns:NonRepudiationProtocol>http://www.w3.org/2000/09/xmldsig#</tns:NonRepudiationProtocol>
+					<tns:NonRepudiationProtocol>http://www.w3.org/2010/xmldsig2#</tns:NonRepudiationProtocol>
 					<tns:HashFunction>http://www.w3.org/2001/04/xmlenc#sha256</tns:HashFunction>
 					<tns:SignatureAlgorithm>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</tns:SignatureAlgorithm>
 					<tns:SigningCertificateRef tns:certId="DIGIPOORT_SigningCert" />
@@ -232,7 +232,7 @@
 			</tns:ebXMLSenderBinding>
 			<tns:ebXMLReceiverBinding tns:version="2.0">
 				<tns:ReceiverNonRepudiation>
-					<tns:NonRepudiationProtocol>http://www.w3.org/2000/09/xmldsig#</tns:NonRepudiationProtocol>
+					<tns:NonRepudiationProtocol>http://www.w3.org/2010/xmldsig2#</tns:NonRepudiationProtocol>
 					<tns:HashFunction>http://www.w3.org/2001/04/xmlenc#sha256</tns:HashFunction>
 					<tns:SignatureAlgorithm>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</tns:SignatureAlgorithm>
 					<tns:SigningSecurityDetailsRef tns:securityId="DIGIPOORT_Security" />
@@ -248,7 +248,7 @@
 				</tns:ReliableMessaging>
 				<tns:PersistDuration>PT30M</tns:PersistDuration>
 				<tns:SenderNonRepudiation>
-					<tns:NonRepudiationProtocol>http://www.w3.org/2000/09/xmldsig#</tns:NonRepudiationProtocol>
+					<tns:NonRepudiationProtocol>http://www.w3.org/2010/xmldsig2#</tns:NonRepudiationProtocol>
 					<tns:HashFunction>http://www.w3.org/2001/04/xmlenc#sha256</tns:HashFunction>
 					<tns:SignatureAlgorithm>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</tns:SignatureAlgorithm>
 					<tns:SigningCertificateRef tns:certId="DIGIPOORT_SigningCert" />
@@ -262,7 +262,7 @@
 				</tns:ReliableMessaging>
 				<tns:PersistDuration>PT30M</tns:PersistDuration>
 				<tns:ReceiverNonRepudiation>
-					<tns:NonRepudiationProtocol>http://www.w3.org/2000/09/xmldsig#</tns:NonRepudiationProtocol>
+					<tns:NonRepudiationProtocol>http://www.w3.org/2010/xmldsig2#</tns:NonRepudiationProtocol>
 					<tns:HashFunction>http://www.w3.org/2001/04/xmlenc#sha256</tns:HashFunction>
 					<tns:SignatureAlgorithm>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</tns:SignatureAlgorithm>
 					<tns:SigningSecurityDetailsRef tns:securityId="DIGIPOORT_Security" />
@@ -491,7 +491,7 @@
 		<tns:DocExchange tns:docExchangeId="OVERHEID_SIGNED_BestEffort">
 			<tns:ebXMLSenderBinding tns:version="2.0">
 				<tns:SenderNonRepudiation>
-					<tns:NonRepudiationProtocol>http://www.w3.org/2000/09/xmldsig#</tns:NonRepudiationProtocol>
+					<tns:NonRepudiationProtocol>http://www.w3.org/2010/xmldsig2#</tns:NonRepudiationProtocol>
 					<tns:HashFunction>http://www.w3.org/2001/04/xmlenc#sha256</tns:HashFunction>
 					<tns:SignatureAlgorithm>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</tns:SignatureAlgorithm>
 					<tns:SigningCertificateRef tns:certId="OVERHEID_SigningCert" />
@@ -499,7 +499,7 @@
 			</tns:ebXMLSenderBinding>
 			<tns:ebXMLReceiverBinding tns:version="2.0">
 				<tns:ReceiverNonRepudiation>
-					<tns:NonRepudiationProtocol>http://www.w3.org/2000/09/xmldsig#</tns:NonRepudiationProtocol>
+					<tns:NonRepudiationProtocol>http://www.w3.org/2010/xmldsig2#</tns:NonRepudiationProtocol>
 					<tns:HashFunction>http://www.w3.org/2001/04/xmlenc#sha256</tns:HashFunction>
 					<tns:SignatureAlgorithm>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</tns:SignatureAlgorithm>
 					<tns:SigningSecurityDetailsRef tns:securityId="OVERHEID_Security" />
@@ -515,7 +515,7 @@
 				</tns:ReliableMessaging>
 				<tns:PersistDuration>PT30M</tns:PersistDuration>
 				<tns:SenderNonRepudiation>
-					<tns:NonRepudiationProtocol>http://www.w3.org/2000/09/xmldsig#</tns:NonRepudiationProtocol>
+					<tns:NonRepudiationProtocol>http://www.w3.org/2010/xmldsig2#</tns:NonRepudiationProtocol>
 					<tns:HashFunction>http://www.w3.org/2001/04/xmlenc#sha256</tns:HashFunction>
 					<tns:SignatureAlgorithm>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</tns:SignatureAlgorithm>
 					<tns:SigningCertificateRef tns:certId="OVERHEID_SigningCert" />
@@ -529,7 +529,7 @@
 				</tns:ReliableMessaging>
 				<tns:PersistDuration>PT30M</tns:PersistDuration>
 				<tns:ReceiverNonRepudiation>
-					<tns:NonRepudiationProtocol>http://www.w3.org/2000/09/xmldsig#</tns:NonRepudiationProtocol>
+					<tns:NonRepudiationProtocol>http://www.w3.org/2010/xmldsig2#</tns:NonRepudiationProtocol>
 					<tns:HashFunction>http://www.w3.org/2001/04/xmlenc#sha256</tns:HashFunction>
 					<tns:SignatureAlgorithm>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</tns:SignatureAlgorithm>
 					<tns:SigningSecurityDetailsRef tns:securityId="OVERHEID_Security" />
