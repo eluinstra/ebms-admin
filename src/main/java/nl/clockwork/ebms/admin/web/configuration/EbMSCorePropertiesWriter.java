@@ -91,10 +91,13 @@ public class EbMSCorePropertiesWriter
 		properties.setProperty("https.requireClientAuthentication",Boolean.toString(sslProperties.getRequireClientAuthentication()));
 		properties.setProperty("https.verifyHostnames",Boolean.toString(sslProperties.getVerifyHostnames()));
 		properties.setProperty("https.clientCertificateAuthentication",Boolean.toString(sslProperties.getClientCertificateAuthentication()));
+ 		properties.setProperty("keystore.type",sslProperties.getKeystoreProperties().getType().name());
  		properties.setProperty("keystore.path",StringUtils.defaultString(sslProperties.getKeystoreProperties().getUri()));
  		properties.setProperty("keystore.password",StringUtils.defaultString(sslProperties.getKeystoreProperties().getPassword()));
+		properties.setProperty("client.keystore.type",sslProperties.getClientKeystoreProperties().getType().name());
 		properties.setProperty("client.keystore.path",StringUtils.defaultString(sslProperties.getClientKeystoreProperties().getUri()));
 		properties.setProperty("client.keystore.password",StringUtils.defaultString(sslProperties.getClientKeystoreProperties().getPassword()));
+ 		properties.setProperty("truststore.type",sslProperties.getTruststoreProperties().getType().name());
  		properties.setProperty("truststore.path",StringUtils.defaultString(sslProperties.getTruststoreProperties().getUri()));
  		properties.setProperty("truststore.password",StringUtils.defaultString(sslProperties.getTruststoreProperties().getPassword()));
   }
@@ -112,6 +115,7 @@ public class EbMSCorePropertiesWriter
   {
   	if (signatureProperties.getSigning())
   	{
+  		properties.setProperty("signature.keystore.type",signatureProperties.getKeystoreProperties().getType().name());
   		properties.setProperty("signature.keystore.path",StringUtils.defaultString(signatureProperties.getKeystoreProperties().getUri()));
   		properties.setProperty("signature.keystore.password",StringUtils.defaultString(signatureProperties.getKeystoreProperties().getPassword()));
   	}
@@ -121,6 +125,7 @@ public class EbMSCorePropertiesWriter
   {
   	if (encryptionProperties.getEncryption())
   	{
+  		properties.setProperty("encryption.keystore.type",encryptionProperties.getKeystoreProperties().getType().name());
   		properties.setProperty("encryption.keystore.path",StringUtils.defaultString(encryptionProperties.getKeystoreProperties().getUri()));
   		properties.setProperty("encryption.keystore.password",StringUtils.defaultString(encryptionProperties.getKeystoreProperties().getPassword()));
   	}

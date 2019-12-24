@@ -16,10 +16,14 @@
 package nl.clockwork.ebms.admin.web.configuration;
 
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.common.KeyStoreManager.KeyStoreType;
+
+import java.util.Arrays;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
@@ -56,6 +60,7 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 		public JavaKeyStorePropertiesForm(String id, final IModel<JavaKeyStorePropertiesFormModel> model)
 		{
 			super(id,new CompoundPropertyModel<>(model));
+			add(new BootstrapFormComponentFeedbackBorder("typeFeedback",new DropDownChoice<KeyStoreType>("type",Arrays.asList(KeyStoreType.values())).setLabel(new ResourceModel("lbl.type")).setRequired(required)));
 			add(new BootstrapFormComponentFeedbackBorder("uriFeedback",new TextField<String>("uri").setLabel(new ResourceModel("lbl.uri")).setRequired(required)));
 			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",new PasswordTextField("password").setResetPassword(false).setLabel(new ResourceModel("lbl.password")).setRequired(required)));
 			add(createTestButton("test",model));
@@ -73,7 +78,7 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 					try
 					{
 						JavaKeyStorePropertiesFormModel m = model.getObject();
-						Utils.testKeystore(m.getUri(),m.getPassword());
+						Utils.testKeystore(m.getType(),m.getUri(),m.getPassword());
 						info(JavaKeyStorePropertiesForm.this.getString("test.ok"));
 					}
 					catch (Exception e)
@@ -89,9 +94,18 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 	public static class JavaKeyStorePropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		private String uri = "keystore.jks";
+		private KeyStoreType type = KeyStoreType.PKCS12;
+		private String uri = "keystore.p12";
 		private String password = "password";
 
+		public KeyStoreType getType()
+		{
+			return type;
+		}
+		public void setType(KeyStoreType type)
+		{
+			this.type = type;
+		}
 		public String getUri()
 		{
 			return uri;

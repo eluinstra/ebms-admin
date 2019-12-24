@@ -113,14 +113,17 @@ public class Start
 		options.addOption("port",true,"set port");
 		options.addOption("path",true,"set path");
 		options.addOption("ssl",false,"use ssl");
-		options.addOption("clientAuthentication", false,"use ssl client authentication");
-		options.addOption("keystore",true,"set keystore path");
+		options.addOption("keystoreType",true,"set keystore type");
+		options.addOption("keystorePath",true,"set keystore path");
 		options.addOption("keystorePassword",true,"set keystore password");
-		options.addOption("truststore",true,"set truststore path");
+		options.addOption("clientAuthentication", false,"use ssl client authentication");
+		options.addOption("truststoreType",true,"set truststore type");
+		options.addOption("truststorePath",true,"set truststore path");
 		options.addOption("truststorePassword",true,"set truststore password");
-		options.addOption("clientTruststore",true,"set client truststore path");
-		options.addOption("clientTruststorePassword",true,"set client truststore password");
 		options.addOption("authentication",false,"use basic / client certificate authentication");
+		options.addOption("clientTruststoreType",true,"set client truststore type");
+		options.addOption("clientTruststorePath",true,"set client truststore path");
+		options.addOption("clientTruststorePassword",true,"set client truststore password");
 		options.addOption("jmx",false,"start mbean server");
 		return options;
 	}
@@ -150,7 +153,7 @@ public class Start
 		}
 		else
 		{
-			String keystorePath = cmd.getOptionValue("keystore",DEFAULT_KEYSTORE_FILE);
+			String keystorePath = cmd.getOptionValue("keystorePath",DEFAULT_KEYSTORE_FILE);
 			String keystorePassword = cmd.getOptionValue("keystorePassword",DEFAULT_KEYSTORE_PASSWORD);
 			if (DEFAULT_KEYSTORE_FILE.equals(keystorePath))
 				System.out.println("Using default keystore!");
@@ -165,7 +168,7 @@ public class Start
 
 				if (cmd.hasOption("clientAuthentication"))
 				{
-					String truststorePath = cmd.getOptionValue("truststore");
+					String truststorePath = cmd.getOptionValue("truststorePath");
 					String truststorePassword = cmd.getOptionValue("truststorePassword");
 					Resource truststore = getResource(truststorePath);
 					factory.setTrustStoreResource(truststore);
@@ -239,10 +242,10 @@ public class Start
 
 		if (cmd.hasOption("authentication") && cmd.hasOption("ssl") && cmd.hasOption("clientAuthentication"))
 		{
-			String clientTruststorePath = cmd.getOptionValue("clientTruststore");
+			String clientTruststorePath = cmd.getOptionValue("clientTruststorePath");
 			String clientTruststorePassword = cmd.getOptionValue("clientTruststorePassword");
 			FilterHolder filterHolder = new FilterHolder(nl.clockwork.ebms.servlet.ClientCertificateAuthenticationFilter.class); 
-			filterHolder.setInitParameter("truststore",clientTruststorePath);
+			filterHolder.setInitParameter("truststorePath",clientTruststorePath);
 			filterHolder.setInitParameter("truststorePassword",clientTruststorePassword);
 			handler.addFilter(filterHolder,"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
 		}

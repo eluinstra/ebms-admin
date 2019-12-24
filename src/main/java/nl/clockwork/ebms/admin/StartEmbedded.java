@@ -82,15 +82,7 @@ public class StartEmbedded extends Start
 	@Override
 	protected Options createOptions()
 	{
-		options = new Options();
-		options.addOption("h",false,"print this message");
-		options.addOption("host",true,"set host");
-		options.addOption("port",true,"set port");
-		options.addOption("ssl",false,"use ssl");
-		options.addOption("keystore",true,"set keystore");
-		options.addOption("password",true,"set keystore password");
-		options.addOption("authentication",false,"use basic authentication");
-		options.addOption("jmx",false,"start mbean server");
+		options = super.createOptions();
 		options.addOption("hsqldb",false,"start hsqldb server");
 		options.addOption("hsqldbDir",true,"set hsqldb location (default: hsqldb)");
 		options.addOption("soap",false,"start soap service");
@@ -203,6 +195,7 @@ public class StartEmbedded extends Start
 					factory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(properties.get("https.protocols"),',')));
 				if (!StringUtils.isEmpty(properties.get("https.cipherSuites")))
 					factory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(properties.get("https.cipherSuites"),',')));
+				factory.setKeyStoreType(properties.get("keystore.type"));
 				factory.setKeyStoreResource(keystore);
 				factory.setKeyStorePassword(properties.get("keystore.password"));
 				if ("true".equals(properties.get("https.requireClientAuthentication")))
@@ -211,6 +204,7 @@ public class StartEmbedded extends Start
 					if (truststore != null && truststore.exists())
 					{
 						factory.setNeedClientAuth(true);
+						factory.setTrustStoreType(properties.get("truststore.type"));
 						factory.setTrustStoreResource(truststore);
 						factory.setTrustStorePassword(properties.get("truststore.password"));
 					}

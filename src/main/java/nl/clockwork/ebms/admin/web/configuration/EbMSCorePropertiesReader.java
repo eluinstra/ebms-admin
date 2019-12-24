@@ -21,6 +21,8 @@ import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nl.clockwork.ebms.admin.web.configuration.Constants.JdbcDriver;
 import nl.clockwork.ebms.admin.web.configuration.CorePropertiesFormPanel.CorePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.EbMSCorePropertiesFormModel;
@@ -31,9 +33,8 @@ import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyP
 import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.SignaturePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormModel;
 import nl.clockwork.ebms.client.EbMSHttpClientFactory.EbMSHttpClientType;
+import nl.clockwork.ebms.common.KeyStoreManager.KeyStoreType;
 import nl.clockwork.ebms.event.EventListenerFactory.EventListenerType;
-
-import org.apache.commons.lang3.StringUtils;
 
 public class EbMSCorePropertiesReader
 {
@@ -95,10 +96,13 @@ public class EbMSCorePropertiesReader
 		sslProperties.setRequireClientAuthentication(new Boolean(properties.getProperty("https.requireClientAuthentication")));
 		sslProperties.setVerifyHostnames(new Boolean(properties.getProperty("https.verifyHostnames")));
 		sslProperties.setClientCertificateAuthentication(new Boolean(properties.getProperty("https.clientCertificateAuthentication")));
+		sslProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("keystore.type","JKS").toUpperCase()));
 		sslProperties.getKeystoreProperties().setUri(properties.getProperty("keystore.path"));
 		sslProperties.getKeystoreProperties().setPassword(properties.getProperty("keystore.password"));
+		sslProperties.getClientKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("client.keystore.type","JKS").toUpperCase()));
 		sslProperties.getClientKeystoreProperties().setUri(properties.getProperty("client.keystore.path"));
 		sslProperties.getClientKeystoreProperties().setPassword(properties.getProperty("client.keystore.password"));
+		sslProperties.getTruststoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("truststore.type","JKS").toUpperCase()));
 		sslProperties.getTruststoreProperties().setUri(properties.getProperty("truststore.path"));
 		sslProperties.getTruststoreProperties().setPassword(properties.getProperty("truststore.password"));
 	}
@@ -115,6 +119,7 @@ public class EbMSCorePropertiesReader
 	protected void read(Properties properties, SignaturePropertiesFormModel signatureProperties) throws MalformedURLException
 	{
 		signatureProperties.setSigning(!StringUtils.isEmpty(properties.getProperty("signature.keystore.path")));
+		signatureProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("signature.keystore.type","JKS").toUpperCase()));
 		signatureProperties.getKeystoreProperties().setUri(properties.getProperty("signature.keystore.path"));
 		signatureProperties.getKeystoreProperties().setPassword(properties.getProperty("signature.keystore.password"));
 	}
@@ -122,6 +127,7 @@ public class EbMSCorePropertiesReader
 	protected void read(Properties properties, EncryptionPropertiesFormModel encryptionProperties) throws MalformedURLException
 	{
 		encryptionProperties.setEncryption(!StringUtils.isEmpty(properties.getProperty("encryption.keystore.path")));
+		encryptionProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("encryption.keystore.path","JKS").toUpperCase()));
 		encryptionProperties.getKeystoreProperties().setUri(properties.getProperty("encryption.keystore.path"));
 		encryptionProperties.getKeystoreProperties().setPassword(properties.getProperty("encryption.keystore.password"));
 	}

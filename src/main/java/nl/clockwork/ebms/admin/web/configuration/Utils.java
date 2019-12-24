@@ -40,6 +40,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
+import nl.clockwork.ebms.common.KeyStoreManager.KeyStoreType;
+
 public class Utils
 {
 	private static SSLEngine sslEngine;
@@ -121,10 +123,10 @@ public class Utils
 		return result.exists() ? result : new ClassPathResource(path);
 	}
   
-	public static void testKeystore(String path, String password) throws MalformedURLException, IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException
+	public static void testKeystore(KeyStoreType type, String path, String password) throws MalformedURLException, IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException
 	{
 		Resource resource = getResource(path);
-		KeyStore keyStore = KeyStore.getInstance("JKS");
+		KeyStore keyStore = KeyStore.getInstance(type.name());
 		keyStore.load(resource.getInputStream(),password.toCharArray());
 		Enumeration<String> aliases = keyStore.aliases();
 		while (aliases.hasMoreElements())
