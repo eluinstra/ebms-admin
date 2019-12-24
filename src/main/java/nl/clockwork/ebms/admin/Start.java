@@ -19,7 +19,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
@@ -39,7 +38,6 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.jmx.ConnectorServer;
@@ -64,9 +62,12 @@ import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
 import nl.clockwork.ebms.admin.web.ExtensionProvider;
+import nl.clockwork.ebms.common.KeyStoreManager.KeyStoreType;
+import nl.clockwork.ebms.common.util.SecurityUtils;
 
 public class Start
 {
+	protected final String DEFAULT_KEYSTORE_TYPE = KeyStoreType.JKS.name();
 	protected final String DEFAULT_KEYSTORE_FILE = "keystore.jks";
 	protected final String DEFAULT_KEYSTORE_PASSWORD = "password";
 	protected final String REALM = "Realm";
@@ -113,17 +114,17 @@ public class Start
 		options.addOption("port",true,"set port");
 		options.addOption("path",true,"set path");
 		options.addOption("ssl",false,"use ssl");
-		options.addOption("keystoreType",true,"set keystore type");
-		options.addOption("keystorePath",true,"set keystore path");
-		options.addOption("keystorePassword",true,"set keystore password");
-		options.addOption("clientAuthentication", false,"use ssl client authentication");
-		options.addOption("truststoreType",true,"set truststore type");
-		options.addOption("truststorePath",true,"set truststore path");
-		options.addOption("truststorePassword",true,"set truststore password");
+		options.addOption("keyStoreType",true,"set keystore type");
+		options.addOption("keyStorePath",true,"set keystore path");
+		options.addOption("keyStorePassword",true,"set keystore password");
+		options.addOption("clientAuthentication", false,"require ssl client authentication");
+		options.addOption("trustStoreType",true,"set truststore type");
+		options.addOption("trustStorePath",true,"set truststore path");
+		options.addOption("trustStorePassword",true,"set truststore password");
 		options.addOption("authentication",false,"use basic / client certificate authentication");
-		options.addOption("clientTruststoreType",true,"set client truststore type");
-		options.addOption("clientTruststorePath",true,"set client truststore path");
-		options.addOption("clientTruststorePassword",true,"set client truststore password");
+		options.addOption("clientTrustStoreType",true,"set client truststore type");
+		options.addOption("clientTrustStorePath",true,"set client truststore path");
+		options.addOption("clientTrustStorePassword",true,"set client truststore password");
 		options.addOption("jmx",false,"start mbean server");
 		return options;
 	}
@@ -153,26 +154,30 @@ public class Start
 		}
 		else
 		{
-			String keystorePath = cmd.getOptionValue("keystorePath",DEFAULT_KEYSTORE_FILE);
-			String keystorePassword = cmd.getOptionValue("keystorePassword",DEFAULT_KEYSTORE_PASSWORD);
-			if (DEFAULT_KEYSTORE_FILE.equals(keystorePath))
+			String keyStoreType = cmd.getOptionValue("keyStoreType",DEFAULT_KEYSTORE_TYPE);
+			String keyStorePath = cmd.getOptionValue("keyStorePath",DEFAULT_KEYSTORE_FILE);
+			String keyStorePassword = cmd.getOptionValue("keyStorePassword",DEFAULT_KEYSTORE_PASSWORD);
+			if (DEFAULT_KEYSTORE_FILE.equals(keyStorePath))
 				System.out.println("Using default keystore!");
 			else
-				System.out.println("Using keystore " + new File(keystorePath).getAbsolutePath());
-			Resource keystore = getResource(keystorePath);
-			if (keystore != null && keystore.exists())
+				System.out.println("Using keystore " + new File(keyStorePath).getAbsolutePath());
+			Resource keyStore = getResource(keyStorePath);
+			if (keyStore != null && keyStore.exists())
 			{
 				SslContextFactory factory = new SslContextFactory();
-				factory.setKeyStoreResource(keystore);
-				factory.setKeyStorePassword(keystorePassword);
+				factory.setKeyStoreType(keyStoreType);
+				factory.setKeyStoreResource(keyStore);
+				factory.setKeyStorePassword(keyStorePassword);
 
 				if (cmd.hasOption("clientAuthentication"))
 				{
-					String truststorePath = cmd.getOptionValue("truststorePath");
-					String truststorePassword = cmd.getOptionValue("truststorePassword");
-					Resource truststore = getResource(truststorePath);
-					factory.setTrustStoreResource(truststore);
-					factory.setTrustStorePassword(truststorePassword);
+					String trustStoreType = cmd.getOptionValue("trustStoreType");
+					String trustStorePath = cmd.getOptionValue("trustStorePath");
+					String trustStorePassword = cmd.getOptionValue("trustStorePassword");
+					Resource trustStore = getResource(trustStorePath);
+					factory.setTrustStoreType(trustStoreType);
+					factory.setTrustStoreResource(trustStore);
+					factory.setTrustStorePassword(trustStorePassword);
 				}
 
 				ServerConnector connector = new ServerConnector(this.server,factory);
@@ -186,7 +191,7 @@ public class Start
 			}
 			else
 			{
-				System.out.println("Web server not available: keystore " + keystorePath + " not found!");
+				System.out.println("Web server not available: keystore " + keyStorePath + " not found!");
 				System.exit(1);
 			}
 		}
@@ -242,11 +247,13 @@ public class Start
 
 		if (cmd.hasOption("authentication") && cmd.hasOption("ssl") && cmd.hasOption("clientAuthentication"))
 		{
-			String clientTruststorePath = cmd.getOptionValue("clientTruststorePath");
-			String clientTruststorePassword = cmd.getOptionValue("clientTruststorePassword");
+			String clientTrustStoreType = cmd.getOptionValue("clientTrustStoreType");
+			String clientTrustStorePath = cmd.getOptionValue("clientTrustStorePath");
+			String clientTrustStorePassword = cmd.getOptionValue("clientTrustStorePassword");
 			FilterHolder filterHolder = new FilterHolder(nl.clockwork.ebms.servlet.ClientCertificateAuthenticationFilter.class); 
-			filterHolder.setInitParameter("truststorePath",clientTruststorePath);
-			filterHolder.setInitParameter("truststorePassword",clientTruststorePassword);
+			filterHolder.setInitParameter("trustStoreType",clientTrustStoreType);
+			filterHolder.setInitParameter("trustStorePath",clientTrustStorePath);
+			filterHolder.setInitParameter("trustStorePassword",clientTrustStorePassword);
 			handler.addFilter(filterHolder,"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
 		}
 
@@ -302,8 +309,8 @@ public class Start
 		String result = null;
 		while (true)
 		{
-			result = toMD5(readLine("enter password: ",reader));
-			String password = toMD5(readLine("re-enter password: ",reader));
+			result = SecurityUtils.toMD5(readLine("enter password: ",reader));
+			String password = SecurityUtils.toMD5(readLine("re-enter password: ",reader));
 			if (!result.equals(password))
 				System.out.println("Passwords don't match! Try again.");
 			else
@@ -312,11 +319,6 @@ public class Start
 		return result;
 	}
 	
-	private String toMD5(String s) throws NoSuchAlgorithmException, UnsupportedEncodingException
-	{
-		return "MD5:" + DigestUtils.md5Hex(s);
-	}
-
 	protected SecurityHandler getSecurityHandler()
 	{
 		ConstraintSecurityHandler result = new ConstraintSecurityHandler();

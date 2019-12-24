@@ -187,8 +187,8 @@ public class StartEmbedded extends Start
 		}
 		else
 		{
-			Resource keystore = getResource(properties.get("keystore.path"));
-			if (keystore != null && keystore.exists())
+			Resource keyStore = getResource(properties.get("keystore.path"));
+			if (keyStore != null && keyStore.exists())
 			{
 				SslContextFactory factory = new SslContextFactory();
 				if (!StringUtils.isEmpty(properties.get("https.protocols")))
@@ -196,16 +196,16 @@ public class StartEmbedded extends Start
 				if (!StringUtils.isEmpty(properties.get("https.cipherSuites")))
 					factory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(properties.get("https.cipherSuites"),',')));
 				factory.setKeyStoreType(properties.get("keystore.type"));
-				factory.setKeyStoreResource(keystore);
+				factory.setKeyStoreResource(keyStore);
 				factory.setKeyStorePassword(properties.get("keystore.password"));
 				if ("true".equals(properties.get("https.requireClientAuthentication")))
 				{
-					Resource truststore = getResource(properties.get("truststore.path"));
-					if (truststore != null && truststore.exists())
+					Resource trustStore = getResource(properties.get("truststore.path"));
+					if (trustStore != null && trustStore.exists())
 					{
 						factory.setNeedClientAuth(true);
 						factory.setTrustStoreType(properties.get("truststore.type"));
-						factory.setTrustStoreResource(truststore);
+						factory.setTrustStoreResource(trustStore);
 						factory.setTrustStorePassword(properties.get("truststore.password"));
 					}
 					else
