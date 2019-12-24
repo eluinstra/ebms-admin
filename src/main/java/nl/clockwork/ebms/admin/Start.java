@@ -67,8 +67,8 @@ import nl.clockwork.ebms.common.util.SecurityUtils;
 
 public class Start
 {
-	protected final String DEFAULT_KEYSTORE_TYPE = KeyStoreType.JKS.name();
-	protected final String DEFAULT_KEYSTORE_FILE = "keystore.jks";
+	protected final String DEFAULT_KEYSTORE_TYPE = KeyStoreType.PKCS12.name();
+	protected final String DEFAULT_KEYSTORE_FILE = "keystore.p12";
 	protected final String DEFAULT_KEYSTORE_PASSWORD = "password";
 	protected final String REALM = "Realm";
 	protected final String REALM_FILE = "realm.properties";
@@ -114,15 +114,15 @@ public class Start
 		options.addOption("port",true,"set port");
 		options.addOption("path",true,"set path");
 		options.addOption("ssl",false,"use ssl");
-		options.addOption("keyStoreType",true,"set keystore type");
+		options.addOption("keyStoreType",true,"set keystore type (deault=" + DEFAULT_KEYSTORE_TYPE + ")");
 		options.addOption("keyStorePath",true,"set keystore path");
 		options.addOption("keyStorePassword",true,"set keystore password");
 		options.addOption("clientAuthentication", false,"require ssl client authentication");
-		options.addOption("trustStoreType",true,"set truststore type");
+		options.addOption("trustStoreType",true,"set truststore type (deault=" + DEFAULT_KEYSTORE_TYPE + ")");
 		options.addOption("trustStorePath",true,"set truststore path");
 		options.addOption("trustStorePassword",true,"set truststore password");
 		options.addOption("authentication",false,"use basic / client certificate authentication");
-		options.addOption("clientTrustStoreType",true,"set client truststore type");
+		options.addOption("clientTrustStoreType",true,"set client truststore type (deault=" + DEFAULT_KEYSTORE_TYPE + ")");
 		options.addOption("clientTrustStorePath",true,"set client truststore path");
 		options.addOption("clientTrustStorePassword",true,"set client truststore password");
 		options.addOption("jmx",false,"start mbean server");
@@ -171,7 +171,7 @@ public class Start
 
 				if (cmd.hasOption("clientAuthentication"))
 				{
-					String trustStoreType = cmd.getOptionValue("trustStoreType");
+					String trustStoreType = cmd.getOptionValue("trustStoreType",DEFAULT_KEYSTORE_TYPE);
 					String trustStorePath = cmd.getOptionValue("trustStorePath");
 					String trustStorePassword = cmd.getOptionValue("trustStorePassword");
 					Resource trustStore = getResource(trustStorePath);
@@ -247,7 +247,7 @@ public class Start
 
 		if (cmd.hasOption("authentication") && cmd.hasOption("ssl") && cmd.hasOption("clientAuthentication"))
 		{
-			String clientTrustStoreType = cmd.getOptionValue("clientTrustStoreType");
+			String clientTrustStoreType = cmd.getOptionValue("clientTrustStoreType",DEFAULT_KEYSTORE_TYPE);
 			String clientTrustStorePath = cmd.getOptionValue("clientTrustStorePath");
 			String clientTrustStorePassword = cmd.getOptionValue("clientTrustStorePassword");
 			FilterHolder filterHolder = new FilterHolder(nl.clockwork.ebms.servlet.ClientCertificateAuthenticationFilter.class); 
