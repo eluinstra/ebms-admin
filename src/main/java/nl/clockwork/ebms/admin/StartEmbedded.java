@@ -68,9 +68,10 @@ public class StartEmbedded extends Start
 		start.properties = start.getProperties("nl/clockwork/ebms/admin/applicationConfig.embedded.xml");
 
 		start.initHSQLDB(start.cmd,start.properties);
-		start.initWebServer(start.server,start.cmd);
-		start.initEbMSServer(start.server,start.properties);
+		start.initWebServer(start.cmd,start.server);
+		start.initEbMSServer(start.properties,start.server);
 		start.initJMX(start.cmd,start.server);
+
 		XmlWebApplicationContext context = new XmlWebApplicationContext();
 		context.setConfigLocations(getConfigLocations("classpath:nl/clockwork/ebms/admin/applicationContext.embedded.xml"));
 		ContextLoaderListener contextLoaderListener = new ContextLoaderListener(context);
@@ -178,7 +179,7 @@ public class StartEmbedded extends Start
 		}
 	}
 
-	private void initEbMSServer(Server server, Map<String,String> properties) throws MalformedURLException, IOException
+	private void initEbMSServer(Map<String,String> properties, Server server) throws MalformedURLException, IOException
 	{
 		if (!"true".equals(properties.get("ebms.ssl")))
 		{

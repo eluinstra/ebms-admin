@@ -87,8 +87,9 @@ public class Start
 
 		start.server.setHandler(start.handlerCollection);
 
-		start.initWebServer(start.server,start.cmd);
+		start.initWebServer(start.cmd,start.server);
 		start.initJMX(start.cmd,start.server);
+
 		XmlWebApplicationContext context = new XmlWebApplicationContext();
 		context.setConfigLocations(getConfigLocations("classpath:nl/clockwork/ebms/admin/applicationContext.xml"));
 		ContextLoaderListener contextLoaderListener = new ContextLoaderListener(context);
@@ -133,7 +134,7 @@ public class Start
 		return result.toArray(new String[]{});
 	}
 
-	protected void initWebServer(Server server, CommandLine cmd) throws MalformedURLException, IOException
+	protected void initWebServer(CommandLine cmd, Server server) throws MalformedURLException, IOException
 	{
 		if (!cmd.hasOption("ssl"))
 		{
