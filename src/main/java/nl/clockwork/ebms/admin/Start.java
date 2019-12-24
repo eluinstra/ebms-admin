@@ -67,7 +67,7 @@ import nl.clockwork.ebms.admin.web.ExtensionProvider;
 
 public class Start
 {
-	protected final String DEFAULT_KEYSTORE_FILE = "nl/clockwork/ebms/admin/keystore.jks";
+	protected final String DEFAULT_KEYSTORE_FILE = "keystore.jks";
 	protected final String DEFAULT_KEYSTORE_PASSWORD = "password";
 	protected final String REALM = "Realm";
 	protected final String REALM_FILE = "realm.properties";
@@ -113,9 +113,14 @@ public class Start
 		options.addOption("port",true,"set port");
 		options.addOption("path",true,"set path");
 		options.addOption("ssl",false,"use ssl");
-		options.addOption("keystore",true,"set keystore");
-		options.addOption("password",true,"set keystore password");
-		options.addOption("authentication",false,"use basic authentication");
+		options.addOption("clientAuthentication", false,"use ssl client authentication");
+		options.addOption("keystore",true,"set keystore path");
+		options.addOption("keystorePassword",true,"set keystore password");
+		options.addOption("truststore",true,"set truststore path");
+		options.addOption("truststorePassword",true,"set truststore password");
+		options.addOption("clientTruststore",true,"set client truststore path");
+		options.addOption("clientTruststorePassword",true,"set client truststore password");
+		options.addOption("authentication",false,"use basic / client certificate authentication");
 		options.addOption("jmx",false,"start mbean server");
 		return options;
 	}
@@ -146,7 +151,7 @@ public class Start
 		else
 		{
 			String keystorePath = cmd.getOptionValue("keystore",DEFAULT_KEYSTORE_FILE);
-			String keystorePassword = cmd.getOptionValue("password",DEFAULT_KEYSTORE_PASSWORD);
+			String keystorePassword = cmd.getOptionValue("keystorePassword",DEFAULT_KEYSTORE_PASSWORD);
 			if (DEFAULT_KEYSTORE_FILE.equals(keystorePath))
 				System.out.println("Using default keystore!");
 			else
@@ -157,6 +162,16 @@ public class Start
 				SslContextFactory factory = new SslContextFactory();
 				factory.setKeyStoreResource(keystore);
 				factory.setKeyStorePassword(keystorePassword);
+
+				if (cmd.hasOption("clientAuthentication"))
+				{
+					String truststorePath = cmd.getOptionValue("truststore");
+					String truststorePassword = cmd.getOptionValue("truststorePassword");
+					Resource truststore = getResource(truststorePath);
+					factory.setTrustStoreResource(truststore);
+					factory.setTrustStorePassword(truststorePassword);
+				}
+
 				ServerConnector connector = new ServerConnector(this.server,factory);
 				connector.setHost(cmd.getOptionValue("host") == null ? "0.0.0.0" : cmd.getOptionValue("host"));
 				connector.setPort(cmd.getOptionValue("port") == null ? 8433 : Integer.parseInt(cmd.getOptionValue("port")));
@@ -201,7 +216,7 @@ public class Start
 
 		handler.setContextPath(getPath());
 
-		if (cmd.hasOption("authentication"))
+		if (cmd.hasOption("authentication") && !cmd.hasOption("clientAuthentication"))
 		{
 			System.out.println("Configuring web server authentication:");
 			File file = new File(REALM_FILE);
@@ -221,7 +236,17 @@ public class Start
 		handler.addServlet(servletHolder,"/js/*");
 
 		handler.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
-		
+
+		if (cmd.hasOption("authentication") && cmd.hasOption("ssl") && cmd.hasOption("clientAuthentication"))
+		{
+			String clientTruststorePath = cmd.getOptionValue("clientTruststore");
+			String clientTruststorePassword = cmd.getOptionValue("clientTruststorePassword");
+			FilterHolder filterHolder = new FilterHolder(nl.clockwork.ebms.servlet.ClientCertificateAuthenticationFilter.class); 
+			filterHolder.setInitParameter("truststore",clientTruststorePath);
+			filterHolder.setInitParameter("truststorePassword",clientTruststorePassword);
+			handler.addFilter(filterHolder,"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
+		}
+
 		FilterHolder filterHolder = new FilterHolder(org.apache.wicket.protocol.http.WicketFilter.class); 
 		filterHolder.setInitParameter("applicationClassName","nl.clockwork.ebms.admin.web.WicketApplication");
 		filterHolder.setInitParameter("filterMappingUrlPattern","/*");
@@ -291,7 +316,7 @@ public class Start
 
 	protected SecurityHandler getSecurityHandler()
 	{
-		ConstraintSecurityHandler security = new ConstraintSecurityHandler();
+		ConstraintSecurityHandler result = new ConstraintSecurityHandler();
 
 		Constraint constraint = new Constraint();
 		constraint.setName("auth");
@@ -302,11 +327,11 @@ public class Start
 		mapping.setPathSpec("/*");
 		mapping.setConstraint(constraint);
 
-		security.setConstraintMappings(Collections.singletonList(mapping));
-		security.setAuthenticator(new BasicAuthenticator());
-		security.setLoginService(new HashLoginService(REALM,REALM_FILE));
+		result.setConstraintMappings(Collections.singletonList(mapping));
+		result.setAuthenticator(new BasicAuthenticator());
+		result.setLoginService(new HashLoginService(REALM,REALM_FILE));
 
-		return security;
+		return result;
 	}
 
 	protected String getHost(String host)
