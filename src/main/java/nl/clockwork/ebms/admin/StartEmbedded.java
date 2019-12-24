@@ -26,9 +26,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.resource.Resource;
@@ -54,7 +57,8 @@ public class StartEmbedded extends Start
 	public static void main(String[] args) throws Exception
 	{
 		StartEmbedded start = new StartEmbedded();
-		start.initCmd(args);
+		start.options = start.createOptions();
+		start.cmd = new DefaultParser().parse(start.options,args);
 
 		if (start.cmd.hasOption("h"))
 			start.printUsage();
@@ -63,15 +67,15 @@ public class StartEmbedded extends Start
 
 		start.properties = start.getProperties("nl/clockwork/ebms/admin/applicationConfig.embedded.xml");
 
-		start.initHSQLDB();
-		start.initWebServer();
-		start.initEbMSServer();
-		start.initJMX();
+		start.initHSQLDB(start.cmd,start.properties);
+		start.initWebServer(start.server,start.cmd);
+		start.initEbMSServer(start.server,start.properties);
+		start.initJMX(start.cmd,start.server);
 		XmlWebApplicationContext context = new XmlWebApplicationContext();
 		context.setConfigLocations(getConfigLocations("classpath:nl/clockwork/ebms/admin/applicationContext.embedded.xml"));
 		ContextLoaderListener contextLoaderListener = new ContextLoaderListener(context);
-		start.initWebContext(contextLoaderListener);
-		start.initEbMSContext(contextLoaderListener);
+		start.handlerCollection.addHandler(start.createWebContextHandler(start.cmd,contextLoaderListener));
+		start.handlerCollection.addHandler(start.createEbMSContextHandler(start.properties,contextLoaderListener));
 
 		System.out.println("Starting web server...");
 
@@ -82,11 +86,11 @@ public class StartEmbedded extends Start
 	@Override
 	protected Options createOptions()
 	{
-		options = super.createOptions();
-		options.addOption("hsqldb",false,"start hsqldb server");
-		options.addOption("hsqldbDir",true,"set hsqldb location (default: hsqldb)");
-		options.addOption("soap",false,"start soap service");
-		return options;
+		Options result = super.createOptions();
+		result.addOption("hsqldb",false,"start hsqldb server");
+		result.addOption("hsqldbDir",true,"set hsqldb location (default: hsqldb)");
+		result.addOption("soap",false,"start soap service");
+		return result;
 	}
 	
 	private Map<String,String> getProperties(String...files)
@@ -98,7 +102,7 @@ public class StartEmbedded extends Start
 		}
 	}
 
-	private void initHSQLDB() throws IOException, AclFormatException, URISyntaxException
+	private void initHSQLDB(CommandLine cmd, Map<String,String> properties) throws IOException, AclFormatException, URISyntaxException
 	{
 		if ("org.hsqldb.jdbcDriver".equals(properties.get("ebms.jdbc.driverClassName")) && cmd.hasOption("hsqldb"))
 		{
@@ -109,11 +113,11 @@ public class StartEmbedded extends Start
 				System.exit(1);
 			}
 			System.out.println("Starting hsqldb...");
-			startHSQLDBServer(jdbcURL);
+			startHSQLDBServer(cmd,jdbcURL);
 		}
 	}
 
-	public void startHSQLDBServer(JdbcURL jdbcURL) throws IOException, AclFormatException, URISyntaxException
+	public void startHSQLDBServer(CommandLine cmd, JdbcURL jdbcURL) throws IOException, AclFormatException, URISyntaxException
 	{
 		List<String> options = new ArrayList<>();
 		options.add("-database.0");
@@ -174,74 +178,99 @@ public class StartEmbedded extends Start
 		}
 	}
 
-	private void initEbMSServer() throws MalformedURLException, IOException
+	private void initEbMSServer(Server server, Map<String,String> properties) throws MalformedURLException, IOException
 	{
 		if (!"true".equals(properties.get("ebms.ssl")))
 		{
-			ServerConnector connector = new ServerConnector(this.server);
-			connector.setHost(StringUtils.isEmpty(properties.get("ebms.host")) ? "0.0.0.0" : properties.get("ebms.host"));
-			connector.setPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
-			connector.setName("ebms");
-			server.addConnector(connector);
-			System.out.println("EbMS service configured on http://" + getHost(connector.getHost()) + ":" + connector.getPort() + properties.get("ebms.path"));
+			server.addConnector(createEbMSHttpConnector(properties));
 		}
 		else
 		{
-			Resource keyStore = getResource(properties.get("keystore.path"));
-			if (keyStore != null && keyStore.exists())
-			{
-				SslContextFactory factory = new SslContextFactory();
-				if (!StringUtils.isEmpty(properties.get("https.protocols")))
-					factory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(properties.get("https.protocols"),',')));
-				if (!StringUtils.isEmpty(properties.get("https.cipherSuites")))
-					factory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(properties.get("https.cipherSuites"),',')));
-				factory.setKeyStoreType(properties.get("keystore.type"));
-				factory.setKeyStoreResource(keyStore);
-				factory.setKeyStorePassword(properties.get("keystore.password"));
-				if ("true".equals(properties.get("https.requireClientAuthentication")))
-				{
-					Resource trustStore = getResource(properties.get("truststore.path"));
-					if (trustStore != null && trustStore.exists())
-					{
-						factory.setNeedClientAuth(true);
-						factory.setTrustStoreType(properties.get("truststore.type"));
-						factory.setTrustStoreResource(trustStore);
-						factory.setTrustStorePassword(properties.get("truststore.password"));
-					}
-					else
-					{
-						System.out.println("EbMS service not available: truststore " + properties.get("truststore.path") + " not found!");
-						System.exit(1);
-					}
-				}
-				ServerConnector connector = new ServerConnector(this.server,factory);
-				connector.setHost(StringUtils.isEmpty(properties.get("ebms.host")) ? "0.0.0.0" : properties.get("ebms.host"));
-				connector.setPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
-				connector.setName("ebms");
-				server.addConnector(connector);
-				System.out.println("EbMS service configured on https://" + connector.getHost() + ":" + connector.getPort() + properties.get("ebms.path"));
-			}
-			else
-			{
-				System.out.println("EbMS service not available: keystore " + properties.get("keystore.path") + " not found!");
-				System.exit(1);
-			}
+			SslContextFactory factory = createEbMSSslContextFactory(properties);
+			server.addConnector(createEbMSHttpsConnector(properties,factory));
 		}
 	}
 
-	protected void initEbMSContext(ContextLoaderListener contextLoaderListener) throws IOException, NoSuchAlgorithmException
+	private ServerConnector createEbMSHttpConnector(Map<String,String> properties)
 	{
-		ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		handler.setVirtualHosts(new String[] {"@ebms"});
-		handlerCollection.addHandler(handler);
+		ServerConnector result = new ServerConnector(this.server);
+		result.setHost(StringUtils.isEmpty(properties.get("ebms.host")) ? "0.0.0.0" : properties.get("ebms.host"));
+		result.setPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
+		result.setName("ebms");
+		System.out.println("EbMS service configured on http://" + getHost(result.getHost()) + ":" + result.getPort() + properties.get("ebms.path"));
+		return result;
+	}
 
-		handler.setContextPath("/");
+	private SslContextFactory createEbMSSslContextFactory(Map<String,String> properties) throws MalformedURLException, IOException
+	{
+		SslContextFactory result = new SslContextFactory();
+		addEbMSKeyStore(properties,result);
+		if ("true".equals(properties.get("https.requireClientAuthentication")))
+			addEbMSTrustStore(properties,result);
+		return result;
+	}
 
-		handler.addServlet(nl.clockwork.ebms.servlet.EbMSServlet.class,properties.get("ebms.path"));
+	private void addEbMSKeyStore(Map<String,String> properties, SslContextFactory sslContextFactory) throws MalformedURLException, IOException
+	{
+		Resource keyStore = getResource(properties.get("keystore.path"));
+		if (keyStore != null && keyStore.exists())
+		{
+			if (!StringUtils.isEmpty(properties.get("https.protocols")))
+				sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(properties.get("https.protocols"),',')));
+			if (!StringUtils.isEmpty(properties.get("https.cipherSuites")))
+				sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(properties.get("https.cipherSuites"),',')));
+			sslContextFactory.setKeyStoreType(properties.get("keystore.type"));
+			sslContextFactory.setKeyStoreResource(keyStore);
+			sslContextFactory.setKeyStorePassword(properties.get("keystore.password"));
+		}
+		else
+		{
+			System.out.println("EbMS service not available: keystore " + properties.get("keystore.path") + " not found!");
+			System.exit(1);
+		}
+	}
 
-		handler.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
+	private void addEbMSTrustStore(Map<String,String> properties, SslContextFactory sslContextFactory) throws MalformedURLException, IOException
+	{
+		Resource trustStore = getResource(properties.get("truststore.path"));
+		if (trustStore != null && trustStore.exists())
+		{
+			sslContextFactory.setNeedClientAuth(true);
+			sslContextFactory.setTrustStoreType(properties.get("truststore.type"));
+			sslContextFactory.setTrustStoreResource(trustStore);
+			sslContextFactory.setTrustStorePassword(properties.get("truststore.password"));
+		}
+		else
+		{
+			System.out.println("EbMS service not available: truststore " + properties.get("truststore.path") + " not found!");
+			System.exit(1);
+		}
+	}
+
+	private ServerConnector createEbMSHttpsConnector(Map<String,String> properties, SslContextFactory factory)
+	{
+		ServerConnector result = new ServerConnector(this.server,factory);
+		result.setHost(StringUtils.isEmpty(properties.get("ebms.host")) ? "0.0.0.0" : properties.get("ebms.host"));
+		result.setPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
+		result.setName("ebms");
+		System.out.println("EbMS service configured on https://" + result.getHost() + ":" + result.getPort() + properties.get("ebms.path"));
+		return result;
+	}
+
+	protected ServletContextHandler createEbMSContextHandler(Map<String,String> properties, ContextLoaderListener contextLoaderListener) throws IOException, NoSuchAlgorithmException
+	{
+		ServletContextHandler result = new ServletContextHandler(ServletContextHandler.SESSIONS);
+		result.setVirtualHosts(new String[] {"@ebms"});
+
+		result.setContextPath("/");
+
+		result.addServlet(nl.clockwork.ebms.servlet.EbMSServlet.class,properties.get("ebms.path"));
+
+		result.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
 		
-		handler.addEventListener(contextLoaderListener);
+		result.addEventListener(contextLoaderListener);
+		
+		return result;
 	}
 
 }

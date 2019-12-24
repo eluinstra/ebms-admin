@@ -37,7 +37,6 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.jmx.ConnectorServer;
@@ -80,19 +79,20 @@ public class Start
 	public static void main(String[] args) throws Exception
 	{
 		Start start = new Start();
-		start.initCmd(args);
+		start.options = start.createOptions();
+		start.cmd = new DefaultParser().parse(start.options,args);
 
 		if (start.cmd.hasOption("h"))
 			start.printUsage();
 
 		start.server.setHandler(start.handlerCollection);
 
-		start.initWebServer();
-		start.initJMX();
+		start.initWebServer(start.server,start.cmd);
+		start.initJMX(start.cmd,start.server);
 		XmlWebApplicationContext context = new XmlWebApplicationContext();
 		context.setConfigLocations(getConfigLocations("classpath:nl/clockwork/ebms/admin/applicationContext.xml"));
 		ContextLoaderListener contextLoaderListener = new ContextLoaderListener(context);
-		start.initWebContext(contextLoaderListener);
+		start.handlerCollection.addHandler(start.createWebContextHandler(start.cmd,contextLoaderListener));
 
 		System.out.println("Starting web server...");
 
@@ -100,33 +100,27 @@ public class Start
 		start.server.join();
 	}
 
-	protected void initCmd(String[] args) throws ParseException
-	{
-		createOptions();
-		cmd = new DefaultParser().parse(options,args);
-	}
-
 	protected Options createOptions()
 	{
-		options = new Options();
-		options.addOption("h",false,"print this message");
-		options.addOption("host",true,"set host");
-		options.addOption("port",true,"set port");
-		options.addOption("path",true,"set path");
-		options.addOption("ssl",false,"use ssl");
-		options.addOption("keyStoreType",true,"set keystore type (deault=" + DEFAULT_KEYSTORE_TYPE + ")");
-		options.addOption("keyStorePath",true,"set keystore path");
-		options.addOption("keyStorePassword",true,"set keystore password");
-		options.addOption("clientAuthentication", false,"require ssl client authentication");
-		options.addOption("trustStoreType",true,"set truststore type (deault=" + DEFAULT_KEYSTORE_TYPE + ")");
-		options.addOption("trustStorePath",true,"set truststore path");
-		options.addOption("trustStorePassword",true,"set truststore password");
-		options.addOption("authentication",false,"use basic / client certificate authentication");
-		options.addOption("clientTrustStoreType",true,"set client truststore type (deault=" + DEFAULT_KEYSTORE_TYPE + ")");
-		options.addOption("clientTrustStorePath",true,"set client truststore path");
-		options.addOption("clientTrustStorePassword",true,"set client truststore password");
-		options.addOption("jmx",false,"start mbean server");
-		return options;
+		Options result = new Options();
+		result.addOption("h",false,"print this message");
+		result.addOption("host",true,"set host");
+		result.addOption("port",true,"set port");
+		result.addOption("path",true,"set path");
+		result.addOption("ssl",false,"use ssl");
+		result.addOption("keyStoreType",true,"set keystore type (deault=" + DEFAULT_KEYSTORE_TYPE + ")");
+		result.addOption("keyStorePath",true,"set keystore path");
+		result.addOption("keyStorePassword",true,"set keystore password");
+		result.addOption("clientAuthentication", false,"require ssl client authentication");
+		result.addOption("trustStoreType",true,"set truststore type (deault=" + DEFAULT_KEYSTORE_TYPE + ")");
+		result.addOption("trustStorePath",true,"set truststore path");
+		result.addOption("trustStorePassword",true,"set truststore password");
+		result.addOption("authentication",false,"use basic / client certificate authentication");
+		result.addOption("clientTrustStoreType",true,"set client truststore type (deault=" + DEFAULT_KEYSTORE_TYPE + ")");
+		result.addOption("clientTrustStorePath",true,"set client truststore path");
+		result.addOption("clientTrustStorePassword",true,"set client truststore password");
+		result.addOption("jmx",false,"start mbean server");
+		return result;
 	}
 	
 	protected static String[] getConfigLocations(String configLocation)
@@ -139,79 +133,101 @@ public class Start
 		return result.toArray(new String[]{});
 	}
 
-	protected void initWebServer() throws MalformedURLException, IOException
+	protected void initWebServer(Server server, CommandLine cmd) throws MalformedURLException, IOException
 	{
 		if (!cmd.hasOption("ssl"))
 		{
-			ServerConnector connector = new ServerConnector(this.server);
-			connector.setHost(cmd.getOptionValue("host") == null ? "0.0.0.0" : cmd.getOptionValue("host"));
-			connector.setPort(cmd.getOptionValue("port") == null ? 8080 : Integer.parseInt(cmd.getOptionValue("port")));
-			connector.setName("web");
-			server.addConnector(connector);
-			System.out.println("Web server configured on http://" + getHost(connector.getHost()) + ":" + connector.getPort() + getPath());
-			if (cmd.hasOption("soap"))
-				System.out.println("SOAP service configured on http://" + getHost(connector.getHost()) + ":" + connector.getPort() + "/service");
+			server.addConnector(createHttpConnector(cmd));
 		}
 		else
 		{
-			String keyStoreType = cmd.getOptionValue("keyStoreType",DEFAULT_KEYSTORE_TYPE);
-			String keyStorePath = cmd.getOptionValue("keyStorePath",DEFAULT_KEYSTORE_FILE);
-			String keyStorePassword = cmd.getOptionValue("keyStorePassword",DEFAULT_KEYSTORE_PASSWORD);
-			if (DEFAULT_KEYSTORE_FILE.equals(keyStorePath))
-				System.out.println("Using default keystore!");
-			else
-				System.out.println("Using keystore " + new File(keyStorePath).getAbsolutePath());
-			Resource keyStore = getResource(keyStorePath);
-			if (keyStore != null && keyStore.exists())
-			{
-				SslContextFactory factory = new SslContextFactory();
-				factory.setKeyStoreType(keyStoreType);
-				factory.setKeyStoreResource(keyStore);
-				factory.setKeyStorePassword(keyStorePassword);
-
-				if (cmd.hasOption("clientAuthentication"))
-				{
-					String trustStoreType = cmd.getOptionValue("trustStoreType",DEFAULT_KEYSTORE_TYPE);
-					String trustStorePath = cmd.getOptionValue("trustStorePath");
-					String trustStorePassword = cmd.getOptionValue("trustStorePassword");
-					Resource trustStore = getResource(trustStorePath);
-					if (trustStore != null && trustStore.exists())
-					{
-						factory.setNeedClientAuth(true);
-						factory.setTrustStoreType(trustStoreType);
-						factory.setTrustStoreResource(trustStore);
-						factory.setTrustStorePassword(trustStorePassword);
-					}
-					else
-					{
-						System.out.println("Web server not available: truststore " + trustStorePath + " not found!");
-						System.exit(1);
-					}
-				}
-
-				ServerConnector connector = new ServerConnector(this.server,factory);
-				connector.setHost(cmd.getOptionValue("host") == null ? "0.0.0.0" : cmd.getOptionValue("host"));
-				connector.setPort(cmd.getOptionValue("port") == null ? 8433 : Integer.parseInt(cmd.getOptionValue("port")));
-				connector.setName("web");
-				server.addConnector(connector);
-				System.out.println("Web server configured on https://" + getHost(connector.getHost()) + ":" + connector.getPort() + getPath());
-				if (cmd.hasOption("soap"))
-					System.out.println("SOAP service configured on https://" + getHost(connector.getHost()) + ":" + connector.getPort() + "/service");
-			}
-			else
-			{
-				System.out.println("Web server not available: keystore " + keyStorePath + " not found!");
-				System.exit(1);
-			}
+			SslContextFactory factory = createSslContextFactory(cmd);
+			server.addConnector(createHttpsConnector(cmd,factory));
 		}
 	}
 
-	protected String getPath()
+	private ServerConnector createHttpConnector(CommandLine cmd)
+	{
+		ServerConnector result = new ServerConnector(this.server);
+		result.setHost(cmd.getOptionValue("host") == null ? "0.0.0.0" : cmd.getOptionValue("host"));
+		result.setPort(cmd.getOptionValue("port") == null ? 8080 : Integer.parseInt(cmd.getOptionValue("port")));
+		result.setName("web");
+		System.out.println("Web server configured on http://" + getHost(result.getHost()) + ":" + result.getPort() + getPath(cmd));
+		if (cmd.hasOption("soap"))
+			System.out.println("SOAP service configured on http://" + getHost(result.getHost()) + ":" + result.getPort() + "/service");
+		return result;
+	}
+
+	private SslContextFactory createSslContextFactory(CommandLine cmd) throws MalformedURLException, IOException
+	{
+		SslContextFactory result = new SslContextFactory();
+		addKeyStore(result);
+		if (cmd.hasOption("clientAuthentication"))
+			addTrustStore(result);
+		return result;
+	}
+
+	private void addKeyStore(SslContextFactory result) throws MalformedURLException, IOException
+	{
+		String keyStoreType = cmd.getOptionValue("keyStoreType",DEFAULT_KEYSTORE_TYPE);
+		String keyStorePath = cmd.getOptionValue("keyStorePath",DEFAULT_KEYSTORE_FILE);
+		String keyStorePassword = cmd.getOptionValue("keyStorePassword",DEFAULT_KEYSTORE_PASSWORD);
+		if (DEFAULT_KEYSTORE_FILE.equals(keyStorePath))
+			System.out.println("Using default keystore!");
+		else
+			System.out.println("Using keystore " + new File(keyStorePath).getAbsolutePath());
+		Resource keyStore = getResource(keyStorePath);
+		if (keyStore != null && keyStore.exists())
+		{
+			result.setKeyStoreType(keyStoreType);
+			result.setKeyStoreResource(keyStore);
+			result.setKeyStorePassword(keyStorePassword);
+		}
+		else
+		{
+			System.out.println("Web server not available: keystore " + keyStorePath + " not found!");
+			System.exit(1);
+		}
+	}
+
+	private void addTrustStore(SslContextFactory sslContextFactory) throws MalformedURLException, IOException
+	{
+		String trustStoreType = cmd.getOptionValue("trustStoreType",DEFAULT_KEYSTORE_TYPE);
+		String trustStorePath = cmd.getOptionValue("trustStorePath");
+		String trustStorePassword = cmd.getOptionValue("trustStorePassword");
+		Resource trustStore = getResource(trustStorePath);
+		if (trustStore != null && trustStore.exists())
+		{
+			sslContextFactory.setNeedClientAuth(true);
+			sslContextFactory.setTrustStoreType(trustStoreType);
+			sslContextFactory.setTrustStoreResource(trustStore);
+			sslContextFactory.setTrustStorePassword(trustStorePassword);
+		}
+		else
+		{
+			System.out.println("Web server not available: truststore " + trustStorePath + " not found!");
+			System.exit(1);
+		}
+	}
+
+	private ServerConnector createHttpsConnector(CommandLine cmd, SslContextFactory factory)
+	{
+		ServerConnector connector = new ServerConnector(this.server,factory);
+		connector.setHost(cmd.getOptionValue("host") == null ? "0.0.0.0" : cmd.getOptionValue("host"));
+		connector.setPort(cmd.getOptionValue("port") == null ? 8433 : Integer.parseInt(cmd.getOptionValue("port")));
+		connector.setName("web");
+		System.out.println("Web server configured on https://" + getHost(connector.getHost()) + ":" + connector.getPort() + getPath(cmd));
+		if (cmd.hasOption("soap"))
+			System.out.println("SOAP service configured on https://" + getHost(connector.getHost()) + ":" + connector.getPort() + "/service");
+		return connector;
+	}
+
+	protected String getPath(CommandLine cmd)
 	{
 		return cmd.getOptionValue("path") == null ? "/" : cmd.getOptionValue("path");
 	}
 
-	protected void initJMX() throws Exception
+	protected void initJMX(CommandLine cmd, Server server) throws Exception
 	{
 		if (cmd.hasOption("jmx"))
 		{
@@ -225,14 +241,11 @@ public class Start
 		}
 	}
 
-	protected void initWebContext(ContextLoaderListener contextLoaderListener) throws Exception
+	protected ServletContextHandler createWebContextHandler(CommandLine cmd, ContextLoaderListener contextLoaderListener) throws Exception
 	{
-		ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		handler.setVirtualHosts(new String[] {"@web"});
-		handlerCollection.addHandler(handler);
-
-		handler.setContextPath(getPath());
-
+		ServletContextHandler result = new ServletContextHandler(ServletContextHandler.SESSIONS);
+		result.setVirtualHosts(new String[] {"@web"});
+		result.setContextPath(getPath(cmd));
 		if (cmd.hasOption("authentication") && !cmd.hasOption("clientAuthentication"))
 		{
 			System.out.println("Configuring web server authentication:");
@@ -241,43 +254,58 @@ public class Start
 				System.out.println("Using file: " + file.getAbsoluteFile());
 			else
 				createRealmFile(file);
-			handler.setSecurityHandler(getSecurityHandler());
+			result.setSecurityHandler(getSecurityHandler());
 		}
 
-		handler.setInitParameter("configuration","deployment");
+		result.setInitParameter("configuration","deployment");
 
 		ServletHolder servletHolder = new ServletHolder(nl.clockwork.ebms.admin.web.ResourceServlet.class);
-		handler.addServlet(servletHolder,"/css/*");
-		handler.addServlet(servletHolder,"/fonts/*");
-		handler.addServlet(servletHolder,"/images/*");
-		handler.addServlet(servletHolder,"/js/*");
+		result.addServlet(servletHolder,"/css/*");
+		result.addServlet(servletHolder,"/fonts/*");
+		result.addServlet(servletHolder,"/images/*");
+		result.addServlet(servletHolder,"/js/*");
 
-		handler.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
+		result.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
 
 		if (cmd.hasOption("authentication") && cmd.hasOption("ssl") && cmd.hasOption("clientAuthentication"))
-		{
-			String clientTrustStoreType = cmd.getOptionValue("clientTrustStoreType",DEFAULT_KEYSTORE_TYPE);
-			String clientTrustStorePath = cmd.getOptionValue("clientTrustStorePath");
-			String clientTrustStorePassword = cmd.getOptionValue("clientTrustStorePassword");
-			FilterHolder filterHolder = new FilterHolder(nl.clockwork.ebms.servlet.ClientCertificateAuthenticationFilter.class); 
-			filterHolder.setInitParameter("trustStoreType",clientTrustStoreType);
-			filterHolder.setInitParameter("trustStorePath",clientTrustStorePath);
-			filterHolder.setInitParameter("trustStorePassword",clientTrustStorePassword);
-			handler.addFilter(filterHolder,"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
-		}
+			result.addFilter(createAuthenticationFilterHolder(),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
 
-		FilterHolder filterHolder = new FilterHolder(org.apache.wicket.protocol.http.WicketFilter.class); 
-		filterHolder.setInitParameter("applicationClassName","nl.clockwork.ebms.admin.web.WicketApplication");
-		filterHolder.setInitParameter("filterMappingUrlPattern","/*");
-		handler.addFilter(filterHolder,"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
+		result.addFilter(createWicketFilterHolder(),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
 		
-		ErrorPageErrorHandler errorHandler = new ErrorPageErrorHandler();
-		handler.setErrorHandler(errorHandler);
+		result.setErrorHandler(createErrorHandler());
+		
+		result.addEventListener(contextLoaderListener);
+		
+		return result;
+	}
+
+	private FilterHolder createAuthenticationFilterHolder()
+	{
+		FilterHolder result = new FilterHolder(nl.clockwork.ebms.servlet.ClientCertificateAuthenticationFilter.class); 
+		String clientTrustStoreType = cmd.getOptionValue("clientTrustStoreType",DEFAULT_KEYSTORE_TYPE);
+		String clientTrustStorePath = cmd.getOptionValue("clientTrustStorePath");
+		String clientTrustStorePassword = cmd.getOptionValue("clientTrustStorePassword");
+		result.setInitParameter("trustStoreType",clientTrustStoreType);
+		result.setInitParameter("trustStorePath",clientTrustStorePath);
+		result.setInitParameter("trustStorePassword",clientTrustStorePassword);
+		return result;
+	}
+
+	private FilterHolder createWicketFilterHolder()
+	{
+		FilterHolder result = new FilterHolder(org.apache.wicket.protocol.http.WicketFilter.class); 
+		result.setInitParameter("applicationClassName","nl.clockwork.ebms.admin.web.WicketApplication");
+		result.setInitParameter("filterMappingUrlPattern","/*");
+		return result;
+	}
+
+	private ErrorPageErrorHandler createErrorHandler()
+	{
+		ErrorPageErrorHandler result = new ErrorPageErrorHandler();
 		Map<String,String> errorPages = new HashMap<>();
 		errorPages.put("404","/404");
-		errorHandler.setErrorPages(errorPages);
-		
-		handler.addEventListener(contextLoaderListener);
+		result.setErrorPages(errorPages);
+		return result;
 	}
 
 	protected void printUsage()
