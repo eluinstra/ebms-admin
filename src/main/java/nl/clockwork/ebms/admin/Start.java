@@ -175,9 +175,18 @@ public class Start
 					String trustStorePath = cmd.getOptionValue("trustStorePath");
 					String trustStorePassword = cmd.getOptionValue("trustStorePassword");
 					Resource trustStore = getResource(trustStorePath);
-					factory.setTrustStoreType(trustStoreType);
-					factory.setTrustStoreResource(trustStore);
-					factory.setTrustStorePassword(trustStorePassword);
+					if (trustStore != null && trustStore.exists())
+					{
+						factory.setNeedClientAuth(true);
+						factory.setTrustStoreType(trustStoreType);
+						factory.setTrustStoreResource(trustStore);
+						factory.setTrustStorePassword(trustStorePassword);
+					}
+					else
+					{
+						System.out.println("Web server not available: truststore " + trustStorePath + " not found!");
+						System.exit(1);
+					}
 				}
 
 				ServerConnector connector = new ServerConnector(this.server,factory);
