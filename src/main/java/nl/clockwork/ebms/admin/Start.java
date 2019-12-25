@@ -244,19 +244,25 @@ public class Start
 	{
 		ServletContextHandler result = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		result.setVirtualHosts(new String[] {"@web"});
-		result.setContextPath(getPath(cmd));
-		if (cmd.hasOption("authentication") && !cmd.hasOption("clientAuthentication"))
-		{
-			System.out.println("Configuring web server basic authentication:");
-			File file = new File(REALM_FILE);
-			if (file.exists())
-				System.out.println("Using file " + file.getAbsoluteFile());
-			else
-				createRealmFile(file);
-			result.setSecurityHandler(getSecurityHandler());
-		}
 
 		result.setInitParameter("configuration","deployment");
+
+		result.setContextPath(getPath(cmd));
+		if (cmd.hasOption("authentication"))
+		{
+			if (!cmd.hasOption("clientAuthentication"))
+			{
+				System.out.println("Configuring web server basic authentication:");
+				File file = new File(REALM_FILE);
+				if (file.exists())
+					System.out.println("Using file " + file.getAbsoluteFile());
+				else
+					createRealmFile(file);
+				result.setSecurityHandler(getSecurityHandler());
+			}
+			else if (cmd.hasOption("ssl") && cmd.hasOption("clientAuthentication"))
+				result.addFilter(createAuthenticationFilterHolder(),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
+		}
 
 		ServletHolder servletHolder = new ServletHolder(nl.clockwork.ebms.admin.web.ResourceServlet.class);
 		result.addServlet(servletHolder,"/css/*");
@@ -265,9 +271,6 @@ public class Start
 		result.addServlet(servletHolder,"/js/*");
 
 		result.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
-
-		if (cmd.hasOption("authentication") && cmd.hasOption("ssl") && cmd.hasOption("clientAuthentication"))
-			result.addFilter(createAuthenticationFilterHolder(),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
 
 		result.addFilter(createWicketFilterHolder(),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
 		
