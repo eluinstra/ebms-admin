@@ -112,7 +112,8 @@ public class Start
 		result.addOption("keyStoreType",true,"set keystore type (deault=" + DEFAULT_KEYSTORE_TYPE + ")");
 		result.addOption("keyStorePath",true,"set keystore path");
 		result.addOption("keyStorePassword",true,"set keystore password");
-		result.addOption("clientAuthentication", false,"require ssl client authentication");
+		result.addOption("clientAuthentication",false,"require ssl client authentication");
+		result.addOption("clientCertificateHeader",true,"client certificate header");
 		result.addOption("trustStoreType",true,"set truststore type (deault=" + DEFAULT_KEYSTORE_TYPE + ")");
 		result.addOption("trustStorePath",true,"set truststore path");
 		result.addOption("trustStorePassword",true,"set truststore password");
@@ -261,7 +262,10 @@ public class Start
 				result.setSecurityHandler(getSecurityHandler());
 			}
 			else if (cmd.hasOption("ssl") && cmd.hasOption("clientAuthentication"))
-				result.addFilter(createAuthenticationFilterHolder(),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
+			{
+				result.addFilter(createClientCertificateManagerFilterHolder(cmd),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
+				result.addFilter(createClientCertificateAuthenticationFilterHolder(),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
+			}
 		}
 
 		ServletHolder servletHolder = new ServletHolder(nl.clockwork.ebms.admin.web.ResourceServlet.class);
@@ -281,7 +285,14 @@ public class Start
 		return result;
 	}
 
-	private FilterHolder createAuthenticationFilterHolder() throws MalformedURLException, IOException
+	private FilterHolder createClientCertificateManagerFilterHolder(CommandLine cmd)
+	{
+		FilterHolder result = new FilterHolder(nl.clockwork.ebms.servlet.ClientCertificateManagerFilter.class); 
+		result.setInitParameter("x509CertificateHeader",cmd.getOptionValue("clientCertificateHeader"));
+		return result;
+	}
+
+	private FilterHolder createClientCertificateAuthenticationFilterHolder() throws MalformedURLException, IOException
 	{
 		System.out.println("Configuring web server client certificate authentication:");
 		FilterHolder result = new FilterHolder(nl.clockwork.ebms.servlet.ClientCertificateAuthenticationFilter.class); 

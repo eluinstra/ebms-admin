@@ -23,8 +23,11 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.DispatcherType;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -33,6 +36,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
@@ -265,12 +269,22 @@ public class StartEmbedded extends Start
 
 		result.setContextPath("/");
 
+		if ("true".equals(properties.get("https.clientCertificateAuthentication").toLowerCase()))
+			result.addFilter(createClientCertificateManagerFilterHolder(properties),"/*",EnumSet.allOf(DispatcherType.class));
+
 		result.addServlet(nl.clockwork.ebms.servlet.EbMSServlet.class,properties.get("ebms.path"));
 
 		result.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
 		
 		result.addEventListener(contextLoaderListener);
 		
+		return result;
+	}
+
+	private FilterHolder createClientCertificateManagerFilterHolder(Map<String,String> properties)
+	{
+		FilterHolder result = new FilterHolder(nl.clockwork.ebms.servlet.ClientCertificateManagerFilter.class); 
+		result.setInitParameter("x509CertificateHeader",properties.get("https.clientCertificateHeader"));
 		return result;
 	}
 
