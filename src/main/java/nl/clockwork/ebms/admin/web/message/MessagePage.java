@@ -15,6 +15,8 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
+import java.util.EnumSet;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.IGenericComponent;
@@ -78,29 +80,6 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		add(createToggleContentLink("toggleContent",content));
 	}
 
-	private Component[] createActionField(String id, EbMSMessage message)
-	{
-		final ModalWindow messageErrorModalWindow = new ErrorMessageModalWindow("messageErrorWindow","messageError",getErrorList(getModelObject().getContent()));
-		AjaxLink<Void> link = new AjaxLink<Void>("showMessageErrorWindow")
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void onClick(AjaxRequestTarget target)
-			{
-				messageErrorModalWindow.show(target);
-			}
-		};
-		link.setEnabled(nl.clockwork.ebms.Constants.EBMS_SERVICE_URI.equals(getModelObject().getService()) && "MessageError".equals(getModelObject().getAction()));
-		link.add(new Label(id));
-		return new Component[] {link,messageErrorModalWindow};
-	}
-
-	private String getErrorList(String content)
-	{
-		return content.replaceFirst("(?ms)^.*(<[^<>]*:?ErrorList.*ErrorList>).*$","$1");
-	}
-
 	@Override
 	public String getPageTitle()
 	{
@@ -158,6 +137,24 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		return result;
 	}
 	
+	private Component[] createActionField(String id, EbMSMessage message)
+	{
+		final ModalWindow messageErrorModalWindow = new ErrorMessageModalWindow("messageErrorWindow","messageError",Utils.getErrorList(getModelObject().getContent()));
+		AjaxLink<Void> link = new AjaxLink<Void>("showMessageErrorWindow")
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick(AjaxRequestTarget target)
+			{
+				messageErrorModalWindow.show(target);
+			}
+		};
+		link.setEnabled(nl.clockwork.ebms.Constants.EBMS_SERVICE_URI.equals(getModelObject().getService()) && "MessageError".equals(getModelObject().getAction()));
+		link.add(new Label(id));
+		return new Component[] {link,messageErrorModalWindow};
+	}
+
 	private AjaxLink<Void> createViewMessageErrorLink(String id, final EbMSMessage message)
 	{
 		AjaxLink<Void> result = new AjaxLink<Void>(id)
@@ -170,7 +167,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 				setResponsePage(new MessagePage(ebMSDAO.findResponseMessage(message.getMessageId()),MessagePage.this));
 			}
 		};
-		result.setEnabled(EbMSMessageStatus.DELIVERY_FAILED.equals(message.getStatus()) ? ebMSDAO.existsResponseMessage(message.getMessageId()) : false);
+		result.setEnabled(EnumSet.of(EbMSMessageStatus.FAILED,EbMSMessageStatus.DELIVERY_FAILED).contains(message.getStatus()) ? ebMSDAO.existsResponseMessage(message.getMessageId()) : false);
 		result.add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus()))));
 		result.add(new Label("status"));
 		return result;

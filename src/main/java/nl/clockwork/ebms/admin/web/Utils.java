@@ -68,4 +68,9 @@ public class Utils
 		return null;
 	}
 
+	public static String getErrorList(String content)
+	{
+		return content.replaceFirst("(?ms)^.*(<[^<>]*:?ErrorList.*ErrorList>).*$","$1");
+	}
+
 }

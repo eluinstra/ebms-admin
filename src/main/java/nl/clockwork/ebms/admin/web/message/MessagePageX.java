@@ -29,6 +29,8 @@ import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.admin.web.WicketApplication;
 
+import java.util.EnumSet;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.IGenericComponent;
@@ -76,7 +78,7 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 		add(new Label("toPartyId"));
 		add(new Label("toRole"));
 		add(new Label("service"));
-		add(new Label("action"));
+		add(createActionField("action",message));
 		add(createViewMessageErrorLink("viewMessageError",message));
 		add(new Label("statusTime"));
 		add(createNextEventContainer("nextEvent",message));
@@ -115,10 +117,12 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 	public class ErrorMessageModalWindow extends ModalWindow
 	{
 		private static final long serialVersionUID = 1L;
+		private String title;
 
-		public ErrorMessageModalWindow(String id, String errorMessage)
+		public ErrorMessageModalWindow(String id, String title, String errorMessage)
 		{
 			super(id);
+			this.title = title;
 			setCssClassName(ModalWindow.CSS_CLASS_GRAY);
 			setContent(new ErrorMessagePanel(this,Model.of(errorMessage)));
 			setCookieName("eventError");
@@ -136,7 +140,7 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 		@Override
 		public IModel<String> getTitle()
 		{
-			return new Model<>(getLocalizer().getString("eventError",this));
+			return new Model<>(getLocalizer().getString(title,this));
 		}
 	}
 
@@ -156,6 +160,24 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 		return link;
 	}
 	
+	private Component[] createActionField(String id, EbMSMessage message)
+	{
+		final ModalWindow messageErrorModalWindow = new ErrorMessageModalWindow("messageErrorWindow","messageError",Utils.getErrorList(getModelObject().getContent()));
+		AjaxLink<Void> link = new AjaxLink<Void>("showMessageErrorWindow")
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick(AjaxRequestTarget target)
+			{
+				messageErrorModalWindow.show(target);
+			}
+		};
+		link.setEnabled(nl.clockwork.ebms.Constants.EBMS_SERVICE_URI.equals(getModelObject().getService()) && "MessageError".equals(getModelObject().getAction()));
+		link.add(new Label(id));
+		return new Component[] {link,messageErrorModalWindow};
+	}
+
 	private AjaxLink<Void> createViewMessageErrorLink(String id, final EbMSMessage message)
 	{
 		AjaxLink<Void> linkMessageError = new AjaxLink<Void>(id)
@@ -168,7 +190,7 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 				setResponsePage(new MessagePageX(ebMSDAO.findResponseMessage(message.getMessageId()),MessagePageX.this));
 			}
 		};
-		linkMessageError.setEnabled(EbMSMessageStatus.DELIVERY_FAILED.equals(message.getStatus()) ? ebMSDAO.existsResponseMessage(message.getMessageId()) : false);
+		linkMessageError.setEnabled(EnumSet.of(EbMSMessageStatus.FAILED,EbMSMessageStatus.DELIVERY_FAILED).contains(message.getStatus()) ? ebMSDAO.existsResponseMessage(message.getMessageId()) : false);
 		linkMessageError.add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus()))));
 		linkMessageError.add(new Label("status"));
 		return linkMessageError;
@@ -198,7 +220,7 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 			@Override
 			protected void populateItem(ListItem<EbMSEventLog> item)
 			{
-				final ModalWindow errorMessageModalWindow = new ErrorMessageModalWindow("errorMessageWindow",item.getModelObject().getErrorMessage());
+				final ModalWindow errorMessageModalWindow = new ErrorMessageModalWindow("errorMessageWindow","eventError",item.getModelObject().getErrorMessage());
 				item.add(DateLabel.forDatePattern("timestamp",Constants.DATETIME_FORMAT));
 				item.add(new Label("uri"));
 				item.add(errorMessageModalWindow);
