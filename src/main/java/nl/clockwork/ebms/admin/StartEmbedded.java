@@ -226,7 +226,7 @@ public class StartEmbedded extends Start
 		}
 		else
 		{
-			System.out.println("EbMS service not available: keystore " + properties.get("keystore.path") + " not found!");
+			System.out.println("EbMS service not available: keyStore " + properties.get("keystore.path") + " not found!");
 			System.exit(1);
 		}
 	}
@@ -243,7 +243,7 @@ public class StartEmbedded extends Start
 		}
 		else
 		{
-			System.out.println("EbMS service not available: truststore " + properties.get("truststore.path") + " not found!");
+			System.out.println("EbMS service not available: trustStore " + properties.get("truststore.path") + " not found!");
 			System.exit(1);
 		}
 	}

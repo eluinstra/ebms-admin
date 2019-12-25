@@ -173,11 +173,8 @@ public class Start
 		String keyStoreType = cmd.getOptionValue("keyStoreType",DEFAULT_KEYSTORE_TYPE);
 		String keyStorePath = cmd.getOptionValue("keyStorePath",DEFAULT_KEYSTORE_FILE);
 		String keyStorePassword = cmd.getOptionValue("keyStorePassword",DEFAULT_KEYSTORE_PASSWORD);
-		if (DEFAULT_KEYSTORE_FILE.equals(keyStorePath))
-			System.out.println("Using default keystore!");
-		else
-			System.out.println("Using keystore " + new File(keyStorePath).getAbsolutePath());
 		Resource keyStore = getResource(keyStorePath);
+		System.out.println("Using keyStore " + keyStore.getURI());
 		if (keyStore != null && keyStore.exists())
 		{
 			result.setKeyStoreType(keyStoreType);
@@ -186,7 +183,7 @@ public class Start
 		}
 		else
 		{
-			System.out.println("Web server not available: keystore " + keyStorePath + " not found!");
+			System.out.println("Web server not available: keyStore " + keyStorePath + " not found!");
 			System.exit(1);
 		}
 	}
@@ -197,6 +194,7 @@ public class Start
 		String trustStorePath = cmd.getOptionValue("trustStorePath");
 		String trustStorePassword = cmd.getOptionValue("trustStorePassword");
 		Resource trustStore = getResource(trustStorePath);
+		System.out.println("Using trustStore " + trustStore.getURI());
 		if (trustStore != null && trustStore.exists())
 		{
 			sslContextFactory.setNeedClientAuth(true);
@@ -206,7 +204,7 @@ public class Start
 		}
 		else
 		{
-			System.out.println("Web server not available: truststore " + trustStorePath + " not found!");
+			System.out.println("Web server not available: trustStore " + trustStorePath + " not found!");
 			System.exit(1);
 		}
 	}
@@ -249,10 +247,10 @@ public class Start
 		result.setContextPath(getPath(cmd));
 		if (cmd.hasOption("authentication") && !cmd.hasOption("clientAuthentication"))
 		{
-			System.out.println("Configuring web server authentication:");
+			System.out.println("Configuring web server basic authentication:");
 			File file = new File(REALM_FILE);
 			if (file.exists())
-				System.out.println("Using file: " + file.getAbsoluteFile());
+				System.out.println("Using file " + file.getAbsoluteFile());
 			else
 				createRealmFile(file);
 			result.setSecurityHandler(getSecurityHandler());
@@ -280,16 +278,28 @@ public class Start
 		return result;
 	}
 
-	private FilterHolder createAuthenticationFilterHolder()
+	private FilterHolder createAuthenticationFilterHolder() throws MalformedURLException, IOException
 	{
+		System.out.println("Configuring web server client certificate authentication:");
 		FilterHolder result = new FilterHolder(nl.clockwork.ebms.servlet.ClientCertificateAuthenticationFilter.class); 
 		String clientTrustStoreType = cmd.getOptionValue("clientTrustStoreType",DEFAULT_KEYSTORE_TYPE);
 		String clientTrustStorePath = cmd.getOptionValue("clientTrustStorePath");
 		String clientTrustStorePassword = cmd.getOptionValue("clientTrustStorePassword");
-		result.setInitParameter("trustStoreType",clientTrustStoreType);
-		result.setInitParameter("trustStorePath",clientTrustStorePath);
-		result.setInitParameter("trustStorePassword",clientTrustStorePassword);
-		return result;
+		Resource trustStore = getResource(clientTrustStorePath);
+		System.out.println("Using clientTrustStore " + trustStore.getURI());
+		if (trustStore != null && trustStore.exists())
+		{
+			result.setInitParameter("trustStoreType",clientTrustStoreType);
+			result.setInitParameter("trustStorePath",clientTrustStorePath);
+			result.setInitParameter("trustStorePassword",clientTrustStorePassword);
+			return result;
+		}
+		else
+		{
+			System.out.println("Web server not available: clientTrustStore " + clientTrustStorePath + " not found!");
+			System.exit(1);
+			return null;
+		}
 	}
 
 	private FilterHolder createWicketFilterHolder()
