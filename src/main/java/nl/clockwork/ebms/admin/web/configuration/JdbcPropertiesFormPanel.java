@@ -84,7 +84,7 @@ public class JdbcPropertiesFormPanel extends Panel
 				@Override
 				protected void onUpdate(AjaxRequestTarget target)
 				{
-					if (!model.getObject().getDriver().getDriverClassName().equals(Constants.JdbcDriver.HSQLDB.getDriverClassName()) && classExists(model.getObject().getDriver().getDriverClassName()))
+					if (!model.getObject().getDriver().getDriverClassName().equals(Constants.JdbcDriver.HSQLDB.getDriverClassName()) && !classExists(model.getObject().getDriver().getDriverClassName()))
 						error(JdbcPropertiesForm.this.getString("driver.jdbc.missing",model));
 					target.add(JdbcPropertiesFormPanel.this.get("feedback"));
 					target.add(getURLComponent());
