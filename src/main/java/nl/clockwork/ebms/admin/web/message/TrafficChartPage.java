@@ -79,19 +79,10 @@ public class TrafficChartPage extends BasePage
 	
 	private ChartConfiguration createChartConfiguration(TrafficChartFormModel model)
 	{
-		DateTime from = new DateTime(model.from.getTime());
-		DateTime to = from.plus(model.timeUnit.getPeriod());
-
-		List<Date> dates = new ArrayList<>();
-		while (from.isBefore(to))
-		{
-			dates.add(from.toDate());
-			from = from.plus(model.timeUnit.getTimeUnit());
-		}
 		ChartConfiguration result = new ChartConfiguration();
 		result.setType(ChartType.LINE);
 		result.setOptions(createOptions(model));
-		result.setData(createData(model,dates));
+		result.setData(createData(model));
 		return result;
 	}
 
@@ -125,8 +116,16 @@ public class TrafficChartPage extends BasePage
 		return options;
 	}
 
-	private Data createData(TrafficChartFormModel model, List<Date> dates)
+	private Data createData(TrafficChartFormModel model)
 	{
+		DateTime from = new DateTime(model.from.getTime());
+		DateTime to = from.plus(model.timeUnit.getPeriod());
+		List<Date> dates = new ArrayList<>();
+		while (from.isBefore(to))
+		{
+			dates.add(from.toDate());
+			from = from.plus(model.timeUnit.getTimeUnit());
+		}
 		List<String> dateStrings = dates.stream().map(d -> new SimpleDateFormat(model.timeUnit.getTimeUnitDateFormat()).format(d)).collect(Collectors.toList());
 		Data data = new Data().setLabels(TextLabel.of(dateStrings))
 				.setDatasets(Arrays.stream(model.getEbMSMessageTrafficChartOption().getEbMSMessageTrafficChartSeries())
