@@ -116,6 +116,7 @@ public class Constants
 	
 	public enum EbMSMessageTrafficChartSerie
 	{
+		TOTAL_STATUS("Total",SimpleColor.YELLOW,Color.YELLOW,EbMSMessageStatus.values()),
 		RECEIVE_STATUS_OK("Ok",SimpleColor.GREEN,Color.GREEN,new EbMSMessageStatus[]{EbMSMessageStatus.PROCESSED,EbMSMessageStatus.FORWARDED}),
 		RECEIVE_STATUS_WARN("Warn",SimpleColor.ORANGE,Color.ORANGE,new EbMSMessageStatus[]{EbMSMessageStatus.RECEIVED}),
 		RECEIVE_STATUS_NOK("Failed",SimpleColor.RED,Color.RED,new EbMSMessageStatus[]{EbMSMessageStatus.UNAUTHORIZED,EbMSMessageStatus.NOT_RECOGNIZED,EbMSMessageStatus.FAILED}),
@@ -157,7 +158,7 @@ public class Constants
 	
 	public enum EbMSMessageTrafficChartOption
 	{
-		ALL("All Messages",new EbMSMessageTrafficChartSerie[]{EbMSMessageTrafficChartSerie.RECEIVE_STATUS,EbMSMessageTrafficChartSerie.SEND_STATUS}),
+		ALL("All Messages",new EbMSMessageTrafficChartSerie[]{EbMSMessageTrafficChartSerie.TOTAL_STATUS,EbMSMessageTrafficChartSerie.RECEIVE_STATUS,EbMSMessageTrafficChartSerie.SEND_STATUS}),
 		RECEIVED("Received Messages",new EbMSMessageTrafficChartSerie[]{EbMSMessageTrafficChartSerie.RECEIVE_STATUS_NOK,EbMSMessageTrafficChartSerie.RECEIVE_STATUS_WARN,EbMSMessageTrafficChartSerie.RECEIVE_STATUS_OK,EbMSMessageTrafficChartSerie.RECEIVE_STATUS}),
 		SENT("Sending Messages",new EbMSMessageTrafficChartSerie[]{EbMSMessageTrafficChartSerie.SEND_STATUS_NOK,EbMSMessageTrafficChartSerie.SEND_STATUS_WARN,EbMSMessageTrafficChartSerie.SEND_STATUS_OK,EbMSMessageTrafficChartSerie.SEND_STATUS});
 		
