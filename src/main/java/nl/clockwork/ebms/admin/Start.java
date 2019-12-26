@@ -289,8 +289,6 @@ public class Start
 
 			result.addFilter(createWicketFilterHolder(),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
 		}
-		result.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
-
 		result.setErrorHandler(createErrorHandler());
 
 		result.addEventListener(contextLoaderListener);

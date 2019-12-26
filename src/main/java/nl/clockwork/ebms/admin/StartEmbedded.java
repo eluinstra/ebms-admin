@@ -284,8 +284,6 @@ public class StartEmbedded extends Start
 
 		result.addServlet(nl.clockwork.ebms.servlet.EbMSServlet.class,properties.get("ebms.path"));
 
-		result.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
-		
 		result.addEventListener(contextLoaderListener);
 		
 		return result;
