@@ -47,7 +47,7 @@ public interface EbMSDAO
 	
 	List<String> selectMessageIds(String cpaId, String fromRole, String toRole, EbMSMessageStatus...status);
 
-	HashMap<Date,Number> selectMessageTraffic(Date from, Date to, TimeUnit timeUnit, EbMSMessageStatus...status);
+	HashMap<Date,Integer> selectMessageTraffic(Date from, Date to, TimeUnit timeUnit, EbMSMessageStatus...status);
 	
 	void writeMessageToZip(String messageId, int messageNr, ZipOutputStream stream);
 	void printMessagesToCSV(CSVPrinter printer, EbMSMessageFilter filter);

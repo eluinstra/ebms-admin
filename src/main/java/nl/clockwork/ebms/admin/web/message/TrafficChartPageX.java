@@ -35,23 +35,17 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IClusterable;
 import org.joda.time.DateTime;
 
-import de.adesso.wickedcharts.chartjs.ChartConfiguration;
-import de.adesso.wickedcharts.chartjs.chartoptions.AxesScale;
-import de.adesso.wickedcharts.chartjs.chartoptions.ChartType;
-import de.adesso.wickedcharts.chartjs.chartoptions.Data;
-import de.adesso.wickedcharts.chartjs.chartoptions.Dataset;
-import de.adesso.wickedcharts.chartjs.chartoptions.Hover;
-import de.adesso.wickedcharts.chartjs.chartoptions.HoverMode;
-import de.adesso.wickedcharts.chartjs.chartoptions.Options;
-import de.adesso.wickedcharts.chartjs.chartoptions.ScaleLabel;
-import de.adesso.wickedcharts.chartjs.chartoptions.Scales;
-import de.adesso.wickedcharts.chartjs.chartoptions.Ticks;
-import de.adesso.wickedcharts.chartjs.chartoptions.Title;
-import de.adesso.wickedcharts.chartjs.chartoptions.TooltipMode;
-import de.adesso.wickedcharts.chartjs.chartoptions.Tooltips;
-import de.adesso.wickedcharts.chartjs.chartoptions.label.TextLabel;
-import de.adesso.wickedcharts.chartjs.chartoptions.valueType.IntegerValue;
-import de.adesso.wickedcharts.wicket8.chartjs.Chart;
+import de.adesso.wickedcharts.highcharts.options.Axis;
+import de.adesso.wickedcharts.highcharts.options.ChartOptions;
+import de.adesso.wickedcharts.highcharts.options.HorizontalAlignment;
+import de.adesso.wickedcharts.highcharts.options.Legend;
+import de.adesso.wickedcharts.highcharts.options.LegendLayout;
+import de.adesso.wickedcharts.highcharts.options.Options;
+import de.adesso.wickedcharts.highcharts.options.SeriesType;
+import de.adesso.wickedcharts.highcharts.options.Title;
+import de.adesso.wickedcharts.highcharts.options.VerticalAlignment;
+import de.adesso.wickedcharts.highcharts.options.series.SimpleSeries;
+import de.adesso.wickedcharts.wicket8.highcharts.Chart;
 import nl.clockwork.ebms.Constants.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.Constants.EbMSMessageTrafficChartOption;
 import nl.clockwork.ebms.admin.Constants.TimeUnit;
@@ -59,25 +53,25 @@ import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 
-public class TrafficChartPage extends BasePage
+public class TrafficChartPageX extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="ebMSAdminDAO")
 	private EbMSDAO ebMSDAO;
 	private Chart chart;
 
-	public TrafficChartPage()
+	public TrafficChartPageX()
 	{
 		this(getTrafficChartFormModel(TimeUnit.DAY,EbMSMessageTrafficChartOption.ALL));
 	}
 	
-	public TrafficChartPage(TrafficChartFormModel model)
+	public TrafficChartPageX(TrafficChartFormModel model)
 	{
 		add(new BootstrapFeedbackPanel("feedback"));
     add(new TrafficChartForm("form",model));
   }
 	
-	private ChartConfiguration createChartConfiguration(TrafficChartFormModel model)
+	private Options createOptions(TrafficChartFormModel model)
 	{
 		DateTime from = new DateTime(model.from.getTime());
 		DateTime to = from.plus(model.timeUnit.getPeriod());
@@ -90,45 +84,16 @@ public class TrafficChartPage extends BasePage
 		}
 
 		List<String> dateString = dates.stream().map(d -> new SimpleDateFormat(model.timeUnit.getTimeUnitDateFormat()).format(d)).collect(Collectors.toList());
-		Data data = new Data().setLabels(TextLabel.of(dateString));
-		ChartConfiguration result = new ChartConfiguration();
-		result.setType(ChartType.LINE);
-		Options options = new Options()
-        .setResponsive(true)
-        .setTitle(new Title()
-                .setDisplay(true)
-                .setText(model.getEbMSMessageTrafficChartOption().getTitle() + " " + new SimpleDateFormat(model.timeUnit.getDateFormat()).format(model.getFrom())))
-        .setTooltips(new Tooltips()
-                .setMode(TooltipMode.INDEX)
-                .setIntersect(false))
-        .setHover(new Hover()
-                .setMode(HoverMode.NEAREST)
-                .setIntersect(true))
-        .setScales(new Scales()
-                .setXAxes(new AxesScale()
-                        .setDisplay(true)
-                        .setScaleLabel(new ScaleLabel()
-                                .setDisplay(true)
-                                .setLabelString(model.timeUnit.getUnits())))
-                .setYAxes(new AxesScale()
-                        .setTicks(new Ticks()
-                                .setMaxTicksLimit(Integer.MAX_VALUE)
-                                .setMin(0))
-                        .setDisplay(true)
-                        .setScaleLabel(new ScaleLabel()
-                                .setDisplay(true)
-                                .setLabelString("Messages"))));
-			result.setOptions(options);
-			data.setDatasets(Arrays.stream(model.getEbMSMessageTrafficChartOption().getEbMSMessageTrafficChartSeries())
-				.map(ds -> new Dataset()
-						.setLabel(ds.getName())
-						.setBackgroundColor(ds.getColor())
-						.setBorderColor(ds.getColor())
-						.setData(IntegerValue.of(getMessages(dates,model,ds.getEbMSMessageStatuses())))
-						.setFill(false))
-				.collect(Collectors.toList()));
-		result.setData(data);
 
+		Options result = new Options();
+		result.setChartOptions(new ChartOptions().setType(SeriesType.LINE));
+		result.setTitle(new Title(model.getEbMSMessageTrafficChartOption().getTitle() + " " + new SimpleDateFormat(model.timeUnit.getDateFormat()).format(model.getFrom())));
+		result.setxAxis(new Axis().setCategories(dateString));
+		result.setyAxis(new Axis().setTitle(new Title("Messages")));
+		result.setLegend(new Legend().setLayout(LegendLayout.VERTICAL).setAlign(HorizontalAlignment.RIGHT).setVerticalAlign(VerticalAlignment.TOP).setX(0).setY(1000).setBorderWidth(0));
+		result.setSeries(Arrays.stream(model.getEbMSMessageTrafficChartOption().getEbMSMessageTrafficChartSeries())
+				.map(s -> new SimpleSeries().setName(s.getName()).setColor(s.getColorX()).setData(getMessages(dates,model,s.getEbMSMessageStatuses())))
+				.collect(Collectors.toList()));
 		return result;
 	}
 
@@ -139,7 +104,7 @@ public class TrafficChartPage extends BasePage
 		return new TrafficChartFormModel(timeUnit,from.toDate(),to.toDate(),ebMSMessageTrafficChartOption);
 	}
 
-	private List<Integer> getMessages(List<Date> dates, TrafficChartFormModel model, EbMSMessageStatus...status)
+	private List<Number> getMessages(List<Date> dates, TrafficChartFormModel model, EbMSMessageStatus...status)
 	{
 		HashMap<Date,Integer> messageTraffic = ebMSDAO.selectMessageTraffic(model.from,new DateTime(model.from.getTime()).plus(model.timeUnit.getPeriod()).toDate(),model.timeUnit,status);
 		return dates.stream().map(d -> messageTraffic.containsKey(d) ? messageTraffic.get(d) : 0).collect(Collectors.toList());
@@ -161,7 +126,7 @@ public class TrafficChartPage extends BasePage
 			add(createTimeUnitChoice("timeUnit"));
 			add(createMinusLink("minus"));
 			add(createPlusLink("plus"));
-	    chart = new Chart("chart",createChartConfiguration(model));
+	    chart = new Chart("chart",createOptions(model));
 			add(chart);
 			add(createEbMSMessageTrafficChartOptions("ebMSMessageTrafficChartOptions"));
 		}
@@ -189,7 +154,7 @@ public class TrafficChartPage extends BasePage
 				{
 					TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
 					model.setFrom(model.getTimeUnit().getFrom().toDate());
-					chart.setChartConfiguration(createChartConfiguration(model));
+					chart.setOptions(createOptions(model));
 					target.add(chart);
 				}
 			});
@@ -207,7 +172,7 @@ public class TrafficChartPage extends BasePage
 				{
 					TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
 					model.setFrom(new DateTime(model.getFrom().getTime()).minus(model.getTimeUnit().getPeriod()).toDate());
-					chart.setChartConfiguration(createChartConfiguration(model));
+					chart.setOptions(createOptions(model));
 					target.add(chart);
 				}
 			};
@@ -224,7 +189,7 @@ public class TrafficChartPage extends BasePage
 				{
 					TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
 					model.setFrom(new DateTime(model.getFrom().getTime()).plus(model.getTimeUnit().getPeriod()).toDate());
-					chart.setChartConfiguration(createChartConfiguration(model));
+					chart.setOptions(createOptions(model));
 					target.add(chart);
 				}
 			};
@@ -252,7 +217,7 @@ public class TrafficChartPage extends BasePage
 				protected void onUpdate(AjaxRequestTarget target)
 				{
 					TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
-					chart.setChartConfiguration(createChartConfiguration(model));
+					chart.setOptions(createOptions(model));
 					target.add(chart);
 				}
 			});

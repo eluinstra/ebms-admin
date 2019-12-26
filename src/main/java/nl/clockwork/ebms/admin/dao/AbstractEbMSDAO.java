@@ -371,9 +371,9 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 	
 	@Override
-	public HashMap<Date,Number> selectMessageTraffic(Date from, Date to, TimeUnit timeUnit, EbMSMessageStatus...status)
+	public HashMap<Date,Integer> selectMessageTraffic(Date from, Date to, TimeUnit timeUnit, EbMSMessageStatus...status)
 	{
-		final HashMap<Date,Number> result = new HashMap<>();
+		final HashMap<Date,Integer> result = new HashMap<>();
 		jdbcTemplate.query(
 			"select trunc(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "') time, count(*) nr" + 
 			" from ebms_message" + 

@@ -24,6 +24,8 @@ import nl.clockwork.ebms.Constants.EbMSMessageStatus;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 
+import de.adesso.wickedcharts.chartjs.chartoptions.colors.SimpleColor;
+
 public class Constants
 {
 	public final static String DATE_FORMAT = "dd-MM-yyyy";
@@ -52,19 +54,25 @@ public class Constants
 
 	public enum TimeUnit
 	{
-		HOUR(Period.minutes(1),Period.hours(1),DATETIME_HOUR_FORMAT,"mm"), DAY(Period.hours(1),Period.days(1),DATE_FORMAT,"HH")/*, WEEK(Period.days(1),Period.weeks(1),DATE_FORMAT,"dd"), MONTH(Period.weeks(1),Period.months(1),DATE_FORMAT,"ww")*/, MONTH(Period.days(1),Period.months(1),DATE_MONTH_FORMAT,"dd"), YEAR(Period.months(1),Period.years(1),DATE_YEAR_FORMAT,"MM");
+		HOUR("Minutes",Period.minutes(1),Period.hours(1),DATETIME_HOUR_FORMAT,"mm"), DAY("Hours",Period.hours(1),Period.days(1),DATE_FORMAT,"HH")/*, WEEK("Days",Period.days(1),Period.weeks(1),DATE_FORMAT,"dd"), MONTH("Weeks",Period.weeks(1),Period.months(1),DATE_FORMAT,"ww")*/, MONTH("Days",Period.days(1),Period.months(1),DATE_MONTH_FORMAT,"dd"), YEAR("Months",Period.months(1),Period.years(1),DATE_YEAR_FORMAT,"MM");
 		
+		private String units;
 		private Period timeUnit;
 		private Period period;
 		private String dateFormat;
 		private String timeUnitDateFormat;
 
-		TimeUnit(Period timeUnit, Period period, String dateFormat, String timeUnitDateFormat)
+		TimeUnit(String units, Period timeUnit, Period period, String dateFormat, String timeUnitDateFormat)
 		{
+			this.units = units;
 			this.timeUnit = timeUnit;
 			this.period = period;
 			this.dateFormat = dateFormat;
 			this.timeUnitDateFormat = timeUnitDateFormat;
+		}
+		public String getUnits()
+		{
+			return units;
 		}
 		public Period getTimeUnit()
 		{
@@ -108,32 +116,38 @@ public class Constants
 	
 	public enum EbMSMessageTrafficChartSerie
 	{
-		RECEIVE_STATUS_OK("Ok",Color.GREEN,new EbMSMessageStatus[]{EbMSMessageStatus.PROCESSED,EbMSMessageStatus.FORWARDED}),
-		RECEIVE_STATUS_WARN("Warn",Color.ORANGE,new EbMSMessageStatus[]{EbMSMessageStatus.RECEIVED}),
-		RECEIVE_STATUS_NOK("Failed",Color.RED,new EbMSMessageStatus[]{EbMSMessageStatus.UNAUTHORIZED,EbMSMessageStatus.NOT_RECOGNIZED,EbMSMessageStatus.FAILED}),
-		RECEIVE_STATUS("Received",Color.BLACK,new EbMSMessageStatus[]{EbMSMessageStatus.UNAUTHORIZED,EbMSMessageStatus.NOT_RECOGNIZED,EbMSMessageStatus.RECEIVED,EbMSMessageStatus.PROCESSED,EbMSMessageStatus.FORWARDED,EbMSMessageStatus.FAILED}),
-		SEND_STATUS_OK("Ok",Color.GREEN,new EbMSMessageStatus[]{EbMSMessageStatus.DELIVERED}),
-		SEND_STATUS_WARN("Warn",Color.ORANGE,new EbMSMessageStatus[]{EbMSMessageStatus.SENDING}),
-		SEND_STATUS_NOK("Failed",Color.RED,new EbMSMessageStatus[]{EbMSMessageStatus.DELIVERY_FAILED,EbMSMessageStatus.EXPIRED}),
-		SEND_STATUS("Sending",Color.BLUE,new EbMSMessageStatus[]{EbMSMessageStatus.SENDING,EbMSMessageStatus.DELIVERED,EbMSMessageStatus.DELIVERY_FAILED,EbMSMessageStatus.EXPIRED});
+		RECEIVE_STATUS_OK("Ok",SimpleColor.GREEN,Color.GREEN,new EbMSMessageStatus[]{EbMSMessageStatus.PROCESSED,EbMSMessageStatus.FORWARDED}),
+		RECEIVE_STATUS_WARN("Warn",SimpleColor.ORANGE,Color.ORANGE,new EbMSMessageStatus[]{EbMSMessageStatus.RECEIVED}),
+		RECEIVE_STATUS_NOK("Failed",SimpleColor.RED,Color.RED,new EbMSMessageStatus[]{EbMSMessageStatus.UNAUTHORIZED,EbMSMessageStatus.NOT_RECOGNIZED,EbMSMessageStatus.FAILED}),
+		RECEIVE_STATUS("Received",SimpleColor.GREY,Color.BLACK,new EbMSMessageStatus[]{EbMSMessageStatus.UNAUTHORIZED,EbMSMessageStatus.NOT_RECOGNIZED,EbMSMessageStatus.RECEIVED,EbMSMessageStatus.PROCESSED,EbMSMessageStatus.FORWARDED,EbMSMessageStatus.FAILED}),
+		SEND_STATUS_OK("Ok",SimpleColor.GREEN,Color.GREEN,new EbMSMessageStatus[]{EbMSMessageStatus.DELIVERED}),
+		SEND_STATUS_WARN("Warn",SimpleColor.ORANGE,Color.ORANGE,new EbMSMessageStatus[]{EbMSMessageStatus.SENDING}),
+		SEND_STATUS_NOK("Failed",SimpleColor.RED,Color.RED,new EbMSMessageStatus[]{EbMSMessageStatus.DELIVERY_FAILED,EbMSMessageStatus.EXPIRED}),
+		SEND_STATUS("Sending",SimpleColor.BLUE,Color.BLUE,new EbMSMessageStatus[]{EbMSMessageStatus.SENDING,EbMSMessageStatus.DELIVERED,EbMSMessageStatus.DELIVERY_FAILED,EbMSMessageStatus.EXPIRED});
 		
 		private String name;
-		private Color color;
+		private de.adesso.wickedcharts.chartjs.chartoptions.colors.Color color;
+		private Color colorX;
 		private EbMSMessageStatus[] ebMSMessageStatuses;
 
-		private EbMSMessageTrafficChartSerie(String name, Color color, EbMSMessageStatus[] ebMSMessageStatuses)
+		private EbMSMessageTrafficChartSerie(String name, de.adesso.wickedcharts.chartjs.chartoptions.colors.Color color, Color colorX, EbMSMessageStatus[] ebMSMessageStatuses)
 		{
 			this.name = name;
 			this.color = color;
+			this.colorX = colorX;
 			this.ebMSMessageStatuses = ebMSMessageStatuses;
 		}
 		public String getName()
 		{
 			return name;
 		}
-		public Color getColor()
+		public de.adesso.wickedcharts.chartjs.chartoptions.colors.Color getColor()
 		{
 			return color;
+		}
+		public Color getColorX()
+		{
+			return colorX;
 		}
 		public EbMSMessageStatus[] getEbMSMessageStatuses()
 		{
