@@ -97,7 +97,15 @@ public class Start
 
 		System.out.println("Starting web server...");
 
-		start.server.start();
+		try
+		{
+			start.server.start();
+		}
+		catch (Exception e)
+		{
+			start.server.stop();
+			System.exit(1);
+		}
 		start.server.join();
 	}
 
