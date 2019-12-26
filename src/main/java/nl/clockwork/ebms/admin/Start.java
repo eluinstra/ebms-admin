@@ -276,18 +276,23 @@ public class Start
 			}
 		}
 
-		ServletHolder servletHolder = new ServletHolder(nl.clockwork.ebms.admin.web.ResourceServlet.class);
-		result.addServlet(servletHolder,"/css/*");
-		result.addServlet(servletHolder,"/fonts/*");
-		result.addServlet(servletHolder,"/images/*");
-		result.addServlet(servletHolder,"/js/*");
+		if (cmd.hasOption("soap"))
+			result.addServlet(org.apache.cxf.transport.servlet.CXFServlet.class,"/service/*");
 
+		if (!cmd.hasOption("headless"))
+		{
+			ServletHolder servletHolder = new ServletHolder(nl.clockwork.ebms.admin.web.ResourceServlet.class);
+			result.addServlet(servletHolder,"/css/*");
+			result.addServlet(servletHolder,"/fonts/*");
+			result.addServlet(servletHolder,"/images/*");
+			result.addServlet(servletHolder,"/js/*");
+
+			result.addFilter(createWicketFilterHolder(),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
+		}
 		result.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
 
-		result.addFilter(createWicketFilterHolder(),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
-		
 		result.setErrorHandler(createErrorHandler());
-		
+
 		result.addEventListener(contextLoaderListener);
 		
 		return result;

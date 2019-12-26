@@ -79,7 +79,8 @@ public class StartEmbedded extends Start
 		XmlWebApplicationContext context = new XmlWebApplicationContext();
 		context.setConfigLocations(getConfigLocations("classpath:nl/clockwork/ebms/admin/applicationContext.embedded.xml"));
 		ContextLoaderListener contextLoaderListener = new ContextLoaderListener(context);
-		start.handlerCollection.addHandler(start.createWebContextHandler(start.cmd,contextLoaderListener));
+		if (start.cmd.hasOption("soap") || !start.cmd.hasOption("headless"))
+			start.handlerCollection.addHandler(start.createWebContextHandler(start.cmd,contextLoaderListener));
 		start.handlerCollection.addHandler(start.createEbMSContextHandler(start.properties,contextLoaderListener));
 
 		System.out.println("Starting web server...");
@@ -103,6 +104,7 @@ public class StartEmbedded extends Start
 		result.addOption("hsqldb",false,"start hsqldb server");
 		result.addOption("hsqldbDir",true,"set hsqldb location (default: hsqldb)");
 		result.addOption("soap",false,"start soap service");
+		result.addOption("headless",false,"start without web interface");
 		return result;
 	}
 	
