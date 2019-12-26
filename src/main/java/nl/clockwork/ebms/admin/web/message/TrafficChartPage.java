@@ -88,48 +88,56 @@ public class TrafficChartPage extends BasePage
 			dates.add(from.toDate());
 			from = from.plus(model.timeUnit.getTimeUnit());
 		}
-
-		List<String> dateString = dates.stream().map(d -> new SimpleDateFormat(model.timeUnit.getTimeUnitDateFormat()).format(d)).collect(Collectors.toList());
-		Data data = new Data().setLabels(TextLabel.of(dateString));
 		ChartConfiguration result = new ChartConfiguration();
 		result.setType(ChartType.LINE);
-		Options options = new Options()
-        .setResponsive(true)
-        .setTitle(new Title()
-                .setDisplay(true)
-                .setText(model.getEbMSMessageTrafficChartOption().getTitle() + " " + new SimpleDateFormat(model.timeUnit.getDateFormat()).format(model.getFrom())))
-        .setTooltips(new Tooltips()
-                .setMode(TooltipMode.INDEX)
-                .setIntersect(false))
-        .setHover(new Hover()
-                .setMode(HoverMode.NEAREST)
-                .setIntersect(true))
-        .setScales(new Scales()
-                .setXAxes(new AxesScale()
-                        .setDisplay(true)
-                        .setScaleLabel(new ScaleLabel()
-                                .setDisplay(true)
-                                .setLabelString(model.timeUnit.getUnits())))
-                .setYAxes(new AxesScale()
-                        .setTicks(new Ticks()
-                                .setMaxTicksLimit(Integer.MAX_VALUE)
-                                .setMin(0))
-                        .setDisplay(true)
-                        .setScaleLabel(new ScaleLabel()
-                                .setDisplay(true)
-                                .setLabelString("Messages"))));
-			result.setOptions(options);
-			data.setDatasets(Arrays.stream(model.getEbMSMessageTrafficChartOption().getEbMSMessageTrafficChartSeries())
-				.map(ds -> new Dataset()
-						.setLabel(ds.getName())
-						.setBackgroundColor(ds.getColor())
-						.setBorderColor(ds.getColor())
-						.setData(IntegerValue.of(getMessages(dates,model,ds.getEbMSMessageStatuses())))
-						.setFill(false))
-				.collect(Collectors.toList()));
-		result.setData(data);
-
+		result.setOptions(createOptions(model));
+		result.setData(createData(model,dates));
 		return result;
+	}
+
+	private Options createOptions(TrafficChartFormModel model)
+	{
+		Options options = new Options()
+				.setResponsive(true)
+				.setTitle(new Title()
+					.setDisplay(true)
+					.setText(model.getEbMSMessageTrafficChartOption().getTitle() + " " + new SimpleDateFormat(model.timeUnit.getDateFormat()).format(model.getFrom())))
+				.setTooltips(new Tooltips()
+					.setMode(TooltipMode.INDEX)
+					.setIntersect(false))
+				.setHover(new Hover()
+					.setMode(HoverMode.NEAREST)
+					.setIntersect(true))
+				.setScales(new Scales()
+					.setXAxes(new AxesScale()
+						.setDisplay(true)
+						.setScaleLabel(new ScaleLabel()
+							.setDisplay(true)
+							.setLabelString(model.timeUnit.getUnits())))
+					.setYAxes(new AxesScale()
+						.setTicks(new Ticks()
+							.setMaxTicksLimit(Integer.MAX_VALUE)
+							.setMin(0))
+						.setDisplay(true)
+						.setScaleLabel(new ScaleLabel()
+							.setDisplay(true)
+							.setLabelString("Messages"))));
+		return options;
+	}
+
+	private Data createData(TrafficChartFormModel model, List<Date> dates)
+	{
+		List<String> dateStrings = dates.stream().map(d -> new SimpleDateFormat(model.timeUnit.getTimeUnitDateFormat()).format(d)).collect(Collectors.toList());
+		Data data = new Data().setLabels(TextLabel.of(dateStrings))
+				.setDatasets(Arrays.stream(model.getEbMSMessageTrafficChartOption().getEbMSMessageTrafficChartSeries())
+					.map(ds -> new Dataset()
+							.setLabel(ds.getName())
+							.setBackgroundColor(ds.getColor())
+							.setBorderColor(ds.getColor())
+							.setData(IntegerValue.of(getMessages(dates,model,ds.getEbMSMessageStatuses())))
+							.setFill(false))
+					.collect(Collectors.toList()));
+		return data;
 	}
 
 	private static TrafficChartFormModel getTrafficChartFormModel(TimeUnit timeUnit, EbMSMessageTrafficChartOption ebMSMessageTrafficChartOption)
