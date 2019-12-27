@@ -33,7 +33,7 @@
 	<context:component-scan base-package="nl.clockwork.ebms.admin" />
 
 	<bean class="org.springframework.beans.factory.config.MethodInvokingBean">
-		<property name="staticMethod" value="org.springframework.util.Log4jConfigurer.initLogging" />
+		<property name="staticMethod" value="nl.clockwork.ebms.admin.Log4j2Configurer.initLogging" />
 		<property name="arguments">
 			<list>
 				<value>${log4j.file}</value>
