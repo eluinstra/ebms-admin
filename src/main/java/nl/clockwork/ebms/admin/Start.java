@@ -106,6 +106,7 @@ public class Start
 			start.server.stop();
 			System.exit(1);
 		}
+		System.out.println("Web server started.");
 		start.server.join();
 	}
 
