@@ -190,7 +190,7 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 				setResponsePage(new MessagePageX(ebMSDAO.findResponseMessage(message.getMessageId()),MessagePageX.this));
 			}
 		};
-		linkMessageError.setEnabled(EnumSet.of(EbMSMessageStatus.FAILED,EbMSMessageStatus.DELIVERY_FAILED).contains(message.getStatus()) ? ebMSDAO.existsResponseMessage(message.getMessageId()) : false);
+		linkMessageError.setEnabled(EnumSet.of(EbMSMessageStatus.RECEIVED,EbMSMessageStatus.PROCESSED,EbMSMessageStatus.DELIVERED,EbMSMessageStatus.FAILED,EbMSMessageStatus.DELIVERY_FAILED).contains(message.getStatus()) ? ebMSDAO.existsResponseMessage(message.getMessageId()) : false);
 		linkMessageError.add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus()))));
 		linkMessageError.add(new Label("status"));
 		return linkMessageError;
