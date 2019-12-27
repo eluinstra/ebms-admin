@@ -121,7 +121,7 @@ public class Start
 		result.addOption("keyStorePath",true,"set keystore path");
 		result.addOption("keyStorePassword",true,"set keystore password");
 		result.addOption("clientAuthentication",false,"require ssl client authentication");
-		result.addOption("clientCertificateHeader",true,"client certificate header");
+		result.addOption("clientCertificateHeader",true,"set client certificate header");
 		result.addOption("trustStoreType",true,"set truststore type (deault=" + DEFAULT_KEYSTORE_TYPE + ")");
 		result.addOption("trustStorePath",true,"set truststore path");
 		result.addOption("trustStorePassword",true,"set truststore password");
