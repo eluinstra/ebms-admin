@@ -12,14 +12,14 @@ The web and soap interfaces are configured through the application's command lin
 = Start EbMS Admin Console standalone
 =====================================
 show help:
-> java -cp ebms-admin-2.16.1.jar nl.clockwork.ebms.admin.Start -h
+> java -cp ebms-admin-2.16.2.jar nl.clockwork.ebms.admin.Start -h
 usage: Start [-authentication] [-clientAuthentication]
        [-clientCertificateHeader <arg>] [-clientTrustStorePassword <arg>]
        [-clientTrustStorePath <arg>] [-clientTrustStoreType <arg>] [-h]
        [-host <arg>] [-jmx] [-keyStorePassword <arg>] [-keyStorePath
-       <arg>] [-keyStoreType <arg>] [-path <arg>] [-port <arg>] [-ssl]
-       [-trustStorePassword <arg>] [-trustStorePath <arg>]
-       [-trustStoreType <arg>]
+       <arg>] [-keyStoreType <arg>] [-path <arg>] [-port <arg>]
+       [-propertiesFilesDir <arg>] [-ssl] [-trustStorePassword <arg>]
+       [-trustStorePath <arg>] [-trustStoreType <arg>]
  -authentication                   use basic / client certificate
                                    authentication
  -clientAuthentication             require ssl client authentication
@@ -36,6 +36,7 @@ usage: Start [-authentication] [-clientAuthentication]
  -keyStoreType <arg>               set keystore type (deault=PKCS12)
  -path <arg>                       set path
  -port <arg>                       set port
+ -propertiesFilesDir <arg>         set properties files directory
  -ssl                              use ssl
  -trustStorePassword <arg>         set truststore password
  -trustStorePath <arg>             set truststore path
@@ -47,8 +48,11 @@ start:
 start on port 8000 (instead of 8080):
 > java -cp ebms-admin-2.16.1.jar nl.clockwork.ebms.admin.Start -port 8000
 
-start with a different log4j2 file:
-> java -Dlog4j.configurationFile=path/to/log4j2.xml -cp ebms-admin-2.16.1.jar nl.clockwork.ebms.admin.Start
+start with properties files directory properties/ (default is current directory)
+> java -cp ebms-admin-2.16.1.jar nl.clockwork.ebms.admin.Start -propertiesFilesDir properties/
+
+start with a log4j2 file properties/log4j2.xml:
+> java -Dlog4j.configurationFile=properties/log4j2.xml -cp ebms-admin-2.16.1.jar nl.clockwork.ebms.admin.Start
 
 start without using the default java truststore:
 > java -Djavax.net.ssl.trustStore= -cp ebms-admin-2.16.1.jar nl.clockwork.ebms.admin.Start
