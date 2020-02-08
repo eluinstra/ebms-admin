@@ -40,6 +40,8 @@
 
 		<AsyncLogger name="nl.clockwork.ebms" level="INFO" />
 
+		<AsyncLogger name="nl.clockwork.ebms.message" level="INFO" />
+
 		<AsyncLogger name="nl.clockwork.ebms.client" level="DEBUG" />
 
 		<AsyncLogger name="nl.clockwork.ebms.server" level="DEBUG" />
