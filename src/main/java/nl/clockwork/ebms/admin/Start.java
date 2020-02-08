@@ -85,6 +85,8 @@ public class Start
 		if (start.cmd.hasOption("h"))
 			start.printUsage();
 
+		start.init(start.cmd);
+		
 		start.server.setHandler(start.handlerCollection);
 
 		start.initWebServer(start.cmd,start.server);
@@ -130,6 +132,7 @@ public class Start
 		result.addOption("clientTrustStoreType",true,"set client truststore type (deault=" + DEFAULT_KEYSTORE_TYPE + ")");
 		result.addOption("clientTrustStorePath",true,"set client truststore path");
 		result.addOption("clientTrustStorePassword",true,"set client truststore password");
+		result.addOption("propertiesFilesDir",true,"set properties files directory");
 		result.addOption("jmx",false,"start mbean server");
 		return result;
 	}
@@ -142,6 +145,13 @@ public class Start
 				.collect(Collectors.toList());
 		result.add(0,configLocation);
 		return result.toArray(new String[]{});
+	}
+
+	protected void init(CommandLine cmd)
+	{
+		String propertiesFilesDir = cmd.getOptionValue("propertiesFilesDir","");
+		System.setProperty("ebms.propertiesFilesDir",propertiesFilesDir);
+		System.out.println("Using properties files directory: " + propertiesFilesDir);
 	}
 
 	protected void initWebServer(CommandLine cmd, Server server) throws MalformedURLException, IOException

@@ -67,6 +67,8 @@ public class StartEmbedded extends Start
 		if (start.cmd.hasOption("h"))
 			start.printUsage();
 
+		start.init(start.cmd);
+		
 		start.server.setHandler(start.handlerCollection);
 
 		start.properties = start.getProperties("nl/clockwork/ebms/admin/applicationConfig.embedded.xml");
