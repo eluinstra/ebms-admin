@@ -132,7 +132,7 @@ public class Start
 		result.addOption("clientTrustStoreType",true,"set client truststore type (deault=" + DEFAULT_KEYSTORE_TYPE + ")");
 		result.addOption("clientTrustStorePath",true,"set client truststore path");
 		result.addOption("clientTrustStorePassword",true,"set client truststore password");
-		result.addOption("propertiesFilesDir",true,"set properties files directory");
+		result.addOption("propertiesFilesDir",true,"set properties files directory (default=current dir)");
 		result.addOption("jmx",false,"start mbean server");
 		return result;
 	}
