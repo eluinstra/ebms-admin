@@ -48,7 +48,7 @@ start:
 start on port 8000 (instead of 8080):
 > java -cp ebms-admin-2.16.2.jar nl.clockwork.ebms.admin.Start -port 8000
 
-start with properties files directory properties/ (default is current directory)
+start with properties files directory properties/
 > java -cp ebms-admin-2.16.2.jar nl.clockwork.ebms.admin.Start -propertiesFilesDir properties/
 
 start with a log4j2 file properties/log4j2.xml:
@@ -143,7 +143,7 @@ start with soap interface:
 start with soap interface and without a web interface:
 > java -cp ebms-admin-2.16.2.jar nl.clockwork.ebms.admin.StartEmbedded -soap -headless
 
-start with properties files directory properties/ (default is current directory)
+start with properties files directory properties/
 > java -cp ebms-admin-2.16.2.jar nl.clockwork.ebms.admin.StartEmbedded -propertiesFilesDir properties/
 
 start with a log4j2 file properties/log4j2.xml:
