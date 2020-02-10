@@ -100,7 +100,9 @@ public class SslPropertiesFormPanel extends Panel
 				}
 			};
 			result.add(
-				new CheckBoxMultipleChoice<String>("enabledProtocols",getModelObject().getSupportedProtocols()).setLabel(new ResourceModel("lbl.enabledProtocols"))
+				new CheckBoxMultipleChoice<String>("enabledProtocols",getModelObject().getSupportedProtocols())
+					.setSuffix("<br/>")
+					.setLabel(new ResourceModel("lbl.enabledProtocols"))
 			);
 			return result;
 		}
@@ -138,7 +140,9 @@ public class SslPropertiesFormPanel extends Panel
 				}
 			};
 			result.add(
-				new CheckBoxMultipleChoice<String>("enabledCipherSuites",getModelObject().getSupportedCipherSuites()).setLabel(new ResourceModel("lbl.enabledCipherSuites"))
+				new CheckBoxMultipleChoice<String>("enabledCipherSuites",getModelObject().getSupportedCipherSuites())
+					.setSuffix("<br/>")
+					.setLabel(new ResourceModel("lbl.enabledCipherSuites"))
 			);
 			return result;
 		}
