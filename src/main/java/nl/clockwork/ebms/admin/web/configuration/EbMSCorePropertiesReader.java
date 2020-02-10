@@ -127,7 +127,7 @@ public class EbMSCorePropertiesReader
 	protected void read(Properties properties, EncryptionPropertiesFormModel encryptionProperties) throws MalformedURLException
 	{
 		encryptionProperties.setEncryption(!StringUtils.isEmpty(properties.getProperty("encryption.keystore.path")));
-		encryptionProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("encryption.keystore.path","JKS").toUpperCase()));
+		encryptionProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("encryption.keystore.type","JKS").toUpperCase()));
 		encryptionProperties.getKeystoreProperties().setUri(properties.getProperty("encryption.keystore.path"));
 		encryptionProperties.getKeystoreProperties().setPassword(properties.getProperty("encryption.keystore.password"));
 	}
