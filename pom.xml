@@ -24,7 +24,7 @@
 	<groupId>nl.clockwork.ebms.admin</groupId>
 	<artifactId>ebms-admin</artifactId>
 	<packaging>jar</packaging>
-	<version>2.16.2a</version>
+	<version>2.16.3-SNAPSHOT</version>
 	<name>EbMS Admin</name>
 	<description></description>
 	<url>https://sourceforge.net/projects/javaebmsadmin/</url>
@@ -206,7 +206,7 @@
 		<dependency>
 			<groupId>nl.clockwork.ebms</groupId>
 			<artifactId>ebms-core</artifactId>
-			<version>2.16.2</version>
+			<version>2.16.3-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>mail</artifactId>
@@ -340,34 +340,6 @@
 				</excludes>
 			</testResource>
 		</testResources>
-		<pluginManagement>
-			<plugins>
-				<!--plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.apache.cxf</groupId>
-										<artifactId>cxf-codegen-plugin</artifactId>
-										<versionRange>[2.7.14,)</versionRange>
-										<goals>
-											<goal>wsdl2java</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<execute/>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin-->
-			</plugins>
-		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>com.mycila</groupId>
@@ -399,32 +371,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!--plugin>
-				<groupId>org.apache.cxf</groupId>
-				<artifactId>cxf-codegen-plugin</artifactId>
-				<version>2.7.14</version>
-				<executions>
-					<execution>
-						<configuration>
-							<defaultOptions>
-								<frontEnd>jaxws21</frontEnd>
-								<extraargs>
-									<extraarg>-exsh</extraarg>
-									<extraarg>true</extraarg>
-								</extraargs>
-							</defaultOptions>
-							<wsdlRoot>${basedir}/src/main/resources/nl/clockwork/ebms/admin/wsdl</wsdlRoot>
-							<includes>
-								<include>cpa.wsdl</include>
-								<include>ebms.wsdl</include>
-							</includes>
-						</configuration>
-						<goals>
-							<goal>wsdl2java</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin-->
 			<plugin>
 				<inherited>true</inherited>
 				<groupId>org.apache.maven.plugins</groupId>

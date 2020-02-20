@@ -21,7 +21,7 @@ import java.util.List;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.client.EbMSHttpClientFactory.EbMSHttpClientType;
-import nl.clockwork.ebms.event.EventListenerFactory.EventListenerType;
+import nl.clockwork.ebms.event.listener.EventListenerFactory.EventListenerType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
