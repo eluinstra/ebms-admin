@@ -62,7 +62,7 @@ public class SslPropertiesFormPanel extends Panel
 			add(createClientAuthenticationRequiredCheckBox("requireClientAuthentication"));
 			add(createClientCertificateAuthenticationContainer("clientCertificateAuthenticationContainer"));
 			add(new KeystorePropertiesFormPanel("keystoreProperties",new PropertyModel<>(getModelObject(),"keystoreProperties")));
-			add(createClientKeystorePropertiesFormPanel("clientKeystoreProperties"));
+			add(new ClientKeystorePropertiesFormPanel("clientKeystoreProperties",new PropertyModel<>(getModelObject(),"clientKeystoreProperties")));
 			add(new TruststorePropertiesFormPanel("truststoreProperties",new PropertyModel<>(getModelObject(),"truststoreProperties")));
 			add(new CheckBox("verifyHostnames").setLabel(new ResourceModel("lbl.verifyHostnames")));
 		}
@@ -180,19 +180,6 @@ public class SslPropertiesFormPanel extends Panel
 			return result;
 		}
 
-		private ClientKeystorePropertiesFormPanel createClientKeystorePropertiesFormPanel(String id)
-		{
-			return new ClientKeystorePropertiesFormPanel(id,new PropertyModel<>(getModelObject(),"clientKeystoreProperties"))
-			{
-				private static final long serialVersionUID = 1L;
-				
-				@Override
-				public boolean isVisible()
-				{
-					return getModelObject().getRequireClientAuthentication();
-				}
-			};
-		}
 	}
 
 	public static class SslPropertiesFormModel implements IClusterable
