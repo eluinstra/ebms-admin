@@ -60,11 +60,11 @@ public class SslPropertiesFormPanel extends Panel
 			add(createOverrideDefaultCipherSuitesContainer("overrideDefaultCipherSuitesContainer",enableSslOverridePropeties));
 			add(createEnabledCipherSuitesContainer("enabledCipherSuitesContainer",enableSslOverridePropeties));
 			add(createClientAuthenticationRequiredCheckBox("requireClientAuthentication"));
-			add(new CheckBox("verifyHostnames").setLabel(new ResourceModel("lbl.verifyHostnames")));
-			add(new CheckBox("clientCertificateAuthentication").setLabel(new ResourceModel("lbl.clientCertificateAuthentication")));
+			add(createClientCertificateAuthenticationContainer("clientCertificateAuthenticationContainer"));
 			add(new KeystorePropertiesFormPanel("keystoreProperties",new PropertyModel<>(getModelObject(),"keystoreProperties")));
 			add(createClientKeystorePropertiesFormPanel("clientKeystoreProperties"));
 			add(new TruststorePropertiesFormPanel("truststoreProperties",new PropertyModel<>(getModelObject(),"truststoreProperties")));
+			add(new CheckBox("verifyHostnames").setLabel(new ResourceModel("lbl.verifyHostnames")));
 		}
 
 		private WebMarkupContainer createOverrideDefaultProtocolsContainer(String id, boolean enableSslOverridePropeties)
@@ -161,6 +161,22 @@ public class SslPropertiesFormPanel extends Panel
 					target.add(SslPropertiesForm.this);
 				}
 			});
+			return result;
+		}
+
+		private WebMarkupContainer createClientCertificateAuthenticationContainer(String id)
+		{
+			WebMarkupContainer result = new WebMarkupContainer(id)
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public boolean isVisible()
+				{
+					return getModelObject().getRequireClientAuthentication();
+				}
+			};
+			result.add(new CheckBox("clientCertificateAuthentication").setLabel(new ResourceModel("lbl.clientCertificateAuthentication")));
 			return result;
 		}
 
