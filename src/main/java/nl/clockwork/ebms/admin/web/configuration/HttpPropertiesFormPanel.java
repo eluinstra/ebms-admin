@@ -17,6 +17,7 @@ package nl.clockwork.ebms.admin.web.configuration;
 
 import java.util.Locale;
 
+import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormModel;
@@ -206,7 +207,7 @@ public class HttpPropertiesFormPanel extends Panel
 		private Integer port = 8888;
 		private String path = "/ebms";
 		private boolean chunkedStreamingMode = true;
-		private boolean base64Writer = true;
+		private boolean base64Writer = false;
 		private boolean ssl = true;
 		private SslPropertiesFormModel sslProperties = new SslPropertiesFormModel();
 		private boolean proxy;
@@ -242,7 +243,7 @@ public class HttpPropertiesFormPanel extends Panel
 		}
 		public String getUrl()
 		{
-			return getProtocol() + host + (port == null ? "" : ":" + port.toString()) + path;
+			return getProtocol() + Utils.getHost(host) + (port == null ? "" : ":" + port.toString()) + path;
 		}
 		public boolean isChunkedStreamingMode()
 		{

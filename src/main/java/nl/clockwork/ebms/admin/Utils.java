@@ -70,4 +70,9 @@ public class Utils
 		return list == null ? new ArrayList<>() : list;
 	}
 
+	public static String getHost(String host)
+	{
+		return "0.0.0.0".equals(host) || "::".equals(host) ? "localhost" : host;
+	}
+
 }

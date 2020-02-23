@@ -185,9 +185,9 @@ public class SslPropertiesFormPanel extends Panel
 	public static class SslPropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		private boolean overrideDefaultProtocols = false;
+		private boolean overrideDefaultProtocols = true;
 		private List<String> supportedProtocols = Arrays.asList(Utils.getSupportedSSLProtocols());
-		private List<String> enabledProtocols = new ArrayList<>();
+		private List<String> enabledProtocols = Arrays.asList("TLSv1.2");
 		private boolean overrideDefaultCipherSuites = false;
 		private List<String> supportedCipherSuites = Arrays.asList(Utils.getSupportedSSLCipherSuites());
 		private List<String> enabledCipherSuites = new ArrayList<>();

@@ -215,7 +215,7 @@ public class StartEmbedded extends Start
 		result.setHost(StringUtils.isEmpty(properties.get("ebms.host")) ? "0.0.0.0" : properties.get("ebms.host"));
 		result.setPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
 		result.setName("ebms");
-		System.out.println("EbMS service configured on http://" + getHost(result.getHost()) + ":" + result.getPort() + properties.get("ebms.path"));
+		System.out.println("EbMS service configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + properties.get("ebms.path"));
 		return result;
 	}
 
@@ -271,7 +271,7 @@ public class StartEmbedded extends Start
 		result.setHost(StringUtils.isEmpty(properties.get("ebms.host")) ? "0.0.0.0" : properties.get("ebms.host"));
 		result.setPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
 		result.setName("ebms");
-		System.out.println("EbMS service configured on https://" + result.getHost() + ":" + result.getPort() + properties.get("ebms.path"));
+		System.out.println("EbMS service configured on https://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + properties.get("ebms.path"));
 		return result;
 	}
 
