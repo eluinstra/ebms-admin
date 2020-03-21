@@ -57,4 +57,10 @@
 
 	<jaxws:client id="ebMSMessageService" serviceClass="nl.clockwork.ebms.service.EbMSMessageService" address="${service.ebms.url}/ebms"/>
 
+	<jaxws:client id="ebMSMessageServiceMTOM" serviceClass="nl.clockwork.ebms.service.EbMSMessageServiceMTOM" address="${service.ebms.url}/ebmsMTOM" serviceName="EbMSMessageServiceImplService" endpointName="EbMSMessageServiceImplPort">
+		<jaxws:properties>
+			<entry key="mtom-enabled" value="true" />
+		</jaxws:properties>
+	</jaxws:client>
+
 </beans>
