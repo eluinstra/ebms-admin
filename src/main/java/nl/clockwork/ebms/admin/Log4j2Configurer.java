@@ -28,7 +28,7 @@ public class Log4j2Configurer
 	{
 		if (StringUtils.isNotEmpty(uri))
 		{
-			LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
+			LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(true);
 			context.setConfigLocation(new URI(uri));
 		}
 	}
