@@ -15,6 +15,12 @@ See 'Configure 2 EbMS Admin Consoles with embedded EbMS adapter to communicate w
 = Release Notes
 ===============
 ebms-admin-2.16.4.jar
+- added new MTOM EbMS soap service
+- upgrade to ebms-core-2.16.3.jar:
+	- fixed EbMSEventProcessor: the processor sometimes stops processing after an error occurs, so the ebms adapter stops sending messages
+	- fixed query in deleteEbMSAttachmentsOnMessageProcessed
+	- fixed messageId: the hostname is not prepended anymore when the messageId is given
+	- added new MTOM EbMS soap service
 
 ebms-admin-2.16.3.jar
 - minor configuration improvements
