@@ -66,7 +66,7 @@
 		<wicket.version>8.5.0</wicket.version>
 		<jetty.version>9.3.27.v20190418</jetty.version>
 		<spring.version>5.1.9.RELEASE</spring.version>
-		<cxf.version>3.3.3</cxf.version>
+		<cxf.version>3.3.5</cxf.version>
 		<activemq.version>5.15.10</activemq.version>
 		<checkstyle.config.location>${basedir}/resources/reporting/checkstyle.xml</checkstyle.config.location>
 		<checkstyle.header.file>${basedir}/resources/reporting/license.txt</checkstyle.header.file>
