@@ -19,56 +19,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.model.EbMSMessageContext;
 
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class EbMSMessageFilter extends EbMSMessageContext
 {
 	private static final long serialVersionUID = 1L;
-	private Integer messageNr;
-	private Boolean serviceMessage;
-	private List<EbMSMessageStatus> statuses = new ArrayList<>();
-	private Date from;
-	private Date to;
-
-	public Integer getMessageNr()
-	{
-		return messageNr;
-	}
-	public void setMessageNr(Integer messageNr)
-	{
-		this.messageNr = messageNr;
-	}
-	public Boolean getServiceMessage()
-	{
-		return serviceMessage;
-	}
-	public void setServiceMessage(Boolean serviceMessage)
-	{
-		this.serviceMessage = serviceMessage;
-	}
-	public List<EbMSMessageStatus> getStatuses()
-	{
-		return statuses;
-	}
-	public void setStatuses(List<EbMSMessageStatus> statuses)
-	{
-		this.statuses = statuses;
-	}
-	public Date getFrom()
-	{
-		return from;
-	}
-	public void setFrom(Date from)
-	{
-		this.from = from;
-	}
-	public Date getTo()
-	{
-		return to;
-	}
-	public void setTo(Date to)
-	{
-		this.to = to;
-	}
+	Integer messageNr;
+	Boolean serviceMessage;
+	List<EbMSMessageStatus> statuses = new ArrayList<>();
+	Date from;
+	Date to;
 }

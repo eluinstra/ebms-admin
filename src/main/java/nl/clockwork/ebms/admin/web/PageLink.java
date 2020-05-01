@@ -18,10 +18,16 @@ package nl.clockwork.ebms.admin.web;
 import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.link.Link;
 
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PageLink extends Link<Void>
 {
 	private static final long serialVersionUID = 1L;
-	private Page page;
+	@NonNull
+	Page page;
 
 	public PageLink(String id, Page page)
 	{

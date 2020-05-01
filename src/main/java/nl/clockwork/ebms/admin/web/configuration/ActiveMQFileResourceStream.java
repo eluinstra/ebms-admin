@@ -33,5 +33,4 @@ public class ActiveMQFileResourceStream extends PackageResourceStream
 	{
 		return "text/xml";
 	}
-	
 }

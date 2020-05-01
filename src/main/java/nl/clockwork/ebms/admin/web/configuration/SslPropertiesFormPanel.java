@@ -19,13 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import nl.clockwork.ebms.admin.web.WebMarkupContainer;
-import nl.clockwork.ebms.admin.web.configuration.JavaKeyStorePropertiesFormPanel.JavaKeyStorePropertiesFormModel;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.CheckBoxMultipleChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -37,15 +30,35 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.util.io.IClusterable;
 
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NonNull;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
+import nl.clockwork.ebms.admin.web.Supplier;
+import nl.clockwork.ebms.admin.web.WebMarkupContainer;
+import nl.clockwork.ebms.admin.web.configuration.JavaKeyStorePropertiesFormPanel.JavaKeyStorePropertiesFormModel;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SslPropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
+	Supplier<Boolean> isVisible;
 
-	public SslPropertiesFormPanel(String id, final IModel<SslPropertiesFormModel> model, boolean enableSslOverridePropeties)
+	@Builder
+	public SslPropertiesFormPanel(String id, final IModel<SslPropertiesFormModel> model, boolean enableSslOverridePropeties, Supplier<Boolean> isVisible)
 	{
 		super(id,model);
+		this.isVisible = isVisible == null ? () -> super.isVisible() : isVisible;
 		add(new SslPropertiesForm("form",model,enableSslOverridePropeties));
+	}
+
+	@Override
+	public boolean isVisible()
+	{
+		return isVisible.get();
 	}
 
 	public class SslPropertiesForm extends Form<SslPropertiesFormModel>
@@ -69,38 +82,26 @@ public class SslPropertiesFormPanel extends Panel
 
 		private WebMarkupContainer createOverrideDefaultProtocolsContainer(String id, boolean enableSslOverridePropeties)
 		{
-			WebMarkupContainer result = new WebMarkupContainer(id);
+			val result = new WebMarkupContainer(id);
 			result.setVisible(enableSslOverridePropeties);
-			CheckBox checkBox = new CheckBox("overrideDefaultProtocols");
+			val checkBox = new CheckBox("overrideDefaultProtocols");
 			checkBox.setLabel(new ResourceModel("lbl.overrideDefaultProtocols"));
-			checkBox.add(new AjaxFormComponentUpdatingBehavior("change")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					target.add(SslPropertiesForm.this);
-				}
-			});
+			checkBox.add(AjaxFormComponentUpdatingBehavior.builder()
+					.event("change")
+					.onUpdate(t -> t.add(SslPropertiesForm.this))
+					.build());
 			result.add(checkBox);
 			return result;
 		}
 
 		private WebMarkupContainer createEnabledProtocolsContainer(String id, final boolean enableSslOverridePropeties)
 		{
-			WebMarkupContainer result = new WebMarkupContainer(id)
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public boolean isVisible()
-				{
-					return enableSslOverridePropeties && getModelObject().isOverrideDefaultProtocols();
-				}
-			};
+			val result = WebMarkupContainer.builder()
+					.id(id)
+					.isVisible(() -> enableSslOverridePropeties && getModelObject().isOverrideDefaultProtocols())
+					.build();
 			result.add(
-				new CheckBoxMultipleChoice<String>("enabledProtocols",getModelObject().getSupportedProtocols())
+					new CheckBoxMultipleChoice<String>("enabledProtocols",getModelObject().getSupportedProtocols())
 					.setSuffix("<br/>")
 					.setLabel(new ResourceModel("lbl.enabledProtocols"))
 			);
@@ -109,38 +110,25 @@ public class SslPropertiesFormPanel extends Panel
 
 		private WebMarkupContainer createOverrideDefaultCipherSuitesContainer(String id, boolean enableSslOverridePropeties)
 		{
-			WebMarkupContainer result = new WebMarkupContainer(id);
+			val result = new WebMarkupContainer(id);
 			result.setVisible(enableSslOverridePropeties);
-			CheckBox checkBox = new CheckBox("overrideDefaultCipherSuites");
+			val checkBox = new CheckBox("overrideDefaultCipherSuites");
 			checkBox.setLabel(new ResourceModel("lbl.overrideDefaultCipherSuites"));
-			checkBox.add(new AjaxFormComponentUpdatingBehavior("change")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					target.add(SslPropertiesForm.this);
-				}
-			});
+			checkBox.add(AjaxFormComponentUpdatingBehavior.builder()
+					.event("change")
+					.onUpdate(t -> t.add(SslPropertiesForm.this))
+					.build());
 			result.add(checkBox);
 			return result;
 		}
 
 		private WebMarkupContainer createEnabledCipherSuitesContainer(String id, final boolean enableSslOverridePropeties)
 		{
-			WebMarkupContainer result = new WebMarkupContainer(id)
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public boolean isVisible()
-				{
-					return enableSslOverridePropeties && getModelObject().isOverrideDefaultCipherSuites();
-				}
-			};
-			result.add(
-				new CheckBoxMultipleChoice<String>("enabledCipherSuites",getModelObject().getSupportedCipherSuites())
+			val result = WebMarkupContainer.builder()
+					.id(id)
+					.isVisible(() -> enableSslOverridePropeties && getModelObject().isOverrideDefaultCipherSuites())
+					.build();
+			result.add(new CheckBoxMultipleChoice<String>("enabledCipherSuites",getModelObject().getSupportedCipherSuites())
 					.setSuffix("<br/>")
 					.setLabel(new ResourceModel("lbl.enabledCipherSuites"))
 			);
@@ -149,142 +137,46 @@ public class SslPropertiesFormPanel extends Panel
 
 		private FormComponent<Boolean> createClientAuthenticationRequiredCheckBox(String id)
 		{
-			CheckBox result = new CheckBox(id);
+			val result = new CheckBox(id);
 			result.setLabel(new ResourceModel("lbl.requireClientAuthentication"));
-			result.add(new AjaxFormComponentUpdatingBehavior("change")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					target.add(SslPropertiesForm.this);
-				}
-			});
+			result.add(AjaxFormComponentUpdatingBehavior.builder()
+					.event("change")
+					.onUpdate(t -> t.add(SslPropertiesForm.this))
+					.build());
 			return result;
 		}
 
 		private WebMarkupContainer createClientCertificateAuthenticationContainer(String id)
 		{
-			WebMarkupContainer result = new WebMarkupContainer(id)
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public boolean isVisible()
-				{
-					return getModelObject().getRequireClientAuthentication();
-				}
-			};
+			val result = WebMarkupContainer.builder()
+					.id(id)
+					.isVisible(() -> getModelObject().isRequireClientAuthentication())
+					.build();
 			result.add(new CheckBox("clientCertificateAuthentication").setLabel(new ResourceModel("lbl.clientCertificateAuthentication")));
 			return result;
 		}
-
 	}
 
+	@Data
 	public static class SslPropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		private boolean overrideDefaultProtocols = true;
-		private List<String> supportedProtocols = Arrays.asList(Utils.getSupportedSSLProtocols());
-		private List<String> enabledProtocols = Arrays.asList("TLSv1.2");
-		private boolean overrideDefaultCipherSuites = false;
-		private List<String> supportedCipherSuites = Arrays.asList(Utils.getSupportedSSLCipherSuites());
-		private List<String> enabledCipherSuites = new ArrayList<>();
-		private boolean requireClientAuthentication = true;
-		private boolean verifyHostnames = false;
-		private boolean clientCertificateAuthentication = true;
-		private JavaKeyStorePropertiesFormModel keystoreProperties = new JavaKeyStorePropertiesFormModel();
-		private JavaKeyStorePropertiesFormModel truststoreProperties = new JavaKeyStorePropertiesFormModel();
-		private JavaKeyStorePropertiesFormModel clientKeystoreProperties = new JavaKeyStorePropertiesFormModel();
-
-		public boolean isOverrideDefaultProtocols()
-		{
-			return overrideDefaultProtocols;
-		}
-		public void setOverrideDefaultProtocols(boolean overrideDefaultProtocols)
-		{
-			this.overrideDefaultProtocols = overrideDefaultProtocols;
-		}
-		public List<String> getSupportedProtocols()
-		{
-			return supportedProtocols;
-		}
-		public List<String> getEnabledProtocols()
-		{
-			return enabledProtocols;
-		}
-		public void setEnabledProtocols(List<String> enabledProtocols)
-		{
-			this.enabledProtocols = enabledProtocols;
-		}
-		public boolean isOverrideDefaultCipherSuites()
-		{
-			return overrideDefaultCipherSuites;
-		}
-		public void setOverrideDefaultCipherSuites(boolean overrideDefaultCipherSuites)
-		{
-			this.overrideDefaultCipherSuites = overrideDefaultCipherSuites;
-		}
-		public List<String> getSupportedCipherSuites()
-		{
-			return supportedCipherSuites;
-		}
-		public void setEnabledCipherSuites(List<String> enabledCipherSuites)
-		{
-			this.enabledCipherSuites = enabledCipherSuites;
-		}
-		public List<String> getEnabledCipherSuites()
-		{
-			return enabledCipherSuites;
-		}
-		public boolean getRequireClientAuthentication()
-		{
-			return requireClientAuthentication;
-		}
-		public void setRequireClientAuthentication(boolean requireClientAuthentication)
-		{
-			this.requireClientAuthentication = requireClientAuthentication;
-		}
-		public boolean getVerifyHostnames()
-		{
-			return verifyHostnames;
-		}
-		public void setVerifyHostnames(boolean verifyHostnames)
-		{
-			this.verifyHostnames = verifyHostnames;
-		}
-		public boolean getClientCertificateAuthentication()
-		{
-			return clientCertificateAuthentication;
-		}
-		public void setClientCertificateAuthentication(boolean clientCertificateAuthentication)
-		{
-			this.clientCertificateAuthentication = clientCertificateAuthentication;
-		}
-		public JavaKeyStorePropertiesFormModel getKeystoreProperties()
-		{
-			return keystoreProperties;
-		}
-		public void setKeystoreProperties(JavaKeyStorePropertiesFormModel keystoreProperties)
-		{
-			this.keystoreProperties = keystoreProperties;
-		}
-		public JavaKeyStorePropertiesFormModel getTruststoreProperties()
-		{
-			return truststoreProperties;
-		}
-		public void setTruststoreProperties(JavaKeyStorePropertiesFormModel truststoreProperties)
-		{
-			this.truststoreProperties = truststoreProperties;
-		}
-		public JavaKeyStorePropertiesFormModel getClientKeystoreProperties()
-		{
-			return clientKeystoreProperties;
-		}
-		public void setClientKeystoreProperties(JavaKeyStorePropertiesFormModel clientKeystoreProperties)
-		{
-			this.clientKeystoreProperties = clientKeystoreProperties;
-		}
+		boolean overrideDefaultProtocols = true;
+		final List<String> supportedProtocols = Arrays.asList(Utils.getSupportedSSLProtocols());
+		@NonNull
+		List<String> enabledProtocols = Arrays.asList("TLSv1.2");
+		boolean overrideDefaultCipherSuites = false;
+		final List<String> supportedCipherSuites = Arrays.asList(Utils.getSupportedSSLCipherSuites());
+		@NonNull
+		List<String> enabledCipherSuites = new ArrayList<>();
+		boolean requireClientAuthentication = true;
+		boolean verifyHostnames = false;
+		boolean clientCertificateAuthentication = true;
+		@NonNull
+		JavaKeyStorePropertiesFormModel keystoreProperties = new JavaKeyStorePropertiesFormModel();
+		@NonNull
+		JavaKeyStorePropertiesFormModel truststoreProperties = new JavaKeyStorePropertiesFormModel();
+		@NonNull
+		JavaKeyStorePropertiesFormModel clientKeystoreProperties = new JavaKeyStorePropertiesFormModel();
 	}
 }

@@ -17,16 +17,13 @@ package nl.clockwork.ebms.admin.web.service.message;
 
 import java.util.List;
 
-import nl.clockwork.ebms.model.EbMSDataSource;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.panel.Panel;
+
+import nl.clockwork.ebms.model.EbMSDataSource;
 
 public abstract class DataSourcesPanel extends Panel implements DataSources
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
 
 	public DataSourcesPanel(String id)
 	{
@@ -35,5 +32,4 @@ public abstract class DataSourcesPanel extends Panel implements DataSources
 
 	@Override
 	public abstract List<EbMSDataSource> getDataSources();
-
 }

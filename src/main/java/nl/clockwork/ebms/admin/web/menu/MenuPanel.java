@@ -22,12 +22,17 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
+import lombok.AccessLevel;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+
 public class MenuPanel extends Panel
 {
+	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 	public static class MenuItems extends ListView<MenuItem>
 	{
 		private static final long serialVersionUID = 1L;
-		private int level;
+		int level;
 
 		public MenuItems(String id, List<MenuItem> list, int level)
 		{
@@ -39,7 +44,7 @@ public class MenuPanel extends Panel
 		@Override
 		protected void populateItem(ListItem<MenuItem> item)
 		{
-			MenuItem menuItem = item.getModelObject();
+			val menuItem = item.getModelObject();
 			if (menuItem instanceof MenuLinkItem)
 				item.add(new MenuLinkItemPanel("menuItem",(MenuLinkItem)menuItem)/*.setRenderBodyOnly(true)*/);
 			else if (menuItem instanceof MenuDivider)

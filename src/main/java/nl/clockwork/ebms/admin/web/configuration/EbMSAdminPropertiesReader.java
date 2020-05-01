@@ -22,8 +22,8 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 
+import lombok.val;
 import nl.clockwork.ebms.admin.web.configuration.ConsolePropertiesFormPanel.ConsolePropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.Constants.PropertiesType;
 import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.ServicePropertiesFormPanel.ServicePropertiesFormModel;
 
@@ -36,7 +36,7 @@ public class EbMSAdminPropertiesReader extends EbMSCorePropertiesReader
 
 	public void read(EbMSAdminPropertiesFormModel ebMSAdminProperties, PropertiesType propertiesType) throws IOException
 	{
-		Properties properties = new Properties();
+		val properties = new Properties();
 		switch (propertiesType)
 		{
 			case EBMS_ADMIN:

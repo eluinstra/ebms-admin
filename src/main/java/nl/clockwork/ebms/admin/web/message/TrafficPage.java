@@ -19,7 +19,6 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
@@ -28,17 +27,23 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.wicketstuff.datetime.markup.html.basic.DateLabel;
 
+import lombok.AccessLevel;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
+import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
+import nl.clockwork.ebms.admin.web.Link;
 import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
 import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.admin.web.message.MessageFilterPanel.MessageFilterFormModel;
 
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class TrafficPage extends BasePage
 {
 	private class EbMSMessageDataView extends DataView<EbMSMessage>
@@ -78,35 +83,25 @@ public class TrafficPage extends BasePage
 
 		private Link<Void> createViewLink(String id, final EbMSMessage message)
 		{
-			Link<Void> result = new Link<Void>(id)
+			Action onClick = () ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void onClick()
-				{
-					//setResponsePage(new MessagePageX(ebMSDAO.getMessage(message.getMessageId(),message.getMessageNr()),MessagesPage.this));
-					setResponsePage(new MessagePageX(message,TrafficPage.this));
-				}
+				//setResponsePage(new MessagePageX(ebMSDAO.getMessage(message.getMessageId(),message.getMessageNr()),MessagesPage.this));
+				setResponsePage(new MessagePageX(message,TrafficPage.this));
 			};
+			val result = new Link<Void>(id,onClick);
 			result.add(new Label("messageId",message.getMessageId()));
 			return result;
 		}
 
 		private Link<Void> createFilterConversationIdLink(String id, final EbMSMessage message)
 		{
-			Link<Void> result = new Link<Void>(id)
+			Action onClick = () ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void onClick()
-				{
-					MessageFilterFormModel filter = (MessageFilterFormModel)SerializationUtils.clone(TrafficPage.this.filter);
-					filter.setConversationId(message.getConversationId());
-					setResponsePage(new TrafficPage(filter,TrafficPage.this));
-				}
+				val filter = (MessageFilterFormModel)SerializationUtils.clone(TrafficPage.this.filter);
+				filter.setConversationId(message.getConversationId());
+				setResponsePage(new TrafficPage(filter,TrafficPage.this));
 			};
+			val result = new Link<Void>(id,onClick);
 			result.add(new Label("conversationId",message.getConversationId()));
 			result.setEnabled(TrafficPage.this.filter.getConversationId() == null);
 			return result;
@@ -115,10 +110,10 @@ public class TrafficPage extends BasePage
 
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="ebMSAdminDAO")
-	private EbMSDAO ebMSDAO;
+	EbMSDAO ebMSDAO;
 	@SpringBean(name="maxItemsPerPage")
-	private Integer maxItemsPerPage;
-	private EbMSMessageFilter filter;
+	Integer maxItemsPerPage;
+	EbMSMessageFilter filter;
 
 	public TrafficPage()
 	{
@@ -136,11 +131,11 @@ public class TrafficPage extends BasePage
 		filter.setMessageNr(0);
 		filter.setServiceMessage(false);
 		add(createMessageFilterPanel("messageFilter",filter));
-		WebMarkupContainer container = new WebMarkupContainer("container");
+		val container = new WebMarkupContainer("container");
 		add(container);
-		DataView<EbMSMessage> messages = new EbMSMessageDataView("messages",new MessageDataProvider(ebMSDAO,this.filter));
+		val messages = new EbMSMessageDataView("messages",new MessageDataProvider(ebMSDAO,this.filter));
 		container.add(messages);
-		BootstrapPagingNavigator navigator = new BootstrapPagingNavigator("navigator",messages);
+		val navigator = new BootstrapPagingNavigator("navigator",messages);
 		add(navigator);
 		add(new MaxItemsPerPageChoice("maxItemsPerPage",new PropertyModel<>(this,"maxItemsPerPage"),navigator,container));
 		add(new PageLink("back",responsePage).setVisible(responsePage != null));
@@ -149,16 +144,7 @@ public class TrafficPage extends BasePage
 
 	private MessageFilterPanel createMessageFilterPanel(String id, EbMSMessageFilter filter)
 	{
-		return new MessageFilterPanel(id,(MessageFilterFormModel)filter)
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public BasePage getPage(MessageFilterFormModel filter)
-			{
-				return new TrafficPage(filter);
-			}
-		};
+		return new MessageFilterPanel(id,(MessageFilterFormModel)filter,f -> new TrafficPage(f));
 	}
 
 	@Override

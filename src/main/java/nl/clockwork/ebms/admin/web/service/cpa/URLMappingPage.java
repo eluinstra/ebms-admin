@@ -15,16 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.service.cpa;
 
-import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.model.URLMapping;
-import nl.clockwork.ebms.service.CPAService;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -32,12 +22,29 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IClusterable;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NonNull;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.apachecommons.CommonsLog;
+import nl.clockwork.ebms.admin.web.Action;
+import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.Button;
+import nl.clockwork.ebms.admin.web.ResetButton;
+import nl.clockwork.ebms.model.URLMapping;
+import nl.clockwork.ebms.service.CPAService;
+
+@CommonsLog
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class URLMappingPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(getClass());
 	@SpringBean(name="cpaService")
-	private CPAService cpaService;
+	CPAService cpaService;
 
 	public URLMappingPage()
 	{
@@ -71,48 +78,33 @@ public class URLMappingPage extends BasePage
 
 		private Button createSetButton(String id)
 		{
-			Button result = new Button(id,new ResourceModel("cmd.upload"))
+			Action onSubmit = () ->
 			{
-				private static final long serialVersionUID = 1L;
-	
-				@Override
-				public void onSubmit()
+				try
 				{
-					try
-					{
-						final URLMapping urlMapping = EditURLMappingForm.this.getModelObject().urlMapping;
-						cpaService.setURLMapping(urlMapping);
-						setResponsePage(URLMappingsPage.class);
-					}
-					catch (Exception e)
-					{
-						logger.error("",e);
-						error(e.getMessage());
-					}
+					val urlMapping = EditURLMappingForm.this.getModelObject().urlMapping;
+					cpaService.setURLMapping(urlMapping);
+					setResponsePage(URLMappingsPage.class);
+				}
+				catch (Exception e)
+				{
+					log.error("",e);
+					error(e.getMessage());
 				}
 			};
+			val result = new Button(id,new ResourceModel("cmd.upload"),onSubmit );
 			setDefaultButton(result);
 			return result;
 		}
 	}
-	
+
+	@Data
+	@AllArgsConstructor
 	public class URLMappingFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		private URLMapping urlMapping;
-		
-		public URLMappingFormModel(URLMapping urlMapping)
-		{
-			this.urlMapping = urlMapping;
-		}
-		public URLMapping getUrlMapping()
-		{
-			return urlMapping;
-		}
-		public void setUrlMapping(URLMapping urlMapping)
-		{
-			this.urlMapping = urlMapping;
-		}
+		@NonNull
+		URLMapping urlMapping;
 	}
 
 }

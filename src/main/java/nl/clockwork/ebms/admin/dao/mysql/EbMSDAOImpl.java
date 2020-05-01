@@ -25,16 +25,18 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import nl.clockwork.ebms.EbMSMessageStatus;
-import nl.clockwork.ebms.admin.Constants.TimeUnit;
 import nl.clockwork.ebms.admin.dao.AbstractEbMSDAO;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
+import nl.clockwork.ebms.admin.web.message.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.support.TransactionTemplate;
+
+import lombok.val;
 
 public class EbMSDAOImpl extends AbstractEbMSDAO
 {
@@ -56,7 +58,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 	@Override
 	public String selectMessagesQuery(EbMSMessageFilter filter, long first, long count, List<Object> parameters)
 	{
-		return new EbMSMessageRowMapper().getBaseQuery() +
+		return EbMSMessageRowMapper.builder().build().getBaseQuery() +
 			" where 1 = 1" +
 			getMessageFilter(filter,parameters) +
 			" order by time_stamp desc" +
@@ -79,7 +81,12 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 				@Override
 				public EbMSAttachment mapRow(ResultSet rs, int rowNum) throws SQLException
 				{
-					return new EbMSAttachment(rs.getString("name"),rs.getString("content_id"),rs.getString("content_type"),rs.getBytes("content"));
+					return EbMSAttachment.builder()
+							.name(rs.getString("name"))
+							.contentId(rs.getString("content_id"))
+							.contentType(rs.getString("content_type"))
+							.content(rs.getBytes("content"))
+							.build();
 				}
 			},
 			messageId,
@@ -101,7 +108,11 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 				@Override
 				public EbMSAttachment mapRow(ResultSet rs, int rowNum) throws SQLException
 				{
-					return new EbMSAttachment(rs.getString("name"),rs.getString("content_id"),rs.getString("content_type"),null);
+					return EbMSAttachment.builder()
+							.name(rs.getString("name"))
+							.contentId(rs.getString("content_id"))
+							.contentType(rs.getString("content_type"))
+							.build();
 				}
 			},
 			messageId,
@@ -112,7 +123,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 	@Override
 	public HashMap<Date,Integer> selectMessageTraffic(Date from, Date to, TimeUnit timeUnit, EbMSMessageStatus...status)
 	{
-		final HashMap<Date,Integer> result = new HashMap<>();
+		val result = new HashMap<Date,Integer>();
 		jdbcTemplate.query(
 			//"select date_format(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "') time, count(*) nr" + 
 			"select str_to_date(date_format(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "'),'%Y-%m-%d %k:%i:%s') time, count(*) nr" + 

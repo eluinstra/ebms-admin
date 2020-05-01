@@ -18,24 +18,28 @@ package nl.clockwork.ebms.admin.web.configuration;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import nl.clockwork.ebms.admin.web.configuration.Constants.PropertiesType;
-import nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.EbMSCorePropertiesFormModel;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.resource.IResourceStream;
 
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.apachecommons.CommonsLog;
+import nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.EbMSCorePropertiesFormModel;
+
+@CommonsLog
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DownloadEbMSCorePropertiesButton extends Button
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
-	private EbMSCorePropertiesFormModel ebMSCorePropertiesFormModel;
+	@NonNull
+	EbMSCorePropertiesFormModel ebMSCorePropertiesFormModel;
 
-	public DownloadEbMSCorePropertiesButton(String id, ResourceModel resourceModel, EbMSCorePropertiesFormModel ebMSCorePropertiesFormModel)
+	public DownloadEbMSCorePropertiesButton(String id, ResourceModel resourceModel, @NonNull EbMSCorePropertiesFormModel ebMSCorePropertiesFormModel)
 	{
 		super(id,resourceModel);
 		this.ebMSCorePropertiesFormModel = ebMSCorePropertiesFormModel;
@@ -46,14 +50,14 @@ public class DownloadEbMSCorePropertiesButton extends Button
 	{
 		try
 		{
-			final StringWriter writer = new StringWriter();
+			val writer = new StringWriter();
 			new EbMSCorePropertiesWriter(writer,false).write(ebMSCorePropertiesFormModel);
-			IResourceStream resourceStream = new StringWriterResourceStream(writer,"plain/text");
+			val resourceStream = new StringWriterResourceStream(writer,"plain/text");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}
 		catch (IOException e)
 		{
-			logger.error("",e);
+			log.error("",e);
 			error(e.getMessage());
 		}
 	}
@@ -61,8 +65,7 @@ public class DownloadEbMSCorePropertiesButton extends Button
 	private ResourceStreamRequestHandler createRequestHandler(IResourceStream resourceStream)
 	{
 		return new ResourceStreamRequestHandler(resourceStream)
-		.setFileName(PropertiesType.EBMS_CORE.getPropertiesFile())
-		.setContentDisposition(ContentDisposition.ATTACHMENT);
+				.setFileName(PropertiesType.EBMS_CORE.getPropertiesFile())
+				.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
-
 }

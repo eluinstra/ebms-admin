@@ -15,8 +15,23 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
+import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.markup.repeater.data.IDataProvider;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+
+import lombok.AccessLevel;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
+import nl.clockwork.ebms.admin.web.Link;
 import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
 import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.PageLink;
@@ -26,28 +41,18 @@ import nl.clockwork.ebms.model.EbMSMessageContext;
 import nl.clockwork.ebms.model.EbMSMessageEvent;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
-import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.Component;
-import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.markup.repeater.data.DataView;
-import org.apache.wicket.markup.repeater.data.IDataProvider;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class MessageEventsPage extends BasePage
 {
 	private class MessageEventDataView extends DataView<EbMSMessageEvent>
 	{
+		private static final long serialVersionUID = 1L;
+
 		protected MessageEventDataView(String id, IDataProvider<EbMSMessageEvent> dataProvider)
 		{
 			super(id,dataProvider);
 			setOutputMarkupId(true);
 		}
-
-		private static final long serialVersionUID = 1L;
 
 		@Override
 		public long getItemsPerPage()
@@ -58,7 +63,7 @@ public class MessageEventsPage extends BasePage
 		@Override
 		protected void populateItem(final Item<EbMSMessageEvent> item)
 		{
-			final EbMSMessageEvent messageEvent = item.getModelObject();
+			val messageEvent = item.getModelObject();
 			item.add(createViewLink("view",messageEvent,new Label("messageId",messageEvent.getMessageId())));
 			item.add(new Label("type",messageEvent.getType()));
 			item.add(AttributeModifier.replace("class",new OddOrEvenIndexStringModel(item.getIndex())));
@@ -66,26 +71,15 @@ public class MessageEventsPage extends BasePage
 
 		private Link<Void> createViewLink(String id, final EbMSMessageEvent messageEvent, Component...components)
 		{
-			Link<Void> link = new Link<Void>(id)
+			Action onClick = () ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void onClick()
-				{
-					setResponsePage(new MessagePage(ebMSMessageService.getMessage(messageEvent.getMessageId(),null),MessageEventsPage.this,
-					new MessageProcessor()
-					{
-						private static final long serialVersionUID = 1L;
-
-						@Override
-						public void processMessage(String messageId)
-						{
-							ebMSMessageService.processMessageEvent(messageId);
-						}
-					}));
-				}
+				setResponsePage(
+						new MessagePage(
+								ebMSMessageService.getMessage(messageEvent.getMessageId(),null),
+								MessageEventsPage.this,
+								messageId -> ebMSMessageService.processMessageEvent(messageId)));
 			};
+			val link = new Link<Void>(id,onClick);
 			link.add(components);
 			return link;
 		}
@@ -93,11 +87,11 @@ public class MessageEventsPage extends BasePage
 
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="ebMSMessageService")
-	private EbMSMessageService ebMSMessageService;
+	EbMSMessageService ebMSMessageService;
 	@SpringBean(name="maxItemsPerPage")
-	private Integer maxItemsPerPage;
-	private EbMSMessageContext filter;
-	private EbMSMessageEventType[] eventTypes;
+	Integer maxItemsPerPage;
+	EbMSMessageContext filter;
+	EbMSMessageEventType[] eventTypes;
 
 	public MessageEventsPage()
 	{
@@ -113,11 +107,11 @@ public class MessageEventsPage extends BasePage
 	{
 		this.filter = filter;
 		this.eventTypes = eventTypes;
-		final WebMarkupContainer container = new WebMarkupContainer("container");
+		val container = new WebMarkupContainer("container");
 		add(container);
-		DataView<EbMSMessageEvent> messageEvents = new MessageEventDataView("messageEvents",new MessageEventDataProvider(ebMSMessageService,this.filter,this.eventTypes));
+		val messageEvents = new MessageEventDataView("messageEvents",new MessageEventDataProvider(ebMSMessageService,this.filter,this.eventTypes));
 		container.add(messageEvents);
-		final BootstrapPagingNavigator navigator = new BootstrapPagingNavigator("navigator",messageEvents);
+		val navigator = new BootstrapPagingNavigator("navigator",messageEvents);
 		add(navigator);
 		add(new MaxItemsPerPageChoice("maxItemsPerPage",new PropertyModel<>(this,"maxItemsPerPage"),navigator,container));
 		add(new PageLink("back",responsePage).setVisible(responsePage != null));

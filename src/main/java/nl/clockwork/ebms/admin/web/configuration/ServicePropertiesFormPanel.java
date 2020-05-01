@@ -15,11 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -30,10 +25,18 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.io.IClusterable;
 
+import lombok.Data;
+import lombok.NonNull;
+import lombok.val;
+import lombok.extern.apachecommons.CommonsLog;
+import nl.clockwork.ebms.admin.web.Action;
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.Button;
+
+@CommonsLog
 public class ServicePropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
 
 	public ServicePropertiesFormPanel(String id, final IModel<ServicePropertiesFormModel> model)
 	{
@@ -54,42 +57,33 @@ public class ServicePropertiesFormPanel extends Panel
 
 		private Button createTestButton(String id, final IModel<ServicePropertiesFormModel> model)
 		{
-			Button result = new Button(id,new ResourceModel("cmd.test"))
+			Action action = () ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void onSubmit()
+				try
 				{
-					try
-					{
-						ServicePropertiesFormModel m = model.getObject();
-						Utils.testEbMSUrl(m.getURL());
-						info(ServicePropertiesForm.this.getString("test.ok"));
-					}
-					catch (Exception e)
-					{
-						logger .error("",e);
-						error(new StringResourceModel("test.nok",ServicePropertiesForm.this,Model.of(e)).getString());
-					}
+					val m = model.getObject();
+					Utils.testEbMSUrl(m.getUrl());
+					info(ServicePropertiesForm.this.getString("test.ok"));
+				}
+				catch (Exception e)
+				{
+					log.error("",e);
+					error(new StringResourceModel("test.nok",ServicePropertiesForm.this,Model.of(e)).getString());
 				}
 			};
-			return result;
+			return Button.builder()
+					.id(id)
+					.model(new ResourceModel("cmd.test"))
+					.onSubmit(action)
+					.build();
 		}
 	}
 
+	@Data
 	public static class ServicePropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		private String url = "http://localhost:8089/adapter";
-
-		public String getURL()
-		{
-			return url;
-		}
-		public void setUrl(String url)
-		{
-			this.url = url;
-		}
+		@NonNull
+		String url = "http://localhost:8089/adapter";
 	}
 }

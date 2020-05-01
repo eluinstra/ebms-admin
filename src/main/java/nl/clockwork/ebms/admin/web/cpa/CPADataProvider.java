@@ -23,16 +23,17 @@ import nl.clockwork.ebms.admin.model.CPA;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@AllArgsConstructor
 public class CPADataProvider implements IDataProvider<CPA>
 {
 	private static final long serialVersionUID = 1L;
-	private EbMSDAO ebMSDAO;
+	EbMSDAO ebMSDAO;
 
-	public CPADataProvider(EbMSDAO ebMSDAO)
-	{
-		this.ebMSDAO = ebMSDAO;
-	}
-	
 	@Override
 	public Iterator<? extends CPA> iterator(long first, long count)
 	{
@@ -55,5 +56,4 @@ public class CPADataProvider implements IDataProvider<CPA>
 	public void detach()
 	{
 	}
-
 }

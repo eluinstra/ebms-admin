@@ -16,26 +16,25 @@
 package nl.clockwork.ebms.admin.web;
 
 import java.net.URLConnection;
-import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.wicket.resource.loader.IStringResourceLoader;
 
+import lombok.val;
 import nl.clockwork.ebms.EbMSMessageStatus;
 
 public class Utils
 {
 	public static String getResourceString(Class<?> clazz, String propertyName)
 	{
-		List<IStringResourceLoader> loaders = WicketApplication.get().getResourceSettings().getStringResourceLoaders();
+		val loaders = WicketApplication.get().getResourceSettings().getStringResourceLoaders();
 		return loaders.stream().map(l -> l.loadStringResource(clazz,propertyName,null,null,null)).filter(s -> StringUtils.isNotBlank(s)).findFirst().orElse(propertyName);
 	}
 
 	public static String getContentType(String pathInfo)
 	{
-		String result = URLConnection.guessContentTypeFromName(pathInfo);
-		//String result = new MimetypesFileTypeMap().getContentType(pathInfo);
-		//String result = URLConnection.getFileNameMap().getContentTypeFor(pathInfo);
+		val result = URLConnection.guessContentTypeFromName(pathInfo);
+		//val result = new MimetypesFileTypeMap().getContentType(pathInfo);
+		//val result = URLConnection.getFileNameMap().getContentTypeFor(pathInfo);
 		return result == null ? "application/octet-stream" : result;
 	}
 

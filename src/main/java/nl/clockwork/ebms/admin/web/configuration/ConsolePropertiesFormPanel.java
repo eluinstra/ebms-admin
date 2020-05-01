@@ -15,10 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -27,10 +23,12 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.util.io.IClusterable;
 
+import lombok.Data;
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+
 public class ConsolePropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
 
 	public ConsolePropertiesFormPanel(String id, final IModel<ConsolePropertiesFormModel> model)
 	{
@@ -51,27 +49,11 @@ public class ConsolePropertiesFormPanel extends Panel
 		}
 	}
 
+	@Data
 	public static class ConsolePropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		private int maxItemsPerPage = 20;
-		private String log4jPropertiesFile;
-
-		public int getMaxItemsPerPage()
-		{
-			return maxItemsPerPage;
-		}
-		public void setMaxItemsPerPage(int maxItemsPerPage)
-		{
-			this.maxItemsPerPage = maxItemsPerPage;
-		}
-		public String getLog4jPropertiesFile()
-		{
-			return log4jPropertiesFile;
-		}
-		public void setLog4jPropertiesFile(String log4jPropertiesFile)
-		{
-			this.log4jPropertiesFile = log4jPropertiesFile;
-		}
+		int maxItemsPerPage = 20;
+		String log4jPropertiesFile;
 	}
 }

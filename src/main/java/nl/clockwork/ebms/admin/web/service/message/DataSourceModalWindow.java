@@ -17,8 +17,10 @@ package nl.clockwork.ebms.admin.web.service.message;
 
 import java.util.List;
 
+import nl.clockwork.ebms.admin.web.AjaxButton;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.Consumer;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.model.EbMSDataSource;
 
@@ -27,7 +29,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -39,6 +40,10 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.val;
+
 public class DataSourceModalWindow extends ModalWindow
 {
 	private static final long serialVersionUID = 1L;
@@ -47,7 +52,7 @@ public class DataSourceModalWindow extends ModalWindow
 	{
 		super(id);
 		setCssClassName(ModalWindow.CSS_CLASS_GRAY);
-		setContent(createDataSourcePanel(dataSources,components));
+		setContent(new DataSourcePanel(getContentId(),dataSources,components));
 		setCookieName("dataSource");
 		setCloseButtonCallback(new nl.clockwork.ebms.admin.web.CloseButtonCallback());
 	}
@@ -58,46 +63,34 @@ public class DataSourceModalWindow extends ModalWindow
 		return Model.of(getLocalizer().getString("dataSource",this));
 	}
 
-	private DataSourcePanel createDataSourcePanel(final List<EbMSDataSource> dataSources, final Component...components)
-	{
-		return new DataSourcePanel(getContentId())
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void addDataSource(EbMSDataSource dataSource)
-			{
-				dataSources.add(dataSource);
-			}
-			
-			@Override
-			public Component[] getComponents()
-			{
-				return components;
-			}
-			
-			@Override
-			public ModalWindow getWindow()
-			{
-				return DataSourceModalWindow.this;
-			}
-		};
-	}
-	
-	public abstract class DataSourcePanel extends Panel
+	public class DataSourcePanel extends Panel
 	{
 		private static final long serialVersionUID = 1L;
 		protected transient Log logger = LogFactory.getLog(this.getClass());
+		private List<EbMSDataSource> dataSources;
+		private Component[] components;
 
-		public DataSourcePanel(String id)
+		public DataSourcePanel(String id, List<EbMSDataSource> dataSources, Component[] components)
 		{
 			super(id);
+			this.dataSources = dataSources;
+			this.components = components;
 			add(new DataSourceForm("form"));
 		}
 		
-		public abstract void addDataSource(EbMSDataSource dataSource);
-		public abstract Component[] getComponents();
-		public abstract ModalWindow getWindow();
+		public void addDataSource(EbMSDataSource dataSource)
+		{
+			dataSources.add(dataSource);
+		}
+
+		public Component[] getComponents()
+		{
+			return components;
+		}
+		public ModalWindow getWindow()
+		{
+			return DataSourceModalWindow.this;
+		}
 
 		public class DataSourceForm extends Form<DataSourceModel>
 		{
@@ -124,68 +117,53 @@ public class DataSourceModalWindow extends ModalWindow
 
 			private AjaxButton createAddButton(String id)
 			{
-				final AjaxButton result = new AjaxButton(id,new ResourceModel("cmd.add"))
+				Consumer<AjaxRequestTarget> onSubmit = t ->
 				{
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					protected void onSubmit(AjaxRequestTarget target)
+					DataSourceModel model = DataSourceForm.this.getModelObject();
+					model.getFile().forEach(f -> addDataSource(new EbMSDataSource(
+								StringUtils.isBlank(model.getName()) ? f.getClientFileName() : model.getName(),
+								StringUtils.isBlank(model.getContentType()) ? Utils.getContentType(f.getClientFileName()) : model.getContentType(),
+								f.getBytes())));
+					if (t != null)
 					{
-						DataSourceModel model = DataSourceForm.this.getModelObject();
-						model.getFile().forEach(f -> addDataSource(new EbMSDataSource(
-									StringUtils.isBlank(model.getName()) ? f.getClientFileName() : model.getName(),
-									StringUtils.isBlank(model.getContentType()) ? Utils.getContentType(f.getClientFileName()) : model.getContentType(),
-									f.getBytes())));
-						if (target != null)
-						{
-							target.add(getComponents());
-							getWindow().close(target);
-						}
-					}
-
-					@Override
-					protected void onError(AjaxRequestTarget target)
-					{
-						super.onError(target);
-						if (target != null)
-						{
-							target.add(DataSourceForm.this);
-						}
+						t.add(getComponents());
+						getWindow().close(t);
 					}
 				};
+				Consumer<AjaxRequestTarget> onError = t ->
+				{
+					if (t != null)
+					{
+						t.add(DataSourceForm.this);
+					}
+				};
+				val result = AjaxButton.builder()
+						.id(id)
+						.model(new ResourceModel("cmd.add"))
+						.onSubmit(onSubmit)
+						.onError(onError)
+						.build();
 				return result;
 			}
 
 			private AjaxButton createCancelButton(String id)
 			{
-				AjaxButton cancel = new AjaxButton(id,new ResourceModel("cmd.cancel"))
-				{
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					protected void onSubmit(AjaxRequestTarget target)
-					{
-						getWindow().close(target);
-					}
-				};
+				val cancel = AjaxButton.builder()
+						.id(id)
+						.model(new ResourceModel("cmd.cancel"))
+						.onSubmit(t -> getWindow().close(t))
+						.build();
 				cancel.setDefaultFormProcessing(false);
 				return cancel;
 			}
 		}
 	}
 
+	@Data
+	@EqualsAndHashCode(callSuper = true)
 	public static class DataSourceModel extends EbMSDataSource
 	{
 		private static final long serialVersionUID = 1L;
-		private List<FileUpload> file;
-		
-		public List<FileUpload> getFile()
-		{
-			return file;
-		}
-		public void setFile(List<FileUpload> file)
-		{
-			this.file = file;
-		}
+		List<FileUpload> file;
 	}
 }

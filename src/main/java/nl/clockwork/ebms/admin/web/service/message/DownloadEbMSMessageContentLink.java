@@ -25,8 +25,6 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
@@ -35,17 +33,18 @@ import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.resource.IResourceStream;
 
+import lombok.val;
+import lombok.extern.apachecommons.CommonsLog;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.message.ByteArrayResourceStream;
 import nl.clockwork.ebms.common.JAXBParser;
-import nl.clockwork.ebms.model.EbMSDataSource;
 import nl.clockwork.ebms.model.EbMSMessageContent;
 import nl.clockwork.ebms.model.EbMSMessageContext;
 
+@CommonsLog
 public class DownloadEbMSMessageContentLink extends Link<EbMSMessageContent>
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
 
 	public DownloadEbMSMessageContentLink(String id, nl.clockwork.ebms.model.EbMSMessageContent messageContent)
 	{
@@ -57,36 +56,36 @@ public class DownloadEbMSMessageContentLink extends Link<EbMSMessageContent>
 	{
 		try
 		{
-			EbMSMessageContent messageContent = getModelObject();
-			final ByteArrayOutputStream output = new ByteArrayOutputStream();
-			try (ZipOutputStream zip = new ZipOutputStream(output))
+			val messageContent = getModelObject();
+			val output = new ByteArrayOutputStream();
+			try (val zip = new ZipOutputStream(output))
 			{
 				writeMessageToZip(messageContent,zip);
 			}
-			IResourceStream resourceStream = new ByteArrayResourceStream(output,"application/zip");
+			val resourceStream = new ByteArrayResourceStream(output,"application/zip");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(messageContent,resourceStream));
 		}
 		catch (IOException e)
 		{
-			logger.error("",e);
+			log.error("",e);
 			error(e.getMessage());
 		}
 		catch (JAXBException e)
 		{
-			logger.error("",e);
+			log.error("",e);
 			error(e.getMessage());
 		}
 	}
 
 	private void writeMessageToZip(EbMSMessageContent messageContent, ZipOutputStream zip) throws IOException, JAXBException
 	{
-		ZipEntry entry = new ZipEntry("messageContext.xml");
+		val entry = new ZipEntry("messageContext.xml");
 		zip.putNextEntry(entry);
 		zip.write(JAXBParser.getInstance(EbMSMessageContext.class).handle(new JAXBElement<>(new QName("http://www.clockwork.nl/ebms/2.0","messageContext"),EbMSMessageContext.class,messageContent.getContext())).getBytes());
 		zip.closeEntry();
-		for (EbMSDataSource dataSource: messageContent.getDataSources())
+		for (val dataSource: messageContent.getDataSources())
 		{
-			ZipEntry e = new ZipEntry("datasources/" + (StringUtils.isEmpty(dataSource.getName()) ? UUID.randomUUID() + Utils.getFileExtension(dataSource.getContentType()) : dataSource.getName()));
+			val e = new ZipEntry("datasources/" + (StringUtils.isEmpty(dataSource.getName()) ? UUID.randomUUID() + Utils.getFileExtension(dataSource.getContentType()) : dataSource.getName()));
 			entry.setComment("Content-Type: " + dataSource.getContentType());
 			zip.putNextEntry(e);
 			zip.write(dataSource.getContent());
@@ -97,8 +96,8 @@ public class DownloadEbMSMessageContentLink extends Link<EbMSMessageContent>
 	private ResourceStreamRequestHandler createRequestHandler(EbMSMessageContent messageContent, IResourceStream resourceStream)
 	{
 		return new ResourceStreamRequestHandler(resourceStream)
-		.setFileName("messageContent." + messageContent.getContext().getMessageId() + ".zip")
-		.setContentDisposition(ContentDisposition.ATTACHMENT);
+				.setFileName("messageContent." + messageContent.getContext().getMessageId() + ".zip")
+				.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 
 }

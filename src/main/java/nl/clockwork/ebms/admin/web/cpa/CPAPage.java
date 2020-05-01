@@ -42,5 +42,4 @@ public class CPAPage extends BasePage implements IGenericComponent<CPA,CPAPage>
 	{
 		return getLocalizer().getString("cpa",this);
 	}
-
 }

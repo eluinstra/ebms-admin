@@ -23,11 +23,18 @@ import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.resource.IResourceStream;
 
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DownloadCPALink extends Link<String>
 {
 	private static final long serialVersionUID = 1L;
-	private CPAService cpaService;
+	CPAService cpaService;
 
+	@Builder
 	public DownloadCPALink(String id, CPAService cpaService, String cpaId)
 	{
 		super(id,Model.of(cpaId));
@@ -37,17 +44,16 @@ public class DownloadCPALink extends Link<String>
 	@Override
 	public void onClick()
 	{
-		String cpaId = getModelObject();
-		final String cpa = cpaService.getCPA(cpaId);
-		IResourceStream resourceStream = new StringResourceStream(cpa,"text/xml");
+		val cpaId = getModelObject();
+		val cpa = cpaService.getCPA(cpaId);
+		val resourceStream = new StringResourceStream(cpa,"text/xml");
 		getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(cpaId,resourceStream));
 	}
 
 	private ResourceStreamRequestHandler createRequestHandler(String cpaId, IResourceStream resourceStream)
 	{
 		return new ResourceStreamRequestHandler(resourceStream)
-		.setFileName("cpa." + cpaId + ".xml")
-		.setContentDisposition(ContentDisposition.ATTACHMENT);
+				.setFileName("cpa." + cpaId + ".xml")
+				.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
-
 }

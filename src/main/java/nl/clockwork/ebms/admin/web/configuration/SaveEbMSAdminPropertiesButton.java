@@ -19,24 +19,29 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import nl.clockwork.ebms.admin.web.configuration.Constants.PropertiesType;
-import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormModel;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.apachecommons.CommonsLog;
+import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormModel;
+
+@CommonsLog
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SaveEbMSAdminPropertiesButton extends Button
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
-	private EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel;
-	private PropertiesType propertiesType;
+	@NonNull
+	EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel;
+	@NonNull
+	PropertiesType propertiesType;
 
-	public SaveEbMSAdminPropertiesButton(String id, ResourceModel resourceModel, EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel, PropertiesType propertiesType)
+	public SaveEbMSAdminPropertiesButton(String id, ResourceModel resourceModel, @NonNull EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel, @NonNull PropertiesType propertiesType)
 	{
 		super(id,resourceModel);
 		this.ebMSAdminPropertiesFormModel = ebMSAdminPropertiesFormModel;
@@ -48,15 +53,15 @@ public class SaveEbMSAdminPropertiesButton extends Button
 	{
 		try
 		{
-			File file = new File(propertiesType.getPropertiesFile());
-			FileWriter writer = new FileWriter(file);
+			val file = new File(propertiesType.getPropertiesFile());
+			val writer = new FileWriter(file);
 			new EbMSAdminPropertiesWriter(writer,true).write(ebMSAdminPropertiesFormModel,propertiesType);
 			info(new StringResourceModel("properties.saved",getPage(),Model.of(file)).getString());
 			error(new StringResourceModel("restart",getPage(),null).getString());
 		}
 		catch (IOException e)
 		{
-			logger.error("",e);
+			log.error("",e);
 			error(e.getMessage());
 		}
 	}

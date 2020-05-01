@@ -20,22 +20,24 @@ import nl.clockwork.ebms.admin.model.CPA;
 
 import org.apache.wicket.model.LoadableDetachableModel;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@AllArgsConstructor
 public class CPADataModel extends LoadableDetachableModel<CPA>
 {
 	private static final long serialVersionUID = 1L;
-	private final EbMSDAO ebMSDAO;
-	private final String cpaId;
+	@NonNull
+	EbMSDAO ebMSDAO;
+	@NonNull
+	String cpaId;
 
 	public CPADataModel(EbMSDAO ebMSDAO, CPA cpa)
 	{
 		this(ebMSDAO,cpa.getCpaId());
-	}
-	public CPADataModel(EbMSDAO ebMSDAO, String cpaId)
-	{
-		if (cpaId == null || "".equals(cpaId))
-			throw new IllegalArgumentException("cpaId is empty!");
-		this.ebMSDAO = ebMSDAO;
-		this.cpaId = cpaId;
 	}
 
 	@Override

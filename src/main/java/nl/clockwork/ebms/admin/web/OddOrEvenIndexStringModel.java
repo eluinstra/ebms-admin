@@ -17,15 +17,16 @@ package nl.clockwork.ebms.admin.web;
 
 import org.apache.wicket.model.IModel;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@AllArgsConstructor
 public class OddOrEvenIndexStringModel implements IModel<String>
 {
 	private static final long serialVersionUID = 1L;
-	private int index;
-
-	public OddOrEvenIndexStringModel(int index)
-	{
-		this.index = index;
-	}
+	int index;
 
 	@Override
 	public String getObject()

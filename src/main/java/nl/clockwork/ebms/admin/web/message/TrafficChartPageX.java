@@ -19,14 +19,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
@@ -46,19 +42,27 @@ import de.adesso.wickedcharts.highcharts.options.Title;
 import de.adesso.wickedcharts.highcharts.options.VerticalAlignment;
 import de.adesso.wickedcharts.highcharts.options.series.SimpleSeries;
 import de.adesso.wickedcharts.wicket8.highcharts.Chart;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.NonNull;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.EbMSMessageStatus;
-import nl.clockwork.ebms.admin.Constants.EbMSMessageTrafficChartOption;
-import nl.clockwork.ebms.admin.Constants.TimeUnit;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
+import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
+import nl.clockwork.ebms.admin.web.AjaxLink;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.Consumer;
+import nl.clockwork.ebms.admin.web.DropDownChoice;
 
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class TrafficChartPageX extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="ebMSAdminDAO")
-	private EbMSDAO ebMSDAO;
-	private Chart chart;
+	EbMSDAO ebMSDAO;
+	Chart chart;
 
 	public TrafficChartPageX()
 	{
@@ -73,19 +77,11 @@ public class TrafficChartPageX extends BasePage
 	
 	private Options createOptions(TrafficChartFormModel model)
 	{
-		DateTime from = new DateTime(model.from.getTime());
-		DateTime to = from.plus(model.timeUnit.getPeriod());
-
-		List<Date> dates = new ArrayList<>();
-		while (from.isBefore(to))
-		{
-			dates.add(from.toDate());
-			from = from.plus(model.timeUnit.getTimeUnit());
-		}
-
-		List<String> dateString = dates.stream().map(d -> new SimpleDateFormat(model.timeUnit.getTimeUnitDateFormat()).format(d)).collect(Collectors.toList());
-
-		Options result = new Options();
+		val from = new DateTime(model.from.getTime());
+		val to = from.plus(model.timeUnit.getPeriod());
+		val dates = calculateDates(model,from,to);
+		val dateString = dates.stream().map(d -> new SimpleDateFormat(model.timeUnit.getTimeUnitDateFormat()).format(d)).collect(Collectors.toList());
+		val result = new Options();
 		result.setChartOptions(new ChartOptions().setType(SeriesType.LINE));
 		result.setTitle(new Title(model.getEbMSMessageTrafficChartOption().getTitle() + " " + new SimpleDateFormat(model.timeUnit.getDateFormat()).format(model.getFrom())));
 		result.setxAxis(new Axis().setCategories(dateString));
@@ -99,14 +95,14 @@ public class TrafficChartPageX extends BasePage
 
 	private static TrafficChartFormModel getTrafficChartFormModel(TimeUnit timeUnit, EbMSMessageTrafficChartOption ebMSMessageTrafficChartOption)
 	{
-		DateTime from = timeUnit.getFrom();
-		DateTime to = from.plus(timeUnit.getPeriod());
+		val from = timeUnit.getFrom();
+		val to = from.plus(timeUnit.getPeriod());
 		return new TrafficChartFormModel(timeUnit,from.toDate(),to.toDate(),ebMSMessageTrafficChartOption);
 	}
 
 	private List<Number> getMessages(List<Date> dates, TrafficChartFormModel model, EbMSMessageStatus...status)
 	{
-		HashMap<Date,Integer> messageTraffic = ebMSDAO.selectMessageTraffic(model.from,new DateTime(model.from.getTime()).plus(model.timeUnit.getPeriod()).toDate(),model.timeUnit,status);
+		val messageTraffic = ebMSDAO.selectMessageTraffic(model.from,new DateTime(model.from.getTime()).plus(model.timeUnit.getPeriod()).toDate(),model.timeUnit,status);
 		return dates.stream().map(d -> messageTraffic.containsKey(d) ? messageTraffic.get(d) : 0).collect(Collectors.toList());
 	}
 
@@ -133,142 +129,96 @@ public class TrafficChartPageX extends BasePage
 
 		private DropDownChoice<TimeUnit> createTimeUnitChoice(String id)
 		{
-			DropDownChoice<TimeUnit> result = new DropDownChoice<TimeUnit>(id,new PropertyModel<List<TimeUnit>>(this.getModelObject(),"timeUnits"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected boolean localizeDisplayValues()
-				{
-					return true;
-				}
-			};
+			val result = DropDownChoice.<TimeUnit>builder()
+					.id(id)
+					.choices(new PropertyModel<List<TimeUnit>>(this.getModelObject(),"timeUnits"))
+					.localizeDisplayValues(() -> true)
+					.build();
 			result.setLabel(new ResourceModel("lbl.timeUnit"));
 			result.setRequired(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("change")
+			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
-					model.setFrom(model.getTimeUnit().getFrom().toDate());
-					chart.setOptions(createOptions(model));
-					target.add(chart);
-				}
-			});
+				val model = TrafficChartForm.this.getModelObject();
+				model.setFrom(model.getTimeUnit().getFrom().toDate());
+				chart.setOptions(createOptions(model));
+				t.add(chart);
+			};
+			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;
 		}
 
 		private AjaxLink<Void> createMinusLink(String id)
 		{
-			return new AjaxLink<Void>(id)
+			Consumer<AjaxRequestTarget> onClick = t ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void onClick(AjaxRequestTarget target)
-				{
-					TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
-					model.setFrom(new DateTime(model.getFrom().getTime()).minus(model.getTimeUnit().getPeriod()).toDate());
-					chart.setOptions(createOptions(model));
-					target.add(chart);
-				}
+				TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
+				model.setFrom(new DateTime(model.getFrom().getTime()).minus(model.getTimeUnit().getPeriod()).toDate());
+				chart.setOptions(createOptions(model));
+				t.add(chart);
 			};
+			return new AjaxLink<Void>(id,onClick);
 		}
 
 		private AjaxLink<Void> createPlusLink(String id)
 		{
-			return new AjaxLink<Void>(id)
+			Consumer<AjaxRequestTarget> onClick = t ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void onClick(AjaxRequestTarget target)
-				{
-					TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
-					model.setFrom(new DateTime(model.getFrom().getTime()).plus(model.getTimeUnit().getPeriod()).toDate());
-					chart.setOptions(createOptions(model));
-					target.add(chart);
-				}
+				TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
+				model.setFrom(new DateTime(model.getFrom().getTime()).plus(model.getTimeUnit().getPeriod()).toDate());
+				chart.setOptions(createOptions(model));
+				t.add(chart);
 			};
+			return new AjaxLink<Void>(id,onClick);
 		}
 
 		private DropDownChoice<EbMSMessageTrafficChartOption> createEbMSMessageTrafficChartOptions(String id)
 		{
-			DropDownChoice<EbMSMessageTrafficChartOption> ebMSMessageTrafficChartOptions = new DropDownChoice<EbMSMessageTrafficChartOption>(id,new PropertyModel<EbMSMessageTrafficChartOption>(this.getModelObject(),"ebMSMessageTrafficChartOption"),new PropertyModel<List<EbMSMessageTrafficChartOption>>(this.getModelObject(),"ebMSMessageTrafficChartOptions"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected boolean localizeDisplayValues()
-				{
-					return true;
-				}
-			};
+			val ebMSMessageTrafficChartOptions = DropDownChoice.<EbMSMessageTrafficChartOption>builder()
+					.id(id)
+					.model(new PropertyModel<EbMSMessageTrafficChartOption>(this.getModelObject(),"ebMSMessageTrafficChartOption"))
+					.choices(new PropertyModel<List<EbMSMessageTrafficChartOption>>(this.getModelObject(),"ebMSMessageTrafficChartOptions"))
+					.localizeDisplayValues(() -> true)
+					.build();
 			ebMSMessageTrafficChartOptions.setLabel(new ResourceModel("lbl.ebMSMessageTrafficChartOption"));
 			ebMSMessageTrafficChartOptions.setRequired(true);
-			ebMSMessageTrafficChartOptions.add(new AjaxFormComponentUpdatingBehavior("change")
+			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
-					chart.setOptions(createOptions(model));
-					target.add(chart);
-				}
-			});
+				TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
+				chart.setOptions(createOptions(model));
+				t.add(chart);
+			};
+			ebMSMessageTrafficChartOptions.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return ebMSMessageTrafficChartOptions;
 		}
 	}
 	
+	private List<Date> calculateDates(TrafficChartFormModel model, DateTime from, DateTime to)
+	{
+		val dates = new ArrayList<Date>();
+		while (from.isBefore(to))
+		{
+			dates.add(from.toDate());
+			from = from.plus(model.timeUnit.getTimeUnit());
+		}
+		return dates;
+	}
+
+	@Data
 	public static class TrafficChartFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		private TimeUnit timeUnit;
-		private Date from;
-		private EbMSMessageTrafficChartOption ebMSMessageTrafficChartOption;
+		@NonNull
+		TimeUnit timeUnit;
+		@NonNull
+		Date from;
+		@NonNull
+		Date to;
+		@NonNull
+		EbMSMessageTrafficChartOption ebMSMessageTrafficChartOption;
 		
-		public TrafficChartFormModel(TimeUnit timeUnit, Date from, Date to, EbMSMessageTrafficChartOption ebMSMessageTrafficChartOption)
-		{
-			this.timeUnit = timeUnit;
-			this.from = from;
-			this.ebMSMessageTrafficChartOption = ebMSMessageTrafficChartOption;
-		}
 		public List<TimeUnit> getTimeUnits()
 		{
 			return Arrays.asList(TimeUnit.values());
-		}
-		public TimeUnit getTimeUnit()
-		{
-			return timeUnit;
-		}
-		public void setTimeUnit(TimeUnit timeUnit)
-		{
-			this.timeUnit = timeUnit;
-		}
-		public Date getFrom()
-		{
-			return from;
-		}
-		public void setFrom(Date from)
-		{
-			this.from = from;
-		}
-		public List<EbMSMessageTrafficChartOption> getEbMSMessageTrafficChartOptions()
-		{
-			return Arrays.asList(EbMSMessageTrafficChartOption.values());
-		}
-		public EbMSMessageTrafficChartOption getEbMSMessageTrafficChartOption()
-		{
-			return ebMSMessageTrafficChartOption;
-		}
-		public void setEbMSMessageTrafficChartOption(EbMSMessageTrafficChartOption ebMSMessageTrafficChartOption)
-		{
-			this.ebMSMessageTrafficChartOption = ebMSMessageTrafficChartOption;
 		}
 	}
 

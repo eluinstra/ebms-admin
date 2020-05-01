@@ -19,19 +19,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
 
+import org.apache.wicket.markup.html.panel.Panel;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NonNull;
+import lombok.val;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.service.message.DataSourcesPanel;
-
-import org.apache.wicket.markup.html.panel.Panel;
 
 public abstract class MessageProvider
 {
 	public static List<MessageProvider> get()
 	{
-		ServiceLoader<MessageProvider> providers = ServiceLoader.load(MessageProvider.class);
-		List<MessageProvider> result = new ArrayList<>();
-		for (MessageProvider provider : providers)
+		val providers = ServiceLoader.load(MessageProvider.class);
+		val result = new ArrayList<MessageProvider>();
+		for (val provider : providers)
 			result.add(provider);
 		return result;
 	}
@@ -49,38 +53,18 @@ public abstract class MessageProvider
 
 	public abstract List<MessageEditPanel> getMessageEditPanels();
 
+	@Data
+	@AllArgsConstructor
 	public static class MessagePanel
 	{
-		private String service;
-		private String action;
+		@NonNull
+		String service;
+		@NonNull
+		String action;
 
-		public MessagePanel()
-		{
-		}
-		public MessagePanel(String service, String action)
-		{
-			this.service = service;
-			this.action = action;
-		}
 		public String getId()
 		{
 			return createId(service,action);
-		}
-		public String getService()
-		{
-			return service;
-		}
-		public void setService(String service)
-		{
-			this.service = service;
-		}
-		public String getAction()
-		{
-			return action;
-		}
-		public void setAction(String action)
-		{
-			this.action = action;
 		}
 	}
 

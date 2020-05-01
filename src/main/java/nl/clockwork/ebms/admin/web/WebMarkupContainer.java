@@ -15,14 +15,32 @@
  */
 package nl.clockwork.ebms.admin.web;
 
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class WebMarkupContainer extends org.apache.wicket.markup.html.WebMarkupContainer
 {
 	private static final long serialVersionUID = 1L;
+	Supplier<Boolean> isVisible;
 
 	public WebMarkupContainer(String id)
 	{
+		this(id,null);
+	}
+
+	@Builder
+	public WebMarkupContainer(String id, Supplier<Boolean> isVisible)
+	{
 		super(id);
+		this.isVisible = isVisible == null ? () -> super.isVisible() : isVisible;
 		setOutputMarkupId(true);
 	}
 
+	@Override
+	public boolean isVisible()
+	{
+		return isVisible.get();
+	}
 }

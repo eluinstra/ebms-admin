@@ -15,14 +15,8 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.security.KeyStoreType;
-
 import java.util.Arrays;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
@@ -35,29 +29,52 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.io.IClusterable;
 
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NonNull;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.apachecommons.CommonsLog;
+import nl.clockwork.ebms.admin.web.Action;
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.Button;
+import nl.clockwork.ebms.admin.web.Supplier;
+import nl.clockwork.ebms.security.KeyStoreType;
+
+@CommonsLog
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JavaKeyStorePropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
-	private boolean required;
+	boolean required;
+	Supplier<Boolean> isVisible;
 
-	public JavaKeyStorePropertiesFormPanel(String id, final IModel<JavaKeyStorePropertiesFormModel> model)
+	public JavaKeyStorePropertiesFormPanel(String id, IModel<JavaKeyStorePropertiesFormModel> model)
 	{
-		this(id,model,true);
+		this(id,model,true,null);
 	}
 
-	public JavaKeyStorePropertiesFormPanel(String id, final IModel<JavaKeyStorePropertiesFormModel> model, boolean required)
+	@Builder
+	public JavaKeyStorePropertiesFormPanel(String id, IModel<JavaKeyStorePropertiesFormModel> model, boolean required, Supplier<Boolean> isVisible)
 	{
 		super(id,model);
 		this.required = required;
+		this.isVisible = isVisible == null ? () -> super.isVisible() : isVisible;
 		add(new JavaKeyStorePropertiesForm("form",model));
+	}
+
+	@Override
+	public boolean isVisible()
+	{
+		return isVisible.get();
 	}
 
 	public class JavaKeyStorePropertiesForm extends Form<JavaKeyStorePropertiesFormModel>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public JavaKeyStorePropertiesForm(String id, final IModel<JavaKeyStorePropertiesFormModel> model)
+		public JavaKeyStorePropertiesForm(String id, IModel<JavaKeyStorePropertiesFormModel> model)
 		{
 			super(id,new CompoundPropertyModel<>(model));
 			add(new BootstrapFormComponentFeedbackBorder("typeFeedback",new DropDownChoice<KeyStoreType>("type",Arrays.asList(KeyStoreType.values())).setLabel(new ResourceModel("lbl.type")).setRequired(required)));
@@ -68,59 +85,36 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 
 		private Button createTestButton(String id, final IModel<JavaKeyStorePropertiesFormModel> model)
 		{
-			return new Button(id,new ResourceModel("cmd.test"))
+			Action action = () ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void onSubmit()
+				try
 				{
-					try
-					{
-						JavaKeyStorePropertiesFormModel m = model.getObject();
-						Utils.testKeystore(m.getType(),m.getUri(),m.getPassword());
-						info(JavaKeyStorePropertiesForm.this.getString("test.ok"));
-					}
-					catch (Exception e)
-					{
-						logger .error("",e);
-						error(new StringResourceModel("test.nok",JavaKeyStorePropertiesForm.this,Model.of(e)).getString());
-					}
+					val m = model.getObject();
+					Utils.testKeystore(m.getType(),m.getUri(),m.getPassword());
+					info(JavaKeyStorePropertiesForm.this.getString("test.ok"));
+				}
+				catch (Exception e)
+				{
+					log.error("",e);
+					error(new StringResourceModel("test.nok",JavaKeyStorePropertiesForm.this,Model.of(e)).getString());
 				}
 			};
+			return Button.builder()
+					.id(id)
+					.model(new ResourceModel("cmd.test"))
+					.onSubmit(action)
+					.build();
 		}
 	}
 
+	@Data
 	public static class JavaKeyStorePropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		private KeyStoreType type = KeyStoreType.PKCS12;
-		private String uri = "keystore.p12";
-		private String password = "password";
-
-		public KeyStoreType getType()
-		{
-			return type;
-		}
-		public void setType(KeyStoreType type)
-		{
-			this.type = type;
-		}
-		public String getUri()
-		{
-			return uri;
-		}
-		public void setUri(String uri)
-		{
-			this.uri = uri;
-		}
-		public String getPassword()
-		{
-			return password;
-		}
-		public void setPassword(String password)
-		{
-			this.password = password;
-		}
+		KeyStoreType type = KeyStoreType.PKCS12;
+		@NonNull
+		String uri = "keystore.p12";
+		@NonNull
+		String password = "password";
 	}
 }

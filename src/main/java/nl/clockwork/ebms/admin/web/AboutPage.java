@@ -18,10 +18,6 @@ package nl.clockwork.ebms.admin.web;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Map;
-
-import nl.clockwork.ebms.admin.PropertyPlaceholderConfigurer;
-import nl.clockwork.ebms.admin.Utils;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -29,19 +25,26 @@ import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import lombok.AccessLevel;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.admin.PropertyPlaceholderConfigurer;
+import nl.clockwork.ebms.admin.Utils;
+
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class AboutPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="propertyConfigurer")
-	private PropertyPlaceholderConfigurer propertyPlaceholderConfigurer;
+	PropertyPlaceholderConfigurer propertyPlaceholderConfigurer;
 
 	public AboutPage(final PageParameters parameters) throws FileNotFoundException, IOException
 	{
 		super(parameters);
 		add(new WebMarkupContainer("ebms-admin.version").add(new Label("version",Utils.readVersion("/META-INF/maven/nl.clockwork.ebms.admin/ebms-admin/pom.properties"))));
 		add(new WebMarkupContainer("ebms-core.version").add(new Label("version",Utils.readVersion("/META-INF/maven/nl.clockwork.ebms/ebms-core/pom.properties"))));
-		Map<String,String> properties = propertyPlaceholderConfigurer.getProperties();
-		StringWriter writer = new StringWriter();
+		val properties = propertyPlaceholderConfigurer.getProperties();
+		val writer = new StringWriter();
 		Utils.writeProperties(properties,writer);
 		add(new MultiLineLabel("properties",writer.toString()));
 	}

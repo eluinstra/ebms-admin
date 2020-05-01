@@ -17,32 +17,31 @@ package nl.clockwork.ebms.admin.web.service.message;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-
-import nl.clockwork.ebms.admin.Utils;
-import nl.clockwork.ebms.model.EbMSMessageContext;
-import nl.clockwork.ebms.service.EbMSMessageService;
 
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.admin.Utils;
+import nl.clockwork.ebms.model.EbMSMessageContext;
+import nl.clockwork.ebms.service.EbMSMessageService;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@AllArgsConstructor
 public class MessageDataProvider implements IDataProvider<String>
 {
 	private static final long serialVersionUID = 1L;
-	private EbMSMessageService ebMSMessageService;
-	private EbMSMessageContext filter;
+	EbMSMessageService ebMSMessageService;
+	EbMSMessageContext filter;
 
-	public MessageDataProvider(EbMSMessageService ebMSMessageService, EbMSMessageContext filter)
-	{
-		this.ebMSMessageService = ebMSMessageService;
-		this.filter = filter;
-	}
-	
 	@Override
 	public Iterator<? extends String> iterator(long first, long count)
 	{
-		List<String> messageIds = Utils.toList(ebMSMessageService.getMessageIds(filter,(int)(first+count)));
+		val messageIds = Utils.toList(ebMSMessageService.getMessageIds(filter,(int)(first+count)));
 		return messageIds == null ? new ArrayList<String>().iterator() : messageIds.listIterator((int)first);
 	}
 
@@ -55,7 +54,7 @@ public class MessageDataProvider implements IDataProvider<String>
 	@Override
 	public long size()
 	{
-		List<String> messageIds = Utils.toList(ebMSMessageService.getMessageIds(filter,null));
+		val messageIds = Utils.toList(ebMSMessageService.getMessageIds(filter,null));
 		return messageIds == null ? 0 : messageIds.size();
 	}
 
@@ -63,5 +62,4 @@ public class MessageDataProvider implements IDataProvider<String>
 	public void detach()
 	{
 	}
-
 }

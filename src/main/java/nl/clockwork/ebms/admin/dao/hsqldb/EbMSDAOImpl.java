@@ -43,7 +43,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 	@Override
 	public String selectMessagesQuery(EbMSMessageFilter filter, long first, long count, List<Object> parameters)
 	{
-		return new EbMSMessageRowMapper().getBaseQuery() +
+		return EbMSMessageRowMapper.builder().build().getBaseQuery() +
 			" where 1 = 1" +
 			getMessageFilter(filter,parameters) +
 			" order by time_stamp desc" +

@@ -32,6 +32,11 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import lombok.AccessLevel;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CPAsPage extends BasePage
 {
 	private class CPADataView extends DataView<CPA>
@@ -59,7 +64,7 @@ public class CPAsPage extends BasePage
 
 		private Link<Void> createViewLink(String id, final CPA cpa)
 		{
-			Link<Void> result = new Link<Void>(id)
+			val result = new Link<Void>(id)
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -77,17 +82,17 @@ public class CPAsPage extends BasePage
 
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="ebMSAdminDAO")
-	private EbMSDAO ebMSDAO;
+	EbMSDAO ebMSDAO;
 	@SpringBean(name="maxItemsPerPage")
-	private Integer maxItemsPerPage;
+	Integer maxItemsPerPage;
 
 	public CPAsPage()
 	{
-		WebMarkupContainer container = new WebMarkupContainer("container");
+		val container = new WebMarkupContainer("container");
 		add(container);
-		DataView<CPA> cpas = new CPADataView("cpas",new CPADataProvider(ebMSDAO));
+		val cpas = new CPADataView("cpas",new CPADataProvider(ebMSDAO));
 		container.add(cpas);
-		BootstrapPagingNavigator navigator = new BootstrapPagingNavigator("navigator",cpas);
+		val navigator = new BootstrapPagingNavigator("navigator",cpas);
 		add(navigator);
 		add(new MaxItemsPerPageChoice("maxItemsPerPage",new PropertyModel<>(this,"maxItemsPerPage"),container,navigator));
 	}

@@ -15,10 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
@@ -28,15 +24,33 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.util.io.IClusterable;
 
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.Supplier;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProxyPropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
+	Supplier<Boolean> isVisible;
 
-	public ProxyPropertiesFormPanel(String id, final IModel<ProxyPropertiesFormModel> model)
+	@Builder
+	public ProxyPropertiesFormPanel(String id, final IModel<ProxyPropertiesFormModel> model, Supplier<Boolean> isVisible)
 	{
 		super(id,model);
+		this.isVisible = isVisible == null ? () -> super.isVisible() : isVisible;
 		add(new ProxyPropertiesForm("form",model));
+	}
+
+	@Override
+	public boolean isVisible()
+	{
+		return isVisible.get();
 	}
 
 	public class ProxyPropertiesForm extends Form<ProxyPropertiesFormModel>
@@ -54,58 +68,17 @@ public class ProxyPropertiesFormPanel extends Panel
 		}
 	}
 
+	@Data
+	@NoArgsConstructor
 	public static class ProxyPropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		private String host;
-		private Integer port;
-		private String nonProxyHosts;
-		private String username;
-		private String password;
-
-		public String getHost()
-		{
-			return host;
-		}
-		public void setHost(String host)
-		{
-			this.host = host;
-		}
-		public Integer getPort()
-		{
-			return port;
-		}
-		public void setPort(Integer port)
-		{
-			this.port = port;
-		}
-		public String getNonProxyHosts()
-		{
-			return nonProxyHosts;
-		}
-		public void setNonProxyHosts(String nonProxyHosts)
-		{
-			this.nonProxyHosts = nonProxyHosts;
-		}
-		public String getUsername()
-		{
-			return username;
-		}
-		public void setUsername(String username)
-		{
-			this.username = username;
-		}
-		public String getPassword()
-		{
-			return password;
-		}
-		public void setPassword(String password)
-		{
-			this.password = password;
-		}
-		public static long getSerialversionuid()
-		{
-			return serialVersionUID;
-		}
+		@NonNull
+		String host;
+		@NonNull
+		Integer port;
+		String nonProxyHosts;
+		String username;
+		String password;
 	}
 }

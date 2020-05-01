@@ -21,5 +21,4 @@ public class EbMSServerProperties extends ServerProperties
 	{
 		super(protocol);
 	}
-
 }

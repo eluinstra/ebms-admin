@@ -17,39 +17,19 @@ package nl.clockwork.ebms.admin.model;
 
 import org.apache.wicket.util.io.IClusterable;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NonNull;
+
+@Builder
+@Data
+@AllArgsConstructor
 public class CPA implements IClusterable
 {
 	private static final long serialVersionUID = 1L;
-	private String cpaId;
-	private String cpa;
-	
-	public CPA()
-	{
-	}
-	
-	public CPA(String id, String cpa)
-	{
-		this.cpaId = id;
-		this.cpa = cpa;
-	}
-
-	public String getCpaId()
-	{
-		return cpaId;
-	}
-	
-	public void setCpaId(String cpaId)
-	{
-		this.cpaId = cpaId;
-	}
-	
-	public String getCpa()
-	{
-		return cpa;
-	}
-	
-	public void setCpa(String cpa)
-	{
-		this.cpa = cpa;
-	}
+	@NonNull
+	String cpaId;
+	@NonNull
+	String cpa;
 }

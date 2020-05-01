@@ -20,29 +20,10 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
-import nl.clockwork.ebms.admin.CPAUtils;
-import nl.clockwork.ebms.admin.Utils;
-import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.common.JAXBParser;
-import nl.clockwork.ebms.model.EbMSDataSource;
-import nl.clockwork.ebms.model.EbMSMessageContent;
-import nl.clockwork.ebms.model.EbMSMessageContext;
-import nl.clockwork.ebms.model.Role;
-import nl.clockwork.ebms.service.CPAService;
-import nl.clockwork.ebms.service.EbMSMessageService;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Button;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -55,10 +36,37 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement;
 
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NonNull;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.admin.CPAUtils;
+import nl.clockwork.ebms.admin.Utils;
+import nl.clockwork.ebms.admin.web.Action;
+import nl.clockwork.ebms.admin.web.AjaxButton;
+import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
+import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.Button;
+import nl.clockwork.ebms.admin.web.Consumer;
+import nl.clockwork.ebms.admin.web.DropDownChoice;
+import nl.clockwork.ebms.admin.web.ResetButton;
+import nl.clockwork.ebms.common.JAXBParser;
+import nl.clockwork.ebms.model.EbMSDataSource;
+import nl.clockwork.ebms.model.EbMSMessageContent;
+import nl.clockwork.ebms.model.EbMSMessageContext;
+import nl.clockwork.ebms.model.Role;
+import nl.clockwork.ebms.service.CPAService;
+import nl.clockwork.ebms.service.EbMSMessageService;
+
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class SendMessagePage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(getClass());
+	protected transient Log log = LogFactory.getLog(getClass());
 	@SpringBean(name="cpaService")
 	private CPAService cpaService;
 	@SpringBean(name="ebMSMessageService")
@@ -93,7 +101,7 @@ public class SendMessagePage extends BasePage
 			add(new TextField<String>("messageId").setLabel(new ResourceModel("lbl.messageId")));
 			add(new TextField<String>("refToMessageId").setLabel(new ResourceModel("lbl.refToMessageId")));
 			add(new DataSourcesForm("form",getModelObject().getDataSources()));
-			Button send = createSendButton("send");
+			val send = createSendButton("send");
 			setDefaultButton(send);
 			add(send);
 			add(new ResetButton("reset",new ResourceModel("cmd.reset"),SendMessagePage.class));
@@ -101,140 +109,120 @@ public class SendMessagePage extends BasePage
 
 		private DropDownChoice<String> createCPAIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())));
+			val result = new DropDownChoice<String>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())));
 			result.setLabel(new ResourceModel("lbl.cpaId"));
 			result.setRequired(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("change")
+			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
+				try
 				{
-					try
-					{
-						EbMSMessageContextModel model = MessageForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						model.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
-						model.resetFromRoles(CPAUtils.getRoleNames(cpa));
-						model.resetServices();
-						model.resetActions();
-						model.resetDataSources();
-						target.add(getPage().get("feedback"));
-						target.add(getPage().get("form"));
-					}
-					catch (JAXBException e)
-					{
-						logger.error("",e);
-						error(e.getMessage());
-					}
+					val model = MessageForm.this.getModelObject();
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+					model.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
+					model.resetFromRoles(CPAUtils.getRoleNames(cpa));
+					model.resetServices();
+					model.resetActions();
+					model.resetDataSources();
+					t.add(getPage().get("feedback"));
+					t.add(getPage().get("form"));
 				}
-			});
+				catch (JAXBException e)
+				{
+					log.error("",e);
+					error(e.getMessage());
+				}
+			};
+			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createFromPartyIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"));
+			val result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"));
 			result.setLabel(new ResourceModel("lbl.fromPartyId"));
 			result.setRequired(false).setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("change")
+			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
+				try
 				{
-					try
-					{
-						EbMSMessageContextModel model = MessageForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						model.resetFromRoles(CPAUtils.getRoleNames(cpa,model.getFromRole().getPartyId()));
-						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole().getRole()));
-						model.resetActions();
-						model.resetDataSources();
-						target.add(getPage().get("feedback"));
-						target.add(getPage().get("form"));
-					}
-					catch (JAXBException e)
-					{
-						logger.error("",e);
-						error(e.getMessage());
-					}
+					val model = MessageForm.this.getModelObject();
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+					model.resetFromRoles(CPAUtils.getRoleNames(cpa,model.getFromRole().getPartyId()));
+					model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole().getRole()));
+					model.resetActions();
+					model.resetDataSources();
+					t.add(getPage().get("feedback"));
+					t.add(getPage().get("form"));
 				}
-			});
+				catch (JAXBException e)
+				{
+					log.error("",e);
+					error(e.getMessage());
+				}
+			};
+			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createFromRoleChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"));
+			val result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"));
 			result.setLabel(new ResourceModel("lbl.fromRole"));
 			result.setRequired(true).setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("change")
+			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
+				try
 				{
-					try
-					{
-						EbMSMessageContextModel model = MessageForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						if (model.getFromRole().getPartyId() == null)
-							model.resetFromPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getFromRole().getRole()));
-						model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole().getRole()));
-						model.resetActions();
-						model.resetDataSources();
-						target.add(getPage().get("feedback"));
-						target.add(getPage().get("form"));
-					}
-					catch (JAXBException e)
-					{
-						logger.error("",e);
-						error(e.getMessage());
-					}
+					val model = MessageForm.this.getModelObject();
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+					if (model.getFromRole().getPartyId() == null)
+						model.resetFromPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getFromRole().getRole()));
+					model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole().getRole()));
+					model.resetActions();
+					model.resetDataSources();
+					t.add(getPage().get("feedback"));
+					t.add(getPage().get("form"));
 				}
-			});
+				catch (JAXBException e)
+				{
+					log.error("",e);
+					error(e.getMessage());
+				}
+			};
+			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createServiceChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"services"));
+			val result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"services"));
 			result.setLabel(new ResourceModel("lbl.service"));
 			result.setRequired(true);
 			result.setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("change")
+			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
+				try
 				{
-					try
-					{
-						EbMSMessageContextModel model = MessageForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						model.resetActions(CPAUtils.getFromActionNames(cpa,model.getFromRole().getRole(),model.getService()));
-						model.resetDataSources();
-						target.add(getPage().get("feedback"));
-						target.add(getPage().get("form"));
-					}
-					catch (JAXBException e)
-					{
-						logger.error("",e);
-						error(e.getMessage());
-					}
+					val model = MessageForm.this.getModelObject();
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+					model.resetActions(CPAUtils.getFromActionNames(cpa,model.getFromRole().getRole(),model.getService()));
+					model.resetDataSources();
+					t.add(getPage().get("feedback"));
+					t.add(getPage().get("form"));
 				}
-			});
+				catch (JAXBException e)
+				{
+					log.error("",e);
+					error(e.getMessage());
+				}
+			};
+			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createActionChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"actions"));
+			val result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"actions"));
 			result.setLabel(new ResourceModel("lbl.action"));
 			result.setRequired(true);
 			result.setOutputMarkupId(true);
@@ -243,49 +231,39 @@ public class SendMessagePage extends BasePage
 
 		private Button createSendButton(String id)
 		{
-			Button result = new Button(id,new ResourceModel("cmd.send"))
+			Action onSubmit = () ->
 			{
-				private static final long serialVersionUID = 1L;
-	
-				@Override
-				public void onSubmit()
+				try
 				{
-					try
-					{
-						EbMSMessageContextModel model = MessageForm.this.getModelObject();
-						EbMSMessageContent messageContent = new EbMSMessageContent(model,model.getDataSources());
-						String messageId = ebMSMessageService.sendMessage(messageContent);
-						info(new StringResourceModel("sendMessage.ok",Model.of(messageId)).getString());
-					}
-					catch (Exception e)
-					{
-						logger.error("",e);
-						error(e.getMessage());
-					}
+					val model = MessageForm.this.getModelObject();
+					val messageContent = new EbMSMessageContent(model,model.getDataSources());
+					val messageId = ebMSMessageService.sendMessage(messageContent);
+					info(new StringResourceModel("sendMessage.ok",Model.of(messageId)).getString());
+				}
+				catch (Exception e)
+				{
+					log.error("",e);
+					error(e.getMessage());
 				}
 			};
-			return result;
+			return new Button(id,new ResourceModel("cmd.send"),onSubmit);
 		}
-
 	}
 
+	@Data
+	@EqualsAndHashCode(callSuper = true)
 	public class EbMSMessageContextModel extends EbMSMessageContext
 	{
 		private static final long serialVersionUID = 1L;
-		private List<String> fromPartyIds = new ArrayList<>();
-		private List<String> fromRoles = new ArrayList<>();
-		private List<String> services = new ArrayList<>();
-		private List<String> actions = new ArrayList<>();
-		private List<EbMSDataSource> dataSources = new ArrayList<>();
+		final List<String> fromPartyIds = new ArrayList<>();
+		final List<String> fromRoles = new ArrayList<>();
+		final List<String> services = new ArrayList<>();
+		final List<String> actions = new ArrayList<>();
+		final List<EbMSDataSource> dataSources = new ArrayList<>();
 
 		public EbMSMessageContextModel()
 		{
 			setFromRole(new Role());
-		}
-		
-		public List<String> getFromPartyIds()
-		{
-			return fromPartyIds;
 		}
 		public void resetFromPartyIds()
 		{
@@ -296,10 +274,6 @@ public class SendMessagePage extends BasePage
 		{
 			resetFromPartyIds();
 			getFromPartyIds().addAll(partyIds);
-		}
-		public List<String> getFromRoles()
-		{
-			return fromRoles;
 		}
 		public void resetFromRoles()
 		{
@@ -312,10 +286,6 @@ public class SendMessagePage extends BasePage
 			getFromRoles().addAll(roles);
 			getFromRole().setRole(getFromRoles().size() == 1 ? getFromRoles().get(0) : null);
 		}
-		public List<String> getServices()
-		{
-			return services;
-		}
 		public void resetServices()
 		{
 			getServices().clear();
@@ -325,10 +295,6 @@ public class SendMessagePage extends BasePage
 		{
 			resetServices();
 			getServices().addAll(serviceNames);
-		}
-		public List<String> getActions()
-		{
-			return actions;
 		}
 		public void resetActions()
 		{
@@ -340,13 +306,42 @@ public class SendMessagePage extends BasePage
 			resetActions();
 			getActions().addAll(actionNames);
 		}
-		public List<EbMSDataSource> getDataSources()
-		{
-			return dataSources;
-		}
 		public void resetDataSources()
 		{
 			getDataSources().clear();
+		}
+	}
+
+	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+	public static class EbMSDataSourceListView extends ListView<EbMSDataSource>
+	{
+		private static final long serialVersionUID = 1L;
+		@NonNull
+		DataSourcesForm dataSourcesForm;
+
+		public EbMSDataSourceListView(String id, List<EbMSDataSource> dataSources, @NonNull DataSourcesForm dataSourcesForm)
+		{
+			super(id,dataSources);
+			this.dataSourcesForm = dataSourcesForm;
+		}
+
+		@Override
+		protected void populateItem(final ListItem<EbMSDataSource> item)
+		{
+			item.setModel(new CompoundPropertyModel<>(item.getModelObject()));
+			item.add(new Label("name"));
+			item.add(new Label("contentType"));
+			Consumer<AjaxRequestTarget> onSubmit = t ->
+			{
+				dataSourcesForm.getModelObject().remove(item.getModelObject());
+				t.add(dataSourcesForm);
+			};
+			item.add(AjaxButton.builder()
+					.id("remove")
+					.model(new ResourceModel("cmd.remove"))
+					.form(dataSourcesForm)
+					.onSubmit(onSubmit)
+					.build());
 		}
 	}
 
@@ -358,48 +353,19 @@ public class SendMessagePage extends BasePage
 		{
 			super(id,Model.ofList(dataSources));
 
-			ListView<EbMSDataSource> dataSources_ = new ListView<EbMSDataSource>("dataSources",dataSources)
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void populateItem(final ListItem<EbMSDataSource> item)
-				{
-					item.setModel(new CompoundPropertyModel<>(item.getModelObject()));
-					item.add(new Label("name"));
-					item.add(new Label("contentType"));
-					item.add(new AjaxButton("remove",new ResourceModel("cmd.remove"),DataSourcesForm.this)
-					{
-						private static final long serialVersionUID = 1L;
-						
-						@Override
-						protected void onSubmit(AjaxRequestTarget target)
-						{
-							DataSourcesForm.this.getModelObject().remove(item.getModelObject());
-							target.add(DataSourcesForm.this);
-						}
-					});
-				}
-			};
+			val dataSources_ = new EbMSDataSourceListView("dataSources",dataSources,DataSourcesForm.this);
 			dataSources_.setOutputMarkupId(true);
 			add(dataSources_);
 
-			final ModalWindow dataSourceModalWindow = new DataSourceModalWindow("dataSourceModelWindow",dataSources,DataSourcesForm.this);
+			val dataSourceModalWindow = new DataSourceModalWindow("dataSourceModelWindow",dataSources,DataSourcesForm.this);
 			add(dataSourceModalWindow);
 			
-			AjaxButton add = new AjaxButton("add")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onSubmit(AjaxRequestTarget target)
-				{
-					dataSourceModalWindow.show(target);
-				}
-			};
+			val add = AjaxButton.builder()
+					.id("add")
+					.onSubmit(t -> dataSourceModalWindow.show(t))
+					.build();
 			add(add);
 		}
-
 	}
 
 }

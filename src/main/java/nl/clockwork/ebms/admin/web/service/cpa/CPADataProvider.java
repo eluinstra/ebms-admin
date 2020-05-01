@@ -26,20 +26,22 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@AllArgsConstructor
 public class CPADataProvider implements IDataProvider<String>
 {
 	private static final long serialVersionUID = 1L;
-	private CPAService cpaService;
+	CPAService cpaService;
 
-	public CPADataProvider(CPAService cpaService)
-	{
-		this.cpaService = cpaService;
-	}
-	
 	@Override
 	public Iterator<? extends String> iterator(long first, long count)
 	{
-		List<String> cpaIds = Utils.toList(cpaService.getCPAIds());
+		val cpaIds = Utils.toList(cpaService.getCPAIds());
 		return cpaIds == null ? new ArrayList<String>().iterator() : cpaIds.iterator();
 	}
 
@@ -60,5 +62,4 @@ public class CPADataProvider implements IDataProvider<String>
 	public void detach()
 	{
 	}
-
 }

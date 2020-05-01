@@ -19,23 +19,29 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.zip.ZipOutputStream;
 
-import nl.clockwork.ebms.admin.dao.EbMSDAO;
-import nl.clockwork.ebms.admin.model.EbMSMessage;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.resource.IResourceStream;
 
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.apachecommons.CommonsLog;
+import nl.clockwork.ebms.admin.dao.EbMSDAO;
+import nl.clockwork.ebms.admin.model.EbMSMessage;
+
+@CommonsLog
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DownloadEbMSMessageLink extends Link<Void>
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
-	private EbMSDAO ebMSDAO;
-	private String messageId;
-	private int messageNr;
+	@NonNull
+	EbMSDAO ebMSDAO;
+	@NonNull
+	String messageId;
+	int messageNr;
 
 	public DownloadEbMSMessageLink(String id, EbMSDAO ebMSDAO, EbMSMessage message)
 	{
@@ -55,17 +61,17 @@ public class DownloadEbMSMessageLink extends Link<Void>
 	{
 		try
 		{
-			final ByteArrayOutputStream output = new ByteArrayOutputStream();
-			try (ZipOutputStream zip = new ZipOutputStream(output))
+			val output = new ByteArrayOutputStream();
+			try (val zip = new ZipOutputStream(output))
 			{
 				ebMSDAO.writeMessageToZip(messageId, messageNr,zip);
 			}
-			IResourceStream resourceStream = new ByteArrayResourceStream(output,"application/zip");
+			val resourceStream = new ByteArrayResourceStream(output,"application/zip");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}
 		catch (IOException e)
 		{
-			logger.error("",e);
+			log.error("",e);
 			error(e.getMessage());
 		}
 	}
@@ -73,8 +79,8 @@ public class DownloadEbMSMessageLink extends Link<Void>
 	private ResourceStreamRequestHandler createRequestHandler(IResourceStream resourceStream)
 	{
 		return new ResourceStreamRequestHandler(resourceStream)
-		.setFileName("message." + messageId + "." + messageNr + ".zip")
-		.setContentDisposition(ContentDisposition.ATTACHMENT);
+				.setFileName("message." + messageId + "." + messageNr + ".zip")
+				.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 
 }

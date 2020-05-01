@@ -20,7 +20,8 @@ import java.net.URISyntaxException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LoggerContext;
+
+import lombok.val;
 
 public class Log4j2Configurer
 {
@@ -28,7 +29,7 @@ public class Log4j2Configurer
 	{
 		if (StringUtils.isNotEmpty(uri))
 		{
-			LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(true);
+			val context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(true);
 			context.setConfigLocation(new URI(uri));
 		}
 	}

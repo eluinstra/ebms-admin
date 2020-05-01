@@ -17,18 +17,19 @@ package nl.clockwork.ebms.admin.web.configuration;
 
 import java.net.URISyntaxException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.encoding.UrlEncoder;
 import org.apache.wicket.util.resource.IResourceStream;
 
+import lombok.val;
+import lombok.extern.apachecommons.CommonsLog;
+
+@CommonsLog
 public class DownloadActiveMQFileLink extends Link<Void>
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(getClass());
 
 	public DownloadActiveMQFileLink(String id)
 	{
@@ -40,13 +41,13 @@ public class DownloadActiveMQFileLink extends Link<Void>
 	{
 		try
 		{
-			String fileName = UrlEncoder.QUERY_INSTANCE.encode("activemq.xml",getRequest().getCharset());
-			IResourceStream resourceStream = new ActiveMQFileResourceStream(); 
+			val fileName = UrlEncoder.QUERY_INSTANCE.encode("activemq.xml",getRequest().getCharset());
+			val resourceStream = new ActiveMQFileResourceStream(); 
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName,resourceStream));
 		}
 		catch (URISyntaxException e)
 		{
-			logger.error("",e);
+			log.error("",e);
 			error(e);
 		}
 	}
@@ -54,8 +55,7 @@ public class DownloadActiveMQFileLink extends Link<Void>
 	private ResourceStreamRequestHandler createRequestHandler(String fileName, IResourceStream resourceStream)
 	{
 		return new ResourceStreamRequestHandler(resourceStream)
-		.setFileName(fileName)
-		.setContentDisposition(ContentDisposition.ATTACHMENT);
+				.setFileName(fileName)
+				.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
-
 }

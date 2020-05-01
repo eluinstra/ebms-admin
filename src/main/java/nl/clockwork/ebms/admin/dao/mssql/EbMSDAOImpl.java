@@ -22,12 +22,14 @@ import java.util.HashMap;
 import java.util.List;
 
 import nl.clockwork.ebms.EbMSMessageStatus;
-import nl.clockwork.ebms.admin.Constants.TimeUnit;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
+import nl.clockwork.ebms.admin.web.message.TimeUnit;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.support.TransactionTemplate;
+
+import lombok.val;
 
 public class EbMSDAOImpl extends nl.clockwork.ebms.admin.dao.mysql.EbMSDAOImpl
 {
@@ -61,7 +63,7 @@ public class EbMSDAOImpl extends nl.clockwork.ebms.admin.dao.mysql.EbMSDAOImpl
 		//	" offset " + first + " rows fetch " + count + " rows only"
 		//;
 		return "select a.* from (" +
-			new EbMSMessageRowMapper().getBaseQuery().replaceFirst("select ","select row_number() over (order by time_stamp desc) as rn, ") +
+			EbMSMessageRowMapper.builder().build().getBaseQuery().replaceFirst("select ","select row_number() over (order by time_stamp desc) as rn, ") +
 			" where 1 = 1" +
 			getMessageFilter(filter,parameters) +
 			//") a where rn >= " + (first + 1) + " and rn < " + (first + 1 + count)
@@ -72,7 +74,7 @@ public class EbMSDAOImpl extends nl.clockwork.ebms.admin.dao.mysql.EbMSDAOImpl
 	@Override
 	public HashMap<Date,Integer> selectMessageTraffic(Date from, Date to, TimeUnit timeUnit, EbMSMessageStatus...status)
 	{
-		final HashMap<Date,Integer> result = new HashMap<>();
+		val result = new HashMap<Date,Integer>();
 		jdbcTemplate.query(
 			//"select format(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "') time, count(*) nr" + 
 			//"select parse(format(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "'),'yyyy-MM-dd hh:mm:ss') time, count(*) nr" + 

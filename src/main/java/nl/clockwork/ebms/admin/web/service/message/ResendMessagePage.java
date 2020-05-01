@@ -15,17 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
-import nl.clockwork.ebms.admin.dao.EbMSDAO;
-import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.service.CPAService;
-import nl.clockwork.ebms.service.EbMSMessageService;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -35,10 +24,26 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IClusterable;
 
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.apachecommons.CommonsLog;
+import nl.clockwork.ebms.admin.dao.EbMSDAO;
+import nl.clockwork.ebms.admin.web.Action;
+import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.Button;
+import nl.clockwork.ebms.admin.web.ResetButton;
+import nl.clockwork.ebms.service.CPAService;
+import nl.clockwork.ebms.service.EbMSMessageService;
+
+@CommonsLog
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ResendMessagePage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(getClass());
 	@SpringBean(name="ebMSAdminDAO")
 	public EbMSDAO ebMSDAO;
 	@SpringBean(name="cpaService")
@@ -68,7 +73,7 @@ public class ResendMessagePage extends BasePage
 		{
 			super(id,new CompoundPropertyModel<>(new ResendMessageFormModel()));
 			add(new BootstrapFormComponentFeedbackBorder("messageIdFeedback",createMessageIdField("messageId")));
-			Button resend = createResendButton("resend");
+			val resend = createResendButton("resend");
 			setDefaultButton(resend);
 			add(resend);
 			add(new ResetButton("reset",new ResourceModel("cmd.reset"),ResendMessagePage.class));
@@ -76,7 +81,7 @@ public class ResendMessagePage extends BasePage
 
 		private TextField<String> createMessageIdField(String id)
 		{
-			final TextField<String> result = new TextField<>(id);
+			val result = new TextField<String>(id);
 			result.setLabel(new ResourceModel("lbl.messageId"));
 			result.setRequired(true).setOutputMarkupPlaceholderTag(true);
 			return result;
@@ -84,44 +89,30 @@ public class ResendMessagePage extends BasePage
 
 		private Button createResendButton(String id)
 		{
-			Button result = new Button(id,new ResourceModel("cmd.check"))
+			Action onSubmit = () ->
 			{
-				private static final long serialVersionUID = 1L;
-	
-				@Override
-				public void onSubmit()
+				try
 				{
-					try
-					{
-						ResendMessageFormModel model = MessageStatusForm.this.getModelObject();
-						String messageId = ebMSMessageService.resendMessage(model.getMessageId());
-						info(new StringResourceModel("resendMessage.ok",Model.of(messageId)).getString());
-					}
-					catch (Exception e)
-					{
-						logger.error("",e);
-						error(e.getMessage());
-					}
+					val model = MessageStatusForm.this.getModelObject();
+					val messageId = ebMSMessageService.resendMessage(model.getMessageId());
+					info(new StringResourceModel("resendMessage.ok",Model.of(messageId)).getString());
+				}
+				catch (Exception e)
+				{
+					log.error("",e);
+					error(e.getMessage());
 				}
 			};
-			return result;
+			return new Button(id,new ResourceModel("cmd.check"),onSubmit);
 		}
-
 	}
 
+	@Data
 	public class ResendMessageFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		private String messageId;
+		String messageId;
 		
-		public String getMessageId()
-		{
-			return messageId;
-		}
-		public void setMessageId(String messageId)
-		{
-			this.messageId = messageId;
-		}
 		public void resetMessageId()
 		{
 			setMessageId(null);

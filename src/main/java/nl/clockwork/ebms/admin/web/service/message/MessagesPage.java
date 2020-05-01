@@ -15,8 +15,23 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
+import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.markup.repeater.data.IDataProvider;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+
+import lombok.AccessLevel;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
+import nl.clockwork.ebms.admin.web.Link;
 import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
 import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.PageLink;
@@ -24,28 +39,18 @@ import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.model.EbMSMessageContext;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
-import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.Component;
-import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.markup.repeater.data.DataView;
-import org.apache.wicket.markup.repeater.data.IDataProvider;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class MessagesPage extends BasePage
 {
 	private class MessageDataView extends DataView<String>
 	{
+		private static final long serialVersionUID = 1L;
+
 		protected MessageDataView(String id, IDataProvider<String> dataProvider)
 		{
 			super(id,dataProvider);
 			setOutputMarkupId(true);
 		}
-
-		private static final long serialVersionUID = 1L;
 
 		@Override
 		public long getItemsPerPage()
@@ -56,33 +61,22 @@ public class MessagesPage extends BasePage
 		@Override
 		protected void populateItem(final Item<String> item)
 		{
-			final String messageId = item.getModelObject();
+			val messageId = item.getModelObject();
 			item.add(createViewLink("view",messageId,new Label("messageId",messageId)));
 			item.add(AttributeModifier.replace("class",new OddOrEvenIndexStringModel(item.getIndex())));
 		}
 
 		private Link<Void> createViewLink(String id, final String messageId, Component...components)
 		{
-			Link<Void> link = new Link<Void>(id)
+			Action onClick = () ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void onClick()
-				{
-					setResponsePage(new MessagePage(ebMSMessageService.getMessage(messageId,null),MessagesPage.this,
-					new MessageProcessor()
-					{
-						private static final long serialVersionUID = 1L;
-
-						@Override
-						public void processMessage(String messageId)
-						{
-							ebMSMessageService.processMessage(messageId);
-						}
-					}));
-				}
+				setResponsePage(
+						new MessagePage(
+								ebMSMessageService.getMessage(messageId,null),
+								MessagesPage.this,
+								messageId_ -> ebMSMessageService.processMessage(messageId_)));
 			};
+			val link = new Link<Void>(id,onClick);
 			link.add(components);
 			return link;
 		}
@@ -90,10 +84,10 @@ public class MessagesPage extends BasePage
 
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="ebMSMessageService")
-	private EbMSMessageService ebMSMessageService;
+	EbMSMessageService ebMSMessageService;
 	@SpringBean(name="maxItemsPerPage")
-	private Integer maxItemsPerPage;
-	private EbMSMessageContext filter;
+	Integer maxItemsPerPage;
+	EbMSMessageContext filter;
 
 	public MessagesPage()
 	{
@@ -108,11 +102,11 @@ public class MessagesPage extends BasePage
 	public MessagesPage(EbMSMessageContext filter, final WebPage responsePage)
 	{
 		this.filter = filter;
-		final WebMarkupContainer container = new WebMarkupContainer("container");
+		val container = new WebMarkupContainer("container");
 		add(container);
-		DataView<String> messages = new MessageDataView("messages",new MessageDataProvider(ebMSMessageService,this.filter));
+		val messages = new MessageDataView("messages",new MessageDataProvider(ebMSMessageService,this.filter));
 		container.add(messages);
-		final BootstrapPagingNavigator navigator = new BootstrapPagingNavigator("navigator",messages);
+		val navigator = new BootstrapPagingNavigator("navigator",messages);
 		add(navigator);
 		add(new MaxItemsPerPageChoice("maxItemsPerPage",new PropertyModel<>(this,"maxItemsPerPage"),navigator,container));
 		add(new PageLink("back",responsePage).setVisible(responsePage != null));

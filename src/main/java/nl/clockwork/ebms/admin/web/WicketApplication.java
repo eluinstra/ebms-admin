@@ -21,10 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import nl.clockwork.ebms.admin.web.menu.MenuDivider;
-import nl.clockwork.ebms.admin.web.menu.MenuItem;
-import nl.clockwork.ebms.admin.web.menu.MenuLinkItem;
-
 import org.apache.wicket.core.request.handler.PageProvider;
 import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
 import org.apache.wicket.markup.html.WebPage;
@@ -35,74 +31,111 @@ import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.resource.JavaScriptResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 
+import lombok.AccessLevel;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.admin.web.menu.MenuDivider;
+import nl.clockwork.ebms.admin.web.menu.MenuItem;
+import nl.clockwork.ebms.admin.web.menu.MenuLinkItem;
+
 /**
  * Application object for your web application. If you want to run this application without deploying, run the Start class.
  * 
  * @see nl.clockwork.ebms.admin.Start#main(String[])
  */
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class WicketApplication extends WebApplication
 {
-	public List<MenuItem> menuItems = new ArrayList<>();
-	public Map<String,MessageProvider.MessageViewPanel> messageViewPanels = new HashMap<>();
-	public Map<String,MessageProvider.MessageEditPanel> messageEditPanels = new HashMap<>();
+	List<MenuItem> menuItems = new ArrayList<>();
+	Map<String,MessageProvider.MessageViewPanel> messageViewPanels = new HashMap<>();
+	Map<String,MessageProvider.MessageEditPanel> messageEditPanels = new HashMap<>();
 	
 	public WicketApplication()
 	{
-		MenuItem home = new MenuLinkItem("0","home",getHomePage());
-		menuItems.add(home);
-		
-		MenuItem cpa = new MenuItem("1","cpaService");
-		new MenuLinkItem(cpa,"1","cpas",nl.clockwork.ebms.admin.web.service.cpa.CPAsPage.class);
-		new MenuDivider(cpa,"2");
-		new MenuLinkItem(cpa,"3","urlMappings",nl.clockwork.ebms.admin.web.service.cpa.URLMappingsPage.class);
-		menuItems.add(cpa);
+		menuItems.add(createHomeMenuItem("0"));
+		menuItems.add(createCPAServiceMenuItem("1"));
+		menuItems.add(createMEssageServiceMenuItem("2"));
+		menuItems.add(createAdvancedMenuItem("3"));
+		menuItems.add(createConfigurationMenuItem("4"));
 
-		MenuItem message = new MenuItem("2","messageService");
-		new MenuLinkItem(message,"1","ping",nl.clockwork.ebms.admin.web.service.message.PingPage.class);
-		new MenuDivider(message,"2");
-		new MenuLinkItem(message,"3","receivedMessages",nl.clockwork.ebms.admin.web.service.message.MessagesPage.class);
-		new MenuLinkItem(message,"4","messageEvents",nl.clockwork.ebms.admin.web.service.message.MessageEventsPage.class);
-		new MenuDivider(message,"5");
-		//new MenuLinkItem(message,"6","messageSend",nl.clockwork.ebms.admin.web.service.message.SendMessagePage.class);
-		new MenuLinkItem(message,"6","messageSend",nl.clockwork.ebms.admin.web.service.message.SendMessagePageX.class);
-		new MenuLinkItem(message,"7","messageResend",nl.clockwork.ebms.admin.web.service.message.ResendMessagePage.class);
-		new MenuDivider(message,"8");
-		new MenuLinkItem(message,"9","messageStatus",nl.clockwork.ebms.admin.web.service.message.MessageStatusPage.class);
-		menuItems.add(message);
-
-		MenuItem advanced = new MenuItem("3","advanced");
-		new MenuLinkItem(advanced,"1","traffic",nl.clockwork.ebms.admin.web.message.TrafficPage.class);
-		new MenuLinkItem(advanced,"2","trafficChart",nl.clockwork.ebms.admin.web.message.TrafficChartPage.class);
-		new MenuDivider(advanced,"3");
-		new MenuLinkItem(advanced,"4","cpas",nl.clockwork.ebms.admin.web.cpa.CPAsPage.class);
-		new MenuLinkItem(advanced,"5","messages",nl.clockwork.ebms.admin.web.message.MessagesPage.class);
-		menuItems.add(advanced);
-
-		MenuItem configuration = new MenuItem("4","configuration");
-		new MenuLinkItem(configuration,"1","ebMSAdminProperties",nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.class);
-		new MenuDivider(configuration,"2");
-		new MenuLinkItem(configuration,"3","ebMSCoreProperties",nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.class);
-		menuItems.add(configuration);
-
-		List<ExtensionProvider> extensionProviders = ExtensionProvider.get();
+		val extensionProviders = ExtensionProvider.get();
 		if (extensionProviders.size() > 0)
-		{
-			MenuItem extensions = new MenuItem("5","extensions");
-			menuItems.add(extensions);
-			AtomicInteger i = new AtomicInteger(1);
-			extensionProviders.forEach(p ->
-			{
-				MenuItem epmi = new MenuItem("" + i.getAndIncrement(),p.getName());
-				extensions.addChild(epmi);
-				p.getMenuItems().forEach(m -> epmi.addChild(m));
-			});
-		}
+			menuItems.add(createExtensionsMenuItem("5",extensionProviders));
 
-		List<MessageProvider> messageProviders = MessageProvider.get();
+		val messageProviders = MessageProvider.get();
 		messageProviders.forEach(p ->p.getMessageViewPanels().forEach(vp -> messageViewPanels.put(vp.getId(),vp)));
 		messageProviders.forEach(p -> p.getMessageEditPanels().forEach(ep -> messageEditPanels.put(ep.getId(),ep)));
-		MenuItem about = new MenuLinkItem("6","about",nl.clockwork.ebms.admin.web.AboutPage.class);
-		menuItems.add(about);
+
+		menuItems.add(createAboutMEnuItem("6"));
+	}
+
+	private MenuItem createHomeMenuItem(String id)
+	{
+		return new MenuLinkItem(id,"home",getHomePage());
+	}
+
+	private MenuItem createCPAServiceMenuItem(String id)
+	{
+		val result = new MenuItem(id,"cpaService");
+		new MenuLinkItem(result,"1","cpas",nl.clockwork.ebms.admin.web.service.cpa.CPAsPage.class);
+		new MenuDivider(result,"2");
+		new MenuLinkItem(result,"3","urlMappings",nl.clockwork.ebms.admin.web.service.cpa.URLMappingsPage.class);
+		return result;
+	}
+
+	private MenuItem createMEssageServiceMenuItem(String id)
+	{
+		val result = new MenuItem(id,"messageService");
+		new MenuLinkItem(result,"1","ping",nl.clockwork.ebms.admin.web.service.message.PingPage.class);
+		new MenuDivider(result,"2");
+		new MenuLinkItem(result,"3","receivedMessages",nl.clockwork.ebms.admin.web.service.message.MessagesPage.class);
+		new MenuLinkItem(result,"4","messageEvents",nl.clockwork.ebms.admin.web.service.message.MessageEventsPage.class);
+		new MenuDivider(result,"5");
+		//new MenuLinkItem(message,"6","messageSend",nl.clockwork.ebms.admin.web.service.message.SendMessagePage.class);
+		new MenuLinkItem(result,"6","messageSend",nl.clockwork.ebms.admin.web.service.message.SendMessagePageX.class);
+		new MenuLinkItem(result,"7","messageResend",nl.clockwork.ebms.admin.web.service.message.ResendMessagePage.class);
+		new MenuDivider(result,"8");
+		new MenuLinkItem(result,"9","messageStatus",nl.clockwork.ebms.admin.web.service.message.MessageStatusPage.class);
+		return result;
+	}
+
+	private MenuItem createAdvancedMenuItem(String id)
+	{
+		val result = new MenuItem(id,"advanced");
+		new MenuLinkItem(result,"1","traffic",nl.clockwork.ebms.admin.web.message.TrafficPage.class);
+		new MenuLinkItem(result,"2","trafficChart",nl.clockwork.ebms.admin.web.message.TrafficChartPage.class);
+		new MenuDivider(result,"3");
+		new MenuLinkItem(result,"4","cpas",nl.clockwork.ebms.admin.web.cpa.CPAsPage.class);
+		new MenuLinkItem(result,"5","messages",nl.clockwork.ebms.admin.web.message.MessagesPage.class);
+		return result;
+	}
+
+	private MenuItem createConfigurationMenuItem(String id)
+	{
+		val result = new MenuItem(id,"configuration");
+		new MenuLinkItem(result,"1","ebMSAdminProperties",nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.class);
+		new MenuDivider(result,"2");
+		new MenuLinkItem(result,"3","ebMSCoreProperties",nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.class);
+		return result;
+	}
+
+	private MenuItem createExtensionsMenuItem(String id, List<ExtensionProvider> extensionProviders)
+	{
+		val result = new MenuItem(id,"extensions");
+		val i = new AtomicInteger(1);
+		extensionProviders.forEach(p ->
+		{
+			MenuItem epmi = new MenuItem(result,"" + i.getAndIncrement(),p.getName());
+			//result.addChild(epmi);
+			//p.getMenuItems().forEach(m -> epmi.addChild(m));
+			p.addMenuItems(epmi);
+		});
+		return result;
+	}
+
+	private MenuItem createAboutMEnuItem(String id)
+	{
+		return new MenuLinkItem(id,"about",nl.clockwork.ebms.admin.web.AboutPage.class);
 	}
 	
 	/**

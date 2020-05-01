@@ -17,12 +17,24 @@ package nl.clockwork.ebms.admin.web.configuration;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.io.IClusterable;
+
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.NonNull;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.PropertyPlaceholderConfigurer;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapPanelBorder;
+import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.admin.web.configuration.CorePropertiesFormPanel.CorePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.EncryptionPropertiesFormPanel.EncryptionPropertiesFormModel;
@@ -30,41 +42,12 @@ import nl.clockwork.ebms.admin.web.configuration.HttpPropertiesFormPanel.HttpPro
 import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.SignaturePropertiesFormModel;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.markup.html.form.Button;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.io.IClusterable;
-
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class EbMSCorePropertiesPage extends BasePage
 {
-	private class ComponentsListView extends ListView<BootstrapPanelBorder>
-	{
-		private static final long serialVersionUID = 1L;
-
-		public ComponentsListView(String id, List<BootstrapPanelBorder> list)
-		{
-			super(id,list);
-			setReuseItems(true);
-		}
-
-		@Override
-		protected void populateItem(ListItem<BootstrapPanelBorder> item)
-		{
-			item.add((BootstrapPanelBorder)item.getModelObject()); 
-		}
-	}
-
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
 	@SpringBean(name="propertyConfigurer")
-	private PropertyPlaceholderConfigurer propertyPlaceholderConfigurer;
+	PropertyPlaceholderConfigurer propertyPlaceholderConfigurer;
 
 	public EbMSCorePropertiesPage() throws IOException
 	{
@@ -90,7 +73,7 @@ public class EbMSCorePropertiesPage extends BasePage
 		{
 			super(id,new CompoundPropertyModel<>(model));
 			
-			List<BootstrapPanelBorder> components = new ArrayList<>();
+			val components = new ArrayList<BootstrapPanelBorder>();
 			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("coreProperties"),new CorePropertiesFormPanel("component",new PropertyModel<>(getModelObject(),"coreProperties"),false)));
 			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("httpProperties"),new HttpPropertiesFormPanel("component",new PropertyModel<>(getModelObject(),"httpProperties"),false)));
 			components.add(new BootstrapPanelBorder("panelBorder",EbMSCorePropertiesPage.this.getString("signatureProperties"),new SignaturePropertiesFormPanel("component",new PropertyModel<>(getModelObject(),"signatureProperties"))));
@@ -104,67 +87,26 @@ public class EbMSCorePropertiesPage extends BasePage
 
 		private Button createValidateButton(String id)
 		{
-			return new Button(id)
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void onSubmit()
-				{
-					info(EbMSCorePropertiesPage.this.getString("validate.ok"));
-				}
-			};
+			return Button.builder()
+					.id(id)
+					.onSubmit(() -> info(EbMSCorePropertiesPage.this.getString("validate.ok")))
+					.build();
 		}
 	}
 
+	@Data
 	public static class EbMSCorePropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		private CorePropertiesFormModel coreProperties = new CorePropertiesFormModel();
-		private HttpPropertiesFormModel httpProperties = new HttpPropertiesFormModel();
-		private SignaturePropertiesFormModel signatureProperties = new SignaturePropertiesFormModel();
-		private EncryptionPropertiesFormModel encryptionProperties = new EncryptionPropertiesFormModel();
-		private JdbcPropertiesFormModel jdbcProperties = new JdbcPropertiesFormModel();
-
-		public CorePropertiesFormModel getCoreProperties()
-		{
-			return coreProperties;
-		}
-		public void setCoreProperties(CorePropertiesFormModel coreProperties)
-		{
-			this.coreProperties = coreProperties;
-		}
-		public HttpPropertiesFormModel getHttpProperties()
-		{
-			return httpProperties;
-		}
-		public void setHttpProperties(HttpPropertiesFormModel httpProperties)
-		{
-			this.httpProperties = httpProperties;
-		}
-		public SignaturePropertiesFormModel getSignatureProperties()
-		{
-			return signatureProperties;
-		}
-		public void setSignatureProperties(SignaturePropertiesFormModel signatureProperties)
-		{
-			this.signatureProperties = signatureProperties;
-		}
-		public EncryptionPropertiesFormModel getEncryptionProperties()
-		{
-			return encryptionProperties;
-		}
-		public void setEncryptionProperties(EncryptionPropertiesFormModel encryptionProperties)
-		{
-			this.encryptionProperties = encryptionProperties;
-		}
-		public JdbcPropertiesFormModel getJdbcProperties()
-		{
-			return jdbcProperties;
-		}
-		public void setJdbcProperties(JdbcPropertiesFormModel jdbcProperties)
-		{
-			this.jdbcProperties = jdbcProperties;
-		}
+		@NonNull
+		CorePropertiesFormModel coreProperties = new CorePropertiesFormModel();
+		@NonNull
+		HttpPropertiesFormModel httpProperties = new HttpPropertiesFormModel();
+		@NonNull
+		SignaturePropertiesFormModel signatureProperties = new SignaturePropertiesFormModel();
+		@NonNull
+		EncryptionPropertiesFormModel encryptionProperties = new EncryptionPropertiesFormModel();
+		@NonNull
+		JdbcPropertiesFormModel jdbcProperties = new JdbcPropertiesFormModel();
 	}
 }

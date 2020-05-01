@@ -30,20 +30,21 @@ import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPrope
 
 import org.apache.commons.lang3.StringUtils;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
+@AllArgsConstructor
 public class EbMSCorePropertiesWriter
 {
-	protected Writer writer;
-	protected boolean enableSslOverridePropeties;
-
-  public EbMSCorePropertiesWriter(Writer writer, boolean enableSslOverridePropeties)
-	{
-		this.writer = writer;
-		this.enableSslOverridePropeties = enableSslOverridePropeties;
-	}
+	Writer writer;
+	boolean enableSslOverridePropeties;
 
 	public void write(EbMSCorePropertiesFormModel ebMSCoreProperties) throws IOException
 	{
-		Properties p = new Properties();
+		val p = new Properties();
 		write(p,ebMSCoreProperties.getCoreProperties());
 		write(p,ebMSCoreProperties.getHttpProperties(),enableSslOverridePropeties);
 		write(p,ebMSCoreProperties.getSignatureProperties());
@@ -73,12 +74,12 @@ public class EbMSCorePropertiesWriter
 		properties.setProperty("ebms.host",httpProperties.getHost());
 		properties.setProperty("ebms.port",httpProperties.getPort() == null ? "" : httpProperties.getPort().toString());
 		properties.setProperty("ebms.path",httpProperties.getPath());
-		properties.setProperty("ebms.ssl",Boolean.toString(httpProperties.getSsl()));
+		properties.setProperty("ebms.ssl",Boolean.toString(httpProperties.isSsl()));
 		properties.setProperty("http.chunkedStreamingMode",Boolean.toString(httpProperties.isChunkedStreamingMode()));
 		properties.setProperty("http.base64Writer",Boolean.toString(httpProperties.isBase64Writer()));
-		if (httpProperties.getSsl())
+		if (httpProperties.isSsl())
 			write(properties,httpProperties.getSslProperties(),enableSslOverridePropeties);
-		if (httpProperties.getProxy())
+		if (httpProperties.isProxy())
 			write(properties,httpProperties.getProxyProperties());
   }
 
@@ -88,9 +89,9 @@ public class EbMSCorePropertiesWriter
 			properties.setProperty("https.protocols",StringUtils.join(sslProperties.getEnabledProtocols(),','));
 		if (enableSslOverridePropeties && sslProperties.isOverrideDefaultCipherSuites())
 			properties.setProperty("https.cipherSuites",StringUtils.join(sslProperties.getEnabledCipherSuites(),','));
-		properties.setProperty("https.requireClientAuthentication",Boolean.toString(sslProperties.getRequireClientAuthentication()));
-		properties.setProperty("https.verifyHostnames",Boolean.toString(sslProperties.getVerifyHostnames()));
-		properties.setProperty("https.clientCertificateAuthentication",Boolean.toString(sslProperties.getClientCertificateAuthentication()));
+		properties.setProperty("https.requireClientAuthentication",Boolean.toString(sslProperties.isRequireClientAuthentication()));
+		properties.setProperty("https.verifyHostnames",Boolean.toString(sslProperties.isVerifyHostnames()));
+		properties.setProperty("https.clientCertificateAuthentication",Boolean.toString(sslProperties.isClientCertificateAuthentication()));
  		properties.setProperty("keystore.type",sslProperties.getKeystoreProperties().getType().name());
  		properties.setProperty("keystore.path",StringUtils.defaultString(sslProperties.getKeystoreProperties().getUri()));
  		properties.setProperty("keystore.password",StringUtils.defaultString(sslProperties.getKeystoreProperties().getPassword()));
@@ -113,7 +114,7 @@ public class EbMSCorePropertiesWriter
 
 	protected void write(Properties properties, SignaturePropertiesFormModel signatureProperties)
   {
-  	if (signatureProperties.getSigning())
+  	if (signatureProperties.isSigning())
   	{
   		properties.setProperty("signature.keystore.type",signatureProperties.getKeystoreProperties().getType().name());
   		properties.setProperty("signature.keystore.path",StringUtils.defaultString(signatureProperties.getKeystoreProperties().getUri()));
@@ -123,7 +124,7 @@ public class EbMSCorePropertiesWriter
 
 	protected void write(Properties properties, EncryptionPropertiesFormModel encryptionProperties)
   {
-  	if (encryptionProperties.getEncryption())
+  	if (encryptionProperties.isEncryption())
   	{
   		properties.setProperty("encryption.keystore.type",encryptionProperties.getKeystoreProperties().getType().name());
   		properties.setProperty("encryption.keystore.path",StringUtils.defaultString(encryptionProperties.getKeystoreProperties().getUri()));

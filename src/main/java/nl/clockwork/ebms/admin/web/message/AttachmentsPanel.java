@@ -17,17 +17,19 @@ package nl.clockwork.ebms.admin.web.message;
 
 import java.util.List;
 
-import nl.clockwork.ebms.admin.dao.EbMSDAO;
-import nl.clockwork.ebms.admin.model.EbMSAttachment;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import lombok.AccessLevel;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.admin.dao.EbMSDAO;
+import nl.clockwork.ebms.admin.model.EbMSAttachment;
+
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class AttachmentsPanel extends Panel
 {
 	private class EbMSAttachmentPropertyListView extends PropertyListView<EbMSAttachment>
@@ -43,7 +45,7 @@ public class AttachmentsPanel extends Panel
 		protected void populateItem(ListItem<EbMSAttachment> item)
 		{
 			item.add(new Label("name"));
-			DownloadEbMSAttachmentLink link = new DownloadEbMSAttachmentLink("downloadAttachment",ebMSDAO,item.getModelObject());
+			val link = new DownloadEbMSAttachmentLink("downloadAttachment",ebMSDAO,item.getModelObject());
 			link.add(new Label("contentId"));
 			item.add(link);
 			item.add(new Label("contentType"));
@@ -51,9 +53,8 @@ public class AttachmentsPanel extends Panel
 	}
 
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
 	@SpringBean(name="ebMSAdminDAO")
-	private EbMSDAO ebMSDAO;
+	EbMSDAO ebMSDAO;
 
 	public AttachmentsPanel(String id, List<EbMSAttachment> attachments)
 	{

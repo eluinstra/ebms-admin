@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import java.io.Serializable;
 import java.util.Arrays;
 
 import org.apache.wicket.Component;
@@ -23,35 +22,33 @@ import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.feedback.IFeedbackMessageFilter;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
 
 public class BootstrapAlertFeedbackPanel extends FeedbackPanel
 {
-	private static final long serialVersionUID = 1L;
+	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+	@AllArgsConstructor
+	@Getter
 	private enum ErrorLevel
 	{
 		UNDEFINED(0,"alert-info"), DEBUG(100,"alert-info"), INFO(200,"alert-info"), SUCCESS(250,"alert-success"), WARNING(300,"alert-warning"), ERROR(400,"alert-danger"), FATAL(500,"alert-danger");
 		
-		private int errorCode;
-		private String cssClass;
+		int errorCode;
+		String cssClass;
 
-		private ErrorLevel(int errorCode, String cssClass)
-		{
-			this.errorCode = errorCode;
-			this.cssClass = cssClass;
-		}
-		
 		public static ErrorLevel getErrorLevel(int errorCode)
 		{
 			return Arrays.stream(ErrorLevel.values()).filter(e -> errorCode == e.errorCode).findFirst().orElse(null);
 		}
-		
-		public String getCssClass()
-		{
-			return cssClass;
-		}
 	}
+
+	private static final long serialVersionUID = 1L;
 
 	public BootstrapAlertFeedbackPanel(final String id)
 	{
@@ -72,10 +69,10 @@ public class BootstrapAlertFeedbackPanel extends FeedbackPanel
 	@Override
 	protected Component newMessageDisplayComponent(final String id, final FeedbackMessage message)
 	{
-		WebMarkupContainer container = new WebMarkupContainer(id);
+		val container = new WebMarkupContainer(id);
 		container.add(new Button("close"));
-		Serializable serializable = message.getMessage();
-		Label label = new Label("content",serializable == null ? "" : serializable.toString());
+		val serializable = message.getMessage();
+		val label = new Label("content",serializable == null ? "" : serializable.toString());
 		label.setEscapeModelStrings(BootstrapAlertFeedbackPanel.this.getEscapeModelStrings());
 		container.add(label);
 		return container;

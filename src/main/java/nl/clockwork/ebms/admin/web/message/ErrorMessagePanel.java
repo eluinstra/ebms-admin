@@ -15,12 +15,12 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+
+import nl.clockwork.ebms.admin.web.AjaxLink;
 
 public class ErrorMessagePanel extends Panel
 {
@@ -35,16 +35,10 @@ public class ErrorMessagePanel extends Panel
 
 	private AjaxLink<Void> createClose(String id, final ModalWindow window)
 	{
-		return new AjaxLink<Void>(id)
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void onClick(AjaxRequestTarget target)
-			{
-				window.close(target);
-			}
-		};
+		return AjaxLink.<Void>builder()
+				.id(id)
+				.onClick(t -> window.close(t))
+				.build();
 	}
 
 }

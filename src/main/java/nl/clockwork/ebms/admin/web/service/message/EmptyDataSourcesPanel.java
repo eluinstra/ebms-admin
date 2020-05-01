@@ -20,13 +20,9 @@ import java.util.List;
 
 import nl.clockwork.ebms.model.EbMSDataSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 public class EmptyDataSourcesPanel extends DataSourcesPanel
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
 
 	public EmptyDataSourcesPanel(String id)
 	{
@@ -38,5 +34,4 @@ public class EmptyDataSourcesPanel extends DataSourcesPanel
 	{
 		return new ArrayList<>();
 	}
-
 }

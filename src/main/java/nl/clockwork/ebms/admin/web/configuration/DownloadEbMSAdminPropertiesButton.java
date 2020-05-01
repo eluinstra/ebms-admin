@@ -18,25 +18,30 @@ package nl.clockwork.ebms.admin.web.configuration;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import nl.clockwork.ebms.admin.web.configuration.Constants.PropertiesType;
-import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormModel;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.resource.IResourceStream;
 
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.apachecommons.CommonsLog;
+import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormModel;
+
+@CommonsLog
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DownloadEbMSAdminPropertiesButton extends Button
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
-	private EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel;
-	private PropertiesType propertiesType;
+	@NonNull
+	EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel;
+	@NonNull
+	PropertiesType propertiesType;
 
-	public DownloadEbMSAdminPropertiesButton(String id, ResourceModel resourceModel, EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel, PropertiesType propertiesType)
+	public DownloadEbMSAdminPropertiesButton(String id, ResourceModel resourceModel, @NonNull EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel, @NonNull PropertiesType propertiesType)
 	{
 		super(id,resourceModel);
 		this.ebMSAdminPropertiesFormModel = ebMSAdminPropertiesFormModel;
@@ -48,14 +53,14 @@ public class DownloadEbMSAdminPropertiesButton extends Button
 	{
 		try
 		{
-			final StringWriter writer = new StringWriter();
+			val writer = new StringWriter();
 			new EbMSAdminPropertiesWriter(writer,true).write(ebMSAdminPropertiesFormModel,propertiesType);
-			IResourceStream resourceStream = new StringWriterResourceStream(writer,"plain/text");
+			val resourceStream = new StringWriterResourceStream(writer,"plain/text");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}
 		catch (IOException e)
 		{
-			logger.error("",e);
+			log.error("",e);
 			error(e.getMessage());
 		}
 	}
@@ -63,8 +68,7 @@ public class DownloadEbMSAdminPropertiesButton extends Button
 	private ResourceStreamRequestHandler createRequestHandler(IResourceStream resourceStream)
 	{
 		return new ResourceStreamRequestHandler(resourceStream)
-		.setFileName(propertiesType.getPropertiesFile())
-		.setContentDisposition(ContentDisposition.ATTACHMENT);
+				.setFileName(propertiesType.getPropertiesFile())
+				.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
-
 }

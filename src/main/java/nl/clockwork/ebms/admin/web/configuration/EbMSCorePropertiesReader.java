@@ -23,7 +23,10 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 
-import nl.clockwork.ebms.admin.web.configuration.Constants.JdbcDriver;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.web.configuration.CorePropertiesFormPanel.CorePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.EbMSCorePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.EncryptionPropertiesFormPanel.EncryptionPropertiesFormModel;
@@ -36,18 +39,15 @@ import nl.clockwork.ebms.client.EbMSHttpClientFactory.EbMSHttpClientType;
 import nl.clockwork.ebms.event.listener.EventListenerFactory.EventListenerType;
 import nl.clockwork.ebms.security.KeyStoreType;
 
+@FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
+@AllArgsConstructor
 public class EbMSCorePropertiesReader
 {
-	protected Reader reader;
-
-	public EbMSCorePropertiesReader(Reader reader)
-	{
-		this.reader = reader;
-	}
+	Reader reader;
 
 	public void read(EbMSCorePropertiesFormModel ebMSCoreProperties) throws IOException
 	{
-		Properties properties = new Properties();
+		val properties = new Properties();
 		properties.load(reader);
 		read(properties,ebMSCoreProperties.getCoreProperties());
 		read(properties,ebMSCoreProperties.getHttpProperties());
@@ -81,9 +81,9 @@ public class EbMSCorePropertiesReader
 		httpProperties.setProxy(!StringUtils.isEmpty(properties.getProperty("http.proxy.host")));
 		httpProperties.setChunkedStreamingMode(new Boolean(properties.getProperty("http.chunkedStreamingMode")));
 		httpProperties.setBase64Writer(new Boolean(properties.getProperty("http.base64Writer")));
-		if (httpProperties.getSsl())
+		if (httpProperties.isSsl())
 			read(properties,httpProperties.getSslProperties());
-		if (httpProperties.getProxy())
+		if (httpProperties.isProxy())
 			read(properties,httpProperties.getProxyProperties());
 	}
 

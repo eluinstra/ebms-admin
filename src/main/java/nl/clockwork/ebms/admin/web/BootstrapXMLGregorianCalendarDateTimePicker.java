@@ -20,7 +20,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.Locale;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -38,8 +37,16 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.convert.converter.AbstractConverter;
 
-import nl.clockwork.ebms.admin.Constants.JQueryLocale;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPanel<XMLGregorianCalendar>
 {
 	public enum Type
@@ -51,14 +58,25 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 		H12, H24;
 	}
 	private static final long serialVersionUID = 1L;
-	private String format;
-	private String formatJS;
-	private Type type = Type.DATE_TIME;
-	private HourFormat hourFormat;
-	private Date startDate;
-	private Date endDate;
-	private XMLGregorianCalendar dateTime;
-	private TextField<XMLGregorianCalendar> dateTimeField;
+	@NonNull
+	String format;
+	@NonNull
+	String formatJS;
+	Type type = Type.DATE_TIME;
+	@NonNull
+	HourFormat hourFormat;
+	@NonFinal
+	@Setter
+	Date startDate;
+	@NonFinal
+	@Setter
+	Date endDate;
+	@NonFinal
+	@Getter
+	@Setter
+	XMLGregorianCalendar dateTime;
+	@NonNull
+	TextField<XMLGregorianCalendar> dateTimeField;
 
 	public BootstrapXMLGregorianCalendarDateTimePicker(final String id)
 	{
@@ -83,7 +101,7 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 		this.formatJS = format.replaceAll("H","h");
 		setType(XMLGregorianCalendar.class);
 		
-		MarkupContainer dateTimePicker = new MarkupContainer("dateTimePicker")
+		val dateTimePicker = new MarkupContainer("dateTimePicker")
 		{
 			private static final long serialVersionUID = 1L;
 		};
@@ -109,9 +127,9 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 						{
 							try
 							{
-								SimpleDateFormat formatter = new SimpleDateFormat(BootstrapXMLGregorianCalendarDateTimePicker.this.format);
-								GregorianCalendar calendar = new GregorianCalendar();
-								Date date = formatter.parse(value);
+								val formatter = new SimpleDateFormat(BootstrapXMLGregorianCalendarDateTimePicker.this.format);
+								val calendar = new GregorianCalendar();
+								val date = formatter.parse(value);
 								calendar.setTime(date);
 								return DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
 							}
@@ -128,7 +146,7 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 						@Override
 						public String convertToString(XMLGregorianCalendar value, Locale locale)
 						{
-							SimpleDateFormat formatter = new SimpleDateFormat(BootstrapXMLGregorianCalendarDateTimePicker.this.format);
+							val formatter = new SimpleDateFormat(BootstrapXMLGregorianCalendarDateTimePicker.this.format);
 							return formatter.format(value.toGregorianCalendar().getTime());
 						}
 	
@@ -177,7 +195,7 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 	@Override
 	public void renderHead(IHeaderResponse response)
 	{
-		List<String> options = new ArrayList<>();
+		val options = new ArrayList<String>();
 		if (formatJS != null)
 			options.add("format: '" + formatJS + "'");
 		if (!Type.DATE_TIME.equals(type) & !Type.DATE.equals(type))
@@ -215,39 +233,13 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 		return format;
 	}
 	
-	public BootstrapXMLGregorianCalendarDateTimePicker setType(Type type)
-	{
-		this.type = type;
-		return this;
-	}
-	
 	public JQueryLocale getJQueryLocale()
 	{
 		return JQueryLocale.EN;
 	}
 
-	public void setStartDate(Date startDate)
-	{
-		this.startDate = startDate;
-	}
-
-	public void setEndDate(Date endDate)
-	{
-		this.endDate = endDate;
-	}
-	
 	private String getDateTimePickerId()
 	{
 		return getMarkupId() + "DateTimePicker";
-	}
-	
-	public XMLGregorianCalendar getDateTime()
-	{
-		return dateTime;
-	}
-	
-	public void setDateTime(XMLGregorianCalendar dateTime)
-	{
-		this.dateTime = dateTime;
 	}
 }

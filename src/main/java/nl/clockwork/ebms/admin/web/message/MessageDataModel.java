@@ -20,54 +20,32 @@ import nl.clockwork.ebms.admin.model.EbMSMessage;
 
 import org.apache.wicket.model.LoadableDetachableModel;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class MessageDataModel extends LoadableDetachableModel<EbMSMessage>
 {
 	private static final long serialVersionUID = 1L;
-	private final EbMSDAO ebMSDAO;
-	private final String messageId;
-	private final int messageNr;
+	@NonNull
+	transient EbMSDAO ebMSDAO;
+	@NonNull
+	String messageId;
+	int messageNr;
 
 	public MessageDataModel(EbMSDAO ebMSDAO, EbMSMessage message)
 	{
 		this(ebMSDAO,message.getMessageId(),message.getMessageNr());
 	}
 
-	public MessageDataModel(EbMSDAO ebMSDAO, String messageId, int messageNr)
-	{
-		if (messageId == null)
-			throw new IllegalArgumentException("messageId is null!");
-		this.ebMSDAO = ebMSDAO;
-		this.messageId = messageId;
-		this.messageNr = messageNr;
-	}
-
 	@Override
 	protected EbMSMessage load()
 	{
 		return ebMSDAO.findMessage(messageId,messageNr);
-	}
-
-	@Override
-	public int hashCode()
-	{
-    int hash = 1;
-    hash = hash * 13 + (messageId == null ? 0 : messageId.hashCode());
-    hash = hash * 17 + Integer.valueOf(messageNr).hashCode();
-    return hash;
-	}
-
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (obj == this)
-			return true;
-		else if (obj == null)
-			return false;
-		else if (obj instanceof MessageDataModel)
-		{
-			MessageDataModel other = (MessageDataModel)obj;
-			return messageId.equals(other.messageId) && messageNr == other.messageNr;
-		}
-		return false;
 	}
 }

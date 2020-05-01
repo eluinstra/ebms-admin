@@ -15,86 +15,79 @@
  */
 package nl.clockwork.ebms.admin.web.service.cpa;
 
-import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
-import nl.clockwork.ebms.admin.web.PageClassLink;
-import nl.clockwork.ebms.admin.web.WebMarkupContainer;
-import nl.clockwork.ebms.service.CPAService;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import lombok.AccessLevel;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.apachecommons.CommonsLog;
+import nl.clockwork.ebms.admin.web.Action;
+import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.Button;
+import nl.clockwork.ebms.admin.web.Link;
+import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
+import nl.clockwork.ebms.admin.web.PageClassLink;
+import nl.clockwork.ebms.admin.web.WebMarkupContainer;
+import nl.clockwork.ebms.service.CPAService;
+
+@CommonsLog
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CPAsPage extends BasePage
 {
 	private class CPAIdsDataView extends DataView<String>
 	{
+		private static final long serialVersionUID = 1L;
+
 		protected CPAIdsDataView(String id, IDataProvider<String> dataProvider)
 		{
 			super(id,dataProvider);
 			setOutputMarkupId(true);
 		}
 
-		private static final long serialVersionUID = 1L;
-
 		@Override
 		protected void populateItem(final Item<String> item)
 		{
-			String cpaId = item.getModelObject();
+			val cpaId = item.getModelObject();
 			item.add(createViewLink("view",cpaId));
 			item.add(new DownloadCPALink("downloadCPA",cpaService,cpaId));
-			item.add(createDeleteButton("delete"));
+			item.add(createDeleteButton("delete",cpaId));
 			item.add(AttributeModifier.replace("class",new OddOrEvenIndexStringModel(item.getIndex())));
 		}
 
 		private Link<Void> createViewLink(String id, final String cpaId)
 		{
-			Link<Void> result = new Link<Void>(id)
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void onClick()
-				{
-					setResponsePage(new CPAPage(cpaService.getCPA(cpaId),CPAsPage.this));
-				}
-			};
+			val result = Link.<Void>builder()
+					.id(id)
+					.onClick(() -> setResponsePage(new CPAPage(cpaService.getCPA(cpaId),CPAsPage.this)))
+					.build();
 			result.add(new Label("cpaId",cpaId));
 			return result;
 		}
 
-		private Button createDeleteButton(String id)
+		private Button createDeleteButton(String id, final String cpaId)
 		{
-			Button result = new Button(id,new ResourceModel("cmd.delete"))
+			Action onSubmit = () ->
 			{
-				private static final long serialVersionUID = 1L;
-	
-				@Override
-				public void onSubmit()
+				try
 				{
-					try
-					{
-						String cpaId = (String)getParent().getDefaultModelObject();
-						cpaService.deleteCPA(cpaId);
-						setResponsePage(new CPAsPage());
-					}
-					catch (Exception e)
-					{
-						logger.error("",e);
-						error(e.getMessage());
-					}
+					cpaService.deleteCPA(cpaId);
+					setResponsePage(new CPAsPage());
+				}
+				catch (Exception e)
+				{
+					log.error("",e);
+					error(e.getMessage());
 				}
 			};
+			val result = new Button(id,new ResourceModel("cmd.delete"),onSubmit);
 			result.add(AttributeModifier.replace("onclick","return confirm('" + getLocalizer().getString("confirm",this) + "');"));
 			return result;
 		}
@@ -102,9 +95,8 @@ public class CPAsPage extends BasePage
 	}
 
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
 	@SpringBean(name="cpaService")
-	private CPAService cpaService;
+	CPAService cpaService;
 
 	public CPAsPage()
 	{
@@ -119,7 +111,7 @@ public class CPAsPage extends BasePage
 		public EditCPAsForm(String id)
 		{
 			super(id);
-			WebMarkupContainer container = new WebMarkupContainer("container");
+			val container = new WebMarkupContainer("container");
 			add(container);
 			container.add(new CPAIdsDataView("cpaIds",new CPADataProvider(cpaService)));
 			add(new PageClassLink("new",CPAUploadPage.class));

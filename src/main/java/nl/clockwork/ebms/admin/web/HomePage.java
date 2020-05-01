@@ -17,26 +17,29 @@ package nl.clockwork.ebms.admin.web;
 
 import java.io.IOException;
 
-import nl.clockwork.ebms.admin.PropertyPlaceholderConfigurer;
-import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage;
-
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.springframework.core.io.Resource;
 
+import lombok.AccessLevel;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.admin.PropertyPlaceholderConfigurer;
+import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage;
+
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class HomePage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="propertyConfigurer")
-	private PropertyPlaceholderConfigurer propertyPlaceholderConfigurer;
+	PropertyPlaceholderConfigurer propertyPlaceholderConfigurer;
 
 	public HomePage(final PageParameters parameters) throws IOException
 	{
 		super(parameters);
-		Resource file = propertyPlaceholderConfigurer.getOverridePropertiesFile();
+		val file = propertyPlaceholderConfigurer.getOverridePropertiesFile();
 		add(new WebMarkupContainer("configurationFile.found").add(new Label("configurationFile",file.getFile().getAbsolutePath())).setVisible(file.exists()));
 		add(new WebMarkupContainer("configurationFile.notFound").add(new Label("configurationFile",file.getFile().getAbsolutePath()),new BookmarkablePageLink<Void>("configurationPageLink",EbMSAdminPropertiesPage.class)).setVisible(!file.exists()));
 	}

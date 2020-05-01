@@ -24,6 +24,8 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
+import lombok.val;
+
 public class MenuLinkItemPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
@@ -36,7 +38,7 @@ public class MenuLinkItemPanel extends Panel
 	public MenuLinkItemPanel(String id, IModel<MenuLinkItem> model)
 	{
 		super(id,model);
-		BookmarkablePageLink<BasePage> link = new BookmarkablePageLink<>("link",model.getObject().getPageClass());
+		val link = new BookmarkablePageLink<BasePage>("link",model.getObject().getPageClass());
 		link.add(new Label("name",Utils.getResourceString(this.getClass(),model.getObject().getName())));
 		add(link);
 		//add(AttributeModifier.replace("class",Model.of("active"));

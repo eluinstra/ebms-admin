@@ -26,13 +26,22 @@ import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.encoding.UrlEncoder;
 import org.apache.wicket.util.resource.IResourceStream;
 
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DownloadEbMSAttachmentLink extends Link<Void>
 {
 	private static final long serialVersionUID = 1L;
-	private EbMSDAO ebMSDAO;
-	private String messageId;
-	private int messageNr;
-	private String contentId;
+	@NonNull
+	EbMSDAO ebMSDAO;
+	@NonNull
+	String messageId;
+	int messageNr;
+	@NonNull
+	String contentId;
 
 	public DownloadEbMSAttachmentLink(String id, EbMSDAO ebMSDAO, EbMSAttachment attachment)
 	{
@@ -51,17 +60,17 @@ public class DownloadEbMSAttachmentLink extends Link<Void>
 	@Override
 	public void onClick()
 	{
-		EbMSAttachment attachment = ebMSDAO.findAttachment(messageId,messageNr,contentId);
-		String fileName = UrlEncoder.QUERY_INSTANCE.encode(StringUtils.isEmpty(attachment.getName()) ? attachment.getContentId() + Utils.getFileExtension(attachment.getContentType()) : attachment.getName(),getRequest().getCharset());
-		IResourceStream resourceStream = new AttachmentResourceStream(attachment); 
+		val attachment = ebMSDAO.findAttachment(messageId,messageNr,contentId);
+		val fileName = UrlEncoder.QUERY_INSTANCE.encode(StringUtils.isEmpty(attachment.getName()) ? attachment.getContentId() + Utils.getFileExtension(attachment.getContentType()) : attachment.getName(),getRequest().getCharset());
+		val resourceStream = new AttachmentResourceStream(attachment); 
 		getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName,resourceStream));
 	}
 
 	private ResourceStreamRequestHandler createRequestHandler(String fileName, IResourceStream resourceStream)
 	{
 		return new ResourceStreamRequestHandler(resourceStream)
-		.setFileName(fileName)
-		.setContentDisposition(ContentDisposition.ATTACHMENT);
+				.setFileName(fileName)
+				.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 
 }

@@ -19,82 +19,26 @@ import java.util.Date;
 
 import org.apache.wicket.util.io.IClusterable;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import nl.clockwork.ebms.event.processor.EbMSEventStatus;
 
+@Builder
+@Data
+@AllArgsConstructor
+@RequiredArgsConstructor
 public class EbMSEventLog implements IClusterable
 {
 	private static final long serialVersionUID = 1L;
-	private EbMSMessage message;
-	private Date timestamp;
-	private String uri;
-	private EbMSEventStatus status;
-	private String errorMessage;
-
-	public EbMSEventLog()
-	{
-	}
-
-	public EbMSEventLog(Date timestamp, String uri, EbMSEventStatus status, String errorMessage)
-	{
-		this.timestamp = timestamp;
-		this.uri = uri;
-		this.status = status;
-		this.errorMessage = errorMessage;
-	}
-
-	public EbMSMessage getMessage()
-	{
-		return message;
-	}
-
-	public void setMessage(EbMSMessage message)
-	{
-		this.message = message;
-	}
-
-	public Date getTimestamp()
-	{
-		return timestamp;
-	}
-
-	public void setTimestamp(Date timestamp)
-	{
-		this.timestamp = timestamp;
-	}
-
-	public String getUri()
-	{
-		return uri;
-	}
-
-	public void setUri(String uri)
-	{
-		this.uri = uri;
-	}
-
-	public EbMSEventStatus getStatus()
-	{
-		return status;
-	}
-
-	public void setStatus(EbMSEventStatus status)
-	{
-		this.status = status;
-	}
-
-	public String getErrorMessage()
-	{
-		return errorMessage;
-	}
-
-	public void setErrorMessage(String errorMessage)
-	{
-		this.errorMessage = errorMessage;
-	}
-
-	public static long getSerialversionuid()
-	{
-		return serialVersionUID;
-	}
-
+	EbMSMessage message;
+	@NonNull
+	Date timestamp;
+	@NonNull
+	String uri;
+	@NonNull
+	EbMSEventStatus status;
+	String errorMessage;
 }

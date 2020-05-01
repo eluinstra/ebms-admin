@@ -24,24 +24,23 @@ import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@AllArgsConstructor
 public class StringWriterResourceStream extends AbstractResourceStream
 {
 	private static final long serialVersionUID = 1L;
-	private StringWriter writer;
-	private String contentType;
+	@NonNull
+	StringWriter writer;
+	@NonNull
+	@Getter
+	String contentType;
 
-	public StringWriterResourceStream(StringWriter writer, String contentType)
-	{
-		this.writer = writer;
-		this.contentType = contentType;
-	}
-
-	@Override
-	public String getContentType()
-	{
-		return contentType;
-	}
-	
 	@Override
 	public Bytes length()
 	{

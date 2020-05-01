@@ -19,14 +19,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -34,41 +28,32 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NonNull;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.apachecommons.CommonsLog;
 import nl.clockwork.ebms.admin.PropertyPlaceholderConfigurer;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapPanelBorder;
+import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.admin.web.configuration.ConsolePropertiesFormPanel.ConsolePropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.Constants.PropertiesType;
 import nl.clockwork.ebms.admin.web.configuration.CorePropertiesFormPanel.CorePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.EbMSCorePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.ServicePropertiesFormPanel.ServicePropertiesFormModel;
 
+@CommonsLog
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class EbMSAdminPropertiesPage extends BasePage
 {
-	private class ComponentsListView extends ListView<BootstrapPanelBorder>
-	{
-		private static final long serialVersionUID = 1L;
-
-		public ComponentsListView(String id, List<BootstrapPanelBorder> list)
-		{
-			super(id,list);
-			setReuseItems(true);
-		}
-
-		@Override
-		protected void populateItem(ListItem<BootstrapPanelBorder> item)
-		{
-			item.add((BootstrapPanelBorder)item.getModelObject()); 
-		}
-	}
-
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
 	@SpringBean(name="propertyConfigurer")
-	private PropertyPlaceholderConfigurer propertyPlaceholderConfigurer;
-	private PropertiesType propertiesType;
+	PropertyPlaceholderConfigurer propertyPlaceholderConfigurer;
+	PropertiesType propertiesType;
 
 	public EbMSAdminPropertiesPage() throws IOException
 	{
@@ -83,14 +68,14 @@ public class EbMSAdminPropertiesPage extends BasePage
 			ebMSAdminPropertiesFormModel = new EbMSAdminPropertiesFormModel();
 			try
 			{
-				File file = new File(propertiesType.getPropertiesFile());
-				FileReader reader = new FileReader(file);
+				val file = new File(propertiesType.getPropertiesFile());
+				val reader = new FileReader(file);
 				new EbMSAdminPropertiesReader(reader).read(ebMSAdminPropertiesFormModel,propertiesType);
 				this.info(new StringResourceModel("properties.loaded",this,Model.of(file)).getString());
 			}
 			catch (IOException e)
 			{
-				logger.error("",e);
+				log.error("",e);
 				error(e.getMessage());
 			}
 		}
@@ -111,7 +96,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 		{
 			super(id,new CompoundPropertyModel<>(model));
 			
-			List<BootstrapPanelBorder> components = new ArrayList<>();
+			val components = new ArrayList<BootstrapPanelBorder>();
 			components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("consoleProperties"),new ConsolePropertiesFormPanel("component",new PropertyModel<>(getModelObject(),"consoleProperties"))));
 			components.add(new BootstrapPanelBorder("panelBorder",EbMSAdminPropertiesPage.this.getString("coreProperties"),new CorePropertiesFormPanel("component",new PropertyModel<>(getModelObject(),"coreProperties"),PropertiesType.EBMS_ADMIN.equals(propertiesType))));
 			if (PropertiesType.EBMS_ADMIN.equals(propertiesType))
@@ -132,49 +117,23 @@ public class EbMSAdminPropertiesPage extends BasePage
 
 		private Button createValidateButton(String id)
 		{
-			return new Button(id)
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void onSubmit()
-				{
-					info(EbMSAdminPropertiesPage.this.getString("validate.ok"));
-				}
-			};
+			return Button.builder()
+					.id(id)
+					.onSubmit(() -> info(EbMSAdminPropertiesPage.this.getString("validate.ok")))
+					.build();
 		}
 	}
 
+	@Data
+	@EqualsAndHashCode(callSuper = true)
 	public static class EbMSAdminPropertiesFormModel extends EbMSCorePropertiesFormModel
 	{
 		private static final long serialVersionUID = 1L;
-		private ConsolePropertiesFormModel consoleProperties = new ConsolePropertiesFormModel();
-		private CorePropertiesFormModel coreProperties = new CorePropertiesFormModel();
-		private ServicePropertiesFormModel serviceProperties = new ServicePropertiesFormModel();
-		
-		public ConsolePropertiesFormModel getConsoleProperties()
-		{
-			return consoleProperties;
-		}
-		public void setConsoleProperties(ConsolePropertiesFormModel consoleProperties)
-		{
-			this.consoleProperties = consoleProperties;
-		}
-		public CorePropertiesFormModel getCoreProperties()
-		{
-			return coreProperties;
-		}
-		public void setCoreProperties(CorePropertiesFormModel coreProperties)
-		{
-			this.coreProperties = coreProperties;
-		}
-		public ServicePropertiesFormModel getServiceProperties()
-		{
-			return serviceProperties;
-		}
-		public void setServiceProperties(ServicePropertiesFormModel serviceProperties)
-		{
-			this.serviceProperties = serviceProperties;
-		}
+		@NonNull
+		ConsolePropertiesFormModel consoleProperties = new ConsolePropertiesFormModel();
+		@NonNull
+		CorePropertiesFormModel coreProperties = new CorePropertiesFormModel();
+		@NonNull
+		ServicePropertiesFormModel serviceProperties = new ServicePropertiesFormModel();
 	}
 }

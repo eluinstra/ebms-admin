@@ -24,12 +24,14 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.springframework.web.context.ContextLoaderListener;
 
+import lombok.val;
+
 public class Main
 {
 	public static void main(String[] args) throws Exception
 	{
-		Server server = new Server(8080);
-		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+		val server = new Server(8080);
+		val context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		context.setContextPath("/");
 		server.setHandler(context);
 
@@ -38,12 +40,12 @@ public class Main
 
 		context.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
 		
-		FilterHolder filterHolder = new FilterHolder(org.apache.wicket.protocol.http.WicketFilter.class); 
+		val filterHolder = new FilterHolder(org.apache.wicket.protocol.http.WicketFilter.class); 
 		filterHolder.setInitParameter("applicationClassName","nl.clockwork.ebms.admin.web.WicketApplication");
 		filterHolder.setInitParameter("filterMappingUrlPattern","/*");
 		context.addFilter(filterHolder,"/*",EnumSet.of(DispatcherType.REQUEST));
 		
-		ContextLoaderListener listener = new ContextLoaderListener();
+		val listener = new ContextLoaderListener();
 		context.addEventListener(listener);
 
 		server.start();

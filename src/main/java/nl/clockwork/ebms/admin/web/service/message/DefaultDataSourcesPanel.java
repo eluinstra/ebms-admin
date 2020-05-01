@@ -18,12 +18,7 @@ package nl.clockwork.ebms.admin.web.service.message;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.clockwork.ebms.model.EbMSDataSource;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -33,20 +28,30 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.util.io.IClusterable;
 
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.Value;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.admin.web.AjaxButton;
+import nl.clockwork.ebms.admin.web.Consumer;
+import nl.clockwork.ebms.model.EbMSDataSource;
+
 public class DefaultDataSourcesPanel extends DataSourcesPanel
 {
+	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 	private class EbMSDataSourceListView extends ListView<EbMSDataSource>
 	{
-		private DataSourcesForm dataSourcesForm;
+		private static final long serialVersionUID = 1L;
+		@NonNull
+		DataSourcesForm dataSourcesForm;
 
-		public EbMSDataSourceListView(String id, DataSourcesForm dataSourcesForm)
+		public EbMSDataSourceListView(String id, @NonNull DataSourcesForm dataSourcesForm)
 		{
 			super(id);
 			this.dataSourcesForm = dataSourcesForm;
 			setOutputMarkupId(true);
 		}
-
-		private static final long serialVersionUID = 1L;
 
 		@Override
 		protected void populateItem(final ListItem<EbMSDataSource> item)
@@ -54,21 +59,21 @@ public class DefaultDataSourcesPanel extends DataSourcesPanel
 			item.setModel(new CompoundPropertyModel<>(item.getModelObject()));
 			item.add(new Label("name"));
 			item.add(new Label("contentType"));
-			item.add(new AjaxButton("remove",new ResourceModel("cmd.remove"),dataSourcesForm)
+			Consumer<AjaxRequestTarget> onSubmit = t ->
 			{
-				private static final long serialVersionUID = 1L;
-				
-				@Override
-				protected void onSubmit(AjaxRequestTarget target)
-				{
-					dataSourcesForm.getModelObject().getDataSources().remove(item.getModelObject());
-					target.add(dataSourcesForm);
-				}
-			});
+				dataSourcesForm.getModelObject().getDataSources().remove(item.getModelObject());
+				t.add(dataSourcesForm);
+			};
+			item.add(AjaxButton.builder()
+					.id("remove")
+					.model(new ResourceModel("cmd.remove"))
+					.form(dataSourcesForm)
+					.onSubmit(onSubmit)
+					.build());
 		}
 	}
+
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
 
 	public DefaultDataSourcesPanel(String id)
 	{
@@ -84,24 +89,17 @@ public class DefaultDataSourcesPanel extends DataSourcesPanel
 		{
 			super(id,new CompoundPropertyModel<>(new DataSourcesModel()));
 			add(new EbMSDataSourceListView("dataSources",DataSourcesForm.this));
-			final ModalWindow dataSourceModalWindow = new DataSourceModalWindow("dataSourceModelWindow",getModelObject().getDataSources(),DataSourcesForm.this);
+			val dataSourceModalWindow = new DataSourceModalWindow("dataSourceModelWindow",getModelObject().getDataSources(),DataSourcesForm.this);
 			add(dataSourceModalWindow);
 			add(createAddButton("add",dataSourceModalWindow));
 		}
 
 		private AjaxButton createAddButton(String id, final ModalWindow dataSourceModalWindow)
 		{
-			AjaxButton result = new AjaxButton(id)
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onSubmit(AjaxRequestTarget target)
-				{
-					dataSourceModalWindow.show(target);
-				}
-			};
-			return result;
+			return AjaxButton.builder()
+					.id(id)
+					.onSubmit(t -> dataSourceModalWindow.show(t))
+					.build();
 		}
 	}
 	
@@ -111,15 +109,11 @@ public class DefaultDataSourcesPanel extends DataSourcesPanel
 		return ((DataSourcesForm)this.get("form")).getModelObject().getDataSources();
 	}
 
+	@Value
 	public static class DataSourcesModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		private List<EbMSDataSource> dataSources = new ArrayList<>();
-
-		public List<EbMSDataSource> getDataSources()
-		{
-			return dataSources;
-		}
+		List<EbMSDataSource> dataSources = new ArrayList<>();
 	}
 
 }

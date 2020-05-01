@@ -37,5 +37,4 @@ public class CPAPage extends BasePage
 	{
 		return getLocalizer().getString("cpa",this);
 	}
-
 }

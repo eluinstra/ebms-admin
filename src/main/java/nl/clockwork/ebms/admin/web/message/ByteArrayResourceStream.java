@@ -24,18 +24,21 @@ import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@AllArgsConstructor
 public class ByteArrayResourceStream extends AbstractResourceStream
 {
 	private static final long serialVersionUID = 1L;
-	private ByteArrayOutputStream stream;
-	private String contentType;
+	@NonNull
+	ByteArrayOutputStream stream;
+	@NonNull
+	String contentType;
 	
-	public ByteArrayResourceStream(ByteArrayOutputStream stream, String contentType)
-	{
-		this.stream = stream;
-		this.contentType = contentType;
-	}
-
 	@Override
 	public String getContentType()
 	{

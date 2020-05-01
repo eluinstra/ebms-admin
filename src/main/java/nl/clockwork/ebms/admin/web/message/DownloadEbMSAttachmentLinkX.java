@@ -27,6 +27,8 @@ import org.apache.wicket.util.encoding.UrlEncoder;
 import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.resource.IResourceStream;
 
+import lombok.val;
+
 public class DownloadEbMSAttachmentLinkX extends Link<EbMSAttachment>
 {
 	private static final long serialVersionUID = 1L;
@@ -39,17 +41,17 @@ public class DownloadEbMSAttachmentLinkX extends Link<EbMSAttachment>
 	@Override
 	public void onClick()
 	{
-		final EbMSAttachment attachment = getModelObject();
-		String fileName = UrlEncoder.QUERY_INSTANCE.encode(StringUtils.isEmpty(attachment.getName()) ? attachment.getContentId() + Utils.getFileExtension(attachment.getContentType()) : attachment.getName(),getRequest().getCharset());
-		IResourceStream resourceStream = new AttachmentResourceStream(attachment);
+		val attachment = getModelObject();
+		val fileName = UrlEncoder.QUERY_INSTANCE.encode(StringUtils.isEmpty(attachment.getName()) ? attachment.getContentId() + Utils.getFileExtension(attachment.getContentType()) : attachment.getName(),getRequest().getCharset());
+		val resourceStream = new AttachmentResourceStream(attachment);
 		getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName,resourceStream));
 	}
 
 	private ResourceStreamRequestHandler createRequestHandler(String fileName, IResourceStream resourceStream)
 	{
 		return new ResourceStreamRequestHandler(resourceStream)
-		.setFileName(fileName)
-		.setContentDisposition(ContentDisposition.ATTACHMENT);
+				.setFileName(fileName)
+				.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 
 }

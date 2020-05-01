@@ -26,8 +26,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.management.remote.JMXServiceURL;
@@ -60,42 +58,44 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.web.ExtensionProvider;
 import nl.clockwork.ebms.common.util.SecurityUtils;
 import nl.clockwork.ebms.security.KeyStoreType;
 
+@FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
+@RequiredArgsConstructor
 public class Start
 {
-	protected final String DEFAULT_KEYSTORE_TYPE = KeyStoreType.PKCS12.name();
-	protected final String DEFAULT_KEYSTORE_FILE = "keystore.p12";
-	protected final String DEFAULT_KEYSTORE_PASSWORD = "password";
-	protected final String REALM = "Realm";
-	protected final String REALM_FILE = "realm.properties";
-	protected Options options;
-	protected CommandLine cmd;
-	protected Server server = new Server();
-	protected ContextHandlerCollection handlerCollection = new ContextHandlerCollection();
+	protected static final String DEFAULT_KEYSTORE_TYPE = KeyStoreType.PKCS12.name();
+	protected static final String DEFAULT_KEYSTORE_FILE = "keystore.p12";
+	protected static final String DEFAULT_KEYSTORE_PASSWORD = "password";
+	protected static final String REALM = "Realm";
+	protected static final String REALM_FILE = "realm.properties";
+	Server server = new Server();
+	ContextHandlerCollection handlerCollection = new ContextHandlerCollection();
 
 	public static void main(String[] args) throws Exception
 	{
-		Start start = new Start();
-		start.options = start.createOptions();
-		start.cmd = new DefaultParser().parse(start.options,args);
+		Options options = createOptions();
+		CommandLine cmd = new DefaultParser().parse(options,args);
+		if (cmd.hasOption("h"))
+			printUsage(options);
 
-		if (start.cmd.hasOption("h"))
-			start.printUsage();
-
-		start.init(start.cmd);
-		
+		val start = new Start();
+		start.init(cmd);
 		start.server.setHandler(start.handlerCollection);
 
-		start.initWebServer(start.cmd,start.server);
-		start.initJMX(start.cmd,start.server);
+		start.initWebServer(cmd,start.server);
+		start.initJMX(cmd,start.server);
 
-		XmlWebApplicationContext context = new XmlWebApplicationContext();
+		val context = new XmlWebApplicationContext();
 		context.setConfigLocations(getConfigLocations("classpath:nl/clockwork/ebms/admin/applicationContext.xml"));
-		ContextLoaderListener contextLoaderListener = new ContextLoaderListener(context);
-		start.handlerCollection.addHandler(start.createWebContextHandler(start.cmd,contextLoaderListener));
+		val contextLoaderListener = new ContextLoaderListener(context);
+		start.handlerCollection.addHandler(start.createWebContextHandler(cmd,contextLoaderListener));
 
 		System.out.println("Starting web server...");
 
@@ -112,9 +112,9 @@ public class Start
 		start.server.join();
 	}
 
-	protected Options createOptions()
+	protected static Options createOptions()
 	{
-		Options result = new Options();
+		val result = new Options();
 		result.addOption("h",false,"print this message");
 		result.addOption("host",true,"set host");
 		result.addOption("port",true,"set port");
@@ -139,7 +139,7 @@ public class Start
 	
 	protected static String[] getConfigLocations(String configLocation)
 	{
-		List<String> result = ExtensionProvider.get().stream()
+		val result = ExtensionProvider.get().stream()
 				.filter(p -> !StringUtils.isEmpty(p.getSpringConfigurationFile()))
 				.map(p -> p.getSpringConfigurationFile())
 				.collect(Collectors.toList());
@@ -149,7 +149,7 @@ public class Start
 
 	protected void init(CommandLine cmd)
 	{
-		String propertiesFilesDir = cmd.getOptionValue("propertiesFilesDir","");
+		val propertiesFilesDir = cmd.getOptionValue("propertiesFilesDir","");
 		System.setProperty("ebms.propertiesFilesDir",propertiesFilesDir);
 		System.out.println("Using properties files directory: " + propertiesFilesDir);
 	}
@@ -162,14 +162,14 @@ public class Start
 		}
 		else
 		{
-			SslContextFactory factory = createSslContextFactory(cmd);
+			val factory = createSslContextFactory(cmd);
 			server.addConnector(createHttpsConnector(cmd,factory));
 		}
 	}
 
 	private ServerConnector createHttpConnector(CommandLine cmd)
 	{
-		ServerConnector result = new ServerConnector(this.server);
+		val result = new ServerConnector(this.server);
 		result.setHost(cmd.getOptionValue("host") == null ? "0.0.0.0" : cmd.getOptionValue("host"));
 		result.setPort(cmd.getOptionValue("port") == null ? 8080 : Integer.parseInt(cmd.getOptionValue("port")));
 		result.setName("web");
@@ -181,22 +181,22 @@ public class Start
 
 	private SslContextFactory createSslContextFactory(CommandLine cmd) throws MalformedURLException, IOException
 	{
-		SslContextFactory result = new SslContextFactory();
-		addKeyStore(result);
+		val result = new SslContextFactory();
+		addKeyStore(cmd,result);
 		if (cmd.hasOption("clientAuthentication"))
-			addTrustStore(result);
+			addTrustStore(cmd,result);
 		return result;
 	}
 
-	private void addKeyStore(SslContextFactory result) throws MalformedURLException, IOException
+	private void addKeyStore(CommandLine cmd, SslContextFactory result) throws MalformedURLException, IOException
 	{
-		String keyStoreType = cmd.getOptionValue("keyStoreType",DEFAULT_KEYSTORE_TYPE);
-		String keyStorePath = cmd.getOptionValue("keyStorePath",DEFAULT_KEYSTORE_FILE);
-		String keyStorePassword = cmd.getOptionValue("keyStorePassword",DEFAULT_KEYSTORE_PASSWORD);
-		Resource keyStore = getResource(keyStorePath);
-		System.out.println("Using keyStore " + keyStore.getURI());
+		val keyStoreType = cmd.getOptionValue("keyStoreType",DEFAULT_KEYSTORE_TYPE);
+		val keyStorePath = cmd.getOptionValue("keyStorePath",DEFAULT_KEYSTORE_FILE);
+		val keyStorePassword = cmd.getOptionValue("keyStorePassword",DEFAULT_KEYSTORE_PASSWORD);
+		val keyStore = getResource(keyStorePath);
 		if (keyStore != null && keyStore.exists())
 		{
+			System.out.println("Using keyStore " + keyStore.getURI());
 			result.setKeyStoreType(keyStoreType);
 			result.setKeyStoreResource(keyStore);
 			result.setKeyStorePassword(keyStorePassword);
@@ -208,15 +208,15 @@ public class Start
 		}
 	}
 
-	private void addTrustStore(SslContextFactory sslContextFactory) throws MalformedURLException, IOException
+	private void addTrustStore(CommandLine cmd, SslContextFactory sslContextFactory) throws MalformedURLException, IOException
 	{
-		String trustStoreType = cmd.getOptionValue("trustStoreType",DEFAULT_KEYSTORE_TYPE);
-		String trustStorePath = cmd.getOptionValue("trustStorePath");
-		String trustStorePassword = cmd.getOptionValue("trustStorePassword");
-		Resource trustStore = getResource(trustStorePath);
-		System.out.println("Using trustStore " + trustStore.getURI());
+		val trustStoreType = cmd.getOptionValue("trustStoreType",DEFAULT_KEYSTORE_TYPE);
+		val trustStorePath = cmd.getOptionValue("trustStorePath");
+		val trustStorePassword = cmd.getOptionValue("trustStorePassword");
+		val trustStore = getResource(trustStorePath);
 		if (trustStore != null && trustStore.exists())
 		{
+			System.out.println("Using trustStore " + trustStore.getURI());
 			sslContextFactory.setNeedClientAuth(true);
 			sslContextFactory.setTrustStoreType(trustStoreType);
 			sslContextFactory.setTrustStoreResource(trustStore);
@@ -231,7 +231,7 @@ public class Start
 
 	private ServerConnector createHttpsConnector(CommandLine cmd, SslContextFactory factory)
 	{
-		ServerConnector connector = new ServerConnector(this.server,factory);
+		val connector = new ServerConnector(this.server,factory);
 		connector.setHost(cmd.getOptionValue("host") == null ? "0.0.0.0" : cmd.getOptionValue("host"));
 		connector.setPort(cmd.getOptionValue("port") == null ? 8443 : Integer.parseInt(cmd.getOptionValue("port")));
 		connector.setName("web");
@@ -251,29 +251,27 @@ public class Start
 		if (cmd.hasOption("jmx"))
 		{
 			System.out.println("Starting mbean server...");
-			MBeanContainer mBeanContainer = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
+			val mBeanContainer = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
 			server.addBean(mBeanContainer);
 			server.addBean(Log.getLog());
-			JMXServiceURL jmxURL = new JMXServiceURL("rmi",null,1999,"/jndi/rmi:///jmxrmi");
-			ConnectorServer jmxServer = new ConnectorServer(jmxURL,"org.eclipse.jetty.jmx:name=rmiconnectorserver");
+			val jmxURL = new JMXServiceURL("rmi",null,1999,"/jndi/rmi:///jmxrmi");
+			val jmxServer = new ConnectorServer(jmxURL,"org.eclipse.jetty.jmx:name=rmiconnectorserver");
 			server.addBean(jmxServer);
 		}
 	}
 
 	protected ServletContextHandler createWebContextHandler(CommandLine cmd, ContextLoaderListener contextLoaderListener) throws Exception
 	{
-		ServletContextHandler result = new ServletContextHandler(ServletContextHandler.SESSIONS);
+		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		result.setVirtualHosts(new String[] {"@web"});
-
 		result.setInitParameter("configuration","deployment");
-
 		result.setContextPath(getPath(cmd));
 		if (cmd.hasOption("authentication"))
 		{
 			if (!cmd.hasOption("clientAuthentication"))
 			{
 				System.out.println("Configuring web server basic authentication:");
-				File file = new File(REALM_FILE);
+				val file = new File(REALM_FILE);
 				if (file.exists())
 					System.out.println("Using file " + file.getAbsoluteFile());
 				else
@@ -283,48 +281,43 @@ public class Start
 			else if (cmd.hasOption("ssl") && cmd.hasOption("clientAuthentication"))
 			{
 				result.addFilter(createClientCertificateManagerFilterHolder(cmd),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
-				result.addFilter(createClientCertificateAuthenticationFilterHolder(),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
+				result.addFilter(createClientCertificateAuthenticationFilterHolder(cmd),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
 			}
 		}
-
 		if (cmd.hasOption("soap"))
 			result.addServlet(org.apache.cxf.transport.servlet.CXFServlet.class,"/service/*");
-
 		if (!cmd.hasOption("headless"))
 		{
-			ServletHolder servletHolder = new ServletHolder(nl.clockwork.ebms.admin.web.ResourceServlet.class);
+			val servletHolder = new ServletHolder(nl.clockwork.ebms.admin.web.ResourceServlet.class);
 			result.addServlet(servletHolder,"/css/*");
 			result.addServlet(servletHolder,"/fonts/*");
 			result.addServlet(servletHolder,"/images/*");
 			result.addServlet(servletHolder,"/js/*");
-
 			result.addFilter(createWicketFilterHolder(),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
 		}
 		result.setErrorHandler(createErrorHandler());
-
 		result.addEventListener(contextLoaderListener);
-		
 		return result;
 	}
 
 	private FilterHolder createClientCertificateManagerFilterHolder(CommandLine cmd)
 	{
-		FilterHolder result = new FilterHolder(nl.clockwork.ebms.servlet.ClientCertificateManagerFilter.class); 
+		val result = new FilterHolder(nl.clockwork.ebms.servlet.ClientCertificateManagerFilter.class); 
 		result.setInitParameter("x509CertificateHeader",cmd.getOptionValue("clientCertificateHeader"));
 		return result;
 	}
 
-	private FilterHolder createClientCertificateAuthenticationFilterHolder() throws MalformedURLException, IOException
+	private FilterHolder createClientCertificateAuthenticationFilterHolder(CommandLine cmd) throws MalformedURLException, IOException
 	{
 		System.out.println("Configuring web server client certificate authentication:");
-		FilterHolder result = new FilterHolder(nl.clockwork.ebms.servlet.ClientCertificateAuthenticationFilter.class); 
+		val result = new FilterHolder(nl.clockwork.ebms.servlet.ClientCertificateAuthenticationFilter.class); 
 		String clientTrustStoreType = cmd.getOptionValue("clientTrustStoreType",DEFAULT_KEYSTORE_TYPE);
 		String clientTrustStorePath = cmd.getOptionValue("clientTrustStorePath");
 		String clientTrustStorePassword = cmd.getOptionValue("clientTrustStorePassword");
-		Resource trustStore = getResource(clientTrustStorePath);
-		System.out.println("Using clientTrustStore " + trustStore.getURI());
+		val trustStore = getResource(clientTrustStorePath);
 		if (trustStore != null && trustStore.exists())
 		{
+			System.out.println("Using clientTrustStore " + trustStore.getURI());
 			result.setInitParameter("trustStoreType",clientTrustStoreType);
 			result.setInitParameter("trustStorePath",clientTrustStorePath);
 			result.setInitParameter("trustStorePassword",clientTrustStorePassword);
@@ -340,7 +333,7 @@ public class Start
 
 	private FilterHolder createWicketFilterHolder()
 	{
-		FilterHolder result = new FilterHolder(org.apache.wicket.protocol.http.WicketFilter.class); 
+		val result = new FilterHolder(org.apache.wicket.protocol.http.WicketFilter.class); 
 		result.setInitParameter("applicationClassName","nl.clockwork.ebms.admin.web.WicketApplication");
 		result.setInitParameter("filterMappingUrlPattern","/*");
 		return result;
@@ -348,71 +341,69 @@ public class Start
 
 	private ErrorPageErrorHandler createErrorHandler()
 	{
-		ErrorPageErrorHandler result = new ErrorPageErrorHandler();
-		Map<String,String> errorPages = new HashMap<>();
+		val result = new ErrorPageErrorHandler();
+		val errorPages = new HashMap<String,String>();
 		errorPages.put("404","/404");
 		result.setErrorPages(errorPages);
 		return result;
 	}
 
-	protected void printUsage()
+	protected static void printUsage(Options options)
 	{
-		HelpFormatter formatter = new HelpFormatter();
+		val formatter = new HelpFormatter();
 		formatter.printHelp("Start",options,true);
 		System.exit(0);
 	}
 
 	protected Resource getResource(String path) throws MalformedURLException, IOException
 	{
-		Resource result = Resource.newResource(path);
+		val result = Resource.newResource(path);
 		return result.exists() ? result : Resource.newClassPathResource(path);
 	}
 
 	protected void createRealmFile(File file) throws IOException, NoSuchAlgorithmException
 	{
-		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-		String username = readLine("enter username: ",reader);
-		String password = readPassword(reader);
+		val reader = new BufferedReader(new InputStreamReader(System.in));
+		val username = readLine("enter username: ",reader);
+		val password = readPassword(reader);
 		System.out.println("Writing to file: " + file.getAbsoluteFile());
 		FileUtils.writeStringToFile(file,username + ": " + password + ",user",Charset.defaultCharset(),false);
 	}
 
 	private String readLine(String prompt, BufferedReader reader) throws IOException
 	{
-		String result = null;
-		while (StringUtils.isBlank(result))
+		while (true)
 		{
 			System.out.print(prompt);
-			result = reader.readLine();
+			val result = reader.readLine();
+			if (StringUtils.isNotBlank(result))
+				return result;
 		}
-		return result;
 	}
 
 	private String readPassword(BufferedReader reader) throws IOException, NoSuchAlgorithmException
 	{
-		String result = null;
 		while (true)
 		{
-			result = SecurityUtils.toMD5(readLine("enter password: ",reader));
-			String password = SecurityUtils.toMD5(readLine("re-enter password: ",reader));
-			if (!result.equals(password))
-				System.out.println("Passwords don't match! Try again.");
+			val result = SecurityUtils.toMD5(readLine("enter password: ",reader));
+			val password = SecurityUtils.toMD5(readLine("re-enter password: ",reader));
+			if (result.equals(password))
+				return result;
 			else
-				break;
+				System.out.println("Passwords don't match! Try again.");
 		}
-		return result;
 	}
 	
 	protected SecurityHandler getSecurityHandler()
 	{
-		ConstraintSecurityHandler result = new ConstraintSecurityHandler();
+		val result = new ConstraintSecurityHandler();
 
-		Constraint constraint = new Constraint();
+		val constraint = new Constraint();
 		constraint.setName("auth");
 		constraint.setAuthenticate(true);
 		constraint.setRoles(new String[]{"user","admin"});
 
-		ConstraintMapping mapping = new ConstraintMapping();
+		val mapping = new ConstraintMapping();
 		mapping.setPathSpec("/*");
 		mapping.setConstraint(constraint);
 

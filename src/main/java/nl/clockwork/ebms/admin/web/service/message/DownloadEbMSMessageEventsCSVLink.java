@@ -22,13 +22,17 @@ import java.util.List;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.resource.IResourceStream;
 
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.NonNull;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.apachecommons.CommonsLog;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.message.ByteArrayResourceStream;
 import nl.clockwork.ebms.event.listener.EbMSMessageEventType;
@@ -36,15 +40,20 @@ import nl.clockwork.ebms.model.EbMSMessageContext;
 import nl.clockwork.ebms.model.EbMSMessageEvent;
 import nl.clockwork.ebms.service.EbMSMessageService;
 
+@CommonsLog
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DownloadEbMSMessageEventsCSVLink extends Link<Void>
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
-	private EbMSMessageService ebMSMessageService;
-	private EbMSMessageContext filter;
-	private EbMSMessageEventType[] eventTypes;
+	@NonNull
+	EbMSMessageService ebMSMessageService;
+	@NonNull
+	EbMSMessageContext filter;
+	@NonNull
+	EbMSMessageEventType[] eventTypes;
 
-	public DownloadEbMSMessageEventsCSVLink(String id, EbMSMessageService ebMSMessageService, EbMSMessageContext filter, EbMSMessageEventType...eventTypes)
+	@Builder
+	public DownloadEbMSMessageEventsCSVLink(String id, @NonNull EbMSMessageService ebMSMessageService, @NonNull EbMSMessageContext filter, @NonNull EbMSMessageEventType...eventTypes)
 	{
 		super(id);
 		this.ebMSMessageService = ebMSMessageService;
@@ -57,34 +66,34 @@ public class DownloadEbMSMessageEventsCSVLink extends Link<Void>
 	{
 		try
 		{
-			final ByteArrayOutputStream output = new ByteArrayOutputStream();
-			try (CSVPrinter printer = new CSVPrinter(new OutputStreamWriter(output),CSVFormat.DEFAULT))
+			val output = new ByteArrayOutputStream();
+			try (val printer = new CSVPrinter(new OutputStreamWriter(output),CSVFormat.DEFAULT))
 			{
-				List<EbMSMessageEvent> messageEvents = Utils.toList(ebMSMessageService.getMessageEvents(filter,eventTypes,null));
+				val messageEvents = Utils.toList(ebMSMessageService.getMessageEvents(filter,eventTypes,null));
 				if (messageEvents != null)
 					printMessagesToCSV(printer,messageEvents);
 			}
-			IResourceStream resourceStream = new ByteArrayResourceStream(output,"text/csv");
+			val resourceStream = new ByteArrayResourceStream(output,"text/csv");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}
 		catch (IOException e)
 		{
-			logger.error("",e);
+			log.error("",e);
 			error(e.getMessage());
 		}
 	}
 
 	private void printMessagesToCSV(CSVPrinter printer, List<EbMSMessageEvent> messageEvents) throws IOException
 	{
-		for (EbMSMessageEvent event: messageEvents)
+		for (val event: messageEvents)
 			printer.printRecord(event.getMessageId(),event.getType().name());
 	}
 
 	private ResourceStreamRequestHandler createRequestHandler(IResourceStream resourceStream)
 	{
 		return new ResourceStreamRequestHandler(resourceStream)
-		.setFileName("messages.csv")
-		.setContentDisposition(ContentDisposition.ATTACHMENT);
+				.setFileName("messages.csv")
+				.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 
 }

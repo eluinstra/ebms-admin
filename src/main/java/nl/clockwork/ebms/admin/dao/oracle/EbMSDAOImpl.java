@@ -67,7 +67,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 		//;
 		return "select * from (" +
 			"select t.*, rownum rn from (" +
-			new EbMSMessageRowMapper().getBaseQuery() +
+			EbMSMessageRowMapper.builder().build().getBaseQuery() +
 			" where 1 = 1" +
 			getMessageFilter(filter,parameters) +
 			" order by time_stamp desc" +

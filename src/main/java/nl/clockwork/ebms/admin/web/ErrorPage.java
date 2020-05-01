@@ -18,17 +18,22 @@ package nl.clockwork.ebms.admin.web;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.authorization.UnauthorizedActionException;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.protocol.http.PageExpiredException;
 
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.apachecommons.CommonsLog;
+
+@CommonsLog
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ErrorPage extends BasePage
 {
-	private static final long serialVersionUID = 1L;
 	private enum ErrorType
 	{
 		ERROR("error"), PAGE_EXPIRED("pageExpired"), UNAUTHORIZED_ACTION("unauthorizedAction");
@@ -53,24 +58,19 @@ public class ErrorPage extends BasePage
 				return ERROR;
 		}
 	}
-	protected transient Log logger = LogFactory.getLog(this.getClass());
-	private ErrorType errorType;
+	private static final long serialVersionUID = 1L;
+	@NonNull
+	ErrorType errorType;
 
 	public ErrorPage(Exception exception)
 	{
-		logger.error("",exception);
+		log.error("",exception);
 		errorType = ErrorType.get(exception);
 		add(new WebMarkupContainer("error").add(new HomePageLink("homePageLink")).setVisible(ErrorType.ERROR.equals(errorType)));
 		add(new WebMarkupContainer("pageExpired").add(new HomePageLink("homePageLink")).setVisible(ErrorType.PAGE_EXPIRED.equals(errorType)));
 		add(new WebMarkupContainer("unauthorizedAction").add(new HomePageLink("homePageLink")).setVisible(ErrorType.UNAUTHORIZED_ACTION.equals(errorType)));
-		boolean showStackTrace = RuntimeConfigurationType.DEVELOPMENT.equals(getApplication().getConfigurationType());
-		String stackTrace = null;
-		if (showStackTrace)
-		{
-			StringWriter sw = new StringWriter();
-			exception.printStackTrace(new PrintWriter(sw));
-			stackTrace = sw.getBuffer().toString();
-		}
+		val showStackTrace = RuntimeConfigurationType.DEVELOPMENT.equals(getApplication().getConfigurationType());
+		val stackTrace = showStackTrace ? getStackTrace(exception) : null;
 		add(new Label("stackTrace",stackTrace).setVisible(showStackTrace));
 	}
 
@@ -90,6 +90,13 @@ public class ErrorPage extends BasePage
 	public String getPageTitle()
 	{
 		return errorType.getTitle();
+	}
+
+	private String getStackTrace(Exception exception)
+	{
+		StringWriter sw = new StringWriter();
+		exception.printStackTrace(new PrintWriter(sw));
+		return sw.getBuffer().toString();
 	}
 
 }

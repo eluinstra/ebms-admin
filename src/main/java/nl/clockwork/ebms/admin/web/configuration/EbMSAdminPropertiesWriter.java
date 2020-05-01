@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Properties;
 
+import lombok.val;
 import nl.clockwork.ebms.admin.web.configuration.ConsolePropertiesFormPanel.ConsolePropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.Constants.PropertiesType;
 import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.ServicePropertiesFormPanel.ServicePropertiesFormModel;
 
@@ -33,7 +33,7 @@ public class EbMSAdminPropertiesWriter extends EbMSCorePropertiesWriter
 
 	public void write(EbMSAdminPropertiesFormModel ebMSAdminProperties, PropertiesType propertiesType) throws IOException
 	{
-		Properties p = new Properties();
+		val p = new Properties();
 		switch (propertiesType)
 		{
 			case EBMS_ADMIN:
@@ -66,7 +66,7 @@ public class EbMSAdminPropertiesWriter extends EbMSCorePropertiesWriter
 
   protected void write(Properties properties, ServicePropertiesFormModel serviceProperties)
   {
-		properties.setProperty("service.ebms.url",serviceProperties.getURL());
+		properties.setProperty("service.ebms.url",serviceProperties.getUrl());
   }
 
 }

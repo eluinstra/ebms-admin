@@ -25,5 +25,4 @@ public class MenuDividerPanel extends Panel
 	{
 		super(id,null);
 	}
-
 }

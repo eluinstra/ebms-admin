@@ -17,30 +17,30 @@ package nl.clockwork.ebms.admin.web.service.cpa;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-
-import nl.clockwork.ebms.admin.Utils;
-import nl.clockwork.ebms.model.URLMapping;
-import nl.clockwork.ebms.service.CPAService;
 
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.admin.Utils;
+import nl.clockwork.ebms.model.URLMapping;
+import nl.clockwork.ebms.service.CPAService;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@AllArgsConstructor
 public class URLMappingDataProvider implements IDataProvider<URLMapping>
 {
 	private static final long serialVersionUID = 1L;
-	private CPAService cpaService;
+	CPAService cpaService;
 
-	public URLMappingDataProvider(CPAService cpaService)
-	{
-		this.cpaService = cpaService;
-	}
-	
 	@Override
 	public Iterator<? extends URLMapping> iterator(long first, long count)
 	{
-		List<URLMapping> urlMappings = Utils.toList(cpaService.getURLMappings());
+		val urlMappings = Utils.toList(cpaService.getURLMappings());
 		return urlMappings == null ? new ArrayList<URLMapping>().iterator() : urlMappings.iterator();
 	}
 
@@ -53,7 +53,7 @@ public class URLMappingDataProvider implements IDataProvider<URLMapping>
 	@Override
 	public long size()
 	{
-		List<URLMapping> urlMappings = Utils.toList(cpaService.getURLMappings());
+		val urlMappings = Utils.toList(cpaService.getURLMappings());
 		return urlMappings == null ? 0 : urlMappings.size();
 	}
 
@@ -61,5 +61,4 @@ public class URLMappingDataProvider implements IDataProvider<URLMapping>
 	public void detach()
 	{
 	}
-
 }

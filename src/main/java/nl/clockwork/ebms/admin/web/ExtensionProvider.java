@@ -19,15 +19,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
 
+import lombok.val;
 import nl.clockwork.ebms.admin.web.menu.MenuItem;
 
 public abstract class ExtensionProvider
 {
 	public static List<ExtensionProvider> get()
 	{
-		ServiceLoader<ExtensionProvider> providers = ServiceLoader.load(ExtensionProvider.class);
-		List<ExtensionProvider> result = new ArrayList<>();
-		for (ExtensionProvider provider : providers)
+		val providers = ServiceLoader.load(ExtensionProvider.class);
+		val result = new ArrayList<ExtensionProvider>();
+		for (val provider : providers)
 			result.add(provider);
 		return result;
 	}
@@ -35,6 +36,5 @@ public abstract class ExtensionProvider
 	public abstract String getSpringConfigurationFile();
 	public abstract String getHSQLDBFile();
 	public abstract String getName();
-	public abstract List<MenuItem> getMenuItems();
-
+	public abstract void addMenuItems(MenuItem menuItem);
 }

@@ -23,18 +23,18 @@ import nl.clockwork.ebms.admin.model.EbMSMessage;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@AllArgsConstructor
 public class MessageDataProvider implements IDataProvider<EbMSMessage>
 {
 	private static final long serialVersionUID = 1L;
-	private EbMSDAO ebMSDAO;
-	private EbMSMessageFilter filter;
+	EbMSDAO ebMSDAO;
+	EbMSMessageFilter filter;
 
-	public MessageDataProvider(EbMSDAO ebMSDAO, EbMSMessageFilter filter)
-	{
-		this.ebMSDAO = ebMSDAO;
-		this.filter = filter;
-	}
-	
 	@Override
 	public Iterator<? extends EbMSMessage> iterator(long first, long count)
 	{

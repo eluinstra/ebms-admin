@@ -18,11 +18,8 @@ package nl.clockwork.ebms.admin.web.configuration;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.feedback.ContainerFeedbackMessageFilter;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -38,19 +35,25 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.io.IClusterable;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NonNull;
+import lombok.val;
+import lombok.extern.apachecommons.CommonsLog;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.configuration.Constants.JdbcDriver;
+import nl.clockwork.ebms.admin.web.Consumer;
+import nl.clockwork.ebms.admin.web.OnChangeAjaxBehavior;
 
+@CommonsLog
 public class JdbcPropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
 
 	public JdbcPropertiesFormPanel(String id, final IModel<JdbcPropertiesFormModel> model)
 	{
 		super(id,model);
-		JdbcPropertiesForm jdbcPropertiesForm = new JdbcPropertiesForm("form",model);
+		val jdbcPropertiesForm = new JdbcPropertiesForm("form",model);
 		add(new BootstrapFeedbackPanel("feedback",new ContainerFeedbackMessageFilter(jdbcPropertiesForm)).setOutputMarkupId(true));
 		add(jdbcPropertiesForm);
 	}
@@ -74,22 +77,19 @@ public class JdbcPropertiesFormPanel extends Panel
 
 		private DropDownChoice<JdbcDriver> createDriverChoice(String id, final IModel<JdbcPropertiesFormModel> model)
 		{
-			DropDownChoice<JdbcDriver> result = new DropDownChoice<>(id,new PropertyModel<List<JdbcDriver>>(model.getObject(),"drivers"));
+			val result = new DropDownChoice<JdbcDriver>(id,new PropertyModel<List<JdbcDriver>>(model.getObject(),"drivers"));
 			result.setLabel(new ResourceModel("lbl.driver"));
 			result.setRequired(true);
-			result.add(new OnChangeAjaxBehavior()
+			Consumer<AjaxRequestTarget> action = t ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					if (!model.getObject().getDriver().getDriverClassName().equals(Constants.JdbcDriver.HSQLDB.getDriverClassName()) && !classExists(model.getObject().getDriver().getDriverClassName()))
-						error(JdbcPropertiesForm.this.getString("driver.jdbc.missing",model));
-					target.add(JdbcPropertiesFormPanel.this.get("feedback"));
-					target.add(getURLComponent());
-				}
-			});
+				if (!model.getObject().getDriver().getDriverClassName().equals(JdbcDriver.HSQLDB.getDriverClassName()) && !classExists(model.getObject().getDriver().getDriverClassName()))
+					error(JdbcPropertiesForm.this.getString("driver.jdbc.missing",model));
+				t.add(JdbcPropertiesFormPanel.this.get("feedback"));
+				t.add(getURLComponent());
+			};
+			result.add(OnChangeAjaxBehavior.builder()
+					.onUpdate(action)
+					.build());
 			return result;
 		}
 
@@ -111,16 +111,9 @@ public class JdbcPropertiesFormPanel extends Panel
 			TextField<String> result = new TextField<>(id);
 			result.setLabel(new ResourceModel("lbl.host"));
 			result.setRequired(true);
-			result.add(new OnChangeAjaxBehavior()
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					target.add(getURLComponent());
-				}
-			});
+			result.add(OnChangeAjaxBehavior.builder()
+					.onUpdate(t -> t.add(getURLComponent()))
+					.build());
 			return result;
 		}
 
@@ -128,40 +121,26 @@ public class JdbcPropertiesFormPanel extends Panel
 		{
 			TextField<Integer> result = new TextField<>(id);
 			result.setLabel(new ResourceModel("lbl.port"));
-			result.add(new OnChangeAjaxBehavior()
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					target.add(getURLComponent());
-				}
-			});
+			result.add(OnChangeAjaxBehavior.builder()
+					.onUpdate(t -> t.add(getURLComponent()))
+					.build());
 			return result;
 		}
 
 		private TextField<String> createDatabaseField(String id)
 		{
-			TextField<String> result = new TextField<>(id);
+			val result = new TextField<String>(id);
 			result.setLabel(new ResourceModel("lbl.database"));
 			result.setRequired(true);
-			result.add(new OnChangeAjaxBehavior()
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					target.add(getURLComponent());
-				}
-			});
+			result.add(OnChangeAjaxBehavior.builder()
+					.onUpdate(t -> t.add(getURLComponent()))
+					.build());
 			return result;
 		}
 
 		private Button createTestButton(String id, final IModel<JdbcPropertiesFormModel> model)
 		{
-			Button result = new Button(id,new ResourceModel("cmd.test"))
+			return new Button(id,new ResourceModel("cmd.test"))
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -170,19 +149,18 @@ public class JdbcPropertiesFormPanel extends Panel
 				{
 					try
 					{
-						JdbcPropertiesFormModel m = model.getObject();
+						val m = model.getObject();
 						Utils.testJdbcConnection(m.getDriver().getDriverClassName(),m.getUrl(),m.getUsername(),m.getPassword());
 						info(JdbcPropertiesForm.this.getString("test.ok"));
 					}
 					catch (Exception e)
 					{
-						logger .error("",e);
+						log.error("",e);
 						error(new StringResourceModel("test.nok",JdbcPropertiesForm.this,Model.of(e)).getString());
 					}
 				}
 
 			};
-			return result;
 		}
 
 		private Component getURLComponent()
@@ -190,46 +168,25 @@ public class JdbcPropertiesFormPanel extends Panel
 			return this.get("url");
 		}
 	}
-	
+
+	@Data
+	@EqualsAndHashCode(callSuper = true)
 	public static class JdbcPropertiesFormModel extends JdbcURL implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		private JdbcDriver driver = JdbcDriver.HSQLDB;
-		private String username = "sa";
-		private String password = null;
+		JdbcDriver driver = JdbcDriver.HSQLDB;
+		@NonNull
+		String username = "sa";
+		String password = null;
 
 		public List<JdbcDriver> getDrivers()
 		{
 			return Arrays.asList(JdbcDriver.values());
 		}
-		public JdbcDriver getDriver()
-		{
-			return driver;
-		}
-		public void setDriver(JdbcDriver driver)
-		{
-			this.driver = driver;
-		}
 		public String getUrl()
 		{
 			//return driver.createJdbcURL(getHost(),getPort(),getDatabase());
-			return JdbcDriver.createJdbcURL(driver.getURLExpr(),getHost(),getPort(),getDatabase());
-		}
-		public String getUsername()
-		{
-			return username;
-		}
-		public void setUsername(String username)
-		{
-			this.username = username;
-		}
-		public String getPassword()
-		{
-			return password;
-		}
-		public void setPassword(String password)
-		{
-			this.password = password;
+			return JdbcDriver.createJdbcURL(driver.getUrlExpr(),getHost(),getPort(),getDatabase());
 		}
 	}
 }

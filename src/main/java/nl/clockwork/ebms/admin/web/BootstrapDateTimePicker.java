@@ -17,7 +17,6 @@ package nl.clockwork.ebms.admin.web;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.MarkupContainer;
@@ -29,8 +28,15 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 
-import nl.clockwork.ebms.admin.Constants.JQueryLocale;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 {
 	public enum Type
@@ -42,14 +48,26 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 		H12, H24;
 	}
 	private static final long serialVersionUID = 1L;
-	private String format;
-	private String formatJS;
-	private Type type;
-	private HourFormat hourFormat;
-	private Date startDate;
-	private Date endDate;
-	private Date dateTime;
-	private TextField<Date> dateTimeField;
+	@NonNull
+	String format;
+	@NonNull
+	String formatJS;
+	@NonNull
+	Type type;
+	@NonNull
+	HourFormat hourFormat;
+	@NonFinal
+	@Setter
+	Date startDate;
+	@NonFinal
+	@Setter
+	Date endDate;
+	@NonFinal
+	@Getter
+	@Setter
+	Date dateTime;
+	@NonNull
+	TextField<Date> dateTimeField;
 
 	public BootstrapDateTimePicker(final String id)
 	{
@@ -71,7 +89,7 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 		this.format = format;
 		this.hourFormat = format.contains("H") ? HourFormat.H24 : HourFormat.H12;
 		this.formatJS = format.replaceAll("H","h");
-		setType(type);
+		this.type = type;
 		
 		MarkupContainer dateTimePicker = new MarkupContainer("dateTimePicker")
 		{
@@ -114,7 +132,7 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 	@Override
 	public void renderHead(IHeaderResponse response)
 	{
-		List<String> options = new ArrayList<>();
+		val options = new ArrayList<String>();
 		if (formatJS != null)
 			options.add("format: '" + formatJS + "'");
 		if (!Type.DATE_TIME.equals(type) & !Type.DATE.equals(type))
@@ -152,39 +170,13 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 		return format;
 	}
 	
-	public BootstrapDateTimePicker setType(Type type)
-	{
-		this.type = type;
-		return this;
-	}
-	
 	public JQueryLocale getJQueryLocale()
 	{
 		return JQueryLocale.EN;
 	}
 
-	public void setStartDate(Date startDate)
-	{
-		this.startDate = startDate;
-	}
-
-	public void setEndDate(Date endDate)
-	{
-		this.endDate = endDate;
-	}
-	
 	private String getDateTimePickerId()
 	{
 		return getMarkupId() + "DateTimePicker";
-	}
-	
-	public Date getDateTime()
-	{
-		return dateTime;
-	}
-	
-	public void setDateTime(Date dateTime)
-	{
-		this.dateTime = dateTime;
 	}
 }

@@ -19,23 +19,29 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-import nl.clockwork.ebms.admin.dao.EbMSDAO;
-
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.resource.IResourceStream;
 
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.apachecommons.CommonsLog;
+import nl.clockwork.ebms.admin.dao.EbMSDAO;
+
+@CommonsLog
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DownloadEbMSMessagesCSVLink extends Link<Void>
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
-	private EbMSDAO ebMSDAO;
-	private EbMSMessageFilter filter;
+	@NonNull
+	EbMSDAO ebMSDAO;
+	@NonNull
+	EbMSMessageFilter filter;
 
 	public DownloadEbMSMessagesCSVLink(String id, EbMSDAO ebMSDAO, EbMSMessageFilter filter)
 	{
@@ -49,17 +55,17 @@ public class DownloadEbMSMessagesCSVLink extends Link<Void>
 	{
 		try
 		{
-			final ByteArrayOutputStream output = new ByteArrayOutputStream();
-			try (CSVPrinter printer = new CSVPrinter(new OutputStreamWriter(output),CSVFormat.DEFAULT))
+			val output = new ByteArrayOutputStream();
+			try (val printer = new CSVPrinter(new OutputStreamWriter(output),CSVFormat.DEFAULT))
 			{
 				ebMSDAO.printMessagesToCSV(printer,filter);
 			}
-			IResourceStream resourceStream = new ByteArrayResourceStream(output,"text/csv");
+			val resourceStream = new ByteArrayResourceStream(output,"text/csv");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}
 		catch (IOException e)
 		{
-			logger.error("",e);
+			log.error("",e);
 			error(e.getMessage());
 		}
 	}
@@ -67,8 +73,8 @@ public class DownloadEbMSMessagesCSVLink extends Link<Void>
 	private ResourceStreamRequestHandler createRequestHandler(IResourceStream resourceStream)
 	{
 		return new ResourceStreamRequestHandler(resourceStream)
-		.setFileName("messages.csv")
-		.setContentDisposition(ContentDisposition.ATTACHMENT);
+				.setFileName("messages.csv")
+				.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 
 }

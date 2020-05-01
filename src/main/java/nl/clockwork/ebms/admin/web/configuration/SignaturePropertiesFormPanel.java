@@ -15,12 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-import nl.clockwork.ebms.admin.web.configuration.JavaKeyStorePropertiesFormPanel.JavaKeyStorePropertiesFormModel;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -30,10 +24,15 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.util.io.IClusterable;
 
+import lombok.Data;
+import lombok.NonNull;
+import lombok.val;
+import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
+import nl.clockwork.ebms.admin.web.configuration.JavaKeyStorePropertiesFormPanel.JavaKeyStorePropertiesFormModel;
+
 public class SignaturePropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(this.getClass());
 
 	public SignaturePropertiesFormPanel(String id, final IModel<SignaturePropertiesFormModel> model)
 	{
@@ -54,58 +53,33 @@ public class SignaturePropertiesFormPanel extends Panel
 
 		private CheckBox createSigningCheckBox(String id)
 		{
-			CheckBox result = new CheckBox(id);
+			val result = new CheckBox(id);
 			result.setLabel(new ResourceModel("lbl.signing"));
-			result.add(new AjaxFormComponentUpdatingBehavior("change")
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					target.add(SignaturePropertiesForm.this);
-				}
-			});
+			result.add(AjaxFormComponentUpdatingBehavior.builder()
+					.event("change")
+					.onUpdate(t -> t.add(SignaturePropertiesForm.this))
+					.build());
 			return result;
 		}
 
 		private JavaKeyStorePropertiesFormPanel createKeystorePropertiesPanel(String id)
 		{
-			return new JavaKeyStorePropertiesFormPanel(id,new PropertyModel<>(getModelObject(),"keystoreProperties"),false)
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public boolean isVisible()
-				{
-					return getModelObject().getSigning();
-				}
-			};
+			return JavaKeyStorePropertiesFormPanel.builder()
+					.id(id)
+					.model(new PropertyModel<>(getModelObject(),"keystoreProperties"))
+					.required(false)
+					.isVisible(() -> getModelObject().isSigning())
+					.build();
 		}
 
 	}
 
+	@Data
 	public static class SignaturePropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		private boolean signing = true;
-		private JavaKeyStorePropertiesFormModel keystoreProperties = new JavaKeyStorePropertiesFormModel();
-
-		public boolean getSigning()
-		{
-			return signing;
-		}
-		public void setSigning(boolean signing)
-		{
-			this.signing = signing;
-		}
-		public JavaKeyStorePropertiesFormModel getKeystoreProperties()
-		{
-			return keystoreProperties;
-		}
-		public void setKeystoreProperties(JavaKeyStorePropertiesFormModel keystoreProperties)
-		{
-			this.keystoreProperties = keystoreProperties;
-		}
+		boolean signing = true;
+		@NonNull
+		JavaKeyStorePropertiesFormModel keystoreProperties = new JavaKeyStorePropertiesFormModel();
 	}
 }

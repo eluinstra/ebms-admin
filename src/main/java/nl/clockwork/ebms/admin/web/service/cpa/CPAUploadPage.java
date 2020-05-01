@@ -17,15 +17,6 @@ package nl.clockwork.ebms.admin.web.service.cpa;
 
 import java.util.List;
 
-import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.service.CPAService;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
@@ -35,12 +26,26 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IClusterable;
 
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.apachecommons.CommonsLog;
+import nl.clockwork.ebms.admin.web.Action;
+import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.Button;
+import nl.clockwork.ebms.admin.web.ResetButton;
+import nl.clockwork.ebms.service.CPAService;
+
+@CommonsLog
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CPAUploadPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(getClass());
 	@SpringBean(name="cpaService")
-	private CPAService cpaService;
+	CPAService cpaService;
 
 	public CPAUploadPage()
 	{
@@ -71,7 +76,7 @@ public class CPAUploadPage extends BasePage
 
 		private FileUploadField createCPAFileField(String id)
 		{
-			FileUploadField result = new FileUploadField(id);
+			val result = new FileUploadField(id);
 			result.setLabel(new ResourceModel("lbl.cpa"));
 			result.setRequired(true);
 			return result;
@@ -79,93 +84,63 @@ public class CPAUploadPage extends BasePage
 
 		private Button createValidateButton(String id)
 		{
-			Button result = new Button(id,new ResourceModel("cmd.validate"))
+			Action onSubmit = () ->
 			{
-				private static final long serialVersionUID = 1L;
-	
-				@Override
-				public void onSubmit()
+				try
 				{
-					try
+					val files = EditUploadForm.this.getModelObject().cpaFile;
+					if (files != null && files.size() == 1)
 					{
-						final List<FileUpload> files = EditUploadForm.this.getModelObject().cpaFile;
-						if (files != null && files.size() == 1)
-						{
-							FileUpload file = files.get(0);
-							//String contentType = file.getContentType();
-							//FIXME char encoding
-							cpaService.validateCPA(new String(file.getBytes()));
-						}
-						info(getString("cpa.valid"));
+						FileUpload file = files.get(0);
+						//String contentType = file.getContentType();
+						//FIXME char encoding
+						cpaService.validateCPA(new String(file.getBytes()));
 					}
-					catch (Exception e)
-					{
-						logger.error("",e);
-						error(e.getMessage());
-					}
+					info(getString("cpa.valid"));
+				}
+				catch (Exception e)
+				{
+					log.error("",e);
+					error(e.getMessage());
 				}
 			};
-			return result;
+			return new Button(id,new ResourceModel("cmd.validate"),onSubmit );
 		}
 
 		private Button createUploadButton(String id)
 		{
-			Button result = new Button(id,new ResourceModel("cmd.upload"))
+			Action onSubmit = () ->
 			{
-				private static final long serialVersionUID = 1L;
-	
-				@Override
-				public void onSubmit()
+				try
 				{
-					try
+					val files = EditUploadForm.this.getModelObject().cpaFile;
+					if (files != null && files.size() == 1)
 					{
-						final List<FileUpload> files = EditUploadForm.this.getModelObject().cpaFile;
-						if (files != null && files.size() == 1)
-						{
-							FileUpload file = files.get(0);
-							//String contentType = file.getContentType();
-							//FIXME char encoding
-							cpaService.insertCPA(new String(file.getBytes()),EditUploadForm.this.getModelObject().isOverwrite());
-						}
-						setResponsePage(new CPAsPage());
+						val file = files.get(0);
+						//val contentType = file.getContentType();
+						//FIXME char encoding
+						cpaService.insertCPA(new String(file.getBytes()),EditUploadForm.this.getModelObject().isOverwrite());
 					}
-					catch (Exception e)
-					{
-						logger.error("",e);
-						error(e.getMessage());
-					}
+					setResponsePage(new CPAsPage());
+				}
+				catch (Exception e)
+				{
+					log.error("",e);
+					error(e.getMessage());
 				}
 			};
+			val result = new Button(id,new ResourceModel("cmd.upload"),onSubmit);
 			setDefaultButton(result);
 			return result;
 		}
 	}
-	
+
+	@Data
 	public class EditUploadFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		private List<FileUpload> cpaFile;
-		private boolean overwrite;
-		
-		public List<FileUpload> getCpaFile()
-		{
-			return cpaFile;
-		}
-		
-		public void setCpaFile(List<FileUpload> cpaFile)
-		{
-			this.cpaFile = cpaFile;
-		}
-		
-		public boolean isOverwrite()
-		{
-			return overwrite;
-		}
-		
-		public void setOverwrite(boolean overwrite)
-		{
-			this.overwrite = overwrite;
-		}
+		List<FileUpload> cpaFile;
+		boolean overwrite;
 	}
 
 }

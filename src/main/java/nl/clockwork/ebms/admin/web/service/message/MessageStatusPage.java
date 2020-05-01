@@ -20,29 +20,9 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
-import nl.clockwork.ebms.EbMSMessageStatus;
-import nl.clockwork.ebms.admin.CPAUtils;
-import nl.clockwork.ebms.admin.Utils;
-import nl.clockwork.ebms.admin.dao.EbMSDAO;
-import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.common.JAXBParser;
-import nl.clockwork.ebms.model.MessageStatus;
-import nl.clockwork.ebms.model.Party;
-import nl.clockwork.ebms.service.CPAService;
-import nl.clockwork.ebms.service.EbMSMessageService;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -52,18 +32,43 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IClusterable;
 import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement;
 
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.apachecommons.CommonsLog;
+import nl.clockwork.ebms.EbMSMessageStatus;
+import nl.clockwork.ebms.admin.CPAUtils;
+import nl.clockwork.ebms.admin.Utils;
+import nl.clockwork.ebms.admin.dao.EbMSDAO;
+import nl.clockwork.ebms.admin.web.Action;
+import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
+import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.Button;
+import nl.clockwork.ebms.admin.web.Consumer;
+import nl.clockwork.ebms.admin.web.DropDownChoice;
+import nl.clockwork.ebms.admin.web.ResetButton;
+import nl.clockwork.ebms.admin.web.TextField;
+import nl.clockwork.ebms.common.JAXBParser;
+import nl.clockwork.ebms.model.Party;
+import nl.clockwork.ebms.service.CPAService;
+import nl.clockwork.ebms.service.EbMSMessageService;
+
+@CommonsLog
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class MessageStatusPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log logger = LogFactory.getLog(getClass());
 	@SpringBean(name="ebMSAdminDAO")
-	public EbMSDAO ebMSDAO;
+	EbMSDAO ebMSDAO;
 	@SpringBean(name="cpaService")
-	private CPAService cpaService;
+	CPAService cpaService;
 	@SpringBean(name="ebMSMessageService")
-	private EbMSMessageService ebMSMessageService;
+	EbMSMessageService ebMSMessageService;
 	@SpringBean(name="cleoPatch")
-	private Boolean cleoPatch;
+	Boolean cleoPatch;
 
 	public MessageStatusPage()
 	{
@@ -89,10 +94,10 @@ public class MessageStatusPage extends BasePage
 			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",createFromRoleChoice("fromRole")));
 			add(new BootstrapFormComponentFeedbackBorder("toPartyIdFeedback",createToPartyIdChoice("toPartyId")).setVisible(cleoPatch));
 			add(new BootstrapFormComponentFeedbackBorder("toRoleFeedback",createToRoleChoice("toRole")));
-			final DropDownChoice<String> messageIds = createMessageIdsChoice("messageIds");
+			val messageIds = createMessageIdsChoice("messageIds");
 			add(new BootstrapFormComponentFeedbackBorder("messageIdFeedback",messageIds,createMessageIdField("messageId")));
 			add(createManualCheckBox("manual",messageIds));
-			Button check = createCheckButton("check");
+			val check = createCheckButton("check");
 			setDefaultButton(check);
 			add(check);
 			add(new ResetButton("reset",new ResourceModel("cmd.reset"),MessageStatusPage.class));
@@ -100,244 +105,180 @@ public class MessageStatusPage extends BasePage
 
 		private DropDownChoice<String> createCPAIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public boolean isEnabled()
-				{
-					return !MessageStatusForm.this.getModelObject().getManual();
-				}
-			};
+			val result = DropDownChoice.<String>builder()
+					.id(id)
+					.choices(Model.ofList(Utils.toList(cpaService.getCPAIds())))
+					.isEnabled(() -> !MessageStatusForm.this.getModelObject().isManual())
+					.build();
 			result.setLabel(new ResourceModel("lbl.cpaId"));
 			//result.setRequired(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("change")
+			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
+				try
 				{
-					try
-					{
-						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						model.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
-						model.resetFromRoles(CPAUtils.getRoleNames(cpa));
-						model.resetToPartyIds();
-						model.resetToRoles();
-						target.add(getPage().get("feedback"));
-						target.add(getPage().get("form"));
-					}
-					catch (JAXBException e)
-					{
-						logger.error("",e);
-						error(e.getMessage());
-					}
+					val model = MessageStatusForm.this.getModelObject();
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+					model.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
+					model.resetFromRoles(CPAUtils.getRoleNames(cpa));
+					model.resetToPartyIds();
+					model.resetToRoles();
+					t.add(getPage().get("feedback"));
+					t.add(getPage().get("form"));
 				}
-			});
+				catch (JAXBException e)
+				{
+					log.error("",e);
+					error(e.getMessage());
+				}
+			};
+			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createFromPartyIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public boolean isEnabled()
-				{
-					return !MessageStatusForm.this.getModelObject().getManual();
-				}
-
-				@Override
-				public boolean isRequired()
-				{
-					return !MessageStatusForm.this.getModelObject().getManual();
-				}
-			};
+			val result = DropDownChoice.<String>builder()
+					.id(id)
+					.choices(new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"))
+					.isEnabled(() -> !MessageStatusForm.this.getModelObject().isManual())
+					.isRequired(() -> !MessageStatusForm.this.getModelObject().isManual())
+					.build();
 			result.setLabel(new ResourceModel("lbl.fromPartyId"));
 			result.setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("change")
+			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
+				try
 				{
-					try
-					{
-						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						model.resetFromRoles(CPAUtils.getRoleNames(cpa,model.getFromPartyId()));
-						model.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,model.getFromPartyId()));
-						if (model.getFromRole() != null)
-							model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToPartyId()));
-						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENDING,EbMSMessageStatus.EXPIRED));
-						if (model.getMessageIds().size() == 0)
-							info("No messages found");
-						target.add(getPage().get("feedback"));
-						target.add(getPage().get("form"));
-					}
-					catch (JAXBException e)
-					{
-						logger.error("",e);
-						error(e.getMessage());
-					}
+					val model = MessageStatusForm.this.getModelObject();
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+					model.resetFromRoles(CPAUtils.getRoleNames(cpa,model.getFromPartyId()));
+					model.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,model.getFromPartyId()));
+					if (model.getFromRole() != null)
+						model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToPartyId()));
+					model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENDING,EbMSMessageStatus.EXPIRED));
+					if (model.getMessageIds().size() == 0)
+						info("No messages found");
+					t.add(getPage().get("feedback"));
+					t.add(getPage().get("form"));
 				}
-			});
+				catch (JAXBException e)
+				{
+					log.error("",e);
+					error(e.getMessage());
+				}
+			};
+			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createFromRoleChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public boolean isEnabled()
-				{
-					return !MessageStatusForm.this.getModelObject().getManual();
-				}
-			};
+			val result = DropDownChoice.<String>builder()
+					.id(id)
+					.choices(new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
+					.isEnabled(() -> !MessageStatusForm.this.getModelObject().isManual())
+					.build();
 			result.setLabel(new ResourceModel("lbl.fromRole"));
 			result.setRequired(false).setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("change")
+			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
+				try
 				{
-					try
-					{
-						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						model.resetFromPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getFromRole()));
-						model.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,model.getFromPartyId()));
-						model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToPartyId()));
-						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENDING,EbMSMessageStatus.EXPIRED));
-						if (model.getMessageIds().size() == 0)
-							info("No messages found");
-						target.add(getPage().get("feedback"));
-						target.add(getPage().get("form"));
-					}
-					catch (JAXBException e)
-					{
-						logger.error("",e);
-						error(e.getMessage());
-					}
+					val model = MessageStatusForm.this.getModelObject();
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+					model.resetFromPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getFromRole()));
+					model.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,model.getFromPartyId()));
+					model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToPartyId()));
+					model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENDING,EbMSMessageStatus.EXPIRED));
+					if (model.getMessageIds().size() == 0)
+						info("No messages found");
+					t.add(getPage().get("feedback"));
+					t.add(getPage().get("form"));
 				}
-			});
+				catch (JAXBException e)
+				{
+					log.error("",e);
+					error(e.getMessage());
+				}
+			};
+			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createToPartyIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public boolean isEnabled()
-				{
-					return !MessageStatusForm.this.getModelObject().getManual();
-				}
-
-				@Override
-				public boolean isRequired()
-				{
-					return !MessageStatusForm.this.getModelObject().getManual();
-				}
-			};
+			val result = DropDownChoice.<String>builder()
+					.id(id)
+					.choices(new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"))
+					.isEnabled(() -> !MessageStatusForm.this.getModelObject().isManual())
+					.isRequired(() -> !MessageStatusForm.this.getModelObject().isManual())
+					.build();
 			result.setLabel(new ResourceModel("lbl.toPartyId"));
 			result.setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("change")
+			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
+				try
 				{
-					try
-					{
-						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToPartyId()));
-						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENDING,EbMSMessageStatus.EXPIRED));
-						if (model.getMessageIds().size() == 0)
-							info("No messages found");
-						target.add(getPage().get("feedback"));
-						target.add(getPage().get("form"));
-					}
-					catch (JAXBException e)
-					{
-						logger.error("",e);
-						error(e.getMessage());
-					}
+					val model = MessageStatusForm.this.getModelObject();
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+					model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToPartyId()));
+					model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENDING,EbMSMessageStatus.EXPIRED));
+					if (model.getMessageIds().size() == 0)
+						info("No messages found");
+					t.add(getPage().get("feedback"));
+					t.add(getPage().get("form"));
 				}
-			});
+				catch (JAXBException e)
+				{
+					log.error("",e);
+					error(e.getMessage());
+				}
+			};
+			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createToRoleChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toRoles"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public boolean isEnabled()
-				{
-					return !MessageStatusForm.this.getModelObject().getManual();
-				}
-			};
+			val result = DropDownChoice.<String>builder()
+					.id(id)
+					.choices(new PropertyModel<List<String>>(this.getModelObject(),"toRoles"))
+					.isEnabled(() -> !MessageStatusForm.this.getModelObject().isManual())
+					.build();
 			result.setLabel(new ResourceModel("lbl.toRole"));
 			result.setRequired(false).setOutputMarkupId(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("change")
+			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
+				try
 				{
-					try
-					{
-						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
-						CollaborationProtocolAgreement cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-						if (model.getToPartyId() == null)
-							model.resetToPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getToRole()));
-						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENDING,EbMSMessageStatus.EXPIRED));
-						if (model.getMessageIds().size() == 0)
-							info("No messages found");
-						target.add(getPage().get("feedback"));
-						target.add(getPage().get("form"));
-					}
-					catch (JAXBException e)
-					{
-						logger.error("",e);
-						error(e.getMessage());
-					}
+					val model = MessageStatusForm.this.getModelObject();
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
+					if (model.getToPartyId() == null)
+						model.resetToPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getToRole()));
+					model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENDING,EbMSMessageStatus.EXPIRED));
+					if (model.getMessageIds().size() == 0)
+						info("No messages found");
+					t.add(getPage().get("feedback"));
+					t.add(getPage().get("form"));
 				}
-			});
+				catch (JAXBException e)
+				{
+					log.error("",e);
+					error(e.getMessage());
+				}
+			};
+			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createMessageIdsChoice(String id)
 		{
-			final DropDownChoice<String> result = new DropDownChoice<String>(id,new PropertyModel<String>(this.getModelObject(),"messageId"),new PropertyModel<List<String>>(this.getModelObject(),"messageIds"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public boolean isVisible()
-				{
-					return !MessageStatusForm.this.getModelObject().getManual();
-				}
-			};
+			val result = DropDownChoice.<String>builder()
+					.id(id)
+					.model(new PropertyModel<String>(this.getModelObject(),"messageId"))
+					.choices(new PropertyModel<List<String>>(this.getModelObject(),"messageIds"))
+					.isVisible(() -> !MessageStatusForm.this.getModelObject().isManual())
+					.build();
 			result.setLabel(new ResourceModel("lbl.messageId"));
 			result.setOutputMarkupPlaceholderTag(true);
 			result.setRequired(true);
@@ -346,16 +287,10 @@ public class MessageStatusPage extends BasePage
 
 		private TextField<String> createMessageIdField(String id)
 		{
-			final TextField<String> result = new TextField<String>(id)
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public boolean isVisible()
-				{
-					return MessageStatusForm.this.getModelObject().getManual();
-				}
-			};
+			val result = TextField.<String>builder()
+					.id(id)
+					.isVisible(() -> MessageStatusForm.this.getModelObject().isManual())
+					.build();
 			result.setLabel(new ResourceModel("lbl.messageId"));
 			result.setRequired(true).setOutputMarkupPlaceholderTag(true);
 			return result;
@@ -363,100 +298,70 @@ public class MessageStatusPage extends BasePage
 
 		private CheckBox createManualCheckBox(String id, final DropDownChoice<String> messageIds)
 		{
-			CheckBox result = new CheckBox(id);
+			val result = new CheckBox(id);
 			result.setLabel(new ResourceModel("lbl.manual"));
-			result.add(new AjaxFormComponentUpdatingBehavior("change")
-      {
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
+			Consumer<AjaxRequestTarget> onUpdate = t ->
+			{
+				if (messageIds.isVisible())
 				{
-					if (messageIds.isVisible())
-					{
-						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
-						model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENDING,EbMSMessageStatus.EXPIRED));
-						if (model.getMessageIds().size() == 0)
-							info("No messages found");
-					}
-					target.add(getPage().get("feedback"));
-					target.add(getPage().get("form"));
+					val model = MessageStatusForm.this.getModelObject();
+					model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENDING,EbMSMessageStatus.EXPIRED));
+					if (model.getMessageIds().size() == 0)
+						info("No messages found");
 				}
-      });
+				t.add(getPage().get("feedback"));
+				t.add(getPage().get("form"));
+			};
+			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;
 		}
 
 		private Button createCheckButton(String id)
 		{
-			Button result = new Button(id,new ResourceModel("cmd.check"))
+			Action onSubmit = () ->
 			{
-				private static final long serialVersionUID = 1L;
-	
-				@Override
-				public void onSubmit()
+				try
 				{
-					try
+					val model = MessageStatusForm.this.getModelObject();
+					if (!model.isManual() || (model.getCpaId() != null && model.getFromPartyId() != null && model.getToPartyId() != null))
 					{
-						MessageStatusFormModel model = MessageStatusForm.this.getModelObject();
-						if (!model.getManual() || (model.getCpaId() != null && model.getFromPartyId() != null && model.getToPartyId() != null))
-						{
-							MessageStatus messageStatus = ebMSMessageService.getMessageStatus(model.getCpaId(),new Party(model.getFromPartyId(),model.getFromRole()),new Party(model.getToPartyId(),model.getToRole()),model.getMessageId());
-							info(new StringResourceModel("getMessageStatus.ok",Model.of(messageStatus.getStatus())).getString());
-						}
-						else
-						{
-							MessageStatus messageStatus = ebMSMessageService.getMessageStatus(model.getMessageId());
-							info(new StringResourceModel("getMessageStatus.ok",Model.of(messageStatus.getStatus())).getString());
-						}
+						val messageStatus = ebMSMessageService.getMessageStatus(model.getCpaId(),new Party(model.getFromPartyId(),model.getFromRole()),new Party(model.getToPartyId(),model.getToRole()),model.getMessageId());
+						info(new StringResourceModel("getMessageStatus.ok",Model.of(messageStatus.getStatus())).getString());
 					}
-					catch (Exception e)
+					else
 					{
-						logger.error("",e);
-						error(e.getMessage());
+						val messageStatus = ebMSMessageService.getMessageStatus(model.getMessageId());
+						info(new StringResourceModel("getMessageStatus.ok",Model.of(messageStatus.getStatus())).getString());
 					}
 				}
+				catch (Exception e)
+				{
+					log.error("",e);
+					error(e.getMessage());
+				}
 			};
-			return result;
+			return new Button(id,new ResourceModel("cmd.check"),onSubmit);
 		}
 
 	}
 
+	@Data
 	public class MessageStatusFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		private String cpaId;
-		private List<String> fromPartyIds = new ArrayList<>();
-		private String fromPartyId;
-		private List<String> fromRoles = new ArrayList<>();
-		private String fromRole;
-		private List<String> toPartyIds = new ArrayList<>();
-		private String toPartyId;
-		private List<String> toRoles = new ArrayList<>();
-		private String toRole;
-		private List<String> messageIds = new ArrayList<>();
-		private String messageId;
-		private boolean manual = true;
+		String cpaId;
+		final List<String> fromPartyIds = new ArrayList<>();
+		String fromPartyId;
+		final List<String> fromRoles = new ArrayList<>();
+		String fromRole;
+		final List<String> toPartyIds = new ArrayList<>();
+		String toPartyId;
+		final List<String> toRoles = new ArrayList<>();
+		String toRole;
+		final List<String> messageIds = new ArrayList<>();
+		String messageId;
+		boolean manual = true;
 		
-		public String getCpaId()
-		{
-			return cpaId;
-		}
-		public void setCpaId(String cpaId)
-		{
-			this.cpaId = cpaId;
-		}
-		public List<String> getFromPartyIds()
-		{
-			return fromPartyIds;
-		}
-		public void setFromPartyId(String fromPartyId)
-		{
-			this.fromPartyId = fromPartyId;
-		}
-		public String getFromPartyId()
-		{
-			return fromPartyId;
-		}
 		public void resetFromPartyIds()
 		{
 			getFromPartyIds().clear();
@@ -468,18 +373,6 @@ public class MessageStatusPage extends BasePage
 			getFromPartyIds().addAll(partyIds);
 			setFromPartyId(getFromPartyIds().size() == 1 ? getFromPartyIds().get(0) : null);
 		}
-		public List<String> getFromRoles()
-		{
-			return fromRoles;
-		}
-		public String getFromRole()
-		{
-			return fromRole;
-		}
-		public void setFromRole(String fromRole)
-		{
-			this.fromRole = fromRole;
-		}
 		public void resetFromRoles()
 		{
 			getFromRoles().clear();
@@ -489,18 +382,6 @@ public class MessageStatusPage extends BasePage
 		{
 			resetFromRoles();
 			getFromRoles().addAll(roleNames);
-		}
-		public List<String> getToPartyIds()
-		{
-			return toPartyIds;
-		}
-		public String getToPartyId()
-		{
-			return toPartyId;
-		}
-		public void setToPartyId(String toPartyId)
-		{
-			this.toPartyId = toPartyId;
 		}
 		public void resetToPartyIds()
 		{
@@ -513,18 +394,6 @@ public class MessageStatusPage extends BasePage
 			getToPartyIds().addAll(partyIds);
 			setToPartyId(getToPartyIds().size() == 1 ? getToPartyIds().get(0) : null);
 		}
-		public List<String> getToRoles()
-		{
-			return toRoles;
-		}
-		public String getToRole()
-		{
-			return toRole;
-		}
-		public void setToRole(String toRole)
-		{
-			this.toRole = toRole;
-		}
 		public void resetToRoles()
 		{
 			getToRoles().clear();
@@ -536,18 +405,6 @@ public class MessageStatusPage extends BasePage
 			getToRoles().addAll(roleNames);
 			setToRole(getFromRole() != null && getToRoles().size() == 1 ? getToRoles().get(0) : null);
 		}
-		public List<String> getMessageIds()
-		{
-			return messageIds;
-		}
-		public String getMessageId()
-		{
-			return messageId;
-		}
-		public void setMessageId(String messageId)
-		{
-			this.messageId = messageId;
-		}
 		public void resetMessageId()
 		{
 			setMessageId(null);
@@ -558,14 +415,5 @@ public class MessageStatusPage extends BasePage
 			getMessageIds().addAll(messageIds);
 			setMessageId(null);
 		}
-		public boolean getManual()
-		{
-			return manual;
-		}
-		public void setManual(boolean manual)
-		{
-			this.manual = manual;
-		}
 	}		
-
 }

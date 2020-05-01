@@ -22,13 +22,15 @@ import java.util.HashMap;
 import java.util.List;
 
 import nl.clockwork.ebms.EbMSMessageStatus;
-import nl.clockwork.ebms.admin.Constants.TimeUnit;
 import nl.clockwork.ebms.admin.dao.AbstractEbMSDAO;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
+import nl.clockwork.ebms.admin.web.message.TimeUnit;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.support.TransactionTemplate;
+
+import lombok.val;
 
 public class EbMSDAOImpl extends AbstractEbMSDAO
 {
@@ -50,7 +52,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 	@Override
 	public String selectMessagesQuery(EbMSMessageFilter filter, long first, long count, List<Object> parameters)
 	{
-		return new EbMSMessageRowMapper().getBaseQuery() +
+		return EbMSMessageRowMapper.builder().build().getBaseQuery() +
 			" where 1 = 1" +
 			getMessageFilter(filter,parameters) +
 			" order by time_stamp desc" +
@@ -61,7 +63,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 	@Override
 	public HashMap<Date,Integer> selectMessageTraffic(Date from, Date to, TimeUnit timeUnit, EbMSMessageStatus...status)
 	{
-		final HashMap<Date,Integer> result = new HashMap<>();
+		val result = new HashMap<Date,Integer>();
 		jdbcTemplate.query(
 			"select date_trunc('" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "',time_stamp) as time, count(*) as nr" + 
 			" from ebms_message" + 

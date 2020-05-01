@@ -23,22 +23,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import nl.clockwork.ebms.Constants;
-import nl.clockwork.ebms.EbMSMessageStatus;
-import nl.clockwork.ebms.admin.Constants.TimeUnit;
-import nl.clockwork.ebms.admin.model.CPA;
-import nl.clockwork.ebms.admin.model.EbMSAttachment;
-import nl.clockwork.ebms.admin.model.EbMSEvent;
-import nl.clockwork.ebms.admin.model.EbMSEventLog;
-import nl.clockwork.ebms.admin.model.EbMSMessage;
-import nl.clockwork.ebms.admin.web.Utils;
-import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
-import nl.clockwork.ebms.dao.DAOException;
-import nl.clockwork.ebms.event.processor.EbMSEventStatus;
 
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.StringUtils;
@@ -50,8 +38,23 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.NonNull;
+import lombok.val;
 import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.Constants;
+import nl.clockwork.ebms.EbMSMessageStatus;
+import nl.clockwork.ebms.admin.model.CPA;
+import nl.clockwork.ebms.admin.model.EbMSAttachment;
+import nl.clockwork.ebms.admin.model.EbMSEvent;
+import nl.clockwork.ebms.admin.model.EbMSEventLog;
+import nl.clockwork.ebms.admin.model.EbMSMessage;
+import nl.clockwork.ebms.admin.web.Utils;
+import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
+import nl.clockwork.ebms.admin.web.message.TimeUnit;
+import nl.clockwork.ebms.dao.DAOException;
+import nl.clockwork.ebms.event.processor.EbMSEventStatus;
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @AllArgsConstructor
@@ -71,19 +74,17 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		}
 	}
 	
+	@Builder
+	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 	public static class EbMSMessageRowMapper implements RowMapper<EbMSMessage>
 	{
-		private boolean detail;
-
-		public EbMSMessageRowMapper()
-		{
-			this(false);
-		}
-		
-		public EbMSMessageRowMapper(boolean detail)
-		{
-			this.detail = detail;
-		}
+		@Default
+		Supplier<List<EbMSAttachment>> getAttachments = () -> new ArrayList<EbMSAttachment>();
+		@Default
+		Supplier<EbMSEvent> getEvent = () -> null;
+		@Default
+		Supplier<List<EbMSEventLog>> getEvents = () -> new ArrayList<EbMSEventLog>();
+		boolean detail;
 
 		public String getBaseQuery()
 		{
@@ -110,24 +111,32 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		@Override
 		public EbMSMessage mapRow(ResultSet rs, int rowNum) throws SQLException
 		{
-			EbMSMessage result = new EbMSMessage();
-			result.setTimestamp(rs.getTimestamp("time_stamp"));
-			result.setCpaId(rs.getString("cpa_id"));
-			result.setConversationId(rs.getString("conversation_id"));
-			result.setMessageId(rs.getString("message_id"));
-			result.setMessageNr(rs.getInt("message_nr"));
-			result.setRefToMessageId(rs.getString("ref_to_message_id"));
-			result.setTimeToLive(rs.getTimestamp("time_to_live"));
-			result.setFromPartyId(rs.getString("from_party_id"));
-			result.setFromRole(rs.getString("from_role"));
-			result.setToPartyId(rs.getString("to_party_id"));
-			result.setToRole(rs.getString("to_role"));
-			result.setService(rs.getString("service"));
-			result.setAction(rs.getString("action"));
+			val attachments = getAttachments.get();
+			val events = getEvents.get();
+			val builder = EbMSMessage.builder();
+			builder.timestamp(rs.getTimestamp("time_stamp"));
+			builder.cpaId(rs.getString("cpa_id"));
+			builder.conversationId(rs.getString("conversation_id"));
+			builder.messageId(rs.getString("message_id"));
+			builder.messageNr(rs.getInt("message_nr"));
+			builder.refToMessageId(rs.getString("ref_to_message_id"));
+			builder.timeToLive(rs.getTimestamp("time_to_live"));
+			builder.fromPartyId(rs.getString("from_party_id"));
+			builder.fromRole(rs.getString("from_role"));
+			builder.toPartyId(rs.getString("to_party_id"));
+			builder.toRole(rs.getString("to_role"));
+			builder.service(rs.getString("service"));
+			builder.action(rs.getString("action"));
 			if (detail)
-				result.setContent(rs.getString("content"));
-			result.setStatus(rs.getObject("status") == null ? null : EbMSMessageStatus.get(rs.getInt("status")));
-			result.setStatusTime(rs.getTimestamp("status_time"));
+				builder.content(rs.getString("content"));
+			builder.status(rs.getObject("status") == null ? null : EbMSMessageStatus.get(rs.getInt("status")));
+			builder.statusTime(rs.getTimestamp("status_time"));
+			builder.attachments(attachments);
+			builder.event(getEvent.get());
+			builder.events(events);
+			EbMSMessage result = builder.build();
+			attachments.forEach(a -> a.setMessage(result));
+			events.forEach(e -> e.setMessage(result));
 			return result;
 		}
 	}
@@ -192,20 +201,20 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	@Override
 	public EbMSMessage findMessage(String messageId, int messageNr)
 	{
-		EbMSMessage result = jdbcTemplate.queryForObject(
-			new EbMSMessageRowMapper(true).getBaseQuery() + 
+		EbMSMessageRowMapper rowMapper = EbMSMessageRowMapper.builder()
+				.getAttachments(() -> getAttachments(messageId,messageNr))
+				.getEvent(() -> getEvent(messageId))
+				.getEvents(() -> getEvents(messageId))
+				.detail(true)
+				.build();
+		return jdbcTemplate.queryForObject(
+				rowMapper.getBaseQuery() + 
 			" where message_id = ?" +
 			" and message_nr = ?",
-			new EbMSMessageRowMapper(true),
+			rowMapper,
 			messageId,
 			messageNr
 		);
-		result.setAttachments(getAttachments(messageId,messageNr));
-		result.getAttachments().forEach(a -> a.setMessage(result));
-		result.setEvent(getEvent(messageId));
-		result.setEvents(getEvents(messageId));
-		result.getEvents().forEach(e -> e.setMessage(result));
-		return result;
 	}
 
 	@Override
@@ -226,20 +235,21 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	@Override
 	public EbMSMessage findResponseMessage(String messageId)
 	{
-		EbMSMessage result = jdbcTemplate.queryForObject(
-			new EbMSMessageRowMapper(true).getBaseQuery() + 
-			" where ref_to_message_id = ?" +
-			" and message_nr = ?" +
-			" and service = ?",
-			new EbMSMessageRowMapper(true),
-			messageId,
-			0,
-			Constants.EBMS_SERVICE_URI
+		val rowMapper = EbMSMessageRowMapper.builder()
+				.getAttachments(() -> new ArrayList<EbMSAttachment>())
+				.getEvents(() -> getEvents(messageId))
+				.detail(true)
+				.build();
+		return jdbcTemplate.queryForObject(
+				rowMapper.getBaseQuery() + 
+				" where ref_to_message_id = ?" +
+				" and message_nr = ?" +
+				" and service = ?",
+				rowMapper,
+				messageId,
+				0,
+				Constants.EBMS_SERVICE_URI
 		);
-		result.setAttachments(new ArrayList<>());
-		result.setEvents(getEvents(messageId));
-		result.getEvents().forEach(e -> e.setMessage(result));
-		return result;
 	}
 
 	@Override
@@ -262,10 +272,11 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	public List<EbMSMessage> selectMessages(EbMSMessageFilter filter, long first, long count)
 	{
 		List<Object> parameters = new ArrayList<>();
+		EbMSMessageRowMapper rowMapper = EbMSMessageRowMapper.builder().build();
 		return jdbcTemplate.query(
 			selectMessagesQuery(filter,first,count,parameters),
 			parameters.toArray(new Object[0]),
-			new EbMSMessageRowMapper()
+			rowMapper
 		);
 	}
 	
@@ -283,7 +294,12 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				@Override
 				public EbMSAttachment mapRow(ResultSet rs, int rowNum) throws SQLException
 				{
-					return new EbMSAttachment(rs.getString("name"),rs.getString("content_id"),rs.getString("content_type"),rs.getBytes("content"));
+					return EbMSAttachment.builder()
+							.name(rs.getString("name"))
+							.contentId(rs.getString("content_id"))
+							.contentType(rs.getString("content_type"))
+							.content(rs.getBytes("content"))
+							.build();
 				}
 			},
 			messageId,
@@ -304,7 +320,11 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				@Override
 				public EbMSAttachment mapRow(ResultSet rs, int rowNum) throws SQLException
 				{
-					return new EbMSAttachment(rs.getString("name"),rs.getString("content_id"),rs.getString("content_type"),null);
+					return EbMSAttachment.builder()
+							.name(rs.getString("name"))
+							.contentId(rs.getString("content_id"))
+							.contentType(rs.getString("content_type"))
+							.build();
 				}
 			},
 			messageId,
@@ -348,7 +368,12 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				@Override
 				public EbMSEventLog mapRow(ResultSet rs, int rowNum) throws SQLException
 				{
-					return new EbMSEventLog(rs.getTimestamp("time_stamp"),rs.getString("uri"),EbMSEventStatus.get(rs.getInt("status")),rs.getString("error_message"));
+					return EbMSEventLog.builder()
+							.timestamp(rs.getTimestamp("time_stamp"))
+							.uri(rs.getString("uri"))
+							.status(EbMSEventStatus.get(rs.getInt("status")))
+							.errorMessage(rs.getString("error_message"))
+							.build();
 				}
 			},
 			messageId
@@ -376,7 +401,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	@Override
 	public HashMap<Date,Integer> selectMessageTraffic(Date from, Date to, TimeUnit timeUnit, EbMSMessageStatus...status)
 	{
-		final HashMap<Date,Integer> result = new HashMap<>();
+		val result = new HashMap<Date,Integer>();
 		jdbcTemplate.query(
 			"select trunc(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "') time, count(*) nr" + 
 			" from ebms_message" + 
@@ -416,8 +441,9 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	public void printMessagesToCSV(final CSVPrinter printer, EbMSMessageFilter filter)
 	{
 		List<Object> parameters = new ArrayList<>();
+		EbMSMessageRowMapper rowMapper = EbMSMessageRowMapper.builder().build();
 		jdbcTemplate.query(
-			new EbMSMessageRowMapper().getBaseQuery() +
+			rowMapper.getBaseQuery() +
 			" where 1 = 1" +
 			getMessageFilter(filter,parameters) +
 			" order by time_stamp desc",

@@ -23,8 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.TreeSet;
+
+import lombok.val;
 
 public class Utils
 {
@@ -32,7 +33,7 @@ public class Utils
 	{
 		try
 		{
-			Properties properties = Utils.readProperties(Utils.class.getResourceAsStream(propertiesFile));
+			val properties = Utils.readProperties(Utils.class.getResourceAsStream(propertiesFile));
 			return properties.getProperty("artifactId") + "-" + properties.getProperty("version");
 		}
 		catch (Exception e)
@@ -43,7 +44,7 @@ public class Utils
 	
 	public static Properties readProperties(InputStream inputStream) throws IOException
 	{
-		Properties properties = new Properties();
+		val properties = new Properties();
 		properties.load(inputStream);
 		return properties;
 	}
@@ -55,8 +56,8 @@ public class Utils
 	
 	public static void writeProperties(Map<String,String> properties, Writer writer) throws IOException
 	{
-		Set<String> keySet = new TreeSet<String>(properties.keySet());
-		for (String key : keySet)
+		val keySet = new TreeSet<String>(properties.keySet());
+		for (val key : keySet)
 		{
 			writer.write(key);
 			writer.write(" = ");

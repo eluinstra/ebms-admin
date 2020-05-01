@@ -24,10 +24,14 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.core.io.Resource;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class PropertyPlaceholderConfigurer extends org.springframework.beans.factory.config.PropertyPlaceholderConfigurer
 {
-	private Resource overridePropertiesFile;
-	private Map<String,String> properties;
+	Resource overridePropertiesFile;
+	Map<String,String> properties;
 
 	@Override
 	public void setLocations(Resource...locations)

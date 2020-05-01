@@ -33,5 +33,4 @@ public class XMLFileResourceStream extends PackageResourceStream
 	{
 		return "text/xml";
 	}
-	
 }

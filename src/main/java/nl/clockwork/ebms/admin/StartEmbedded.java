@@ -24,7 +24,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.DispatcherType;
@@ -38,52 +37,48 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.hsqldb.persist.HsqlProperties;
 import org.hsqldb.server.EbMSServerProperties;
 import org.hsqldb.server.ServerAcl.AclFormatException;
 import org.hsqldb.server.ServerConfiguration;
 import org.hsqldb.server.ServerConstants;
-import org.hsqldb.server.ServerProperties;
-import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
+import lombok.AccessLevel;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.web.ExtensionProvider;
 import nl.clockwork.ebms.admin.web.configuration.JdbcURL;
 
+@FieldDefaults(level = AccessLevel.PROTECTED)
 public class StartEmbedded extends Start
 {
-	protected Map<String,String> properties;
-
 	public static void main(String[] args) throws Exception
 	{
-		StartEmbedded start = new StartEmbedded();
-		start.options = start.createOptions();
-		start.cmd = new DefaultParser().parse(start.options,args);
+		val options = createOptions();
+		val cmd = new DefaultParser().parse(options,args);
+		if (cmd.hasOption("h"))
+			printUsage(options);
 
-		if (start.cmd.hasOption("h"))
-			start.printUsage();
-
-		start.init(start.cmd);
-		
+		val start = new StartEmbedded();
+		start.init(cmd);
 		start.server.setHandler(start.handlerCollection);
+		val properties = getProperties("nl/clockwork/ebms/admin/applicationConfig.embedded.xml");
 
-		start.properties = start.getProperties("nl/clockwork/ebms/admin/applicationConfig.embedded.xml");
+		start.initHSQLDB(cmd,properties);
+		start.initWebServer(cmd,start.server);
+		start.initEbMSServer(properties,start.server);
+		start.initJMX(cmd,start.server);
 
-		start.initHSQLDB(start.cmd,start.properties);
-		start.initWebServer(start.cmd,start.server);
-		start.initEbMSServer(start.properties,start.server);
-		start.initJMX(start.cmd,start.server);
-
-		XmlWebApplicationContext context = new XmlWebApplicationContext();
+		val context = new XmlWebApplicationContext();
 		context.setConfigLocations(getConfigLocations("classpath:nl/clockwork/ebms/admin/applicationContext.embedded.xml"));
-		ContextLoaderListener contextLoaderListener = new ContextLoaderListener(context);
-		if (start.cmd.hasOption("soap") || !start.cmd.hasOption("headless"))
-			start.handlerCollection.addHandler(start.createWebContextHandler(start.cmd,contextLoaderListener));
-		start.handlerCollection.addHandler(start.createEbMSContextHandler(start.properties,contextLoaderListener));
+		val contextLoaderListener = new ContextLoaderListener(context);
+		if (cmd.hasOption("soap") || !cmd.hasOption("headless"))
+			start.handlerCollection.addHandler(start.createWebContextHandler(cmd,contextLoaderListener));
+		start.handlerCollection.addHandler(start.createEbMSContextHandler(properties,contextLoaderListener));
 
 		System.out.println("Starting web server...");
 
@@ -100,10 +95,9 @@ public class StartEmbedded extends Start
 		start.server.join();
 	}
 
-	@Override
-	protected Options createOptions()
+	protected static Options createOptions()
 	{
-		Options result = super.createOptions();
+		val result = Start.createOptions();
 		result.addOption("hsqldb",false,"start hsqldb server");
 		result.addOption("hsqldbDir",true,"set hsqldb location (default: hsqldb)");
 		result.addOption("soap",false,"start soap service");
@@ -111,11 +105,11 @@ public class StartEmbedded extends Start
 		return result;
 	}
 	
-	private Map<String,String> getProperties(String...files)
+	private static Map<String,String> getProperties(String...files)
 	{
-		try (AbstractApplicationContext applicationContext = new ClassPathXmlApplicationContext(files))
+		try (val applicationContext = new ClassPathXmlApplicationContext(files))
 		{
-			PropertyPlaceholderConfigurer properties = (PropertyPlaceholderConfigurer)applicationContext.getBean("propertyConfigurer");
+			val properties = (PropertyPlaceholderConfigurer)applicationContext.getBean("propertyConfigurer");
 			return properties.getProperties();
 		}
 	}
@@ -124,7 +118,7 @@ public class StartEmbedded extends Start
 	{
 		if ("org.hsqldb.jdbcDriver".equals(properties.get("ebms.jdbc.driverClassName")) && cmd.hasOption("hsqldb"))
 		{
-			JdbcURL jdbcURL = nl.clockwork.ebms.admin.web.configuration.Utils.parseJdbcURL(properties.get("ebms.jdbc.url"),new JdbcURL());
+			val jdbcURL = nl.clockwork.ebms.admin.web.configuration.Utils.parseJdbcURL(properties.get("ebms.jdbc.url"),new JdbcURL());
 			if (!jdbcURL.getHost().matches("(localhost|127.0.0.1)"))
 			{
 				System.out.println("Cannot start server on " + jdbcURL.getHost());
@@ -137,7 +131,7 @@ public class StartEmbedded extends Start
 
 	public void startHSQLDBServer(CommandLine cmd, JdbcURL jdbcURL) throws IOException, AclFormatException, URISyntaxException
 	{
-		List<String> options = new ArrayList<>();
+		val options = new ArrayList<>();
 		options.add("-database.0");
 		options.add((cmd.hasOption("hsqldbDir") ? "file:" + cmd.getOptionValue("hsqldbDir") : "file:hsqldb") + "/" + jdbcURL.getDatabase());
 		options.add("-dbname.0");
@@ -147,8 +141,8 @@ public class StartEmbedded extends Start
 			options.add("-port");
 			options.add(jdbcURL.getPort().toString());
 		}
-		HsqlProperties argProps = HsqlProperties.argArrayToProps(options.toArray(new String[0]),"server");
-		ServerProperties props = new EbMSServerProperties(ServerConstants.SC_PROTOCOL_HSQL);
+		val argProps = HsqlProperties.argArrayToProps(options.toArray(new String[0]),"server");
+		val props = new EbMSServerProperties(ServerConstants.SC_PROTOCOL_HSQL);
 		props.addProperties(argProps);
 		ServerConfiguration.translateDefaultDatabaseProperty(props);
 		ServerConfiguration.translateDefaultNoSystemExitProperty(props);
@@ -161,7 +155,7 @@ public class StartEmbedded extends Start
 
 	private void initDatabase(org.hsqldb.server.Server server)
 	{
-    try (Connection c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:" + server.getPort() + "/" + server.getDatabaseName(0,true), "sa", ""))
+    try (val c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:" + server.getPort() + "/" + server.getDatabaseName(0,true), "sa", ""))
 		{
 			if (!c.createStatement().executeQuery("select table_name from information_schema.tables where table_name = 'CPA'").next())
 			{
@@ -211,7 +205,7 @@ public class StartEmbedded extends Start
 
 	private ServerConnector createEbMSHttpConnector(Map<String,String> properties)
 	{
-		ServerConnector result = new ServerConnector(this.server);
+		val result = new ServerConnector(this.server);
 		result.setHost(StringUtils.isEmpty(properties.get("ebms.host")) ? "0.0.0.0" : properties.get("ebms.host"));
 		result.setPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
 		result.setName("ebms");
@@ -221,7 +215,7 @@ public class StartEmbedded extends Start
 
 	private SslContextFactory createEbMSSslContextFactory(Map<String,String> properties) throws MalformedURLException, IOException
 	{
-		SslContextFactory result = new SslContextFactory();
+		val result = new SslContextFactory();
 		addEbMSKeyStore(properties,result);
 		if ("true".equals(properties.get("https.requireClientAuthentication")))
 			addEbMSTrustStore(properties,result);
@@ -230,7 +224,7 @@ public class StartEmbedded extends Start
 
 	private void addEbMSKeyStore(Map<String,String> properties, SslContextFactory sslContextFactory) throws MalformedURLException, IOException
 	{
-		Resource keyStore = getResource(properties.get("keystore.path"));
+		val keyStore = getResource(properties.get("keystore.path"));
 		if (keyStore != null && keyStore.exists())
 		{
 			if (!StringUtils.isEmpty(properties.get("https.protocols")))
@@ -250,7 +244,7 @@ public class StartEmbedded extends Start
 
 	private void addEbMSTrustStore(Map<String,String> properties, SslContextFactory sslContextFactory) throws MalformedURLException, IOException
 	{
-		Resource trustStore = getResource(properties.get("truststore.path"));
+		val trustStore = getResource(properties.get("truststore.path"));
 		if (trustStore != null && trustStore.exists())
 		{
 			sslContextFactory.setNeedClientAuth(true);
@@ -267,7 +261,7 @@ public class StartEmbedded extends Start
 
 	private ServerConnector createEbMSHttpsConnector(Map<String,String> properties, SslContextFactory factory)
 	{
-		ServerConnector result = new ServerConnector(this.server,factory);
+		val result = new ServerConnector(this.server,factory);
 		result.setHost(StringUtils.isEmpty(properties.get("ebms.host")) ? "0.0.0.0" : properties.get("ebms.host"));
 		result.setPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
 		result.setName("ebms");
@@ -277,18 +271,13 @@ public class StartEmbedded extends Start
 
 	protected ServletContextHandler createEbMSContextHandler(Map<String,String> properties, ContextLoaderListener contextLoaderListener) throws IOException, NoSuchAlgorithmException
 	{
-		ServletContextHandler result = new ServletContextHandler(ServletContextHandler.SESSIONS);
+		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		result.setVirtualHosts(new String[] {"@ebms"});
-
 		result.setContextPath("/");
-
 		if ("true".equals(properties.get("https.clientCertificateAuthentication").toLowerCase()))
 			result.addFilter(createClientCertificateManagerFilterHolder(properties),"/*",EnumSet.allOf(DispatcherType.class));
-
 		result.addServlet(nl.clockwork.ebms.servlet.EbMSServlet.class,properties.get("ebms.path"));
-
 		result.addEventListener(contextLoaderListener);
-		
 		return result;
 	}
 

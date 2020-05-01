@@ -19,14 +19,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
@@ -34,6 +30,7 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IClusterable;
 import org.joda.time.DateTime;
+import org.joda.time.Period;
 
 import de.adesso.wickedcharts.chartjs.ChartConfiguration;
 import de.adesso.wickedcharts.chartjs.chartoptions.AxesScale;
@@ -52,19 +49,26 @@ import de.adesso.wickedcharts.chartjs.chartoptions.Tooltips;
 import de.adesso.wickedcharts.chartjs.chartoptions.label.TextLabel;
 import de.adesso.wickedcharts.chartjs.chartoptions.valueType.IntegerValue;
 import de.adesso.wickedcharts.wicket8.chartjs.Chart;
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.EbMSMessageStatus;
-import nl.clockwork.ebms.admin.Constants.EbMSMessageTrafficChartOption;
-import nl.clockwork.ebms.admin.Constants.TimeUnit;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
+import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
+import nl.clockwork.ebms.admin.web.AjaxLink;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.Consumer;
+import nl.clockwork.ebms.admin.web.DropDownChoice;
 
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class TrafficChartPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="ebMSAdminDAO")
-	private EbMSDAO ebMSDAO;
-	private Chart chart;
+	EbMSDAO ebMSDAO;
+	Chart chart;
 
 	public TrafficChartPage()
 	{
@@ -79,7 +83,7 @@ public class TrafficChartPage extends BasePage
 	
 	private ChartConfiguration createChartConfiguration(TrafficChartFormModel model)
 	{
-		ChartConfiguration result = new ChartConfiguration();
+		val result = new ChartConfiguration();
 		result.setType(ChartType.LINE);
 		result.setOptions(createOptions(model));
 		result.setData(createData(model));
@@ -88,7 +92,7 @@ public class TrafficChartPage extends BasePage
 
 	private Options createOptions(TrafficChartFormModel model)
 	{
-		Options options = new Options()
+		val options = new Options()
 				.setResponsive(true)
 				.setTitle(new Title()
 					.setDisplay(true)
@@ -118,16 +122,11 @@ public class TrafficChartPage extends BasePage
 
 	private Data createData(TrafficChartFormModel model)
 	{
-		DateTime from = new DateTime(model.from.getTime());
-		DateTime to = from.plus(model.timeUnit.getPeriod());
-		List<Date> dates = new ArrayList<>();
-		while (from.isBefore(to))
-		{
-			dates.add(from.toDate());
-			from = from.plus(model.timeUnit.getTimeUnit());
-		}
-		List<String> dateStrings = dates.stream().map(d -> new SimpleDateFormat(model.timeUnit.getTimeUnitDateFormat()).format(d)).collect(Collectors.toList());
-		Data data = new Data().setLabels(TextLabel.of(dateStrings))
+		val from = new DateTime(model.from.getTime());
+		val to = from.plus(model.timeUnit.getPeriod());
+		val dates = calculateDates(model.timeUnit.getTimeUnit(),from,to);
+		val dateStrings = dates.stream().map(d -> new SimpleDateFormat(model.timeUnit.getTimeUnitDateFormat()).format(d)).collect(Collectors.toList());
+		return new Data().setLabels(TextLabel.of(dateStrings))
 				.setDatasets(Arrays.stream(model.getEbMSMessageTrafficChartOption().getEbMSMessageTrafficChartSeries())
 					.map(ds -> new Dataset()
 							.setLabel(ds.getName())
@@ -136,19 +135,18 @@ public class TrafficChartPage extends BasePage
 							.setData(IntegerValue.of(getMessages(dates,model,ds.getEbMSMessageStatuses())))
 							.setFill(false))
 					.collect(Collectors.toList()));
-		return data;
 	}
 
 	private static TrafficChartFormModel getTrafficChartFormModel(TimeUnit timeUnit, EbMSMessageTrafficChartOption ebMSMessageTrafficChartOption)
 	{
-		DateTime from = timeUnit.getFrom();
-		DateTime to = from.plus(timeUnit.getPeriod());
+		val from = timeUnit.getFrom();
+		val to = from.plus(timeUnit.getPeriod());
 		return new TrafficChartFormModel(timeUnit,from.toDate(),to.toDate(),ebMSMessageTrafficChartOption);
 	}
 
 	private List<Integer> getMessages(List<Date> dates, TrafficChartFormModel model, EbMSMessageStatus...status)
 	{
-		HashMap<Date,Integer> messageTraffic = ebMSDAO.selectMessageTraffic(model.from,new DateTime(model.from.getTime()).plus(model.timeUnit.getPeriod()).toDate(),model.timeUnit,status);
+		val messageTraffic = ebMSDAO.selectMessageTraffic(model.from,new DateTime(model.from.getTime()).plus(model.timeUnit.getPeriod()).toDate(),model.timeUnit,status);
 		return dates.stream().map(d -> messageTraffic.containsKey(d) ? messageTraffic.get(d) : 0).collect(Collectors.toList());
 	}
 
@@ -175,142 +173,96 @@ public class TrafficChartPage extends BasePage
 
 		private DropDownChoice<TimeUnit> createTimeUnitChoice(String id)
 		{
-			DropDownChoice<TimeUnit> result = new DropDownChoice<TimeUnit>(id,new PropertyModel<List<TimeUnit>>(this.getModelObject(),"timeUnits"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected boolean localizeDisplayValues()
-				{
-					return true;
-				}
-			};
+			val result = DropDownChoice.<TimeUnit>builder()
+					.id(id)
+					.choices(new PropertyModel<List<TimeUnit>>(this.getModelObject(),"timeUnits"))
+					.localizeDisplayValues(() -> true)
+					.build();
 			result.setLabel(new ResourceModel("lbl.timeUnit"));
 			result.setRequired(true);
-			result.add(new AjaxFormComponentUpdatingBehavior("change")
+			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
-					model.setFrom(model.getTimeUnit().getFrom().toDate());
-					chart.setChartConfiguration(createChartConfiguration(model));
-					target.add(chart);
-				}
-			});
+				val model = TrafficChartForm.this.getModelObject();
+				model.setFrom(model.getTimeUnit().getFrom().toDate());
+				chart.setChartConfiguration(createChartConfiguration(model));
+				t.add(chart);
+			};
+			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;
 		}
 
 		private AjaxLink<Void> createMinusLink(String id)
 		{
-			return new AjaxLink<Void>(id)
+			Consumer<AjaxRequestTarget> onClick = t ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void onClick(AjaxRequestTarget target)
-				{
-					TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
-					model.setFrom(new DateTime(model.getFrom().getTime()).minus(model.getTimeUnit().getPeriod()).toDate());
-					chart.setChartConfiguration(createChartConfiguration(model));
-					target.add(chart);
-				}
+				val model = TrafficChartForm.this.getModelObject();
+				model.setFrom(new DateTime(model.getFrom().getTime()).minus(model.getTimeUnit().getPeriod()).toDate());
+				chart.setChartConfiguration(createChartConfiguration(model));
+				t.add(chart);
 			};
+			return new AjaxLink<Void>(id,onClick);
 		}
 
 		private AjaxLink<Void> createPlusLink(String id)
 		{
-			return new AjaxLink<Void>(id)
+			Consumer<AjaxRequestTarget> onClick = t ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void onClick(AjaxRequestTarget target)
-				{
-					TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
-					model.setFrom(new DateTime(model.getFrom().getTime()).plus(model.getTimeUnit().getPeriod()).toDate());
-					chart.setChartConfiguration(createChartConfiguration(model));
-					target.add(chart);
-				}
+				val model = TrafficChartForm.this.getModelObject();
+				model.setFrom(new DateTime(model.getFrom().getTime()).plus(model.getTimeUnit().getPeriod()).toDate());
+				chart.setChartConfiguration(createChartConfiguration(model));
+				t.add(chart);
 			};
+			return new AjaxLink<Void>(id,onClick);
 		}
 
 		private DropDownChoice<EbMSMessageTrafficChartOption> createEbMSMessageTrafficChartOptions(String id)
 		{
-			DropDownChoice<EbMSMessageTrafficChartOption> ebMSMessageTrafficChartOptions = new DropDownChoice<EbMSMessageTrafficChartOption>(id,new PropertyModel<EbMSMessageTrafficChartOption>(this.getModelObject(),"ebMSMessageTrafficChartOption"),new PropertyModel<List<EbMSMessageTrafficChartOption>>(this.getModelObject(),"ebMSMessageTrafficChartOptions"))
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected boolean localizeDisplayValues()
-				{
-					return true;
-				}
-			};
+			val ebMSMessageTrafficChartOptions = DropDownChoice.<EbMSMessageTrafficChartOption>builder()
+					.id(id)
+					.model(new PropertyModel<EbMSMessageTrafficChartOption>(this.getModelObject(),"ebMSMessageTrafficChartOption"))
+					.choices(new PropertyModel<List<EbMSMessageTrafficChartOption>>(this.getModelObject(),"ebMSMessageTrafficChartOptions"))
+					.localizeDisplayValues(() -> true)
+					.build();
 			ebMSMessageTrafficChartOptions.setLabel(new ResourceModel("lbl.ebMSMessageTrafficChartOption"));
 			ebMSMessageTrafficChartOptions.setRequired(true);
-			ebMSMessageTrafficChartOptions.add(new AjaxFormComponentUpdatingBehavior("change")
+			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected void onUpdate(AjaxRequestTarget target)
-				{
-					TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
-					chart.setChartConfiguration(createChartConfiguration(model));
-					target.add(chart);
-				}
-			});
+				TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
+				chart.setChartConfiguration(createChartConfiguration(model));
+				t.add(chart);
+			};
+			ebMSMessageTrafficChartOptions.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return ebMSMessageTrafficChartOptions;
 		}
 	}
 	
+	private List<Date> calculateDates(Period period, DateTime from, DateTime to)
+	{
+		val dates = new ArrayList<Date>();
+		while (from.isBefore(to))
+		{
+			dates.add(from.toDate());
+			from = from.plus(period);
+		}
+		return dates;
+	}
+
+	@lombok.Data
 	public static class TrafficChartFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		private TimeUnit timeUnit;
-		private Date from;
-		private EbMSMessageTrafficChartOption ebMSMessageTrafficChartOption;
+		@NonNull
+		TimeUnit timeUnit;
+		@NonNull
+		Date from;
+		@NonNull
+		Date to;
+		@NonNull
+		EbMSMessageTrafficChartOption ebMSMessageTrafficChartOption;
 		
-		public TrafficChartFormModel(TimeUnit timeUnit, Date from, Date to, EbMSMessageTrafficChartOption ebMSMessageTrafficChartOption)
-		{
-			this.timeUnit = timeUnit;
-			this.from = from;
-			this.ebMSMessageTrafficChartOption = ebMSMessageTrafficChartOption;
-		}
 		public List<TimeUnit> getTimeUnits()
 		{
 			return Arrays.asList(TimeUnit.values());
-		}
-		public TimeUnit getTimeUnit()
-		{
-			return timeUnit;
-		}
-		public void setTimeUnit(TimeUnit timeUnit)
-		{
-			this.timeUnit = timeUnit;
-		}
-		public Date getFrom()
-		{
-			return from;
-		}
-		public void setFrom(Date from)
-		{
-			this.from = from;
-		}
-		public List<EbMSMessageTrafficChartOption> getEbMSMessageTrafficChartOptions()
-		{
-			return Arrays.asList(EbMSMessageTrafficChartOption.values());
-		}
-		public EbMSMessageTrafficChartOption getEbMSMessageTrafficChartOption()
-		{
-			return ebMSMessageTrafficChartOption;
-		}
-		public void setEbMSMessageTrafficChartOption(EbMSMessageTrafficChartOption ebMSMessageTrafficChartOption)
-		{
-			this.ebMSMessageTrafficChartOption = ebMSMessageTrafficChartOption;
 		}
 	}
 
