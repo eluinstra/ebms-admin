@@ -61,8 +61,8 @@ import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
 import nl.clockwork.ebms.admin.web.ExtensionProvider;
-import nl.clockwork.ebms.common.KeyStoreManager.KeyStoreType;
 import nl.clockwork.ebms.common.util.SecurityUtils;
+import nl.clockwork.ebms.security.KeyStoreType;
 
 public class Start
 {

@@ -19,12 +19,11 @@ import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import nl.clockwork.ebms.Constants.EbMSMessageStatus;
-
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 
 import de.adesso.wickedcharts.chartjs.chartoptions.colors.SimpleColor;
+import nl.clockwork.ebms.EbMSMessageStatus;
 
 public class Constants
 {

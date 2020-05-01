@@ -15,15 +15,28 @@
  */
 package nl.clockwork.ebms.admin.dao;
 
+import javax.sql.DataSource;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.dao.AbstractDAOFactory.DefaultDAOFactory;
 
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class EbMSDAOFactory extends DefaultDAOFactory<EbMSDAO>
 {
-	protected TransactionTemplate transactionTemplate;
-	protected JdbcTemplate jdbcTemplate;
+	TransactionTemplate transactionTemplate;
+	JdbcTemplate jdbcTemplate;
+
+	public EbMSDAOFactory(@NonNull DataSource dataSource, TransactionTemplate transactionTemplate, JdbcTemplate jdbcTemplate)
+	{
+		super(dataSource);
+		this.transactionTemplate = transactionTemplate;
+		this.jdbcTemplate = jdbcTemplate;
+	}
 
 	@Override
 	public Class<EbMSDAO> getObjectType()
@@ -60,15 +73,4 @@ public class EbMSDAOFactory extends DefaultDAOFactory<EbMSDAO>
 	{
 		return new nl.clockwork.ebms.admin.dao.mssql.EbMSDAOImpl(transactionTemplate,jdbcTemplate);
 	}
-
-	public void setTransactionTemplate(TransactionTemplate transactionTemplate)
-	{
-		this.transactionTemplate = transactionTemplate;
-	}
-	
-	public void setJdbcTemplate(JdbcTemplate jdbcTemplate)
-	{
-		this.jdbcTemplate = jdbcTemplate;
-	}
-
 }

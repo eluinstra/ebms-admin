@@ -15,8 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-import nl.clockwork.ebms.Constants.EbMSEventStatus;
-import nl.clockwork.ebms.Constants.EbMSMessageStatus;
+import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.model.EbMSEventLog;
@@ -28,6 +27,7 @@ import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.admin.web.WicketApplication;
+import nl.clockwork.ebms.event.processor.EbMSEventStatus;
 
 import java.util.EnumSet;
 

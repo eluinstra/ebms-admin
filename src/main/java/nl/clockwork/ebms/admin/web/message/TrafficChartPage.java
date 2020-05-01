@@ -52,7 +52,7 @@ import de.adesso.wickedcharts.chartjs.chartoptions.Tooltips;
 import de.adesso.wickedcharts.chartjs.chartoptions.label.TextLabel;
 import de.adesso.wickedcharts.chartjs.chartoptions.valueType.IntegerValue;
 import de.adesso.wickedcharts.wicket8.chartjs.Chart;
-import nl.clockwork.ebms.Constants.EbMSMessageStatus;
+import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.Constants.EbMSMessageTrafficChartOption;
 import nl.clockwork.ebms.admin.Constants.TimeUnit;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;

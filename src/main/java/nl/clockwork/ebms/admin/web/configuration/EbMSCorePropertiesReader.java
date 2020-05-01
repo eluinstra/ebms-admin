@@ -33,8 +33,8 @@ import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyP
 import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.SignaturePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormModel;
 import nl.clockwork.ebms.client.EbMSHttpClientFactory.EbMSHttpClientType;
-import nl.clockwork.ebms.common.KeyStoreManager.KeyStoreType;
 import nl.clockwork.ebms.event.listener.EventListenerFactory.EventListenerType;
+import nl.clockwork.ebms.security.KeyStoreType;
 
 public class EbMSCorePropertiesReader
 {

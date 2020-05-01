@@ -18,10 +18,10 @@ package nl.clockwork.ebms.admin.web;
 import java.net.URLConnection;
 import java.util.List;
 
-import nl.clockwork.ebms.Constants.EbMSMessageStatus;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.resource.loader.IStringResourceLoader;
+
+import nl.clockwork.ebms.EbMSMessageStatus;
 
 public class Utils
 {

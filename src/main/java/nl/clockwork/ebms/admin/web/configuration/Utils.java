@@ -40,7 +40,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
-import nl.clockwork.ebms.common.KeyStoreManager.KeyStoreType;
+import nl.clockwork.ebms.security.KeyStoreType;
 
 public class Utils
 {

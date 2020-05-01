@@ -15,13 +15,13 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
-import nl.clockwork.ebms.Constants.EbMSMessageEventType;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
 import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
 import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
+import nl.clockwork.ebms.event.listener.EbMSMessageEventType;
 import nl.clockwork.ebms.model.EbMSMessageContext;
 import nl.clockwork.ebms.model.EbMSMessageEvent;
 import nl.clockwork.ebms.service.EbMSMessageService;

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import nl.clockwork.ebms.Constants.EbMSMessageStatus;
+import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.model.EbMSMessageContext;
 
 public class EbMSMessageFilter extends EbMSMessageContext

@@ -29,9 +29,9 @@ import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.resource.IResourceStream;
 
-import nl.clockwork.ebms.Constants.EbMSMessageEventType;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.message.ByteArrayResourceStream;
+import nl.clockwork.ebms.event.listener.EbMSMessageEventType;
 import nl.clockwork.ebms.model.EbMSMessageContext;
 import nl.clockwork.ebms.model.EbMSMessageEvent;
 import nl.clockwork.ebms.service.EbMSMessageService;

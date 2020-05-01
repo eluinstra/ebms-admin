@@ -28,8 +28,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import nl.clockwork.ebms.Constants;
-import nl.clockwork.ebms.Constants.EbMSEventStatus;
-import nl.clockwork.ebms.Constants.EbMSMessageStatus;
+import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.Constants.TimeUnit;
 import nl.clockwork.ebms.admin.model.CPA;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
@@ -39,6 +38,7 @@ import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
 import nl.clockwork.ebms.dao.DAOException;
+import nl.clockwork.ebms.event.processor.EbMSEventStatus;
 
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.StringUtils;
@@ -48,6 +48,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
+@AllArgsConstructor
 public abstract class AbstractEbMSDAO implements EbMSDAO
 {
 	public static class CPARowMapper implements RowMapper<CPA>
@@ -124,15 +131,11 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			return result;
 		}
 	}
-	
-	protected TransactionTemplate transactionTemplate;
-	protected JdbcTemplate jdbcTemplate;
 
-	public AbstractEbMSDAO(TransactionTemplate transactionTemplate, JdbcTemplate jdbcTemplate)
-	{
-		this.transactionTemplate = transactionTemplate;
-		this.jdbcTemplate = jdbcTemplate;
-	}
+	@NonNull
+	TransactionTemplate transactionTemplate;
+	@NonNull
+	JdbcTemplate jdbcTemplate;
 
 	@Override
 	public CPA findCPA(String cpaId)
@@ -406,7 +409,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 
 	protected String join(EbMSMessageStatus[] array, String delimiter)
 	{
-		return Arrays.stream(array).map(s -> Integer.toString(s.id())).collect(Collectors.joining(delimiter));
+		return Arrays.stream(array).map(s -> Integer.toString(s.getId())).collect(Collectors.joining(delimiter));
 	}
 	
 	@Override
@@ -592,7 +595,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			}
 			if (messageFilter.getStatuses().size() > 0)
 			{
-				String ids = messageFilter.getStatuses().stream().map(s -> Integer.toString(s.id())).collect(Collectors.joining(","));
+				String ids = messageFilter.getStatuses().stream().map(s -> Integer.toString(s.getId())).collect(Collectors.joining(","));
 				result.append(" and status in (" + ids + ")");
 			}
 			if (messageFilter.getServiceMessage() != null)

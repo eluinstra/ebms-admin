@@ -16,14 +16,21 @@
 
 CREATE TABLE cpa
 (
-	cpa_id						VARCHAR(256)		NOT NULL PRIMARY KEY,
+	cpa_id						VARCHAR(256)		NOT NULL UNIQUE,
 	cpa								CLOB						NOT NULL
 );
 
-CREATE TABLE url
+CREATE TABLE url_mapping
 (
 	source						VARCHAR(256)		NOT NULL UNIQUE,
 	destination				VARCHAR(256)		NOT NULL
+);
+
+CREATE TABLE certificate_mapping
+(
+	id								VARCHAR(256)	NOT NULL UNIQUE,
+	source						BLOB					NOT NULL,
+	destination				BLOB					NOT NULL
 );
 
 CREATE TABLE ebms_message
@@ -45,8 +52,7 @@ CREATE TABLE ebms_message
 	content						CLOB						NULL,
 	status						SMALLINT				NULL,
 	status_time				TIMESTAMP				NULL,
-	PRIMARY KEY (message_id,message_nr),
-	FOREIGN KEY (cpa_id) REFERENCES cpa(cpa_id)
+	PRIMARY KEY (message_id,message_nr)
 );
 
 CREATE TABLE ebms_attachment
@@ -63,36 +69,30 @@ CREATE TABLE ebms_attachment
 
 CREATE TABLE ebms_event
 (
-	cpa_id						VARCHAR(256)		NOT NULL,
-	channel_id				VARCHAR(256)		NOT NULL,
-	message_id				VARCHAR(256)		NOT NULL UNIQUE,
-	message_nr				SMALLINT				DEFAULT 0 NOT NULL,
-	time_to_live			TIMESTAMP				NULL,
-	time_stamp				TIMESTAMP				NOT NULL,
-	is_confidential		SMALLINT				NOT NULL,
-	retries						SMALLINT				DEFAULT 0 NOT NULL,
-	server_id				VARCHAR(256)			NULL,
-	FOREIGN KEY (cpa_id) REFERENCES cpa(cpa_id),
-	FOREIGN KEY (message_id,message_nr) REFERENCES ebms_message (message_id,message_nr)
+	cpa_id							VARCHAR(256)		NOT NULL,
+	send_channel_id			VARCHAR(256)		NOT NULL,
+	receive_channel_id	VARCHAR(256)		NOT NULL,
+	message_id					VARCHAR(256)		NOT NULL UNIQUE,
+	time_to_live				TIMESTAMP				NULL,
+	time_stamp					TIMESTAMP				NOT NULL,
+	is_confidential			BOOLEAN					NOT NULL,
+	retries							SMALLINT				DEFAULT 0 NOT NULL,
+	server_id						VARCHAR(256)		NULL
 );
 
 CREATE TABLE ebms_event_log
 (
 	message_id				VARCHAR(256)		NOT NULL,
-	message_nr				SMALLINT				DEFAULT 0 NOT NULL,
 	time_stamp				TIMESTAMP				NOT NULL,
 	uri								VARCHAR(256)		NULL,
 	status						SMALLINT				NOT NULL,
-	error_message			CLOB						NULL,
-	FOREIGN KEY (message_id,message_nr) REFERENCES ebms_message (message_id,message_nr)
+	error_message			CLOB						NULL
 );
 
 CREATE TABLE ebms_message_event
 (
 	message_id				VARCHAR(256)		NOT NULL UNIQUE,
-	message_nr				SMALLINT				DEFAULT 0 NOT NULL,
 	event_type				SMALLINT				NOT NULL,
 	time_stamp				TIMESTAMP				NOT NULL,
-	processed					SMALLINT				DEFAULT 0 NOT NULL,
-	FOREIGN KEY (message_id,message_nr) REFERENCES ebms_message (message_id,message_nr)
+	processed					SMALLINT				DEFAULT 0 NOT NULL
 );

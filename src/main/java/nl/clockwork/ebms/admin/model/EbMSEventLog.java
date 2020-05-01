@@ -17,9 +17,9 @@ package nl.clockwork.ebms.admin.model;
 
 import java.util.Date;
 
-import nl.clockwork.ebms.Constants.EbMSEventStatus;
-
 import org.apache.wicket.util.io.IClusterable;
+
+import nl.clockwork.ebms.event.processor.EbMSEventStatus;
 
 public class EbMSEventLog implements IClusterable
 {

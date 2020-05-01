@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import nl.clockwork.ebms.Constants.EbMSMessageStatus;
-
 import org.apache.wicket.util.io.IClusterable;
+
+import nl.clockwork.ebms.EbMSMessageStatus;
 
 public class EbMSMessage implements IClusterable
 {

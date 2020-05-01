@@ -46,7 +46,7 @@ import de.adesso.wickedcharts.highcharts.options.Title;
 import de.adesso.wickedcharts.highcharts.options.VerticalAlignment;
 import de.adesso.wickedcharts.highcharts.options.series.SimpleSeries;
 import de.adesso.wickedcharts.wicket8.highcharts.Chart;
-import nl.clockwork.ebms.Constants.EbMSMessageStatus;
+import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.Constants.EbMSMessageTrafficChartOption;
 import nl.clockwork.ebms.admin.Constants.TimeUnit;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
