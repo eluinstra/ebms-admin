@@ -173,7 +173,7 @@ If you want to override 'advanced' properties from the default.properties file t
 = Start EbMS Admin Console standalone
 =====================================
 show help:
-> java -cp ebms-admin-2.16.2.jar nl.clockwork.ebms.admin.Start -h
+> java -cp ebms-admin-2.16.5.jar nl.clockwork.ebms.admin.Start -h
 usage: Start [-authentication] [-clientAuthentication]
        [-clientCertificateHeader <arg>] [-clientTrustStorePassword <arg>]
        [-clientTrustStorePath <arg>] [-clientTrustStoreType <arg>] [-h]
