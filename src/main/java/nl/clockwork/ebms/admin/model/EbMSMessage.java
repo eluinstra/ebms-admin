@@ -56,9 +56,11 @@ public class EbMSMessage implements IClusterable
 	String content;
 	EbMSMessageStatus status;
 	Date statusTime;
+	@NonNull
 	@Default
 	List<EbMSAttachment> attachments = new ArrayList<>();
 	EbMSEvent event;
+	@NonNull
 	@Default
 	List<EbMSEventLog> events = new ArrayList<>();
 }

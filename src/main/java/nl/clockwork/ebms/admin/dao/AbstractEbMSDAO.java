@@ -79,10 +79,13 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 	public static class EbMSMessageRowMapper implements RowMapper<EbMSMessage>
 	{
+		@NonNull
 		@Default
 		Supplier<List<EbMSAttachment>> getAttachments = () -> new ArrayList<EbMSAttachment>();
+		@NonNull
 		@Default
 		Supplier<EbMSEvent> getEvent = () -> null;
+		@NonNull
 		@Default
 		Supplier<List<EbMSEventLog>> getEvents = () -> new ArrayList<EbMSEventLog>();
 		boolean detail;
