@@ -15,10 +15,10 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +29,6 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IClusterable;
-import org.joda.time.DateTime;
 
 import de.adesso.wickedcharts.highcharts.options.Axis;
 import de.adesso.wickedcharts.highcharts.options.ChartOptions;
@@ -77,14 +76,12 @@ public class TrafficChartPageX extends BasePage
 	
 	private Options createOptions(TrafficChartFormModel model)
 	{
-		val from = new DateTime(model.from.getTime());
-		val to = from.plus(model.timeUnit.getPeriod());
-		val dates = calculateDates(model,from,to);
-		val dateString = dates.stream().map(d -> new SimpleDateFormat(model.timeUnit.getTimeUnitDateFormat()).format(d)).collect(Collectors.toList());
+		val dates = calculateDates(model.timeUnit.getTimeUnit(),model.from,model.getTo());
+		val dateStrings = dates.stream().map(d -> model.timeUnit.getTimeUnitDateFormat().format(d)).collect(Collectors.toList());
 		val result = new Options();
 		result.setChartOptions(new ChartOptions().setType(SeriesType.LINE));
-		result.setTitle(new Title(model.getEbMSMessageTrafficChartOption().getTitle() + " " + new SimpleDateFormat(model.timeUnit.getDateFormat()).format(model.getFrom())));
-		result.setxAxis(new Axis().setCategories(dateString));
+		result.setTitle(new Title(model.getEbMSMessageTrafficChartOption().getTitle() + " " + model.timeUnit.getDateFormatter().format(model.getFrom())));
+		result.setxAxis(new Axis().setCategories(dateStrings));
 		result.setyAxis(new Axis().setTitle(new Title("Messages")));
 		result.setLegend(new Legend().setLayout(LegendLayout.VERTICAL).setAlign(HorizontalAlignment.RIGHT).setVerticalAlign(VerticalAlignment.TOP).setX(0).setY(1000).setBorderWidth(0));
 		result.setSeries(Arrays.stream(model.getEbMSMessageTrafficChartOption().getEbMSMessageTrafficChartSeries())
@@ -96,13 +93,12 @@ public class TrafficChartPageX extends BasePage
 	private static TrafficChartFormModel getTrafficChartFormModel(TimeUnit timeUnit, EbMSMessageTrafficChartOption ebMSMessageTrafficChartOption)
 	{
 		val from = timeUnit.getFrom();
-		val to = from.plus(timeUnit.getPeriod());
-		return new TrafficChartFormModel(timeUnit,from.toDate(),to.toDate(),ebMSMessageTrafficChartOption);
+		return new TrafficChartFormModel(timeUnit,from,ebMSMessageTrafficChartOption);
 	}
 
-	private List<Number> getMessages(List<Date> dates, TrafficChartFormModel model, EbMSMessageStatus...status)
+	private List<Number> getMessages(List<LocalDateTime> dates, TrafficChartFormModel model, EbMSMessageStatus...status)
 	{
-		val messageTraffic = ebMSDAO.selectMessageTraffic(model.from,new DateTime(model.from.getTime()).plus(model.timeUnit.getPeriod()).toDate(),model.timeUnit,status);
+		val messageTraffic = ebMSDAO.selectMessageTraffic(model.from,model.getTo(),model.timeUnit,status);
 		return dates.stream().map(d -> messageTraffic.containsKey(d) ? messageTraffic.get(d) : 0).collect(Collectors.toList());
 	}
 
@@ -139,7 +135,7 @@ public class TrafficChartPageX extends BasePage
 			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				val model = TrafficChartForm.this.getModelObject();
-				model.setFrom(model.getTimeUnit().getFrom().toDate());
+				model.setFrom(model.getTimeUnit().getFrom());
 				chart.setOptions(createOptions(model));
 				t.add(chart);
 			};
@@ -152,7 +148,7 @@ public class TrafficChartPageX extends BasePage
 			Consumer<AjaxRequestTarget> onClick = t ->
 			{
 				TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
-				model.setFrom(new DateTime(model.getFrom().getTime()).minus(model.getTimeUnit().getPeriod()).toDate());
+				model.setFrom(model.getFrom().minus(model.getTimeUnit().getPeriod()));
 				chart.setOptions(createOptions(model));
 				t.add(chart);
 			};
@@ -164,7 +160,7 @@ public class TrafficChartPageX extends BasePage
 			Consumer<AjaxRequestTarget> onClick = t ->
 			{
 				TrafficChartFormModel model = TrafficChartForm.this.getModelObject();
-				model.setFrom(new DateTime(model.getFrom().getTime()).plus(model.getTimeUnit().getPeriod()).toDate());
+				model.setFrom(model.getFrom().plus(model.getTimeUnit().getPeriod()));
 				chart.setOptions(createOptions(model));
 				t.add(chart);
 			};
@@ -192,13 +188,13 @@ public class TrafficChartPageX extends BasePage
 		}
 	}
 	
-	private List<Date> calculateDates(TrafficChartFormModel model, DateTime from, DateTime to)
+	private List<LocalDateTime> calculateDates(TemporalAmount period, LocalDateTime from, LocalDateTime to)
 	{
-		val dates = new ArrayList<Date>();
+		val dates = new ArrayList<LocalDateTime>();
 		while (from.isBefore(to))
 		{
-			dates.add(from.toDate());
-			from = from.plus(model.timeUnit.getTimeUnit());
+			dates.add(from);
+			from = from.plus(period);
 		}
 		return dates;
 	}
@@ -210,15 +206,21 @@ public class TrafficChartPageX extends BasePage
 		@NonNull
 		TimeUnit timeUnit;
 		@NonNull
-		Date from;
-		@NonNull
-		Date to;
+		LocalDateTime from;
 		@NonNull
 		EbMSMessageTrafficChartOption ebMSMessageTrafficChartOption;
 		
 		public List<TimeUnit> getTimeUnits()
 		{
 			return Arrays.asList(TimeUnit.values());
+		}
+		public LocalDateTime getTo()
+		{
+			return from.plus(timeUnit.getPeriod());
+		}
+		public List<EbMSMessageTrafficChartOption> getEbMSMessageTrafficChartOptions()
+		{
+			return Arrays.asList(EbMSMessageTrafficChartOption.values());
 		}
 	}
 

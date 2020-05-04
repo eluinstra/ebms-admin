@@ -17,20 +17,19 @@ package nl.clockwork.ebms.admin.dao.postgresql;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
-
-import nl.clockwork.ebms.EbMSMessageStatus;
-import nl.clockwork.ebms.admin.dao.AbstractEbMSDAO;
-import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
-import nl.clockwork.ebms.admin.web.message.TimeUnit;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import lombok.val;
+import nl.clockwork.ebms.EbMSMessageStatus;
+import nl.clockwork.ebms.admin.dao.AbstractEbMSDAO;
+import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
+import nl.clockwork.ebms.admin.web.message.TimeUnit;
 
 public class EbMSDAOImpl extends AbstractEbMSDAO
 {
@@ -61,22 +60,22 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 	}
 
 	@Override
-	public HashMap<Date,Integer> selectMessageTraffic(Date from, Date to, TimeUnit timeUnit, EbMSMessageStatus...status)
+	public HashMap<LocalDateTime,Integer> selectMessageTraffic(LocalDateTime from, LocalDateTime to, TimeUnit timeUnit, EbMSMessageStatus...status)
 	{
-		val result = new HashMap<Date,Integer>();
+		val result = new HashMap<LocalDateTime,Integer>();
 		jdbcTemplate.query(
-			"select date_trunc('" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "',time_stamp) as time, count(*) as nr" + 
+			"select date_trunc('" + getDateFormat(timeUnit.getSqlDateFormat()) + "',time_stamp) as time, count(*) as nr" + 
 			" from ebms_message" + 
 			" where time_stamp >= ? " +
 			" and time_stamp < ?" +
 			(status.length == 0 ? " and status is not null" : " and status in (" + join(status,",") + ")") +
-			" group by date_trunc('" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "',time_stamp)",
+			" group by date_trunc('" + getDateFormat(timeUnit.getSqlDateFormat()) + "',time_stamp)",
 			new RowMapper<Object>()
 			{
 				@Override
 				public Object mapRow(ResultSet rs, int rowNum) throws SQLException
 				{
-					result.put(rs.getTimestamp("time"),rs.getInt("nr"));
+					result.put(rs.getTimestamp("time").toLocalDateTime(),rs.getInt("nr"));
 					return null;
 				}
 			},

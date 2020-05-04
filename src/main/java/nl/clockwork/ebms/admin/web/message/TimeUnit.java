@@ -1,10 +1,11 @@
 package nl.clockwork.ebms.admin.web.message;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import org.joda.time.DateTime;
-import org.joda.time.Period;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAmount;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -17,40 +18,41 @@ import nl.clockwork.ebms.admin.Constants;
 @Getter
 public enum TimeUnit
 {
-	HOUR("Minutes",Period.minutes(1),Period.hours(1),Constants.DATETIME_HOUR_FORMAT,"mm"), DAY("Hours",Period.hours(1),Period.days(1),Constants.DATE_FORMAT,"HH")/*, WEEK("Days",Period.days(1),Period.weeks(1),DATE_FORMAT,"dd"), MONTH("Weeks",Period.weeks(1),Period.months(1),DATE_FORMAT,"ww")*/, MONTH("Days",Period.days(1),Period.months(1),Constants.DATE_MONTH_FORMAT,"dd"), YEAR("Months",Period.months(1),Period.years(1),Constants.DATE_YEAR_FORMAT,"MM");
+	HOUR("Minutes",Duration.ofMinutes(1),Duration.ofHours(1),DateTimeFormatter.ofPattern(Constants.DATETIME_HOUR_FORMAT),DateTimeFormatter.ofPattern("mm"),"mm"),
+	DAY("Hours",Duration.ofHours(1),Duration.ofDays(1),DateTimeFormatter.ofPattern(Constants.DATE_FORMAT),DateTimeFormatter.ofPattern("HH"),"HH"),
+	/*WEEK("Days",Period.ofDays(1),Period.ofWeeks(1),DateTimeFormatter.ofPattern(Constants.DATE_FORMAT),DateTimeFormatter.ofPattern("dd"),"dd"),
+	MONTH("Weeks",Period.ofWeeks(1),Period.ofMonths(1),DateTimeFormatter.ofPattern(Constants.DATE_FORMAT),DateTimeFormatter.ofPattern("ww"),"ww"),*/
+	MONTH("Days",Period.ofDays(1),Period.ofMonths(1),DateTimeFormatter.ofPattern(Constants.DATE_MONTH_FORMAT),DateTimeFormatter.ofPattern("dd"),"dd"),
+	YEAR("Months",Period.ofMonths(1),Period.ofYears(1),DateTimeFormatter.ofPattern(Constants.DATE_YEAR_FORMAT),DateTimeFormatter.ofPattern("MM"),"MM");
 	
 	String units;
-	Period timeUnit;
-	Period period;
-	String dateFormat;
-	String timeUnitDateFormat;
+	TemporalAmount timeUnit;
+	TemporalAmount period;
+	DateTimeFormatter dateFormatter;
+	DateTimeFormatter timeUnitDateFormat;
+	String sqlDateFormat;
 
-	public DateTime getFrom()
+	public LocalDateTime getFrom()
 	{
-		return getFrom(new Date());
+		return getFrom(LocalDateTime.now());
 	}
 
-	public DateTime getFrom(Date date)
+	public LocalDateTime getFrom(LocalDateTime dateTime)
 	{
 		switch(this)
 		{
 			case HOUR:
-				return new DateTime(date.getTime()).withMillisOfSecond(0).withSecondOfMinute(0).withMinuteOfHour(0).plusHours(1).minus(this.getPeriod());
+				return dateTime.withNano(0).with(ChronoField.MILLI_OF_SECOND,0).withSecond(0).withMinute(0).plusHours(1).minus(this.getPeriod());
 			case DAY:
-				return new DateTime(date.getTime()).withMillisOfSecond(0).withSecondOfMinute(0).withMinuteOfHour(0).withHourOfDay(0).plusDays(1).minus(this.getPeriod());
+				return dateTime.withNano(0).with(ChronoField.MILLI_OF_SECOND,0).withSecond(0).withMinute(0).withHour(0).plusDays(1).minus(this.getPeriod());
 			//case WEEK:
-				//return new DateTime().withMillisOfSecond(0).withSecondOfMinute(0).withMinuteOfHour(0).withHourOfDay(0).withDayOfWeek(1).plusWeeks(1).minus(this.getPeriod());
+				//return dateTime.withNano(0).with(ChronoField.MILLI_OF_SECOND,0).withSecond(0).withMinute(0).withHour(0).withDayOfWeek(1).plusWeeks(1).minus(this.getPeriod());
 			case MONTH:
-				return new DateTime(date.getTime()).withMillisOfSecond(0).withSecondOfMinute(0).withMinuteOfHour(0).withHourOfDay(0).withDayOfMonth(1).plusMonths(1).minus(this.getPeriod());
+				return dateTime.withNano(0).with(ChronoField.MILLI_OF_SECOND,0).withSecond(0).withMinute(0).withHour(0).withDayOfMonth(1).plusMonths(1).minus(this.getPeriod());
 			case YEAR:
-				return new DateTime(date.getTime()).withMillisOfSecond(0).withSecondOfMinute(0).withMinuteOfHour(0).withHourOfDay(0).withDayOfYear(1).plusYears(1).minus(this.getPeriod());
+				return dateTime.withNano(0).with(ChronoField.MILLI_OF_SECOND,0).withSecond(0).withMinute(0).withHour(0).withDayOfYear(1).plusYears(1).minus(this.getPeriod());
 			default:
 				return null;
 		}
-	}
-
-	public String format(Date date)
-	{
-		return new SimpleDateFormat(dateFormat).format(date);
 	}
 }

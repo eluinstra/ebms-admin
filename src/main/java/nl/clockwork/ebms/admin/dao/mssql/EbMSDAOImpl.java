@@ -17,19 +17,19 @@ package nl.clockwork.ebms.admin.dao.mssql;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
-
-import nl.clockwork.ebms.EbMSMessageStatus;
-import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
-import nl.clockwork.ebms.admin.web.message.TimeUnit;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import lombok.val;
+import nl.clockwork.ebms.EbMSMessageStatus;
+import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
+import nl.clockwork.ebms.admin.web.message.TimeUnit;
 
 public class EbMSDAOImpl extends nl.clockwork.ebms.admin.dao.mysql.EbMSDAOImpl
 {
@@ -72,30 +72,30 @@ public class EbMSDAOImpl extends nl.clockwork.ebms.admin.dao.mysql.EbMSDAOImpl
 	}
 
 	@Override
-	public HashMap<Date,Integer> selectMessageTraffic(Date from, Date to, TimeUnit timeUnit, EbMSMessageStatus...status)
+	public HashMap<LocalDateTime,Integer> selectMessageTraffic(LocalDateTime from, LocalDateTime to, TimeUnit timeUnit, EbMSMessageStatus...status)
 	{
-		val result = new HashMap<Date,Integer>();
+		val result = new HashMap<LocalDateTime,Integer>();
 		jdbcTemplate.query(
 			//"select format(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "') time, count(*) nr" + 
 			//"select parse(format(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "'),'yyyy-MM-dd hh:mm:ss') time, count(*) nr" + 
-			"select cast(" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "as datetime) time, count(*) nr" + 
+			"select cast(" + getDateFormat(timeUnit.getSqlDateFormat()) + "as datetime) time, count(*) nr" + 
 			" from ebms_message" + 
 			" where time_stamp >= ? " +
 			" and time_stamp < ?" +
 			(status.length == 0 ? " and status is not null" : " and status in (" + join(status,",") + ")") +
 			//" group by format(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "')",
-			" group by " + getDateFormat(timeUnit.getTimeUnitDateFormat()),
+			" group by " + getDateFormat(timeUnit.getSqlDateFormat()),
 			new RowMapper<Object>()
 			{
 				@Override
 				public Object mapRow(ResultSet rs, int rowNum) throws SQLException
 				{
-					result.put(rs.getTimestamp("time"),rs.getInt("nr"));
+					result.put(rs.getTimestamp("time").toLocalDateTime(),rs.getInt("nr"));
 					return null;
 				}
 			},
-			from,
-			to
+			Timestamp.valueOf(from),
+			Timestamp.valueOf(to)
 		);
 		return result;
 	}

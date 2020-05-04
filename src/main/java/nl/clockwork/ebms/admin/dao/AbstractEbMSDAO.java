@@ -18,9 +18,10 @@ package nl.clockwork.ebms.admin.dao;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
@@ -399,27 +400,27 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 	
 	@Override
-	public HashMap<Date,Integer> selectMessageTraffic(Date from, Date to, TimeUnit timeUnit, EbMSMessageStatus...status)
+	public HashMap<LocalDateTime,Integer> selectMessageTraffic(LocalDateTime from, LocalDateTime to, TimeUnit timeUnit, EbMSMessageStatus...status)
 	{
-		val result = new HashMap<Date,Integer>();
+		val result = new HashMap<LocalDateTime,Integer>();
 		jdbcTemplate.query(
-			"select trunc(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "') time, count(*) nr" + 
+			"select trunc(time_stamp,'" + getDateFormat(timeUnit.getSqlDateFormat()) + "') time, count(*) nr" + 
 			" from ebms_message" + 
 			" where time_stamp >= ? " +
 			" and time_stamp < ?" +
 			(status.length == 0 ? " and status is not null" : " and status in (" + join(status,",") + ")") +
-			" group by trunc(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "')",
+			" group by trunc(time_stamp,'" + getDateFormat(timeUnit.getSqlDateFormat()) + "')",
 			new RowMapper<Object>()
 			{
 				@Override
 				public Object mapRow(ResultSet rs, int rowNum) throws SQLException
 				{
-					result.put(rs.getTimestamp("time"),rs.getInt("nr"));
+					result.put(rs.getTimestamp("time").toLocalDateTime(),rs.getInt("nr"));
 					return null;
 				}
 			},
-			from,
-			to
+			Timestamp.valueOf(from),
+			Timestamp.valueOf(to)
 		);
 		return result;
 	}

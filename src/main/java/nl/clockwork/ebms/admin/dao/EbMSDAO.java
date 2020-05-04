@@ -15,10 +15,12 @@
  */
 package nl.clockwork.ebms.admin.dao;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipOutputStream;
+
+import org.apache.commons.csv.CSVPrinter;
 
 import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.model.CPA;
@@ -26,8 +28,6 @@ import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
 import nl.clockwork.ebms.admin.web.message.TimeUnit;
-
-import org.apache.commons.csv.CSVPrinter;
 
 public interface EbMSDAO
 {
@@ -47,7 +47,7 @@ public interface EbMSDAO
 	
 	List<String> selectMessageIds(String cpaId, String fromRole, String toRole, EbMSMessageStatus...status);
 
-	HashMap<Date,Integer> selectMessageTraffic(Date from, Date to, TimeUnit timeUnit, EbMSMessageStatus...status);
+	HashMap<LocalDateTime,Integer> selectMessageTraffic(LocalDateTime from, LocalDateTime to, TimeUnit timeUnit, EbMSMessageStatus...status);
 	
 	void writeMessageToZip(String messageId, int messageNr, ZipOutputStream stream);
 	void printMessagesToCSV(CSVPrinter printer, EbMSMessageFilter filter);
