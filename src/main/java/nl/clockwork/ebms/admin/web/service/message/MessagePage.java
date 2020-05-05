@@ -39,9 +39,9 @@ import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.Link;
 import nl.clockwork.ebms.admin.web.PageLink;
-import nl.clockwork.ebms.model.EbMSDataSource;
-import nl.clockwork.ebms.model.EbMSMessageContent;
 import nl.clockwork.ebms.service.EbMSMessageService;
+import nl.clockwork.ebms.service.model.EbMSDataSource;
+import nl.clockwork.ebms.service.model.EbMSMessageContent;
 
 @CommonsLog
 @FieldDefaults(level = AccessLevel.PRIVATE)

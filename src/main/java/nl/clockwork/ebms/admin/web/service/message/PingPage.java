@@ -48,9 +48,9 @@ import nl.clockwork.ebms.admin.web.Consumer;
 import nl.clockwork.ebms.admin.web.DropDownChoice;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.common.JAXBParser;
-import nl.clockwork.ebms.model.Party;
 import nl.clockwork.ebms.service.CPAService;
 import nl.clockwork.ebms.service.EbMSMessageService;
+import nl.clockwork.ebms.service.model.Party;
 
 @CommonsLog
 @FieldDefaults(level = AccessLevel.PRIVATE)

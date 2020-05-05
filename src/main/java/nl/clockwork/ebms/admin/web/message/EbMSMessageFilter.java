@@ -22,7 +22,7 @@ import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nl.clockwork.ebms.EbMSMessageStatus;
-import nl.clockwork.ebms.model.EbMSMessageContext;
+import nl.clockwork.ebms.service.model.EbMSMessageContext;
 
 @Data
 @EqualsAndHashCode(callSuper = true)

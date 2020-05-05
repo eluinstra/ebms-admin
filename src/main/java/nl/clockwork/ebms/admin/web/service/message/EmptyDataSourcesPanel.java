@@ -18,7 +18,7 @@ package nl.clockwork.ebms.admin.web.service.message;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.clockwork.ebms.model.EbMSDataSource;
+import nl.clockwork.ebms.service.model.EbMSDataSource;
 
 public class EmptyDataSourcesPanel extends DataSourcesPanel
 {

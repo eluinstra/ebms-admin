@@ -35,7 +35,7 @@ import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.web.AjaxButton;
 import nl.clockwork.ebms.admin.web.Consumer;
-import nl.clockwork.ebms.model.EbMSDataSource;
+import nl.clockwork.ebms.service.model.EbMSDataSource;
 
 public class DefaultDataSourcesPanel extends DataSourcesPanel
 {

@@ -38,15 +38,15 @@ import lombok.extern.apachecommons.CommonsLog;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.message.ByteArrayResourceStream;
 import nl.clockwork.ebms.common.JAXBParser;
-import nl.clockwork.ebms.model.EbMSMessageContent;
-import nl.clockwork.ebms.model.EbMSMessageContext;
+import nl.clockwork.ebms.service.model.EbMSMessageContent;
+import nl.clockwork.ebms.service.model.EbMSMessageContext;
 
 @CommonsLog
 public class DownloadEbMSMessageContentLink extends Link<EbMSMessageContent>
 {
 	private static final long serialVersionUID = 1L;
 
-	public DownloadEbMSMessageContentLink(String id, nl.clockwork.ebms.model.EbMSMessageContent messageContent)
+	public DownloadEbMSMessageContentLink(String id, nl.clockwork.ebms.service.model.EbMSMessageContent messageContent)
 	{
 		super(id,Model.of(Args.notNull(messageContent,"messageContent")));
 	}

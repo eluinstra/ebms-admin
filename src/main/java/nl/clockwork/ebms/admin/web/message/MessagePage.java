@@ -132,7 +132,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		@NonNull
 		String title;
 
-		public ErrorMessageModalWindow(String id, @NonNull String title, @NonNull String errorMessage)
+		public ErrorMessageModalWindow(String id, @NonNull String title, String errorMessage)
 		{
 			super(id);
 			this.title = title;

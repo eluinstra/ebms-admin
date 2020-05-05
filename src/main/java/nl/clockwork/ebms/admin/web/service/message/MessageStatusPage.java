@@ -52,9 +52,9 @@ import nl.clockwork.ebms.admin.web.DropDownChoice;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.admin.web.TextField;
 import nl.clockwork.ebms.common.JAXBParser;
-import nl.clockwork.ebms.model.Party;
 import nl.clockwork.ebms.service.CPAService;
 import nl.clockwork.ebms.service.EbMSMessageService;
+import nl.clockwork.ebms.service.model.Party;
 
 @CommonsLog
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -155,7 +155,7 @@ public class MessageStatusPage extends BasePage
 					model.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,model.getFromPartyId()));
 					if (model.getFromRole() != null)
 						model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToPartyId()));
-					model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENDING,EbMSMessageStatus.EXPIRED));
+					model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.getSendStatus()));
 					if (model.getMessageIds().size() == 0)
 						info("No messages found");
 					t.add(getPage().get("feedback"));
@@ -189,7 +189,7 @@ public class MessageStatusPage extends BasePage
 					model.resetFromPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getFromRole()));
 					model.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,model.getFromPartyId()));
 					model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToPartyId()));
-					model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENDING,EbMSMessageStatus.EXPIRED));
+					model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.getSendStatus()));
 					if (model.getMessageIds().size() == 0)
 						info("No messages found");
 					t.add(getPage().get("feedback"));
@@ -222,7 +222,7 @@ public class MessageStatusPage extends BasePage
 					val model = MessageStatusForm.this.getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 					model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToPartyId()));
-					model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENDING,EbMSMessageStatus.EXPIRED));
+					model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.getSendStatus()));
 					if (model.getMessageIds().size() == 0)
 						info("No messages found");
 					t.add(getPage().get("feedback"));
@@ -255,7 +255,7 @@ public class MessageStatusPage extends BasePage
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 					if (model.getToPartyId() == null)
 						model.resetToPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getToRole()));
-					model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENDING,EbMSMessageStatus.EXPIRED));
+					model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.getSendStatus()));
 					if (model.getMessageIds().size() == 0)
 						info("No messages found");
 					t.add(getPage().get("feedback"));
@@ -305,7 +305,7 @@ public class MessageStatusPage extends BasePage
 				if (messageIds.isVisible())
 				{
 					val model = MessageStatusForm.this.getModelObject();
-					model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.SENDING,EbMSMessageStatus.EXPIRED));
+					model.resetMessageIds(ebMSDAO.selectMessageIds(model.getCpaId(),model.getFromRole(),model.getToRole(),EbMSMessageStatus.getSendStatus()));
 					if (model.getMessageIds().size() == 0)
 						info("No messages found");
 				}

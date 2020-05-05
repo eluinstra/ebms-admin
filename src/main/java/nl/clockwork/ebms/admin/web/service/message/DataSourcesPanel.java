@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.apache.wicket.markup.html.panel.Panel;
 
-import nl.clockwork.ebms.model.EbMSDataSource;
+import nl.clockwork.ebms.service.model.EbMSDataSource;
 
 public abstract class DataSourcesPanel extends Panel implements DataSources
 {

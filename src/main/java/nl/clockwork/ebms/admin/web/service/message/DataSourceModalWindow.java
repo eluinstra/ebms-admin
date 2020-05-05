@@ -22,7 +22,7 @@ import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.Consumer;
 import nl.clockwork.ebms.admin.web.Utils;
-import nl.clockwork.ebms.model.EbMSDataSource;
+import nl.clockwork.ebms.service.model.EbMSDataSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;

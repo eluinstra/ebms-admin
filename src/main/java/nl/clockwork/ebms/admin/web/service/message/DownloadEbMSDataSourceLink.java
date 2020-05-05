@@ -16,7 +16,7 @@
 package nl.clockwork.ebms.admin.web.service.message;
 
 import nl.clockwork.ebms.admin.web.Utils;
-import nl.clockwork.ebms.model.EbMSDataSource;
+import nl.clockwork.ebms.service.model.EbMSDataSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.markup.html.basic.Label;
