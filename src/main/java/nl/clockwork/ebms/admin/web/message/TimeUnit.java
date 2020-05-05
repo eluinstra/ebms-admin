@@ -4,7 +4,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAmount;
 
 import lombok.AccessLevel;
@@ -42,15 +42,15 @@ public enum TimeUnit
 		switch(this)
 		{
 			case HOUR:
-				return dateTime.withNano(0).with(ChronoField.MILLI_OF_SECOND,0).withSecond(0).withMinute(0).plusHours(1).minus(this.getPeriod());
+				return dateTime.truncatedTo(ChronoUnit.HOURS).plusHours(1).minus(this.getPeriod());
 			case DAY:
-				return dateTime.withNano(0).with(ChronoField.MILLI_OF_SECOND,0).withSecond(0).withMinute(0).withHour(0).plusDays(1).minus(this.getPeriod());
+				return dateTime.truncatedTo(ChronoUnit.DAYS).plusDays(1).minus(this.getPeriod());
 			//case WEEK:
-				//return dateTime.withNano(0).with(ChronoField.MILLI_OF_SECOND,0).withSecond(0).withMinute(0).withHour(0).withDayOfWeek(1).plusWeeks(1).minus(this.getPeriod());
+				//return dateTime.truncatedTo(ChronoUnit.DAYS).withDayOfWeek(1).plusWeeks(1).minus(this.getPeriod());
 			case MONTH:
-				return dateTime.withNano(0).with(ChronoField.MILLI_OF_SECOND,0).withSecond(0).withMinute(0).withHour(0).withDayOfMonth(1).plusMonths(1).minus(this.getPeriod());
+				return dateTime.truncatedTo(ChronoUnit.DAYS).withDayOfMonth(1).plusMonths(1).minus(this.getPeriod());
 			case YEAR:
-				return dateTime.withNano(0).with(ChronoField.MILLI_OF_SECOND,0).withSecond(0).withMinute(0).withHour(0).withDayOfYear(1).plusYears(1).minus(this.getPeriod());
+				return dateTime.truncatedTo(ChronoUnit.DAYS).withDayOfYear(1).plusYears(1).minus(this.getPeriod());
 			default:
 				return null;
 		}
