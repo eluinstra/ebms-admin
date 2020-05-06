@@ -251,6 +251,7 @@ public class SendMessagePage extends BasePage
 	}
 
 	@Data
+	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@EqualsAndHashCode(callSuper = true)
 	public class EbMSMessageContextModel extends EbMSMessageContext
 	{

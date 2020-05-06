@@ -32,6 +32,7 @@ import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProt
 
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
@@ -251,6 +252,8 @@ public class PingPage extends BasePage
 	}
 
 	@Data
+	@FieldDefaults(level = AccessLevel.PRIVATE)
+	@NoArgsConstructor
 	public class PingFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;

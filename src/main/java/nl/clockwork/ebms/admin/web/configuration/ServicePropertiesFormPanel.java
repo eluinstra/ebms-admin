@@ -25,9 +25,12 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.io.IClusterable;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.val;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.apachecommons.CommonsLog;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
@@ -80,6 +83,8 @@ public class ServicePropertiesFormPanel extends Panel
 	}
 
 	@Data
+	@FieldDefaults(level = AccessLevel.PRIVATE)
+	@NoArgsConstructor
 	public static class ServicePropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;

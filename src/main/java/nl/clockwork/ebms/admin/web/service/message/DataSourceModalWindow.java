@@ -17,13 +17,6 @@ package nl.clockwork.ebms.admin.web.service.message;
 
 import java.util.List;
 
-import nl.clockwork.ebms.admin.web.AjaxButton;
-import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.Consumer;
-import nl.clockwork.ebms.admin.web.Utils;
-import nl.clockwork.ebms.service.model.EbMSDataSource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,9 +33,18 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.val;
+import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.admin.web.AjaxButton;
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.Consumer;
+import nl.clockwork.ebms.admin.web.Utils;
+import nl.clockwork.ebms.service.model.EbMSDataSource;
 
 public class DataSourceModalWindow extends ModalWindow
 {
@@ -160,6 +162,8 @@ public class DataSourceModalWindow extends ModalWindow
 	}
 
 	@Data
+	@FieldDefaults(level = AccessLevel.PRIVATE)
+	@NoArgsConstructor
 	@EqualsAndHashCode(callSuper = true)
 	public static class DataSourceModel extends EbMSDataSource
 	{

@@ -80,8 +80,8 @@ public class Start
 
 	public static void main(String[] args) throws Exception
 	{
-		Options options = createOptions();
-		CommandLine cmd = new DefaultParser().parse(options,args);
+		val options = createOptions();
+		val cmd = new DefaultParser().parse(options,args);
 		if (cmd.hasOption("h"))
 			printUsage(options);
 

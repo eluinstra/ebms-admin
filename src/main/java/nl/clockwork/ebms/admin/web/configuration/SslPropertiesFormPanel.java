@@ -33,6 +33,7 @@ import org.apache.wicket.util.io.IClusterable;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
@@ -158,6 +159,8 @@ public class SslPropertiesFormPanel extends Panel
 	}
 
 	@Data
+	@FieldDefaults(level = AccessLevel.PRIVATE)
+	@NoArgsConstructor
 	public static class SslPropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;

@@ -21,14 +21,21 @@ import java.util.List;
 
 import org.apache.wicket.util.io.IClusterable;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.EbMSMessageStatus;
 
 @Builder
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@AllArgsConstructor
 public class EbMSMessage implements IClusterable
 {
 	private static final long serialVersionUID = 1L;

@@ -25,6 +25,7 @@ import org.apache.wicket.util.io.IClusterable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
@@ -99,6 +100,8 @@ public class URLMappingPage extends BasePage
 	}
 
 	@Data
+	@FieldDefaults(level = AccessLevel.PRIVATE)
+	@NoArgsConstructor
 	@AllArgsConstructor
 	public class URLMappingFormModel implements IClusterable
 	{
@@ -106,5 +109,4 @@ public class URLMappingPage extends BasePage
 		@NonNull
 		URLMapping urlMapping;
 	}
-
 }

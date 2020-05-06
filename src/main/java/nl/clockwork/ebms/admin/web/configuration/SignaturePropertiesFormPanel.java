@@ -24,9 +24,12 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.util.io.IClusterable;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.val;
+import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
 import nl.clockwork.ebms.admin.web.configuration.JavaKeyStorePropertiesFormPanel.JavaKeyStorePropertiesFormModel;
 
@@ -75,6 +78,8 @@ public class SignaturePropertiesFormPanel extends Panel
 	}
 
 	@Data
+	@FieldDefaults(level = AccessLevel.PRIVATE)
+	@NoArgsConstructor
 	public static class SignaturePropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;

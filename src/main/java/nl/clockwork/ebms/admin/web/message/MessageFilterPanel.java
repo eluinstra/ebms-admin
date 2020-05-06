@@ -38,7 +38,9 @@ import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProt
 
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
@@ -379,17 +381,19 @@ public class MessageFilterPanel extends Panel
 		return new MessageFilterFormModel();
 	}
 
-	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-	@Getter
+	@Data
+	@FieldDefaults(level = AccessLevel.PRIVATE)
+	@NoArgsConstructor
+	@EqualsAndHashCode(callSuper = true)
 	public static class MessageFilterFormModel extends EbMSMessageFilter
 	{
 		private static final long serialVersionUID = 1L;
-		List<String> fromPartyIds = new ArrayList<>();
-		List<String> fromRoles = new ArrayList<>();
-		List<String> toPartyIds = new ArrayList<>();
-		List<String> toRoles = new ArrayList<>();
-		List<String> services = new ArrayList<>();
-		List<String> actions = new ArrayList<>();
+		final List<String> fromPartyIds = new ArrayList<>();
+		final List<String> fromRoles = new ArrayList<>();
+		final List<String> toPartyIds = new ArrayList<>();
+		final List<String> toRoles = new ArrayList<>();
+		final List<String> services = new ArrayList<>();
+		final List<String> actions = new ArrayList<>();
 		
 		public void resetFromPartyIds()
 		{

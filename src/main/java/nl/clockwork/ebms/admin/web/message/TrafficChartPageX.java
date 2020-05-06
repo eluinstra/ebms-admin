@@ -42,7 +42,9 @@ import de.adesso.wickedcharts.highcharts.options.VerticalAlignment;
 import de.adesso.wickedcharts.highcharts.options.series.SimpleSeries;
 import de.adesso.wickedcharts.wicket8.highcharts.Chart;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
@@ -200,6 +202,9 @@ public class TrafficChartPageX extends BasePage
 	}
 
 	@Data
+	@FieldDefaults(level = AccessLevel.PRIVATE)
+	@NoArgsConstructor
+	@AllArgsConstructor
 	public static class TrafficChartFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;

@@ -21,10 +21,13 @@ import java.util.ServiceLoader;
 
 import org.apache.wicket.markup.html.panel.Panel;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.val;
+import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.service.message.DataSourcesPanel;
@@ -54,6 +57,8 @@ public abstract class MessageProvider
 	public abstract List<MessageEditPanel> getMessageEditPanels();
 
 	@Data
+	@FieldDefaults(level = AccessLevel.PRIVATE)
+	@NoArgsConstructor
 	@AllArgsConstructor
 	public static class MessagePanel
 	{

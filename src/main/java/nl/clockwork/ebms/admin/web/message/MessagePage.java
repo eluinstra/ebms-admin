@@ -37,6 +37,7 @@ import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.EbMSAction;
 import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
@@ -166,7 +167,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 				.id("showMessageErrorWindow")
 				.onClick(t -> messageErrorModalWindow.show(t))
 				.build();
-		link.setEnabled(nl.clockwork.ebms.Constants.EBMS_SERVICE_URI.equals(getModelObject().getService()) && "MessageError".equals(getModelObject().getAction()));
+		link.setEnabled(EbMSAction.EBMS_SERVICE_URI.equals(getModelObject().getService()) && "MessageError".equals(getModelObject().getAction()));
 		link.add(new Label(id));
 		return new Component[] {link,messageErrorModalWindow};
 	}

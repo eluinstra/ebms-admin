@@ -44,7 +44,7 @@ import lombok.Builder.Default;
 import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.Constants;
+import nl.clockwork.ebms.EbMSAction;
 import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.model.CPA;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
@@ -232,7 +232,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			Integer.class,
 			messageId,
 			0,
-			Constants.EBMS_SERVICE_URI
+			EbMSAction.EBMS_SERVICE_URI
 		) > 0;
 	}
 
@@ -252,7 +252,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				rowMapper,
 				messageId,
 				0,
-				Constants.EBMS_SERVICE_URI
+				EbMSAction.EBMS_SERVICE_URI
 		);
 	}
 
@@ -630,7 +630,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			}
 			if (messageFilter.getServiceMessage() != null)
 			{
-				parameters.add(Constants.EBMS_SERVICE_URI);
+				parameters.add(EbMSAction.EBMS_SERVICE_URI);
 				if (messageFilter.getServiceMessage())
 					result.append(" and service = ?");
 				else

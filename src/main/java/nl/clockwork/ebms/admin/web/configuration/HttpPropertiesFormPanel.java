@@ -29,9 +29,12 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.util.convert.converter.AbstractConverter;
 import org.apache.wicket.util.io.IClusterable;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.val;
+import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
@@ -150,6 +153,8 @@ public class HttpPropertiesFormPanel extends Panel
 	}
 
 	@Data
+	@FieldDefaults(level = AccessLevel.PRIVATE)
+	@NoArgsConstructor
 	public static class HttpPropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;

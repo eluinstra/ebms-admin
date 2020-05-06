@@ -13,24 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.clockwork.ebms.admin.web.service.message;
+package nl.clockwork.ebms.admin.web.service.cpa;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IClusterable;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.apachecommons.CommonsLog;
-import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
@@ -38,65 +37,55 @@ import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.service.CPAService;
-import nl.clockwork.ebms.service.EbMSMessageService;
+import nl.clockwork.ebms.service.model.CertificateMapping;
 
 @CommonsLog
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ResendMessagePage extends BasePage
+public class CertificateMappingPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="ebMSAdminDAO")
-	public EbMSDAO ebMSDAO;
 	@SpringBean(name="cpaService")
-	private CPAService cpaService;
-	@SpringBean(name="ebMSMessageService")
-	private EbMSMessageService ebMSMessageService;
-	@SpringBean(name="cleoPatch")
-	private Boolean cleoPatch;
+	CPAService cpaService;
 
-	public ResendMessagePage()
+	public CertificateMappingPage()
 	{
-		add(new BootstrapFeedbackPanel("feedback").setOutputMarkupId(true));
-		add(new MessageStatusForm("form"));
+		this(new CertificateMapping());
 	}
 	
+	public CertificateMappingPage(CertificateMapping certificateMapping)
+	{
+		add(new BootstrapFeedbackPanel("feedback"));
+		add(new EditCertificateMappingForm("form",certificateMapping));
+	}
+
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("messageStatus",this);
+		return getLocalizer().getString("certificateMapping",this);
 	}
 
-	public class MessageStatusForm extends Form<ResendMessageFormModel>
+	public class EditCertificateMappingForm extends Form<CertificateMappingFormModel>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public MessageStatusForm(String id)
+		public EditCertificateMappingForm(String id, CertificateMapping certificateMapping)
 		{
-			super(id,new CompoundPropertyModel<>(new ResendMessageFormModel()));
-			add(new BootstrapFormComponentFeedbackBorder("messageIdFeedback",createMessageIdField("messageId")));
-			val resend = createResendButton("resend");
-			setDefaultButton(resend);
-			add(resend);
-			add(new ResetButton("reset",new ResourceModel("cmd.reset"),ResendMessagePage.class));
+			super(id,new CompoundPropertyModel<>(new CertificateMappingFormModel(certificateMapping)));
+			add(new BootstrapFormComponentFeedbackBorder("sourceFeedback",new TextField<String>("certificateMapping.source").setRequired(true).setLabel(new ResourceModel("lbl.source"))));
+			add(new BootstrapFormComponentFeedbackBorder("destinationFeedback",new TextField<String>("certificateMapping.destination").setRequired(true).setLabel(new ResourceModel("lbl.destination"))));
+			add(createSetButton("set"));
+			add(new ResetButton("reset",new ResourceModel("cmd.reset"),CertificateMappingPage.class));
 		}
 
-		private TextField<String> createMessageIdField(String id)
-		{
-			val result = new TextField<String>(id);
-			result.setLabel(new ResourceModel("lbl.messageId"));
-			result.setRequired(true).setOutputMarkupPlaceholderTag(true);
-			return result;
-		}
-
-		private Button createResendButton(String id)
+		private Button createSetButton(String id)
 		{
 			Action onSubmit = () ->
 			{
 				try
 				{
-					val model = MessageStatusForm.this.getModelObject();
-					val messageId = ebMSMessageService.resendMessage(model.getMessageId());
-					info(new StringResourceModel("resendMessage.ok",Model.of(messageId)).getString());
+					val certificateMapping = EditCertificateMappingForm.this.getModelObject().certificateMapping;
+					cpaService.setCertificateMapping(certificateMapping);
+					setResponsePage(CertificateMappingsPage.class);
 				}
 				catch (Exception e)
 				{
@@ -104,22 +93,21 @@ public class ResendMessagePage extends BasePage
 					error(e.getMessage());
 				}
 			};
-			return new Button(id,new ResourceModel("cmd.check"),onSubmit);
+			val result = new Button(id,new ResourceModel("cmd.upload"),onSubmit );
+			setDefaultButton(result);
+			return result;
 		}
 	}
 
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
-	public class ResendMessageFormModel implements IClusterable
+	@AllArgsConstructor
+	public class CertificateMappingFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		String messageId;
-		
-		public void resetMessageId()
-		{
-			setMessageId(null);
-		}
-	}		
+		@NonNull
+		CertificateMapping certificateMapping;
+	}
 
 }

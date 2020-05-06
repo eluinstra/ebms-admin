@@ -31,6 +31,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
@@ -125,6 +126,8 @@ public class EbMSAdminPropertiesPage extends BasePage
 	}
 
 	@Data
+	@FieldDefaults(level = AccessLevel.PRIVATE)
+	@NoArgsConstructor
 	@EqualsAndHashCode(callSuper = true)
 	public static class EbMSAdminPropertiesFormModel extends EbMSCorePropertiesFormModel
 	{

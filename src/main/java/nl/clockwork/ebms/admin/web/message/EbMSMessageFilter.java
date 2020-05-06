@@ -19,18 +19,27 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import lombok.AccessLevel;
+import lombok.Builder.Default;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.service.model.EbMSMessageContext;
 
+@SuperBuilder
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class EbMSMessageFilter extends EbMSMessageContext
 {
 	private static final long serialVersionUID = 1L;
 	Integer messageNr;
 	Boolean serviceMessage;
+	@Default
 	List<EbMSMessageStatus> statuses = new ArrayList<>();
 	Date from;
 	Date to;

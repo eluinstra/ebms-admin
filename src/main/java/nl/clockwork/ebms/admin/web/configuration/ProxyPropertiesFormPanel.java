@@ -69,6 +69,7 @@ public class ProxyPropertiesFormPanel extends Panel
 	}
 
 	@Data
+	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
 	public static class ProxyPropertiesFormModel implements IClusterable
 	{

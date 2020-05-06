@@ -28,6 +28,7 @@ import org.apache.wicket.util.io.IClusterable;
 
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.apachecommons.CommonsLog;
@@ -136,11 +137,12 @@ public class CPAUploadPage extends BasePage
 	}
 
 	@Data
+	@FieldDefaults(level = AccessLevel.PRIVATE)
+	@NoArgsConstructor
 	public class EditUploadFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		List<FileUpload> cpaFile;
 		boolean overwrite;
 	}
-
 }
