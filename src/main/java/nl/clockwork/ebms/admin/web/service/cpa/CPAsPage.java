@@ -59,7 +59,7 @@ public class CPAsPage extends BasePage
 			item.add(createViewLink("view",cpaId));
 			item.add(new DownloadCPALink("downloadCPA",cpaService,cpaId));
 			item.add(createDeleteButton("delete",cpaId));
-			item.add(AttributeModifier.replace("class",new OddOrEvenIndexStringModel(item.getIndex())));
+			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 
 		private Link<Void> createViewLink(String id, final String cpaId)
@@ -113,7 +113,7 @@ public class CPAsPage extends BasePage
 			super(id);
 			val container = new WebMarkupContainer("container");
 			add(container);
-			container.add(new CPAIdsDataView("cpaIds",new CPADataProvider(cpaService)));
+			container.add(new CPAIdsDataView("cpaIds",CPADataProvider.of(cpaService)));
 			add(new PageClassLink("new",CPAUploadPage.class));
 		}
 	}

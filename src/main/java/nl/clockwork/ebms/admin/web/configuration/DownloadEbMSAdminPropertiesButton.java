@@ -55,7 +55,7 @@ public class DownloadEbMSAdminPropertiesButton extends Button
 		{
 			val writer = new StringWriter();
 			new EbMSAdminPropertiesWriter(writer,true).write(ebMSAdminPropertiesFormModel,propertiesType);
-			val resourceStream = new StringWriterResourceStream(writer,"plain/text");
+			val resourceStream = StringWriterResourceStream.of(writer,"plain/text");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}
 		catch (IOException e)

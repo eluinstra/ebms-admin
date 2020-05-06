@@ -71,7 +71,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		@Override
 		public CPA mapRow(ResultSet rs, int rowNum) throws SQLException
 		{
-			return new CPA(rs.getString("cpa_id"),rs.getString("cpa"));
+			return CPA.of(rs.getString("cpa_id"),rs.getString("cpa"));
 		}
 	}
 	
@@ -117,27 +117,27 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		{
 			val attachments = getAttachments.get();
 			val events = getEvents.get();
-			val builder = EbMSMessage.builder();
-			builder.timestamp(rs.getTimestamp("time_stamp"));
-			builder.cpaId(rs.getString("cpa_id"));
-			builder.conversationId(rs.getString("conversation_id"));
-			builder.messageId(rs.getString("message_id"));
-			builder.messageNr(rs.getInt("message_nr"));
-			builder.refToMessageId(rs.getString("ref_to_message_id"));
-			builder.timeToLive(rs.getTimestamp("time_to_live"));
-			builder.fromPartyId(rs.getString("from_party_id"));
-			builder.fromRole(rs.getString("from_role"));
-			builder.toPartyId(rs.getString("to_party_id"));
-			builder.toRole(rs.getString("to_role"));
-			builder.service(rs.getString("service"));
-			builder.action(rs.getString("action"));
+			val builder = EbMSMessage.builder()
+					.timestamp(rs.getTimestamp("time_stamp"))
+					.cpaId(rs.getString("cpa_id"))
+					.conversationId(rs.getString("conversation_id"))
+					.messageId(rs.getString("message_id"))
+					.messageNr(rs.getInt("message_nr"))
+					.refToMessageId(rs.getString("ref_to_message_id"))
+					.timeToLive(rs.getTimestamp("time_to_live"))
+					.fromPartyId(rs.getString("from_party_id"))
+					.fromRole(rs.getString("from_role"))
+					.toPartyId(rs.getString("to_party_id"))
+					.toRole(rs.getString("to_role"))
+					.service(rs.getString("service"))
+					.action(rs.getString("action"))
+					.status(rs.getObject("status") == null ? null : EbMSMessageStatus.get(rs.getInt("status")))
+					.statusTime(rs.getTimestamp("status_time"))
+					.attachments(attachments)
+					.event(getEvent.get())
+					.events(events);
 			if (detail)
 				builder.content(rs.getString("content"));
-			builder.status(rs.getObject("status") == null ? null : EbMSMessageStatus.get(rs.getInt("status")));
-			builder.statusTime(rs.getTimestamp("status_time"));
-			builder.attachments(attachments);
-			builder.event(getEvent.get());
-			builder.events(events);
 			EbMSMessage result = builder.build();
 			attachments.forEach(a -> a.setMessage(result));
 			events.forEach(e -> e.setMessage(result));
@@ -349,7 +349,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 					@Override
 					public EbMSEvent mapRow(ResultSet rs, int rowNum) throws SQLException
 					{
-						return new EbMSEvent(rs.getTimestamp("time_to_live"),rs.getTimestamp("time_stamp"),rs.getInt("retries"));
+						return EbMSEvent.of(rs.getTimestamp("time_to_live"),rs.getTimestamp("time_stamp"),rs.getInt("retries"));
 					}
 				},
 				messageId

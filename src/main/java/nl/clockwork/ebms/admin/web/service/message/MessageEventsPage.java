@@ -66,7 +66,7 @@ public class MessageEventsPage extends BasePage
 			val messageEvent = item.getModelObject();
 			item.add(createViewLink("view",messageEvent,new Label("messageId",messageEvent.getMessageId())));
 			item.add(new Label("type",messageEvent.getType()));
-			item.add(AttributeModifier.replace("class",new OddOrEvenIndexStringModel(item.getIndex())));
+			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 
 		private Link<Void> createViewLink(String id, final EbMSMessageEvent messageEvent, Component...components)
@@ -109,7 +109,7 @@ public class MessageEventsPage extends BasePage
 		this.eventTypes = eventTypes;
 		val container = new WebMarkupContainer("container");
 		add(container);
-		val messageEvents = new MessageEventDataView("messageEvents",new MessageEventDataProvider(ebMSMessageService,this.filter,this.eventTypes));
+		val messageEvents = new MessageEventDataView("messageEvents",MessageEventDataProvider.of(ebMSMessageService,this.filter,this.eventTypes));
 		container.add(messageEvents);
 		val navigator = new BootstrapPagingNavigator("navigator",messageEvents);
 		add(navigator);

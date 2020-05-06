@@ -43,7 +43,7 @@ public class DownloadEbMSAttachmentLinkX extends Link<EbMSAttachment>
 	{
 		val attachment = getModelObject();
 		val fileName = UrlEncoder.QUERY_INSTANCE.encode(StringUtils.isEmpty(attachment.getName()) ? attachment.getContentId() + Utils.getFileExtension(attachment.getContentType()) : attachment.getName(),getRequest().getCharset());
-		val resourceStream = new AttachmentResourceStream(attachment);
+		val resourceStream = AttachmentResourceStream.of(attachment);
 		getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName,resourceStream));
 	}
 

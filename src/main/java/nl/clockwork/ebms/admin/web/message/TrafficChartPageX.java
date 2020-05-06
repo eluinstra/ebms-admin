@@ -95,7 +95,7 @@ public class TrafficChartPageX extends BasePage
 	private static TrafficChartFormModel getTrafficChartFormModel(TimeUnit timeUnit, EbMSMessageTrafficChartOption ebMSMessageTrafficChartOption)
 	{
 		val from = timeUnit.getFrom();
-		return new TrafficChartFormModel(timeUnit,from,ebMSMessageTrafficChartOption);
+		return TrafficChartFormModel.of(timeUnit,from,ebMSMessageTrafficChartOption);
 	}
 
 	private List<Number> getMessages(List<LocalDateTime> dates, TrafficChartFormModel model, EbMSMessageStatus...status)
@@ -204,7 +204,7 @@ public class TrafficChartPageX extends BasePage
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
-	@AllArgsConstructor
+	@AllArgsConstructor(staticName = "of")
 	public static class TrafficChartFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;

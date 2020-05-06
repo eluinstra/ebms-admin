@@ -23,16 +23,14 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 
 @Builder
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@NoArgsConstructor
-@AllArgsConstructor
-public class EbMSEvent  implements IClusterable
+@AllArgsConstructor(staticName = "of")
+public class EbMSEvent implements IClusterable
 {
 	private static final long serialVersionUID = 1L;
 	@NonNull

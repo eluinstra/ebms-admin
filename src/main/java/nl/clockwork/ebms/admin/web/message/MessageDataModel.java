@@ -27,7 +27,7 @@ import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 @EqualsAndHashCode(callSuper = false)
 public class MessageDataModel extends LoadableDetachableModel<EbMSMessage>
 {

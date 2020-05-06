@@ -61,7 +61,7 @@ public class URLMappingsPage extends BasePage
 			item.add(new Label("destination",Model.of(urlMapping.getDestination())));
 			item.add(createEditButton("editUrl",urlMapping));
 			item.add(createDeleteButton("delete",urlMapping));
-			item.add(AttributeModifier.replace("class",new OddOrEvenIndexStringModel(item.getIndex())));
+			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 
 		private Button createEditButton(String id, final URLMapping urlMapping)
@@ -122,7 +122,7 @@ public class URLMappingsPage extends BasePage
 			super(id);
 			val container = new WebMarkupContainer("container");
 			add(container);
-			container.add(new URLMappingsDataView("urlMappings",new URLMappingDataProvider(cpaService)));
+			container.add(new URLMappingsDataView("urlMappings",URLMappingDataProvider.of(cpaService)));
 			add(new PageLink("new",new URLMappingPage()));
 		}
 	}

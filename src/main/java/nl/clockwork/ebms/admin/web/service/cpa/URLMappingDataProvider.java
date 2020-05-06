@@ -31,7 +31,7 @@ import nl.clockwork.ebms.service.CPAService;
 import nl.clockwork.ebms.service.model.URLMapping;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 public class URLMappingDataProvider implements IDataProvider<URLMapping>
 {
 	private static final long serialVersionUID = 1L;

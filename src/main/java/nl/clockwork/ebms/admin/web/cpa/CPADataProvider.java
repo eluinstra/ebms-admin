@@ -28,7 +28,7 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 public class CPADataProvider implements IDataProvider<CPA>
 {
 	private static final long serialVersionUID = 1L;
@@ -43,7 +43,7 @@ public class CPADataProvider implements IDataProvider<CPA>
 	@Override
 	public IModel<CPA> model(CPA cpa)
 	{
-		return new CPADataModel(ebMSDAO,cpa);
+		return CPADataModel.of(ebMSDAO,cpa);
 	}
 
 	@Override

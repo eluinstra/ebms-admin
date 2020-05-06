@@ -133,7 +133,7 @@ public class TrafficPage extends BasePage
 		add(createMessageFilterPanel("messageFilter",filter));
 		val container = new WebMarkupContainer("container");
 		add(container);
-		val messages = new EbMSMessageDataView("messages",new MessageDataProvider(ebMSDAO,this.filter));
+		val messages = new EbMSMessageDataView("messages",MessageDataProvider.of(ebMSDAO,this.filter));
 		container.add(messages);
 		val navigator = new BootstrapPagingNavigator("navigator",messages);
 		add(navigator);

@@ -61,7 +61,7 @@ public class CertificateMappingsPage extends BasePage
 			item.add(new Label("destination",Model.of(certificateMapping.getDestination())));
 			item.add(createEditButton("editCertificate",certificateMapping));
 			item.add(createDeleteButton("delete",certificateMapping));
-			item.add(AttributeModifier.replace("class",new OddOrEvenIndexStringModel(item.getIndex())));
+			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 
 		private Button createEditButton(String id, final CertificateMapping certificateMapping)
@@ -122,7 +122,7 @@ public class CertificateMappingsPage extends BasePage
 			super(id);
 			val container = new WebMarkupContainer("container");
 			add(container);
-			container.add(new CertificateMappingsDataView("certificateMappings",new CertificateMappingDataProvider(cpaService)));
+			container.add(new CertificateMappingsDataView("certificateMappings",CertificateMappingDataProvider.of(cpaService)));
 			add(new PageLink("new",new CertificateMappingPage()));
 		}
 	}

@@ -20,19 +20,21 @@ import org.apache.wicket.util.io.IClusterable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.Setter;
+import lombok.Value;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 
 @Builder
-@Data
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@NoArgsConstructor
-@AllArgsConstructor
+@Value
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@AllArgsConstructor(staticName = "of")
 public class EbMSAttachment implements IClusterable
 {
 	private static final long serialVersionUID = 1L;
+	@NonFinal
+	@Setter
 	EbMSMessage message;
 	@NonNull
 	String name;

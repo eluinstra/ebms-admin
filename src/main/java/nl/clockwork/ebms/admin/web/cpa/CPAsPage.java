@@ -59,7 +59,7 @@ public class CPAsPage extends BasePage
 		protected void populateItem(final Item<CPA> item)
 		{
 			item.add(createViewLink("view",item.getModelObject()));
-			item.add(AttributeModifier.replace("class",new OddOrEvenIndexStringModel(item.getIndex())));
+			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 
 		private Link<Void> createViewLink(String id, final CPA cpa)
@@ -90,7 +90,7 @@ public class CPAsPage extends BasePage
 	{
 		val container = new WebMarkupContainer("container");
 		add(container);
-		val cpas = new CPADataView("cpas",new CPADataProvider(ebMSDAO));
+		val cpas = new CPADataView("cpas",CPADataProvider.of(ebMSDAO));
 		container.add(cpas);
 		val navigator = new BootstrapPagingNavigator("navigator",cpas);
 		add(navigator);

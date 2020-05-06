@@ -103,7 +103,7 @@ public class CertificateMappingPage extends BasePage
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
 	@AllArgsConstructor
-	public class CertificateMappingFormModel implements IClusterable
+	public static class CertificateMappingFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		@NonNull

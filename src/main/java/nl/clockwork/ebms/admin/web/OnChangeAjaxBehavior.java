@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 public class OnChangeAjaxBehavior extends org.apache.wicket.ajax.form.OnChangeAjaxBehavior
 {
 	private static final long serialVersionUID = 1L;

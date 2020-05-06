@@ -46,7 +46,7 @@ public class DownloadCPALink extends Link<String>
 	{
 		val cpaId = getModelObject();
 		val cpa = cpaService.getCPA(cpaId);
-		val resourceStream = new StringResourceStream(cpa,"text/xml");
+		val resourceStream = StringResourceStream.of(cpa,"text/xml");
 		getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(cpaId,resourceStream));
 	}
 

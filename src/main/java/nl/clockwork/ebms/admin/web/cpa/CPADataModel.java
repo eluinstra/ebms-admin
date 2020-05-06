@@ -26,7 +26,7 @@ import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 public class CPADataModel extends LoadableDetachableModel<CPA>
 {
 	private static final long serialVersionUID = 1L;
@@ -35,9 +35,9 @@ public class CPADataModel extends LoadableDetachableModel<CPA>
 	@NonNull
 	String cpaId;
 
-	public CPADataModel(EbMSDAO ebMSDAO, CPA cpa)
+	public static CPADataModel of(EbMSDAO ebMSDAO, CPA cpa)
 	{
-		this(ebMSDAO,cpa.getCpaId());
+		return of(ebMSDAO,cpa.getCpaId());
 	}
 
 	@Override

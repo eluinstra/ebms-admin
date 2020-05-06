@@ -22,7 +22,7 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 public class OddOrEvenIndexStringModel implements IModel<String>
 {
 	private static final long serialVersionUID = 1L;

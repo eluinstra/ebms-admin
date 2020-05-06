@@ -63,7 +63,7 @@ public class MessagesPage extends BasePage
 		{
 			val messageId = item.getModelObject();
 			item.add(createViewLink("view",messageId,new Label("messageId",messageId)));
-			item.add(AttributeModifier.replace("class",new OddOrEvenIndexStringModel(item.getIndex())));
+			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 
 		private Link<Void> createViewLink(String id, final String messageId, Component...components)
@@ -104,7 +104,7 @@ public class MessagesPage extends BasePage
 		this.filter = filter;
 		val container = new WebMarkupContainer("container");
 		add(container);
-		val messages = new MessageDataView("messages",new MessageDataProvider(ebMSMessageService,this.filter));
+		val messages = new MessageDataView("messages",MessageDataProvider.of(ebMSMessageService,this.filter));
 		container.add(messages);
 		val navigator = new BootstrapPagingNavigator("navigator",messages);
 		add(navigator);

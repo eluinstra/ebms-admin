@@ -30,7 +30,7 @@ import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 public class ByteArrayResourceStream extends AbstractResourceStream
 {
 	private static final long serialVersionUID = 1L;

@@ -34,7 +34,7 @@ import nl.clockwork.ebms.service.model.EbMSMessageContext;
 import nl.clockwork.ebms.service.model.EbMSMessageEvent;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 public class MessageEventDataProvider implements IDataProvider<EbMSMessageEvent>
 {
 	private static final long serialVersionUID = 1L;

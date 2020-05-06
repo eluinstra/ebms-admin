@@ -81,7 +81,7 @@ public class MessagesPage extends BasePage
 			item.add(new Label("action",message.getAction()));
 			item.add(new Label("status",message.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus())))));
 			item.add(DateLabel.forDatePattern("statusTime",new Model<>(message.getStatusTime()),Constants.DATETIME_FORMAT));
-			item.add(AttributeModifier.replace("class",new OddOrEvenIndexStringModel(item.getIndex())));
+			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 
 		private Link<Void> createViewLink(String id, final EbMSMessage message)
@@ -143,7 +143,7 @@ public class MessagesPage extends BasePage
 		add(createMessageFilterPanel("messageFilter",filter));
 		WebMarkupContainer container = new WebMarkupContainer("container");
 		add(container);
-		val messages = new EbMSMessageDataView("messages",new MessageDataProvider(ebMSDAO,this.filter));
+		val messages = new EbMSMessageDataView("messages",MessageDataProvider.of(ebMSDAO,this.filter));
 		container.add(messages);
 		val navigator = new BootstrapPagingNavigator("navigator",messages);
 		add(navigator);

@@ -60,7 +60,7 @@ public class DownloadEbMSMessagesCSVLink extends Link<Void>
 			{
 				ebMSDAO.printMessagesToCSV(printer,filter);
 			}
-			val resourceStream = new ByteArrayResourceStream(output,"text/csv");
+			val resourceStream = ByteArrayResourceStream.of(output,"text/csv");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}
 		catch (IOException e)

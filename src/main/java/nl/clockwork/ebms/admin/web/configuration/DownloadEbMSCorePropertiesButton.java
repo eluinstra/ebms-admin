@@ -52,7 +52,7 @@ public class DownloadEbMSCorePropertiesButton extends Button
 		{
 			val writer = new StringWriter();
 			new EbMSCorePropertiesWriter(writer,false).write(ebMSCorePropertiesFormModel);
-			val resourceStream = new StringWriterResourceStream(writer,"plain/text");
+			val resourceStream = StringWriterResourceStream.of(writer,"plain/text");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}
 		catch (IOException e)

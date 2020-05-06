@@ -29,7 +29,7 @@ import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.service.model.EbMSDataSource;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 public class EbMSDataSourceResourceStream extends AbstractResourceStream
 {
 	private static final long serialVersionUID = 1L;
