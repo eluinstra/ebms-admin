@@ -59,9 +59,6 @@ public class CorePropertiesFormPanel extends Panel
 		public CorePropertiesForm(String id, final IModel<CorePropertiesFormModel> model, boolean enableConsoleProperties)
 		{
 			super(id,new CompoundPropertyModel<>(model));
-			add(createContainer("digipoortPatchContainer",enableConsoleProperties,new CheckBox("digipoortPatch").setLabel(new ResourceModel("lbl.digipoortPatch"))));
-			add(createContainer("oraclePatchContainer",enableConsoleProperties,new CheckBox("oraclePatch").setLabel(new ResourceModel("lbl.oraclePatch"))));
-			add(new CheckBox("cleoPatch").setLabel(new ResourceModel("lbl.cleoPatch")));
 			add(createContainer("deleteMessageContentOnProcessedContainer",enableConsoleProperties,new CheckBox("deleteMessageContentOnProcessed").setLabel(new ResourceModel("lbl.deleteMessageContentOnProcessed"))));
 			add(createContainer("storeDuplicateMessageContainer",enableConsoleProperties,new CheckBox("storeDuplicateMessage").setLabel(new ResourceModel("lbl.storeDuplicateMessage"))));
 			add(createContainer("storeDuplicateMessageContentContainer",enableConsoleProperties,new CheckBox("storeDuplicateMessageContent").setLabel(new ResourceModel("lbl.storeDuplicateMessageContent"))));
@@ -135,9 +132,6 @@ public class CorePropertiesFormPanel extends Panel
 	public static class CorePropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		boolean digipoortPatch = true;
-		boolean oraclePatch = true;
-		boolean cleoPatch = false;
 		@NonNull
 		EbMSHttpClientType httpClient = EbMSHttpClientType.DEFAULT;
 		@NonNull

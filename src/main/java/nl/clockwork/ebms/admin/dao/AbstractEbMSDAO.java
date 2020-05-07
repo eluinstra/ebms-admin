@@ -570,29 +570,29 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				parameters.add(messageFilter.getCpaId());
 				result.append(" and cpa_id = ?");
 			}
-			if (messageFilter.getFromRole() != null)
+			if (messageFilter.getFromParty() != null)
 			{
-				if (messageFilter.getFromRole().getPartyId() != null)
+				if (messageFilter.getFromParty().getPartyId() != null)
 				{
-					parameters.add(messageFilter.getFromRole().getPartyId());
+					parameters.add(messageFilter.getFromParty().getPartyId());
 					result.append(" and from_party_id = ?");
 				}
-				if (messageFilter.getFromRole().getRole() != null)
+				if (messageFilter.getFromParty().getRole() != null)
 				{
-					parameters.add(messageFilter.getFromRole().getRole());
+					parameters.add(messageFilter.getFromParty().getRole());
 					result.append(" and from_role = ?");
 				}
 			}
-			if (messageFilter.getToRole() != null)
+			if (messageFilter.getToParty() != null)
 			{
-				if (messageFilter.getToRole().getPartyId() != null)
+				if (messageFilter.getToParty().getPartyId() != null)
 				{
-					parameters.add(messageFilter.getToRole().getPartyId());
+					parameters.add(messageFilter.getToParty().getPartyId());
 					result.append(" and to_party_id = ?");
 				}
-				if (messageFilter.getToRole().getRole() != null)
+				if (messageFilter.getToParty().getRole() != null)
 				{
-					parameters.add(messageFilter.getToRole().getRole());
+					parameters.add(messageFilter.getToParty().getRole());
 					result.append(" and to_role = ?");
 				}
 			}

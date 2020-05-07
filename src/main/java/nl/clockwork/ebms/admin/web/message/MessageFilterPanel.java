@@ -130,10 +130,10 @@ public class MessageFilterPanel extends Panel
 		{
 			super(id,new CompoundPropertyModel<>(model));
 			add(createCPAIdChoice("cpaId"));
-			add(createFromPartyIdChoice("fromRole.partyId"));
-			add(createFromRoleChoice("fromRole.role"));
-			add(createToPartyIdChoice("toRole.partyId"));
-			add(createToRoleChoice("toRole.role"));
+			add(createFromPartyIdChoice("fromParty.partyId"));
+			add(createFromRoleChoice("fromParty.role"));
+			add(createToPartyIdChoice("toParty.partyId"));
+			add(createToRoleChoice("toParty.role"));
 			add(createServiceChoice("service"));
 			add(createActionChoice("action"));
 			add(new TextField<String>("conversationId").setLabel(new ResourceModel("lbl.conversationId")));
@@ -184,7 +184,7 @@ public class MessageFilterPanel extends Panel
 			val result = DropDownChoice.<String>builder()
 					.id(id)
 					.choices(new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"))
-					.isEnabled(() -> MessageFilterForm.this.getModelObject().getToRole() == null)
+					.isEnabled(() -> MessageFilterForm.this.getModelObject().getToParty() == null)
 					.build();
 			result.setLabel(new ResourceModel("lbl.fromPartyId"));
 			result.setOutputMarkupId(true);
@@ -194,7 +194,7 @@ public class MessageFilterPanel extends Panel
 				{
 					val model = MessageFilterForm.this.getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					model.resetFromRoles(CPAUtils.getRoleNames(cpa,model.getFromRole().getPartyId()));
+					model.resetFromRoles(CPAUtils.getRoleNames(cpa,model.getFromParty().getPartyId()));
 					model.resetServices();
 					model.resetActions();
 					t.add(getFeedbackComponent());
@@ -215,7 +215,7 @@ public class MessageFilterPanel extends Panel
 			val result = DropDownChoice.<String>builder()
 					.id(id)
 					.choices(new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
-					.isEnabled(() -> MessageFilterForm.this.getModelObject().getToRole() == null)
+					.isEnabled(() -> MessageFilterForm.this.getModelObject().getToParty() == null)
 					.build();
 			result.setLabel(new ResourceModel("lbl.fromRole"));
 			result.setOutputMarkupId(true);
@@ -225,7 +225,7 @@ public class MessageFilterPanel extends Panel
 				{
 					val model = MessageFilterForm.this.getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole().getRole()));
+					model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromParty().getRole()));
 					model.resetActions();
 					t.add(getFeedbackComponent());
 					t.add(getForm());
@@ -245,7 +245,7 @@ public class MessageFilterPanel extends Panel
 			val result = DropDownChoice.<String>builder()
 					.id(id)
 					.choices(new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"))
-					.isEnabled(() -> MessageFilterForm.this.getModelObject().getFromRole() == null)
+					.isEnabled(() -> MessageFilterForm.this.getModelObject().getFromParty() == null)
 					.build();
 			result.setLabel(new ResourceModel("lbl.toPartyId"));
 			result.setOutputMarkupId(true);
@@ -255,7 +255,7 @@ public class MessageFilterPanel extends Panel
 				{
 					val model = MessageFilterForm.this.getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToRole().getPartyId()));
+					model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToParty().getPartyId()));
 					model.resetServices();
 					model.resetActions();
 					t.add(getFeedbackComponent());
@@ -276,7 +276,7 @@ public class MessageFilterPanel extends Panel
 			val result = DropDownChoice.<String>builder()
 					.id(id)
 					.choices(new PropertyModel<List<String>>(this.getModelObject(),"toRoles"))
-					.isEnabled(() -> MessageFilterForm.this.getModelObject().getFromRole() == null)
+					.isEnabled(() -> MessageFilterForm.this.getModelObject().getFromParty() == null)
 					.build();
 			result.setLabel(new ResourceModel("lbl.toRole"));
 			result.setOutputMarkupId(true);
@@ -286,7 +286,7 @@ public class MessageFilterPanel extends Panel
 				{
 					val model = MessageFilterForm.this.getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					model.resetServices(CPAUtils.getServiceNames(cpa,model.getToRole().getRole()));
+					model.resetServices(CPAUtils.getServiceNames(cpa,model.getToParty().getRole()));
 					model.resetActions();
 					t.add(getFeedbackComponent());
 					t.add(getForm());
@@ -312,7 +312,7 @@ public class MessageFilterPanel extends Panel
 				{
 					val model = MessageFilterForm.this.getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					model.resetActions(model.getFromRole() == null ? CPAUtils.getToActionNames(cpa,model.getToRole().getRole(),model.getService()) : CPAUtils.getFromActionNames(cpa,model.getFromRole().getRole(),model.getService()));
+					model.resetActions(model.getFromParty() == null ? CPAUtils.getToActionNames(cpa,model.getToParty().getRole(),model.getService()) : CPAUtils.getFromActionNames(cpa,model.getFromParty().getRole(),model.getService()));
 					t.add(getFeedbackComponent());
 					t.add(getForm());
 				}
@@ -398,7 +398,7 @@ public class MessageFilterPanel extends Panel
 		public void resetFromPartyIds()
 		{
 			getFromPartyIds().clear();
-			setFromRole(null);
+			setFromParty(null);
 		}
 		public void resetFromPartyIds(List<String> partyIds)
 		{
@@ -408,8 +408,8 @@ public class MessageFilterPanel extends Panel
 		public void resetFromRoles()
 		{
 			getFromRoles().clear();
-			if (getFromRole() != null)
-				getFromRole().setRole(null);
+			if (getFromParty() != null)
+				getFromParty().setRole(null);
 		}
 		public void resetFromRoles(List<String> roleNames)
 		{
@@ -419,7 +419,7 @@ public class MessageFilterPanel extends Panel
 		public void resetToPartyIds()
 		{
 			getToPartyIds().clear();
-			setToRole(null);
+			setToParty(null);
 		}
 		public void resetToPartyIds(List<String> partyIds)
 		{
@@ -429,8 +429,8 @@ public class MessageFilterPanel extends Panel
 		public void resetToRoles()
 		{
 			getToRoles().clear();
-			if (getToRole() != null)
-				getToRole().setRole(null);
+			if (getToParty() != null)
+				getToParty().setRole(null);
 		}
 		public void resetToRoles(List<String> roleNames)
 		{

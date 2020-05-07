@@ -33,7 +33,6 @@ import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProt
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.apachecommons.CommonsLog;
@@ -51,7 +50,6 @@ import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.common.JAXBParser;
 import nl.clockwork.ebms.service.CPAService;
 import nl.clockwork.ebms.service.EbMSMessageService;
-import nl.clockwork.ebms.service.model.Party;
 
 @CommonsLog
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -62,8 +60,6 @@ public class PingPage extends BasePage
 	CPAService cpaService;
 	@SpringBean(name="ebMSMessageService")
 	EbMSMessageService ebMSMessageService;
-	@SpringBean(name="cleoPatch")
-	Boolean cleoPatch;
 
 	public PingPage()
 	{
@@ -86,9 +82,7 @@ public class PingPage extends BasePage
 			super(id,new CompoundPropertyModel<>(new PingFormModel()));
 			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",createCPAIdChoice("cpaId")));
 			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",createFromPartyIdChoice("fromPartyId")));
-			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",createFromRoleChoice("fromRole")).setVisible(cleoPatch));
 			add(new BootstrapFormComponentFeedbackBorder("toPartyIdFeedback",createToPartyIdChoice("toPartyId")));
-			add(new BootstrapFormComponentFeedbackBorder("toRoleFeedback",createToRoleChoice("toRole")).setVisible(cleoPatch));
 			val ping = createPingButton("ping");
 			setDefaultButton(ping);
 			add(ping);
@@ -107,9 +101,7 @@ public class PingPage extends BasePage
 					val model = PingForm.this.getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
 					model.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
-					model.resetFromRoles(CPAUtils.getRoleNames(cpa));
 					model.resetToPartyIds();
-					model.resetToRoles();
 					t.add(getPage().get("feedback"));
 					t.add(getPage().get("form"));
 				}
@@ -134,37 +126,7 @@ public class PingPage extends BasePage
 				{
 					val model = PingForm.this.getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					model.resetFromRoles(CPAUtils.getRoleNames(cpa,model.getFromPartyId()));
 					model.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,model.getFromPartyId()));
-					if (model.getFromRole() != null)
-						model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToPartyId()));
-					t.add(getPage().get("feedback"));
-					t.add(getPage().get("form"));
-				}
-				catch (JAXBException e)
-				{
-					log.error("",e);
-					error(e.getMessage());
-				}
-			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
-			return result;
-		}
-
-		private DropDownChoice<String> createFromRoleChoice(String id)
-		{
-			val result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"));
-			result.setLabel(new ResourceModel("lbl.fromRole"));
-			result.setRequired(false).setOutputMarkupId(true);
-			Consumer<AjaxRequestTarget> onUpdate = t ->
-			{
-				try
-				{
-					val model = PingForm.this.getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					model.resetFromPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getFromRole()));
-					model.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,model.getFromPartyId()));
-					model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToPartyId()));
 					t.add(getPage().get("feedback"));
 					t.add(getPage().get("form"));
 				}
@@ -185,46 +147,8 @@ public class PingPage extends BasePage
 			result.setRequired(true).setOutputMarkupId(true);
 			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
-				try
-				{
-					val model = PingForm.this.getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToPartyId()));
-					t.add(getPage().get("feedback"));
-					t.add(getPage().get("form"));
-				}
-				catch (JAXBException e)
-				{
-					log.error("",e);
-					error(e.getMessage());
-				}
-			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
-			return result;
-		}
-
-		private DropDownChoice<String> createToRoleChoice(String id)
-		{
-			val result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"toRoles"));
-			result.setLabel(new ResourceModel("lbl.toRole"));
-			result.setRequired(false).setOutputMarkupId(true);
-			@NonNull
-			Consumer<AjaxRequestTarget> onUpdate = t ->
-			{
-				try
-				{
-					val model = PingForm.this.getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					if (model.getToPartyId() == null)
-						model.resetToPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getToRole()));
-					t.add(getPage().get("feedback"));
-					t.add(getPage().get("form"));
-				}
-				catch (JAXBException e)
-				{
-					log.error("",e);
-					error(e.getMessage());
-				}
+				t.add(getPage().get("feedback"));
+				t.add(getPage().get("form"));
 			};
 			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;
@@ -237,7 +161,7 @@ public class PingPage extends BasePage
 				try
 				{
 					val model = PingForm.this.getModelObject();
-					ebMSMessageService.ping(model.getCpaId(),new Party(model.getFromPartyId(),model.getFromRole()),new Party(model.getToPartyId(),model.getToRole()));
+					ebMSMessageService.ping(model.getCpaId(),model.getFromPartyId(),model.getToPartyId());
 					info(PingPage.this.getString("ping.ok"));
 				}
 				catch (Exception e)
@@ -260,12 +184,8 @@ public class PingPage extends BasePage
 		String cpaId;
 		final List<String> fromPartyIds = new ArrayList<>();
 		String fromPartyId;
-		final List<String> fromRoles = new ArrayList<>();
-		String fromRole;
 		final List<String> toPartyIds = new ArrayList<>();
 		String toPartyId;
-		final List<String> toRoles = new ArrayList<>();
-		String toRole;
 		
 		public void resetFromPartyIds()
 		{
@@ -278,16 +198,6 @@ public class PingPage extends BasePage
 			getFromPartyIds().addAll(partyIds);
 			setFromPartyId(getFromPartyIds().size() == 1 ? getFromPartyIds().get(0) : null);
 		}
-		public void resetFromRoles()
-		{
-			getFromRoles().clear();
-			setFromRole(null);
-		}
-		public void resetFromRoles(List<String> roleNames)
-		{
-			resetFromRoles();
-			getFromRoles().addAll(roleNames);
-		}
 		public void resetToPartyIds()
 		{
 			getToPartyIds().clear();
@@ -298,17 +208,6 @@ public class PingPage extends BasePage
 			resetToPartyIds();
 			getToPartyIds().addAll(partyIds);
 			setToPartyId(getToPartyIds().size() == 1 ? getToPartyIds().get(0) : null);
-		}
-		public void resetToRoles()
-		{
-			getToRoles().clear();
-			setToRole(null);
-		}
-		public void resetToRoles(List<String> roleNames)
-		{
-			resetToRoles();
-			getToRoles().addAll(roleNames);
-			setToRole(getFromRole() != null && getToRoles().size() == 1 ? getToRoles().get(0) : null);
 		}
 	}		
 }

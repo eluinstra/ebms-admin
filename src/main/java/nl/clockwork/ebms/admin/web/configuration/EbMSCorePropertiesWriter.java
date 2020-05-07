@@ -55,9 +55,6 @@ public class EbMSCorePropertiesWriter
 
   protected void write(Properties properties, CorePropertiesFormModel coreProperties)
   {
-		properties.setProperty("patch.digipoort.enable",Boolean.toString(coreProperties.isDigipoortPatch()));
-		properties.setProperty("patch.oracle.enable",Boolean.toString(coreProperties.isOraclePatch()));
-		properties.setProperty("patch.cleo.enable",Boolean.toString(coreProperties.isCleoPatch()));
 		properties.setProperty("http.client",coreProperties.getHttpClient().name());
 		properties.setProperty("eventListener.type",coreProperties.getEventListener().name());
 		properties.setProperty("jms.brokerURL",coreProperties.getJmsBrokerUrl() == null ? "" : coreProperties.getJmsBrokerUrl());

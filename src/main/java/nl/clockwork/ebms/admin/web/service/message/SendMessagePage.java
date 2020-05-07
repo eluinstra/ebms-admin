@@ -60,7 +60,7 @@ import nl.clockwork.ebms.service.EbMSMessageService;
 import nl.clockwork.ebms.service.model.EbMSDataSource;
 import nl.clockwork.ebms.service.model.EbMSMessageContent;
 import nl.clockwork.ebms.service.model.EbMSMessageContext;
-import nl.clockwork.ebms.service.model.Role;
+import nl.clockwork.ebms.service.model.Party;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SendMessagePage extends BasePage
@@ -93,8 +93,8 @@ public class SendMessagePage extends BasePage
 			super(id,new CompoundPropertyModel<>(new EbMSMessageContextModel()));
 			setMultiPart(true);
 			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",createCPAIdChoice("cpaId")));
-			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",createFromPartyIdChoice("fromRole.partyId")));
-			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",createFromRoleChoice("fromRole.role")));
+			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",createFromPartyIdChoice("fromParty.partyId")));
+			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",createFromRoleChoice("fromParty.role")));
 			add(new BootstrapFormComponentFeedbackBorder("serviceFeedback",createServiceChoice("service")));
 			add(new BootstrapFormComponentFeedbackBorder("actionFeedback",createActionChoice("action")));
 			add(new TextField<String>("conversationId").setLabel(new ResourceModel("lbl.conversationId")));
@@ -147,8 +147,8 @@ public class SendMessagePage extends BasePage
 				{
 					val model = MessageForm.this.getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					model.resetFromRoles(CPAUtils.getRoleNames(cpa,model.getFromRole().getPartyId()));
-					model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole().getRole()));
+					model.resetFromRoles(CPAUtils.getRoleNames(cpa,model.getFromParty().getPartyId()));
+					model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromParty().getRole()));
 					model.resetActions();
 					model.resetDataSources();
 					t.add(getPage().get("feedback"));
@@ -175,9 +175,9 @@ public class SendMessagePage extends BasePage
 				{
 					val model = MessageForm.this.getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					if (model.getFromRole().getPartyId() == null)
-						model.resetFromPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getFromRole().getRole()));
-					model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromRole().getRole()));
+					if (model.getFromParty().getPartyId() == null)
+						model.resetFromPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,model.getFromParty().getRole()));
+					model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromParty().getRole()));
 					model.resetActions();
 					model.resetDataSources();
 					t.add(getPage().get("feedback"));
@@ -205,7 +205,7 @@ public class SendMessagePage extends BasePage
 				{
 					val model = MessageForm.this.getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					model.resetActions(CPAUtils.getFromActionNames(cpa,model.getFromRole().getRole(),model.getService()));
+					model.resetActions(CPAUtils.getFromActionNames(cpa,model.getFromParty().getRole(),model.getService()));
 					model.resetDataSources();
 					t.add(getPage().get("feedback"));
 					t.add(getPage().get("form"));
@@ -264,12 +264,12 @@ public class SendMessagePage extends BasePage
 
 		public EbMSMessageContextModel()
 		{
-			setFromRole(new Role());
+			setFromParty(new Party());
 		}
 		public void resetFromPartyIds()
 		{
 			getFromRoles().clear();
-			getFromRole().setPartyId(null);
+			getFromParty().setPartyId(null);
 		}
 		public void resetFromPartyIds(List<String> partyIds)
 		{
@@ -279,13 +279,13 @@ public class SendMessagePage extends BasePage
 		public void resetFromRoles()
 		{
 			getFromRoles().clear();
-			getFromRole().setRole(null);
+			getFromParty().setRole(null);
 		}
 		public void resetFromRoles(List<String> roles)
 		{
 			resetFromRoles();
 			getFromRoles().addAll(roles);
-			getFromRole().setRole(getFromRoles().size() == 1 ? getFromRoles().get(0) : null);
+			getFromParty().setRole(getFromRoles().size() == 1 ? getFromRoles().get(0) : null);
 		}
 		public void resetServices()
 		{

@@ -82,10 +82,10 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		add(createViewRefToMessageIdLink("viewRefToMessageId",messageProcessor, messageContent));
 		add(DateLabel.forDatePattern("context.timestamp",Constants.DATETIME_FORMAT));
 		add(new Label("context.cpaId"));
-		add(new Label("context.fromRole.partyId"));
-		add(new Label("context.fromRole.role"));
-		add(new Label("context.toRole.partyId"));
-		add(new Label("context.toRole.role"));
+		add(new Label("context.fromParty.partyId"));
+		add(new Label("context.fromParty.role"));
+		add(new Label("context.toParty.partyId"));
+		add(new Label("context.toParty.role"));
 		add(new Label("context.service"));
 		add(new Label("context.action"));
 		add(new EbMSDataSourcePropertyListView("dataSources",messageContent.getDataSources()));
