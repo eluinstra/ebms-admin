@@ -41,6 +41,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Builder.Default;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
@@ -76,6 +77,8 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 	
 	@Builder
+	@NoArgsConstructor(force = true)
+	@AllArgsConstructor(staticName = "of")
 	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 	public static class EbMSMessageRowMapper implements RowMapper<EbMSMessage>
 	{
@@ -205,7 +208,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	@Override
 	public EbMSMessage findMessage(String messageId, int messageNr)
 	{
-		EbMSMessageRowMapper rowMapper = EbMSMessageRowMapper.builder()
+		val rowMapper = EbMSMessageRowMapper.builder()
 				.getAttachments(() -> getAttachments(messageId,messageNr))
 				.getEvent(() -> getEvent(messageId))
 				.getEvents(() -> getEvents(messageId))
@@ -259,7 +262,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	@Override
 	public int countMessages(EbMSMessageFilter filter)
 	{
-		List<Object> parameters = new ArrayList<>();
+		val parameters = new ArrayList<Object>();
 		return jdbcTemplate.queryForObject(
 			"select count(message_id)" +
 			" from ebms_message" +
@@ -275,8 +278,8 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	@Override
 	public List<EbMSMessage> selectMessages(EbMSMessageFilter filter, long first, long count)
 	{
-		List<Object> parameters = new ArrayList<>();
-		EbMSMessageRowMapper rowMapper = EbMSMessageRowMapper.builder().build();
+		val parameters = new ArrayList<Object>();
+		val rowMapper = new EbMSMessageRowMapper();
 		return jdbcTemplate.query(
 			selectMessagesQuery(filter,first,count,parameters),
 			parameters.toArray(new Object[0]),
@@ -444,8 +447,8 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	@Override
 	public void printMessagesToCSV(final CSVPrinter printer, EbMSMessageFilter filter)
 	{
-		List<Object> parameters = new ArrayList<>();
-		EbMSMessageRowMapper rowMapper = EbMSMessageRowMapper.builder().build();
+		val parameters = new ArrayList<Object>();
+		val rowMapper = EbMSMessageRowMapper.builder().build();
 		jdbcTemplate.query(
 			rowMapper.getBaseQuery() +
 			" where 1 = 1" +
@@ -502,7 +505,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 					{
 						try
 						{
-							ZipEntry entry = new ZipEntry("message.xml");
+							val entry = new ZipEntry("message.xml");
 							zip.putNextEntry(entry);
 							zip.write(rs.getString("content").getBytes());
 							zip.closeEntry();
@@ -539,7 +542,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				{
 					try
 					{
-						ZipEntry entry = new ZipEntry("attachments/" + (StringUtils.isEmpty(rs.getString("name")) ? rs.getString("content_id") + Utils.getFileExtension(rs.getString("content_type")) : rs.getString("name")));
+						val entry = new ZipEntry("attachments/" + (StringUtils.isEmpty(rs.getString("name")) ? rs.getString("content_id") + Utils.getFileExtension(rs.getString("content_type")) : rs.getString("name")));
 						entry.setComment("Content-Type: " + rs.getString("content_type"));
 						zip.putNextEntry(entry);
 						zip.write(rs.getBytes("content"));
@@ -559,7 +562,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	
 	protected String getMessageFilter(EbMSMessageFilter messageFilter, List<Object> parameters)
 	{
-		StringBuffer result = new StringBuffer();
+		val result = new StringBuffer();
 		if (messageFilter != null)
 		{
 			if (messageFilter.getCpaId() != null)
