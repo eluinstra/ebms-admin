@@ -15,7 +15,7 @@
  */
 package nl.clockwork.ebms.admin.model;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -63,9 +63,9 @@ public class EbMSMessage implements IClusterable
 	Date statusTime;
 	@NonNull
 	@Default
-	List<EbMSAttachment> attachments = new ArrayList<>();
+	List<EbMSAttachment> attachments = Collections.emptyList();
 	EbMSEvent event;
 	@NonNull
 	@Default
-	List<EbMSEventLog> events = new ArrayList<>();
+	List<EbMSEventLog> events = Collections.emptyList();
 }

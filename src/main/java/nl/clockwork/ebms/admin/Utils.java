@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -68,7 +68,7 @@ public class Utils
 
 	public static <T> List<T> toList(List<T> list)
 	{
-		return list == null ? new ArrayList<>() : list;
+		return list == null ? Collections.emptyList() : list;
 	}
 
 	public static String getHost(String host)

@@ -15,7 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class EbMSMessageFilter extends EbMSMessageContext
 	Integer messageNr;
 	Boolean serviceMessage;
 	@Default
-	List<EbMSMessageStatus> statuses = new ArrayList<>();
+	List<EbMSMessageStatus> statuses = Collections.emptyList();
 	Date from;
 	Date to;
 }

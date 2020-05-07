@@ -45,10 +45,6 @@
 		<constructor-arg value="${maxItemsPerPage}"/>
 	</bean>
 
-	<bean id="cleoPatch" class="java.lang.Boolean">
-		<constructor-arg value="${patch.cleo.enable}"/>
-	</bean>
-
 	<http-conf:conduit name="{http://www.ordina.nl/cpa/2.1}CPAServicePort.http-conduit">
 		<http-conf:client Connection="Keep-Alive" MaxRetransmits="1" AllowChunking="false" />
 	</http-conf:conduit>

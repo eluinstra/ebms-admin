@@ -51,8 +51,6 @@ public class ResendMessagePage extends BasePage
 	private CPAService cpaService;
 	@SpringBean(name="ebMSMessageService")
 	private EbMSMessageService ebMSMessageService;
-	@SpringBean(name="cleoPatch")
-	private Boolean cleoPatch;
 
 	public ResendMessagePage()
 	{

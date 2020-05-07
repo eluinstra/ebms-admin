@@ -17,6 +17,7 @@ package nl.clockwork.ebms.admin.web.configuration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -171,7 +172,7 @@ public class SslPropertiesFormPanel extends Panel
 		boolean overrideDefaultCipherSuites = false;
 		final List<String> supportedCipherSuites = Arrays.asList(Utils.getSupportedSSLCipherSuites());
 		@NonNull
-		List<String> enabledCipherSuites = new ArrayList<>();
+		List<String> enabledCipherSuites = Collections.emptyList();
 		boolean requireClientAuthentication = true;
 		boolean verifyHostnames = false;
 		boolean clientCertificateAuthentication = true;

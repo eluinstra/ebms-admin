@@ -15,7 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import nl.clockwork.ebms.service.model.EbMSDataSource;
@@ -32,6 +32,6 @@ public class EmptyDataSourcesPanel extends DataSourcesPanel
 	@Override
 	public List<EbMSDataSource> getDataSources()
 	{
-		return new ArrayList<>();
+		return Collections.emptyList();
 	}
 }

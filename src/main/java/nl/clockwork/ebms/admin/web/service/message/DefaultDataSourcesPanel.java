@@ -16,6 +16,7 @@
 package nl.clockwork.ebms.admin.web.service.message;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -113,7 +114,7 @@ public class DefaultDataSourcesPanel extends DataSourcesPanel
 	public static class DataSourcesModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		List<EbMSDataSource> dataSources = new ArrayList<>();
+		List<EbMSDataSource> dataSources = Collections.emptyList();
 	}
 
 }

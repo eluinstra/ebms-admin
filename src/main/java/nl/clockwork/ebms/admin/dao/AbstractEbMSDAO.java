@@ -22,6 +22,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
@@ -84,13 +85,13 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	{
 		@NonNull
 		@Default
-		Supplier<List<EbMSAttachment>> getAttachments = () -> new ArrayList<EbMSAttachment>();
+		Supplier<List<EbMSAttachment>> getAttachments = () -> Collections.emptyList();
 		@NonNull
 		@Default
 		Supplier<EbMSEvent> getEvent = () -> null;
 		@NonNull
 		@Default
-		Supplier<List<EbMSEventLog>> getEvents = () -> new ArrayList<EbMSEventLog>();
+		Supplier<List<EbMSEventLog>> getEvents = () -> Collections.emptyList();
 		boolean detail;
 
 		public String getBaseQuery()
@@ -243,7 +244,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	public EbMSMessage findResponseMessage(String messageId)
 	{
 		val rowMapper = EbMSMessageRowMapper.builder()
-				.getAttachments(() -> new ArrayList<EbMSAttachment>())
+				.getAttachments(() -> Collections.emptyList())
 				.getEvents(() -> getEvents(messageId))
 				.detail(true)
 				.build();
