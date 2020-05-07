@@ -6,53 +6,15 @@
 		<span wicket:id="feedback"/>
 	</div>
 	<form class="form-horizontal" role="form" wicket:id="form">
-		<div class="form-group" wicket:id="cpaIdFeedback">
-			<label wicket:for="cpaId" class="col-lg-2 control-label"><wicket:label/></label>
-			<div class="col-lg-10">
-				<select class="form-control" wicket:id="cpaId"/>
-			</div>
-		</div>
-		<div class="form-group" wicket:id="fromPartyIdFeedback">
-			<label wicket:for="fromPartyId" class="col-lg-2 control-label"><wicket:label/></label>
-			<div class="col-lg-10">
-				<select class="form-control" wicket:id="fromPartyId"/>
-			</div>
-		</div>
-		<div class="form-group" wicket:id="fromRoleFeedback">
-			<label wicket:for="fromRole" class="col-lg-2 control-label"><wicket:label/></label>
-			<div class="col-lg-10">
-				<select class="form-control" wicket:id="fromRole"/>
-			</div>
-		</div>
-		<div class="form-group" wicket:id="toPartyIdFeedback">
-			<label wicket:for="toPartyId" class="col-lg-2 control-label"><wicket:label/></label>
-			<div class="col-lg-10">
-				<select class="form-control" wicket:id="toPartyId"/>
-			</div>
-		</div>
-		<div class="form-group" wicket:id="toRoleFeedback">
-			<label wicket:for="toRole" class="col-lg-2 control-label"><wicket:label/></label>
-			<div class="col-lg-10">
-				<select class="form-control" wicket:id="toRole"/>
-			</div>
-		</div>
 		<div class="form-group" wicket:id="messageIdFeedback">
-			<label wicket:for="messageIds" class="col-lg-2 control-label"><wicket:label/></label>
+			<label wicket:for="messageId" class="col-lg-2 control-label"><wicket:label/></label>
 			<div class="col-lg-10">
-				<select class="form-control" wicket:id="messageIds"/>
 				<input type="text" class="form-control" wicket:id="messageId"/>
-			</div>
-		</div>
-		<div class="form-group">
-			<label wicket:for="manual" class="col-lg-2 control-label"><wicket:label/></label>
-			<div class="col-lg-10">
-				<input type="checkbox" wicket:id="manual" />
 			</div>
 		</div>
 		<div class="form-group">
 			<div class="col-lg-offset-2 col-lg-10">
 				<input type="submit" class="btn btn-default" wicket:id="check" wicket:message="value:cmd.check"/>
-				<input type="submit" class="btn btn-default" wicket:id="reset" wicket:message="value:cmd.reset"/>
 			</div>
 		</div>
 	</form>
