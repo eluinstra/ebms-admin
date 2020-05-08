@@ -15,7 +15,7 @@
  */
 package nl.clockwork.ebms.admin.model;
 
-import java.util.Date;
+import java.time.Instant;
 
 import org.apache.wicket.util.io.IClusterable;
 
@@ -36,7 +36,7 @@ public class EbMSEventLog implements IClusterable
 	private static final long serialVersionUID = 1L;
 	EbMSMessage message;
 	@NonNull
-	Date timestamp;
+	Instant timestamp;
 	@NonNull
 	String uri;
 	@NonNull

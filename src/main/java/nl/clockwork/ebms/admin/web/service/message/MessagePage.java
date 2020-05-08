@@ -27,7 +27,6 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.wicketstuff.datetime.markup.html.basic.DateLabel;
 
 import lombok.AccessLevel;
 import lombok.val;
@@ -37,6 +36,7 @@ import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.InstantLabel;
 import nl.clockwork.ebms.admin.web.Link;
 import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.service.EbMSMessageService;
@@ -80,7 +80,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		add(new Label("context.messageId"));
 		add(new Label("context.conversationId"));
 		add(createViewRefToMessageIdLink("viewRefToMessageId",messageProcessor, messageContent));
-		add(DateLabel.forDatePattern("context.timestamp",Constants.DATETIME_FORMAT));
+		add(InstantLabel.forInstantPattern("context.timestamp",Constants.DATETIME_FORMAT));
 		add(new Label("context.cpaId"));
 		add(new Label("context.fromParty.partyId"));
 		add(new Label("context.fromParty.role"));

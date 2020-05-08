@@ -25,7 +25,6 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.wicketstuff.datetime.markup.html.basic.DateLabel;
 
 import lombok.AccessLevel;
 import lombok.val;
@@ -36,6 +35,7 @@ import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
+import nl.clockwork.ebms.admin.web.InstantLabel;
 import nl.clockwork.ebms.admin.web.Link;
 import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
 import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
@@ -71,7 +71,7 @@ public class MessagesPage extends BasePage
 			item.add(new Label("messageNr",message.getMessageNr()));
 			item.add(createFilterConversationIdLink("filterConversationId",message));
 			item.add(createViewRefToMessageIdLink("viewRefToMessageId",message));
-			item.add(DateLabel.forDatePattern("timestamp",new Model<>(message.getTimestamp()),Constants.DATETIME_FORMAT));
+			item.add(InstantLabel.of("timestamp",new Model<>(message.getTimestamp()),Constants.DATETIME_FORMAT));
 			item.add(new Label("cpaId",message.getCpaId()));
 			item.add(new Label("fromPartyId",message.getFromPartyId()));
 			item.add(new Label("fromRole",message.getFromRole()));
@@ -80,7 +80,7 @@ public class MessagesPage extends BasePage
 			item.add(new Label("service",message.getService()));
 			item.add(new Label("action",message.getAction()));
 			item.add(new Label("status",message.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus())))));
-			item.add(DateLabel.forDatePattern("statusTime",new Model<>(message.getStatusTime()),Constants.DATETIME_FORMAT));
+			item.add(InstantLabel.of("statusTime",new Model<>(message.getStatusTime()),Constants.DATETIME_FORMAT));
 			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 

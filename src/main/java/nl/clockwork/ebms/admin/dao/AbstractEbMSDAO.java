@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -122,13 +123,13 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			val attachments = getAttachments.get();
 			val events = getEvents.get();
 			val builder = EbMSMessage.builder()
-					.timestamp(rs.getTimestamp("time_stamp"))
+					.timestamp(toInstant(rs.getTimestamp("time_stamp")))
 					.cpaId(rs.getString("cpa_id"))
 					.conversationId(rs.getString("conversation_id"))
 					.messageId(rs.getString("message_id"))
 					.messageNr(rs.getInt("message_nr"))
 					.refToMessageId(rs.getString("ref_to_message_id"))
-					.timeToLive(rs.getTimestamp("time_to_live"))
+					.timeToLive(toInstant(rs.getTimestamp("time_to_live")))
 					.fromPartyId(rs.getString("from_party_id"))
 					.fromRole(rs.getString("from_role"))
 					.toPartyId(rs.getString("to_party_id"))
@@ -136,7 +137,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 					.service(rs.getString("service"))
 					.action(rs.getString("action"))
 					.status(rs.getObject("status") == null ? null : EbMSMessageStatus.get(rs.getInt("status")))
-					.statusTime(rs.getTimestamp("status_time"))
+					.statusTime(toInstant(rs.getTimestamp("status_time")))
 					.attachments(attachments)
 					.event(getEvent.get())
 					.events(events);
@@ -170,6 +171,11 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		{
 			return null;
 		}
+	}
+
+	protected static Instant toInstant(Timestamp timestamp)
+	{
+		return timestamp == null ? null : timestamp.toInstant();
 	}
 
 	@Override
@@ -353,7 +359,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 					@Override
 					public EbMSEvent mapRow(ResultSet rs, int rowNum) throws SQLException
 					{
-						return EbMSEvent.of(rs.getTimestamp("time_to_live"),rs.getTimestamp("time_stamp"),rs.getInt("retries"));
+						return EbMSEvent.of(toInstant(rs.getTimestamp("time_to_live")),toInstant(rs.getTimestamp("time_stamp")),rs.getInt("retries"));
 					}
 				},
 				messageId
@@ -377,7 +383,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				public EbMSEventLog mapRow(ResultSet rs, int rowNum) throws SQLException
 				{
 					return EbMSEventLog.builder()
-							.timestamp(rs.getTimestamp("time_stamp"))
+							.timestamp(toInstant(rs.getTimestamp("time_stamp")))
 							.uri(rs.getString("uri"))
 							.status(EbMSEventStatus.get(rs.getInt("status")))
 							.errorMessage(rs.getString("error_message"))

@@ -13,29 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.clockwork.ebms.admin.model;
+package nl.clockwork.ebms.admin.web;
 
-import java.time.Instant;
-
-import org.apache.wicket.util.io.IClusterable;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 
-@Builder
-@Data
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@AllArgsConstructor(staticName = "of")
-public class EbMSEvent implements IClusterable
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@AllArgsConstructor
+public class PatternInstantConverter extends InstantConverter
 {
 	private static final long serialVersionUID = 1L;
-	@NonNull
-	Instant timeToLive;
-	@NonNull
-	Instant timestamp;
-	int retries;
+	String datePattern;
+
+	@Override
+	public String getDatePattern(Locale locale)
+	{
+		return datePattern;
+	}
+
+	@Override
+	protected DateTimeFormatter getFormat(Locale locale)
+	{
+		return DateTimeFormatter.ofPattern(datePattern).withLocale(locale);
+	}
 }

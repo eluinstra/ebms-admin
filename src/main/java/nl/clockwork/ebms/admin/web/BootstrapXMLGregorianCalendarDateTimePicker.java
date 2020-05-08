@@ -17,8 +17,8 @@ package nl.clockwork.ebms.admin.web;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
@@ -67,10 +67,10 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 	HourFormat hourFormat;
 	@NonFinal
 	@Setter
-	Date startDate;
+	Instant startDate;
 	@NonFinal
 	@Setter
-	Date endDate;
+	Instant endDate;
 	@NonFinal
 	@Getter
 	@Setter
@@ -207,9 +207,9 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 		if (getJQueryLocale() != null)
 			options.add("language: '" + getLocale().toString() + "'");
 		if (startDate != null)
-			options.add("startDate: new Date(" + startDate.getTime() + ")");
+			options.add("startDate: new Date(" + startDate.toEpochMilli() + ")");
 		if (endDate != null)
-			options.add("endDate: new Date(" + endDate.getTime() + ")");
+			options.add("endDate: new Date(" + endDate.toEpochMilli() + ")");
 		response.render(OnDomReadyHeaderItem.forScript("$(function () {$('#" + getDateTimePickerId() + "').datetimepicker({" + StringUtils.join(options,",") + "});});"));
 		super.renderHead(response);
 	}

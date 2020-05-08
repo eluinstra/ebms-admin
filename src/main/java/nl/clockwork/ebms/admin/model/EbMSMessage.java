@@ -15,8 +15,8 @@
  */
 package nl.clockwork.ebms.admin.model;
 
+import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.util.io.IClusterable;
@@ -38,7 +38,7 @@ public class EbMSMessage implements IClusterable
 {
 	private static final long serialVersionUID = 1L;
 	@NonNull
-	Date timestamp;
+	Instant timestamp;
 	@NonNull
 	String cpaId;
 	@NonNull
@@ -47,7 +47,7 @@ public class EbMSMessage implements IClusterable
 	String messageId;
 	int messageNr;
 	String refToMessageId;
-	Date timeToLive;
+	Instant timeToLive;
 	@NonNull
 	String fromPartyId;
 	String fromRole;
@@ -60,7 +60,7 @@ public class EbMSMessage implements IClusterable
 	String action;
 	String content;
 	EbMSMessageStatus status;
-	Date statusTime;
+	Instant statusTime;
 	@NonNull
 	@Default
 	List<EbMSAttachment> attachments = Collections.emptyList();
