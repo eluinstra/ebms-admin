@@ -15,8 +15,8 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import lombok.AccessLevel;
@@ -41,6 +41,6 @@ public class EbMSMessageFilter extends EbMSMessageContext
 	Boolean serviceMessage;
 	@Default
 	List<EbMSMessageStatus> statuses = Collections.emptyList();
-	Date from;
-	Date to;
+	LocalDateTime from;
+	LocalDateTime to;
 }

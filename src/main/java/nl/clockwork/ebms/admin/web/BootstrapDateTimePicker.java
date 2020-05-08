@@ -15,12 +15,12 @@
  */
 package nl.clockwork.ebms.admin.web;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.MarkupContainer;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.form.FormComponentPanel;
@@ -37,7 +37,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class BootstrapDateTimePicker extends FormComponentPanel<Date>
+public class BootstrapDateTimePicker extends FormComponentPanel<LocalDateTime>
 {
 	public enum Type
 	{
@@ -58,32 +58,32 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 	HourFormat hourFormat;
 	@NonFinal
 	@Setter
-	Date startDate;
+	Instant startDate;
 	@NonFinal
 	@Setter
-	Date endDate;
+	Instant endDate;
 	@NonFinal
 	@Getter
 	@Setter
-	Date dateTime;
+	LocalDateTime dateTime;
 	@NonNull
-	TextField<Date> dateTimeField;
+	TextField<LocalDateTime> dateTimeField;
 
 	public BootstrapDateTimePicker(final String id)
 	{
-		this(id,(IModel<Date>)null);
+		this(id,(IModel<LocalDateTime>)null);
 	}
 	public BootstrapDateTimePicker(final String id, String format, Type type)
 	{
 		this(id,null,format,type);
 	}
 	
-	public BootstrapDateTimePicker(final String id, IModel<Date> model)
+	public BootstrapDateTimePicker(final String id, IModel<LocalDateTime> model)
 	{
 		this(id,model,"dd-MM-yyyy HH:mm:ss",Type.DATE_TIME);
 	}
 
-	public BootstrapDateTimePicker(final String id, IModel<Date> model, String format, Type type)
+	public BootstrapDateTimePicker(final String id, IModel<LocalDateTime> model, String format, Type type)
 	{
 		super(id,model);
 		this.format = format;
@@ -99,7 +99,7 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 		dateTimePicker.setOutputMarkupId(true);
 		add(dateTimePicker);
 
-		dateTimeField = new DateTextField("dateTime",new PropertyModel<>(this,"dateTime"),format)
+		dateTimeField = new LocalDateTimeTextField("dateTime",new PropertyModel<>(this,"dateTime"),format)
 		{
 			private static final long serialVersionUID = 1L;
 
@@ -144,9 +144,9 @@ public class BootstrapDateTimePicker extends FormComponentPanel<Date>
 		if (getJQueryLocale() != null)
 			options.add("language: '" + getLocale().toString() + "'");
 		if (startDate != null)
-			options.add("startDate: new Date(" + startDate.getTime() + ")");
+			options.add("startDate: new Date(" + startDate.toEpochMilli() + ")");
 		if (endDate != null)
-			options.add("endDate: new Date(" + endDate.getTime() + ")");
+			options.add("endDate: new Date(" + endDate.toEpochMilli() + ")");
 		response.render(OnDomReadyHeaderItem.forScript("$(function () {$('#" + getDateTimePickerId() + "').datetimepicker({" + StringUtils.join(options,",") + "});});"));
 		super.renderHead(response);
 	}

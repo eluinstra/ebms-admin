@@ -51,6 +51,7 @@ import nl.clockwork.ebms.admin.web.AjaxLink;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.Consumer;
+import nl.clockwork.ebms.admin.web.InstantLabel;
 import nl.clockwork.ebms.admin.web.Link;
 import nl.clockwork.ebms.admin.web.MessageProvider;
 import nl.clockwork.ebms.admin.web.PageLink;
@@ -77,7 +78,7 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 		protected void populateItem(ListItem<EbMSEventLog> item)
 		{
 			val errorMessageModalWindow = new ErrorMessageModalWindow("errorMessageWindow","eventError",item.getModelObject().getErrorMessage());
-			item.add(DateLabel.forDatePattern("timestamp",Constants.DATETIME_FORMAT));
+			item.add(InstantLabel.forInstantPattern("timestamp",Constants.DATETIME_FORMAT));
 			item.add(new Label("uri"));
 			item.add(errorMessageModalWindow);
 			val link = AjaxLink.<Void>builder()
@@ -212,9 +213,9 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 		nextEvent.setVisible(message.getEvent() != null);
 		if (message.getEvent() != null)
 		{
-			nextEvent.add(DateLabel.forDatePattern("event.timestamp",Constants.DATETIME_FORMAT));
+			nextEvent.add(InstantLabel.forInstantPattern("event.timestamp",Constants.DATETIME_FORMAT));
 			nextEvent.add(new Label("event.retries"));
-			nextEvent.add(DateLabel.forDatePattern("event.timeToLive",Constants.DATETIME_FORMAT));
+			nextEvent.add(InstantLabel.forInstantPattern("event.timeToLive",Constants.DATETIME_FORMAT));
 		}
 		return nextEvent;
 	}
