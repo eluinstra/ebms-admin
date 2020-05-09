@@ -31,7 +31,6 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.wicketstuff.datetime.markup.html.basic.DateLabel;
 
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -71,7 +70,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		protected void populateItem(ListItem<EbMSEventLog> item)
 		{
 			val errorMessageModalWindow = new ErrorMessageModalWindow("errorMessageWindow","eventError",item.getModelObject().getErrorMessage());
-			item.add(InstantLabel.forInstantPattern("timestamp",Constants.DATETIME_FORMAT));
+			item.add(InstantLabel.of("timestamp",Constants.DATETIME_FORMAT));
 			item.add(new Label("uri"));
 			item.add(errorMessageModalWindow);
 			val link = AjaxLink.<Void>builder()
@@ -96,7 +95,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		add(new Label("messageNr"));
 		add(new Label("conversationId"));
 		add(createRefToMessageIdLink("viewRefToMessageId",message));
-		add(DateLabel.forDatePattern("timestamp",Constants.DATETIME_FORMAT));
+		add(InstantLabel.of("timestamp",Constants.DATETIME_FORMAT));
 		add(new Label("cpaId"));
 		add(new Label("fromPartyId"));
 		add(new Label("fromRole"));
@@ -105,7 +104,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		add(new Label("service"));
 		add(createActionField("action",message));
 		add(createViewMessageErrorLink("viewMessageError",message));
-		add(new Label("statusTime"));
+		add(InstantLabel.of("statusTime",Constants.DATETIME_FORMAT));
 		add(new AttachmentsPanel("attachments",message.getAttachments()).setVisible(message.getAttachments().size() > 0));
 		add(createNextEventContainer("nextEvent",message));
 		add(createEventLogContainer("eventLog",message));
@@ -191,9 +190,9 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		result.setVisible(message.getEvent() != null);
 		if (message.getEvent() != null)
 		{
-			result.add(InstantLabel.forInstantPattern("event.timestamp",Constants.DATETIME_FORMAT));
+			result.add(InstantLabel.of("event.timestamp",Constants.DATETIME_FORMAT));
 			result.add(new Label("event.retries"));
-			result.add(InstantLabel.forInstantPattern("event.timeToLive",Constants.DATETIME_FORMAT));
+			result.add(InstantLabel.of("event.timeToLive",Constants.DATETIME_FORMAT));
 		}
 		return result;
 	}

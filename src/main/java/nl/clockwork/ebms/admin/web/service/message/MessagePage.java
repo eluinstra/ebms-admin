@@ -80,7 +80,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		add(new Label("context.messageId"));
 		add(new Label("context.conversationId"));
 		add(createViewRefToMessageIdLink("viewRefToMessageId",messageProcessor, messageContent));
-		add(InstantLabel.forInstantPattern("context.timestamp",Constants.DATETIME_FORMAT));
+		add(InstantLabel.of("context.timestamp",Constants.DATETIME_FORMAT));
 		add(new Label("context.cpaId"));
 		add(new Label("context.fromParty.partyId"));
 		add(new Label("context.fromParty.role"));
