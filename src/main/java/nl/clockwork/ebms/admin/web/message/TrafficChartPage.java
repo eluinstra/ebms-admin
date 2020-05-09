@@ -16,7 +16,7 @@
 package nl.clockwork.ebms.admin.web.message;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -191,7 +191,7 @@ public class TrafficChartPage extends BasePage
 			Consumer<AjaxRequestTarget> onClick = t ->
 			{
 				val model = TrafficChartForm.this.getModelObject();
-				model.setFrom(model.getFrom().minus(model.getTimeUnit().getPeriod().getDuration()));
+				model.setFrom(model.getFrom().minus(model.getTimeUnit().getPeriod()));
 				chart.setChartConfiguration(createChartConfiguration(model));
 				t.add(chart);
 			};
@@ -203,7 +203,7 @@ public class TrafficChartPage extends BasePage
 			Consumer<AjaxRequestTarget> onClick = t ->
 			{
 				val model = TrafficChartForm.this.getModelObject();
-				model.setFrom(model.getFrom().plus(model.getTimeUnit().getPeriod().getDuration()));
+				model.setFrom(model.getFrom().plus(model.getTimeUnit().getPeriod()));
 				chart.setChartConfiguration(createChartConfiguration(model));
 				t.add(chart);
 			};
@@ -231,13 +231,13 @@ public class TrafficChartPage extends BasePage
 		}
 	}
 	
-	private List<LocalDateTime> calculateDates(ChronoUnit period, LocalDateTime from, LocalDateTime to)
+	private List<LocalDateTime> calculateDates(TemporalAmount period, LocalDateTime from, LocalDateTime to)
 	{
 		val dates = new ArrayList<LocalDateTime>();
 		while (from.isBefore(to))
 		{
 			dates.add(from);
-			from = from.plus(period.getDuration());
+			from = from.plus(period);
 		}
 		return dates;
 	}
@@ -259,7 +259,7 @@ public class TrafficChartPage extends BasePage
 		}
 		public LocalDateTime getTo()
 		{
-			return from.plus(timeUnit.getPeriod().getDuration());
+			return from.plus(timeUnit.getPeriod());
 		}
 		public List<EbMSMessageTrafficChartOption> getEbMSMessageTrafficChartOptions()
 		{
