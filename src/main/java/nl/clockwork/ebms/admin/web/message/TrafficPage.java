@@ -83,12 +83,10 @@ public class TrafficPage extends BasePage
 
 		private Link<Void> createViewLink(String id, final EbMSMessage message)
 		{
-			Action onClick = () ->
-			{
-				//setResponsePage(new MessagePageX(ebMSDAO.getMessage(message.getMessageId(),message.getMessageNr()),MessagesPage.this));
-				setResponsePage(new MessagePageX(message,TrafficPage.this));
-			};
-			val result = new Link<Void>(id,onClick);
+			val result = Link.<Void>builder()
+					.id(id)
+					.onClick(() -> setResponsePage(new MessagePageX(message,TrafficPage.this)))
+					.build();
 			result.add(new Label("messageId",message.getMessageId()));
 			return result;
 		}

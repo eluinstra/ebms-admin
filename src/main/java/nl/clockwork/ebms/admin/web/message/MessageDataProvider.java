@@ -44,7 +44,7 @@ public class MessageDataProvider implements IDataProvider<EbMSMessage>
 	@Override
 	public IModel<EbMSMessage> model(EbMSMessage message)
 	{
-		return new MessageDataModel(ebMSDAO,message);
+		return MessageDataModel.of(ebMSDAO,message);
 	}
 
 	@Override

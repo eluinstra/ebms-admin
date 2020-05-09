@@ -41,7 +41,7 @@ public class InstantLabel extends Label implements IGenericComponent<Instant, In
 		return new InstantLabel(id,model,new PatternInstantConverter(pattern));
 	}
 
-	public static InstantLabel forInstantPattern(String id, String pattern)
+	public static InstantLabel of(String id, String pattern)
 	{
 		return of(id,null,pattern);
 	}

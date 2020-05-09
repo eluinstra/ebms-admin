@@ -111,7 +111,7 @@ public class MessagesPage extends BasePage
 
 		private Link<Void> createViewRefToMessageIdLink(String id, final EbMSMessage message)
 		{
-			Link<Void> result = Link.<Void>builder()
+			val result = Link.<Void>builder()
 					.id(id)
 					.onClick(() -> setResponsePage(new MessagePage(ebMSDAO.findMessage(message.getRefToMessageId()),MessagesPage.this)))
 					.build();
