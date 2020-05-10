@@ -19,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
@@ -35,6 +36,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.jmx.ConnectorServer;
@@ -63,7 +65,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.web.ExtensionProvider;
-import nl.clockwork.ebms.common.util.SecurityUtils;
 import nl.clockwork.ebms.security.KeyStoreType;
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
@@ -385,8 +386,8 @@ public class Start
 	{
 		while (true)
 		{
-			val result = SecurityUtils.toMD5(readLine("enter password: ",reader));
-			val password = SecurityUtils.toMD5(readLine("re-enter password: ",reader));
+			val result = toMD5(readLine("enter password: ",reader));
+			val password = toMD5(readLine("re-enter password: ",reader));
 			if (result.equals(password))
 				return result;
 			else
@@ -394,6 +395,11 @@ public class Start
 		}
 	}
 	
+	private String toMD5(String s) throws NoSuchAlgorithmException, UnsupportedEncodingException
+	{
+		return "MD5:" + DigestUtils.md5Hex(s);
+	}
+
 	protected SecurityHandler getSecurityHandler()
 	{
 		val result = new ConstraintSecurityHandler();
