@@ -54,6 +54,8 @@
 
 		<AsyncLogger name="org.apache.http.wire" level="WARN" />
 
+		<AsyncLogger name="org.apache.cxf" level="WARN" />
+
 		<AsyncLogger name="org.apache.wicket" level="WARN" />
 
 		<AsyncLogger name="org.apache.wicket.protocol.http.HttpSessionStore" level="DEBUG" />

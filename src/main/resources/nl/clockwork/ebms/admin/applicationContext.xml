@@ -19,11 +19,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xmlns:cxf="http://cxf.apache.org/core"
 	xmlns:http-conf="http://cxf.apache.org/transports/http/configuration"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 		http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schemas/configuration/http-conf.xsd
-		http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+		http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+		http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
  
 	<import resource="classpath:nl/clockwork/ebms/admin/applicationConfig.xml"/>
 
@@ -48,6 +50,16 @@
 	<http-conf:conduit name="{http://www.ordina.nl/cpa/2.1}CPAServicePort.http-conduit">
 		<http-conf:client Connection="Keep-Alive" MaxRetransmits="1" AllowChunking="false" />
 	</http-conf:conduit>
+
+	<bean id="loggingFeature" class="org.apache.cxf.feature.LoggingFeature">
+		<property name="prettyLogging" value="true" />
+	</bean>
+
+	<cxf:bus>
+		<cxf:features>
+			<ref bean="loggingFeature" />
+		</cxf:features>
+	</cxf:bus>
 
 	<jaxws:client id="cpaService" serviceClass="nl.clockwork.ebms.service.CPAService" address="${service.ebms.url}/cpa"/>
 

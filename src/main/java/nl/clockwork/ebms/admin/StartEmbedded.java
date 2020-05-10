@@ -33,6 +33,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.cxf.common.logging.LogUtils;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.FilterHolder;
@@ -58,6 +59,7 @@ public class StartEmbedded extends Start
 {
 	public static void main(String[] args) throws Exception
 	{
+		LogUtils.setLoggerClass(org.apache.cxf.common.logging.Slf4jLogger.class);
 		val options = createOptions();
 		val cmd = new DefaultParser().parse(options,args);
 		if (cmd.hasOption("h"))
