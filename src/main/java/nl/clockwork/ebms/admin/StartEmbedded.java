@@ -236,6 +236,9 @@ public class StartEmbedded extends Start
 			sslContextFactory.setKeyStoreType(properties.get("keystore.type"));
 			sslContextFactory.setKeyStoreResource(keyStore);
 			sslContextFactory.setKeyStorePassword(properties.get("keystore.password"));
+			String certAlias = properties.get("keystore.defaultAlias");
+			if (StringUtils.isNotEmpty(certAlias))
+				sslContextFactory.setCertAlias(certAlias);
 		}
 		else
 		{
