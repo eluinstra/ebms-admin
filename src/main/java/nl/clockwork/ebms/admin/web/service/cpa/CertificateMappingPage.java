@@ -93,7 +93,7 @@ public class CertificateMappingPage extends BasePage
 					error(e.getMessage());
 				}
 			};
-			val result = new Button(id,new ResourceModel("cmd.upload"),onSubmit );
+			val result = new Button(id,new ResourceModel("cmd.upload"),onSubmit);
 			setDefaultButton(result);
 			return result;
 		}

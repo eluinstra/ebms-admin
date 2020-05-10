@@ -105,7 +105,7 @@ public class CPAUploadPage extends BasePage
 					error(e.getMessage());
 				}
 			};
-			return new Button(id,new ResourceModel("cmd.validate"),onSubmit );
+			return new Button(id,new ResourceModel("cmd.validate"),onSubmit);
 		}
 
 		private Button createUploadButton(String id)

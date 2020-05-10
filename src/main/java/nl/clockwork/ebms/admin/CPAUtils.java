@@ -28,7 +28,7 @@ public class CPAUtils
 {
 	public static String toString(PartyId partyId)
 	{
-		return (partyId.getType() == null ? "" : partyId.getType() + ":" ) + partyId.getValue();
+		return (partyId.getType() == null ? "" : partyId.getType() + ":") + partyId.getValue();
 	}
 
 	public static List<String> getPartyIds(CollaborationProtocolAgreement cpa)

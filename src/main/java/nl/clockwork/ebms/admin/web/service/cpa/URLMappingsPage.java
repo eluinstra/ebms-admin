@@ -78,7 +78,7 @@ public class URLMappingsPage extends BasePage
 					error(e.getMessage());
 				}
 			};
-			return new Button(id,new ResourceModel("cmd.edit"),onSubmit );
+			return new Button(id,new ResourceModel("cmd.edit"),onSubmit);
 		}
 
 		private Button createDeleteButton(String id, final URLMapping urlMapping)
