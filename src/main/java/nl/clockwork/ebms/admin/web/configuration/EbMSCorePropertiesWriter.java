@@ -19,6 +19,12 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.web.configuration.CorePropertiesFormPanel.CorePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.EbMSCorePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.EncryptionPropertiesFormPanel.EncryptionPropertiesFormModel;
@@ -27,13 +33,6 @@ import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPro
 import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyPropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.SignaturePropertiesFormModel;
 import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormModel;
-
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @AllArgsConstructor
@@ -92,9 +91,11 @@ public class EbMSCorePropertiesWriter
  		properties.setProperty("keystore.type",sslProperties.getKeystoreProperties().getType().name());
  		properties.setProperty("keystore.path",StringUtils.defaultString(sslProperties.getKeystoreProperties().getUri()));
  		properties.setProperty("keystore.password",StringUtils.defaultString(sslProperties.getKeystoreProperties().getPassword()));
+ 		properties.setProperty("keystore.defaultAlias",StringUtils.defaultString(sslProperties.getKeystoreProperties().getDefaultAlias()));
 		properties.setProperty("client.keystore.type",sslProperties.getClientKeystoreProperties().getType().name());
 		properties.setProperty("client.keystore.path",StringUtils.defaultString(sslProperties.getClientKeystoreProperties().getUri()));
 		properties.setProperty("client.keystore.password",StringUtils.defaultString(sslProperties.getClientKeystoreProperties().getPassword()));
+		properties.setProperty("client.keystore.defaultAlias",StringUtils.defaultString(sslProperties.getClientKeystoreProperties().getDefaultAlias()));
  		properties.setProperty("truststore.type",sslProperties.getTruststoreProperties().getType().name());
  		properties.setProperty("truststore.path",StringUtils.defaultString(sslProperties.getTruststoreProperties().getUri()));
  		properties.setProperty("truststore.password",StringUtils.defaultString(sslProperties.getTruststoreProperties().getPassword()));

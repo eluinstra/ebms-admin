@@ -96,9 +96,10 @@ public class EbMSCorePropertiesReader
 		sslProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("keystore.type","JKS").toUpperCase()));
 		sslProperties.getKeystoreProperties().setUri(properties.getProperty("keystore.path"));
 		sslProperties.getKeystoreProperties().setPassword(properties.getProperty("keystore.password"));
+		sslProperties.getKeystoreProperties().setDefaultAlias(properties.getProperty("keystore.defaultAlias"));
 		sslProperties.getClientKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("client.keystore.type","JKS").toUpperCase()));
 		sslProperties.getClientKeystoreProperties().setUri(properties.getProperty("client.keystore.path"));
-		sslProperties.getClientKeystoreProperties().setPassword(properties.getProperty("client.keystore.password"));
+		sslProperties.getClientKeystoreProperties().setDefaultAlias(properties.getProperty("client.keystore.defaultAlias"));
 		sslProperties.getTruststoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("truststore.type","JKS").toUpperCase()));
 		sslProperties.getTruststoreProperties().setUri(properties.getProperty("truststore.path"));
 		sslProperties.getTruststoreProperties().setPassword(properties.getProperty("truststore.password"));

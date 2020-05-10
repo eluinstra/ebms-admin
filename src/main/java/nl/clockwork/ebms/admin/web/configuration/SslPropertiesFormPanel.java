@@ -41,6 +41,7 @@ import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
 import nl.clockwork.ebms.admin.web.Supplier;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.admin.web.configuration.JavaKeyStorePropertiesFormPanel.JavaKeyStorePropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.JavaTrustStorePropertiesFormPanel.JavaTrustStorePropertiesFormModel;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SslPropertiesFormPanel extends Panel
@@ -178,7 +179,7 @@ public class SslPropertiesFormPanel extends Panel
 		@NonNull
 		JavaKeyStorePropertiesFormModel keystoreProperties = new JavaKeyStorePropertiesFormModel();
 		@NonNull
-		JavaKeyStorePropertiesFormModel truststoreProperties = new JavaKeyStorePropertiesFormModel();
+		JavaTrustStorePropertiesFormModel truststoreProperties = new JavaTrustStorePropertiesFormModel();
 		@NonNull
 		JavaKeyStorePropertiesFormModel clientKeystoreProperties = new JavaKeyStorePropertiesFormModel();
 	}

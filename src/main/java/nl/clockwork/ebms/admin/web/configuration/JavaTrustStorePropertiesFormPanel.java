@@ -45,26 +45,24 @@ import nl.clockwork.ebms.security.KeyStoreType;
 
 @CommonsLog
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class JavaKeyStorePropertiesFormPanel extends Panel
+public class JavaTrustStorePropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
 	boolean required;
-	boolean showDefaultAlias;
 	Supplier<Boolean> isVisible;
 
-	public JavaKeyStorePropertiesFormPanel(String id, IModel<JavaKeyStorePropertiesFormModel> model)
+	public JavaTrustStorePropertiesFormPanel(String id, IModel<JavaTrustStorePropertiesFormModel> model)
 	{
-		this(id,model,true,true,null);
+		this(id,model,true,null);
 	}
 
 	@Builder
-	public JavaKeyStorePropertiesFormPanel(String id, IModel<JavaKeyStorePropertiesFormModel> model, boolean required, boolean showDefaultAlias, Supplier<Boolean> isVisible)
+	public JavaTrustStorePropertiesFormPanel(String id, IModel<JavaTrustStorePropertiesFormModel> model, boolean required, Supplier<Boolean> isVisible)
 	{
 		super(id,model);
 		this.required = required;
-		this.showDefaultAlias = showDefaultAlias;
 		this.isVisible = isVisible == null ? () -> super.isVisible() : isVisible;
-		add(new JavaKeyStorePropertiesForm("form",model));
+		add(new JavaTrustStorePropertiesForm("form",model));
 	}
 
 	@Override
@@ -73,34 +71,33 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 		return isVisible.get();
 	}
 
-	public class JavaKeyStorePropertiesForm extends Form<JavaKeyStorePropertiesFormModel>
+	public class JavaTrustStorePropertiesForm extends Form<JavaTrustStorePropertiesFormModel>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public JavaKeyStorePropertiesForm(String id, IModel<JavaKeyStorePropertiesFormModel> model)
+		public JavaTrustStorePropertiesForm(String id, IModel<JavaTrustStorePropertiesFormModel> model)
 		{
 			super(id,new CompoundPropertyModel<>(model));
 			add(new BootstrapFormComponentFeedbackBorder("typeFeedback",new DropDownChoice<KeyStoreType>("type",Arrays.asList(KeyStoreType.values())).setLabel(new ResourceModel("lbl.type")).setRequired(required)));
 			add(new BootstrapFormComponentFeedbackBorder("uriFeedback",new TextField<String>("uri").setLabel(new ResourceModel("lbl.uri")).setRequired(required)));
 			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",new PasswordTextField("password").setResetPassword(false).setLabel(new ResourceModel("lbl.password")).setRequired(required)));
-			add(new BootstrapFormComponentFeedbackBorder("defaultAliasFeedback",new TextField<String>("defaultAlias").setLabel(new ResourceModel("lbl.defaultAlias"))).setVisible(showDefaultAlias));
 			add(createTestButton("test",model));
 		}
 
-		private Button createTestButton(String id, final IModel<JavaKeyStorePropertiesFormModel> model)
+		private Button createTestButton(String id, final IModel<JavaTrustStorePropertiesFormModel> model)
 		{
 			Action action = () ->
 			{
 				try
 				{
 					val m = model.getObject();
-					Utils.testKeyStore(m.getType(),m.getUri(),m.getPassword(),m.getDefaultAlias(),showDefaultAlias);
-					info(JavaKeyStorePropertiesForm.this.getString("test.ok"));
+					Utils.testTrustStore(m.getType(),m.getUri(),m.getPassword());
+					info(JavaTrustStorePropertiesForm.this.getString("test.ok"));
 				}
 				catch (Exception e)
 				{
 					log.error("",e);
-					error(new StringResourceModel("test.nok",JavaKeyStorePropertiesForm.this,Model.of(e)).getString());
+					error(new StringResourceModel("test.nok",JavaTrustStorePropertiesForm.this,Model.of(e)).getString());
 				}
 			};
 			return new Button(id,new ResourceModel("cmd.test"),action);
@@ -110,7 +107,7 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
-	public static class JavaKeyStorePropertiesFormModel implements IClusterable
+	public static class JavaTrustStorePropertiesFormModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		KeyStoreType type = KeyStoreType.PKCS12;
@@ -118,6 +115,5 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 		String uri = "keystore.p12";
 		@NonNull
 		String password = "password";
-		String defaultAlias;
 	}
 }

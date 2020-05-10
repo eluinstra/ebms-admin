@@ -33,6 +33,7 @@ import java.util.Scanner;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -122,17 +123,42 @@ public class Utils
 		return result.exists() ? result : new ClassPathResource(path);
 	}
   
-	public static void testKeystore(KeyStoreType type, String path, String password) throws MalformedURLException, IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException
+	public static void testTrustStore(KeyStoreType type, String path, String password) throws MalformedURLException, IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException
+	{
+		testKeyStore(type,path,password,null,false);
+	}
+
+	public static void testKeyStore(KeyStoreType type, String path, String password, String defaultAlias, boolean validateKeyPassword) throws MalformedURLException, IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException
 	{
 		val resource = getResource(path);
 		val keyStore = KeyStore.getInstance(type.name());
 		keyStore.load(resource.getInputStream(),password.toCharArray());
 		val aliases = keyStore.aliases();
-		while (aliases.hasMoreElements())
+		if (!aliases.hasMoreElements())
+			throw new IllegalStateException("No keys found in keystore " + path);
+		if (StringUtils.isEmpty(defaultAlias))
 		{
 			val alias = aliases.nextElement();
-			if (keyStore.isKeyEntry(alias))
+			if (validateKeyPassword)
 				keyStore.getKey(alias,password.toCharArray());
+		}
+		else
+		{
+			while (true)
+			{
+				if (aliases.hasMoreElements())
+				{
+					val alias = aliases.nextElement();
+					if (alias.equals(defaultAlias))
+					{
+						if (validateKeyPassword)
+							keyStore.getKey(alias,password.toCharArray());
+						break;
+					}
+				}
+				else
+					throw new IllegalArgumentException("Alias " + defaultAlias + " not found in keystore " + path);
+			}
 		}
 	}
 

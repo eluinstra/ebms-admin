@@ -71,6 +71,7 @@ public class EncryptionPropertiesFormPanel extends Panel
 					.id(id)
 					.model(new PropertyModel<>(getModelObject(),"keystoreProperties"))
 					.required(false)
+					.showDefaultAlias(false)
 					.isVisible(() -> getModelObject().isEncryption())
 					.build();
 		}

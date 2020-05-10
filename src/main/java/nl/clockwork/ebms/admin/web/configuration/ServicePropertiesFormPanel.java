@@ -74,11 +74,7 @@ public class ServicePropertiesFormPanel extends Panel
 					error(new StringResourceModel("test.nok",ServicePropertiesForm.this,Model.of(e)).getString());
 				}
 			};
-			return Button.builder()
-					.id(id)
-					.model(new ResourceModel("cmd.test"))
-					.onSubmit(action)
-					.build();
+			return new Button(id,new ResourceModel("cmd.test"),action);
 		}
 	}
 
