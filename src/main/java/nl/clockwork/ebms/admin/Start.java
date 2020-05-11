@@ -39,6 +39,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.cxf.common.logging.LogUtils;
 import org.eclipse.jetty.jmx.ConnectorServer;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.security.ConstraintMapping;
@@ -78,6 +79,7 @@ public class Start
 
 	public static void main(String[] args) throws Exception
 	{
+		LogUtils.setLoggerClass(org.apache.cxf.common.logging.Slf4jLogger.class);
 		Start start = new Start();
 		start.options = start.createOptions();
 		start.cmd = new DefaultParser().parse(start.options,args);
