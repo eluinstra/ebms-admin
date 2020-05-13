@@ -75,7 +75,6 @@ public class SslPropertiesFormPanel extends Panel
 			add(createOverrideDefaultCipherSuitesContainer("overrideDefaultCipherSuitesContainer",enableSslOverridePropeties));
 			add(createEnabledCipherSuitesContainer("enabledCipherSuitesContainer",enableSslOverridePropeties));
 			add(createClientAuthenticationRequiredCheckBox("requireClientAuthentication"));
-			add(createClientCertificateAuthenticationContainer("clientCertificateAuthenticationContainer"));
 			add(new KeystorePropertiesFormPanel("keystoreProperties",new PropertyModel<>(getModelObject(),"keystoreProperties")));
 			add(new ClientKeystorePropertiesFormPanel("clientKeystoreProperties",new PropertyModel<>(getModelObject(),"clientKeystoreProperties")));
 			add(new TruststorePropertiesFormPanel("truststoreProperties",new PropertyModel<>(getModelObject(),"truststoreProperties")));
@@ -147,16 +146,6 @@ public class SslPropertiesFormPanel extends Panel
 					.build());
 			return result;
 		}
-
-		private WebMarkupContainer createClientCertificateAuthenticationContainer(String id)
-		{
-			val result = WebMarkupContainer.builder()
-					.id(id)
-					.isVisible(() -> getModelObject().isRequireClientAuthentication())
-					.build();
-			result.add(new CheckBox("clientCertificateAuthentication").setLabel(new ResourceModel("lbl.clientCertificateAuthentication")));
-			return result;
-		}
 	}
 
 	@Data
@@ -175,7 +164,6 @@ public class SslPropertiesFormPanel extends Panel
 		List<String> enabledCipherSuites = Collections.emptyList();
 		boolean requireClientAuthentication = true;
 		boolean verifyHostnames = false;
-		boolean clientCertificateAuthentication = false;
 		@NonNull
 		JavaKeyStorePropertiesFormModel keystoreProperties = new JavaKeyStorePropertiesFormModel();
 		@NonNull

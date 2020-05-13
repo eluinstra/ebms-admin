@@ -87,7 +87,6 @@ public class EbMSCorePropertiesWriter
 			properties.setProperty("https.cipherSuites",StringUtils.join(sslProperties.getEnabledCipherSuites(),','));
 		properties.setProperty("https.requireClientAuthentication",Boolean.toString(sslProperties.isRequireClientAuthentication()));
 		properties.setProperty("https.verifyHostnames",Boolean.toString(sslProperties.isVerifyHostnames()));
-		properties.setProperty("https.clientCertificateAuthentication",Boolean.toString(sslProperties.isClientCertificateAuthentication()));
  		properties.setProperty("keystore.type",sslProperties.getKeystoreProperties().getType().name());
  		properties.setProperty("keystore.path",StringUtils.defaultString(sslProperties.getKeystoreProperties().getUri()));
  		properties.setProperty("keystore.password",StringUtils.defaultString(sslProperties.getKeystoreProperties().getPassword()));
