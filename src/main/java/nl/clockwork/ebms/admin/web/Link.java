@@ -45,6 +45,6 @@ public class Link<T> extends org.apache.wicket.markup.html.link.Link<T>
 	@Override
 	public void onClick()
 	{
-		onClick.doIt();
+		onClick.run();
 	}
 }

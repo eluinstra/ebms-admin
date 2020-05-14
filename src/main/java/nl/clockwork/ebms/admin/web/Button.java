@@ -39,6 +39,6 @@ public class Button extends org.apache.wicket.markup.html.form.Button
 	@Override
 	public void onSubmit()
 	{
-		onSubmit.doIt();
+		onSubmit.run();
 	}
 }
