@@ -15,32 +15,45 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
 import lombok.AccessLevel;
-import lombok.Builder.Default;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.SuperBuilder;
 import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.service.model.EbMSMessageContext;
+import nl.clockwork.ebms.service.model.Party;
 
-@SuperBuilder
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@ToString
 public class EbMSMessageFilter extends EbMSMessageContext
 {
 	private static final long serialVersionUID = 1L;
 	Integer messageNr;
 	Boolean serviceMessage;
-	@Default
 	List<EbMSMessageStatus> statuses = Collections.emptyList();
 	LocalDateTime from;
 	LocalDateTime to;
+
+	@Builder(builderMethodName = "ebMSMessageFilterBuilder")
+	public EbMSMessageFilter(@NonNull String cpaId, @NonNull Party fromParty, Party toParty, String service, String action, Instant timestamp, String conversationId, String messageId, String refToMessageId, EbMSMessageStatus messageStatus, Integer messageNr, Boolean serviceMessage, List<EbMSMessageStatus> statuses, LocalDateTime from, LocalDateTime to)
+	{
+		super(cpaId,fromParty,toParty,service,action,timestamp,conversationId,messageId,refToMessageId,messageStatus);
+		this.messageNr = messageNr;
+		this.serviceMessage = serviceMessage;
+		if (statuses != null) this.statuses = statuses;
+		this.from = from;
+		this.to = to;
+	}
 }

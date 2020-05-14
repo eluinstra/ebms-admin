@@ -27,14 +27,14 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.admin.web.configuration.CorePropertiesFormPanel.CorePropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.EbMSCorePropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.EncryptionPropertiesFormPanel.EncryptionPropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.HttpPropertiesFormPanel.HttpPropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyPropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.SignaturePropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.CorePropertiesFormPanel.CorePropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.EbMSCorePropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.EncryptionPropertiesFormPanel.EncryptionPropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.HttpPropertiesFormPanel.HttpPropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyPropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.SignaturePropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormData;
 import nl.clockwork.ebms.client.EbMSHttpClientFactory.EbMSHttpClientType;
 import nl.clockwork.ebms.event.listener.EventListenerFactory.EventListenerType;
 import nl.clockwork.ebms.security.KeyStoreType;
@@ -45,7 +45,7 @@ public class EbMSCorePropertiesReader
 {
 	Reader reader;
 
-	public void read(EbMSCorePropertiesFormModel ebMSCoreProperties) throws IOException
+	public void read(EbMSCorePropertiesFormData ebMSCoreProperties) throws IOException
 	{
 		val properties = new Properties();
 		properties.load(reader);
@@ -56,7 +56,7 @@ public class EbMSCorePropertiesReader
 		read(properties,ebMSCoreProperties.getJdbcProperties());
 	}
 	
-	protected void read(Properties properties, CorePropertiesFormModel coreProperties) throws MalformedURLException
+	protected void read(Properties properties, CorePropertiesFormData coreProperties) throws MalformedURLException
 	{
 		coreProperties.setHttpClient(properties.getProperty("http.client") != null ? EbMSHttpClientType.valueOf(properties.getProperty("http.client")) : null);
 		coreProperties.setEventListener(properties.getProperty("eventListener.type") != null ? EventListenerType.valueOf(properties.getProperty("eventListener.type")) : null);
@@ -69,7 +69,7 @@ public class EbMSCorePropertiesReader
 		coreProperties.setStoreDuplicateMessageContent(Boolean.parseBoolean(properties.getProperty("ebmsMessage.storeDuplicateContent")));
 	}
 
-	protected void read(Properties properties, HttpPropertiesFormModel httpProperties) throws MalformedURLException
+	protected void read(Properties properties, HttpPropertiesFormData httpProperties) throws MalformedURLException
 	{
 		httpProperties.setHost(properties.getProperty("ebms.host"));
 		httpProperties.setPort(properties.getProperty("ebms.port") == null ? null : new Integer(properties.getProperty("ebms.port")));
@@ -84,7 +84,7 @@ public class EbMSCorePropertiesReader
 			read(properties,httpProperties.getProxyProperties());
 	}
 
-	protected void read(Properties properties, SslPropertiesFormModel sslProperties) throws MalformedURLException
+	protected void read(Properties properties, SslPropertiesFormData sslProperties) throws MalformedURLException
 	{
 		sslProperties.setOverrideDefaultProtocols(!StringUtils.isEmpty(properties.getProperty("https.protocols")));
 		sslProperties.setEnabledProtocols(Arrays.asList(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.protocols",""),','))));
@@ -104,7 +104,7 @@ public class EbMSCorePropertiesReader
 		sslProperties.getTruststoreProperties().setPassword(properties.getProperty("truststore.password"));
 	}
 
-	protected void read(Properties properties, ProxyPropertiesFormModel proxyProperties) throws MalformedURLException
+	protected void read(Properties properties, ProxyPropertiesFormData proxyProperties) throws MalformedURLException
 	{
 		proxyProperties.setHost(StringUtils.defaultString(properties.getProperty("http.proxy.host")));
 		proxyProperties.setPort(Integer.getInteger(properties.getProperty("http.proxy.port")));
@@ -113,7 +113,7 @@ public class EbMSCorePropertiesReader
 		proxyProperties.setPassword(properties.getProperty("http.proxy.password"));
 	}
 
-	protected void read(Properties properties, SignaturePropertiesFormModel signatureProperties) throws MalformedURLException
+	protected void read(Properties properties, SignaturePropertiesFormData signatureProperties) throws MalformedURLException
 	{
 		signatureProperties.setSigning(!StringUtils.isEmpty(properties.getProperty("signature.keystore.path")));
 		signatureProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("signature.keystore.type","JKS").toUpperCase()));
@@ -121,7 +121,7 @@ public class EbMSCorePropertiesReader
 		signatureProperties.getKeystoreProperties().setPassword(properties.getProperty("signature.keystore.password"));
 	}
 
-	protected void read(Properties properties, EncryptionPropertiesFormModel encryptionProperties) throws MalformedURLException
+	protected void read(Properties properties, EncryptionPropertiesFormData encryptionProperties) throws MalformedURLException
 	{
 		encryptionProperties.setEncryption(!StringUtils.isEmpty(properties.getProperty("encryption.keystore.path")));
 		encryptionProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("encryption.keystore.type","JKS").toUpperCase()));
@@ -129,7 +129,7 @@ public class EbMSCorePropertiesReader
 		encryptionProperties.getKeystoreProperties().setPassword(properties.getProperty("encryption.keystore.password"));
 	}
 
-	protected void read(Properties properties, JdbcPropertiesFormModel jdbcProperties) throws MalformedURLException
+	protected void read(Properties properties, JdbcPropertiesFormData jdbcProperties) throws MalformedURLException
 	{
 		jdbcProperties.setDriver(JdbcDriver.getJdbcDriver(properties.getProperty("ebms.jdbc.driverClassName")));
 		//jdbcProperties.setJdbcURL(properties.getProperty("ebms.jdbc.url"));

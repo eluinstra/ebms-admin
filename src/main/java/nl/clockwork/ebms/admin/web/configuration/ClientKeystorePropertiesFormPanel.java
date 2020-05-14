@@ -21,7 +21,7 @@ public class ClientKeystorePropertiesFormPanel extends JavaKeyStorePropertiesFor
 {
 	private static final long serialVersionUID = 1L;
 
-	public ClientKeystorePropertiesFormPanel(String id, final IModel<JavaKeyStorePropertiesFormModel> model)
+	public ClientKeystorePropertiesFormPanel(String id, final IModel<JavaKeyStorePropertiesFormData> model)
 	{
 		super(id,model);
 	}

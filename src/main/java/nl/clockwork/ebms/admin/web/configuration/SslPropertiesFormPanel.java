@@ -40,8 +40,8 @@ import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
 import nl.clockwork.ebms.admin.web.Supplier;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
-import nl.clockwork.ebms.admin.web.configuration.JavaKeyStorePropertiesFormPanel.JavaKeyStorePropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.JavaTrustStorePropertiesFormPanel.JavaTrustStorePropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.JavaKeyStorePropertiesFormPanel.JavaKeyStorePropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.JavaTrustStorePropertiesFormPanel.JavaTrustStorePropertiesFormData;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SslPropertiesFormPanel extends Panel
@@ -50,7 +50,7 @@ public class SslPropertiesFormPanel extends Panel
 	Supplier<Boolean> isVisible;
 
 	@Builder
-	public SslPropertiesFormPanel(String id, final IModel<SslPropertiesFormModel> model, boolean enableSslOverridePropeties, Supplier<Boolean> isVisible)
+	public SslPropertiesFormPanel(String id, final IModel<SslPropertiesFormData> model, boolean enableSslOverridePropeties, Supplier<Boolean> isVisible)
 	{
 		super(id,model);
 		this.isVisible = isVisible == null ? () -> super.isVisible() : isVisible;
@@ -63,11 +63,11 @@ public class SslPropertiesFormPanel extends Panel
 		return isVisible.get();
 	}
 
-	public class SslPropertiesForm extends Form<SslPropertiesFormModel>
+	public class SslPropertiesForm extends Form<SslPropertiesFormData>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public SslPropertiesForm(String id, final IModel<SslPropertiesFormModel> model, boolean enableSslOverridePropeties)
+		public SslPropertiesForm(String id, final IModel<SslPropertiesFormData> model, boolean enableSslOverridePropeties)
 		{
 			super(id,new CompoundPropertyModel<>(model));
 			add(createOverrideDefaultProtocolsContainer("overrideDefaultProtocolsContainer",enableSslOverridePropeties));
@@ -75,9 +75,9 @@ public class SslPropertiesFormPanel extends Panel
 			add(createOverrideDefaultCipherSuitesContainer("overrideDefaultCipherSuitesContainer",enableSslOverridePropeties));
 			add(createEnabledCipherSuitesContainer("enabledCipherSuitesContainer",enableSslOverridePropeties));
 			add(createClientAuthenticationRequiredCheckBox("requireClientAuthentication"));
-			add(new KeystorePropertiesFormPanel("keystoreProperties",new PropertyModel<>(getModelObject(),"keystoreProperties")));
-			add(new ClientKeystorePropertiesFormPanel("clientKeystoreProperties",new PropertyModel<>(getModelObject(),"clientKeystoreProperties")));
-			add(new TruststorePropertiesFormPanel("truststoreProperties",new PropertyModel<>(getModelObject(),"truststoreProperties")));
+			add(new KeystorePropertiesFormPanel("keystoreProperties",new PropertyModel<>(getModel(),"keystoreProperties")));
+			add(new ClientKeystorePropertiesFormPanel("clientKeystoreProperties",new PropertyModel<>(getModel(),"clientKeystoreProperties")));
+			add(new TruststorePropertiesFormPanel("truststoreProperties",new PropertyModel<>(getModel(),"truststoreProperties")));
 			add(new CheckBox("verifyHostnames").setLabel(new ResourceModel("lbl.verifyHostnames")));
 		}
 
@@ -151,7 +151,7 @@ public class SslPropertiesFormPanel extends Panel
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
-	public static class SslPropertiesFormModel implements IClusterable
+	public static class SslPropertiesFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		boolean overrideDefaultProtocols = true;
@@ -165,10 +165,10 @@ public class SslPropertiesFormPanel extends Panel
 		boolean requireClientAuthentication = true;
 		boolean verifyHostnames = false;
 		@NonNull
-		JavaKeyStorePropertiesFormModel keystoreProperties = new JavaKeyStorePropertiesFormModel();
+		JavaKeyStorePropertiesFormData keystoreProperties = new JavaKeyStorePropertiesFormData();
 		@NonNull
-		JavaTrustStorePropertiesFormModel truststoreProperties = new JavaTrustStorePropertiesFormModel();
+		JavaTrustStorePropertiesFormData truststoreProperties = new JavaTrustStorePropertiesFormData();
 		@NonNull
-		JavaKeyStorePropertiesFormModel clientKeystoreProperties = new JavaKeyStorePropertiesFormModel();
+		JavaKeyStorePropertiesFormData clientKeystoreProperties = new JavaKeyStorePropertiesFormData();
 	}
 }

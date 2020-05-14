@@ -63,13 +63,13 @@ public class MessageStatusPage extends BasePage
 		return getLocalizer().getString("messageStatus",this);
 	}
 
-	public class MessageStatusForm extends Form<MessageStatusFormModel>
+	public class MessageStatusForm extends Form<MessageStatusFormData>
 	{
 		private static final long serialVersionUID = 1L;
 
 		public MessageStatusForm(String id)
 		{
-			super(id,new CompoundPropertyModel<>(new MessageStatusFormModel()));
+			super(id,new CompoundPropertyModel<>(new MessageStatusFormData()));
 			add(new BootstrapFormComponentFeedbackBorder("messageIdFeedback",createMessageIdField("messageId")));
 			val check = createCheckButton("check");
 			setDefaultButton(check);
@@ -90,8 +90,8 @@ public class MessageStatusPage extends BasePage
 			{
 				try
 				{
-					val model = MessageStatusForm.this.getModelObject();
-					val messageStatus = ebMSMessageService.getMessageStatus(model.getMessageId());
+					val o = getModelObject();
+					val messageStatus = ebMSMessageService.getMessageStatus(o.getMessageId());
 					info(new StringResourceModel("getMessageStatus.ok",Model.of(messageStatus.getStatus())).getString());
 				}
 				catch (Exception e)
@@ -102,13 +102,12 @@ public class MessageStatusPage extends BasePage
 			};
 			return new Button(id,new ResourceModel("cmd.check"),onSubmit);
 		}
-
 	}
 
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
-	public class MessageStatusFormModel implements IClusterable
+	public class MessageStatusFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		String messageId;

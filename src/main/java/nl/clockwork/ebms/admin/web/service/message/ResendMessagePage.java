@@ -64,13 +64,13 @@ public class ResendMessagePage extends BasePage
 		return getLocalizer().getString("messageStatus",this);
 	}
 
-	public class MessageStatusForm extends Form<ResendMessageFormModel>
+	public class MessageStatusForm extends Form<ResendMessageFormData>
 	{
 		private static final long serialVersionUID = 1L;
 
 		public MessageStatusForm(String id)
 		{
-			super(id,new CompoundPropertyModel<>(new ResendMessageFormModel()));
+			super(id,new CompoundPropertyModel<>(new ResendMessageFormData()));
 			add(new BootstrapFormComponentFeedbackBorder("messageIdFeedback",createMessageIdField("messageId")));
 			val resend = createResendButton("resend");
 			setDefaultButton(resend);
@@ -92,8 +92,8 @@ public class ResendMessagePage extends BasePage
 			{
 				try
 				{
-					val model = MessageStatusForm.this.getModelObject();
-					val messageId = ebMSMessageService.resendMessage(model.getMessageId());
+					val o = getModelObject();
+					val messageId = ebMSMessageService.resendMessage(o.getMessageId());
 					info(new StringResourceModel("resendMessage.ok",Model.of(messageId)).getString());
 				}
 				catch (Exception e)
@@ -109,7 +109,7 @@ public class ResendMessagePage extends BasePage
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
-	public class ResendMessageFormModel implements IClusterable
+	public class ResendMessageFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		String messageId;
@@ -119,5 +119,4 @@ public class ResendMessagePage extends BasePage
 			setMessageId(null);
 		}
 	}		
-
 }

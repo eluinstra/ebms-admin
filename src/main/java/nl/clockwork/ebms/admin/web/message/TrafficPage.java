@@ -22,6 +22,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -41,7 +42,7 @@ import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
 import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
-import nl.clockwork.ebms.admin.web.message.MessageFilterPanel.MessageFilterFormModel;
+import nl.clockwork.ebms.admin.web.message.MessageFilterPanel.MessageFilterFormData;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TrafficPage extends BasePage
@@ -65,43 +66,43 @@ public class TrafficPage extends BasePage
 		@Override
 		protected void populateItem(final Item<EbMSMessage> item)
 		{
-			EbMSMessage message = item.getModelObject();
-			item.add(createViewLink("view",message));
-			item.add(createFilterConversationIdLink("filterConversationId",message));
-			item.add(InstantLabel.of("timestamp",new Model<>(message.getTimestamp()),Constants.DATETIME_FORMAT));
-			item.add(new Label("cpaId",message.getCpaId()));
-			item.add(new Label("fromPartyId",message.getFromPartyId()));
-			item.add(new Label("fromRole",message.getFromRole()));
-			item.add(new Label("toPartyId",message.getToPartyId()));
-			item.add(new Label("toRole",message.getToRole()));
-			item.add(new Label("service",message.getService()));
-			item.add(new Label("action",message.getAction()));
-			item.add(new Label("status",message.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus())))));
-			item.add(InstantLabel.of("statusTime",new Model<>(message.getStatusTime()),Constants.DATETIME_FORMAT));
-			item.add(AttributeModifier.replace("class",Model.of(Utils.getTableRowCssClass(message.getStatus()))));
+			val o = item.getModelObject();
+			item.add(createViewLink("view",item.getModel()));
+			item.add(createFilterConversationIdLink("filterConversationId",item.getModel()));
+			item.add(InstantLabel.of("timestamp",new Model<>(o.getTimestamp()),Constants.DATETIME_FORMAT));
+			item.add(new Label("cpaId",o.getCpaId()));
+			item.add(new Label("fromPartyId",o.getFromPartyId()));
+			item.add(new Label("fromRole",o.getFromRole()));
+			item.add(new Label("toPartyId",o.getToPartyId()));
+			item.add(new Label("toRole",o.getToRole()));
+			item.add(new Label("service",o.getService()));
+			item.add(new Label("action",o.getAction()));
+			item.add(new Label("status",o.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(o.getStatus())))));
+			item.add(InstantLabel.of("statusTime",new Model<>(o.getStatusTime()),Constants.DATETIME_FORMAT));
+			item.add(AttributeModifier.replace("class",Model.of(Utils.getTableRowCssClass(o.getStatus()))));
 		}
 
-		private Link<Void> createViewLink(String id, final EbMSMessage message)
+		private Link<Void> createViewLink(String id, final IModel<EbMSMessage> model)
 		{
 			val result = Link.<Void>builder()
 					.id(id)
-					.onClick(() -> setResponsePage(new MessagePageX(message,TrafficPage.this)))
+					.onClick(() -> setResponsePage(new MessagePageX(model,TrafficPage.this)))
 					.build();
-			result.add(new Label("messageId",message.getMessageId()));
+			result.add(new Label("messageId",model.getObject().getMessageId()));
 			return result;
 		}
 
-		private Link<Void> createFilterConversationIdLink(String id, final EbMSMessage message)
+		private Link<Void> createFilterConversationIdLink(String id, final IModel<EbMSMessage> model)
 		{
 			Action onClick = () ->
 			{
-				val filter = (MessageFilterFormModel)SerializationUtils.clone(TrafficPage.this.filter);
-				filter.setConversationId(message.getConversationId());
-				setResponsePage(new TrafficPage(filter,TrafficPage.this));
+				val filter = (MessageFilterFormData)SerializationUtils.clone(TrafficPage.this.filter.getObject());
+				filter.setConversationId(model.getObject().getConversationId());
+				setResponsePage(new TrafficPage(Model.of(filter),TrafficPage.this));
 			};
 			val result = new Link<Void>(id,onClick);
-			result.add(new Label("conversationId",message.getConversationId()));
-			result.setEnabled(TrafficPage.this.filter.getConversationId() == null);
+			result.add(new Label("conversationId",model.getObject().getConversationId()));
+			result.setEnabled(TrafficPage.this.filter.getObject().getConversationId() == null);
 			return result;
 		}
 	}
@@ -111,27 +112,27 @@ public class TrafficPage extends BasePage
 	EbMSDAO ebMSDAO;
 	@SpringBean(name="maxItemsPerPage")
 	Integer maxItemsPerPage;
-	EbMSMessageFilter filter;
+	IModel<MessageFilterFormData> filter;
 
 	public TrafficPage()
 	{
-		this(MessageFilterPanel.createMessageFilter());
+		this(Model.of(MessageFilterPanel.createMessageFilter()));
 	}
 
-	public TrafficPage(EbMSMessageFilter filter)
+	public TrafficPage(IModel<MessageFilterFormData> filter)
 	{
 		this(filter,null);
 	}
 
-	public TrafficPage(EbMSMessageFilter filter, final WebPage responsePage)
+	public TrafficPage(IModel<MessageFilterFormData> filter, final WebPage responsePage)
 	{
 		this.filter = filter;
-		filter.setMessageNr(0);
-		filter.setServiceMessage(false);
+		filter.getObject().setMessageNr(0);
+		filter.getObject().setServiceMessage(false);
 		add(createMessageFilterPanel("messageFilter",filter));
 		val container = new WebMarkupContainer("container");
 		add(container);
-		val messages = new EbMSMessageDataView("messages",MessageDataProvider.of(ebMSDAO,filter));
+		val messages = new EbMSMessageDataView("messages",MessageDataProvider.of(ebMSDAO,filter.getObject()));
 		container.add(messages);
 		val navigator = new BootstrapPagingNavigator("navigator",messages);
 		add(navigator);
@@ -140,9 +141,9 @@ public class TrafficPage extends BasePage
 		add(new DownloadEbMSMessagesCSVLink("download",ebMSDAO,filter));
 	}
 
-	private MessageFilterPanel createMessageFilterPanel(String id, EbMSMessageFilter filter)
+	private MessageFilterPanel createMessageFilterPanel(String id, IModel<MessageFilterFormData> filter)
 	{
-		return new MessageFilterPanel(id,(MessageFilterFormModel)filter,f -> new TrafficPage(f));
+		return new MessageFilterPanel(id,filter,f -> new TrafficPage(f));
 	}
 
 	@Override

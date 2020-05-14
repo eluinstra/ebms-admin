@@ -21,7 +21,6 @@ import java.util.List;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.feedback.ContainerFeedbackMessageFilter;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
@@ -43,8 +42,10 @@ import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.apachecommons.CommonsLog;
+import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.Consumer;
 import nl.clockwork.ebms.admin.web.OnChangeAjaxBehavior;
 
@@ -53,7 +54,7 @@ public class JdbcPropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
 
-	public JdbcPropertiesFormPanel(String id, final IModel<JdbcPropertiesFormModel> model)
+	public JdbcPropertiesFormPanel(String id, final IModel<JdbcPropertiesFormData> model)
 	{
 		super(id,model);
 		val jdbcPropertiesForm = new JdbcPropertiesForm("form",model);
@@ -61,32 +62,42 @@ public class JdbcPropertiesFormPanel extends Panel
 		add(jdbcPropertiesForm);
 	}
 
-	public class JdbcPropertiesForm extends Form<JdbcPropertiesFormModel>
+	public class JdbcPropertiesForm extends Form<JdbcPropertiesFormData>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public JdbcPropertiesForm(String id, final IModel<JdbcPropertiesFormModel> model)
+		public JdbcPropertiesForm(String id, final IModel<JdbcPropertiesFormData> model)
 		{
 			super(id,new CompoundPropertyModel<>(model));
-			add(new BootstrapFormComponentFeedbackBorder("driverFeedback",createDriverChoice("driver",model)));
+			add(new BootstrapFormComponentFeedbackBorder("driverFeedback",createDriverChoice("driver")));
 			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",createHostsField("host")));
 			add(new BootstrapFormComponentFeedbackBorder("portFeedback",createPortField("port")));
 			add(new BootstrapFormComponentFeedbackBorder("databaseFeedback",createDatabaseField("database")));
 			add(new TextField<String>("url").setLabel(new ResourceModel("lbl.url")).setOutputMarkupId(true).setEnabled(false));
-			add(createTestButton("test",model));
-			add(new BootstrapFormComponentFeedbackBorder("usernameFeedback",new TextField<String>("username").setLabel(new ResourceModel("lbl.username")).setRequired(true)));
-			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",new PasswordTextField("password").setResetPassword(false).setLabel(new ResourceModel("lbl.password")).setRequired(false)));
+			add(createTestButton("test"));
+			add(new BootstrapFormComponentFeedbackBorder(
+					"usernameFeedback",
+					new TextField<String>("username")
+							.setLabel(new ResourceModel("lbl.username"))
+							.setRequired(true)));
+			add(new BootstrapFormComponentFeedbackBorder(
+					"passwordFeedback",
+					new PasswordTextField("password")
+							.setResetPassword(false)
+							.setLabel(new ResourceModel("lbl.password"))
+							.setRequired(false)));
 		}
 
-		private DropDownChoice<JdbcDriver> createDriverChoice(String id, final IModel<JdbcPropertiesFormModel> model)
+		private DropDownChoice<JdbcDriver> createDriverChoice(String id)
 		{
-			val result = new DropDownChoice<JdbcDriver>(id,new PropertyModel<List<JdbcDriver>>(model.getObject(),"drivers"));
+			val o = getModelObject();
+			val result = new DropDownChoice<JdbcDriver>(id,new PropertyModel<List<JdbcDriver>>(o,"drivers"));
 			result.setLabel(new ResourceModel("lbl.driver"));
 			result.setRequired(true);
 			Consumer<AjaxRequestTarget> action = t ->
 			{
-				if (!model.getObject().getDriver().getDriverClassName().equals(JdbcDriver.HSQLDB.getDriverClassName()) && !classExists(model.getObject().getDriver().getDriverClassName()))
-					error(JdbcPropertiesForm.this.getString("driver.jdbc.missing",model));
+				if (!o.getDriver().getDriverClassName().equals(JdbcDriver.HSQLDB.getDriverClassName()) && !classExists(o.getDriver().getDriverClassName()))
+					error(JdbcPropertiesForm.this.getString("driver.jdbc.missing",getModel()));
 				t.add(JdbcPropertiesFormPanel.this.get("feedback"));
 				t.add(getURLComponent());
 			};
@@ -141,29 +152,23 @@ public class JdbcPropertiesFormPanel extends Panel
 			return result;
 		}
 
-		private Button createTestButton(String id, final IModel<JdbcPropertiesFormModel> model)
+		private Button createTestButton(String id)
 		{
-			return new Button(id,new ResourceModel("cmd.test"))
+			Action onSubmit = () ->
 			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void onSubmit()
+				try
 				{
-					try
-					{
-						val m = model.getObject();
-						Utils.testJdbcConnection(m.getDriver().getDriverClassName(),m.getUrl(),m.getUsername(),m.getPassword());
-						info(JdbcPropertiesForm.this.getString("test.ok"));
-					}
-					catch (Exception e)
-					{
-						log.error("",e);
-						error(new StringResourceModel("test.nok",JdbcPropertiesForm.this,Model.of(e)).getString());
-					}
+					val o = getModelObject();
+					Utils.testJdbcConnection(o.getDriver().getDriverClassName(),o.getUrl(),o.getUsername(),o.getPassword());
+					info(JdbcPropertiesForm.this.getString("test.ok"));
 				}
-
+				catch (Exception e)
+				{
+					log.error("",e);
+					error(new StringResourceModel("test.nok",JdbcPropertiesForm.this,Model.of(e)).getString());
+				}
 			};
+			return new Button(id,new ResourceModel("cmd.test"),onSubmit);
 		}
 
 		private Component getURLComponent()
@@ -176,7 +181,7 @@ public class JdbcPropertiesFormPanel extends Panel
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
 	@EqualsAndHashCode(callSuper = true)
-	public static class JdbcPropertiesFormModel extends JdbcURL implements IClusterable
+	public static class JdbcPropertiesFormData extends JdbcURL implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		JdbcDriver driver = JdbcDriver.HSQLDB;

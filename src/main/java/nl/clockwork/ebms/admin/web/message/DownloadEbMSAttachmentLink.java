@@ -21,6 +21,7 @@ import nl.clockwork.ebms.admin.web.Utils;
 
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.encoding.UrlEncoder;
@@ -32,35 +33,23 @@ import lombok.val;
 import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class DownloadEbMSAttachmentLink extends Link<Void>
+public class DownloadEbMSAttachmentLink extends Link<EbMSAttachment>
 {
 	private static final long serialVersionUID = 1L;
 	@NonNull
 	EbMSDAO ebMSDAO;
-	@NonNull
-	String messageId;
-	int messageNr;
-	@NonNull
-	String contentId;
 
-	public DownloadEbMSAttachmentLink(String id, EbMSDAO ebMSDAO, EbMSAttachment attachment)
+	public DownloadEbMSAttachmentLink(String id, EbMSDAO ebMSDAO, IModel<EbMSAttachment> model)
 	{
-		this(id,ebMSDAO,attachment.getMessage().getMessageId(),attachment.getMessage().getMessageNr(),attachment.getContentId());
+		super(id,model);
+		this.ebMSDAO = ebMSDAO;
 	}
 	
-	public DownloadEbMSAttachmentLink(String id, EbMSDAO ebMSDAO, String messageId, int messageNr, String contentId)
-	{
-		super(id,null);
-		this.ebMSDAO = ebMSDAO;
-		this.messageId = messageId;
-		this.messageNr = messageNr;
-		this.contentId = contentId;
-	}
-
 	@Override
 	public void onClick()
 	{
-		val attachment = ebMSDAO.findAttachment(messageId,messageNr,contentId);
+		val o = getModelObject();
+		val attachment = ebMSDAO.findAttachment(o.getMessage().getMessageId(),o.getMessage().getMessageNr(),o.getContentId());
 		val fileName = UrlEncoder.QUERY_INSTANCE.encode(StringUtils.isEmpty(attachment.getName()) ? attachment.getContentId() + Utils.getFileExtension(attachment.getContentType()) : attachment.getName(),getRequest().getCharset());
 		val resourceStream = AttachmentResourceStream.of(attachment); 
 		getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName,resourceStream));

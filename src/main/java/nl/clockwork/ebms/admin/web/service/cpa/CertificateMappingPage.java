@@ -70,7 +70,7 @@ public class CertificateMappingPage extends BasePage
 
 		public EditCertificateMappingForm(String id, CertificateMapping certificateMapping)
 		{
-			super(id,new CompoundPropertyModel<>(new CertificateMappingFormModel(certificateMapping)));
+			super(id,new CompoundPropertyModel<>(new CertificateMappingFormData(certificateMapping)));
 			add(new BootstrapFormComponentFeedbackBorder("sourceFeedback",new TextField<String>("certificateMapping.source").setRequired(true).setLabel(new ResourceModel("lbl.source"))));
 			add(new BootstrapFormComponentFeedbackBorder("destinationFeedback",new TextField<String>("certificateMapping.destination").setRequired(true).setLabel(new ResourceModel("lbl.destination"))));
 			add(createSetButton("set"));
@@ -83,8 +83,8 @@ public class CertificateMappingPage extends BasePage
 			{
 				try
 				{
-					val certificateMapping = EditCertificateMappingForm.this.getModelObject().certificateMapping;
-					cpaService.setCertificateMapping(certificateMapping);
+					val o = getModelObject();
+					cpaService.setCertificateMapping(o.certificateMapping);
 					setResponsePage(CertificateMappingsPage.class);
 				}
 				catch (Exception e)
@@ -103,7 +103,7 @@ public class CertificateMappingPage extends BasePage
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
 	@AllArgsConstructor
-	public static class CertificateMappingFormModel implements IClusterable
+	public static class CertificateMappingFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		@NonNull

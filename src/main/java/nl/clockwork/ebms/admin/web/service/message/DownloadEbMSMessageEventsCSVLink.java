@@ -23,6 +23,7 @@ import java.util.List;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.resource.IResourceStream;
@@ -48,12 +49,12 @@ public class DownloadEbMSMessageEventsCSVLink extends Link<Void>
 	@NonNull
 	EbMSMessageService ebMSMessageService;
 	@NonNull
-	EbMSMessageContext filter;
+	IModel<EbMSMessageContext> filter;
 	@NonNull
 	EbMSMessageEventType[] eventTypes;
 
 	@Builder
-	public DownloadEbMSMessageEventsCSVLink(String id, @NonNull EbMSMessageService ebMSMessageService, @NonNull EbMSMessageContext filter, @NonNull EbMSMessageEventType...eventTypes)
+	public DownloadEbMSMessageEventsCSVLink(String id, @NonNull EbMSMessageService ebMSMessageService, @NonNull IModel<EbMSMessageContext> filter, @NonNull EbMSMessageEventType...eventTypes)
 	{
 		super(id);
 		this.ebMSMessageService = ebMSMessageService;
@@ -69,7 +70,7 @@ public class DownloadEbMSMessageEventsCSVLink extends Link<Void>
 			val output = new ByteArrayOutputStream();
 			try (val printer = new CSVPrinter(new OutputStreamWriter(output),CSVFormat.DEFAULT))
 			{
-				val messageEvents = Utils.toList(ebMSMessageService.getMessageEvents(filter,eventTypes,null));
+				val messageEvents = Utils.toList(ebMSMessageService.getMessageEvents(filter.getObject(),eventTypes,null));
 				if (messageEvents != null)
 					printMessagesToCSV(printer,messageEvents);
 			}

@@ -40,24 +40,24 @@ import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.OnChangeAjaxBehavior;
 import nl.clockwork.ebms.admin.web.TextField;
-import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyPropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyPropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormData;
 
 public class HttpPropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
 
-	public HttpPropertiesFormPanel(String id, final IModel<HttpPropertiesFormModel> model, boolean enableSslOverridePropeties)
+	public HttpPropertiesFormPanel(String id, final IModel<HttpPropertiesFormData> model, boolean enableSslOverridePropeties)
 	{
 		super(id,model);
 		add(new HttpPropertiesForm("form",model,enableSslOverridePropeties));
 	}
 
-	public class HttpPropertiesForm extends Form<HttpPropertiesFormModel>
+	public class HttpPropertiesForm extends Form<HttpPropertiesFormData>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public HttpPropertiesForm(String id, final IModel<HttpPropertiesFormModel> model, boolean enableSslOverridePropeties)
+		public HttpPropertiesForm(String id, final IModel<HttpPropertiesFormData> model, boolean enableSslOverridePropeties)
 		{
 			super(id,new CompoundPropertyModel<>(model));
 			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",createHostField("host")).add(new Label("protocol")));
@@ -122,7 +122,7 @@ public class HttpPropertiesFormPanel extends Panel
 		{
 			val result = SslPropertiesFormPanel.builder()
 					.id(id)
-					.model(new PropertyModel<>(getModelObject(),"sslProperties"))
+					.model(new PropertyModel<>(getModel(),"sslProperties"))
 					.enableSslOverridePropeties(enableSslOverridePropeties)
 					.isVisible(() -> getModelObject().isSsl())
 					.build();
@@ -144,7 +144,7 @@ public class HttpPropertiesFormPanel extends Panel
 		{
 			val result = ProxyPropertiesFormPanel.builder()
 					.id(id)
-					.model(new PropertyModel<>(getModelObject(),"proxyProperties"))
+					.model(new PropertyModel<>(getModel(),"proxyProperties"))
 					.isVisible(() -> getModelObject().isProxy())
 					.build();
 			return result;
@@ -155,7 +155,7 @@ public class HttpPropertiesFormPanel extends Panel
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
-	public static class HttpPropertiesFormModel implements IClusterable
+	public static class HttpPropertiesFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		@NonNull
@@ -168,10 +168,10 @@ public class HttpPropertiesFormPanel extends Panel
 		boolean base64Writer = false;
 		boolean ssl = true;
 		@NonNull
-		SslPropertiesFormModel sslProperties = new SslPropertiesFormModel();
+		SslPropertiesFormData sslProperties = new SslPropertiesFormData();
 		boolean proxy;
 		@NonNull
-		ProxyPropertiesFormModel proxyProperties = new ProxyPropertiesFormModel();
+		ProxyPropertiesFormData proxyProperties = new ProxyPropertiesFormData();
 
 		public String getProtocol()
 		{

@@ -21,6 +21,8 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -55,10 +57,10 @@ public class CPAsPage extends BasePage
 		@Override
 		protected void populateItem(final Item<String> item)
 		{
-			val cpaId = item.getModelObject();
-			item.add(createViewLink("view",cpaId));
-			item.add(new DownloadCPALink("downloadCPA",cpaService,cpaId));
-			item.add(createDeleteButton("delete",cpaId));
+			val o = item.getModelObject();
+			item.add(createViewLink("view",o));
+			item.add(new DownloadCPALink("downloadCPA",cpaService,item.getModel()));
+			item.add(createDeleteButton("delete",item.getModel()));
 			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 
@@ -66,19 +68,19 @@ public class CPAsPage extends BasePage
 		{
 			val result = Link.<Void>builder()
 					.id(id)
-					.onClick(() -> setResponsePage(new CPAPage(cpaService.getCPA(cpaId),CPAsPage.this)))
+					.onClick(() -> setResponsePage(new CPAPage(Model.of(cpaService.getCPA(cpaId)),CPAsPage.this)))
 					.build();
 			result.add(new Label("cpaId",cpaId));
 			return result;
 		}
 
-		private Button createDeleteButton(String id, final String cpaId)
+		private Button createDeleteButton(String id, final IModel<String> cpaId)
 		{
 			Action onSubmit = () ->
 			{
 				try
 				{
-					cpaService.deleteCPA(cpaId);
+					cpaService.deleteCPA(cpaId.getObject());
 					setResponsePage(new CPAsPage());
 				}
 				catch (Exception e)

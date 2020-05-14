@@ -122,14 +122,14 @@ public class SendMessagePageX extends BasePage
 			{
 				try
 				{
-					val model = MessageForm.this.getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					model.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
-					model.resetFromRoles();
-					model.resetToPartyIds();
-					model.resetToRoles();
-					model.resetServices();
-					model.resetActions();
+					val o = getModelObject();
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
+					o.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
+					o.resetFromRoles();
+					o.resetToPartyIds();
+					o.resetToRoles();
+					o.resetServices();
+					o.resetActions();
 					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 					t.add(getPage().get("feedback"));
 					t.add(getPage().get("form"));
@@ -146,20 +146,20 @@ public class SendMessagePageX extends BasePage
 
 		private DropDownChoice<String> createFromPartyIdChoice(String id)
 		{
-			val result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"));
+			val result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(getModel(),"fromPartyIds"));
 			result.setLabel(new ResourceModel("lbl.fromPartyId"));
 			result.setRequired(false).setOutputMarkupId(true);
 			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
-					val model = MessageForm.this.getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					model.resetFromRoles(CPAUtils.getRoleNames(cpa,model.getFromParty().getPartyId()));
-					model.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,model.getFromParty().getPartyId()));
-					model.resetToRoles(CPAUtils.getOtherRoleNamesByPartyId(cpa,model.getFromParty().getPartyId()));
-					model.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,model.getFromParty().getPartyId(),model.getFromParty().getRole()),CPAUtils.getServiceNamesCanReceive(cpa,model.getToParty().getPartyId(),model.getToParty().getRole())));
-					model.resetActions();
+					val o = getModelObject();
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
+					o.resetFromRoles(CPAUtils.getRoleNames(cpa,o.getFromParty().getPartyId()));
+					o.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,o.getFromParty().getPartyId()));
+					o.resetToRoles(CPAUtils.getOtherRoleNamesByPartyId(cpa,o.getFromParty().getPartyId()));
+					o.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,o.getFromParty().getPartyId(),o.getFromParty().getRole()),CPAUtils.getServiceNamesCanReceive(cpa,o.getToParty().getPartyId(),o.getToParty().getRole())));
+					o.resetActions();
 					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 					t.add(getPage().get("feedback"));
 					t.add(getPage().get("form"));
@@ -176,17 +176,17 @@ public class SendMessagePageX extends BasePage
 
 		private DropDownChoice<String> createFromRoleChoice(String id)
 		{
-			val result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"));
+			val result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(getModel(),"fromRoles"));
 			result.setLabel(new ResourceModel("lbl.fromRole"));
 			result.setRequired(true).setOutputMarkupId(true);
 			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
-					val model = MessageForm.this.getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					model.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,model.getFromParty().getPartyId(),model.getFromParty().getRole()),CPAUtils.getServiceNamesCanReceive(cpa,model.getToParty().getPartyId(),model.getToParty().getRole())));
-					model.resetActions();
+					val o = getModelObject();
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
+					o.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,o.getFromParty().getPartyId(),o.getFromParty().getRole()),CPAUtils.getServiceNamesCanReceive(cpa,o.getToParty().getPartyId(),o.getToParty().getRole())));
+					o.resetActions();
 					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 					t.add(getPage().get("feedback"));
 					t.add(getPage().get("form"));
@@ -203,18 +203,18 @@ public class SendMessagePageX extends BasePage
 
 		private DropDownChoice<String> createToPartyIdChoice(String id)
 		{
-			val result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"));
+			val result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(getModel(),"toPartyIds"));
 			result.setLabel(new ResourceModel("lbl.toPartyId"));
 			result.setRequired(true).setOutputMarkupId(true);
 			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
-					val model = MessageForm.this.getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToParty().getPartyId()));
-					model.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,model.getFromParty().getPartyId(),model.getFromParty().getRole()),CPAUtils.getServiceNamesCanReceive(cpa,model.getToParty().getPartyId(),model.getToParty().getRole())));
-					model.resetActions();
+					val o = getModelObject();
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
+					o.resetToRoles(CPAUtils.getRoleNames(cpa,o.getToParty().getPartyId()));
+					o.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,o.getFromParty().getPartyId(),o.getFromParty().getRole()),CPAUtils.getServiceNamesCanReceive(cpa,o.getToParty().getPartyId(),o.getToParty().getRole())));
+					o.resetActions();
 					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 					t.add(getPage().get("feedback"));
 					t.add(getPage().get("form"));
@@ -231,17 +231,17 @@ public class SendMessagePageX extends BasePage
 
 		private DropDownChoice<String> createToRoleChoice(String id)
 		{
-			val result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"toRoles"));
+			val result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(getModel(),"toRoles"));
 			result.setLabel(new ResourceModel("lbl.toRole"));
 			result.setRequired(true).setOutputMarkupId(true);
 			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
-					val model = MessageForm.this.getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					model.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,model.getFromParty().getPartyId(),model.getFromParty().getRole()),CPAUtils.getServiceNamesCanReceive(cpa,model.getToParty().getPartyId(),model.getToParty().getRole())));
-					model.resetActions();
+					val o = getModelObject();
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
+					o.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,o.getFromParty().getPartyId(),o.getFromParty().getRole()),CPAUtils.getServiceNamesCanReceive(cpa,o.getToParty().getPartyId(),o.getToParty().getRole())));
+					o.resetActions();
 					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 					t.add(getPage().get("feedback"));
 					t.add(getPage().get("form"));
@@ -258,7 +258,7 @@ public class SendMessagePageX extends BasePage
 
 		private DropDownChoice<String> createServiceChoice(String id)
 		{
-			val result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"services"));
+			val result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(getModel(),"services"));
 			result.setLabel(new ResourceModel("lbl.service"));
 			result.setRequired(true);
 			result.setOutputMarkupId(true);
@@ -266,9 +266,9 @@ public class SendMessagePageX extends BasePage
 			{
 				try
 				{
-					val model = MessageForm.this.getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					model.resetActions(ListUtils.intersection(CPAUtils.getFromActionNamesCanSend(cpa,model.getFromParty().getPartyId(),model.getFromParty().getRole(),model.getService()),CPAUtils.getFromActionNamesCanReceive(cpa,model.getToParty().getPartyId(),model.getToParty().getRole(),model.getService())));
+					val o = getModelObject();
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
+					o.resetActions(ListUtils.intersection(CPAUtils.getFromActionNamesCanSend(cpa,o.getFromParty().getPartyId(),o.getFromParty().getRole(),o.getService()),CPAUtils.getFromActionNamesCanReceive(cpa,o.getToParty().getPartyId(),o.getToParty().getRole(),o.getService())));
 					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 					t.add(getPage().get("feedback"));
 					t.add(getPage().get("form"));
@@ -285,18 +285,18 @@ public class SendMessagePageX extends BasePage
 
 		private DropDownChoice<String> createActionChoice(String id)
 		{
-			val actions = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"actions"));
+			val actions = new DropDownChoice<String>(id,new PropertyModel<List<String>>(getModel(),"actions"));
 			actions.setLabel(new ResourceModel("lbl.action"));
 			actions.setRequired(true);
 			actions.setOutputMarkupId(true);
 			Consumer<AjaxRequestTarget> onUpdate = t->
 			{
-				val model = MessageForm.this.getModelObject();
-				if (WicketApplication.get().getMessageEditPanels().containsKey(MessageProvider.createId(model.getService(),model.getAction())))
-					dataSources.replaceWith(dataSources = WicketApplication.get().getMessageEditPanels().get(MessageProvider.createId(model.getService(),model.getAction())).getPanel(dataSources.getId()));
+				val o = getModelObject();
+				if (WicketApplication.get().getMessageEditPanels().containsKey(MessageProvider.createId(o.getService(),o.getAction())))
+					dataSources.replaceWith(dataSources = WicketApplication.get().getMessageEditPanels().get(MessageProvider.createId(o.getService(),o.getAction())).getPanel(dataSources.getId()));
 				else
 					dataSources.replaceWith(dataSources = new DefaultDataSourcesPanel(dataSources.getId()));
-				model.setRawInput(false);
+				o.setRawInput(false);
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
@@ -308,8 +308,8 @@ public class SendMessagePageX extends BasePage
 		{
 			Supplier<Boolean> isVisible = () ->
 			{
-				val model = MessageForm.this.getModelObject();
-				return model.getAction() != null && (WicketApplication.get().getMessageEditPanels().containsKey(MessageProvider.createId(model.getService(),model.getAction()))) || (dataSources != null && !(dataSources instanceof EmptyDataSourcesPanel || dataSources instanceof DefaultDataSourcesPanel));
+				val o = getModelObject();
+				return o.getAction() != null && (WicketApplication.get().getMessageEditPanels().containsKey(MessageProvider.createId(o.getService(),o.getAction()))) || (dataSources != null && !(dataSources instanceof EmptyDataSourcesPanel || dataSources instanceof DefaultDataSourcesPanel));
 			};
 			return new WebMarkupContainer("rawInputContainer",isVisible);
 		}
@@ -320,11 +320,11 @@ public class SendMessagePageX extends BasePage
 			result.setLabel(new ResourceModel("lbl.rawInput"));
 			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
-				val model = MessageForm.this.getModelObject();
-				if (model.isRawInput())
+				val o = getModelObject();
+				if (o.isRawInput())
 					dataSources.replaceWith(dataSources = new DefaultDataSourcesPanel(dataSources.getId()));
 				else
-					dataSources.replaceWith(dataSources = WicketApplication.get().getMessageEditPanels().get(MessageProvider.createId(model.getService(),model.getAction())).getPanel(dataSources.getId()));
+					dataSources.replaceWith(dataSources = WicketApplication.get().getMessageEditPanels().get(MessageProvider.createId(o.getService(),o.getAction())).getPanel(dataSources.getId()));
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
@@ -338,8 +338,8 @@ public class SendMessagePageX extends BasePage
 			{
 				try
 				{
-					val model = MessageForm.this.getModelObject();
-					val messageContent = new EbMSMessageContent(model,dataSources.getDataSources());
+					val o = getModelObject();
+					val messageContent = new EbMSMessageContent(o,dataSources.getDataSources());
 					val messageId = ebMSMessageService.sendMessage(messageContent);
 					info(new StringResourceModel("sendMessage.ok",Model.of(messageId)).getString());
 				}
@@ -351,7 +351,6 @@ public class SendMessagePageX extends BasePage
 			};
 			return new Button(id,new ResourceModel("cmd.send"),onSubmit);
 		}
-
 	}
 
 	@Data

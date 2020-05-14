@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.resource.IResourceStream;
@@ -34,26 +35,16 @@ import nl.clockwork.ebms.admin.model.EbMSMessage;
 
 @CommonsLog
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class DownloadEbMSMessageLink extends Link<Void>
+public class DownloadEbMSMessageLink extends Link<EbMSMessage>
 {
 	private static final long serialVersionUID = 1L;
 	@NonNull
 	EbMSDAO ebMSDAO;
-	@NonNull
-	String messageId;
-	int messageNr;
 
-	public DownloadEbMSMessageLink(String id, EbMSDAO ebMSDAO, EbMSMessage message)
+	public DownloadEbMSMessageLink(String id, EbMSDAO ebMSDAO, IModel<EbMSMessage> model)
 	{
-		this(id,ebMSDAO,message.getMessageId(),message.getMessageNr());
-	}
-
-	public DownloadEbMSMessageLink(String id, EbMSDAO ebMSDAO, String messageId, int messageNr)
-	{
-		super(id,null);
+		super(id,model);
 		this.ebMSDAO = ebMSDAO;
-		this.messageId = messageId;
-		this.messageNr = messageNr;
 	}
 
 	@Override
@@ -61,10 +52,11 @@ public class DownloadEbMSMessageLink extends Link<Void>
 	{
 		try
 		{
+			val o = getModelObject();
 			val output = new ByteArrayOutputStream();
 			try (val zip = new ZipOutputStream(output))
 			{
-				ebMSDAO.writeMessageToZip(messageId, messageNr,zip);
+				ebMSDAO.writeMessageToZip(o.getMessageId(),o.getMessageNr(),zip);
 			}
 			val resourceStream = ByteArrayResourceStream.of(output,"application/zip");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
@@ -78,8 +70,9 @@ public class DownloadEbMSMessageLink extends Link<Void>
 
 	private ResourceStreamRequestHandler createRequestHandler(IResourceStream resourceStream)
 	{
+		val o = getModelObject();
 		return new ResourceStreamRequestHandler(resourceStream)
-				.setFileName("message." + messageId + "." + messageNr + ".zip")
+				.setFileName("message." + o.getMessageId() + "." + o.getMessageNr() + ".zip")
 				.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 

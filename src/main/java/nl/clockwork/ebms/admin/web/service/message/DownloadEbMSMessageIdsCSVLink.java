@@ -23,6 +23,7 @@ import java.util.List;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.resource.IResourceStream;
@@ -44,10 +45,9 @@ public class DownloadEbMSMessageIdsCSVLink extends Link<Void>
 	private static final long serialVersionUID = 1L;
 	@NonNull
 	private EbMSMessageService ebMSMessageService;
-	@NonNull
-	private EbMSMessageContext filter;
+	private IModel<EbMSMessageContext> filter;
 
-	public DownloadEbMSMessageIdsCSVLink(String id, @NonNull EbMSMessageService ebMSMessageService, @NonNull EbMSMessageContext filter)
+	public DownloadEbMSMessageIdsCSVLink(String id, @NonNull EbMSMessageService ebMSMessageService, @NonNull IModel<EbMSMessageContext> filter)
 	{
 		super(id);
 		this.ebMSMessageService = ebMSMessageService;
@@ -62,7 +62,7 @@ public class DownloadEbMSMessageIdsCSVLink extends Link<Void>
 			val output = new ByteArrayOutputStream();
 			try (val printer = new CSVPrinter(new OutputStreamWriter(output),CSVFormat.DEFAULT))
 			{
-				val messageIds = Utils.toList(ebMSMessageService.getMessageIds(filter,null));
+				val messageIds = Utils.toList(ebMSMessageService.getMessageIds(filter.getObject(),null));
 				if (messageIds != null)
 					printMessagesToCSV(printer,messageIds);
 			}

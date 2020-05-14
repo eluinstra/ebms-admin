@@ -20,9 +20,9 @@ import java.io.Writer;
 import java.util.Properties;
 
 import lombok.val;
-import nl.clockwork.ebms.admin.web.configuration.ConsolePropertiesFormPanel.ConsolePropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.ServicePropertiesFormPanel.ServicePropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.ConsolePropertiesFormPanel.ConsolePropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.ServicePropertiesFormPanel.ServicePropertiesFormData;
 
 public class EbMSAdminPropertiesWriter extends EbMSCorePropertiesWriter
 {
@@ -31,7 +31,7 @@ public class EbMSAdminPropertiesWriter extends EbMSCorePropertiesWriter
 		super(writer,enableSslOverridePropeties);
 	}
 
-	public void write(EbMSAdminPropertiesFormModel ebMSAdminProperties, PropertiesType propertiesType) throws IOException
+	public void write(EbMSAdminPropertiesFormData ebMSAdminProperties, PropertiesType propertiesType) throws IOException
 	{
 		val p = new Properties();
 		switch (propertiesType)
@@ -58,13 +58,13 @@ public class EbMSAdminPropertiesWriter extends EbMSCorePropertiesWriter
 		}
 	}
 
-  protected void write(Properties properties, ConsolePropertiesFormModel consoleProperties)
+  protected void write(Properties properties, ConsolePropertiesFormData consoleProperties)
   {
 		properties.setProperty("maxItemsPerPage",Integer.toString(consoleProperties.getMaxItemsPerPage()));
 		properties.setProperty("log4j.file",consoleProperties.getLog4jPropertiesFile() != null ? "file:" + consoleProperties.getLog4jPropertiesFile() : "");
   }
 
-  protected void write(Properties properties, ServicePropertiesFormModel serviceProperties)
+  protected void write(Properties properties, ServicePropertiesFormData serviceProperties)
   {
 		properties.setProperty("service.ebms.url",serviceProperties.getUrl());
   }

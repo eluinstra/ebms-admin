@@ -56,11 +56,11 @@ public class CertificateMappingsPage extends BasePage
 		@Override
 		protected void populateItem(final Item<CertificateMapping> item)
 		{
-			val certificateMapping = item.getModelObject();
-			item.add(new Label("source",Model.of(certificateMapping.getSource())));
-			item.add(new Label("destination",Model.of(certificateMapping.getDestination())));
-			item.add(createEditButton("editCertificate",certificateMapping));
-			item.add(createDeleteButton("delete",certificateMapping));
+			val o = item.getModelObject();
+			item.add(new Label("source",Model.of(o.getSource())));
+			item.add(new Label("destination",Model.of(o.getDestination())));
+			item.add(createEditButton("editCertificate",o));
+			item.add(createDeleteButton("delete",o));
 			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 

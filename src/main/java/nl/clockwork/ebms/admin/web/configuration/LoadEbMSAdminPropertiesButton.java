@@ -29,24 +29,26 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.apachecommons.CommonsLog;
-import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormData;
 
 @CommonsLog
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class LoadEbMSAdminPropertiesButton extends Button
 {
 	private static final long serialVersionUID = 1L;
+	@NonFinal
 	@NonNull
-	EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel;
+	EbMSAdminPropertiesFormData ebMSAdminPropertiesFormData;
 	@NonNull
 	PropertiesType propertiesType;
 
 	@Builder
-	public LoadEbMSAdminPropertiesButton(String id, ResourceModel resourceModel, @NonNull EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel, @NonNull PropertiesType propertiesType)
+	public LoadEbMSAdminPropertiesButton(String id, ResourceModel resourceModel, @NonNull EbMSAdminPropertiesFormData ebMSAdminPropertiesFormData, @NonNull PropertiesType propertiesType)
 	{
 		super(id,resourceModel);
-		this.ebMSAdminPropertiesFormModel = ebMSAdminPropertiesFormModel;
+		this.ebMSAdminPropertiesFormData = ebMSAdminPropertiesFormData;
 		this.propertiesType = propertiesType;
 		setDefaultFormProcessing(false);
 	}
@@ -64,8 +66,8 @@ public class LoadEbMSAdminPropertiesButton extends Button
 		{
 			val file = new File(propertiesType.getPropertiesFile());
 			val reader = new FileReader(file);
-			new EbMSAdminPropertiesReader(reader).read(ebMSAdminPropertiesFormModel,propertiesType);
-			val page = new EbMSAdminPropertiesPage(ebMSAdminPropertiesFormModel);
+			ebMSAdminPropertiesFormData = new EbMSAdminPropertiesReader(reader).read(propertiesType);
+			val page = new EbMSAdminPropertiesPage(Model.of(ebMSAdminPropertiesFormData));
 			page.info(new StringResourceModel("properties.loaded",page,Model.of(file)).getString());
 			setResponsePage(page);
 		}

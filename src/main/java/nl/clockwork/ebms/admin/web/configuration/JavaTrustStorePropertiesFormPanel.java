@@ -51,13 +51,13 @@ public class JavaTrustStorePropertiesFormPanel extends Panel
 	boolean required;
 	Supplier<Boolean> isVisible;
 
-	public JavaTrustStorePropertiesFormPanel(String id, IModel<JavaTrustStorePropertiesFormModel> model)
+	public JavaTrustStorePropertiesFormPanel(String id, IModel<JavaTrustStorePropertiesFormData> model)
 	{
 		this(id,model,true,null);
 	}
 
 	@Builder
-	public JavaTrustStorePropertiesFormPanel(String id, IModel<JavaTrustStorePropertiesFormModel> model, boolean required, Supplier<Boolean> isVisible)
+	public JavaTrustStorePropertiesFormPanel(String id, IModel<JavaTrustStorePropertiesFormData> model, boolean required, Supplier<Boolean> isVisible)
 	{
 		super(id,model);
 		this.required = required;
@@ -71,27 +71,27 @@ public class JavaTrustStorePropertiesFormPanel extends Panel
 		return isVisible.get();
 	}
 
-	public class JavaTrustStorePropertiesForm extends Form<JavaTrustStorePropertiesFormModel>
+	public class JavaTrustStorePropertiesForm extends Form<JavaTrustStorePropertiesFormData>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public JavaTrustStorePropertiesForm(String id, IModel<JavaTrustStorePropertiesFormModel> model)
+		public JavaTrustStorePropertiesForm(String id, IModel<JavaTrustStorePropertiesFormData> model)
 		{
 			super(id,new CompoundPropertyModel<>(model));
 			add(new BootstrapFormComponentFeedbackBorder("typeFeedback",new DropDownChoice<KeyStoreType>("type",Arrays.asList(KeyStoreType.values())).setLabel(new ResourceModel("lbl.type")).setRequired(required)));
 			add(new BootstrapFormComponentFeedbackBorder("uriFeedback",new TextField<String>("uri").setLabel(new ResourceModel("lbl.uri")).setRequired(required)));
 			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",new PasswordTextField("password").setResetPassword(false).setLabel(new ResourceModel("lbl.password")).setRequired(required)));
-			add(createTestButton("test",model));
+			add(createTestButton("test"));
 		}
 
-		private Button createTestButton(String id, final IModel<JavaTrustStorePropertiesFormModel> model)
+		private Button createTestButton(String id)
 		{
 			Action action = () ->
 			{
 				try
 				{
-					val m = model.getObject();
-					Utils.testTrustStore(m.getType(),m.getUri(),m.getPassword());
+					val o = getModelObject();
+					Utils.testTrustStore(o.getType(),o.getUri(),o.getPassword());
 					info(JavaTrustStorePropertiesForm.this.getString("test.ok"));
 				}
 				catch (Exception e)
@@ -107,7 +107,7 @@ public class JavaTrustStorePropertiesFormPanel extends Panel
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
-	public static class JavaTrustStorePropertiesFormModel implements IClusterable
+	public static class JavaTrustStorePropertiesFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		KeyStoreType type = KeyStoreType.PKCS12;

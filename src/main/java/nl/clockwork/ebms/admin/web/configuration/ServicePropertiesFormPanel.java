@@ -41,31 +41,31 @@ public class ServicePropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
 
-	public ServicePropertiesFormPanel(String id, final IModel<ServicePropertiesFormModel> model)
+	public ServicePropertiesFormPanel(String id, final IModel<ServicePropertiesFormData> model)
 	{
 		super(id,model);
 		add(new ServicePropertiesForm("form",model));
 	}
 
-	public class ServicePropertiesForm extends Form<ServicePropertiesFormModel>
+	public class ServicePropertiesForm extends Form<ServicePropertiesFormData>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public ServicePropertiesForm(String id, final IModel<ServicePropertiesFormModel> model)
+		public ServicePropertiesForm(String id, final IModel<ServicePropertiesFormData> model)
 		{
 			super(id,new CompoundPropertyModel<>(model));
 			add(new BootstrapFormComponentFeedbackBorder("urlFeedback",new TextField<String>("url").setLabel(new ResourceModel("lbl.url")).setRequired(true)));
-			add(createTestButton("test",model));
+			add(createTestButton("test"));
 		}
 
-		private Button createTestButton(String id, final IModel<ServicePropertiesFormModel> model)
+		private Button createTestButton(String id)
 		{
 			Action action = () ->
 			{
 				try
 				{
-					val m = model.getObject();
-					Utils.testEbMSUrl(m.getUrl());
+					val o = getModelObject();
+					Utils.testEbMSUrl(o.getUrl());
 					info(ServicePropertiesForm.this.getString("test.ok"));
 				}
 				catch (Exception e)
@@ -81,7 +81,7 @@ public class ServicePropertiesFormPanel extends Panel
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
-	public static class ServicePropertiesFormModel implements IClusterable
+	public static class ServicePropertiesFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		@NonNull

@@ -22,6 +22,8 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -63,19 +65,19 @@ public class MessageEventsPage extends BasePage
 		@Override
 		protected void populateItem(final Item<EbMSMessageEvent> item)
 		{
-			val messageEvent = item.getModelObject();
-			item.add(createViewLink("view",messageEvent,new Label("messageId",messageEvent.getMessageId())));
-			item.add(new Label("type",messageEvent.getType()));
+			val o = item.getModelObject();
+			item.add(createViewLink("view",item.getModel(),new Label("messageId",o.getMessageId())));
+			item.add(new Label("type",o.getType()));
 			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 
-		private Link<Void> createViewLink(String id, final EbMSMessageEvent messageEvent, Component...components)
+		private Link<Void> createViewLink(String id, final IModel<EbMSMessageEvent> model, Component...components)
 		{
 			Action onClick = () ->
 			{
 				setResponsePage(
 						new MessagePage(
-								ebMSMessageService.getMessage(messageEvent.getMessageId(),null),
+								Model.of(ebMSMessageService.getMessage(model.getObject().getMessageId(),null)),
 								MessageEventsPage.this,
 								messageId -> ebMSMessageService.processMessageEvent(messageId)));
 			};
@@ -90,26 +92,22 @@ public class MessageEventsPage extends BasePage
 	EbMSMessageService ebMSMessageService;
 	@SpringBean(name="maxItemsPerPage")
 	Integer maxItemsPerPage;
-	EbMSMessageContext filter;
-	EbMSMessageEventType[] eventTypes;
 
 	public MessageEventsPage()
 	{
-		this(new EbMSMessageContext(),EbMSMessageEventType.values());
+		this(Model.of(new EbMSMessageContext()),EbMSMessageEventType.values());
 	}
 
-	public MessageEventsPage(EbMSMessageContext filter, EbMSMessageEventType[] eventTypes)
+	public MessageEventsPage(IModel<EbMSMessageContext> filterModel, EbMSMessageEventType[] eventTypes)
 	{
-		this(filter,eventTypes,null);
+		this(filterModel,eventTypes,null);
 	}
 
-	public MessageEventsPage(EbMSMessageContext filter, EbMSMessageEventType[] eventTypes, final WebPage responsePage)
+	public MessageEventsPage(IModel<EbMSMessageContext> filter, EbMSMessageEventType[] eventTypes, final WebPage responsePage)
 	{
-		this.filter = filter;
-		this.eventTypes = eventTypes;
 		val container = new WebMarkupContainer("container");
 		add(container);
-		val messageEvents = new MessageEventDataView("messageEvents",MessageEventDataProvider.of(ebMSMessageService,this.filter,this.eventTypes));
+		val messageEvents = new MessageEventDataView("messageEvents",MessageEventDataProvider.of(ebMSMessageService,filter.getObject(),eventTypes));
 		container.add(messageEvents);
 		val navigator = new BootstrapPagingNavigator("navigator",messageEvents);
 		add(navigator);

@@ -25,14 +25,14 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.admin.web.configuration.CorePropertiesFormPanel.CorePropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.EbMSCorePropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.EncryptionPropertiesFormPanel.EncryptionPropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.HttpPropertiesFormPanel.HttpPropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyPropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.SignaturePropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.CorePropertiesFormPanel.CorePropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.EbMSCorePropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.EncryptionPropertiesFormPanel.EncryptionPropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.HttpPropertiesFormPanel.HttpPropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyPropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.SignaturePropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormData;
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @AllArgsConstructor
@@ -41,7 +41,7 @@ public class EbMSCorePropertiesWriter
 	Writer writer;
 	boolean enableSslOverridePropeties;
 
-	public void write(EbMSCorePropertiesFormModel ebMSCoreProperties) throws IOException
+	public void write(EbMSCorePropertiesFormData ebMSCoreProperties) throws IOException
 	{
 		val p = new Properties();
 		write(p,ebMSCoreProperties.getCoreProperties());
@@ -52,7 +52,7 @@ public class EbMSCorePropertiesWriter
 		p.store(writer,"EbMS Core properties");
 	}
 
-  protected void write(Properties properties, CorePropertiesFormModel coreProperties)
+  protected void write(Properties properties, CorePropertiesFormData coreProperties)
   {
 		properties.setProperty("http.client",coreProperties.getHttpClient().name());
 		properties.setProperty("eventListener.type",coreProperties.getEventListener().name());
@@ -65,7 +65,7 @@ public class EbMSCorePropertiesWriter
 		properties.setProperty("ebmsMessage.storeDuplicateContent",Boolean.toString(coreProperties.isStoreDuplicateMessageContent()));
   }
 
-	protected void write(Properties properties, HttpPropertiesFormModel httpProperties, boolean enableSslOverridePropeties)
+	protected void write(Properties properties, HttpPropertiesFormData httpProperties, boolean enableSslOverridePropeties)
   {
 		properties.setProperty("ebms.host",httpProperties.getHost());
 		properties.setProperty("ebms.port",httpProperties.getPort() == null ? "" : httpProperties.getPort().toString());
@@ -79,7 +79,7 @@ public class EbMSCorePropertiesWriter
 			write(properties,httpProperties.getProxyProperties());
   }
 
-	protected void write(Properties properties, SslPropertiesFormModel sslProperties, boolean enableSslOverridePropeties)
+	protected void write(Properties properties, SslPropertiesFormData sslProperties, boolean enableSslOverridePropeties)
   {
 		if (enableSslOverridePropeties && sslProperties.isOverrideDefaultProtocols())
 			properties.setProperty("https.protocols",StringUtils.join(sslProperties.getEnabledProtocols(),','));
@@ -100,7 +100,7 @@ public class EbMSCorePropertiesWriter
  		properties.setProperty("truststore.password",StringUtils.defaultString(sslProperties.getTruststoreProperties().getPassword()));
   }
 
-	protected void write(Properties properties, ProxyPropertiesFormModel proxyProperties)
+	protected void write(Properties properties, ProxyPropertiesFormData proxyProperties)
   {
 		properties.setProperty("http.proxy.host",StringUtils.defaultString(proxyProperties.getHost()));
 		properties.setProperty("http.proxy.port",proxyProperties.getPort() == null ? "80" : proxyProperties.getPort().toString());
@@ -109,7 +109,7 @@ public class EbMSCorePropertiesWriter
  		properties.setProperty("http.proxy.password",StringUtils.defaultString(proxyProperties.getPassword()));
   }
 
-	protected void write(Properties properties, SignaturePropertiesFormModel signatureProperties)
+	protected void write(Properties properties, SignaturePropertiesFormData signatureProperties)
   {
   	if (signatureProperties.isSigning())
   	{
@@ -119,7 +119,7 @@ public class EbMSCorePropertiesWriter
   	}
   }
 
-	protected void write(Properties properties, EncryptionPropertiesFormModel encryptionProperties)
+	protected void write(Properties properties, EncryptionPropertiesFormData encryptionProperties)
   {
   	if (encryptionProperties.isEncryption())
   	{
@@ -129,7 +129,7 @@ public class EbMSCorePropertiesWriter
   	}
   }
 
-	protected void write(Properties properties, JdbcPropertiesFormModel jdbcProperties)
+	protected void write(Properties properties, JdbcPropertiesFormData jdbcProperties)
   {
 		properties.setProperty("ebms.jdbc.driverClassName",jdbcProperties.getDriver().getDriverClassName());
 		properties.setProperty("ebms.jdbc.url",jdbcProperties.getUrl());

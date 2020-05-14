@@ -21,6 +21,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -56,21 +57,21 @@ public class URLMappingsPage extends BasePage
 		@Override
 		protected void populateItem(final Item<URLMapping> item)
 		{
-			val urlMapping = item.getModelObject();
-			item.add(new Label("source",Model.of(urlMapping.getSource())));
-			item.add(new Label("destination",Model.of(urlMapping.getDestination())));
-			item.add(createEditButton("editUrl",urlMapping));
-			item.add(createDeleteButton("delete",urlMapping));
+			val o = item.getModelObject();
+			item.add(new Label("source",Model.of(o.getSource())));
+			item.add(new Label("destination",Model.of(o.getDestination())));
+			item.add(createEditButton("editUrl",item.getModel()));
+			item.add(createDeleteButton("delete",item.getModel()));
 			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 
-		private Button createEditButton(String id, final URLMapping urlMapping)
+		private Button createEditButton(String id, final IModel<URLMapping> model)
 		{
 			Action onSubmit = () ->
 			{
 				try
 				{
-					setResponsePage(new URLMappingPage(urlMapping));
+					setResponsePage(new URLMappingPage(model));
 				}
 				catch (Exception e)
 				{
@@ -81,13 +82,13 @@ public class URLMappingsPage extends BasePage
 			return new Button(id,new ResourceModel("cmd.edit"),onSubmit);
 		}
 
-		private Button createDeleteButton(String id, final URLMapping urlMapping)
+		private Button createDeleteButton(String id, final IModel<URLMapping> model)
 		{
 			Action onSubmit = () ->
 			{
 				try
 				{
-					cpaService.deleteURLMapping(urlMapping.getSource());
+					cpaService.deleteURLMapping(model.getObject().getSource());
 					setResponsePage(new URLMappingsPage());
 				}
 				catch (Exception e)

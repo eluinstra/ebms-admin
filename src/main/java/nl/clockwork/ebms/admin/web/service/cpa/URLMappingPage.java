@@ -18,15 +18,12 @@ package nl.clockwork.ebms.admin.web.service.cpa;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.io.IClusterable;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.apachecommons.CommonsLog;
@@ -49,13 +46,13 @@ public class URLMappingPage extends BasePage
 
 	public URLMappingPage()
 	{
-		this(new URLMapping());
+		this(Model.of(new URLMapping()));
 	}
 	
-	public URLMappingPage(URLMapping urlMapping)
+	public URLMappingPage(IModel<URLMapping> model)
 	{
 		add(new BootstrapFeedbackPanel("feedback"));
-		add(new EditURLMappingForm("form",urlMapping));
+		add(new EditURLMappingForm("form",model));
 	}
 
 	@Override
@@ -64,15 +61,15 @@ public class URLMappingPage extends BasePage
 		return getLocalizer().getString("urlMapping",this);
 	}
 
-	public class EditURLMappingForm extends Form<URLMappingFormModel>
+	public class EditURLMappingForm extends Form<URLMapping>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public EditURLMappingForm(String id, URLMapping urlMapping)
+		public EditURLMappingForm(String id, IModel<URLMapping> model)
 		{
-			super(id,new CompoundPropertyModel<>(new URLMappingFormModel(urlMapping)));
-			add(new BootstrapFormComponentFeedbackBorder("sourceFeedback",new TextField<String>("urlMapping.source").setRequired(true).setLabel(new ResourceModel("lbl.source"))));
-			add(new BootstrapFormComponentFeedbackBorder("destinationFeedback",new TextField<String>("urlMapping.destination").setRequired(true).setLabel(new ResourceModel("lbl.destination"))));
+			super(id,new CompoundPropertyModel<>(model));
+			add(new BootstrapFormComponentFeedbackBorder("sourceFeedback",new TextField<String>("source").setRequired(true).setLabel(new ResourceModel("lbl.source"))));
+			add(new BootstrapFormComponentFeedbackBorder("destinationFeedback",new TextField<String>("destination").setRequired(true).setLabel(new ResourceModel("lbl.destination"))));
 			add(createSetButton("set"));
 			add(new ResetButton("reset",new ResourceModel("cmd.reset"),URLMappingPage.class));
 		}
@@ -83,8 +80,8 @@ public class URLMappingPage extends BasePage
 			{
 				try
 				{
-					val urlMapping = EditURLMappingForm.this.getModelObject().urlMapping;
-					cpaService.setURLMapping(urlMapping);
+					val o = getModelObject();
+					cpaService.setURLMapping(o);
 					setResponsePage(URLMappingsPage.class);
 				}
 				catch (Exception e)
@@ -97,16 +94,5 @@ public class URLMappingPage extends BasePage
 			setDefaultButton(result);
 			return result;
 		}
-	}
-
-	@Data
-	@FieldDefaults(level = AccessLevel.PRIVATE)
-	@NoArgsConstructor
-	@AllArgsConstructor
-	public class URLMappingFormModel implements IClusterable
-	{
-		private static final long serialVersionUID = 1L;
-		@NonNull
-		URLMapping urlMapping;
 	}
 }

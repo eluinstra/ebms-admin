@@ -22,6 +22,8 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -61,8 +63,8 @@ public class MessagesPage extends BasePage
 		@Override
 		protected void populateItem(final Item<String> item)
 		{
-			val messageId = item.getModelObject();
-			item.add(createViewLink("view",messageId,new Label("messageId",messageId)));
+			val o = item.getModelObject();
+			item.add(createViewLink("view",o,new Label("messageId",o)));
 			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 
@@ -72,7 +74,7 @@ public class MessagesPage extends BasePage
 			{
 				setResponsePage(
 						new MessagePage(
-								ebMSMessageService.getMessage(messageId,null),
+								Model.of(ebMSMessageService.getMessage(messageId,null)),
 								MessagesPage.this,
 								messageId_ -> ebMSMessageService.processMessage(messageId_)));
 			};
@@ -87,24 +89,22 @@ public class MessagesPage extends BasePage
 	EbMSMessageService ebMSMessageService;
 	@SpringBean(name="maxItemsPerPage")
 	Integer maxItemsPerPage;
-	EbMSMessageContext filter;
 
 	public MessagesPage()
 	{
-		this(new EbMSMessageContext());
+		this(Model.of(new EbMSMessageContext()));
 	}
 
-	public MessagesPage(EbMSMessageContext filter)
+	public MessagesPage(IModel<EbMSMessageContext> filter)
 	{
 		this(filter,null);
 	}
 
-	public MessagesPage(EbMSMessageContext filter, final WebPage responsePage)
+	public MessagesPage(IModel<EbMSMessageContext> filter, final WebPage responsePage)
 	{
-		this.filter = filter;
 		val container = new WebMarkupContainer("container");
 		add(container);
-		val messages = new MessageDataView("messages",MessageDataProvider.of(ebMSMessageService,this.filter));
+		val messages = new MessageDataView("messages",MessageDataProvider.of(ebMSMessageService,filter.getObject()));
 		container.add(messages);
 		val navigator = new BootstrapPagingNavigator("navigator",messages);
 		add(navigator);

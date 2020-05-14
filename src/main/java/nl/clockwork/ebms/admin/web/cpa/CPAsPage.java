@@ -29,6 +29,7 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -58,11 +59,11 @@ public class CPAsPage extends BasePage
 		@Override
 		protected void populateItem(final Item<CPA> item)
 		{
-			item.add(createViewLink("view",item.getModelObject()));
+			item.add(createViewLink("view",item.getModel()));
 			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 
-		private Link<Void> createViewLink(String id, final CPA cpa)
+		private Link<Void> createViewLink(String id, final IModel<CPA> model)
 		{
 			val result = new Link<Void>(id)
 			{
@@ -72,10 +73,10 @@ public class CPAsPage extends BasePage
 				public void onClick()
 				{
 					//setResponsePage(new CPAPage(ebMSDAO.getCPA(cpa.getId(),CPAsPage.this)));
-					setResponsePage(new CPAPage(cpa,CPAsPage.this));
+					setResponsePage(new CPAPage(model,CPAsPage.this));
 				}
 			};
-			result.add(new Label("cpaId",cpa.getCpaId()));
+			result.add(new Label("cpaId",model.getObject().getCpaId()));
 			return result;
 		}
 	}

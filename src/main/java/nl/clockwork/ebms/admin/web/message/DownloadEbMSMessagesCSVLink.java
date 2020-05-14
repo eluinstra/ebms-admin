@@ -22,6 +22,7 @@ import java.io.OutputStreamWriter;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.resource.IResourceStream;
@@ -32,22 +33,20 @@ import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.apachecommons.CommonsLog;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
+import nl.clockwork.ebms.admin.web.message.MessageFilterPanel.MessageFilterFormData;
 
 @CommonsLog
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class DownloadEbMSMessagesCSVLink extends Link<Void>
+public class DownloadEbMSMessagesCSVLink extends Link<MessageFilterFormData>
 {
 	private static final long serialVersionUID = 1L;
 	@NonNull
 	EbMSDAO ebMSDAO;
-	@NonNull
-	EbMSMessageFilter filter;
 
-	public DownloadEbMSMessagesCSVLink(String id, EbMSDAO ebMSDAO, EbMSMessageFilter filter)
+	public DownloadEbMSMessagesCSVLink(String id, EbMSDAO ebMSDAO, IModel<MessageFilterFormData> model)
 	{
-		super(id);
+		super(id,model);
 		this.ebMSDAO = ebMSDAO;
-		this.filter = filter;
 	}
 
 	@Override
@@ -58,7 +57,7 @@ public class DownloadEbMSMessagesCSVLink extends Link<Void>
 			val output = new ByteArrayOutputStream();
 			try (val printer = new CSVPrinter(new OutputStreamWriter(output),CSVFormat.DEFAULT))
 			{
-				ebMSDAO.printMessagesToCSV(printer,filter);
+				ebMSDAO.printMessagesToCSV(printer,getModelObject());
 			}
 			val resourceStream = ByteArrayResourceStream.of(output,"text/csv");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));

@@ -121,10 +121,10 @@ public class DataSourceModalWindow extends ModalWindow
 			{
 				Consumer<AjaxRequestTarget> onSubmit = t ->
 				{
-					DataSourceModel model = DataSourceForm.this.getModelObject();
-					model.getFile().forEach(f -> addDataSource(new EbMSDataSource(
-								StringUtils.isBlank(model.getName()) ? f.getClientFileName() : model.getName(),
-								StringUtils.isBlank(model.getContentType()) ? Utils.getContentType(f.getClientFileName()) : model.getContentType(),
+					val o = getModelObject();
+					o.getFile().forEach(f -> addDataSource(new EbMSDataSource(
+								StringUtils.isBlank(o.getName()) ? f.getClientFileName() : o.getName(),
+								StringUtils.isBlank(o.getContentType()) ? Utils.getContentType(f.getClientFileName()) : o.getContentType(),
 								f.getBytes())));
 					if (t != null)
 					{

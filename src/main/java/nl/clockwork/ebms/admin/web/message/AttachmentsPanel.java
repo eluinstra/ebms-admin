@@ -45,7 +45,7 @@ public class AttachmentsPanel extends Panel
 		protected void populateItem(ListItem<EbMSAttachment> item)
 		{
 			item.add(new Label("name"));
-			val link = new DownloadEbMSAttachmentLink("downloadAttachment",ebMSDAO,item.getModelObject());
+			val link = new DownloadEbMSAttachmentLink("downloadAttachment",ebMSDAO,item.getModel());
 			link.add(new Label("contentId"));
 			item.add(link);
 			item.add(new Label("contentType"));

@@ -23,9 +23,9 @@ import java.util.Properties;
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.val;
-import nl.clockwork.ebms.admin.web.configuration.ConsolePropertiesFormPanel.ConsolePropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormModel;
-import nl.clockwork.ebms.admin.web.configuration.ServicePropertiesFormPanel.ServicePropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.ConsolePropertiesFormPanel.ConsolePropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.ServicePropertiesFormPanel.ServicePropertiesFormData;
 
 public class EbMSAdminPropertiesReader extends EbMSCorePropertiesReader
 {
@@ -34,40 +34,42 @@ public class EbMSAdminPropertiesReader extends EbMSCorePropertiesReader
 		super(reader);
 	}
 
-	public void read(EbMSAdminPropertiesFormModel ebMSAdminProperties, PropertiesType propertiesType) throws IOException
+	public EbMSAdminPropertiesFormData read(PropertiesType propertiesType) throws IOException
 	{
+		val result = new EbMSAdminPropertiesFormData();
 		val properties = new Properties();
 		switch (propertiesType)
 		{
 			case EBMS_ADMIN:
 				properties.load(reader);
-				read(properties,ebMSAdminProperties.getConsoleProperties());
-				read(properties,ebMSAdminProperties.getCoreProperties());
-				read(properties,ebMSAdminProperties.getServiceProperties());
-				read(properties,ebMSAdminProperties.getJdbcProperties());
+				read(properties,result.getConsoleProperties());
+				read(properties,result.getCoreProperties());
+				read(properties,result.getServiceProperties());
+				read(properties,result.getJdbcProperties());
 				break;
 			case EBMS_ADMIN_EMBEDDED:
 				properties.load(reader);
-				read(properties,ebMSAdminProperties.getConsoleProperties());
-				read(properties,ebMSAdminProperties.getCoreProperties());
-				read(properties,ebMSAdminProperties.getHttpProperties());
-				read(properties,ebMSAdminProperties.getSignatureProperties());
-				read(properties,ebMSAdminProperties.getEncryptionProperties());
-				read(properties,ebMSAdminProperties.getJdbcProperties());
+				read(properties,result.getConsoleProperties());
+				read(properties,result.getCoreProperties());
+				read(properties,result.getHttpProperties());
+				read(properties,result.getSignatureProperties());
+				read(properties,result.getEncryptionProperties());
+				read(properties,result.getJdbcProperties());
 				break;
 			case EBMS_CORE:
-				read(ebMSAdminProperties);
+				read(result);
 				break;
 		}
+		return result;
 	}
 	
-	protected void read(Properties properties, ConsolePropertiesFormModel consoleProperties) throws MalformedURLException
+	protected void read(Properties properties, ConsolePropertiesFormData consoleProperties) throws MalformedURLException
 	{
 		consoleProperties.setMaxItemsPerPage(Integer.parseInt(properties.getProperty("maxItemsPerPage")));
 		consoleProperties.setLog4jPropertiesFile(StringUtils.defaultString(properties.getProperty("log4j.file")).replaceFirst("file:",""));
 	}
 
-	protected void read(Properties properties, ServicePropertiesFormModel serviceProperties) throws MalformedURLException
+	protected void read(Properties properties, ServicePropertiesFormData serviceProperties) throws MalformedURLException
 	{
 		serviceProperties.setUrl(properties.getProperty("service.ebms.url"));
 	}

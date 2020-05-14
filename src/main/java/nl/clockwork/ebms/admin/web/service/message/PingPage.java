@@ -73,13 +73,13 @@ public class PingPage extends BasePage
 		return getLocalizer().getString("ping",this);
 	}
 
-	public class PingForm extends Form<PingFormModel>
+	public class PingForm extends Form<PingFormData>
 	{
 		private static final long serialVersionUID = 1L;
 
 		public PingForm(String id)
 		{
-			super(id,new CompoundPropertyModel<>(new PingFormModel()));
+			super(id,new CompoundPropertyModel<>(new PingFormData()));
 			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",createCPAIdChoice("cpaId")));
 			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",createFromPartyIdChoice("fromPartyId")));
 			add(new BootstrapFormComponentFeedbackBorder("toPartyIdFeedback",createToPartyIdChoice("toPartyId")));
@@ -98,10 +98,10 @@ public class PingPage extends BasePage
 			{
 				try
 				{
-					val model = PingForm.this.getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					model.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
-					model.resetToPartyIds();
+					val o = getModelObject();
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
+					o.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
+					o.resetToPartyIds();
 					t.add(getPage().get("feedback"));
 					t.add(getPage().get("form"));
 				}
@@ -117,16 +117,16 @@ public class PingPage extends BasePage
 
 		private DropDownChoice<String> createFromPartyIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"));
+			DropDownChoice<String> result = new DropDownChoice<>(id,new PropertyModel<List<String>>(getModel(),"fromPartyIds"));
 			result.setLabel(new ResourceModel("lbl.fromPartyId"));
 			result.setRequired(true).setOutputMarkupId(true);
 			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
-					val model = PingForm.this.getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					model.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,model.getFromPartyId()));
+					val o = getModelObject();
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
+					o.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,o.getFromPartyId()));
 					t.add(getPage().get("feedback"));
 					t.add(getPage().get("form"));
 				}
@@ -142,7 +142,7 @@ public class PingPage extends BasePage
 
 		private DropDownChoice<String> createToPartyIdChoice(String id)
 		{
-			val result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"));
+			val result = new DropDownChoice<>(id,new PropertyModel<List<String>>(getModel(),"toPartyIds"));
 			result.setLabel(new ResourceModel("lbl.toPartyId"));
 			result.setRequired(true).setOutputMarkupId(true);
 			Consumer<AjaxRequestTarget> onUpdate = t ->
@@ -160,8 +160,8 @@ public class PingPage extends BasePage
 			{
 				try
 				{
-					val model = PingForm.this.getModelObject();
-					ebMSMessageService.ping(model.getCpaId(),model.getFromPartyId(),model.getToPartyId());
+					val o = getModelObject();
+					ebMSMessageService.ping(o.getCpaId(),o.getFromPartyId(),o.getToPartyId());
 					info(PingPage.this.getString("ping.ok"));
 				}
 				catch (Exception e)
@@ -172,13 +172,12 @@ public class PingPage extends BasePage
 			};
 			return new Button(id,new ResourceModel("cmd.ping"),onSubmit);
 		}
-
 	}
 
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
-	public class PingFormModel implements IClusterable
+	public class PingFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		String cpaId;

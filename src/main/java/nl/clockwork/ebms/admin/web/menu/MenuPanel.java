@@ -44,13 +44,13 @@ public class MenuPanel extends Panel
 		@Override
 		protected void populateItem(ListItem<MenuItem> item)
 		{
-			val menuItem = item.getModelObject();
-			if (menuItem instanceof MenuLinkItem)
-				item.add(new MenuLinkItemPanel("menuItem",(MenuLinkItem)menuItem)/*.setRenderBodyOnly(true)*/);
-			else if (menuItem instanceof MenuDivider)
+			val o = item.getModelObject();
+			if (o instanceof MenuLinkItem)
+				item.add(new MenuLinkItemPanel("menuItem",Model.of((MenuLinkItem)o))/*.setRenderBodyOnly(true)*/);
+			else if (o instanceof MenuDivider)
 				item.add(new MenuDividerPanel("menuItem"));
 			else
-				item.add(new MenuItemPanel("menuItem",menuItem,level)/*.setRenderBodyOnly(true)*/);
+				item.add(new MenuItemPanel("menuItem",item.getModel(),level)/*.setRenderBodyOnly(true)*/);
 			//item.setRenderBodyOnly(true);
 		}
 	}

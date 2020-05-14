@@ -33,21 +33,28 @@ public class ConsolePropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
 
-	public ConsolePropertiesFormPanel(String id, final IModel<ConsolePropertiesFormModel> model)
+	public ConsolePropertiesFormPanel(String id, final IModel<ConsolePropertiesFormData> model)
 	{
 		super(id,model);
 		add(new ConsolePropertiesForm("form",model));
 	}
 
-	public class ConsolePropertiesForm extends Form<ConsolePropertiesFormModel>
+	public class ConsolePropertiesForm extends Form<ConsolePropertiesFormData>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public ConsolePropertiesForm(String id, final IModel<ConsolePropertiesFormModel> model)
+		public ConsolePropertiesForm(String id, final IModel<ConsolePropertiesFormData> model)
 		{
 			super(id,new CompoundPropertyModel<>(model));
-			add(new BootstrapFormComponentFeedbackBorder("maxItemsPerPageFeedback",new TextField<Integer>("maxItemsPerPage").setLabel(new ResourceModel("lbl.maxItemsPerPage")).setRequired(true)));
-			add(new BootstrapFormComponentFeedbackBorder("log4jPropertiesFileFeedback",new TextField<String>("log4jPropertiesFile").setLabel(new ResourceModel("lbl.log4jPropertiesFile"))));
+			add(new BootstrapFormComponentFeedbackBorder(
+					"maxItemsPerPageFeedback",
+					new TextField<Integer>("maxItemsPerPage")
+							.setLabel(new ResourceModel("lbl.maxItemsPerPage"))
+							.setRequired(true)));
+			add(new BootstrapFormComponentFeedbackBorder(
+					"log4jPropertiesFileFeedback",
+					new TextField<String>("log4jPropertiesFile")
+							.setLabel(new ResourceModel("lbl.log4jPropertiesFile"))));
 			add(new DownloadLog4jFileLink("downloadLog4jFile"));
 		}
 	}
@@ -55,7 +62,7 @@ public class ConsolePropertiesFormPanel extends Panel
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
-	public static class ConsolePropertiesFormModel implements IClusterable
+	public static class ConsolePropertiesFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		int maxItemsPerPage = 20;

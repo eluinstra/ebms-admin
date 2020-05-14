@@ -20,6 +20,7 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
 
 import nl.clockwork.ebms.admin.model.CPA;
 import nl.clockwork.ebms.admin.web.BasePage;
@@ -29,9 +30,9 @@ public class CPAPage extends BasePage implements IGenericComponent<CPA,CPAPage>
 {
 	private static final long serialVersionUID = 1L;
 
-	public CPAPage(final CPA cpa, final WebPage responsePage)
+	public CPAPage(final IModel<CPA> model, final WebPage responsePage)
 	{
-		setModel(new CompoundPropertyModel<>(cpa));
+		setModel(new CompoundPropertyModel<>(model));
 		add(new Label("cpaId"));
 		add(new TextArea<String>("cpa").setEnabled(false));
 		add(new PageLink("back",responsePage));

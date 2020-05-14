@@ -22,7 +22,7 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.model.Model;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.lang.Args;
@@ -38,9 +38,9 @@ public class DownloadEbMSMessageLinkX extends Link<EbMSMessage>
 {
 	private static final long serialVersionUID = 1L;
 
-	public DownloadEbMSMessageLinkX(String id, EbMSMessage message)
+	public DownloadEbMSMessageLinkX(String id, IModel<EbMSMessage> model)
 	{
-		super(id,Model.of(Args.notNull(message,"message")));
+		super(id,Args.notNull(model,"message"));
 	}
 
 	@Override
@@ -48,14 +48,14 @@ public class DownloadEbMSMessageLinkX extends Link<EbMSMessage>
 	{
 		try
 		{
-			val message = getModelObject();
+			val o = getModelObject();
 			val output = new ByteArrayOutputStream();
 			try (val zip = new ZipOutputStream(output))
 			{
-				writeMessageToZip(message,zip);
+				writeMessageToZip(o,zip);
 			}
 			val resourceStream = ByteArrayResourceStream.of(output,"application/zip");
-			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(message,resourceStream));
+			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(o,resourceStream));
 		}
 		catch (IOException e)
 		{

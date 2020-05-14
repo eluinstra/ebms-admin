@@ -15,7 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -56,7 +56,7 @@ public class DefaultDataSourcesPanel extends DataSourcesPanel
 		@Override
 		protected void populateItem(final ListItem<EbMSDataSource> item)
 		{
-			item.setModel(new CompoundPropertyModel<>(item.getModelObject()));
+			item.setModel(new CompoundPropertyModel<>(item.getModel()));
 			item.add(new Label("name"));
 			item.add(new Label("contentType"));
 			Consumer<AjaxRequestTarget> onSubmit = t ->
@@ -113,7 +113,7 @@ public class DefaultDataSourcesPanel extends DataSourcesPanel
 	public static class DataSourcesModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		List<EbMSDataSource> dataSources = Collections.emptyList();
+		List<EbMSDataSource> dataSources = new ArrayList<EbMSDataSource>();
 	}
 
 }

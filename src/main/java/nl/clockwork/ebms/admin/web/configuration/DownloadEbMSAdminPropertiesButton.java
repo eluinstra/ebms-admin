@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
@@ -29,7 +30,7 @@ import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.apachecommons.CommonsLog;
-import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormData;
 
 @CommonsLog
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -37,14 +38,18 @@ public class DownloadEbMSAdminPropertiesButton extends Button
 {
 	private static final long serialVersionUID = 1L;
 	@NonNull
-	EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel;
+	IModel<EbMSAdminPropertiesFormData> ebMSAdminPropertiesFormData;
 	@NonNull
 	PropertiesType propertiesType;
 
-	public DownloadEbMSAdminPropertiesButton(String id, ResourceModel resourceModel, @NonNull EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel, @NonNull PropertiesType propertiesType)
+	public DownloadEbMSAdminPropertiesButton(
+			String id,
+			ResourceModel resourceModel,
+			@NonNull IModel<EbMSAdminPropertiesFormData> ebMSAdminPropertiesFormData,
+			@NonNull PropertiesType propertiesType)
 	{
 		super(id,resourceModel);
-		this.ebMSAdminPropertiesFormModel = ebMSAdminPropertiesFormModel;
+		this.ebMSAdminPropertiesFormData = ebMSAdminPropertiesFormData;
 		this.propertiesType = propertiesType;
 	}
 
@@ -54,7 +59,7 @@ public class DownloadEbMSAdminPropertiesButton extends Button
 		try
 		{
 			val writer = new StringWriter();
-			new EbMSAdminPropertiesWriter(writer,true).write(ebMSAdminPropertiesFormModel,propertiesType);
+			new EbMSAdminPropertiesWriter(writer,true).write(ebMSAdminPropertiesFormData.getObject(),propertiesType);
 			val resourceStream = StringWriterResourceStream.of(writer,"plain/text");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}

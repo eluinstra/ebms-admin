@@ -71,17 +71,17 @@ public class MessageFilterPanel extends Panel
 	@SpringBean(name="ebMSMessageService")
 	EbMSMessageService ebMSMessageService;
 	@NonNull
-	final Function<MessageFilterFormModel,BasePage> getPage;
+	final Function<IModel<MessageFilterFormData>,BasePage> getPage;
 	BootstrapDateTimePicker from;
 	BootstrapDateTimePicker to;
 
 	@Builder
-	public MessageFilterPanel(String id, MessageFilterFormModel filter, @NonNull Function<MessageFilterFormModel,BasePage> getPage)
+	public MessageFilterPanel(String id, IModel<MessageFilterFormData> model, @NonNull Function<IModel<MessageFilterFormData>,BasePage> getPage)
 	{
-		super(id);
+		super(id,model);
 		this.getPage = getPage;
 		add(new BootstrapFeedbackPanel("feedback").setOutputMarkupId(true));
-		add(new MessageFilterForm("form",filter));
+		add(new MessageFilterForm("form",model));
 		add(createClearLink("clear"));
 	}
 
@@ -97,9 +97,9 @@ public class MessageFilterPanel extends Panel
 		super.renderHead(response);
 	}
 
-	public BasePage getPage(MessageFilterFormModel filter)
+	public BasePage getPage(IModel<MessageFilterFormData> model)
 	{
-		return getPage.apply(filter);
+		return getPage.apply(model);
 	}
 
 	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -122,11 +122,11 @@ public class MessageFilterPanel extends Panel
 		}
 	}
 
-	public class MessageFilterForm extends Form<MessageFilterFormModel>
+	public class MessageFilterForm extends Form<MessageFilterFormData>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public MessageFilterForm(String id, MessageFilterFormModel model)
+		public MessageFilterForm(String id, IModel<MessageFilterFormData> model)
 		{
 			super(id,new CompoundPropertyModel<>(model));
 			add(createCPAIdChoice("cpaId"));
@@ -158,14 +158,14 @@ public class MessageFilterPanel extends Panel
 			{
 				try
 				{
-					val model = MessageFilterForm.this.getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					model.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
-					model.resetFromRoles();
-					model.resetToPartyIds(CPAUtils.getPartyIds(cpa));
-					model.resetToRoles();
-					model.resetServices();
-					model.resetActions();
+					val o = getModelObject();
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
+					o.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
+					o.resetFromRoles();
+					o.resetToPartyIds(CPAUtils.getPartyIds(cpa));
+					o.resetToRoles();
+					o.resetServices();
+					o.resetActions();
 					t.add(getFeedbackComponent());
 					t.add(getForm());
 				}
@@ -183,8 +183,8 @@ public class MessageFilterPanel extends Panel
 		{
 			val result = DropDownChoice.<String>builder()
 					.id(id)
-					.choices(new PropertyModel<List<String>>(this.getModelObject(),"fromPartyIds"))
-					.isEnabled(() -> MessageFilterForm.this.getModelObject().getToParty() == null)
+					.choices(new PropertyModel<List<String>>(getModel(),"fromPartyIds"))
+					.isEnabled(() -> getModelObject().getToParty() == null)
 					.build();
 			result.setLabel(new ResourceModel("lbl.fromPartyId"));
 			result.setOutputMarkupId(true);
@@ -192,11 +192,11 @@ public class MessageFilterPanel extends Panel
 			{
 				try
 				{
-					val model = MessageFilterForm.this.getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					model.resetFromRoles(CPAUtils.getRoleNames(cpa,model.getFromParty().getPartyId()));
-					model.resetServices();
-					model.resetActions();
+					val o = getModelObject();
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
+					o.resetFromRoles(CPAUtils.getRoleNames(cpa,o.getFromParty().getPartyId()));
+					o.resetServices();
+					o.resetActions();
 					t.add(getFeedbackComponent());
 					t.add(getForm());
 				}
@@ -214,8 +214,8 @@ public class MessageFilterPanel extends Panel
 		{
 			val result = DropDownChoice.<String>builder()
 					.id(id)
-					.choices(new PropertyModel<List<String>>(this.getModelObject(),"fromRoles"))
-					.isEnabled(() -> MessageFilterForm.this.getModelObject().getToParty() == null)
+					.choices(new PropertyModel<List<String>>(getModel(),"fromRoles"))
+					.isEnabled(() -> getModelObject().getToParty() == null)
 					.build();
 			result.setLabel(new ResourceModel("lbl.fromRole"));
 			result.setOutputMarkupId(true);
@@ -223,10 +223,10 @@ public class MessageFilterPanel extends Panel
 			{
 				try
 				{
-					val model = MessageFilterForm.this.getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					model.resetServices(CPAUtils.getServiceNames(cpa,model.getFromParty().getRole()));
-					model.resetActions();
+					val o = getModelObject();
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
+					o.resetServices(CPAUtils.getServiceNames(cpa,o.getFromParty().getRole()));
+					o.resetActions();
 					t.add(getFeedbackComponent());
 					t.add(getForm());
 				}
@@ -244,8 +244,8 @@ public class MessageFilterPanel extends Panel
 		{
 			val result = DropDownChoice.<String>builder()
 					.id(id)
-					.choices(new PropertyModel<List<String>>(this.getModelObject(),"toPartyIds"))
-					.isEnabled(() -> MessageFilterForm.this.getModelObject().getFromParty() == null)
+					.choices(new PropertyModel<List<String>>(getModel(),"toPartyIds"))
+					.isEnabled(() -> getModelObject().getFromParty() == null)
 					.build();
 			result.setLabel(new ResourceModel("lbl.toPartyId"));
 			result.setOutputMarkupId(true);
@@ -253,11 +253,11 @@ public class MessageFilterPanel extends Panel
 			{
 				try
 				{
-					val model = MessageFilterForm.this.getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					model.resetToRoles(CPAUtils.getRoleNames(cpa,model.getToParty().getPartyId()));
-					model.resetServices();
-					model.resetActions();
+					val o = getModelObject();
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
+					o.resetToRoles(CPAUtils.getRoleNames(cpa,o.getToParty().getPartyId()));
+					o.resetServices();
+					o.resetActions();
 					t.add(getFeedbackComponent());
 					t.add(getForm());
 				}
@@ -275,8 +275,8 @@ public class MessageFilterPanel extends Panel
 		{
 			val result = DropDownChoice.<String>builder()
 					.id(id)
-					.choices(new PropertyModel<List<String>>(this.getModelObject(),"toRoles"))
-					.isEnabled(() -> MessageFilterForm.this.getModelObject().getFromParty() == null)
+					.choices(new PropertyModel<List<String>>(getModel(),"toRoles"))
+					.isEnabled(() -> getModelObject().getFromParty() == null)
 					.build();
 			result.setLabel(new ResourceModel("lbl.toRole"));
 			result.setOutputMarkupId(true);
@@ -284,10 +284,10 @@ public class MessageFilterPanel extends Panel
 			{
 				try
 				{
-					val model = MessageFilterForm.this.getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					model.resetServices(CPAUtils.getServiceNames(cpa,model.getToParty().getRole()));
-					model.resetActions();
+					val o = getModelObject();
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
+					o.resetServices(CPAUtils.getServiceNames(cpa,o.getToParty().getRole()));
+					o.resetActions();
 					t.add(getFeedbackComponent());
 					t.add(getForm());
 				}
@@ -303,16 +303,16 @@ public class MessageFilterPanel extends Panel
 
 		private DropDownChoice<String> createServiceChoice(String id)
 		{
-			val result = new DropDownChoice<>(id,new PropertyModel<List<String>>(this.getModelObject(),"services"));
+			val result = new DropDownChoice<>(id,new PropertyModel<List<String>>(getModel(),"services"));
 			result.setLabel(new ResourceModel("lbl.service"));
 			result.setOutputMarkupId(true);
 			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
-					val model = MessageFilterForm.this.getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(model.getCpaId()));
-					model.resetActions(model.getFromParty() == null ? CPAUtils.getToActionNames(cpa,model.getToParty().getRole(),model.getService()) : CPAUtils.getFromActionNames(cpa,model.getFromParty().getRole(),model.getService()));
+					val o = getModelObject();
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
+					o.resetActions(o.getFromParty() == null ? CPAUtils.getToActionNames(cpa,o.getToParty().getRole(),o.getService()) : CPAUtils.getFromActionNames(cpa,o.getFromParty().getRole(),o.getService()));
 					t.add(getFeedbackComponent());
 					t.add(getForm());
 				}
@@ -328,7 +328,7 @@ public class MessageFilterPanel extends Panel
 
 		private DropDownChoice<String> createActionChoice(String id)
 		{
-			val result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(this.getModelObject(),"actions"));
+			val result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(getModel(),"actions"));
 			result.setLabel(new ResourceModel("lbl.action"));
 			result.setOutputMarkupId(true);
 			return result;
@@ -351,7 +351,7 @@ public class MessageFilterPanel extends Panel
 			return Button.builder()
 					.id(id)
 					.model(new ResourceModel("cmd.search"))
-					.onSubmit(() -> setResponsePage(MessageFilterPanel.this.getPage(MessageFilterForm.this.getModelObject())))
+					.onSubmit(() -> setResponsePage(MessageFilterPanel.this.getPage(getModel())))
 					.build();
 		}
 
@@ -376,16 +376,16 @@ public class MessageFilterPanel extends Panel
 		return this.get("form");
 	}
 	
-	public static MessageFilterFormModel createMessageFilter()
+	public static MessageFilterFormData createMessageFilter()
 	{
-		return new MessageFilterFormModel();
+		return new MessageFilterFormData();
 	}
 
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
 	@EqualsAndHashCode(callSuper = true)
-	public static class MessageFilterFormModel extends EbMSMessageFilter
+	public static class MessageFilterFormData extends EbMSMessageFilter
 	{
 		private static final long serialVersionUID = 1L;
 		final List<String> fromPartyIds = new ArrayList<>();

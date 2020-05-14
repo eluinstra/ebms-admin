@@ -15,12 +15,9 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-import nl.clockwork.ebms.admin.model.EbMSAttachment;
-import nl.clockwork.ebms.admin.web.Utils;
-
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.model.Model;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.encoding.UrlEncoder;
@@ -28,22 +25,26 @@ import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.resource.IResourceStream;
 
 import lombok.val;
+import nl.clockwork.ebms.admin.model.EbMSAttachment;
+import nl.clockwork.ebms.admin.web.Utils;
 
 public class DownloadEbMSAttachmentLinkX extends Link<EbMSAttachment>
 {
 	private static final long serialVersionUID = 1L;
 
-	public DownloadEbMSAttachmentLinkX(String id, EbMSAttachment attachment)
+	public DownloadEbMSAttachmentLinkX(String id, IModel<EbMSAttachment> model)
 	{
-		super(id,Model.of(Args.notNull(attachment,"attachment")));
+		super(id,Args.notNull(model,"attachment"));
 	}
 
 	@Override
 	public void onClick()
 	{
-		val attachment = getModelObject();
-		val fileName = UrlEncoder.QUERY_INSTANCE.encode(StringUtils.isEmpty(attachment.getName()) ? attachment.getContentId() + Utils.getFileExtension(attachment.getContentType()) : attachment.getName(),getRequest().getCharset());
-		val resourceStream = AttachmentResourceStream.of(attachment);
+		val o = getModelObject();
+		val fileName = UrlEncoder.QUERY_INSTANCE.encode(
+				StringUtils.isEmpty(o.getName()) ? o.getContentId() + Utils.getFileExtension(o.getContentType()) : o.getName(),
+				getRequest().getCharset());
+		val resourceStream = AttachmentResourceStream.of(o);
 		getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName,resourceStream));
 	}
 

@@ -22,6 +22,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -42,7 +43,7 @@ import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
-import nl.clockwork.ebms.admin.web.message.MessageFilterPanel.MessageFilterFormModel;
+import nl.clockwork.ebms.admin.web.message.MessageFilterPanel.MessageFilterFormData;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MessagesPage extends BasePage
@@ -66,56 +67,56 @@ public class MessagesPage extends BasePage
 		@Override
 		protected void populateItem(final Item<EbMSMessage> item)
 		{
-			val message = item.getModelObject();
-			item.add(createViewLink("view",message));
-			item.add(new Label("messageNr",message.getMessageNr()));
-			item.add(createFilterConversationIdLink("filterConversationId",message));
-			item.add(createViewRefToMessageIdLink("viewRefToMessageId",message));
-			item.add(InstantLabel.of("timestamp",new Model<>(message.getTimestamp()),Constants.DATETIME_FORMAT));
-			item.add(new Label("cpaId",message.getCpaId()));
-			item.add(new Label("fromPartyId",message.getFromPartyId()));
-			item.add(new Label("fromRole",message.getFromRole()));
-			item.add(new Label("toPartyId",message.getToPartyId()));
-			item.add(new Label("toRole",message.getToRole()));
-			item.add(new Label("service",message.getService()));
-			item.add(new Label("action",message.getAction()));
-			item.add(new Label("status",message.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus())))));
-			item.add(InstantLabel.of("statusTime",new Model<>(message.getStatusTime()),Constants.DATETIME_FORMAT));
+			val o = item.getModelObject();
+			item.add(createViewLink("view",item.getModel()));
+			item.add(new Label("messageNr",o.getMessageNr()));
+			item.add(createFilterConversationIdLink("filterConversationId",item.getModel()));
+			item.add(createViewRefToMessageIdLink("viewRefToMessageId",item.getModel()));
+			item.add(InstantLabel.of("timestamp",Model.of(o.getTimestamp()),Constants.DATETIME_FORMAT));
+			item.add(new Label("cpaId",o.getCpaId()));
+			item.add(new Label("fromPartyId",o.getFromPartyId()));
+			item.add(new Label("fromRole",o.getFromRole()));
+			item.add(new Label("toPartyId",o.getToPartyId()));
+			item.add(new Label("toRole",o.getToRole()));
+			item.add(new Label("service",o.getService()));
+			item.add(new Label("action",o.getAction()));
+			item.add(new Label("status",o.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(o.getStatus())))));
+			item.add(InstantLabel.of("statusTime",Model.of(o.getStatusTime()),Constants.DATETIME_FORMAT));
 			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 
-		private Link<Void> createViewLink(String id, final EbMSMessage message)
+		private Link<Void> createViewLink(String id, final IModel<EbMSMessage> model)
 		{
 			val result = Link.<Void>builder()
 					.id(id)
 					//.onClick(() -> setResponsePage(new MessagePage(ebMSDAO.getMessage(message.getMessageId(),message.getMessageNr()),MessagesPage.this)))
-					.onClick(() -> setResponsePage(new MessagePage(message,MessagesPage.this)))
+					.onClick(() -> setResponsePage(new MessagePage(model,MessagesPage.this)))
 					.build();
-			result.add(new Label("messageId",message.getMessageId()));
+			result.add(new Label("messageId",model.getObject().getMessageId()));
 			return result;
 		}
 
-		private Link<Void> createFilterConversationIdLink(String id, final EbMSMessage message)
+		private Link<Void> createFilterConversationIdLink(String id, final IModel<EbMSMessage> model)
 		{
 			Action onClick = () ->
 			{
-				MessageFilterFormModel filter = (MessageFilterFormModel)SerializationUtils.clone(MessagesPage.this.filter);
-				filter.setConversationId(message.getConversationId());
-				setResponsePage(new MessagesPage(filter,MessagesPage.this));
+				MessageFilterFormData filter = (MessageFilterFormData)SerializationUtils.clone(MessagesPage.this.filter.getObject());
+				filter.setConversationId(model.getObject().getConversationId());
+				setResponsePage(new MessagesPage(Model.of(filter),MessagesPage.this));
 			};
 			val result = new Link<Void>(id,onClick);
-			result.add(new Label("conversationId",message.getConversationId()));
-			result.setEnabled(MessagesPage.this.filter.getConversationId() == null);
+			result.add(new Label("conversationId",model.getObject().getConversationId()));
+			result.setEnabled(MessagesPage.this.filter.getObject().getConversationId() == null);
 			return result;
 		}
 
-		private Link<Void> createViewRefToMessageIdLink(String id, final EbMSMessage message)
+		private Link<Void> createViewRefToMessageIdLink(String id, final IModel<EbMSMessage> model)
 		{
 			val result = Link.<Void>builder()
 					.id(id)
-					.onClick(() -> setResponsePage(new MessagePage(ebMSDAO.findMessage(message.getRefToMessageId()),MessagesPage.this)))
+					.onClick(() -> setResponsePage(new MessagePage(Model.of(ebMSDAO.findMessage(model.getObject().getRefToMessageId())),MessagesPage.this)))
 					.build();
-			result.add(new Label("refToMessageId",message.getRefToMessageId()));
+			result.add(new Label("refToMessageId",model.getObject().getRefToMessageId()));
 			return result;
 		}
 	}
@@ -125,25 +126,25 @@ public class MessagesPage extends BasePage
 	EbMSDAO ebMSDAO;
 	@SpringBean(name="maxItemsPerPage")
 	Integer maxItemsPerPage;
-	EbMSMessageFilter filter;
+	IModel<MessageFilterFormData> filter;
 
 	public MessagesPage()
 	{
-		this(MessageFilterPanel.createMessageFilter());
+		this(Model.of(MessageFilterPanel.createMessageFilter()));
 	}
 
-	public MessagesPage(EbMSMessageFilter filter)
+	public MessagesPage(IModel<MessageFilterFormData> filter)
 	{
 		this(filter,null);
 	}
 
-	public MessagesPage(EbMSMessageFilter filter, final WebPage responsePage)
+	public MessagesPage(IModel<MessageFilterFormData> filter, final WebPage responsePage)
 	{
 		this.filter = filter;
 		add(createMessageFilterPanel("messageFilter",filter));
 		WebMarkupContainer container = new WebMarkupContainer("container");
 		add(container);
-		val messages = new EbMSMessageDataView("messages",MessageDataProvider.of(ebMSDAO,this.filter));
+		val messages = new EbMSMessageDataView("messages",MessageDataProvider.of(ebMSDAO,filter.getObject()));
 		container.add(messages);
 		val navigator = new BootstrapPagingNavigator("navigator",messages);
 		add(navigator);
@@ -158,9 +159,9 @@ public class MessagesPage extends BasePage
 		return getLocalizer().getString("messages",this);
 	}
 
-	private MessageFilterPanel createMessageFilterPanel(String id, EbMSMessageFilter filter)
+	private MessageFilterPanel createMessageFilterPanel(String id, IModel<MessageFilterFormData> filter)
 	{
-		return new MessageFilterPanel(id,(MessageFilterFormModel)filter,f -> new MessagesPage(f));
+		return new MessageFilterPanel(id,filter,f -> new MessagesPage(f));
 	}
 
 }

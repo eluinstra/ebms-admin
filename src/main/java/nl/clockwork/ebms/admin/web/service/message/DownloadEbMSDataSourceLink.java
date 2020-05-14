@@ -15,13 +15,10 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
-import nl.clockwork.ebms.admin.web.Utils;
-import nl.clockwork.ebms.service.model.EbMSDataSource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.model.Model;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.encoding.UrlEncoder;
@@ -29,23 +26,25 @@ import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.resource.IResourceStream;
 
 import lombok.val;
+import nl.clockwork.ebms.admin.web.Utils;
+import nl.clockwork.ebms.service.model.EbMSDataSource;
 
 public class DownloadEbMSDataSourceLink extends Link<EbMSDataSource>
 {
 	private static final long serialVersionUID = 1L;
 
-	public DownloadEbMSDataSourceLink(String id, EbMSDataSource ebMSDataSource)
+	public DownloadEbMSDataSourceLink(String id, IModel<EbMSDataSource> model)
 	{
-		super(id,Model.of(Args.notNull(ebMSDataSource,"ebMSDataSource")));
+		super(id,Args.notNull(model,"ebMSDataSource"));
 		add(new Label("name"));
 	}
 
 	@Override
 	public void onClick()
 	{
-		val ebMSDataSource = getModelObject();
-		val fileName = UrlEncoder.QUERY_INSTANCE.encode(StringUtils.isEmpty(ebMSDataSource.getName()) ? "ebMSDataSource" + Utils.getFileExtension(ebMSDataSource.getContentType()) : ebMSDataSource.getName(),getRequest().getCharset());
-		val resourceStream = EbMSDataSourceResourceStream.of(ebMSDataSource);
+		val o = getModelObject();
+		val fileName = UrlEncoder.QUERY_INSTANCE.encode(StringUtils.isEmpty(o.getName()) ? "ebMSDataSource" + Utils.getFileExtension(o.getContentType()) : o.getName(),getRequest().getCharset());
+		val resourceStream = EbMSDataSourceResourceStream.of(o);
 		getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName,resourceStream));
 	}
 

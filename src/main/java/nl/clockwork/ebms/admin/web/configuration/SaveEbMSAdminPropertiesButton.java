@@ -20,6 +20,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
@@ -29,7 +30,7 @@ import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.apachecommons.CommonsLog;
-import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormData;
 
 @CommonsLog
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -37,14 +38,14 @@ public class SaveEbMSAdminPropertiesButton extends Button
 {
 	private static final long serialVersionUID = 1L;
 	@NonNull
-	EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel;
+	IModel<EbMSAdminPropertiesFormData> ebMSAdminPropertiesFormData;
 	@NonNull
 	PropertiesType propertiesType;
 
-	public SaveEbMSAdminPropertiesButton(String id, ResourceModel resourceModel, @NonNull EbMSAdminPropertiesFormModel ebMSAdminPropertiesFormModel, @NonNull PropertiesType propertiesType)
+	public SaveEbMSAdminPropertiesButton(String id, ResourceModel resourceModel, @NonNull IModel<EbMSAdminPropertiesFormData> ebMSAdminPropertiesFormData, @NonNull PropertiesType propertiesType)
 	{
 		super(id,resourceModel);
-		this.ebMSAdminPropertiesFormModel = ebMSAdminPropertiesFormModel;
+		this.ebMSAdminPropertiesFormData = ebMSAdminPropertiesFormData;
 		this.propertiesType = propertiesType;
 	}
 
@@ -55,7 +56,7 @@ public class SaveEbMSAdminPropertiesButton extends Button
 		{
 			val file = new File(propertiesType.getPropertiesFile());
 			val writer = new FileWriter(file);
-			new EbMSAdminPropertiesWriter(writer,true).write(ebMSAdminPropertiesFormModel,propertiesType);
+			new EbMSAdminPropertiesWriter(writer,true).write(ebMSAdminPropertiesFormData.getObject(),propertiesType);
 			info(new StringResourceModel("properties.saved",getPage(),Model.of(file)).getString());
 			error(new StringResourceModel("restart",getPage(),null).getString());
 		}

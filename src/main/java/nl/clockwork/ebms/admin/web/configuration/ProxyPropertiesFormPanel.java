@@ -40,7 +40,7 @@ public class ProxyPropertiesFormPanel extends Panel
 	Supplier<Boolean> isVisible;
 
 	@Builder
-	public ProxyPropertiesFormPanel(String id, final IModel<ProxyPropertiesFormModel> model, Supplier<Boolean> isVisible)
+	public ProxyPropertiesFormPanel(String id, final IModel<ProxyPropertiesFormData> model, Supplier<Boolean> isVisible)
 	{
 		super(id,model);
 		this.isVisible = isVisible == null ? () -> super.isVisible() : isVisible;
@@ -53,11 +53,11 @@ public class ProxyPropertiesFormPanel extends Panel
 		return isVisible.get();
 	}
 
-	public class ProxyPropertiesForm extends Form<ProxyPropertiesFormModel>
+	public class ProxyPropertiesForm extends Form<ProxyPropertiesFormData>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public ProxyPropertiesForm(String id, final IModel<ProxyPropertiesFormModel> model)
+		public ProxyPropertiesForm(String id, final IModel<ProxyPropertiesFormData> model)
 		{
 			super(id,new CompoundPropertyModel<>(model));
 			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",new TextField<String>("host").setLabel(new ResourceModel("lbl.host")).setRequired(true)));
@@ -71,7 +71,7 @@ public class ProxyPropertiesFormPanel extends Panel
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
-	public static class ProxyPropertiesFormModel implements IClusterable
+	public static class ProxyPropertiesFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		@NonNull

@@ -31,23 +31,23 @@ import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
-import nl.clockwork.ebms.admin.web.configuration.JavaKeyStorePropertiesFormPanel.JavaKeyStorePropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.JavaKeyStorePropertiesFormPanel.JavaKeyStorePropertiesFormData;
 
 public class SignaturePropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
 
-	public SignaturePropertiesFormPanel(String id, final IModel<SignaturePropertiesFormModel> model)
+	public SignaturePropertiesFormPanel(String id, final IModel<SignaturePropertiesFormData> model)
 	{
 		super(id,model);
 		add(new SignaturePropertiesForm("form",model));
 	}
 
-	public class SignaturePropertiesForm extends Form<SignaturePropertiesFormModel>
+	public class SignaturePropertiesForm extends Form<SignaturePropertiesFormData>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public SignaturePropertiesForm(String id, final IModel<SignaturePropertiesFormModel> model)
+		public SignaturePropertiesForm(String id, final IModel<SignaturePropertiesFormData> model)
 		{
 			super(id,new CompoundPropertyModel<>(model));
 			add(createSigningCheckBox("signing"));
@@ -69,7 +69,7 @@ public class SignaturePropertiesFormPanel extends Panel
 		{
 			return JavaKeyStorePropertiesFormPanel.builder()
 					.id(id)
-					.model(new PropertyModel<>(getModelObject(),"keystoreProperties"))
+					.model(new PropertyModel<>(getModel(),"keystoreProperties"))
 					.required(false)
 					.showDefaultAlias(false)
 					.isVisible(() -> getModelObject().isSigning())
@@ -81,11 +81,11 @@ public class SignaturePropertiesFormPanel extends Panel
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
-	public static class SignaturePropertiesFormModel implements IClusterable
+	public static class SignaturePropertiesFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		boolean signing = true;
 		@NonNull
-		JavaKeyStorePropertiesFormModel keystoreProperties = new JavaKeyStorePropertiesFormModel();
+		JavaKeyStorePropertiesFormData keystoreProperties = new JavaKeyStorePropertiesFormData();
 	}
 }

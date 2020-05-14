@@ -31,23 +31,23 @@ import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
-import nl.clockwork.ebms.admin.web.configuration.JavaKeyStorePropertiesFormPanel.JavaKeyStorePropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.JavaKeyStorePropertiesFormPanel.JavaKeyStorePropertiesFormData;
 
 public class EncryptionPropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
 
-	public EncryptionPropertiesFormPanel(String id, final IModel<EncryptionPropertiesFormModel> model)
+	public EncryptionPropertiesFormPanel(String id, final IModel<EncryptionPropertiesFormData> model)
 	{
 		super(id,model);
 		add(new EncryptionPropertiesForm("form",model));
 	}
 
-	public class EncryptionPropertiesForm extends Form<EncryptionPropertiesFormModel>
+	public class EncryptionPropertiesForm extends Form<EncryptionPropertiesFormData>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public EncryptionPropertiesForm(String id, final IModel<EncryptionPropertiesFormModel> model)
+		public EncryptionPropertiesForm(String id, final IModel<EncryptionPropertiesFormData> model)
 		{
 			super(id,new CompoundPropertyModel<>(model));
 			add(createEncryptionCheckBox("encryption"));
@@ -69,7 +69,7 @@ public class EncryptionPropertiesFormPanel extends Panel
 		{
 			return JavaKeyStorePropertiesFormPanel.builder()
 					.id(id)
-					.model(new PropertyModel<>(getModelObject(),"keystoreProperties"))
+					.model(new PropertyModel<>(getModel(),"keystoreProperties"))
 					.required(false)
 					.showDefaultAlias(false)
 					.isVisible(() -> getModelObject().isEncryption())
@@ -80,11 +80,11 @@ public class EncryptionPropertiesFormPanel extends Panel
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
-	public static class EncryptionPropertiesFormModel implements IClusterable
+	public static class EncryptionPropertiesFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		boolean encryption = false;
 		@NonNull
-		JavaKeyStorePropertiesFormModel keystoreProperties = new JavaKeyStorePropertiesFormModel();
+		JavaKeyStorePropertiesFormData keystoreProperties = new JavaKeyStorePropertiesFormData();
 	}
 }

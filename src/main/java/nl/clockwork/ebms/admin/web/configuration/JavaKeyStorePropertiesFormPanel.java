@@ -52,13 +52,13 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 	boolean showDefaultAlias;
 	Supplier<Boolean> isVisible;
 
-	public JavaKeyStorePropertiesFormPanel(String id, IModel<JavaKeyStorePropertiesFormModel> model)
+	public JavaKeyStorePropertiesFormPanel(String id, IModel<JavaKeyStorePropertiesFormData> model)
 	{
 		this(id,model,true,true,null);
 	}
 
 	@Builder
-	public JavaKeyStorePropertiesFormPanel(String id, IModel<JavaKeyStorePropertiesFormModel> model, boolean required, boolean showDefaultAlias, Supplier<Boolean> isVisible)
+	public JavaKeyStorePropertiesFormPanel(String id, IModel<JavaKeyStorePropertiesFormData> model, boolean required, boolean showDefaultAlias, Supplier<Boolean> isVisible)
 	{
 		super(id,model);
 		this.required = required;
@@ -73,28 +73,28 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 		return isVisible.get();
 	}
 
-	public class JavaKeyStorePropertiesForm extends Form<JavaKeyStorePropertiesFormModel>
+	public class JavaKeyStorePropertiesForm extends Form<JavaKeyStorePropertiesFormData>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public JavaKeyStorePropertiesForm(String id, IModel<JavaKeyStorePropertiesFormModel> model)
+		public JavaKeyStorePropertiesForm(String id, IModel<JavaKeyStorePropertiesFormData> model)
 		{
 			super(id,new CompoundPropertyModel<>(model));
 			add(new BootstrapFormComponentFeedbackBorder("typeFeedback",new DropDownChoice<KeyStoreType>("type",Arrays.asList(KeyStoreType.values())).setLabel(new ResourceModel("lbl.type")).setRequired(required)));
 			add(new BootstrapFormComponentFeedbackBorder("uriFeedback",new TextField<String>("uri").setLabel(new ResourceModel("lbl.uri")).setRequired(required)));
 			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",new PasswordTextField("password").setResetPassword(false).setLabel(new ResourceModel("lbl.password")).setRequired(required)));
 			add(new BootstrapFormComponentFeedbackBorder("defaultAliasFeedback",new TextField<String>("defaultAlias").setLabel(new ResourceModel("lbl.defaultAlias"))).setVisible(showDefaultAlias));
-			add(createTestButton("test",model));
+			add(createTestButton("test"));
 		}
 
-		private Button createTestButton(String id, final IModel<JavaKeyStorePropertiesFormModel> model)
+		private Button createTestButton(String id)
 		{
 			Action action = () ->
 			{
 				try
 				{
-					val m = model.getObject();
-					Utils.testKeyStore(m.getType(),m.getUri(),m.getPassword(),m.getDefaultAlias(),showDefaultAlias);
+					val o = getModelObject();
+					Utils.testKeyStore(o.getType(),o.getUri(),o.getPassword(),o.getDefaultAlias(),showDefaultAlias);
 					info(JavaKeyStorePropertiesForm.this.getString("test.ok"));
 				}
 				catch (Exception e)
@@ -110,7 +110,7 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
-	public static class JavaKeyStorePropertiesFormModel implements IClusterable
+	public static class JavaKeyStorePropertiesFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		KeyStoreType type = KeyStoreType.PKCS12;

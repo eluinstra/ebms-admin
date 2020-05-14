@@ -38,6 +38,7 @@ import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.Supplier;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.client.EbMSHttpClientFactory.EbMSHttpClientType;
 import nl.clockwork.ebms.event.listener.EventListenerFactory.EventListenerType;
@@ -46,24 +47,42 @@ public class CorePropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
 
-	public CorePropertiesFormPanel(String id, final IModel<CorePropertiesFormModel> model, boolean enableConsoleProperties)
+	public CorePropertiesFormPanel(String id, final IModel<CorePropertiesFormData> model, boolean enableConsoleProperties)
 	{
 		super(id,model);
 		add(new CorePropertiesForm("form",model,enableConsoleProperties));
 	}
 
-	public class CorePropertiesForm extends Form<CorePropertiesFormModel>
+	public class CorePropertiesForm extends Form<CorePropertiesFormData>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public CorePropertiesForm(String id, final IModel<CorePropertiesFormModel> model, boolean enableConsoleProperties)
+		public CorePropertiesForm(String id, final IModel<CorePropertiesFormData> model, boolean enableConsoleProperties)
 		{
 			super(id,new CompoundPropertyModel<>(model));
-			add(createContainer("deleteMessageContentOnProcessedContainer",enableConsoleProperties,new CheckBox("deleteMessageContentOnProcessed").setLabel(new ResourceModel("lbl.deleteMessageContentOnProcessed"))));
-			add(createContainer("storeDuplicateMessageContainer",enableConsoleProperties,new CheckBox("storeDuplicateMessage").setLabel(new ResourceModel("lbl.storeDuplicateMessage"))));
-			add(createContainer("storeDuplicateMessageContentContainer",enableConsoleProperties,new CheckBox("storeDuplicateMessageContent").setLabel(new ResourceModel("lbl.storeDuplicateMessageContent"))));
-			add(createContainer("httpClientContainer",enableConsoleProperties,new BootstrapFormComponentFeedbackBorder("httpClientFeedback",createHttpClientChoice("httpClient",model))));
-			add(createContainer("eventListenerContainer",enableConsoleProperties,new BootstrapFormComponentFeedbackBorder("eventListenerFeedback",createEventListenerChoice("eventListener",model))));
+			add(createContainer(
+					"deleteMessageContentOnProcessedContainer",
+					enableConsoleProperties,
+					new CheckBox("deleteMessageContentOnProcessed")
+							.setLabel(new ResourceModel("lbl.deleteMessageContentOnProcessed"))));
+			add(createContainer(
+					"storeDuplicateMessageContainer",
+					enableConsoleProperties,
+					new CheckBox("storeDuplicateMessage")
+							.setLabel(new ResourceModel("lbl.storeDuplicateMessage"))));
+			add(createContainer(
+					"storeDuplicateMessageContentContainer",
+					enableConsoleProperties,
+					new CheckBox("storeDuplicateMessageContent")
+						.setLabel(new ResourceModel("lbl.storeDuplicateMessageContent"))));
+			add(createContainer(
+					"httpClientContainer",
+					enableConsoleProperties,
+					new BootstrapFormComponentFeedbackBorder("httpClientFeedback",createHttpClientChoice("httpClient"))));
+			add(createContainer(
+					"eventListenerContainer",
+					enableConsoleProperties,
+					new BootstrapFormComponentFeedbackBorder("eventListenerFeedback",createEventListenerChoice("eventListener"))));
 			add(createJmsContainer("jmsContainer",enableConsoleProperties));
 		}
 
@@ -77,11 +96,18 @@ public class CorePropertiesFormPanel extends Panel
 
 		private WebMarkupContainer createJmsContainer(String id, final boolean enableConsoleProperties)
 		{
+			Supplier<Boolean> isVisible = () -> !enableConsoleProperties 
+					&& (EventListenerType.SIMPLE_JMS.equals(getModelObject().eventListener)
+							|| EventListenerType.JMS.equals(getModelObject().eventListener)
+							|| EventListenerType.JMS_TEXT.equals(getModelObject().eventListener));
 			val result = WebMarkupContainer.builder()
 					.id(id)
-					.isVisible(() -> !enableConsoleProperties && (EventListenerType.SIMPLE_JMS.equals(CorePropertiesForm.this.getModelObject().eventListener) || EventListenerType.JMS.equals(CorePropertiesForm.this.getModelObject().eventListener) || EventListenerType.JMS_TEXT.equals(CorePropertiesForm.this.getModelObject().eventListener)))
+					.isVisible(isVisible)
 					.build();
-			result.add(new BootstrapFormComponentFeedbackBorder("jmsBrokerUrlFeedback",new TextField<String>("jmsBrokerUrl").setLabel(new ResourceModel("lbl.jmsBrokerUrl"))));
+			result.add(new BootstrapFormComponentFeedbackBorder(
+					"jmsBrokerUrlFeedback",
+					new TextField<String>("jmsBrokerUrl")
+							.setLabel(new ResourceModel("lbl.jmsBrokerUrl"))));
 			result.add(new CheckBox("jmsVirtualTopics").setLabel(new ResourceModel("lbl.jmsVirtualTopics")));
 			val checkBox = new CheckBox("startEmbeddedBroker");
 			checkBox.setLabel(new ResourceModel("lbl.startEmbeddedBroker"));
@@ -98,24 +124,27 @@ public class CorePropertiesFormPanel extends Panel
 		{
 			val result = WebMarkupContainer.builder()
 					.id(id)
-					.isVisible(() -> !enableConsoleProperties && CorePropertiesForm.this.getModelObject().startEmbeddedBroker)
+					.isVisible(() -> !enableConsoleProperties && getModelObject().startEmbeddedBroker)
 					.build();
-			result.add(new BootstrapFormComponentFeedbackBorder("activeMQConfigFileFeedback",new TextField<String>("activeMQConfigFile").setLabel(new ResourceModel("lbl.activeMQConfigFile"))));
+			result.add(new BootstrapFormComponentFeedbackBorder(
+					"activeMQConfigFileFeedback",
+					new TextField<String>("activeMQConfigFile")
+							.setLabel(new ResourceModel("lbl.activeMQConfigFile"))));
 			result.add(new DownloadActiveMQFileLink("downloadActiveMQFile"));
 			return result;
 		}
 
-		private DropDownChoice<EbMSHttpClientType> createHttpClientChoice(String id, IModel<CorePropertiesFormModel> model)
+		private DropDownChoice<EbMSHttpClientType> createHttpClientChoice(String id)
 		{
-			val result = new DropDownChoice<EbMSHttpClientType>(id,new PropertyModel<List<EbMSHttpClientType>>(model.getObject(),"httpClients"));
+			val result = new DropDownChoice<EbMSHttpClientType>(id,new PropertyModel<List<EbMSHttpClientType>>(getModel(),"httpClients"));
 			result.setLabel(new ResourceModel("lbl.httpClient"));
 			result.setRequired(true);
 			return result;
 		}
 
-		private DropDownChoice<EventListenerType> createEventListenerChoice(String id, IModel<CorePropertiesFormModel> model)
+		private DropDownChoice<EventListenerType> createEventListenerChoice(String id)
 		{
-			val result = new DropDownChoice<EventListenerType>(id,new PropertyModel<List<EventListenerType>>(model.getObject(),"eventListeners"));
+			val result = new DropDownChoice<EventListenerType>(id,new PropertyModel<List<EventListenerType>>(getModel(),"eventListeners"));
 			result.setLabel(new ResourceModel("lbl.eventListener"));
 			result.setRequired(true);
 			result.add(AjaxFormComponentUpdatingBehavior.builder()
@@ -129,7 +158,7 @@ public class CorePropertiesFormPanel extends Panel
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
-	public static class CorePropertiesFormModel implements IClusterable
+	public static class CorePropertiesFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		@NonNull

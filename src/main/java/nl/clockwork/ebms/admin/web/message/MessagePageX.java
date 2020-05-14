@@ -76,7 +76,8 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 		@Override
 		protected void populateItem(ListItem<EbMSEventLog> item)
 		{
-			val errorMessageModalWindow = new ErrorMessageModalWindow("errorMessageWindow","eventError",item.getModelObject().getErrorMessage());
+			val o = item.getModelObject();
+			val errorMessageModalWindow = new ErrorMessageModalWindow("errorMessageWindow","eventError",o.getErrorMessage());
 			item.add(InstantLabel.of("timestamp",Constants.DATETIME_FORMAT));
 			item.add(new Label("uri"));
 			item.add(errorMessageModalWindow);
@@ -97,14 +98,14 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 	Panel messageViewPanel;
 	boolean rawOutput;
 
-	public MessagePageX(final EbMSMessage message, final WebPage responsePage)
+	public MessagePageX(final IModel<EbMSMessage> model, final WebPage responsePage)
 	{
-		setModel(new CompoundPropertyModel<>(message));
+		setModel(new CompoundPropertyModel<>(model));
 		add(new BootstrapFeedbackPanel("feedback"));
 		add(new Label("messageId"));
 		add(new Label("messageNr"));
 		add(new Label("conversationId"));
-		add(createViewRefToMessageIdLink("viewRefToMessageId",message));
+		add(createViewRefToMessageIdLink("viewRefToMessageId"));
 		add(InstantLabel.of("timestamp",Constants.DATETIME_FORMAT));
 		add(new Label("cpaId"));
 		add(new Label("fromPartyId"));
@@ -112,17 +113,17 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 		add(new Label("toPartyId"));
 		add(new Label("toRole"));
 		add(new Label("service"));
-		add(createActionField("action",message));
-		add(createViewMessageErrorLink("viewMessageError",message));
+		add(createActionField("action"));
+		add(createViewMessageErrorLink("viewMessageError"));
 		add(InstantLabel.of("statusTime",Constants.DATETIME_FORMAT));
-		add(createNextEventContainer("nextEvent",message));
-		add(createEventLogContainer("eventLog",message));
-		add(createRawOutputContainer("rawOutputContainer",message));
-		messageViewPanel = createMessageViewPanel("attachments",message);
+		add(createNextEventContainer("nextEvent"));
+		add(createEventLogContainer("eventLog"));
+		add(createRawOutputContainer("rawOutputContainer"));
+		messageViewPanel = createMessageViewPanel("attachments");
 		add(messageViewPanel);
 		add(new PageLink("back",responsePage));
-		add(new DownloadEbMSMessageLink("download",ebMSDAO,message));
-		val content = createContentField("content",message);
+		add(new DownloadEbMSMessageLink("download",ebMSDAO,model));
+		val content = createContentField("content");
 		add(content);
 		add(createContentToggleLink("toggleContent",content));
 	}
@@ -171,17 +172,17 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 		}
 	}
 
-	private Link<Void> createViewRefToMessageIdLink(String id, final EbMSMessage message)
+	private Link<Void> createViewRefToMessageIdLink(String id)
 	{
 		val link = Link.<Void>builder()
 				.id(id)
-				.onClick(() -> setResponsePage(new MessagePageX(ebMSDAO.findMessage(message.getRefToMessageId()),MessagePageX.this)))
+				.onClick(() -> setResponsePage(new MessagePageX(Model.of(ebMSDAO.findMessage(getModelObject().getRefToMessageId())),MessagePageX.this)))
 				.build();
 		link.add(new Label("refToMessageId"));
 		return link;
 	}
 	
-	private Component[] createActionField(String id, EbMSMessage message)
+	private Component[] createActionField(String id)
 	{
 		//TODO improve: do not generate messageErrorModalWindow and link if message is not of type MessageError
 		val messageErrorModalWindow = new ErrorMessageModalWindow("messageErrorWindow","messageError",Utils.getErrorList(getModelObject().getContent()));
@@ -194,23 +195,25 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 		return new Component[] {link,messageErrorModalWindow};
 	}
 
-	private AjaxLink<Void> createViewMessageErrorLink(String id, final EbMSMessage message)
+	private AjaxLink<Void> createViewMessageErrorLink(String id)
 	{
 		val linkMessageError = AjaxLink.<Void>builder()
 				.id(id)
-				.onClick(t -> setResponsePage(new MessagePageX(ebMSDAO.findResponseMessage(message.getMessageId()),MessagePageX.this)))
+				.onClick(t -> setResponsePage(new MessagePageX(Model.of(ebMSDAO.findResponseMessage(getModelObject().getMessageId())),MessagePageX.this)))
 				.build();
-		linkMessageError.setEnabled(EnumSet.of(EbMSMessageStatus.RECEIVED,EbMSMessageStatus.PROCESSED,EbMSMessageStatus.DELIVERED,EbMSMessageStatus.FAILED,EbMSMessageStatus.DELIVERY_FAILED).contains(message.getStatus()) ? ebMSDAO.existsResponseMessage(message.getMessageId()) : false);
-		linkMessageError.add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(message.getStatus()))));
+		linkMessageError.setEnabled(
+				EnumSet.of(EbMSMessageStatus.RECEIVED,EbMSMessageStatus.PROCESSED,EbMSMessageStatus.DELIVERED,EbMSMessageStatus.FAILED,EbMSMessageStatus.DELIVERY_FAILED)
+				.contains(getModelObject().getStatus()) ? ebMSDAO.existsResponseMessage(getModelObject().getMessageId()) : false);
+		linkMessageError.add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(getModelObject().getStatus()))));
 		linkMessageError.add(new Label("status"));
 		return linkMessageError;
 	}
 
-	private WebMarkupContainer createNextEventContainer(String id, final EbMSMessage message)
+	private WebMarkupContainer createNextEventContainer(String id)
 	{
 		val nextEvent = new WebMarkupContainer(id);
-		nextEvent.setVisible(message.getEvent() != null);
-		if (message.getEvent() != null)
+		nextEvent.setVisible(getModelObject().getEvent() != null);
+		if (getModelObject().getEvent() != null)
 		{
 			nextEvent.add(InstantLabel.of("event.timestamp",Constants.DATETIME_FORMAT));
 			nextEvent.add(new Label("event.retries"));
@@ -219,36 +222,36 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 		return nextEvent;
 	}
 
-	private WebMarkupContainer createEventLogContainer(String id, final EbMSMessage message)
+	private WebMarkupContainer createEventLogContainer(String id)
 	{
 		WebMarkupContainer eventLog = new WebMarkupContainer(id);
-		eventLog.setVisible(message.getEvents().size() > 0);
-		eventLog.add(new EbMSEventLogPropertyListView("events",message.getEvents()));
+		eventLog.setVisible(getModelObject().getEvents().size() > 0);
+		eventLog.add(new EbMSEventLogPropertyListView("events",getModelObject().getEvents()));
 		return eventLog;
 	}
 
-	private WebMarkupContainer createRawOutputContainer(String id, final EbMSMessage message)
+	private WebMarkupContainer createRawOutputContainer(String id)
 	{
 		WebMarkupContainer rawOutputContainer = WebMarkupContainer.builder()
 				.id(id)
-				.isVisible(() -> WicketApplication.get().getMessageViewPanels().containsKey(MessageProvider.createId(message.getService(),message.getAction())))
+				.isVisible(() -> WicketApplication.get().getMessageViewPanels().containsKey(MessageProvider.createId(getModelObject().getService(),getModelObject().getAction())))
 				.build();
 		val rawOutput = new CheckBox("rawOutput",new PropertyModel<>(this,"rawOutput"));
 		rawOutput.setLabel(new ResourceModel("lbl.rawOutput"));
 		Consumer<AjaxRequestTarget> onUpdate = t ->
 		{
 			if (getRawOutput())
-				messageViewPanel.replaceWith(messageViewPanel = new AttachmentsPanel("attachments",message.getAttachments()));
+				messageViewPanel.replaceWith(messageViewPanel = new AttachmentsPanel("attachments",getModelObject().getAttachments()));
 			else
 			{
 				try
 				{
-					messageViewPanel.replaceWith(messageViewPanel = WicketApplication.get().getMessageViewPanels().get(MessageProvider.createId(message.getService(),message.getAction())).getPanel("attachments",message.getAttachments()));
+					messageViewPanel.replaceWith(messageViewPanel = WicketApplication.get().getMessageViewPanels().get(MessageProvider.createId(getModelObject().getService(),getModelObject().getAction())).getPanel("attachments",getModelObject().getAttachments()));
 				}
 				catch (Exception e)
 				{
-					warn("Unable to view message for action" + MessageProvider.createId(message.getService(),message.getAction()) + ". " + e.getMessage());
-					messageViewPanel.replaceWith(messageViewPanel = new AttachmentsPanel("attachments",message.getAttachments()));
+					warn("Unable to view message for action" + MessageProvider.createId(getModelObject().getService(),getModelObject().getAction()) + ". " + e.getMessage());
+					messageViewPanel.replaceWith(messageViewPanel = new AttachmentsPanel("attachments",getModelObject().getAttachments()));
 				}
 			}
 			t.add(getPage());
@@ -258,29 +261,29 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 		return rawOutputContainer;
 	}
 
-	private Panel createMessageViewPanel(String id, final EbMSMessage message)
+	private Panel createMessageViewPanel(String id)
 	{
-		if (WicketApplication.get().getMessageViewPanels().containsKey(MessageProvider.createId(message.getService(),message.getAction())))
+		if (WicketApplication.get().getMessageViewPanels().containsKey(MessageProvider.createId(getModelObject().getService(),getModelObject().getAction())))
 		{
 			try
 			{
-				return WicketApplication.get().getMessageViewPanels().get(MessageProvider.createId(message.getService(),message.getAction())).getPanel(id,message.getAttachments());
+				return WicketApplication.get().getMessageViewPanels().get(MessageProvider.createId(getModelObject().getService(),getModelObject().getAction())).getPanel(id,getModelObject().getAttachments());
 			}
 			catch (Exception e)
 			{
-				warn("Unable to view message for action" + MessageProvider.createId(message.getService(),message.getAction()) + ". " + e.getMessage());
-				return new AttachmentsPanel(id,message.getAttachments());
+				warn("Unable to view message for action" + MessageProvider.createId(getModelObject().getService(),getModelObject().getAction()) + ". " + e.getMessage());
+				return new AttachmentsPanel(id,getModelObject().getAttachments());
 			}
 		}
 		else
-			return new AttachmentsPanel(id,message.getAttachments());
+			return new AttachmentsPanel(id,getModelObject().getAttachments());
 	}
 
-	private TextArea<String> createContentField(String id, final EbMSMessage message)
+	private TextArea<String> createContentField(String id)
 	{
 		val result = TextArea.<String>builder()
 				.id(id)
-				.model(Model.of(message.getContent()))
+				.model(Model.of(getModelObject().getContent()))
 				.isVisible(() -> showContent)
 				.build();
 		result.setOutputMarkupPlaceholderTag(true);

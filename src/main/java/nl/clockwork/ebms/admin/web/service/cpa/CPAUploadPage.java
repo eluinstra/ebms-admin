@@ -60,13 +60,13 @@ public class CPAUploadPage extends BasePage
 		return getLocalizer().getString("cpaUpload",this);
 	}
 
-	public class EditUploadForm extends Form<EditUploadFormModel>
+	public class EditUploadForm extends Form<EditUploadFormData>
 	{
 		private static final long serialVersionUID = 1L;
 
 		public EditUploadForm(String id)
 		{
-			super(id,new CompoundPropertyModel<>(new EditUploadFormModel()));
+			super(id,new CompoundPropertyModel<>(new EditUploadFormData()));
 			setMultiPart(true);
 			add(new BootstrapFormComponentFeedbackBorder("cpaFeedback",createCPAFileField("cpaFile")));
 			add(new CheckBox("overwrite").setLabel(new ResourceModel("lbl.overwrite")));
@@ -89,7 +89,7 @@ public class CPAUploadPage extends BasePage
 			{
 				try
 				{
-					val files = EditUploadForm.this.getModelObject().cpaFile;
+					val files = getModelObject().cpaFile;
 					if (files != null && files.size() == 1)
 					{
 						FileUpload file = files.get(0);
@@ -114,13 +114,13 @@ public class CPAUploadPage extends BasePage
 			{
 				try
 				{
-					val files = EditUploadForm.this.getModelObject().cpaFile;
+					val files = getModelObject().cpaFile;
 					if (files != null && files.size() == 1)
 					{
 						val file = files.get(0);
 						//val contentType = file.getContentType();
 						//FIXME char encoding
-						cpaService.insertCPA(new String(file.getBytes()),EditUploadForm.this.getModelObject().isOverwrite());
+						cpaService.insertCPA(new String(file.getBytes()),getModelObject().isOverwrite());
 					}
 					setResponsePage(new CPAsPage());
 				}
@@ -139,7 +139,7 @@ public class CPAUploadPage extends BasePage
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
-	public class EditUploadFormModel implements IClusterable
+	public class EditUploadFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		List<FileUpload> cpaFile;

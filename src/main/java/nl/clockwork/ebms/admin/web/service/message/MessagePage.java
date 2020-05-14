@@ -26,6 +26,8 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import lombok.AccessLevel;
@@ -61,10 +63,10 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		@Override
 		protected void populateItem(ListItem<EbMSDataSource> item)
 		{
-			val dataSource = item.getModelObject();
-			if (StringUtils.isEmpty(dataSource.getName()))
-				dataSource.setName("dataSource." + i.getAndIncrement());
-			item.add(new DownloadEbMSDataSourceLink("downloadDataSource",dataSource));
+			val o = item.getModelObject();
+			if (StringUtils.isEmpty(o.getName()))
+				o.setName("dataSource." + i.getAndIncrement());
+			item.add(new DownloadEbMSDataSourceLink("downloadDataSource",item.getModel()));
 			item.add(new Label("contentType"));
 		}
 	}
@@ -73,13 +75,13 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 	@SpringBean(name="ebMSMessageService")
 	EbMSMessageService ebMSMessageService;
 
-	public MessagePage(EbMSMessageContent messageContent, WebPage responsePage, MessageProcessor messageProcessor)
+	public MessagePage(IModel<EbMSMessageContent> model, WebPage responsePage, MessageProcessor messageProcessor)
 	{
-		setModel(new CompoundPropertyModel<>(messageContent));
+		setModel(new CompoundPropertyModel<>(model));
 		add(new BootstrapFeedbackPanel("feedback"));
 		add(new Label("context.messageId"));
 		add(new Label("context.conversationId"));
-		add(createViewRefToMessageIdLink("viewRefToMessageId",messageProcessor, messageContent));
+		add(createViewRefToMessageIdLink("viewRefToMessageId",messageProcessor));
 		add(InstantLabel.of("context.timestamp",Constants.DATETIME_FORMAT));
 		add(new Label("context.cpaId"));
 		add(new Label("context.fromParty.partyId"));
@@ -88,10 +90,10 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		add(new Label("context.toParty.role"));
 		add(new Label("context.service"));
 		add(new Label("context.action"));
-		add(new EbMSDataSourcePropertyListView("dataSources",messageContent.getDataSources()));
+		add(new EbMSDataSourcePropertyListView("dataSources",model.getObject().getDataSources()));
 		add(new PageLink("back",responsePage));
-		add(new DownloadEbMSMessageContentLink("download",messageContent));
-		add(createProcessLink("process",messageContent,messageProcessor,responsePage));
+		add(new DownloadEbMSMessageContentLink("download",model));
+		add(createProcessLink("process",messageProcessor,responsePage));
 	}
 
 	@Override
@@ -100,23 +102,25 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		return getLocalizer().getString("message",this);
 	}
 
-	private Link<Void> createViewRefToMessageIdLink(String id, final MessageProcessor messageProcessor, final EbMSMessageContent messageContent)
+	private Link<Void> createViewRefToMessageIdLink(String id, final MessageProcessor messageProcessor)
 	{
-		val result = Link.<Void>builder()
-				.id(id)
-				.onClick(() -> setResponsePage(new MessagePage(ebMSMessageService.getMessage(messageContent.getContext().getRefToMessageId(),null),MessagePage.this,messageProcessor)))
-				.build();
+		Action onClick = () -> setResponsePage(
+				new MessagePage(
+						Model.of(ebMSMessageService.getMessage(getModelObject().getContext().getRefToMessageId(),null)),
+						MessagePage.this,
+						messageProcessor));
+		val result = new Link<Void>(id,onClick);
 		result.add(new Label("context.refToMessageId"));
 		return result;
 	}
 	
-	private Link<Void> createProcessLink(String id, final EbMSMessageContent messageContent, final MessageProcessor messageProcessor, final WebPage responsePage)
+	private Link<Void> createProcessLink(String id, final MessageProcessor messageProcessor, final WebPage responsePage)
 	{
 		Action onClick = () ->
 		{
 			try
 			{
-				messageProcessor.processMessage(messageContent.getContext().getMessageId());
+				messageProcessor.processMessage(getModelObject().getContext().getMessageId());
 				setResponsePage(responsePage);
 			}
 			catch (Exception e)

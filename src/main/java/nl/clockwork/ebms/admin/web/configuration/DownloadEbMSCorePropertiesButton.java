@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
@@ -29,7 +30,7 @@ import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.apachecommons.CommonsLog;
-import nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.EbMSCorePropertiesFormModel;
+import nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.EbMSCorePropertiesFormData;
 
 @CommonsLog
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -37,12 +38,12 @@ public class DownloadEbMSCorePropertiesButton extends Button
 {
 	private static final long serialVersionUID = 1L;
 	@NonNull
-	EbMSCorePropertiesFormModel ebMSCorePropertiesFormModel;
+	IModel<EbMSCorePropertiesFormData> ebMSCorePropertiesFormData;
 
-	public DownloadEbMSCorePropertiesButton(String id, ResourceModel resourceModel, @NonNull EbMSCorePropertiesFormModel ebMSCorePropertiesFormModel)
+	public DownloadEbMSCorePropertiesButton(String id, ResourceModel resourceModel, @NonNull IModel<EbMSCorePropertiesFormData> ebMSCorePropertiesFormData)
 	{
 		super(id,resourceModel);
-		this.ebMSCorePropertiesFormModel = ebMSCorePropertiesFormModel;
+		this.ebMSCorePropertiesFormData = ebMSCorePropertiesFormData;
 	}
 
 	@Override
@@ -51,7 +52,7 @@ public class DownloadEbMSCorePropertiesButton extends Button
 		try
 		{
 			val writer = new StringWriter();
-			new EbMSCorePropertiesWriter(writer,false).write(ebMSCorePropertiesFormModel);
+			new EbMSCorePropertiesWriter(writer,false).write(ebMSCorePropertiesFormData.getObject());
 			val resourceStream = StringWriterResourceStream.of(writer,"plain/text");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}

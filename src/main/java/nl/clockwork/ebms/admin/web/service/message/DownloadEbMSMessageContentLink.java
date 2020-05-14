@@ -27,7 +27,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.model.Model;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.lang.Args;
@@ -46,9 +46,9 @@ public class DownloadEbMSMessageContentLink extends Link<EbMSMessageContent>
 {
 	private static final long serialVersionUID = 1L;
 
-	public DownloadEbMSMessageContentLink(String id, nl.clockwork.ebms.service.model.EbMSMessageContent messageContent)
+	public DownloadEbMSMessageContentLink(String id, IModel<EbMSMessageContent> model)
 	{
-		super(id,Model.of(Args.notNull(messageContent,"messageContent")));
+		super(id,Args.notNull(model,"messageContent"));
 	}
 
 	@Override
@@ -56,14 +56,14 @@ public class DownloadEbMSMessageContentLink extends Link<EbMSMessageContent>
 	{
 		try
 		{
-			val messageContent = getModelObject();
+			val o = getModelObject();
 			val output = new ByteArrayOutputStream();
 			try (val zip = new ZipOutputStream(output))
 			{
-				writeMessageToZip(messageContent,zip);
+				writeMessageToZip(o,zip);
 			}
 			val resourceStream = ByteArrayResourceStream.of(output,"application/zip");
-			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(messageContent,resourceStream));
+			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(o,resourceStream));
 		}
 		catch (IOException e)
 		{
