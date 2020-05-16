@@ -21,6 +21,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import lombok.AccessLevel;
@@ -36,7 +37,7 @@ public class AttachmentsPanel extends Panel
 	{
 		private static final long serialVersionUID = 1L;
 
-		public EbMSAttachmentPropertyListView(String id, List<EbMSAttachment> list)
+		public EbMSAttachmentPropertyListView(String id, IModel<List<EbMSAttachment>> list)
 		{
 			super(id,list);
 		}
@@ -56,7 +57,7 @@ public class AttachmentsPanel extends Panel
 	@SpringBean(name="ebMSAdminDAO")
 	EbMSDAO ebMSDAO;
 
-	public AttachmentsPanel(String id, List<EbMSAttachment> attachments)
+	public AttachmentsPanel(String id, IModel<List<EbMSAttachment>> attachments)
 	{
 		super(id);
 		add(new EbMSAttachmentPropertyListView("attachments",attachments));

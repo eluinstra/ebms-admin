@@ -31,6 +31,7 @@ import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
@@ -43,6 +44,7 @@ import nl.clockwork.ebms.EbMSAction;
 import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
+import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSEventLog;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
@@ -68,7 +70,7 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 	{
 		private static final long serialVersionUID = 1L;
 
-		public EbMSEventLogPropertyListView(String id, List<EbMSEventLog> list)
+		public EbMSEventLogPropertyListView(String id, IModel<List<EbMSEventLog>> list)
 		{
 			super(id,list);
 		}
@@ -90,6 +92,27 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 			item.add(link);
 		}
 	}
+	private class LoadableDetachableEbMSEventLogModel extends LoadableDetachableModel <List<EbMSEventLog>>
+	{
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		protected List<EbMSEventLog> load()
+		{
+			return getModelObject().getEvents();
+		}
+	}
+	private class LoadableDetachableEbMSAttachmentModel extends LoadableDetachableModel<List<EbMSAttachment>>
+	{
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		protected List<EbMSAttachment> load()
+		{
+			return getModelObject().getAttachments();
+		}
+	}
+
 
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="ebMSAdminDAO")
@@ -176,7 +199,7 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 	{
 		val link = Link.<Void>builder()
 				.id(id)
-				.onClick(() -> setResponsePage(new MessagePageX(Model.of(ebMSDAO.findMessage(getModelObject().getRefToMessageId())),MessagePageX.this)))
+				.onClick(() -> setResponsePage(new MessagePageX(MessageDataModel.of(ebMSDAO,ebMSDAO.findMessage(getModelObject().getRefToMessageId())),MessagePageX.this)))
 				.build();
 		link.add(new Label("refToMessageId"));
 		return link;
@@ -226,7 +249,7 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 	{
 		WebMarkupContainer eventLog = new WebMarkupContainer(id);
 		eventLog.setVisible(getModelObject().getEvents().size() > 0);
-		eventLog.add(new EbMSEventLogPropertyListView("events",getModelObject().getEvents()));
+		eventLog.add(new EbMSEventLogPropertyListView("events",new LoadableDetachableEbMSEventLogModel()));
 		return eventLog;
 	}
 
@@ -241,7 +264,7 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 		Consumer<AjaxRequestTarget> onUpdate = t ->
 		{
 			if (getRawOutput())
-				messageViewPanel.replaceWith(messageViewPanel = new AttachmentsPanel("attachments",getModelObject().getAttachments()));
+				messageViewPanel.replaceWith(messageViewPanel = new AttachmentsPanel("attachments",new LoadableDetachableEbMSAttachmentModel()));
 			else
 			{
 				try
@@ -251,7 +274,7 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 				catch (Exception e)
 				{
 					warn("Unable to view message for action" + MessageProvider.createId(getModelObject().getService(),getModelObject().getAction()) + ". " + e.getMessage());
-					messageViewPanel.replaceWith(messageViewPanel = new AttachmentsPanel("attachments",getModelObject().getAttachments()));
+					messageViewPanel.replaceWith(messageViewPanel = new AttachmentsPanel("attachments",new LoadableDetachableEbMSAttachmentModel()));
 				}
 			}
 			t.add(getPage());
@@ -272,11 +295,11 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 			catch (Exception e)
 			{
 				warn("Unable to view message for action" + MessageProvider.createId(getModelObject().getService(),getModelObject().getAction()) + ". " + e.getMessage());
-				return new AttachmentsPanel(id,getModelObject().getAttachments());
+				return new AttachmentsPanel(id,new LoadableDetachableEbMSAttachmentModel());
 			}
 		}
 		else
-			return new AttachmentsPanel(id,getModelObject().getAttachments());
+			return new AttachmentsPanel(id,new LoadableDetachableEbMSAttachmentModel());
 	}
 
 	private TextArea<String> createContentField(String id)

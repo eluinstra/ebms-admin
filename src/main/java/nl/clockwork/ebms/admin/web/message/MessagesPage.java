@@ -114,7 +114,7 @@ public class MessagesPage extends BasePage
 		{
 			val result = Link.<Void>builder()
 					.id(id)
-					.onClick(() -> setResponsePage(new MessagePage(Model.of(ebMSDAO.findMessage(model.getObject().getRefToMessageId())),MessagesPage.this)))
+					.onClick(() -> setResponsePage(new MessagePage(MessageDataModel.of(ebMSDAO,ebMSDAO.findMessage(model.getObject().getRefToMessageId())),MessagesPage.this)))
 					.build();
 			result.add(new Label("refToMessageId",model.getObject().getRefToMessageId()));
 			return result;

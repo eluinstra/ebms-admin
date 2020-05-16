@@ -29,6 +29,7 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -40,6 +41,7 @@ import nl.clockwork.ebms.EbMSAction;
 import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
+import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSEventLog;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.AjaxLink;
@@ -61,7 +63,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 	{
 		private static final long serialVersionUID = 1L;
 
-		public EbMSEventLogPropertyListView(String id, List<EbMSEventLog> list)
+		public EbMSEventLogPropertyListView(String id, IModel<List<EbMSEventLog>> list)
 		{
 			super(id,list);
 		}
@@ -80,6 +82,26 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 			link.setEnabled(EbMSEventStatus.FAILED.equals(item.getModelObject().getStatus()));
 			link.add(new Label("status"));
 			item.add(link);
+		}
+	}
+	private class LoadableDetachableEbMSEventLogModel extends LoadableDetachableModel <List<EbMSEventLog>>
+	{
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		protected List<EbMSEventLog> load()
+		{
+			return getModelObject().getEvents();
+		}
+	}
+	private class LoadableDetachableEbMSAttachmentModel extends LoadableDetachableModel<List<EbMSAttachment>>
+	{
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		protected List<EbMSAttachment> load()
+		{
+			return getModelObject().getAttachments();
 		}
 	}
 
@@ -105,7 +127,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		add(createActionField("action"));
 		add(createViewMessageErrorLink("viewMessageError"));
 		add(InstantLabel.of("statusTime",Constants.DATETIME_FORMAT));
-		add(new AttachmentsPanel("attachments",getModelObject().getAttachments()).setVisible(getModelObject().getAttachments().size() > 0));
+		add(new AttachmentsPanel("attachments",new LoadableDetachableEbMSAttachmentModel()).setVisible(getModelObject().getAttachments().size() > 0));
 		add(createNextEventContainer("nextEvent"));
 		add(createEventLogContainer("eventLog"));
 		add(new PageLink("back",responsePage));
@@ -154,7 +176,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 	{
 		val result = Link.<Void>builder()
 				.id(id)
-				.onClick(() -> setResponsePage(new MessagePage(Model.of(ebMSDAO.findMessage(getModelObject().getRefToMessageId())),MessagePage.this)))
+				.onClick(() -> setResponsePage(new MessagePage(MessageDataModel.of(ebMSDAO,ebMSDAO.findMessage(getModelObject().getRefToMessageId())),MessagePage.this)))
 				.build();
 		result.add(new Label("refToMessageId"));
 		return result;
@@ -188,7 +210,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 
 	private WebMarkupContainer createNextEventContainer(String id)
 	{
-		WebMarkupContainer result = new WebMarkupContainer(id);
+		val result = new WebMarkupContainer(id);
 		result.setVisible(getModelObject().getEvent() != null);
 		if (getModelObject().getEvent() != null)
 		{
@@ -203,7 +225,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 	{
 		val result = new WebMarkupContainer(id);
 		result.setVisible(getModelObject().getEvents().size() > 0);
-		result.add(new EbMSEventLogPropertyListView("events",getModelObject().getEvents()));
+		result.add(new EbMSEventLogPropertyListView("events",new LoadableDetachableEbMSEventLogModel()));
 		return result;
 	}
 

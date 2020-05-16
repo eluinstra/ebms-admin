@@ -27,6 +27,7 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -55,7 +56,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		private static final long serialVersionUID = 1L;
 		AtomicInteger i = new AtomicInteger(1);
 
-		public EbMSDataSourcePropertyListView(String id, List<EbMSDataSource> list)
+		public EbMSDataSourcePropertyListView(String id, IModel<List<EbMSDataSource>> list)
 		{
 			super(id,list);
 		}
@@ -68,6 +69,16 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 				o.setName("dataSource." + i.getAndIncrement());
 			item.add(new DownloadEbMSDataSourceLink("downloadDataSource",item.getModel()));
 			item.add(new Label("contentType"));
+		}
+	}
+	private class LoadableDetachableEbMSDataSourceModel extends LoadableDetachableModel<List<EbMSDataSource>>
+	{
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		protected List<EbMSDataSource> load()
+		{
+			return getModelObject().getDataSources();
 		}
 	}
 
@@ -90,7 +101,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		add(new Label("context.toParty.role"));
 		add(new Label("context.service"));
 		add(new Label("context.action"));
-		add(new EbMSDataSourcePropertyListView("dataSources",model.getObject().getDataSources()));
+		add(new EbMSDataSourcePropertyListView("dataSources",new LoadableDetachableEbMSDataSourceModel()));
 		add(new PageLink("back",responsePage));
 		add(new DownloadEbMSMessageContentLink("download",model));
 		add(createProcessLink("process",messageProcessor,responsePage));
