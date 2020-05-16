@@ -80,6 +80,8 @@ public class WicketApplication extends WebApplication
 		new MenuLinkItem(result,"1","cpas",nl.clockwork.ebms.admin.web.service.cpa.CPAsPage.class);
 		new MenuDivider(result,"2");
 		new MenuLinkItem(result,"3","urlMappings",nl.clockwork.ebms.admin.web.service.cpa.URLMappingsPage.class);
+		new MenuDivider(result,"4");
+		new MenuLinkItem(result,"5","certificateMappings",nl.clockwork.ebms.admin.web.service.cpa.CertificateMappingsPage.class);
 		return result;
 	}
 

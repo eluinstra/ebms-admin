@@ -15,9 +15,18 @@
  */
 package nl.clockwork.ebms.admin.web.service.cpa;
 
+import java.io.IOException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.util.List;
+
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IClusterable;
@@ -26,7 +35,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.apachecommons.CommonsLog;
@@ -49,13 +57,13 @@ public class CertificateMappingPage extends BasePage
 
 	public CertificateMappingPage()
 	{
-		this(new CertificateMapping());
+		this(Model.of(new CertificateMappingFormData()));
 	}
 	
-	public CertificateMappingPage(CertificateMapping certificateMapping)
+	public CertificateMappingPage(IModel<CertificateMappingFormData> model)
 	{
 		add(new BootstrapFeedbackPanel("feedback"));
-		add(new EditCertificateMappingForm("form",certificateMapping));
+		add(new EditCertificateMappingForm("form",model));
 	}
 
 	@Override
@@ -64,15 +72,17 @@ public class CertificateMappingPage extends BasePage
 		return getLocalizer().getString("certificateMapping",this);
 	}
 
-	public class EditCertificateMappingForm extends Form<CertificateMappingFormModel>
+	public class EditCertificateMappingForm extends Form<CertificateMappingFormData>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public EditCertificateMappingForm(String id, CertificateMapping certificateMapping)
+		public EditCertificateMappingForm(String id, IModel<CertificateMappingFormData> model)
 		{
-			super(id,new CompoundPropertyModel<>(new CertificateMappingFormData(certificateMapping)));
-			add(new BootstrapFormComponentFeedbackBorder("sourceFeedback",new TextField<String>("certificateMapping.source").setRequired(true).setLabel(new ResourceModel("lbl.source"))));
-			add(new BootstrapFormComponentFeedbackBorder("destinationFeedback",new TextField<String>("certificateMapping.destination").setRequired(true).setLabel(new ResourceModel("lbl.destination"))));
+			super(id,new CompoundPropertyModel<>(model));
+//			add(new BootstrapFormComponentFeedbackBorder("sourceFeedback",new TextField<String>("source").setRequired(true).setLabel(new ResourceModel("lbl.source"))));
+			add(new BootstrapFormComponentFeedbackBorder("sourceFeedback",new FileUploadField("source").setRequired(true).setLabel(new ResourceModel("lbl.source"))));
+//			add(new BootstrapFormComponentFeedbackBorder("destinationFeedback",new TextField<String>("destination").setRequired(true).setLabel(new ResourceModel("lbl.destination"))));
+			add(new BootstrapFormComponentFeedbackBorder("destinationFeedback",new FileUploadField("destination").setRequired(true).setLabel(new ResourceModel("lbl.destination"))));
 			add(createSetButton("set"));
 			add(new ResetButton("reset",new ResourceModel("cmd.reset"),CertificateMappingPage.class));
 		}
@@ -84,7 +94,7 @@ public class CertificateMappingPage extends BasePage
 				try
 				{
 					val o = getModelObject();
-					cpaService.setCertificateMapping(o.certificateMapping);
+					cpaService.setCertificateMapping(createCertificateMapping(o));
 					setResponsePage(CertificateMappingsPage.class);
 				}
 				catch (Exception e)
@@ -97,6 +107,18 @@ public class CertificateMappingPage extends BasePage
 			setDefaultButton(result);
 			return result;
 		}
+
+		private CertificateMapping createCertificateMapping(CertificateMappingFormData o) throws CertificateException, IOException
+		{
+			X509Certificate source = getX509Certificate(o.source);
+			X509Certificate destination = getX509Certificate(o.destination);
+			return new CertificateMapping(source,destination);
+		}
+
+		private X509Certificate getX509Certificate(List<FileUpload> files) throws CertificateException, IOException
+		{
+			return files != null && files.size() == 1 ? (X509Certificate)CertificateFactory.getInstance("X.509").generateCertificate(files.get(0).getInputStream()) : null;
+		}
 	}
 
 	@Data
@@ -106,8 +128,8 @@ public class CertificateMappingPage extends BasePage
 	public static class CertificateMappingFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		@NonNull
-		CertificateMapping certificateMapping;
+		List<FileUpload> source;
+		List<FileUpload> destination;
 	}
 
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<html xmlns:wicket="http://wicket.apache.org">
+<body>
+<wicket:extend>
+	<span wicket:id="feedback"/>
+	<form wicket:id="form">
+		<div class="table-responsive">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th><wicket:message key="lbl.certificate"/></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody wicket:id="container">
+					<tr wicket:id="certificateMappings">
+						<td wicket:id="source"></td>
+						<td wicket:id="destination"></td>
+						<td><span class="pull-right"><input type="submit" class="btn btn-default" wicket:id="editCertificate" wicket:message="value:cmd.editCertificate"/><input type="submit" class="btn btn-default" wicket:id="delete" wicket:message="value:cmd.delete"/></span></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div>
+			<a class="btn btn-default" href="#" wicket:id="new"><wicket:message key="cmd.new"/></a>
+		</div>
+	</form>
+</wicket:extend>
+</body>
+</html>

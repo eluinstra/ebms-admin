@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<html xmlns:wicket="http://wicket.apache.org">
+<body>
+<wicket:extend>
+	<div class="col-lg-offset-2 col-lg-10">
+		<span wicket:id="feedback"/>
+	</div>
+	<form class="form-horizontal" role="form" wicket:id="form">
+		<div class="form-group" wicket:id="sourceFeedback">
+			<label wicket:for="source" class="col-lg-2 control-label"><wicket:label/></label>
+			<div class="col-lg-10">
+				<input type="file" class="form-control" wicket:id="source"/>
+				<!-- input type="text" class="form-control" wicket:id="source"/-->
+			</div>
+		</div>
+		<div class="form-group" wicket:id="destinationFeedback">
+			<label wicket:for="destination" class="col-lg-2 control-label"><wicket:label/></label>
+			<div class="col-lg-10">
+				<input type="file" class="form-control" wicket:id="destination"/>
+				<!--input type="text" class="form-control" wicket:id="destination"/-->
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-lg-offset-2 col-lg-10">
+				<input class="btn btn-default" type="submit" wicket:id="set" wicket:message="value:cmd.set"/>
+				<input type="submit" class="btn btn-default" wicket:id="reset" wicket:message="value:cmd.reset"/>
+			</div>
+		</div>
+	</form>
+</wicket:extend>
+</body>
+</html>

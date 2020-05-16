@@ -15,17 +15,21 @@
  */
 package nl.clockwork.ebms.admin.web.service.cpa;
 
+import java.security.cert.X509Certificate;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.apachecommons.CommonsLog;
@@ -57,20 +61,25 @@ public class CertificateMappingsPage extends BasePage
 		protected void populateItem(final Item<CertificateMapping> item)
 		{
 			val o = item.getModelObject();
-			item.add(new Label("source",Model.of(o.getSource())));
-			item.add(new Label("destination",Model.of(o.getDestination())));
-			item.add(createEditButton("editCertificate",o));
+			item.add(new Label("source",Model.of(createLabel(o.getSource()))));
+			item.add(new Label("destination",Model.of(createLabel(o.getDestination()))));
+			item.add(createEditButton("editCertificate",item.getModel()));
 			item.add(createDeleteButton("delete",o));
 			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 
-		private Button createEditButton(String id, final CertificateMapping certificateMapping)
+		private String createLabel(@NonNull X509Certificate certificate)
+		{
+			return certificate.getSubjectDN().getName() + " (" + certificate.getSerialNumber().toString() + ")";
+		}
+
+		private Button createEditButton(String id, final IModel<CertificateMapping> model)
 		{
 			Action onSubmit = () ->
 			{
 				try
 				{
-					setResponsePage(new CertificateMappingPage(certificateMapping));
+					setResponsePage(new CertificateMappingPage());
 				}
 				catch (Exception e)
 				{
