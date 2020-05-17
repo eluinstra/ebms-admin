@@ -22,10 +22,12 @@ import java.util.stream.Collectors;
 import org.springframework.core.io.Resource;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Getter
 public class PropertySourcesPlaceholderConfigurer extends org.springframework.context.support.PropertySourcesPlaceholderConfigurer
 {
 	Resource overridePropertiesFile;

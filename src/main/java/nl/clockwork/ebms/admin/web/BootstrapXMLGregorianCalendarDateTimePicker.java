@@ -15,27 +15,18 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.Locale;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.form.FormComponentPanel;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.util.convert.IConverter;
-import org.apache.wicket.util.convert.converter.AbstractConverter;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -101,77 +92,18 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 		this.formatJS = format.replaceAll("H","h");
 		setType(XMLGregorianCalendar.class);
 		
-		val dateTimePicker = new MarkupContainer("dateTimePicker")
-		{
-			private static final long serialVersionUID = 1L;
-		};
+		val dateTimePicker = new WebMarkupContainer("dateTimePicker");
 		dateTimePicker.setMarkupId(getDateTimePickerId());
 		dateTimePicker.setOutputMarkupId(true);
 		add(dateTimePicker);
 
-		dateTimeField = new TextField<XMLGregorianCalendar>("dateTime",new PropertyModel<>(this,"dateTime"))
-		{
-			private static final long serialVersionUID = 1L;
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public <C> IConverter<C> getConverter(Class<C> type)
-			{
-				if (XMLGregorianCalendar.class.isAssignableFrom(type))
-					return (IConverter<C>)new AbstractConverter<XMLGregorianCalendar>()
-					{
-						private static final long serialVersionUID = 1L;
-	
-						@Override
-						public XMLGregorianCalendar convertToObject(String value, Locale locale)
-						{
-							try
-							{
-								val formatter = new SimpleDateFormat(BootstrapXMLGregorianCalendarDateTimePicker.this.format);
-								val calendar = new GregorianCalendar();
-								val date = formatter.parse(value);
-								calendar.setTime(date);
-								return DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
-							}
-							catch (ParseException e)
-							{
-								throw new RuntimeException(e);
-							}
-							catch (DatatypeConfigurationException e)
-							{
-								throw new RuntimeException(e);
-							}
-						}
-	
-						@Override
-						public String convertToString(XMLGregorianCalendar value, Locale locale)
-						{
-							val formatter = new SimpleDateFormat(BootstrapXMLGregorianCalendarDateTimePicker.this.format);
-							return formatter.format(value.toGregorianCalendar().getTime());
-						}
-	
-						@Override
-						protected Class<XMLGregorianCalendar> getTargetType()
-						{
-							return XMLGregorianCalendar.class;
-						}
-					};
-				else
-					return super.getConverter(type);
-			}
-			
-			@Override
-			public IModel<String> getLabel()
-			{
-				return BootstrapXMLGregorianCalendarDateTimePicker.this.getLabel();
-			}
-
-			@Override
-			public boolean isRequired()
-			{
-				return BootstrapXMLGregorianCalendarDateTimePicker.this.isRequired();
-			}
-		};
+		dateTimeField = XMLGregorianCalendarTextField.builder()
+				.id("dateTime")
+				.model(new PropertyModel<>(this,"dateTime"))
+				.datePattern(format)
+				.getLabel(() -> getLabel())
+				.isRequired(() -> isRequired())
+				.build();
 		dateTimePicker.add(dateTimeField);
 	}
 	

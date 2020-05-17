@@ -26,6 +26,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.convert.IConverter;
 
 import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 
@@ -34,28 +36,18 @@ public class LocalDateTimeTextField extends TextField<LocalDateTime> implements 
 {
 	private static final long serialVersionUID = 1L;
 	private static final String DEFAULT_PATTERN = "MM/dd/yyyy";
+	@NonNull
 	String datePattern;
+	@NonNull
 	IConverter<LocalDateTime> converter;
+	Supplier<Boolean> isRequired;
 
-	public LocalDateTimeTextField(final String id)
-	{
-		this(id, null,defaultDatePattern());
-	}
-
-	public LocalDateTimeTextField(final String id, final IModel<LocalDateTime> model)
-	{
-		this(id,model,defaultDatePattern());
-	}
-
-	public LocalDateTimeTextField(final String id, final String datePattern)
-	{
-		this(id,null,datePattern);
-	}
-
-	public LocalDateTimeTextField(final String id, final IModel<LocalDateTime> model, final String datePattern)
+	@Builder
+	public LocalDateTimeTextField(final String id, final IModel<LocalDateTime> model, final String datePattern, Supplier<Boolean> isRequired)
 	{
 		super(id,model,LocalDateTime.class);
-		this.datePattern = datePattern;
+		this.datePattern = datePattern == null ? defaultDatePattern() : datePattern;
+		this.isRequired = isRequired == null ? () -> super.isRequired() : isRequired;
 		converter = new LocalDateTimeConverter(datePattern);
 	}
 
@@ -65,6 +57,12 @@ public class LocalDateTimeTextField extends TextField<LocalDateTime> implements 
 		if (LocalDateTime.class.isAssignableFrom(type))
 			return converter;
 		return null;
+	}
+
+	@Override
+	public boolean isRequired()
+	{
+		return isRequired.get();
 	}
 
 	@Override

@@ -91,24 +91,17 @@ public class BootstrapDateTimePicker extends FormComponentPanel<LocalDateTime>
 		this.formatJS = format.replaceAll("H","h");
 		this.type = type;
 		
-		MarkupContainer dateTimePicker = new MarkupContainer("dateTimePicker")
-		{
-			private static final long serialVersionUID = 1L;
-		};
+		MarkupContainer dateTimePicker = new WebMarkupContainer("dateTimePicker");
 		dateTimePicker.setMarkupId(getDateTimePickerId());
 		dateTimePicker.setOutputMarkupId(true);
 		add(dateTimePicker);
 
-		dateTimeField = new LocalDateTimeTextField("dateTime",new PropertyModel<>(this,"dateTime"),format)
-		{
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public boolean isRequired()
-			{
-				return BootstrapDateTimePicker.this.isRequired();
-			}
-		};
+		dateTimeField = LocalDateTimeTextField.builder()
+				.id("dateTime")
+				.model(new PropertyModel<>(this,"dateTime"))
+				.datePattern(format)
+				.isRequired(() -> BootstrapDateTimePicker.this.isRequired())
+				.build();
 		dateTimePicker.add(dateTimeField);
 	}
 	

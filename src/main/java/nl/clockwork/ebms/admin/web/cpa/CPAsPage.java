@@ -19,13 +19,13 @@ import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.model.CPA;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
+import nl.clockwork.ebms.admin.web.Link;
 import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
 import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
@@ -65,17 +65,10 @@ public class CPAsPage extends BasePage
 
 		private Link<Void> createViewLink(String id, final IModel<CPA> model)
 		{
-			val result = new Link<Void>(id)
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void onClick()
-				{
-					//setResponsePage(new CPAPage(ebMSDAO.getCPA(cpa.getId(),CPAsPage.this)));
-					setResponsePage(new CPAPage(model,CPAsPage.this));
-				}
-			};
+			val result = Link.<Void>builder()
+					.id(id)
+					.onClick(() -> setResponsePage(new CPAPage(model,CPAsPage.this)))
+					.build();
 			result.add(new Label("cpaId",model.getObject().getCpaId()));
 			return result;
 		}
