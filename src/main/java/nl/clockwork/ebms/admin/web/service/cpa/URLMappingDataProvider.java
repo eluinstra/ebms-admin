@@ -27,20 +27,20 @@ import lombok.AllArgsConstructor;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.Utils;
-import nl.clockwork.ebms.service.CPAService;
-import nl.clockwork.ebms.service.model.URLMapping;
+import nl.clockwork.ebms.service.cpa.url.URLMapping;
+import nl.clockwork.ebms.service.cpa.url.URLMappingService;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor(staticName = "of")
 public class URLMappingDataProvider implements IDataProvider<URLMapping>
 {
 	private static final long serialVersionUID = 1L;
-	CPAService cpaService;
+	URLMappingService urlMappingService;
 
 	@Override
 	public Iterator<? extends URLMapping> iterator(long first, long count)
 	{
-		val urlMappings = Utils.toList(cpaService.getURLMappings());
+		val urlMappings = Utils.toList(urlMappingService.getURLMappings());
 		return urlMappings == null ? new ArrayList<URLMapping>().iterator() : urlMappings.iterator();
 	}
 
@@ -53,7 +53,7 @@ public class URLMappingDataProvider implements IDataProvider<URLMapping>
 	@Override
 	public long size()
 	{
-		val urlMappings = Utils.toList(cpaService.getURLMappings());
+		val urlMappings = Utils.toList(urlMappingService.getURLMappings());
 		return urlMappings == null ? 0 : urlMappings.size();
 	}
 

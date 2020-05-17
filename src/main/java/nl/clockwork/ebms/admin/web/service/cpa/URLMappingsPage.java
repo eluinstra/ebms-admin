@@ -37,8 +37,8 @@ import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
-import nl.clockwork.ebms.service.CPAService;
-import nl.clockwork.ebms.service.model.URLMapping;
+import nl.clockwork.ebms.service.cpa.url.URLMapping;
+import nl.clockwork.ebms.service.cpa.url.URLMappingService;
 
 @CommonsLog
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -88,7 +88,7 @@ public class URLMappingsPage extends BasePage
 			{
 				try
 				{
-					cpaService.deleteURLMapping(model.getObject().getSource());
+					urlMappingService.deleteURLMapping(model.getObject().getSource());
 					setResponsePage(new URLMappingsPage());
 				}
 				catch (Exception e)
@@ -105,8 +105,8 @@ public class URLMappingsPage extends BasePage
 	}
 
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="cpaService")
-	CPAService cpaService;
+	@SpringBean(name="urlMappingService")
+	URLMappingService urlMappingService;
 
 	public URLMappingsPage()
 	{
@@ -123,7 +123,7 @@ public class URLMappingsPage extends BasePage
 			super(id);
 			val container = new WebMarkupContainer("container");
 			add(container);
-			container.add(new URLMappingsDataView("urlMappings",URLMappingDataProvider.of(cpaService)));
+			container.add(new URLMappingsDataView("urlMappings",URLMappingDataProvider.of(urlMappingService)));
 			add(new PageLink("new",new URLMappingPage()));
 		}
 	}

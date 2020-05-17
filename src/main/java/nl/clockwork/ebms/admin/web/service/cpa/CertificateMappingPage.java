@@ -44,16 +44,16 @@ import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.service.CPAService;
-import nl.clockwork.ebms.service.model.CertificateMapping;
+import nl.clockwork.ebms.service.cpa.certificate.CertificateMapping;
+import nl.clockwork.ebms.service.cpa.certificate.CertificateMappingService;
 
 @CommonsLog
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CertificateMappingPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="cpaService")
-	CPAService cpaService;
+	@SpringBean(name="certificateMappingService")
+	CertificateMappingService certificateMappingService;
 
 	public CertificateMappingPage()
 	{
@@ -94,7 +94,7 @@ public class CertificateMappingPage extends BasePage
 				try
 				{
 					val o = getModelObject();
-					cpaService.setCertificateMapping(createCertificateMapping(o));
+					certificateMappingService.setCertificateMapping(createCertificateMapping(o));
 					setResponsePage(CertificateMappingsPage.class);
 				}
 				catch (Exception e)

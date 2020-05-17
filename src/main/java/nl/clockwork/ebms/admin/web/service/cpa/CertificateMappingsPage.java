@@ -40,8 +40,8 @@ import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
-import nl.clockwork.ebms.service.CPAService;
-import nl.clockwork.ebms.service.model.CertificateMapping;
+import nl.clockwork.ebms.service.cpa.certificate.CertificateMapping;
+import nl.clockwork.ebms.service.cpa.certificate.CertificateMappingService;
 
 @CommonsLog
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -96,7 +96,7 @@ public class CertificateMappingsPage extends BasePage
 			{
 				try
 				{
-					cpaService.deleteCertificateMapping(certificateMapping.getSource());
+					certificateMappingService.deleteCertificateMapping(certificateMapping.getSource());
 					setResponsePage(new CertificateMappingsPage());
 				}
 				catch (Exception e)
@@ -113,8 +113,8 @@ public class CertificateMappingsPage extends BasePage
 	}
 
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="cpaService")
-	CPAService cpaService;
+	@SpringBean(name="certificateMappingService")
+	CertificateMappingService certificateMappingService;
 
 	public CertificateMappingsPage()
 	{
@@ -131,7 +131,7 @@ public class CertificateMappingsPage extends BasePage
 			super(id);
 			val container = new WebMarkupContainer("container");
 			add(container);
-			container.add(new CertificateMappingsDataView("certificateMappings",CertificateMappingDataProvider.of(cpaService)));
+			container.add(new CertificateMappingsDataView("certificateMappings",CertificateMappingDataProvider.of(certificateMappingService)));
 			add(new PageLink("new",new CertificateMappingPage()));
 		}
 	}

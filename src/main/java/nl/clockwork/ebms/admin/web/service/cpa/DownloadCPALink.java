@@ -25,7 +25,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.service.CPAService;
+import nl.clockwork.ebms.service.cpa.CPAService;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DownloadCPALink extends Link<String>

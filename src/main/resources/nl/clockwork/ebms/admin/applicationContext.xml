@@ -61,7 +61,11 @@
 		</cxf:features>
 	</cxf:bus>
 
-	<jaxws:client id="cpaService" serviceClass="nl.clockwork.ebms.service.CPAService" address="${service.ebms.url}/cpa"/>
+	<jaxws:client id="cpaService" serviceClass="nl.clockwork.ebms.service.cpa.CPAService" address="${service.ebms.url}/cpa"/>
+
+	<jaxws:client id="urlMappingService" serviceClass="nl.clockwork.ebms.service.cpa.url.URLMappingService" address="${service.ebms.url}/urlMapping"/>
+
+	<jaxws:client id="certificateService" serviceClass="nl.clockwork.ebms.service.cpa.certificate.CertificateMappingService" address="${service.ebms.url}/certificateMapping"/>
 
 	<jaxws:client id="ebMSMessageService" serviceClass="nl.clockwork.ebms.service.EbMSMessageService" address="${service.ebms.url}/ebms"/>
 

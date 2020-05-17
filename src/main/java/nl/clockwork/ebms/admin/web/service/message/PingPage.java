@@ -48,8 +48,8 @@ import nl.clockwork.ebms.admin.web.Consumer;
 import nl.clockwork.ebms.admin.web.DropDownChoice;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.jaxb.JAXBParser;
-import nl.clockwork.ebms.service.CPAService;
 import nl.clockwork.ebms.service.EbMSMessageService;
+import nl.clockwork.ebms.service.cpa.CPAService;
 
 @CommonsLog
 @FieldDefaults(level = AccessLevel.PRIVATE)

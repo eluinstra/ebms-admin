@@ -38,7 +38,7 @@ import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.service.CPAService;
+import nl.clockwork.ebms.service.cpa.CPAService;
 
 @CommonsLog
 @FieldDefaults(level = AccessLevel.PRIVATE)

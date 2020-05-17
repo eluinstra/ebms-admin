@@ -33,16 +33,16 @@ import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.service.CPAService;
-import nl.clockwork.ebms.service.model.URLMapping;
+import nl.clockwork.ebms.service.cpa.url.URLMapping;
+import nl.clockwork.ebms.service.cpa.url.URLMappingService;
 
 @CommonsLog
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class URLMappingPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="cpaService")
-	CPAService cpaService;
+	@SpringBean(name="urlMappingService")
+	URLMappingService urlMappingService;
 
 	public URLMappingPage()
 	{
@@ -81,7 +81,7 @@ public class URLMappingPage extends BasePage
 				try
 				{
 					val o = getModelObject();
-					cpaService.setURLMapping(o);
+					urlMappingService.setURLMapping(o);
 					setResponsePage(URLMappingsPage.class);
 				}
 				catch (Exception e)

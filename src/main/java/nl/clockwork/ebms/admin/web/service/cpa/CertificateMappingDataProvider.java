@@ -27,20 +27,20 @@ import lombok.AllArgsConstructor;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.Utils;
-import nl.clockwork.ebms.service.CPAService;
-import nl.clockwork.ebms.service.model.CertificateMapping;
+import nl.clockwork.ebms.service.cpa.certificate.CertificateMapping;
+import nl.clockwork.ebms.service.cpa.certificate.CertificateMappingService;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor(staticName = "of")
 public class CertificateMappingDataProvider implements IDataProvider<CertificateMapping>
 {
 	private static final long serialVersionUID = 1L;
-	CPAService cpaService;
+	CertificateMappingService certificateMappingService;
 
 	@Override
 	public Iterator<? extends CertificateMapping> iterator(long first, long count)
 	{
-		val certificateMappings = Utils.toList(cpaService.getCertificateMappings());
+		val certificateMappings = Utils.toList(certificateMappingService.getCertificateMappings());
 		return certificateMappings == null ? new ArrayList<CertificateMapping>().iterator() : certificateMappings.iterator();
 	}
 
@@ -53,7 +53,7 @@ public class CertificateMappingDataProvider implements IDataProvider<Certificate
 	@Override
 	public long size()
 	{
-		val certificateMappings = Utils.toList(cpaService.getCertificateMappings());
+		val certificateMappings = Utils.toList(certificateMappingService.getCertificateMappings());
 		return certificateMappings == null ? 0 : certificateMappings.size();
 	}
 
