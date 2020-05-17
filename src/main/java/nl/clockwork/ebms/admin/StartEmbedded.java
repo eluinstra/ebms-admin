@@ -281,14 +281,14 @@ public class StartEmbedded extends Start
 		result.setContextPath("/");
 		if ("true".equals(properties.get("https.clientCertificateAuthentication").toLowerCase()))
 			result.addFilter(createClientCertificateManagerFilterHolder(properties),"/*",EnumSet.allOf(DispatcherType.class));
-		result.addServlet(nl.clockwork.ebms.servlet.EbMSServlet.class,properties.get("ebms.path"));
+		result.addServlet(nl.clockwork.ebms.server.servlet.EbMSServlet.class,properties.get("ebms.path"));
 		result.addEventListener(contextLoaderListener);
 		return result;
 	}
 
 	private FilterHolder createClientCertificateManagerFilterHolder(Map<String,String> properties)
 	{
-		FilterHolder result = new FilterHolder(nl.clockwork.ebms.servlet.ClientCertificateManagerFilter.class); 
+		FilterHolder result = new FilterHolder(nl.clockwork.ebms.server.servlet.ClientCertificateManagerFilter.class); 
 		result.setInitParameter("x509CertificateHeader",properties.get("https.clientCertificateHeader"));
 		return result;
 	}

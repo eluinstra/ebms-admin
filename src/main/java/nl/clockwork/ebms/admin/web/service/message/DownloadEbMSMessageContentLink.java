@@ -37,7 +37,7 @@ import lombok.val;
 import lombok.extern.apachecommons.CommonsLog;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.message.ByteArrayResourceStream;
-import nl.clockwork.ebms.common.JAXBParser;
+import nl.clockwork.ebms.jaxb.JAXBParser;
 import nl.clockwork.ebms.service.model.EbMSMessageContent;
 import nl.clockwork.ebms.service.model.EbMSMessageContext;
 

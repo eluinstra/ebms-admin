@@ -305,7 +305,7 @@ public class Start
 
 	private FilterHolder createClientCertificateManagerFilterHolder(CommandLine cmd)
 	{
-		val result = new FilterHolder(nl.clockwork.ebms.servlet.ClientCertificateManagerFilter.class); 
+		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.ClientCertificateManagerFilter.class); 
 		result.setInitParameter("x509CertificateHeader",cmd.getOptionValue("clientCertificateHeader"));
 		return result;
 	}
@@ -313,7 +313,7 @@ public class Start
 	private FilterHolder createClientCertificateAuthenticationFilterHolder(CommandLine cmd) throws MalformedURLException, IOException
 	{
 		System.out.println("Configuring web server client certificate authentication:");
-		val result = new FilterHolder(nl.clockwork.ebms.servlet.ClientCertificateAuthenticationFilter.class); 
+		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.ClientCertificateAuthenticationFilter.class); 
 		String clientTrustStoreType = cmd.getOptionValue("clientTrustStoreType",DEFAULT_KEYSTORE_TYPE);
 		String clientTrustStorePath = cmd.getOptionValue("clientTrustStorePath");
 		String clientTrustStorePassword = cmd.getOptionValue("clientTrustStorePassword");
