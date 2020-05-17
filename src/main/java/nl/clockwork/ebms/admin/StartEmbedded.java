@@ -107,11 +107,11 @@ public class StartEmbedded extends Start
 		return result;
 	}
 	
-	private static Map<String,String> getProperties(String...files)
+	private static Map<String,String> getProperties(String...files) throws IOException
 	{
 		try (val applicationContext = new ClassPathXmlApplicationContext(files))
 		{
-			val properties = (PropertyPlaceholderConfigurer)applicationContext.getBean("propertyConfigurer");
+			val properties = (PropertySourcesPlaceholderConfigurer)applicationContext.getBean("propertyConfigurer");
 			return properties.getProperties();
 		}
 	}
@@ -200,7 +200,7 @@ public class StartEmbedded extends Start
 		}
 		else
 		{
-			SslContextFactory factory = createEbMSSslContextFactory(properties);
+			SslContextFactory.Server factory = createEbMSSslContextFactory(properties);
 			server.addConnector(createEbMSHttpsConnector(properties,factory));
 		}
 	}
@@ -215,16 +215,16 @@ public class StartEmbedded extends Start
 		return result;
 	}
 
-	private SslContextFactory createEbMSSslContextFactory(Map<String,String> properties) throws MalformedURLException, IOException
+	private SslContextFactory.Server createEbMSSslContextFactory(Map<String,String> properties) throws MalformedURLException, IOException
 	{
-		val result = new SslContextFactory();
+		val result = new SslContextFactory.Server();
 		addEbMSKeyStore(properties,result);
 		if ("true".equals(properties.get("https.requireClientAuthentication")))
 			addEbMSTrustStore(properties,result);
 		return result;
 	}
 
-	private void addEbMSKeyStore(Map<String,String> properties, SslContextFactory sslContextFactory) throws MalformedURLException, IOException
+	private void addEbMSKeyStore(Map<String,String> properties, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
 	{
 		val keyStore = getResource(properties.get("keystore.path"));
 		if (keyStore != null && keyStore.exists())
@@ -247,7 +247,7 @@ public class StartEmbedded extends Start
 		}
 	}
 
-	private void addEbMSTrustStore(Map<String,String> properties, SslContextFactory sslContextFactory) throws MalformedURLException, IOException
+	private void addEbMSTrustStore(Map<String,String> properties, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
 	{
 		val trustStore = getResource(properties.get("truststore.path"));
 		if (trustStore != null && trustStore.exists())
@@ -264,9 +264,9 @@ public class StartEmbedded extends Start
 		}
 	}
 
-	private ServerConnector createEbMSHttpsConnector(Map<String,String> properties, SslContextFactory factory)
+	private ServerConnector createEbMSHttpsConnector(Map<String,String> properties, SslContextFactory.Server sslContextFactory)
 	{
-		val result = new ServerConnector(this.server,factory);
+		val result = new ServerConnector(this.server,sslContextFactory);
 		result.setHost(StringUtils.isEmpty(properties.get("ebms.host")) ? "0.0.0.0" : properties.get("ebms.host"));
 		result.setPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
 		result.setName("ebms");

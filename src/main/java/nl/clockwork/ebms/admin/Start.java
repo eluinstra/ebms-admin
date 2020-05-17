@@ -182,16 +182,16 @@ public class Start
 		return result;
 	}
 
-	private SslContextFactory createSslContextFactory(CommandLine cmd) throws MalformedURLException, IOException
+	private SslContextFactory.Server createSslContextFactory(CommandLine cmd) throws MalformedURLException, IOException
 	{
-		val result = new SslContextFactory();
+		val result = new SslContextFactory.Server();
 		addKeyStore(cmd,result);
 		if (cmd.hasOption("clientAuthentication"))
 			addTrustStore(cmd,result);
 		return result;
 	}
 
-	private void addKeyStore(CommandLine cmd, SslContextFactory result) throws MalformedURLException, IOException
+	private void addKeyStore(CommandLine cmd, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
 	{
 		val keyStoreType = cmd.getOptionValue("keyStoreType",DEFAULT_KEYSTORE_TYPE);
 		val keyStorePath = cmd.getOptionValue("keyStorePath",DEFAULT_KEYSTORE_FILE);
@@ -200,9 +200,9 @@ public class Start
 		if (keyStore != null && keyStore.exists())
 		{
 			System.out.println("Using keyStore " + keyStore.getURI());
-			result.setKeyStoreType(keyStoreType);
-			result.setKeyStoreResource(keyStore);
-			result.setKeyStorePassword(keyStorePassword);
+			sslContextFactory.setKeyStoreType(keyStoreType);
+			sslContextFactory.setKeyStoreResource(keyStore);
+			sslContextFactory.setKeyStorePassword(keyStorePassword);
 		}
 		else
 		{
@@ -211,7 +211,7 @@ public class Start
 		}
 	}
 
-	private void addTrustStore(CommandLine cmd, SslContextFactory sslContextFactory) throws MalformedURLException, IOException
+	private void addTrustStore(CommandLine cmd, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
 	{
 		val trustStoreType = cmd.getOptionValue("trustStoreType",DEFAULT_KEYSTORE_TYPE);
 		val trustStorePath = cmd.getOptionValue("trustStorePath");
@@ -232,9 +232,9 @@ public class Start
 		}
 	}
 
-	private ServerConnector createHttpsConnector(CommandLine cmd, SslContextFactory factory)
+	private ServerConnector createHttpsConnector(CommandLine cmd, SslContextFactory.Server sslContectFactory)
 	{
-		val connector = new ServerConnector(this.server,factory);
+		val connector = new ServerConnector(this.server,sslContectFactory);
 		connector.setHost(cmd.getOptionValue("host") == null ? "0.0.0.0" : cmd.getOptionValue("host"));
 		connector.setPort(cmd.getOptionValue("port") == null ? 8443 : Integer.parseInt(cmd.getOptionValue("port")));
 		connector.setName("web");
