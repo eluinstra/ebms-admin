@@ -116,8 +116,6 @@ public class WicketApplication extends WebApplication
 	{
 		val result = new MenuItem(id,"configuration");
 		new MenuLinkItem(result,"1","ebMSAdminProperties",nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.class);
-		new MenuDivider(result,"2");
-		new MenuLinkItem(result,"3","ebMSCoreProperties",nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.class);
 		return result;
 	}
 

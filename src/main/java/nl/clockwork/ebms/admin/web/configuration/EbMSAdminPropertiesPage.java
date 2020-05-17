@@ -28,10 +28,10 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.io.IClusterable;
 
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.val;
@@ -45,8 +45,11 @@ import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.admin.web.configuration.ConsolePropertiesFormPanel.ConsolePropertiesFormData;
 import nl.clockwork.ebms.admin.web.configuration.CorePropertiesFormPanel.CorePropertiesFormData;
-import nl.clockwork.ebms.admin.web.configuration.EbMSCorePropertiesPage.EbMSCorePropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.EncryptionPropertiesFormPanel.EncryptionPropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.HttpPropertiesFormPanel.HttpPropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormData;
 import nl.clockwork.ebms.admin.web.configuration.ServicePropertiesFormPanel.ServicePropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.SignaturePropertiesFormData;
 
 @CommonsLog
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -149,8 +152,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
-	@EqualsAndHashCode(callSuper = true)
-	public static class EbMSAdminPropertiesFormData extends EbMSCorePropertiesFormData
+	public static class EbMSAdminPropertiesFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
 		@NonNull
@@ -159,5 +161,13 @@ public class EbMSAdminPropertiesPage extends BasePage
 		CorePropertiesFormData coreProperties = new CorePropertiesFormData();
 		@NonNull
 		ServicePropertiesFormData serviceProperties = new ServicePropertiesFormData();
+		@NonNull
+		HttpPropertiesFormData httpProperties = new HttpPropertiesFormData();
+		@NonNull
+		SignaturePropertiesFormData signatureProperties = new SignaturePropertiesFormData();
+		@NonNull
+		EncryptionPropertiesFormData encryptionProperties = new EncryptionPropertiesFormData();
+		@NonNull
+		JdbcPropertiesFormData jdbcProperties = new JdbcPropertiesFormData();
 	}
 }

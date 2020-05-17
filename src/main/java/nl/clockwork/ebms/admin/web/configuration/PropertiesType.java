@@ -27,7 +27,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 public enum PropertiesType
 {
-	EBMS_ADMIN("ebms-admin.properties"), EBMS_ADMIN_EMBEDDED("ebms-admin.embedded.properties"), EBMS_CORE("ebms-core.properties");
+	EBMS_ADMIN("ebms-admin.properties"), EBMS_ADMIN_EMBEDDED("ebms-admin.embedded.properties");
 	
 	String propertiesFile;
 
