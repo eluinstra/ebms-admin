@@ -28,7 +28,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.admin.PropertyPlaceholderConfigurer;
+import nl.clockwork.ebms.admin.PropertySourcesPlaceholderConfigurer;
 import nl.clockwork.ebms.admin.Utils;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -36,14 +36,14 @@ public class AboutPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="propertyConfigurer")
-	PropertyPlaceholderConfigurer propertyPlaceholderConfigurer;
+	PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer;
 
 	public AboutPage(final PageParameters parameters) throws FileNotFoundException, IOException
 	{
 		super(parameters);
 		add(new WebMarkupContainer("ebms-admin.version").add(new Label("version",Utils.readVersion("/META-INF/maven/nl.clockwork.ebms.admin/ebms-admin/pom.properties"))));
 		add(new WebMarkupContainer("ebms-core.version").add(new Label("version",Utils.readVersion("/META-INF/maven/nl.clockwork.ebms/ebms-core/pom.properties"))));
-		val properties = propertyPlaceholderConfigurer.getProperties();
+		val properties = propertySourcesPlaceholderConfigurer.getProperties();
 		val writer = new StringWriter();
 		Utils.writeProperties(properties,writer);
 		add(new MultiLineLabel("properties",writer.toString()));

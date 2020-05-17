@@ -26,7 +26,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.admin.PropertyPlaceholderConfigurer;
+import nl.clockwork.ebms.admin.PropertySourcesPlaceholderConfigurer;
 import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -34,12 +34,12 @@ public class HomePage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="propertyConfigurer")
-	PropertyPlaceholderConfigurer propertyPlaceholderConfigurer;
+	PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer;
 
 	public HomePage(final PageParameters parameters) throws IOException
 	{
 		super(parameters);
-		val file = propertyPlaceholderConfigurer.getOverridePropertiesFile();
+		val file = propertySourcesPlaceholderConfigurer.getOverridePropertiesFile();
 		add(new WebMarkupContainer("configurationFile.found").add(new Label("configurationFile",file.getFile().getAbsolutePath())).setVisible(file.exists()));
 		add(new WebMarkupContainer("configurationFile.notFound").add(new Label("configurationFile",file.getFile().getAbsolutePath()),new BookmarkablePageLink<Void>("configurationPageLink",EbMSAdminPropertiesPage.class)).setVisible(!file.exists()));
 	}

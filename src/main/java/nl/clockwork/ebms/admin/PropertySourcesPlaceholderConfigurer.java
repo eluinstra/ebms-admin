@@ -15,24 +15,21 @@
  */
 package nl.clockwork.ebms.admin;
 
-import java.util.Collections;
+import java.io.IOException;
 import java.util.Map;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.core.io.Resource;
 
 import lombok.AccessLevel;
+import lombok.val;
 import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PropertyPlaceholderConfigurer extends org.springframework.beans.factory.config.PropertyPlaceholderConfigurer
+public class PropertySourcesPlaceholderConfigurer extends org.springframework.context.support.PropertySourcesPlaceholderConfigurer
 {
 	Resource overridePropertiesFile;
-	Map<String,String> properties;
-
+	
 	@Override
 	public void setLocations(Resource...locations)
 	{
@@ -40,31 +37,15 @@ public class PropertyPlaceholderConfigurer extends org.springframework.beans.fac
 		super.setLocations(locations);
 	}
 	
-	@Override
-	protected void processProperties(ConfigurableListableBeanFactory beanFactoryToProcess, Properties properties) throws BeansException
-	{
-		super.processProperties(beanFactoryToProcess,properties);
-		this.properties = properties.entrySet().stream().collect(Collectors.toMap(e -> (String)e.getKey(),e -> (String)e.getValue()));
-	}
-	
-	@Override
-	protected void convertProperties(Properties properties)
-	{
-		super.convertProperties(properties);
-	}
-
 	public Resource getOverridePropertiesFile()
 	{
 		return overridePropertiesFile;
 	}
 	
-	public Map<String,String> getProperties()
+	public Map<String,String> getProperties() throws IOException
 	{
-		return Collections.unmodifiableMap(properties);
-	}
-	
-	public String getProperty(String name)
-	{
-		return properties.get(name);
+		val properties = mergeProperties();
+		return properties.entrySet().stream()
+				.collect(Collectors.toMap(e -> (String)e.getKey(), e -> (String)e.getValue()));
 	}
 }

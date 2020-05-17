@@ -20,9 +20,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="propertyConfigurer" class="nl.clockwork.ebms.admin.PropertyPlaceholderConfigurer">
+	<bean id="propertyConfigurer" class="nl.clockwork.ebms.admin.PropertySourcesPlaceholderConfigurer">
 		<property name="ignoreResourceNotFound" value="true" />
-		<property name="systemPropertiesMode" value="2" />
 		<property name="locations"> 
 			<list>
 				<value>classpath:nl/clockwork/ebms/default.properties</value>   

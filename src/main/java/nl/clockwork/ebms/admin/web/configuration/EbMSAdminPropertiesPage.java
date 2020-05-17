@@ -37,7 +37,7 @@ import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.apachecommons.CommonsLog;
-import nl.clockwork.ebms.admin.PropertyPlaceholderConfigurer;
+import nl.clockwork.ebms.admin.PropertySourcesPlaceholderConfigurer;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapPanelBorder;
@@ -54,7 +54,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="propertyConfigurer")
-	PropertyPlaceholderConfigurer propertyPlaceholderConfigurer;
+	PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer;
 	PropertiesType propertiesType;
 
 	public EbMSAdminPropertiesPage() throws IOException
@@ -63,7 +63,7 @@ public class EbMSAdminPropertiesPage extends BasePage
 	}
 	public EbMSAdminPropertiesPage(IModel<EbMSAdminPropertiesFormData> model) throws IOException
 	{
-		propertiesType = PropertiesType.getPropertiesType(propertyPlaceholderConfigurer.getOverridePropertiesFile().getFilename());
+		propertiesType = PropertiesType.getPropertiesType(propertySourcesPlaceholderConfigurer.getOverridePropertiesFile().getFilename());
 		add(new BootstrapFeedbackPanel("feedback"));
 		if (model == null)
 		{

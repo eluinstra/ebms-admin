@@ -33,7 +33,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.admin.PropertyPlaceholderConfigurer;
+import nl.clockwork.ebms.admin.PropertySourcesPlaceholderConfigurer;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapPanelBorder;
@@ -50,7 +50,7 @@ public class EbMSCorePropertiesPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="propertyConfigurer")
-	PropertyPlaceholderConfigurer propertyPlaceholderConfigurer;
+	PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer;
 
 	public EbMSCorePropertiesPage() throws IOException
 	{
