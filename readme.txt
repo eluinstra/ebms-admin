@@ -61,6 +61,7 @@ ebms-admin-2.17.0.jar:
 	- restructured classes and packages
 	- using Wicket models instead of objects
 	- lots of other improvements
+- updated libraries
 
 ebms-admin-2.16.6.jar:
 - fixed CXF logging
