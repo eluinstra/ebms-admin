@@ -182,16 +182,16 @@ public class Start
 		return result;
 	}
 
-	private SslContextFactory.Server createSslContextFactory(CommandLine cmd) throws MalformedURLException, IOException
+	private SslContextFactory createSslContextFactory(CommandLine cmd) throws MalformedURLException, IOException
 	{
-		val result = new SslContextFactory.Server();
+		val result = new SslContextFactory();
 		addKeyStore(cmd,result);
 		if (cmd.hasOption("clientAuthentication"))
 			addTrustStore(cmd,result);
 		return result;
 	}
 
-	private void addKeyStore(CommandLine cmd, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
+	private void addKeyStore(CommandLine cmd, SslContextFactory sslContextFactory) throws MalformedURLException, IOException
 	{
 		val keyStoreType = cmd.getOptionValue("keyStoreType",DEFAULT_KEYSTORE_TYPE);
 		val keyStorePath = cmd.getOptionValue("keyStorePath",DEFAULT_KEYSTORE_FILE);
@@ -211,7 +211,7 @@ public class Start
 		}
 	}
 
-	private void addTrustStore(CommandLine cmd, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
+	private void addTrustStore(CommandLine cmd, SslContextFactory sslContextFactory) throws MalformedURLException, IOException
 	{
 		val trustStoreType = cmd.getOptionValue("trustStoreType",DEFAULT_KEYSTORE_TYPE);
 		val trustStorePath = cmd.getOptionValue("trustStorePath");
@@ -232,7 +232,7 @@ public class Start
 		}
 	}
 
-	private ServerConnector createHttpsConnector(CommandLine cmd, SslContextFactory.Server sslContectFactory)
+	private ServerConnector createHttpsConnector(CommandLine cmd, SslContextFactory sslContectFactory)
 	{
 		val connector = new ServerConnector(this.server,sslContectFactory);
 		connector.setHost(cmd.getOptionValue("host") == null ? "0.0.0.0" : cmd.getOptionValue("host"));
