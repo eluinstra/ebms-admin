@@ -79,8 +79,9 @@ public class EbMSAdminPropertiesPage extends BasePage
 			}
 			catch (IOException e)
 			{
-				log.error("",e);
-				error(e.getMessage());
+				model = Model.of(new EbMSAdminPropertiesFormData());
+				log.warn("",e);
+				warn(e.getMessage());
 			}
 		}
 		add(new EbMSAdminPropertiesForm("form",model));

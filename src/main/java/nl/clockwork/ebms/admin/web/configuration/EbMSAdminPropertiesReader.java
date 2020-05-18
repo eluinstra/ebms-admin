@@ -144,17 +144,23 @@ public class EbMSAdminPropertiesReader
 	private void read(Properties properties, SignaturePropertiesFormData signatureProperties) throws MalformedURLException
 	{
 		signatureProperties.setSigning(!StringUtils.isEmpty(properties.getProperty("signature.keystore.path")));
-		signatureProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("signature.keystore.type","JKS").toUpperCase()));
-		signatureProperties.getKeystoreProperties().setUri(properties.getProperty("signature.keystore.path"));
-		signatureProperties.getKeystoreProperties().setPassword(properties.getProperty("signature.keystore.password"));
+		if (signatureProperties.isSigning())
+		{
+			signatureProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("signature.keystore.type","JKS").toUpperCase()));
+			signatureProperties.getKeystoreProperties().setUri(properties.getProperty("signature.keystore.path"));
+			signatureProperties.getKeystoreProperties().setPassword(properties.getProperty("signature.keystore.password"));
+		}
 	}
 
 	private void read(Properties properties, EncryptionPropertiesFormData encryptionProperties) throws MalformedURLException
 	{
 		encryptionProperties.setEncryption(!StringUtils.isEmpty(properties.getProperty("encryption.keystore.path")));
-		encryptionProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("encryption.keystore.type","JKS").toUpperCase()));
-		encryptionProperties.getKeystoreProperties().setUri(properties.getProperty("encryption.keystore.path"));
-		encryptionProperties.getKeystoreProperties().setPassword(properties.getProperty("encryption.keystore.password"));
+		if (encryptionProperties.isEncryption())
+		{
+			encryptionProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("encryption.keystore.type","JKS").toUpperCase()));
+			encryptionProperties.getKeystoreProperties().setUri(properties.getProperty("encryption.keystore.path"));
+			encryptionProperties.getKeystoreProperties().setPassword(properties.getProperty("encryption.keystore.password"));
+		}
 	}
 
 	private void read(Properties properties, JdbcPropertiesFormData jdbcProperties) throws MalformedURLException
