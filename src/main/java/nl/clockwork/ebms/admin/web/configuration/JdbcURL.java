@@ -23,9 +23,9 @@ import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @AllArgsConstructor(staticName = "of")
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class JdbcURL
 {
 	@NonNull

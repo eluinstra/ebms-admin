@@ -163,7 +163,7 @@ public class SslPropertiesFormPanel extends Panel
 		@NonNull
 		List<String> enabledCipherSuites = Collections.emptyList();
 		boolean requireClientAuthentication = true;
-		boolean verifyHostnames = false;
+		boolean verifyHostnames = true;
 		@NonNull
 		JavaKeyStorePropertiesFormData keystoreProperties = new JavaKeyStorePropertiesFormData();
 		@NonNull
