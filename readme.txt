@@ -212,6 +212,10 @@ start with https using keystore keystore.p12
 start using basic authentication
 > java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.StartEmbedded -authentication
 
+start hsqldb and ebms-admin as 2 separate applications:
+> java -cp ebms-admin-2.17.0-SNAPSHOT.jar org.hsqldb.server.Server --database.0 file:hsqldb/ebms --dbname.0 ebms -port 9001
+> java -Djavax.net.ssl.trustStore= -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.StartEmbedded -soap
+
 When you start you can see the following information in the console:
 Using properties files directory: 
 [Server@f0da945]: Database [index=0, id=0, db=file:hsqldb/ebms, alias=ebms] opened successfully in 420 ms.
