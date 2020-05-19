@@ -193,7 +193,7 @@ public class SslPropertiesFormPanel extends Panel
 		private List<String> enabledCipherSuites = new ArrayList<>();
 		private boolean requireClientAuthentication = true;
 		private boolean verifyHostnames = false;
-		private boolean clientCertificateAuthentication = true;
+		private boolean clientCertificateAuthentication = false;
 		private JavaKeyStorePropertiesFormModel keystoreProperties = new JavaKeyStorePropertiesFormModel();
 		private JavaKeyStorePropertiesFormModel truststoreProperties = new JavaKeyStorePropertiesFormModel();
 		private JavaKeyStorePropertiesFormModel clientKeystoreProperties = new JavaKeyStorePropertiesFormModel();
