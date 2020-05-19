@@ -100,7 +100,7 @@ public class BootstrapDateTimePicker extends FormComponentPanel<LocalDateTime>
 				.id("dateTime")
 				.model(new PropertyModel<>(this,"dateTime"))
 				.datePattern(format)
-				.isRequired(() -> BootstrapDateTimePicker.this.isRequired())
+				.isRequired(() -> isRequired())
 				.build();
 		dateTimePicker.add(dateTimeField);
 	}

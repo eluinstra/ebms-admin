@@ -88,8 +88,8 @@ public class DefaultDataSourcesPanel extends DataSourcesPanel
 		public DataSourcesForm(String id)
 		{
 			super(id,new CompoundPropertyModel<>(new DataSourcesModel()));
-			add(new EbMSDataSourceListView("dataSources",DataSourcesForm.this));
-			val dataSourceModalWindow = new DataSourceModalWindow("dataSourceModelWindow",getModelObject().getDataSources(),DataSourcesForm.this);
+			add(new EbMSDataSourceListView("dataSources",this));
+			val dataSourceModalWindow = new DataSourceModalWindow("dataSourceModelWindow",getModelObject().getDataSources(),this);
 			add(dataSourceModalWindow);
 			add(createAddButton("add",dataSourceModalWindow));
 		}

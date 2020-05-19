@@ -77,7 +77,7 @@ public class HttpPropertiesFormPanel extends Panel
 			val result = new TextField<String>(id);
 			result.setLabel(new ResourceModel("lbl.host"));
 			result.add(OnChangeAjaxBehavior.builder()
-					.onUpdate(t -> t.add(HttpPropertiesForm.this.get("url")))
+					.onUpdate(t -> t.add(get("url")))
 					.build());
 			result.setRequired(true);
 			return result;
@@ -88,7 +88,7 @@ public class HttpPropertiesFormPanel extends Panel
 			val result = new TextField<Integer>(id);
 			result.setLabel(new ResourceModel("lbl.port"));
 			result.add(OnChangeAjaxBehavior.builder()
-					.onUpdate(t -> t.add(HttpPropertiesForm.this.get("url")))
+					.onUpdate(t -> t.add(get("url")))
 					.build());
 			return result;
 		}
@@ -102,7 +102,7 @@ public class HttpPropertiesFormPanel extends Panel
 			result.setLabel(new ResourceModel("lbl.path"));
 			result.setRequired(true);
 			result.add(OnChangeAjaxBehavior.builder()
-					.onUpdate(t -> t.add(HttpPropertiesForm.this.get("url")))
+					.onUpdate(t -> t.add(get("url")))
 					.build());
 			return result;
 		}
@@ -113,7 +113,7 @@ public class HttpPropertiesFormPanel extends Panel
 			result.setLabel(new ResourceModel("lbl.ssl"));
 			result.add(AjaxFormComponentUpdatingBehavior.builder()
 					.event("change")
-					.onUpdate(t -> t.add(HttpPropertiesForm.this))
+					.onUpdate(t -> t.add(this))
 					.build());
 			return result;
 		}
@@ -135,7 +135,7 @@ public class HttpPropertiesFormPanel extends Panel
 			result.setLabel(new ResourceModel("lbl.proxy"));
 			result.add(AjaxFormComponentUpdatingBehavior.builder()
 					.event("change")
-					.onUpdate(t -> t.add(HttpPropertiesForm.this))
+					.onUpdate(t -> t.add(this))
 					.build());
 			return result;
 		}
@@ -149,7 +149,6 @@ public class HttpPropertiesFormPanel extends Panel
 					.build();
 			return result;
 		}
-
 	}
 
 	@Data

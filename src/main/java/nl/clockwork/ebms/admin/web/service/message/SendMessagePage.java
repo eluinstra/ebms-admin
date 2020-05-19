@@ -85,13 +85,13 @@ public class SendMessagePage extends BasePage
 		return getLocalizer().getString("messageSend",this);
 	}
 
-	public class MessageForm extends Form<EbMSMessageContextModel>
+	public class MessageForm extends Form<EbMSMessageContextData>
 	{
 		private static final long serialVersionUID = 1L;
 
 		public MessageForm(String id)
 		{
-			super(id,new CompoundPropertyModel<>(new EbMSMessageContextModel()));
+			super(id,new CompoundPropertyModel<>(new EbMSMessageContextData()));
 			setMultiPart(true);
 			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",createCPAIdChoice("cpaId")));
 			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",createFromPartyIdChoice("fromParty.partyId")));
@@ -254,7 +254,7 @@ public class SendMessagePage extends BasePage
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@EqualsAndHashCode(callSuper = true)
-	public class EbMSMessageContextModel extends EbMSMessageContext
+	public class EbMSMessageContextData extends EbMSMessageContext
 	{
 		private static final long serialVersionUID = 1L;
 		final List<String> fromPartyIds = new ArrayList<>();
@@ -263,7 +263,7 @@ public class SendMessagePage extends BasePage
 		final List<String> actions = new ArrayList<>();
 		final List<EbMSDataSource> dataSources = new ArrayList<>();
 
-		public EbMSMessageContextModel()
+		public EbMSMessageContextData()
 		{
 			setFromParty(new Party());
 		}
@@ -354,10 +354,10 @@ public class SendMessagePage extends BasePage
 		public DataSourcesForm(String id, IModel<List<EbMSDataSource>> model)
 		{
 			super(id,model);
-			val dataSources_ = new EbMSDataSourceListView("dataSources",model.getObject(),DataSourcesForm.this);
+			val dataSources_ = new EbMSDataSourceListView("dataSources",model.getObject(),this);
 			dataSources_.setOutputMarkupId(true);
 			add(dataSources_);
-			val dataSourceModalWindow = new DataSourceModalWindow("dataSourceModelWindow",model.getObject(),DataSourcesForm.this);
+			val dataSourceModalWindow = new DataSourceModalWindow("dataSourceModelWindow",model.getObject(),this);
 			add(dataSourceModalWindow);
 			val add = AjaxButton.builder()
 					.id("add")

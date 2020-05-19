@@ -73,7 +73,7 @@ public class BootstrapAlertFeedbackPanel extends FeedbackPanel
 		container.add(new Button("close"));
 		val serializable = message.getMessage();
 		val label = new Label("content",serializable == null ? "" : serializable.toString());
-		label.setEscapeModelStrings(BootstrapAlertFeedbackPanel.this.getEscapeModelStrings());
+		label.setEscapeModelStrings(getEscapeModelStrings());
 		container.add(label);
 		return container;
 	}

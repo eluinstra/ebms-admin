@@ -60,7 +60,7 @@ public class SignaturePropertiesFormPanel extends Panel
 			result.setLabel(new ResourceModel("lbl.signing"));
 			result.add(AjaxFormComponentUpdatingBehavior.builder()
 					.event("change")
-					.onUpdate(t -> t.add(SignaturePropertiesForm.this))
+					.onUpdate(t -> t.add(this))
 					.build());
 			return result;
 		}

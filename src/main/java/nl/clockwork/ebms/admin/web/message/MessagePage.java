@@ -176,7 +176,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 	{
 		val result = Link.<Void>builder()
 				.id(id)
-				.onClick(() -> setResponsePage(new MessagePage(MessageDataModel.of(ebMSDAO,ebMSDAO.findMessage(getModelObject().getRefToMessageId())),MessagePage.this)))
+				.onClick(() -> setResponsePage(new MessagePage(MessageDataModel.of(ebMSDAO,ebMSDAO.findMessage(getModelObject().getRefToMessageId())),this)))
 				.build();
 		result.add(new Label("refToMessageId"));
 		return result;
@@ -198,7 +198,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 	{
 		val result = AjaxLink.<Void>builder()
 				.id(id)
-				.onClick(t -> setResponsePage(new MessagePage(Model.of(ebMSDAO.findResponseMessage(getModelObject().getMessageId())),MessagePage.this)))
+				.onClick(t -> setResponsePage(new MessagePage(Model.of(ebMSDAO.findResponseMessage(getModelObject().getMessageId())),this)))
 				.build();
 		result.setEnabled(
 				EnumSet.of(EbMSMessageStatus.RECEIVED,EbMSMessageStatus.PROCESSED,EbMSMessageStatus.DELIVERED,EbMSMessageStatus.FAILED,EbMSMessageStatus.DELIVERY_FAILED)
@@ -250,7 +250,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 			t.add(content);
 		};
 		val result = new AjaxLink<String>(id,onClick);
-		result.add(new Label("label",StringModel.of(() -> MessagePage.this.getLocalizer().getString(showContent ? "cmd.hide" : "cmd.show",MessagePage.this))));
+		result.add(new Label("label",StringModel.of(() -> getLocalizer().getString(showContent ? "cmd.hide" : "cmd.show",this))));
 		return result;
 	}
 

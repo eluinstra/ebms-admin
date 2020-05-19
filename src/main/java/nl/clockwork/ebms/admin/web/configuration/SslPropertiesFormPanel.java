@@ -89,7 +89,7 @@ public class SslPropertiesFormPanel extends Panel
 			checkBox.setLabel(new ResourceModel("lbl.overrideDefaultProtocols"));
 			checkBox.add(AjaxFormComponentUpdatingBehavior.builder()
 					.event("change")
-					.onUpdate(t -> t.add(SslPropertiesForm.this))
+					.onUpdate(t -> t.add(this))
 					.build());
 			result.add(checkBox);
 			return result;
@@ -117,7 +117,7 @@ public class SslPropertiesFormPanel extends Panel
 			checkBox.setLabel(new ResourceModel("lbl.overrideDefaultCipherSuites"));
 			checkBox.add(AjaxFormComponentUpdatingBehavior.builder()
 					.event("change")
-					.onUpdate(t -> t.add(SslPropertiesForm.this))
+					.onUpdate(t -> t.add(this))
 					.build());
 			result.add(checkBox);
 			return result;
@@ -142,7 +142,7 @@ public class SslPropertiesFormPanel extends Panel
 			result.setLabel(new ResourceModel("lbl.requireClientAuthentication"));
 			result.add(AjaxFormComponentUpdatingBehavior.builder()
 					.event("change")
-					.onUpdate(t -> t.add(SslPropertiesForm.this))
+					.onUpdate(t -> t.add(this))
 					.build());
 			return result;
 		}

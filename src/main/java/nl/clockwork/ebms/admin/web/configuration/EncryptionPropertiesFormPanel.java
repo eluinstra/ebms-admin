@@ -60,7 +60,7 @@ public class EncryptionPropertiesFormPanel extends Panel
 			result.setLabel(new ResourceModel("lbl.encryption"));
 			result.add(AjaxFormComponentUpdatingBehavior.builder()
 					.event("change")
-					.onUpdate(t -> t.add(EncryptionPropertiesForm.this))
+					.onUpdate(t -> t.add(this))
 					.build());
 			return result;
 		}

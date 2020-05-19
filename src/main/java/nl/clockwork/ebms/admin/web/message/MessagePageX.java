@@ -323,7 +323,7 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 			t.add(content);
 		};
 		val result = new AjaxLink<String>(id,onClick);
-		result.add(new Label("label",StringModel.of(() -> MessagePageX.this.getLocalizer().getString(showContent ? "cmd.hide" : "cmd.show",MessagePageX.this))));
+		result.add(new Label("label",StringModel.of(() -> getLocalizer().getString(showContent ? "cmd.hide" : "cmd.show",this))));
 		return result;
 	}
 

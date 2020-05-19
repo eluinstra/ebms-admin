@@ -66,12 +66,12 @@ public class ServicePropertiesFormPanel extends Panel
 				{
 					val o = getModelObject();
 					Utils.testEbMSUrl(o.getUrl());
-					info(ServicePropertiesForm.this.getString("test.ok"));
+					info(getString("test.ok"));
 				}
 				catch (Exception e)
 				{
 					log.error("",e);
-					error(new StringResourceModel("test.nok",ServicePropertiesForm.this,Model.of(e)).getString());
+					error(new StringResourceModel("test.nok",this,Model.of(e)).getString());
 				}
 			};
 			return new Button(id,new ResourceModel("cmd.test"),action);

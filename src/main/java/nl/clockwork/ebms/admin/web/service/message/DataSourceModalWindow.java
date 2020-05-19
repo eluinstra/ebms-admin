@@ -136,7 +136,7 @@ public class DataSourceModalWindow extends ModalWindow
 				{
 					if (t != null)
 					{
-						t.add(DataSourceForm.this);
+						t.add(this);
 					}
 				};
 				val result = AjaxButton.builder()

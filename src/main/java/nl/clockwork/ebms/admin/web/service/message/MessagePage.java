@@ -118,7 +118,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		Action onClick = () -> setResponsePage(
 				new MessagePage(
 						Model.of(ebMSMessageService.getMessage(getModelObject().getContext().getRefToMessageId(),null)),
-						MessagePage.this,
+						this,
 						messageProcessor));
 		val result = new Link<Void>(id,onClick);
 		result.add(new Label("context.refToMessageId"));

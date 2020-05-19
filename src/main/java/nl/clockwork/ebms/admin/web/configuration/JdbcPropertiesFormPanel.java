@@ -97,8 +97,8 @@ public class JdbcPropertiesFormPanel extends Panel
 			Consumer<AjaxRequestTarget> action = t ->
 			{
 				if (!o.getDriver().getDriverClassName().equals(JdbcDriver.HSQLDB.getDriverClassName()) && !classExists(o.getDriver().getDriverClassName()))
-					error(JdbcPropertiesForm.this.getString("driver.jdbc.missing",getModel()));
-				t.add(JdbcPropertiesFormPanel.this.get("feedback"));
+					error(getString("driver.jdbc.missing",getModel()));
+				t.add(get("feedback"));
 				t.add(getURLComponent());
 			};
 			result.add(OnChangeAjaxBehavior.builder()
@@ -160,12 +160,12 @@ public class JdbcPropertiesFormPanel extends Panel
 				{
 					val o = getModelObject();
 					Utils.testJdbcConnection(o.getDriver().getDriverClassName(),o.getUrl(),o.getUsername(),o.getPassword());
-					info(JdbcPropertiesForm.this.getString("test.ok"));
+					info(getString("test.ok"));
 				}
 				catch (Exception e)
 				{
 					log.error("",e);
-					error(new StringResourceModel("test.nok",JdbcPropertiesForm.this,Model.of(e)).getString());
+					error(new StringResourceModel("test.nok",this,Model.of(e)).getString());
 				}
 			};
 			return new Button(id,new ResourceModel("cmd.test"),onSubmit);

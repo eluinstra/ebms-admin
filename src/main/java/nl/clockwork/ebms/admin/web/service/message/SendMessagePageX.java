@@ -84,14 +84,14 @@ public class SendMessagePageX extends BasePage
 	}
 
 	@FieldDefaults(level = AccessLevel.PRIVATE)
-	public class MessageForm extends Form<EbMSMessageContextModel>
+	public class MessageForm extends Form<EbMSMessageContextData>
 	{
 		private static final long serialVersionUID = 1L;
 		DataSourcesPanel dataSources;
 
 		public MessageForm(String id)
 		{
-			super(id,new CompoundPropertyModel<>(new EbMSMessageContextModel()));
+			super(id,new CompoundPropertyModel<>(new EbMSMessageContextData()));
 			setMultiPart(true);
 			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",createCPAIdChoice("cpaId")));
 			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",createFromPartyIdChoice("fromParty.partyId")));
@@ -356,7 +356,7 @@ public class SendMessagePageX extends BasePage
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@EqualsAndHashCode(callSuper = true)
-	public class EbMSMessageContextModel extends EbMSMessageContext
+	public class EbMSMessageContextData extends EbMSMessageContext
 	{
 		private static final long serialVersionUID = 1L;
 		final List<String> fromPartyIds = new ArrayList<>();
@@ -367,7 +367,7 @@ public class SendMessagePageX extends BasePage
 		final List<String> actions = new ArrayList<>();
 		boolean rawInput;
 
-		public EbMSMessageContextModel()
+		public EbMSMessageContextData()
 		{
 			setFromParty(new Party());
 			setToParty(new Party());

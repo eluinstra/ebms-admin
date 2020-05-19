@@ -95,12 +95,12 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 				{
 					val o = getModelObject();
 					Utils.testKeyStore(o.getType(),o.getUri(),o.getPassword(),o.getDefaultAlias(),showDefaultAlias);
-					info(JavaKeyStorePropertiesForm.this.getString("test.ok"));
+					info(getString("test.ok"));
 				}
 				catch (Exception e)
 				{
 					log.error("",e);
-					error(new StringResourceModel("test.nok",JavaKeyStorePropertiesForm.this,Model.of(e)).getString());
+					error(new StringResourceModel("test.nok",this,Model.of(e)).getString());
 				}
 			};
 			return new Button(id,new ResourceModel("cmd.test"),action);

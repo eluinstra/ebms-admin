@@ -113,7 +113,7 @@ public class CorePropertiesFormPanel extends Panel
 			checkBox.setLabel(new ResourceModel("lbl.startEmbeddedBroker"));
 			checkBox.add(AjaxFormComponentUpdatingBehavior.builder()
 					.event("change")
-					.onUpdate(t -> t.add(CorePropertiesForm.this))
+					.onUpdate(t -> t.add(this))
 					.build());
 			result.add(checkBox);
 			result.add(createActiveMQConfigFileContainer("activeMQConfigFileContainer",enableConsoleProperties));
@@ -149,7 +149,7 @@ public class CorePropertiesFormPanel extends Panel
 			result.setRequired(true);
 			result.add(AjaxFormComponentUpdatingBehavior.builder()
 					.event("change")
-					.onUpdate(t -> t.add(CorePropertiesForm.this))
+					.onUpdate(t -> t.add(this))
 					.build());
 			return result;
 		}
