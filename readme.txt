@@ -137,7 +137,7 @@ usage: Start [-authentication] [-clientAuthentication]
        [-clientTrustStorePath <arg>] [-clientTrustStoreType <arg>] [-h]
        [-headless] [-host <arg>] [-hsqldb] [-hsqldbDir <arg>] [-jmx]
        [-keyStorePassword <arg>] [-keyStorePath <arg>] [-keyStoreType
-       <arg>] [-path <arg>] [-port <arg>] [-propertiesFilesDir <arg>]
+       <arg>] [-path <arg>] [-port <arg>] [-configDir <arg>]
        [-soap] [-ssl] [-trustStorePassword <arg>] [-trustStorePath <arg>]
        [-trustStoreType <arg>]
  -authentication                   use basic / client certificate
@@ -159,7 +159,7 @@ usage: Start [-authentication] [-clientAuthentication]
  -keyStoreType <arg>               set keystore type (deault=PKCS12)
  -path <arg>                       set path
  -port <arg>                       set port
- -propertiesFilesDir <arg>         set properties files directory
+ -configDir <arg>                  set config directory
                                    (default=current dir)
  -soap                             start soap service
  -ssl                              use ssl
@@ -182,11 +182,11 @@ start with soap interface:
 start with soap interface and without a web interface:
 > java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.StartEmbedded -soap -headless
 
-start with properties files directory properties/
-> java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.StartEmbedded -propertiesFilesDir properties/
+start with config directory config/
+> java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.StartEmbedded -configDir config/
 
-start with a log4j2 file properties/log4j2.xml:
-> java -Dlog4j.configurationFile=properties/log4j2.xml -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.StartEmbedded
+start with a log4j2 file config/log4j2.xml:
+> java -Dlog4j.configurationFile=config/log4j2.xml -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.StartEmbedded
 
 start without using the default java truststore:
 > java -Djavax.net.ssl.trustStore= -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.StartEmbedded
@@ -217,7 +217,7 @@ start hsqldb and ebms-admin as 2 separate applications:
 > java -Djavax.net.ssl.trustStore= -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.StartEmbedded -soap
 
 When you start you can see the following information in the console:
-Using properties files directory: 
+Using config directory: 
 [Server@f0da945]: Database [index=0, id=0, db=file:hsqldb/ebms, alias=ebms] opened successfully in 420 ms.
 [Server@f0da945]: Startup sequence completed in 424 ms.
 [Server@f0da945]: 2019-12-27 15:07:57.319 HSQLDB server 2.5.0 is online on port 9001
@@ -235,7 +235,7 @@ Starting web server...
 
 Next configure the remote EbMS service in http://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage
 
-If you want to override 'advanced' properties from the default.properties file that are not included in the ebms-admin.embedded.properties file, then create the file ebms-admin.embedded.advanced.properties in the propertiesFilesDir and add the properties to that file.
+If you want to override 'advanced' properties from the default.properties file that are not included in the ebms-admin.embedded.properties file, then create the file ebms-admin.embedded.advanced.properties in the configDir and add the properties to that file.
 
 =====================================
 = Start EbMS Admin Console standalone
@@ -247,7 +247,7 @@ usage: Start [-authentication] [-clientAuthentication]
        [-clientTrustStorePath <arg>] [-clientTrustStoreType <arg>] [-h]
        [-host <arg>] [-jmx] [-keyStorePassword <arg>] [-keyStorePath
        <arg>] [-keyStoreType <arg>] [-path <arg>] [-port <arg>]
-       [-propertiesFilesDir <arg>] [-ssl] [-trustStorePassword <arg>]
+       [-configDir <arg>] [-ssl] [-trustStorePassword <arg>]
        [-trustStorePath <arg>] [-trustStoreType <arg>]
  -authentication                   use basic / client certificate
                                    authentication
@@ -265,7 +265,7 @@ usage: Start [-authentication] [-clientAuthentication]
  -keyStoreType <arg>               set keystore type (deault=PKCS12)
  -path <arg>                       set path
  -port <arg>                       set port
- -propertiesFilesDir <arg>         set properties files directory
+ -configDir <arg>                  set config directory
  -ssl                              use ssl
  -trustStorePassword <arg>         set truststore password
  -trustStorePath <arg>             set truststore path

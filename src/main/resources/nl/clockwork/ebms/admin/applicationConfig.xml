@@ -25,8 +25,8 @@
 		<property name="locations"> 
 			<list>
 				<value>classpath:nl/clockwork/ebms/admin/default.properties</value>   
-				<value>file:${ebms.propertiesFilesDir}ebms-admin.embedded.advanced.properties</value>
-				<value>file:${ebms.propertiesFilesDir}ebms-admin.embedded.properties</value>
+				<value>file:${ebms.configDir}ebms-admin.embedded.advanced.properties</value>
+				<value>file:${ebms.configDir}ebms-admin.embedded.properties</value>
 			</list>
 		</property>
 	</bean>

@@ -135,7 +135,7 @@ public class Start
 		result.addOption("clientTrustStoreType",true,"set client truststore type (deault=" + DEFAULT_KEYSTORE_TYPE + ")");
 		result.addOption("clientTrustStorePath",true,"set client truststore path");
 		result.addOption("clientTrustStorePassword",true,"set client truststore password");
-		result.addOption("propertiesFilesDir",true,"set properties files directory (default=current dir)");
+		result.addOption("configDir",true,"set config directory (default=current dir)");
 		result.addOption("jmx",false,"start mbean server");
 		return result;
 	}
@@ -152,9 +152,9 @@ public class Start
 
 	protected void init(CommandLine cmd)
 	{
-		val propertiesFilesDir = cmd.getOptionValue("propertiesFilesDir","");
-		System.setProperty("ebms.propertiesFilesDir",propertiesFilesDir);
-		System.out.println("Using properties files directory: " + propertiesFilesDir);
+		val configDir = cmd.getOptionValue("configDir","");
+		System.setProperty("ebms.configDir",configDir);
+		System.out.println("Using config directory: " + configDir);
 	}
 
 	protected void initWebServer(CommandLine cmd, Server server) throws MalformedURLException, IOException
