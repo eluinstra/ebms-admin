@@ -24,6 +24,8 @@ These properties van be edited in ebms-admin.embedded.properties if available an
 = Release Notes
 ===============
 ebms-admin-2.17.0.jar:
+- renamed command line argument propertiesFilesDir by configDir
+- removed property log4j.file (use -Dlog4j.configurationFile=log4j2.xml instead)
 - split up CPAService into CPAService and URLMapper
 - added new SOAP service CertificateMapper
 - updated EbMS Admin Properties Page
@@ -182,11 +184,11 @@ start with soap interface:
 start with soap interface and without a web interface:
 > java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.StartEmbedded -soap -headless
 
-start with config directory config/
-> java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.StartEmbedded -configDir config/
+start with config directory conf/
+> java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.StartEmbedded -configDir conf/
 
-start with a log4j2 file config/log4j2.xml:
-> java -Dlog4j.configurationFile=config/log4j2.xml -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.StartEmbedded
+start with a log4j2 file conf/log4j2.xml:
+> java -Dlog4j.configurationFile=conf/log4j2.xml -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.StartEmbedded
 
 start without using the default java truststore:
 > java -Djavax.net.ssl.trustStore= -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.StartEmbedded
