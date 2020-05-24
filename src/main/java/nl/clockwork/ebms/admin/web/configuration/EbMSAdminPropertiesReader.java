@@ -76,7 +76,6 @@ public class EbMSAdminPropertiesReader
 	private void read(Properties properties, ConsolePropertiesFormData consoleProperties) throws MalformedURLException
 	{
 		consoleProperties.setMaxItemsPerPage(Integer.parseInt(properties.getProperty("maxItemsPerPage")));
-		consoleProperties.setLog4jPropertiesFile(StringUtils.defaultString(properties.getProperty("log4j.file")).replaceFirst("file:",""));
 	}
 
 	private void read(Properties properties, ServicePropertiesFormData serviceProperties) throws MalformedURLException

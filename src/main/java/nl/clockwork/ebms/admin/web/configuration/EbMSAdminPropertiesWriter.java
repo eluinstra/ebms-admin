@@ -70,7 +70,6 @@ public class EbMSAdminPropertiesWriter
   private void write(Properties properties, ConsolePropertiesFormData consoleProperties)
   {
 		properties.setProperty("maxItemsPerPage",Integer.toString(consoleProperties.getMaxItemsPerPage()));
-		properties.setProperty("log4j.file",consoleProperties.getLog4jPropertiesFile() != null ? "file:" + consoleProperties.getLog4jPropertiesFile() : "");
   }
 
   private void write(Properties properties, ServicePropertiesFormData serviceProperties)
