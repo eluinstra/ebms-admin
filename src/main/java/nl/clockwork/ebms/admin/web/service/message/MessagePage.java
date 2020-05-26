@@ -34,7 +34,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
@@ -46,7 +46,7 @@ import nl.clockwork.ebms.service.EbMSMessageService;
 import nl.clockwork.ebms.service.model.EbMSDataSource;
 import nl.clockwork.ebms.service.model.EbMSMessageContent;
 
-@CommonsLog
+@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MessagePage extends BasePage implements IGenericComponent<EbMSMessageContent,MessagePage>
 {

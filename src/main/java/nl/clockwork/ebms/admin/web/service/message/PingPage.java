@@ -35,7 +35,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.Action;
@@ -51,7 +51,7 @@ import nl.clockwork.ebms.jaxb.JAXBParser;
 import nl.clockwork.ebms.service.EbMSMessageService;
 import nl.clockwork.ebms.service.cpa.CPAService;
 
-@CommonsLog
+@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PingPage extends BasePage
 {

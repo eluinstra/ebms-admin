@@ -29,7 +29,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
@@ -40,7 +40,7 @@ import nl.clockwork.ebms.admin.web.PageClassLink;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.service.cpa.CPAService;
 
-@CommonsLog
+@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CPAsPage extends BasePage
 {

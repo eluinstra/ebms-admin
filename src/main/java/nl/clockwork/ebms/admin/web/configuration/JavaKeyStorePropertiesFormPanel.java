@@ -36,14 +36,14 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.Supplier;
 import nl.clockwork.ebms.security.KeyStoreType;
 
-@CommonsLog
+@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JavaKeyStorePropertiesFormPanel extends Panel
 {

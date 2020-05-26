@@ -36,7 +36,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 import nl.clockwork.ebms.admin.PropertySourcesPlaceholderConfigurer;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
@@ -51,7 +51,7 @@ import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPro
 import nl.clockwork.ebms.admin.web.configuration.ServicePropertiesFormPanel.ServicePropertiesFormData;
 import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.SignaturePropertiesFormData;
 
-@CommonsLog
+@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EbMSAdminPropertiesPage extends BasePage
 {

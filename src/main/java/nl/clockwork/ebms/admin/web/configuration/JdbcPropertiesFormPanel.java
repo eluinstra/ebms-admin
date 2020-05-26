@@ -41,7 +41,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
@@ -49,7 +49,7 @@ import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.Consumer;
 import nl.clockwork.ebms.admin.web.OnChangeAjaxBehavior;
 
-@CommonsLog
+@Slf4j
 public class JdbcPropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;

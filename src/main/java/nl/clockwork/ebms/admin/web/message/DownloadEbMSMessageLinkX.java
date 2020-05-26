@@ -29,11 +29,11 @@ import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.resource.IResourceStream;
 
 import lombok.val;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.Utils;
 
-@CommonsLog
+@Slf4j
 public class DownloadEbMSMessageLinkX extends Link<EbMSMessage>
 {
 	private static final long serialVersionUID = 1L;

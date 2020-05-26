@@ -38,7 +38,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.Action;
@@ -61,7 +61,7 @@ import nl.clockwork.ebms.service.model.EbMSMessageContent;
 import nl.clockwork.ebms.service.model.EbMSMessageContext;
 import nl.clockwork.ebms.service.model.Party;
 
-@CommonsLog
+@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SendMessagePageX extends BasePage
 {

@@ -34,14 +34,14 @@ import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.resource.IResourceStream;
 
 import lombok.val;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.message.ByteArrayResourceStream;
 import nl.clockwork.ebms.jaxb.JAXBParser;
 import nl.clockwork.ebms.service.model.EbMSMessageContent;
 import nl.clockwork.ebms.service.model.EbMSMessageContext;
 
-@CommonsLog
+@Slf4j
 public class DownloadEbMSMessageContentLink extends Link<EbMSMessageContent>
 {
 	private static final long serialVersionUID = 1L;

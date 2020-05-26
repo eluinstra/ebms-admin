@@ -26,7 +26,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
@@ -36,7 +36,7 @@ import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.service.cpa.url.URLMapping;
 import nl.clockwork.ebms.service.cpa.url.URLMappingService;
 
-@CommonsLog
+@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class URLMappingPage extends BasePage
 {

@@ -24,9 +24,9 @@ import org.apache.wicket.util.encoding.UrlEncoder;
 import org.apache.wicket.util.resource.IResourceStream;
 
 import lombok.val;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 
-@CommonsLog
+@Slf4j
 public class DownloadActiveMQFileLink extends Link<Void>
 {
 	private static final long serialVersionUID = 1L;

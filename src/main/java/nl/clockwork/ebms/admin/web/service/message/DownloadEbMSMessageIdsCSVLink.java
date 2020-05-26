@@ -32,13 +32,13 @@ import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.message.ByteArrayResourceStream;
 import nl.clockwork.ebms.service.EbMSMessageService;
 import nl.clockwork.ebms.service.model.EbMSMessageContext;
 
-@CommonsLog
+@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DownloadEbMSMessageIdsCSVLink extends Link<Void>
 {
