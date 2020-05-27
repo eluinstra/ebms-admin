@@ -18,10 +18,7 @@ package nl.clockwork.ebms.admin;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Map;
@@ -31,7 +28,6 @@ import javax.servlet.DispatcherType;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.common.logging.LogUtils;
 import org.eclipse.jetty.server.Server;
@@ -39,6 +35,8 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.Location;
 import org.hsqldb.persist.HsqlProperties;
 import org.hsqldb.server.EbMSServerProperties;
 import org.hsqldb.server.ServerAcl.AclFormatException;
@@ -50,8 +48,8 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 
 import lombok.AccessLevel;
 import lombok.val;
+import lombok.var;
 import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.admin.web.ExtensionProvider;
 import nl.clockwork.ebms.admin.web.configuration.JdbcURL;
 
 @FieldDefaults(level = AccessLevel.PROTECTED)
@@ -102,6 +100,7 @@ public class StartEmbedded extends Start
 		val result = Start.createOptions();
 		result.addOption("hsqldb",false,"start hsqldb server");
 		result.addOption("hsqldbDir",true,"set hsqldb location (default: hsqldb)");
+		result.addOption("baselineVersion",true,"set baselineVersion for db update (default: none)");
 		result.addOption("soap",false,"start soap service");
 		result.addOption("headless",false,"start without web interface");
 		return result;
@@ -152,44 +151,24 @@ public class StartEmbedded extends Start
 		org.hsqldb.server.Server server = new org.hsqldb.server.Server();
 		server.setProperties(props);
 		server.start();
-		initDatabase(server);
+		initDatabase(server,cmd.getOptionValue("baselineVersion"));
 	}
 
-	private void initDatabase(org.hsqldb.server.Server server)
+	private void initDatabase(org.hsqldb.server.Server server, String baselineVersion)
 	{
-    try (val c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost:" + server.getPort() + "/" + server.getDatabaseName(0,true), "sa", ""))
-		{
-			if (!c.createStatement().executeQuery("select table_name from information_schema.tables where table_name = 'CPA'").next())
-			{
-				c.createStatement().executeUpdate(IOUtils.toString(this.getClass().getResourceAsStream("/nl/clockwork/ebms/admin/database/hsqldb.sql"),Charset.defaultCharset()));
-				System.out.println("EbMS tables created");
-			}
-			else
-				System.out.println("EbMS tables already exist");
-			ExtensionProvider.get().stream()
-					.filter(p -> StringUtils.isNotEmpty(p.getHSQLDBFile()))
-					.forEach(p -> executeSQLFile(c,p));
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-	private void executeSQLFile(Connection c, ExtensionProvider provider)
-	{
-		try
-		{
-			c.createStatement().executeUpdate(IOUtils.toString(this.getClass().getResourceAsStream(provider.getHSQLDBFile()),Charset.defaultCharset()));
-			System.out.println(provider.getName() + " tables created");
-		}
-		catch (Exception e)
-		{
-			if (e.getMessage().contains("already exists"))
-				System.out.println(provider.getName() + " tables already exist");
-			else
-				e.printStackTrace();
-		}
+		val url = "jdbc:hsqldb:hsql://localhost:" + server.getPort() + "/" + server.getDatabaseName(0,true);
+		val user = "sa";
+		val password = "";
+		Location[] locations = {new Location("classpath:/nl/clockwork/ebms/db/migration/hsqldb")};
+		var config = Flyway.configure()
+				.dataSource(url,user,password)
+				.locations(locations)
+				.ignoreMissingMigrations(true);
+		if (StringUtils.isNotEmpty(baselineVersion))
+				config = config
+						.baselineVersion(baselineVersion)
+						.baselineOnMigrate(true);
+		config.load().migrate();
 	}
 
 	private void initEbMSServer(Map<String,String> properties, Server server) throws MalformedURLException, IOException
