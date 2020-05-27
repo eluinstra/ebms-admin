@@ -28,6 +28,7 @@ import javax.servlet.DispatcherType;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.common.logging.LogUtils;
 import org.eclipse.jetty.server.Server;
@@ -50,6 +51,7 @@ import lombok.AccessLevel;
 import lombok.val;
 import lombok.var;
 import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.admin.DBMigrate.BaselineVersion;
 import nl.clockwork.ebms.admin.web.configuration.JdbcURL;
 
 @FieldDefaults(level = AccessLevel.PROTECTED)
@@ -100,7 +102,7 @@ public class StartEmbedded extends Start
 		val result = Start.createOptions();
 		result.addOption("hsqldb",false,"start hsqldb server");
 		result.addOption("hsqldbDir",true,"set hsqldb location (default: hsqldb)");
-		result.addOption("baselineVersion",true,"set baselineVersion for db update (default: none)");
+		result.addOption("ebmsVersion",true,"set ebmsVersion for db update (default: none)");
 		result.addOption("soap",false,"start soap service");
 		result.addOption("headless",false,"start without web interface");
 		return result;
@@ -115,7 +117,7 @@ public class StartEmbedded extends Start
 		}
 	}
 
-	private void initHSQLDB(CommandLine cmd, Map<String,String> properties) throws IOException, AclFormatException, URISyntaxException
+	private void initHSQLDB(CommandLine cmd, Map<String,String> properties) throws IOException, AclFormatException, URISyntaxException, ParseException
 	{
 		if ("org.hsqldb.jdbcDriver".equals(properties.get("ebms.jdbc.driverClassName")) && cmd.hasOption("hsqldb"))
 		{
@@ -130,7 +132,7 @@ public class StartEmbedded extends Start
 		}
 	}
 
-	public void startHSQLDBServer(CommandLine cmd, JdbcURL jdbcURL) throws IOException, AclFormatException, URISyntaxException
+	public void startHSQLDBServer(CommandLine cmd, JdbcURL jdbcURL) throws IOException, AclFormatException, URISyntaxException, ParseException
 	{
 		val options = new ArrayList<>();
 		options.add("-database.0");
@@ -151,10 +153,10 @@ public class StartEmbedded extends Start
 		org.hsqldb.server.Server server = new org.hsqldb.server.Server();
 		server.setProperties(props);
 		server.start();
-		initDatabase(server,cmd.getOptionValue("baselineVersion"));
+		initDatabase(server,cmd.getOptionValue("ebmsVersion"));
 	}
 
-	private void initDatabase(org.hsqldb.server.Server server, String baselineVersion)
+	private void initDatabase(org.hsqldb.server.Server server, String ebmsVersion) throws ParseException
 	{
 		val url = "jdbc:hsqldb:hsql://localhost:" + server.getPort() + "/" + server.getDatabaseName(0,true);
 		val user = "sa";
@@ -164,9 +166,9 @@ public class StartEmbedded extends Start
 				.dataSource(url,user,password)
 				.locations(locations)
 				.ignoreMissingMigrations(true);
-		if (StringUtils.isNotEmpty(baselineVersion))
+		if (StringUtils.isNotEmpty(ebmsVersion))
 				config = config
-						.baselineVersion(baselineVersion)
+						.baselineVersion(BaselineVersion.getBaselineVersion(ebmsVersion).orElseThrow(() -> new ParseException("ebmsVersion " + ebmsVersion + " not found!")))
 						.baselineOnMigrate(true);
 		config.load().migrate();
 	}
