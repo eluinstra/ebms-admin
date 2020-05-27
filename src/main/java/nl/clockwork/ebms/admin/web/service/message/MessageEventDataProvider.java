@@ -48,7 +48,7 @@ public class MessageEventDataProvider implements IDataProvider<EbMSMessageEvent>
 	@Override
 	public Iterator<? extends EbMSMessageEvent> iterator(long first, long count)
 	{
-		val messageEvents = Utils.toList(ebMSMessageService.getMessageEvents(filter,eventTypes,(int)(first+count)));
+		val messageEvents = Utils.toList(ebMSMessageService.getUnprocessedMessageEvents(filter,eventTypes,(int)(first+count)));
 		return messageEvents == null ? new ArrayList<EbMSMessageEvent>().iterator() : messageEvents.listIterator((int)first);
 	}
 
@@ -61,7 +61,7 @@ public class MessageEventDataProvider implements IDataProvider<EbMSMessageEvent>
 	@Override
 	public long size()
 	{
-		val messageEvents = Utils.toList(ebMSMessageService.getMessageEvents(filter,eventTypes,null));
+		val messageEvents = Utils.toList(ebMSMessageService.getUnprocessedMessageEvents(filter,eventTypes,null));
 		return messageEvents == null ? 0 : messageEvents.size();
 	}
 

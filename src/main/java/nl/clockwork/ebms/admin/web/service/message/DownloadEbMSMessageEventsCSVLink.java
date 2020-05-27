@@ -70,7 +70,7 @@ public class DownloadEbMSMessageEventsCSVLink extends Link<Void>
 			val output = new ByteArrayOutputStream();
 			try (val printer = new CSVPrinter(new OutputStreamWriter(output),CSVFormat.DEFAULT))
 			{
-				val messageEvents = Utils.toList(ebMSMessageService.getMessageEvents(filter.getObject(),eventTypes,null));
+				val messageEvents = Utils.toList(ebMSMessageService.getUnprocessedMessageEvents(filter.getObject(),eventTypes,null));
 				if (messageEvents != null)
 					printMessagesToCSV(printer,messageEvents);
 			}

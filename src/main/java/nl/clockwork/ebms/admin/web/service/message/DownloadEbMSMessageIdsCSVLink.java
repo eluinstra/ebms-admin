@@ -62,7 +62,7 @@ public class DownloadEbMSMessageIdsCSVLink extends Link<Void>
 			val output = new ByteArrayOutputStream();
 			try (val printer = new CSVPrinter(new OutputStreamWriter(output),CSVFormat.DEFAULT))
 			{
-				val messageIds = Utils.toList(ebMSMessageService.getMessageIds(filter.getObject(),null));
+				val messageIds = Utils.toList(ebMSMessageService.getUnprocessedMessageIds(filter.getObject(),null));
 				if (messageIds != null)
 					printMessagesToCSV(printer,messageIds);
 			}
