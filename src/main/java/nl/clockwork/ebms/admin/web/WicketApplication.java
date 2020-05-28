@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.core.request.handler.PageProvider;
 import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
 import org.apache.wicket.markup.html.WebPage;
@@ -54,12 +53,12 @@ public class WicketApplication extends WebApplication
 	@NonNull
 	Integer maxItemsPerPage;
 	@NonNull
-	String eventListenerType;
+	EventListenerType eventListenerType;
 	List<MenuItem> menuItems = new ArrayList<>();
 	Map<String,MessageProvider.MessageViewPanel> messageViewPanels = new HashMap<>();
 	Map<String,MessageProvider.MessageEditPanel> messageEditPanels = new HashMap<>();
 	
-	public WicketApplication(@NonNull Integer maxItemsPerPage, @NonNull String eventListenerType)
+	public WicketApplication(@NonNull Integer maxItemsPerPage, @NonNull EventListenerType eventListenerType)
 	{
 		this.maxItemsPerPage = maxItemsPerPage;
 		this.eventListenerType = eventListenerType;
@@ -102,7 +101,7 @@ public class WicketApplication extends WebApplication
 		new MenuLinkItem(result,"1","ping",nl.clockwork.ebms.admin.web.service.message.PingPage.class);
 		new MenuDivider(result,"2");
 		new MenuLinkItem(result,"3","unprocessedMessages",nl.clockwork.ebms.admin.web.service.message.MessagesPage.class);
-		if (StringUtils.isNotEmpty(eventListenerType) && EventListenerType.DAO == EventListenerType.valueOf(eventListenerType))
+		if (EventListenerType.DAO == eventListenerType)
 			new MenuLinkItem(result,"4","messageEvents",nl.clockwork.ebms.admin.web.service.message.MessageEventsPage.class);
 		new MenuDivider(result,"5");
 		//new MenuLinkItem(message,"6","messageSend",nl.clockwork.ebms.admin.web.service.message.SendMessagePage.class);
