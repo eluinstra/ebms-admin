@@ -15,15 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.cpa;
 
-import nl.clockwork.ebms.admin.dao.EbMSDAO;
-import nl.clockwork.ebms.admin.model.CPA;
-import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
-import nl.clockwork.ebms.admin.web.Link;
-import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
-import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
-import nl.clockwork.ebms.admin.web.WebMarkupContainer;
-
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.repeater.Item;
@@ -34,8 +25,18 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.admin.dao.EbMSDAO;
+import nl.clockwork.ebms.admin.model.CPA;
+import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
+import nl.clockwork.ebms.admin.web.Link;
+import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
+import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
+import nl.clockwork.ebms.admin.web.WebMarkupContainer;
+import nl.clockwork.ebms.admin.web.WicketApplication;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CPAsPage extends BasePage
@@ -77,11 +78,12 @@ public class CPAsPage extends BasePage
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="ebMSAdminDAO")
 	EbMSDAO ebMSDAO;
-	@SpringBean(name="maxItemsPerPage")
-	Integer maxItemsPerPage;
+	@NonNull
+	final Integer maxItemsPerPage;
 
 	public CPAsPage()
 	{
+		this.maxItemsPerPage = WicketApplication.get().getMaxItemsPerPage();
 		val container = new WebMarkupContainer("container");
 		add(container);
 		val cpas = new CPADataView("cpas",CPADataProvider.of(ebMSDAO));

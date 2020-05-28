@@ -28,6 +28,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.Constants;
@@ -42,6 +43,7 @@ import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
 import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
+import nl.clockwork.ebms.admin.web.WicketApplication;
 import nl.clockwork.ebms.admin.web.message.MessageFilterPanel.MessageFilterFormData;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -110,9 +112,10 @@ public class TrafficPage extends BasePage
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="ebMSAdminDAO")
 	EbMSDAO ebMSDAO;
-	@SpringBean(name="maxItemsPerPage")
-	Integer maxItemsPerPage;
-	IModel<MessageFilterFormData> filter;
+	@NonNull
+	final Integer maxItemsPerPage;
+	@NonNull
+	final IModel<MessageFilterFormData> filter;
 
 	public TrafficPage()
 	{
@@ -126,6 +129,7 @@ public class TrafficPage extends BasePage
 
 	public TrafficPage(IModel<MessageFilterFormData> filter, final WebPage responsePage)
 	{
+		this.maxItemsPerPage = WicketApplication.get().getMaxItemsPerPage();
 		this.filter = filter;
 		filter.getObject().setMessageNr(0);
 		filter.getObject().setServiceMessage(false);

@@ -34,8 +34,9 @@
 
 	<context:component-scan base-package="nl.clockwork.ebms.admin" />
 
-	<bean id="maxItemsPerPage" class="java.lang.Integer">
-		<constructor-arg value="${maxItemsPerPage}"/>
+	<bean id="wicketApplication" class="nl.clockwork.ebms.admin.web.WicketApplication">
+		<constructor-arg name="maxItemsPerPage" value="${maxItemsPerPage}"/>
+		<constructor-arg name="eventListenerType" value="${eventListener.type}"/>
 	</bean>
 
 	<http-conf:conduit name="{http://www.ordina.nl/cpa/2.1}CPAServicePort.http-conduit">

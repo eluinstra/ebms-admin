@@ -346,7 +346,8 @@ public class Start
 	private FilterHolder createWicketFilterHolder()
 	{
 		val result = new FilterHolder(org.apache.wicket.protocol.http.WicketFilter.class); 
-		result.setInitParameter("applicationClassName","nl.clockwork.ebms.admin.web.WicketApplication");
+		result.setInitParameter("applicationFactoryClassName","org.apache.wicket.spring.SpringWebApplicationFactory");
+		result.setInitParameter("applicationBean","wicketApplication");
 		result.setInitParameter("filterMappingUrlPattern","/*");
 		return result;
 	}

@@ -28,6 +28,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.web.Action;
@@ -38,6 +39,7 @@ import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
 import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
+import nl.clockwork.ebms.admin.web.WicketApplication;
 import nl.clockwork.ebms.event.listener.EbMSMessageEventType;
 import nl.clockwork.ebms.service.EbMSMessageService;
 import nl.clockwork.ebms.service.model.EbMSMessageContext;
@@ -90,8 +92,8 @@ public class MessageEventsPage extends BasePage
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="ebMSMessageService")
 	EbMSMessageService ebMSMessageService;
-	@SpringBean(name="maxItemsPerPage")
-	Integer maxItemsPerPage;
+	@NonNull
+	final Integer maxItemsPerPage;
 
 	public MessageEventsPage()
 	{
@@ -105,6 +107,7 @@ public class MessageEventsPage extends BasePage
 
 	public MessageEventsPage(IModel<EbMSMessageContext> filter, EbMSMessageEventType[] eventTypes, final WebPage responsePage)
 	{
+		this.maxItemsPerPage = WicketApplication.get().getMaxItemsPerPage();
 		val container = new WebMarkupContainer("container");
 		add(container);
 		val messageEvents = new MessageEventDataView("messageEvents",MessageEventDataProvider.of(ebMSMessageService,filter.getObject(),eventTypes));

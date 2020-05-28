@@ -28,6 +28,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.Constants;
@@ -43,6 +44,7 @@ import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
+import nl.clockwork.ebms.admin.web.WicketApplication;
 import nl.clockwork.ebms.admin.web.message.MessageFilterPanel.MessageFilterFormData;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -124,9 +126,10 @@ public class MessagesPage extends BasePage
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="ebMSAdminDAO")
 	EbMSDAO ebMSDAO;
-	@SpringBean(name="maxItemsPerPage")
-	Integer maxItemsPerPage;
-	IModel<MessageFilterFormData> filter;
+	@NonNull
+	final Integer maxItemsPerPage;
+	@NonNull
+	final IModel<MessageFilterFormData> filter;
 
 	public MessagesPage()
 	{
@@ -140,6 +143,7 @@ public class MessagesPage extends BasePage
 
 	public MessagesPage(IModel<MessageFilterFormData> filter, final WebPage responsePage)
 	{
+		this.maxItemsPerPage = WicketApplication.get().getMaxItemsPerPage();
 		this.filter = filter;
 		add(createMessageFilterPanel("messageFilter",filter));
 		WebMarkupContainer container = new WebMarkupContainer("container");

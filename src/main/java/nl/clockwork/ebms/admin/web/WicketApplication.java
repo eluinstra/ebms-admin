@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.core.request.handler.PageProvider;
 import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
 import org.apache.wicket.markup.html.WebPage;
@@ -32,11 +33,14 @@ import org.apache.wicket.request.resource.JavaScriptResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 
 import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.web.menu.MenuDivider;
 import nl.clockwork.ebms.admin.web.menu.MenuItem;
 import nl.clockwork.ebms.admin.web.menu.MenuLinkItem;
+import nl.clockwork.ebms.event.listener.EventListenerFactory.EventListenerType;
 
 /**
  * Application object for your web application. If you want to run this application without deploying, run the Start class.
@@ -44,14 +48,21 @@ import nl.clockwork.ebms.admin.web.menu.MenuLinkItem;
  * @see nl.clockwork.ebms.admin.Start#main(String[])
  */
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Getter
 public class WicketApplication extends WebApplication
 {
+	@NonNull
+	Integer maxItemsPerPage;
+	@NonNull
+	String eventListenerType;
 	List<MenuItem> menuItems = new ArrayList<>();
 	Map<String,MessageProvider.MessageViewPanel> messageViewPanels = new HashMap<>();
 	Map<String,MessageProvider.MessageEditPanel> messageEditPanels = new HashMap<>();
 	
-	public WicketApplication()
+	public WicketApplication(@NonNull Integer maxItemsPerPage, @NonNull String eventListenerType)
 	{
+		this.maxItemsPerPage = maxItemsPerPage;
+		this.eventListenerType = eventListenerType;
 		menuItems.add(createHomeMenuItem("0"));
 		menuItems.add(createCPAServiceMenuItem("1"));
 		menuItems.add(createMEssageServiceMenuItem("2"));
@@ -90,8 +101,9 @@ public class WicketApplication extends WebApplication
 		val result = new MenuItem(id,"messageService");
 		new MenuLinkItem(result,"1","ping",nl.clockwork.ebms.admin.web.service.message.PingPage.class);
 		new MenuDivider(result,"2");
-		new MenuLinkItem(result,"3","receivedMessages",nl.clockwork.ebms.admin.web.service.message.MessagesPage.class);
-		new MenuLinkItem(result,"4","messageEvents",nl.clockwork.ebms.admin.web.service.message.MessageEventsPage.class);
+		new MenuLinkItem(result,"3","unprocessedMessages",nl.clockwork.ebms.admin.web.service.message.MessagesPage.class);
+		if (StringUtils.isNotEmpty(eventListenerType) && EventListenerType.DAO == EventListenerType.valueOf(eventListenerType))
+			new MenuLinkItem(result,"4","messageEvents",nl.clockwork.ebms.admin.web.service.message.MessageEventsPage.class);
 		new MenuDivider(result,"5");
 		//new MenuLinkItem(message,"6","messageSend",nl.clockwork.ebms.admin.web.service.message.SendMessagePage.class);
 		new MenuLinkItem(result,"6","messageSend",nl.clockwork.ebms.admin.web.service.message.SendMessagePageX.class);
@@ -138,18 +150,12 @@ public class WicketApplication extends WebApplication
 		return new MenuLinkItem(id,"about",nl.clockwork.ebms.admin.web.AboutPage.class);
 	}
 	
-	/**
-	 * @see org.apache.wicket.Application#getHomePage()
-	 */
 	@Override
 	public Class<? extends WebPage> getHomePage()
 	{
 		return HomePage.class;
 	}
 
-	/**
-	 * @see org.apache.wicket.Application#init()
-	 */
 	@Override
 	public void init()
 	{
@@ -168,23 +174,9 @@ public class WicketApplication extends WebApplication
 		mountPage("/404",PageNotFoundPage.class); 
 	}
 	
-	public List<MenuItem> getMenuItems()
-	{
-		return menuItems;
-	}
-
-	public Map<String,MessageProvider.MessageViewPanel> getMessageViewPanels()
-	{
-		return messageViewPanels;
-	}
-
-	public Map<String,MessageProvider.MessageEditPanel> getMessageEditPanels()
-	{
-		return messageEditPanels;
-	}
-
 	public static WicketApplication get()
 	{
 		return (WicketApplication)WebApplication.get();
 	}
+
 }

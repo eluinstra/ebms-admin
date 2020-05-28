@@ -28,6 +28,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.web.Action;
@@ -38,6 +39,7 @@ import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
 import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
+import nl.clockwork.ebms.admin.web.WicketApplication;
 import nl.clockwork.ebms.service.EbMSMessageService;
 import nl.clockwork.ebms.service.model.EbMSMessageContext;
 
@@ -87,8 +89,8 @@ public class MessagesPage extends BasePage
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name="ebMSMessageService")
 	EbMSMessageService ebMSMessageService;
-	@SpringBean(name="maxItemsPerPage")
-	Integer maxItemsPerPage;
+	@NonNull
+	final Integer maxItemsPerPage;
 
 	public MessagesPage()
 	{
@@ -102,6 +104,7 @@ public class MessagesPage extends BasePage
 
 	public MessagesPage(IModel<EbMSMessageContext> filter, final WebPage responsePage)
 	{
+		this.maxItemsPerPage = WicketApplication.get().getMaxItemsPerPage();
 		val container = new WebMarkupContainer("container");
 		add(container);
 		val messages = new MessageDataView("messages",MessageDataProvider.of(ebMSMessageService,filter.getObject()));
@@ -116,6 +119,6 @@ public class MessagesPage extends BasePage
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("receivedMessages",this);
+		return getLocalizer().getString("unprocessedMessages",this);
 	}
 }
