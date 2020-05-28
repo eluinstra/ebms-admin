@@ -98,8 +98,8 @@ public class DBMigrate
 		result.addOption("jdbcUrl",true,"set jdbcUrl");
 		result.addOption("username",true,"set username");
 		result.addOption("password",true,"set password");
-		result.addOption("strict",false,"use strict db scripts");
-		result.addOption("ebmsVersion",true,"set ebmsVersion");
+		result.addOption("strict",false,"use strict db scripts (default: false)");
+		result.addOption("ebmsVersion",true,"set current ebmsVersion (default: none)");
 		return result;
 	}
 	
@@ -125,9 +125,9 @@ public class DBMigrate
 				.locations(location)
 				.ignoreMissingMigrations(true);
 		if (StringUtils.isNotEmpty(baselineVersion))
-				config = config
-						.baselineVersion(baselineVersion)
-						.baselineOnMigrate(true);
+			config = config
+					.baselineVersion(baselineVersion)
+					.baselineOnMigrate(true);
 		config.load().migrate();
 	}
 
