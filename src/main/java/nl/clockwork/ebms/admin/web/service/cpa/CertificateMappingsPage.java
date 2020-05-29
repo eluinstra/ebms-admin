@@ -63,6 +63,7 @@ public class CertificateMappingsPage extends BasePage
 			val o = item.getModelObject();
 			item.add(new Label("source",Model.of(createLabel(o.getSource()))));
 			item.add(new Label("destination",Model.of(createLabel(o.getDestination()))));
+			item.add(new Label("cpaId",Model.of(o.getCpaId())));
 			item.add(createEditButton("editCertificate",item.getModel()));
 			item.add(createDeleteButton("delete",o));
 			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
@@ -96,7 +97,7 @@ public class CertificateMappingsPage extends BasePage
 			{
 				try
 				{
-					certificateMappingService.deleteCertificateMapping(certificateMapping.getSource());
+					certificateMappingService.deleteCertificateMapping(certificateMapping.getSource(),certificateMapping.getCpaId());
 					setResponsePage(new CertificateMappingsPage());
 				}
 				catch (Exception e)

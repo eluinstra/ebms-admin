@@ -38,12 +38,15 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.Button;
+import nl.clockwork.ebms.admin.web.DropDownChoice;
 import nl.clockwork.ebms.admin.web.ResetButton;
+import nl.clockwork.ebms.service.cpa.CPAService;
 import nl.clockwork.ebms.service.cpa.certificate.CertificateMapping;
 import nl.clockwork.ebms.service.cpa.certificate.CertificateMappingService;
 
@@ -52,6 +55,8 @@ import nl.clockwork.ebms.service.cpa.certificate.CertificateMappingService;
 public class CertificateMappingPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
+	@SpringBean(name="cpaService")
+	CPAService cpaService;
 	@SpringBean(name="certificateMappingService")
 	CertificateMappingService certificateMappingService;
 
@@ -79,10 +84,9 @@ public class CertificateMappingPage extends BasePage
 		public EditCertificateMappingForm(String id, IModel<CertificateMappingFormData> model)
 		{
 			super(id,new CompoundPropertyModel<>(model));
-//			add(new BootstrapFormComponentFeedbackBorder("sourceFeedback",new TextField<String>("source").setRequired(true).setLabel(new ResourceModel("lbl.source"))));
 			add(new BootstrapFormComponentFeedbackBorder("sourceFeedback",new FileUploadField("source").setRequired(true).setLabel(new ResourceModel("lbl.source"))));
-//			add(new BootstrapFormComponentFeedbackBorder("destinationFeedback",new TextField<String>("destination").setRequired(true).setLabel(new ResourceModel("lbl.destination"))));
 			add(new BootstrapFormComponentFeedbackBorder("destinationFeedback",new FileUploadField("destination").setRequired(true).setLabel(new ResourceModel("lbl.destination"))));
+			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",new DropDownChoice<String>("cpaId",Model.ofList(Utils.toList(cpaService.getCPAIds()))).setLabel(new ResourceModel("lbl.cpaId"))));
 			add(createSetButton("set"));
 			add(new ResetButton("reset",new ResourceModel("cmd.reset"),CertificateMappingPage.class));
 		}
@@ -112,7 +116,8 @@ public class CertificateMappingPage extends BasePage
 		{
 			X509Certificate source = getX509Certificate(o.source);
 			X509Certificate destination = getX509Certificate(o.destination);
-			return new CertificateMapping(source,destination);
+			String cpaId = o.cpaId;
+			return new CertificateMapping(source,destination,cpaId);
 		}
 
 		private X509Certificate getX509Certificate(List<FileUpload> files) throws CertificateException, IOException
@@ -130,6 +135,7 @@ public class CertificateMappingPage extends BasePage
 		private static final long serialVersionUID = 1L;
 		List<FileUpload> source;
 		List<FileUpload> destination;
+		String cpaId;
 	}
 
 }
