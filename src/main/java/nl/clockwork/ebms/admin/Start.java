@@ -93,7 +93,8 @@ public class Start
 		start.server.setHandler(start.handlerCollection);
 
 		start.initWebServer(cmd,start.server);
-		start.initJMX(cmd,start.server);
+		if (cmd.hasOption("jmx"))
+			start.initJMX(start.server);
 
 		val context = new XmlWebApplicationContext();
 		context.setConfigLocations(getConfigLocations("classpath:nl/clockwork/ebms/admin/applicationContext.xml"));
@@ -258,18 +259,15 @@ public class Start
 		return cmd.getOptionValue("path") == null ? "/" : cmd.getOptionValue("path");
 	}
 
-	protected void initJMX(CommandLine cmd, Server server) throws Exception
+	protected void initJMX(Server server) throws Exception
 	{
-		if (cmd.hasOption("jmx"))
-		{
-			System.out.println("Starting mbean server...");
-			val mBeanContainer = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
-			server.addBean(mBeanContainer);
-			server.addBean(Log.getLog());
-			val jmxURL = new JMXServiceURL("rmi",null,1999,"/jndi/rmi:///jmxrmi");
-			val jmxServer = new ConnectorServer(jmxURL,"org.eclipse.jetty.jmx:name=rmiconnectorserver");
-			server.addBean(jmxServer);
-		}
+		System.out.println("Starting mbean server...");
+		val mBeanContainer = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
+		server.addBean(mBeanContainer);
+		server.addBean(Log.getLog());
+		val jmxURL = new JMXServiceURL("rmi",null,1999,"/jndi/rmi:///jmxrmi");
+		val jmxServer = new ConnectorServer(jmxURL,"org.eclipse.jetty.jmx:name=rmiconnectorserver");
+		server.addBean(jmxServer);
 	}
 
 	protected ServletContextHandler createWebContextHandler(CommandLine cmd, ContextLoaderListener contextLoaderListener) throws Exception

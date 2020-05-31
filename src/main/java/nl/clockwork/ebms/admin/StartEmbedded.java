@@ -65,6 +65,9 @@ public class StartEmbedded extends Start
 		if (cmd.hasOption("h"))
 			printUsage(options);
 
+		System.setProperty("org.apache.activemq.SERIALIZABLE_PACKAGES","*");
+		System.setProperty("ebms.startEbMSClient","" + !cmd.hasOption("disableEbMSClient"));
+
 		val start = new StartEmbedded();
 		start.init(cmd);
 		start.server.setHandler(start.handlerCollection);
@@ -72,8 +75,10 @@ public class StartEmbedded extends Start
 
 		start.initHSQLDB(cmd,properties);
 		start.initWebServer(cmd,start.server);
-		start.initEbMSServer(properties,start.server);
-		start.initJMX(cmd,start.server);
+		if (!cmd.hasOption("disableEbMSServer"))
+			start.initEbMSServer(properties,start.server);
+		if (cmd.hasOption("jmx"))
+			start.initJMX(start.server);
 
 		val context = new XmlWebApplicationContext();
 		context.setConfigLocations(getConfigLocations("classpath:nl/clockwork/ebms/admin/applicationContext.embedded.xml"));
@@ -105,6 +110,8 @@ public class StartEmbedded extends Start
 		result.addOption("ebmsVersion",true,"set current ebmsVersion for hsqldb update (default: none)");
 		result.addOption("soap",false,"start soap service");
 		result.addOption("headless",false,"start without web interface");
+		result.addOption("disableEbMSServer",false,"disable ebms server");
+		result.addOption("disableEbMSClient",false,"disable ebms client");
 		return result;
 	}
 	
