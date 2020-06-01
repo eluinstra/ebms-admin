@@ -66,7 +66,7 @@ public class StartEmbedded extends Start
 			printUsage(options);
 
 		System.setProperty("org.apache.activemq.SERIALIZABLE_PACKAGES","*");
-		System.setProperty("ebms.startEbMSClient","" + !cmd.hasOption("disableEbMSClient"));
+		System.setProperty("eventProcessor.start","" + !cmd.hasOption("disableEbMSClient"));
 
 		val start = new StartEmbedded();
 		start.init(cmd);
