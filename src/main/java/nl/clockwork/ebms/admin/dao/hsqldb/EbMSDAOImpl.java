@@ -34,7 +34,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 	@Override
 	public String selectCPAsQuery(long first, long count)
 	{
-		return CPARowMapper.getBaseQuery() +
+		return "select * from cpa" +
 			" order by cpa_id" +
 			" limit " + count + " offset " + first
 		;

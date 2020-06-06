@@ -42,7 +42,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 	@Override
 	public String selectCPAsQuery(long first, long count)
 	{
-		return CPARowMapper.getBaseQuery() +
+		return "select * from cpa" +
 			" order by cpa_id" +
 			" limit " + count + " offset " + first
 		;
@@ -70,14 +70,10 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 			" and time_stamp < ?" +
 			(status.length == 0 ? " and status is not null" : " and status in (" + join(status,",") + ")") +
 			" group by date_trunc('" + getDateFormat(timeUnit.getSqlDateFormat()) + "',time_stamp)",
-			new RowMapper<Object>()
+			(RowMapper<Object>)(rs,rowNum) ->
 			{
-				@Override
-				public Object mapRow(ResultSet rs, int rowNum) throws SQLException
-				{
-					result.put(rs.getTimestamp("time").toLocalDateTime(),rs.getInt("nr"));
-					return null;
-				}
+				result.put(rs.getTimestamp("time").toLocalDateTime(),rs.getInt("nr"));
+				return null;
 			},
 			from,
 			to

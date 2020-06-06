@@ -64,20 +64,6 @@ import nl.clockwork.ebms.event.processor.EbMSEventStatus;
 @AllArgsConstructor
 public abstract class AbstractEbMSDAO implements EbMSDAO
 {
-	public static class CPARowMapper implements RowMapper<CPA>
-	{
-		public static String getBaseQuery()
-		{
-			return "select cpa_id, cpa from cpa";
-		}
-
-		@Override
-		public CPA mapRow(ResultSet rs, int rowNum) throws SQLException
-		{
-			return CPA.of(rs.getString("cpa_id"),rs.getString("cpa"));
-		}
-	}
-	
 	@Builder
 	@NoArgsConstructor(force = true)
 	@AllArgsConstructor(staticName = "of")
@@ -154,16 +140,20 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	TransactionTemplate transactionTemplate;
 	@NonNull
 	JdbcTemplate jdbcTemplate;
-
+	RowMapper<CPA> cpaRowMapper = (RowMapper<CPA>)(rs,rowNum) ->
+	{
+		return CPA.of(rs.getString("cpa_id"),rs.getString("cpa"));
+	};
+	
 	@Override
 	public CPA findCPA(String cpaId)
 	{
 		try
 		{
 			return jdbcTemplate.queryForObject(
-				CPARowMapper.getBaseQuery() +
+				"select * from cpa" +
 				" where cpa_id = ?",
-				new CPARowMapper(),
+				cpaRowMapper,
 				cpaId
 			);
 		}
@@ -202,7 +192,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	{
 		return jdbcTemplate.query(
 			selectCPAsQuery(first,count),
-			new CPARowMapper()
+			cpaRowMapper
 		);
 	}
 
@@ -303,18 +293,14 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			" where message_id = ?" +
 			" and message_nr = ?" +
 			" and content_id = ?",
-			new RowMapper<EbMSAttachment>()
+			(RowMapper<EbMSAttachment>)(rs,rowNum) ->
 			{
-				@Override
-				public EbMSAttachment mapRow(ResultSet rs, int rowNum) throws SQLException
-				{
-					return EbMSAttachment.builder()
-							.name(rs.getString("name"))
-							.contentId(rs.getString("content_id"))
-							.contentType(rs.getString("content_type"))
-							.content(rs.getBytes("content"))
-							.build();
-				}
+				return EbMSAttachment.builder()
+						.name(rs.getString("name"))
+						.contentId(rs.getString("content_id"))
+						.contentType(rs.getString("content_type"))
+						.content(rs.getBytes("content"))
+						.build();
 			},
 			messageId,
 			messageNr,
@@ -329,17 +315,13 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			" from ebms_attachment" + 
 			" where message_id = ?" +
 			" and message_nr = ?",
-			new RowMapper<EbMSAttachment>()
+			(RowMapper<EbMSAttachment>)(rs,rowNum) ->
 			{
-				@Override
-				public EbMSAttachment mapRow(ResultSet rs, int rowNum) throws SQLException
-				{
-					return EbMSAttachment.builder()
-							.name(rs.getString("name"))
-							.contentId(rs.getString("content_id"))
-							.contentType(rs.getString("content_type"))
-							.build();
-				}
+				return EbMSAttachment.builder()
+						.name(rs.getString("name"))
+						.contentId(rs.getString("content_id"))
+						.contentType(rs.getString("content_type"))
+						.build();
 			},
 			messageId,
 			messageNr
@@ -354,13 +336,9 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				"select time_to_live, time_stamp, retries" +
 				" from ebms_event" +
 				" where message_id = ?",
-				new RowMapper<EbMSEvent>()
+				(RowMapper<EbMSEvent>)(rs,rowNum) ->
 				{
-					@Override
-					public EbMSEvent mapRow(ResultSet rs, int rowNum) throws SQLException
-					{
-						return EbMSEvent.of(toInstant(rs.getTimestamp("time_to_live")),toInstant(rs.getTimestamp("time_stamp")),rs.getInt("retries"));
-					}
+					return EbMSEvent.of(toInstant(rs.getTimestamp("time_to_live")),toInstant(rs.getTimestamp("time_stamp")),rs.getInt("retries"));
 				},
 				messageId
 			);
@@ -377,18 +355,14 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			"select message_id, time_stamp, uri, status, error_message" + 
 			" from ebms_event_log" + 
 			" where message_id = ?",
-			new RowMapper<EbMSEventLog>()
+			(RowMapper<EbMSEventLog>)(rs,rowNum) ->
 			{
-				@Override
-				public EbMSEventLog mapRow(ResultSet rs, int rowNum) throws SQLException
-				{
-					return EbMSEventLog.builder()
-							.timestamp(toInstant(rs.getTimestamp("time_stamp")))
-							.uri(rs.getString("uri"))
-							.status(EbMSEventStatus.get(rs.getInt("status")))
-							.errorMessage(rs.getString("error_message"))
-							.build();
-				}
+				return EbMSEventLog.builder()
+						.timestamp(toInstant(rs.getTimestamp("time_stamp")))
+						.uri(rs.getString("uri"))
+						.status(EbMSEventStatus.get(rs.getInt("status")))
+						.errorMessage(rs.getString("error_message"))
+						.build();
 			},
 			messageId
 		);
@@ -423,14 +397,10 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			" and time_stamp < ?" +
 			(status.length == 0 ? " and status is not null" : " and status in (" + join(status,",") + ")") +
 			" group by trunc(time_stamp,'" + getDateFormat(timeUnit.getSqlDateFormat()) + "')",
-			new RowMapper<Object>()
+			(RowMapper<Object>)(rs,rowNum) ->
 			{
-				@Override
-				public Object mapRow(ResultSet rs, int rowNum) throws SQLException
-				{
-					result.put(rs.getTimestamp("time").toLocalDateTime(),rs.getInt("nr"));
-					return null;
-				}
+				result.put(rs.getTimestamp("time").toLocalDateTime(),rs.getInt("nr"));
+				return null;
 			},
 			Timestamp.valueOf(from),
 			Timestamp.valueOf(to)
@@ -462,35 +432,30 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			getMessageFilter(filter,parameters) +
 			" order by time_stamp desc",
 			parameters.toArray(new Object[0]),
-			new RowMapper<Object>()
+			(RowMapper<Object>)(rs,rowNum) ->
 			{
-				@Override
-				public Object mapRow(ResultSet rs, int rowNum) throws SQLException
+				try
 				{
-					try
-					{
-						printer.print(rs.getString("message_id"));
-						printer.print(rs.getInt("message_nr"));
-						printer.print(rs.getString("ref_to_message_id"));
-						printer.print(rs.getString("conversation_id"));
-						printer.print(rs.getTimestamp("time_stamp"));
-						printer.print(rs.getTimestamp("time_to_live"));
-						printer.print(rs.getString("cpa_id"));
-						printer.print(rs.getString("from_role"));
-						printer.print(rs.getString("to_role"));
-						printer.print(rs.getString("service"));
-						printer.print(rs.getString("action"));
-						printer.print(rs.getObject("status") == null ? null : EbMSMessageStatus.get(rs.getInt("status")));
-						printer.print(rs.getTimestamp("status_time"));
-						printer.println();
-						return null;
-					}
-					catch (IOException e)
-					{
-						throw new SQLException(e);
-					}
+					printer.print(rs.getString("message_id"));
+					printer.print(rs.getInt("message_nr"));
+					printer.print(rs.getString("ref_to_message_id"));
+					printer.print(rs.getString("conversation_id"));
+					printer.print(rs.getTimestamp("time_stamp"));
+					printer.print(rs.getTimestamp("time_to_live"));
+					printer.print(rs.getString("cpa_id"));
+					printer.print(rs.getString("from_role"));
+					printer.print(rs.getString("to_role"));
+					printer.print(rs.getString("service"));
+					printer.print(rs.getString("action"));
+					printer.print(rs.getObject("status") == null ? null : EbMSMessageStatus.get(rs.getInt("status")));
+					printer.print(rs.getTimestamp("status_time"));
+					printer.println();
+					return null;
 				}
-				
+				catch (IOException e)
+				{
+					throw new SQLException(e);
+				}
 			}
 		);
 	}
@@ -505,23 +470,19 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				" from ebms_message" + 
 				" where message_id = ?" +
 				" and message_nr = ?",
-				new RowMapper<Object>()
+				(RowMapper<Object>)(rs,rowNum) ->
 				{
-					@Override
-					public Object mapRow(ResultSet rs, int rowNum) throws SQLException
+					try
 					{
-						try
-						{
-							val entry = new ZipEntry("message.xml");
-							zip.putNextEntry(entry);
-							zip.write(rs.getString("content").getBytes());
-							zip.closeEntry();
-							return null;
-						}
-						catch (IOException e)
-						{
-							throw new SQLException(e);
-						}
+						val entry = new ZipEntry("message.xml");
+						zip.putNextEntry(entry);
+						zip.write(rs.getString("content").getBytes());
+						zip.closeEntry();
+						return null;
+					}
+					catch (IOException e)
+					{
+						throw new SQLException(e);
 					}
 				},
 				messageId,
@@ -542,24 +503,20 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			" from ebms_attachment" + 
 			" where message_id = ?" +
 			" and message_nr = ?",
-			new RowMapper<Object>()
+			(RowMapper<Object>)(rs,rowNum) ->
 			{
-				@Override
-				public Object mapRow(ResultSet rs, int rowNum) throws SQLException
+				try
 				{
-					try
-					{
-						val entry = new ZipEntry("attachments/" + (StringUtils.isEmpty(rs.getString("name")) ? rs.getString("content_id") + Utils.getFileExtension(rs.getString("content_type")) : rs.getString("name")));
-						entry.setComment("Content-Type: " + rs.getString("content_type"));
-						zip.putNextEntry(entry);
-						zip.write(rs.getBytes("content"));
-						zip.closeEntry();
-						return null;
-					}
-					catch (IOException e)
-					{
-						throw new SQLException(e);
-					}
+					val entry = new ZipEntry("attachments/" + (StringUtils.isEmpty(rs.getString("name")) ? rs.getString("content_id") + Utils.getFileExtension(rs.getString("content_type")) : rs.getString("name")));
+					entry.setComment("Content-Type: " + rs.getString("content_type"));
+					zip.putNextEntry(entry);
+					zip.write(rs.getBytes("content"));
+					zip.closeEntry();
+					return null;
+				}
+				catch (IOException e)
+				{
+					throw new SQLException(e);
 				}
 			},
 			messageId,

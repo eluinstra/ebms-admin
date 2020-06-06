@@ -42,13 +42,8 @@ public class EbMSDAOImpl extends nl.clockwork.ebms.admin.dao.mysql.EbMSDAOImpl
 	@Override
 	public String selectCPAsQuery(long first, long count)
 	{
-		//return CPARowMapper.getBaseQuery() +
-		//	" order by cpa_id" +
-		//	" offset " + first + " rows fetch " + count + " rows only"
-		//;
 		return "select a.* from (" +
-			CPARowMapper.getBaseQuery().replaceFirst("select ","select row_number() over (order by cpa_id) as rn, ") +
-			//") a where rn >= " + (first + 1) + " and rn < " + (first + 1 + count)
+				"select row_number() over (order by cpa_id) as rn, * from cpa" +
 			") a where rn between " + first + " and " + (first + count)
 		;
 	}
@@ -56,17 +51,10 @@ public class EbMSDAOImpl extends nl.clockwork.ebms.admin.dao.mysql.EbMSDAOImpl
 	@Override
 	public String selectMessagesQuery(EbMSMessageFilter filter, long first, long count, List<Object> parameters)
 	{
-		//return new EbMSMessageRowMapper().getBaseQuery() +
-		//	" where 1 = 1" +
-		//	getMessageFilter(filter,parameters) +
-		//	" order by time_stamp " + order.toString() +
-		//	" offset " + first + " rows fetch " + count + " rows only"
-		//;
 		return "select a.* from (" +
 			EbMSMessageRowMapper.builder().build().getBaseQuery().replaceFirst("select ","select row_number() over (order by time_stamp desc) as rn, ") +
 			" where 1 = 1" +
 			getMessageFilter(filter,parameters) +
-			//") a where rn >= " + (first + 1) + " and rn < " + (first + 1 + count)
 			") a where rn between " + first + " and " + (first + count)
 		;
 	}
@@ -76,23 +64,16 @@ public class EbMSDAOImpl extends nl.clockwork.ebms.admin.dao.mysql.EbMSDAOImpl
 	{
 		val result = new HashMap<LocalDateTime,Integer>();
 		jdbcTemplate.query(
-			//"select format(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "') time, count(*) nr" + 
-			//"select parse(format(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "'),'yyyy-MM-dd hh:mm:ss') time, count(*) nr" + 
 			"select cast(" + getDateFormat(timeUnit.getSqlDateFormat()) + "as datetime) time, count(*) nr" + 
 			" from ebms_message" + 
 			" where time_stamp >= ? " +
 			" and time_stamp < ?" +
 			(status.length == 0 ? " and status is not null" : " and status in (" + join(status,",") + ")") +
-			//" group by format(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "')",
 			" group by " + getDateFormat(timeUnit.getSqlDateFormat()),
-			new RowMapper<Object>()
+			(RowMapper<Object>)(rs,rowNum) ->
 			{
-				@Override
-				public Object mapRow(ResultSet rs, int rowNum) throws SQLException
-				{
-					result.put(rs.getTimestamp("time").toLocalDateTime(),rs.getInt("nr"));
-					return null;
-				}
+				result.put(rs.getTimestamp("time").toLocalDateTime(),rs.getInt("nr"));
+				return null;
 			},
 			Timestamp.valueOf(from),
 			Timestamp.valueOf(to)

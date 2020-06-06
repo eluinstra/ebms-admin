@@ -40,7 +40,6 @@ import nl.clockwork.ebms.admin.web.message.TimeUnit;
 
 public class EbMSDAOImpl extends AbstractEbMSDAO
 {
-
 	public EbMSDAOImpl(TransactionTemplate transactionTemplate, JdbcTemplate jdbcTemplate)
 	{
 		super(transactionTemplate,jdbcTemplate);
@@ -49,7 +48,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 	@Override
 	public String selectCPAsQuery(long first, long count)
 	{
-		return CPARowMapper.getBaseQuery() +
+		return "select * from cpa" +
 			" order by cpa_id" +
 			" limit " + count + " offset " + first
 		;
@@ -76,18 +75,14 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 			" and m.message_nr = ?" +
 			" and m.id = a.ebms_message_id" +
 			" and a.content_id = ?",
-			new RowMapper<EbMSAttachment>()
+			(RowMapper<EbMSAttachment>)(rs,rowNum) ->
 			{
-				@Override
-				public EbMSAttachment mapRow(ResultSet rs, int rowNum) throws SQLException
-				{
-					return EbMSAttachment.builder()
-							.name(rs.getString("name"))
-							.contentId(rs.getString("content_id"))
-							.contentType(rs.getString("content_type"))
-							.content(rs.getBytes("content"))
-							.build();
-				}
+				return EbMSAttachment.builder()
+						.name(rs.getString("name"))
+						.contentId(rs.getString("content_id"))
+						.contentType(rs.getString("content_type"))
+						.content(rs.getBytes("content"))
+						.build();
 			},
 			messageId,
 			messageNr,
@@ -103,17 +98,13 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 			" where m.message_id = ?" +
 			" and m.message_nr = ?" +
 			" and m.id = a.ebms_message_id",
-			new RowMapper<EbMSAttachment>()
+			(RowMapper<EbMSAttachment>)(rs,rownNum) ->
 			{
-				@Override
-				public EbMSAttachment mapRow(ResultSet rs, int rowNum) throws SQLException
-				{
-					return EbMSAttachment.builder()
-							.name(rs.getString("name"))
-							.contentId(rs.getString("content_id"))
-							.contentType(rs.getString("content_type"))
-							.build();
-				}
+				return EbMSAttachment.builder()
+						.name(rs.getString("name"))
+						.contentId(rs.getString("content_id"))
+						.contentType(rs.getString("content_type"))
+						.build();
 			},
 			messageId,
 			messageNr
@@ -132,14 +123,10 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 			" and time_stamp < ?" +
 			(status.length == 0 ? " and status is not null" : " and status in (" + join(status,",") + ")") +
 			" group by date_format(time_stamp,'" + getDateFormat(timeUnit.getSqlDateFormat()) + "')",
-			new RowMapper<Object>()
+			(RowMapper<Object>)(rs,rowNum) ->
 			{
-				@Override
-				public Object mapRow(ResultSet rs, int rowNum) throws SQLException
-				{
-					result.put(rs.getTimestamp("time").toLocalDateTime(),rs.getInt("nr"));
-					return null;
-				}
+				result.put(rs.getTimestamp("time").toLocalDateTime(),rs.getInt("nr"));
+				return null;
 			},
 			Timestamp.valueOf(from),
 			Timestamp.valueOf(to)
@@ -155,24 +142,20 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 			" where m.message_id = ?" +
 			" and m.message_nr = ?" +
 			" and m.id = a.ebms_message_id",
-			new RowMapper<Object>()
+			(RowMapper<Object>)(rs,rowNum) ->
 			{
-				@Override
-				public Object mapRow(ResultSet rs, int rowNum) throws SQLException
+				try
 				{
-					try
-					{
-						ZipEntry entry = new ZipEntry("attachments/" + (StringUtils.isEmpty(rs.getString("name")) ? rs.getString("content_id") + Utils.getFileExtension(rs.getString("content_type")) : rs.getString("name")));
-						entry.setComment("Content-Type: " + rs.getString("content_type"));
-						zip.putNextEntry(entry);
-						zip.write(rs.getBytes("content"));
-						zip.closeEntry();
-						return null;
-					}
-					catch (IOException e)
-					{
-						throw new SQLException(e);
-					}
+					ZipEntry entry = new ZipEntry("attachments/" + (StringUtils.isEmpty(rs.getString("name")) ? rs.getString("content_id") + Utils.getFileExtension(rs.getString("content_type")) : rs.getString("name")));
+					entry.setComment("Content-Type: " + rs.getString("content_type"));
+					zip.putNextEntry(entry);
+					zip.write(rs.getBytes("content"));
+					zip.closeEntry();
+					return null;
+				}
+				catch (IOException e)
+				{
+					throw new SQLException(e);
 				}
 			},
 			messageId,
