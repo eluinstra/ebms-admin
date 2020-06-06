@@ -15,8 +15,10 @@
  */
 package nl.clockwork.ebms.admin.dao.postgresql;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import static io.vavr.API.$;
+import static io.vavr.API.Case;
+import static io.vavr.API.Match;
+
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -83,16 +85,11 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 
 	protected String getDateFormat(String timeUnitDateFormat)
 	{
-		if ("mm".equals(timeUnitDateFormat))
-			return "minute";
-		else if ("HH".equals(timeUnitDateFormat))
-			return "hour";
-		else if ("dd".equals(timeUnitDateFormat))
-			return "day";
-		else if ("MM".equals(timeUnitDateFormat))
-			return "month";
-		else
-			return timeUnitDateFormat;
+		return Match(timeUnitDateFormat).of(
+				Case($("mm"),"minute"),
+				Case($("HH"),"hour"),
+				Case($("dd"),"day"),
+				Case($("MM"),"month"),
+				Case($(),timeUnitDateFormat));
 	}
-
 }

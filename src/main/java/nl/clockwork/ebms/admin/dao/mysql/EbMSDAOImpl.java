@@ -15,8 +15,11 @@
  */
 package nl.clockwork.ebms.admin.dao.mysql;
 
+import static io.vavr.API.$;
+import static io.vavr.API.Case;
+import static io.vavr.API.Match;
+
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -165,16 +168,11 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 	
 	protected String getDateFormat(String timeUnitDateFormat)
 	{
-		if ("mm".equals(timeUnitDateFormat))
-			return "%Y-%m-%d %k:%i:00";
-		else if ("HH".equals(timeUnitDateFormat))
-			return "%Y-%m-%d %k:00:00";
-		else if ("dd".equals(timeUnitDateFormat))
-			return "%Y-%m-%d 00:00:00";
-		else if ("MM".equals(timeUnitDateFormat))
-			return "%Y-%m-01 00:00:00";
-		else
-			return timeUnitDateFormat;
+		return Match(timeUnitDateFormat).of(
+				Case($("mm"),"%Y-%m-%d %k:%i:00"),
+				Case($("HH"),"%Y-%m-%d %k:00:00"),
+				Case($("dd"),"%Y-%m-%d 00:00:00"),
+				Case($("MM"),"%Y-%m-01 00:00:00"),
+				Case($(),timeUnitDateFormat));
 	}
-
 }

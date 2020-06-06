@@ -15,8 +15,10 @@
  */
 package nl.clockwork.ebms.admin.dao.mssql;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import static io.vavr.API.$;
+import static io.vavr.API.Case;
+import static io.vavr.API.Match;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -83,20 +85,11 @@ public class EbMSDAOImpl extends nl.clockwork.ebms.admin.dao.mysql.EbMSDAOImpl
 
 	protected String getDateFormat(String timeUnitDateFormat)
 	{
-		if ("mm".equals(timeUnitDateFormat))
-			//return "yyyy-MM-dd HH:mm:00";
-			return "cast(datepart(yyyy,time_stamp) as varchar(4)) + '-' + cast(datepart(mm,time_stamp) as varchar(2)) + '-' + cast(datepart(dd,time_stamp) as varchar(2)) + ' ' + cast(datepart(hh,time_stamp) as varchar(2)) + ':' + cast(datepart(mi,time_stamp) as varchar(2)) + ':' + '00'";
-		else if ("HH".equals(timeUnitDateFormat))
-			//return "yyyy-MM-dd HH:00:00";
-			return "cast(datepart(yyyy,time_stamp) as varchar(4)) + '-' + cast(datepart(mm,time_stamp) as varchar(2)) + '-' + cast(datepart(dd,time_stamp) as varchar(2)) + ' ' + cast(datepart(hh,time_stamp) as varchar(2)) + ':' + '00' + ':' + '00'";
-		else if ("dd".equals(timeUnitDateFormat))
-			//return "yyyy-MM-dd 00:00:00";
-			return "cast(datepart(yyyy,time_stamp) as varchar(4)) + '-' + cast(datepart(mm,time_stamp) as varchar(2)) + '-' + cast(datepart(dd,time_stamp) as varchar(2)) + ' ' + '00' + ':' + '00' + ':' + '00'";
-		else if ("MM".equals(timeUnitDateFormat))
-			//return "yyyy-MM-01 00:00:00";
-			return "cast(datepart(yyyy,time_stamp) as varchar(4)) + '-' + cast(datepart(mm,time_stamp) as varchar(2)) + '-' + '01' + ' ' + '00' + ':' + '00' + ':' + '00'";
-		else
-			return timeUnitDateFormat;
+		return Match(timeUnitDateFormat).of(
+				Case($("mm"),"cast(datepart(yyyy,time_stamp) as varchar(4)) + '-' + cast(datepart(mm,time_stamp) as varchar(2)) + '-' + cast(datepart(dd,time_stamp) as varchar(2)) + ' ' + cast(datepart(hh,time_stamp) as varchar(2)) + ':' + cast(datepart(mi,time_stamp) as varchar(2)) + ':' + '00'"), //return "yyyy-MM-dd HH:mm:00";
+				Case($("HH"),"cast(datepart(yyyy,time_stamp) as varchar(4)) + '-' + cast(datepart(mm,time_stamp) as varchar(2)) + '-' + cast(datepart(dd,time_stamp) as varchar(2)) + ' ' + cast(datepart(hh,time_stamp) as varchar(2)) + ':' + '00' + ':' + '00'"), //return "yyyy-MM-dd HH:00:00";
+				Case($("dd"),"cast(datepart(yyyy,time_stamp) as varchar(4)) + '-' + cast(datepart(mm,time_stamp) as varchar(2)) + '-' + cast(datepart(dd,time_stamp) as varchar(2)) + ' ' + '00' + ':' + '00' + ':' + '00'"), //return "yyyy-MM-dd 00:00:00";
+				Case($("MM"),"cast(datepart(yyyy,time_stamp) as varchar(4)) + '-' + cast(datepart(mm,time_stamp) as varchar(2)) + '-' + '01' + ' ' + '00' + ':' + '00' + ':' + '00'"), //return "yyyy-MM-01 00:00:00";
+				Case($(),timeUnitDateFormat));
 	}
-
 }

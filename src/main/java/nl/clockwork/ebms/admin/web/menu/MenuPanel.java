@@ -22,6 +22,8 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
+import static io.vavr.API.*;
+import static io.vavr.Predicates.*;
 import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
@@ -45,12 +47,10 @@ public class MenuPanel extends Panel
 		protected void populateItem(ListItem<MenuItem> item)
 		{
 			val o = item.getModelObject();
-			if (o instanceof MenuLinkItem)
-				item.add(new MenuLinkItemPanel("menuItem",Model.of((MenuLinkItem)o))/*.setRenderBodyOnly(true)*/);
-			else if (o instanceof MenuDivider)
-				item.add(new MenuDividerPanel("menuItem"));
-			else
-				item.add(new MenuItemPanel("menuItem",item.getModel(),level)/*.setRenderBodyOnly(true)*/);
+			Match(o).of(
+					Case($(instanceOf(MenuLinkItem.class)),i -> item.add(new MenuLinkItemPanel("menuItem",Model.of((MenuLinkItem)o))/*.setRenderBodyOnly(true)*/)),
+					Case($(instanceOf(MenuDivider.class)),i -> item.add(new MenuDividerPanel("menuItem"))),
+					Case($(),i -> item.add(new MenuItemPanel("menuItem",item.getModel(),level)/*.setRenderBodyOnly(true)*/)));
 			//item.setRenderBodyOnly(true);
 		}
 	}

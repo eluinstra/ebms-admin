@@ -18,8 +18,6 @@ package nl.clockwork.ebms.admin.web.service.message;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -68,7 +66,6 @@ public class DataSourceModalWindow extends ModalWindow
 	public class DataSourcePanel extends Panel
 	{
 		private static final long serialVersionUID = 1L;
-		protected transient Log logger = LogFactory.getLog(this.getClass());
 		private List<EbMSDataSource> dataSources;
 		private Component[] components;
 

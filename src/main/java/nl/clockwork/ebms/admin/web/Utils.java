@@ -16,14 +16,42 @@
 package nl.clockwork.ebms.admin.web;
 
 import java.net.URLConnection;
+import java.util.Arrays;
+import java.util.EnumSet;
 
 import org.apache.commons.lang3.StringUtils;
 
+import io.vavr.Function2;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.val;
+import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.EbMSMessageStatus;
 
 public class Utils
 {
+	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+	@AllArgsConstructor
+	@Getter
+	private enum Status
+	{
+		SUCCESS(EnumSet.of(EbMSMessageStatus.PROCESSED,EbMSMessageStatus.FORWARDED,EbMSMessageStatus.DELIVERED),"success","text-success"),
+		WARNING(EnumSet.of(EbMSMessageStatus.RECEIVED,EbMSMessageStatus.SENDING),"warning","text-warning"),
+		DANGER(EnumSet.of(EbMSMessageStatus.UNAUTHORIZED,EbMSMessageStatus.NOT_RECOGNIZED,EbMSMessageStatus.FAILED,EbMSMessageStatus.DELIVERY_FAILED,EbMSMessageStatus.EXPIRED),"danger","text-danger");
+		
+		EnumSet<EbMSMessageStatus> statuses;
+		String rowClass;
+		String cellClass;
+
+		public static Function2<EbMSMessageStatus,Function<Status,String>,String> getCssClass = (status,getClass) ->
+				Arrays.stream(Status.values())
+					.filter(s -> s.statuses.contains(status))
+					.map(s -> getClass.apply(s))
+					.findFirst()
+					.orElse(null);
+	}
+
 	public static String getResourceString(Class<?> clazz, String propertyName)
 	{
 		val loaders = WicketApplication.get().getResourceSettings().getStringResourceLoaders();
@@ -40,36 +68,21 @@ public class Utils
 
 	public static String getFileExtension(String contentType)
 	{
-		if (StringUtils.isEmpty(contentType))
-			return "";
-		return "." + (contentType.contains("text") ? "txt" : contentType.split("/")[1]);
+		return StringUtils.isNotEmpty(contentType) ? "." + (contentType.contains("text") ? "txt" : contentType.split("/")[1]) : "";
 	}
 
 	public static String getTableCellCssClass(EbMSMessageStatus ebMSMessageStatus)
 	{
-		if (EbMSMessageStatus.PROCESSED.equals(ebMSMessageStatus) || EbMSMessageStatus.FORWARDED.equals(ebMSMessageStatus) || EbMSMessageStatus.DELIVERED.equals(ebMSMessageStatus))
-			return "text-success";
-		if (EbMSMessageStatus.RECEIVED.equals(ebMSMessageStatus) || EbMSMessageStatus.SENDING.equals(ebMSMessageStatus))
-			return "text-warning";
-		if (EbMSMessageStatus.UNAUTHORIZED.equals(ebMSMessageStatus) || EbMSMessageStatus.NOT_RECOGNIZED.equals(ebMSMessageStatus) || EbMSMessageStatus.FAILED.equals(ebMSMessageStatus) || EbMSMessageStatus.DELIVERY_FAILED.equals(ebMSMessageStatus) || EbMSMessageStatus.EXPIRED.equals(ebMSMessageStatus))
-			return "text-danger";
-		return null;
+		return Status.getCssClass.apply(ebMSMessageStatus,Status::getCellClass);
 	}
 
 	public static String getTableRowCssClass(EbMSMessageStatus ebMSMessageStatus)
 	{
-		if (EbMSMessageStatus.PROCESSED.equals(ebMSMessageStatus) || EbMSMessageStatus.FORWARDED.equals(ebMSMessageStatus) || EbMSMessageStatus.DELIVERED.equals(ebMSMessageStatus))
-			return "success";
-		if (EbMSMessageStatus.RECEIVED.equals(ebMSMessageStatus) || EbMSMessageStatus.SENDING.equals(ebMSMessageStatus))
-			return "warning";
-		if (EbMSMessageStatus.UNAUTHORIZED.equals(ebMSMessageStatus) || EbMSMessageStatus.NOT_RECOGNIZED.equals(ebMSMessageStatus) || EbMSMessageStatus.FAILED.equals(ebMSMessageStatus) || EbMSMessageStatus.DELIVERY_FAILED.equals(ebMSMessageStatus) || EbMSMessageStatus.EXPIRED.equals(ebMSMessageStatus))
-			return "danger";
-		return null;
+		return Status.getCssClass.apply(ebMSMessageStatus,Status::getRowClass);
 	}
 
 	public static String getErrorList(String content)
 	{
 		return content.replaceFirst("(?ms)^.*(<[^<>]*:?ErrorList.*ErrorList>).*$","$1");
 	}
-
 }

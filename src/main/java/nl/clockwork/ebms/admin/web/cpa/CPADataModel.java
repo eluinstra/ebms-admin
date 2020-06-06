@@ -20,6 +20,8 @@ import nl.clockwork.ebms.admin.model.CPA;
 
 import org.apache.wicket.model.LoadableDetachableModel;
 
+import static io.vavr.API.*;
+import static io.vavr.Predicates.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -55,15 +57,10 @@ public class CPADataModel extends LoadableDetachableModel<CPA>
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (obj == this)
-			return true;
-		else if (obj == null)
-			return false;
-		else if (obj instanceof CPADataModel)
-		{
-			CPADataModel other = (CPADataModel)obj;
-			return cpaId.equals(other.cpaId);
-		}
-		return false;
+		return Match(obj).of(
+				Case($(this),true),
+				Case($(null),false),
+				Case($(instanceOf(CPADataModel.class)),o -> cpaId.equals(o.cpaId)),
+				Case($(),false));
 	}
 }

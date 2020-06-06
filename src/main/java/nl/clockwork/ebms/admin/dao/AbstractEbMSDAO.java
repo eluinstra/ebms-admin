@@ -39,6 +39,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import static io.vavr.API.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -410,10 +411,9 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	
 	protected String getDateFormat(String timeUnitDateFormat)
 	{
-		if ("mm".equals(timeUnitDateFormat))
-			return "mi";
-		else
-			return timeUnitDateFormat;
+		return Match(timeUnitDateFormat).of(
+				Case($("mm"),"mi"),
+				Case($(),timeUnitDateFormat));
 	}
 
 	protected String join(EbMSMessageStatus[] array, String delimiter)

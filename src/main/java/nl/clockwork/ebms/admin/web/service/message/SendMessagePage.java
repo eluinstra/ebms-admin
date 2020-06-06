@@ -20,8 +20,6 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -43,6 +41,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.Action;
@@ -63,11 +62,11 @@ import nl.clockwork.ebms.service.model.EbMSMessageContent;
 import nl.clockwork.ebms.service.model.EbMSMessageContext;
 import nl.clockwork.ebms.service.model.Party;
 
+@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SendMessagePage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	protected transient Log log = LogFactory.getLog(getClass());
 	@SpringBean(name="cpaService")
 	private CPAService cpaService;
 	@SpringBean(name="ebMSMessageService")

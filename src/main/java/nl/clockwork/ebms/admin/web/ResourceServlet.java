@@ -15,6 +15,10 @@
  */
 package nl.clockwork.ebms.admin.web;
 
+import static io.vavr.API.$;
+import static io.vavr.API.Case;
+import static io.vavr.API.Match;
+
 import java.io.IOException;
 
 import javax.servlet.GenericServlet;
@@ -27,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.wicket.util.io.IOUtils;
 
 import lombok.val;
+import static nl.clockwork.ebms.Predicates.endsWith;;
 
 public class ResourceServlet extends GenericServlet
 {
@@ -54,20 +59,14 @@ public class ResourceServlet extends GenericServlet
 
 	private String getContentType(String pathInfo)
 	{
-		if (pathInfo.endsWith(".css"))
-			return "text/css";
-		if (pathInfo.endsWith(".js"))
-			return "text/javascript";
-		if (pathInfo.endsWith(".gif"))
-			return "image/gif";
-		if (pathInfo.endsWith(".eot"))
-			return "application/vnd.ms-fontobject";
-		if (pathInfo.endsWith(".svg"))
-			return "image/svg+xml";
-		if (pathInfo.endsWith(".ttf"))
-			return "font/ttf";
-		if (pathInfo.endsWith(".woff"))
-			return "application/font-woff";
-		return null;
+		return Match(pathInfo).of(
+				Case($(endsWith(".css")),"text/css"),
+				Case($(endsWith(".js")),"text/javascript"),
+				Case($(endsWith(".gif")),"image/gif"),
+				Case($(endsWith(".eot")),"application/vnd.ms-fontobject"),
+				Case($(endsWith(".svg")),"image/svg+xml"),
+				Case($(endsWith(".ttf")),"font/ttf"),
+				Case($(endsWith(".woff")),"application/font-woff"),
+				Case($(),(String)null));
 	}
 }
