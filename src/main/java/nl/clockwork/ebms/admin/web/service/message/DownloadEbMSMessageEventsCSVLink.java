@@ -15,13 +15,13 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.apache.cxf.io.CachedOutputStream;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
@@ -35,7 +35,7 @@ import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import nl.clockwork.ebms.admin.Utils;
-import nl.clockwork.ebms.admin.web.message.ByteArrayResourceStream;
+import nl.clockwork.ebms.admin.web.message.CachedOutputResourceStream;
 import nl.clockwork.ebms.event.listener.EbMSMessageEventType;
 import nl.clockwork.ebms.service.EbMSMessageService;
 import nl.clockwork.ebms.service.model.EbMSMessageContext;
@@ -65,16 +65,12 @@ public class DownloadEbMSMessageEventsCSVLink extends Link<Void>
 	@Override
 	public void onClick()
 	{
-		try
+		try (val output = new CachedOutputStream(); val printer = new CSVPrinter(new OutputStreamWriter(output),CSVFormat.DEFAULT))
 		{
-			val output = new ByteArrayOutputStream();
-			try (val printer = new CSVPrinter(new OutputStreamWriter(output),CSVFormat.DEFAULT))
-			{
-				val messageEvents = Utils.toList(ebMSMessageService.getUnprocessedMessageEvents(filter.getObject(),eventTypes,null));
-				if (messageEvents != null)
-					printMessagesToCSV(printer,messageEvents);
-			}
-			val resourceStream = ByteArrayResourceStream.of(output,"text/csv");
+			val messageEvents = Utils.toList(ebMSMessageService.getUnprocessedMessageEvents(filter.getObject(),eventTypes,null));
+			if (messageEvents != null)
+				printMessagesToCSV(printer,messageEvents);
+			val resourceStream = CachedOutputResourceStream.of(output,"text/csv");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}
 		catch (IOException e)

@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
@@ -26,6 +25,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
 import org.apache.cxf.common.util.StringUtils;
+import org.apache.cxf.io.CachedOutputStream;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
@@ -36,7 +36,7 @@ import org.apache.wicket.util.resource.IResourceStream;
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 import nl.clockwork.ebms.admin.web.Utils;
-import nl.clockwork.ebms.admin.web.message.ByteArrayResourceStream;
+import nl.clockwork.ebms.admin.web.message.CachedOutputResourceStream;
 import nl.clockwork.ebms.jaxb.JAXBParser;
 import nl.clockwork.ebms.service.model.EbMSMessageContent;
 import nl.clockwork.ebms.service.model.EbMSMessageContext;
@@ -54,15 +54,11 @@ public class DownloadEbMSMessageContentLink extends Link<EbMSMessageContent>
 	@Override
 	public void onClick()
 	{
-		try
+		val o = getModelObject();
+		try (val output = new CachedOutputStream(); val zip = new ZipOutputStream(output))
 		{
-			val o = getModelObject();
-			val output = new ByteArrayOutputStream();
-			try (val zip = new ZipOutputStream(output))
-			{
-				writeMessageToZip(o,zip);
-			}
-			val resourceStream = ByteArrayResourceStream.of(output,"application/zip");
+			writeMessageToZip(o,zip);
+			val resourceStream = CachedOutputResourceStream.of(output,"application/zip");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(o,resourceStream));
 		}
 		catch (IOException e)

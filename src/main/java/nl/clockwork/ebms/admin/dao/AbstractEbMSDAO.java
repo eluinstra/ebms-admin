@@ -16,6 +16,7 @@
 package nl.clockwork.ebms.admin.dao;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -31,8 +32,10 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.cxf.io.CachedOutputStream;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -296,17 +299,32 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			" and content_id = ?",
 			(RowMapper<EbMSAttachment>)(rs,rowNum) ->
 			{
-				return EbMSAttachment.builder()
-						.name(rs.getString("name"))
-						.contentId(rs.getString("content_id"))
-						.contentType(rs.getString("content_type"))
-						.content(rs.getBytes("content"))
-						.build();
+				try
+				{
+					return EbMSAttachment.builder()
+							.name(rs.getString("name"))
+							.contentId(rs.getString("content_id"))
+							.contentType(rs.getString("content_type"))
+							.content(createCachedOutputStream(rs.getBinaryStream("content")))
+							.build();
+				}
+				catch (IOException e)
+				{
+					throw new SQLException(e);
+				}
 			},
 			messageId,
 			messageNr,
 			contentId
 		);
+	}
+
+	protected CachedOutputStream createCachedOutputStream(InputStream in) throws IOException
+	{
+		val result = new CachedOutputStream();
+		CachedOutputStream.copyStream(in,result,4096);
+		result.lockOutputStream();
+		return result;
 	}
 
 	protected List<EbMSAttachment> getAttachments(String messageId, int messageNr)
@@ -510,7 +528,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 					val entry = new ZipEntry("attachments/" + (StringUtils.isEmpty(rs.getString("name")) ? rs.getString("content_id") + Utils.getFileExtension(rs.getString("content_type")) : rs.getString("name")));
 					entry.setComment("Content-Type: " + rs.getString("content_type"));
 					zip.putNextEntry(entry);
-					zip.write(rs.getBytes("content"));
+					IOUtils.copy(rs.getBinaryStream("content"),zip);
 					zip.closeEntry();
 					return null;
 				}

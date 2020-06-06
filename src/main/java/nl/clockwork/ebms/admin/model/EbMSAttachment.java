@@ -15,6 +15,7 @@
  */
 package nl.clockwork.ebms.admin.model;
 
+import org.apache.cxf.io.CachedOutputStream;
 import org.apache.wicket.util.io.IClusterable;
 
 import lombok.AccessLevel;
@@ -42,5 +43,5 @@ public class EbMSAttachment implements IClusterable
 	String contentId;
 	@NonNull
 	String contentType;
-	byte[] content;
+	CachedOutputStream content;
 }

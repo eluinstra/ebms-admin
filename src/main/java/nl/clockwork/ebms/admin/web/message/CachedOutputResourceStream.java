@@ -15,11 +15,10 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.cxf.io.CachedOutputStream;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
@@ -31,11 +30,11 @@ import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor(staticName = "of")
-public class ByteArrayResourceStream extends AbstractResourceStream
+public class CachedOutputResourceStream extends AbstractResourceStream
 {
 	private static final long serialVersionUID = 1L;
 	@NonNull
-	ByteArrayOutputStream stream;
+	CachedOutputStream stream;
 	@NonNull
 	String contentType;
 	
@@ -54,11 +53,19 @@ public class ByteArrayResourceStream extends AbstractResourceStream
 	@Override
 	public InputStream getInputStream() throws ResourceStreamNotFoundException
 	{
-		return new ByteArrayInputStream(stream.toByteArray());
+		try
+		{
+			return stream.getInputStream();
+		}
+		catch (IOException e)
+		{
+			throw new ResourceStreamNotFoundException(e);
+		}
 	}
 	
 	@Override
 	public void close() throws IOException
 	{
+		stream.close();
 	}
 }

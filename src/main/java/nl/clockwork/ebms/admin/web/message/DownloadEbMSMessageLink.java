@@ -15,10 +15,10 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.cxf.io.CachedOutputStream;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
@@ -50,15 +50,11 @@ public class DownloadEbMSMessageLink extends Link<EbMSMessage>
 	@Override
 	public void onClick()
 	{
-		try
+		val o = getModelObject();
+		try (val out = new CachedOutputStream(); val zip = new ZipOutputStream(out))
 		{
-			val o = getModelObject();
-			val output = new ByteArrayOutputStream();
-			try (val zip = new ZipOutputStream(output))
-			{
-				ebMSDAO.writeMessageToZip(o.getMessageId(),o.getMessageNr(),zip);
-			}
-			val resourceStream = ByteArrayResourceStream.of(output,"application/zip");
+			ebMSDAO.writeMessageToZip(o.getMessageId(),o.getMessageNr(),zip);
+			val resourceStream = CachedOutputResourceStream.of(out,"application/zip");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}
 		catch (IOException e)

@@ -80,12 +80,19 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 			" and a.content_id = ?",
 			(RowMapper<EbMSAttachment>)(rs,rowNum) ->
 			{
-				return EbMSAttachment.builder()
-						.name(rs.getString("name"))
-						.contentId(rs.getString("content_id"))
-						.contentType(rs.getString("content_type"))
-						.content(rs.getBytes("content"))
-						.build();
+				try
+				{
+					return EbMSAttachment.builder()
+							.name(rs.getString("name"))
+							.contentId(rs.getString("content_id"))
+							.contentType(rs.getString("content_type"))
+							.content(createCachedOutputStream(rs.getBinaryStream("content")))
+							.build();
+				}
+				catch (IOException e)
+				{
+					throw new SQLException(e);
+				}
 			},
 			messageId,
 			messageNr,

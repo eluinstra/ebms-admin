@@ -15,12 +15,12 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.apache.cxf.io.CachedOutputStream;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
@@ -52,14 +52,10 @@ public class DownloadEbMSMessagesCSVLink extends Link<MessageFilterFormData>
 	@Override
 	public void onClick()
 	{
-		try
+		try (val output = new CachedOutputStream(); val printer = new CSVPrinter(new OutputStreamWriter(output),CSVFormat.DEFAULT))
 		{
-			val output = new ByteArrayOutputStream();
-			try (val printer = new CSVPrinter(new OutputStreamWriter(output),CSVFormat.DEFAULT))
-			{
-				ebMSDAO.printMessagesToCSV(printer,getModelObject());
-			}
-			val resourceStream = ByteArrayResourceStream.of(output,"text/csv");
+			ebMSDAO.printMessagesToCSV(printer,getModelObject());
+			val resourceStream = CachedOutputResourceStream.of(output,"text/csv");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}
 		catch (IOException e)

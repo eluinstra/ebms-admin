@@ -15,12 +15,9 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
-import org.apache.cxf.common.util.StringUtils;
+import org.apache.cxf.io.CachedOutputStream;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
@@ -31,7 +28,6 @@ import org.apache.wicket.util.resource.IResourceStream;
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
-import nl.clockwork.ebms.admin.web.Utils;
 
 @Slf4j
 public class DownloadEbMSMessageLinkX extends Link<EbMSMessage>
@@ -46,37 +42,17 @@ public class DownloadEbMSMessageLinkX extends Link<EbMSMessage>
 	@Override
 	public void onClick()
 	{
-		try
+		val o = getModelObject();
+		try (val out = new CachedOutputStream())
 		{
-			val o = getModelObject();
-			val output = new ByteArrayOutputStream();
-			try (val zip = new ZipOutputStream(output))
-			{
-				writeMessageToZip(o,zip);
-			}
-			val resourceStream = ByteArrayResourceStream.of(output,"application/zip");
+			EbMSMessageZipper.of(o,out).zip();
+			val resourceStream = CachedOutputResourceStream.of(out,"application/gzip");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(o,resourceStream));
 		}
 		catch (IOException e)
 		{
 			log.error("",e);
 			error(e.getMessage());
-		}
-	}
-
-	private void writeMessageToZip(EbMSMessage message, ZipOutputStream zip) throws IOException
-	{
-		val entry = new ZipEntry("message.xml");
-		zip.putNextEntry(entry);
-		zip.write(message.getContent().getBytes());
-		zip.closeEntry();
-		for (val a: message.getAttachments())
-		{
-			val e = new ZipEntry("attachments/" + (StringUtils.isEmpty(a.getName()) ? a.getContentId() + Utils.getFileExtension(a.getContentType()) : a.getName()));
-			entry.setComment("Content-Type: " + a.getContentType());
-			zip.putNextEntry(e);
-			zip.write(a.getContent());
-			zip.closeEntry();
 		}
 	}
 
