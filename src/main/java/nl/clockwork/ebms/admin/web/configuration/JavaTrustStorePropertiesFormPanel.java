@@ -112,7 +112,7 @@ public class JavaTrustStorePropertiesFormPanel extends Panel
 		private static final long serialVersionUID = 1L;
 		KeyStoreType type = KeyStoreType.PKCS12;
 		@NonNull
-		String uri = "keystore.p12";
+		String uri = "nl/clockwork/ebms/truststore.p12";
 		@NonNull
 		String password = "password";
 	}

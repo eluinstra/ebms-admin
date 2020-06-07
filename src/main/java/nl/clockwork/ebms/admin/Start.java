@@ -73,7 +73,7 @@ import nl.clockwork.ebms.security.KeyStoreType;
 public class Start
 {
 	protected static final String DEFAULT_KEYSTORE_TYPE = KeyStoreType.PKCS12.name();
-	protected static final String DEFAULT_KEYSTORE_FILE = "keystore.p12";
+	protected static final String DEFAULT_KEYSTORE_FILE = "nl/clockwork/ebms/keystore.p12";
 	protected static final String DEFAULT_KEYSTORE_PASSWORD = "password";
 	protected static final String REALM = "Realm";
 	protected static final String REALM_FILE = "realm.properties";

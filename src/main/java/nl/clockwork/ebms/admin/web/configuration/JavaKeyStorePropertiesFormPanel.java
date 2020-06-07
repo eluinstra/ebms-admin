@@ -115,7 +115,7 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 		private static final long serialVersionUID = 1L;
 		KeyStoreType type = KeyStoreType.PKCS12;
 		@NonNull
-		String uri = "keystore.p12";
+		String uri = "nl/clockwork/ebms/keystore.p12";
 		@NonNull
 		String password = "password";
 		String defaultAlias;

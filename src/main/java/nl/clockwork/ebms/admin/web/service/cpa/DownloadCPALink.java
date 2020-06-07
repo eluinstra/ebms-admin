@@ -52,7 +52,7 @@ public class DownloadCPALink extends Link<String>
 	private ResourceStreamRequestHandler createRequestHandler(String cpaId, IResourceStream resourceStream)
 	{
 		return new ResourceStreamRequestHandler(resourceStream)
-				.setFileName("cpa." + cpaId + ".xml")
+				.setFileName(cpaId + ".xml")
 				.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 }
