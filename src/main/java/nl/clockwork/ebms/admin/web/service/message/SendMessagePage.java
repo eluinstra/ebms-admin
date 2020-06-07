@@ -123,14 +123,14 @@ public class SendMessagePage extends BasePage
 					o.resetServices();
 					o.resetActions();
 					o.resetDataSources();
-					t.add(getPage().get("feedback"));
-					t.add(getPage().get("form"));
 				}
 				catch (JAXBException e)
 				{
 					log.error("",e);
 					error(e.getMessage());
 				}
+				t.add(getPage().get("feedback"));
+				t.add(getPage().get("form"));
 			};
 			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;
@@ -151,14 +151,14 @@ public class SendMessagePage extends BasePage
 					o.resetServices(CPAUtils.getServiceNames(cpa,o.getFromParty().getRole()));
 					o.resetActions();
 					o.resetDataSources();
-					t.add(getPage().get("feedback"));
-					t.add(getPage().get("form"));
 				}
 				catch (JAXBException e)
 				{
 					log.error("",e);
 					error(e.getMessage());
 				}
+				t.add(getPage().get("feedback"));
+				t.add(getPage().get("form"));
 			};
 			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;
@@ -180,14 +180,14 @@ public class SendMessagePage extends BasePage
 					o.resetServices(CPAUtils.getServiceNames(cpa,o.getFromParty().getRole()));
 					o.resetActions();
 					o.resetDataSources();
-					t.add(getPage().get("feedback"));
-					t.add(getPage().get("form"));
 				}
 				catch (JAXBException e)
 				{
 					log.error("",e);
 					error(e.getMessage());
 				}
+				t.add(getPage().get("feedback"));
+				t.add(getPage().get("form"));
 			};
 			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;
@@ -207,14 +207,14 @@ public class SendMessagePage extends BasePage
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
 					o.resetActions(CPAUtils.getFromActionNames(cpa,o.getFromParty().getRole(),o.getService()));
 					o.resetDataSources();
-					t.add(getPage().get("feedback"));
-					t.add(getPage().get("form"));
 				}
 				catch (JAXBException e)
 				{
 					log.error("",e);
 					error(e.getMessage());
 				}
+				t.add(getPage().get("feedback"));
+				t.add(getPage().get("form"));
 			};
 			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;

@@ -131,14 +131,14 @@ public class SendMessagePageX extends BasePage
 					o.resetServices();
 					o.resetActions();
 					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
-					t.add(getPage().get("feedback"));
-					t.add(getPage().get("form"));
 				}
 				catch (JAXBException e)
 				{
 					log.error("",e);
 					error(e.getMessage());
 				}
+				t.add(getPage().get("feedback"));
+				t.add(getPage().get("form"));
 			};
 			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;
@@ -161,14 +161,14 @@ public class SendMessagePageX extends BasePage
 					o.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,o.getFromParty().getPartyId(),o.getFromParty().getRole()),CPAUtils.getServiceNamesCanReceive(cpa,o.getToParty().getPartyId(),o.getToParty().getRole())));
 					o.resetActions();
 					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
-					t.add(getPage().get("feedback"));
-					t.add(getPage().get("form"));
 				}
 				catch (JAXBException e)
 				{
 					log.error("",e);
 					error(e.getMessage());
 				}
+				t.add(getPage().get("feedback"));
+				t.add(getPage().get("form"));
 			};
 			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;
@@ -188,14 +188,14 @@ public class SendMessagePageX extends BasePage
 					o.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,o.getFromParty().getPartyId(),o.getFromParty().getRole()),CPAUtils.getServiceNamesCanReceive(cpa,o.getToParty().getPartyId(),o.getToParty().getRole())));
 					o.resetActions();
 					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
-					t.add(getPage().get("feedback"));
-					t.add(getPage().get("form"));
 				}
 				catch (JAXBException e)
 				{
 					log.error("",e);
 					error(e.getMessage());
 				}
+				t.add(getPage().get("feedback"));
+				t.add(getPage().get("form"));
 			};
 			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;
@@ -216,14 +216,14 @@ public class SendMessagePageX extends BasePage
 					o.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,o.getFromParty().getPartyId(),o.getFromParty().getRole()),CPAUtils.getServiceNamesCanReceive(cpa,o.getToParty().getPartyId(),o.getToParty().getRole())));
 					o.resetActions();
 					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
-					t.add(getPage().get("feedback"));
-					t.add(getPage().get("form"));
 				}
 				catch (JAXBException e)
 				{
 					log.error("",e);
 					error(e.getMessage());
 				}
+				t.add(getPage().get("feedback"));
+				t.add(getPage().get("form"));
 			};
 			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;
@@ -243,14 +243,14 @@ public class SendMessagePageX extends BasePage
 					o.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,o.getFromParty().getPartyId(),o.getFromParty().getRole()),CPAUtils.getServiceNamesCanReceive(cpa,o.getToParty().getPartyId(),o.getToParty().getRole())));
 					o.resetActions();
 					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
-					t.add(getPage().get("feedback"));
-					t.add(getPage().get("form"));
 				}
 				catch (JAXBException e)
 				{
 					log.error("",e);
 					error(e.getMessage());
 				}
+				t.add(getPage().get("feedback"));
+				t.add(getPage().get("form"));
 			};
 			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;
@@ -270,14 +270,14 @@ public class SendMessagePageX extends BasePage
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
 					o.resetActions(ListUtils.intersection(CPAUtils.getFromActionNamesCanSend(cpa,o.getFromParty().getPartyId(),o.getFromParty().getRole(),o.getService()),CPAUtils.getFromActionNamesCanReceive(cpa,o.getToParty().getPartyId(),o.getToParty().getRole(),o.getService())));
 					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
-					t.add(getPage().get("feedback"));
-					t.add(getPage().get("form"));
 				}
 				catch (JAXBException e)
 				{
 					log.error("",e);
 					error(e.getMessage());
 				}
+				t.add(getPage().get("feedback"));
+				t.add(getPage().get("form"));
 			};
 			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;

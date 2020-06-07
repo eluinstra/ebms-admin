@@ -11,9 +11,13 @@ hooks
 /.settings
 /.classpath
 /.project
+/log4j2.xml
+/*.properties
 /dependency-reduced-pom.xml
 /target
 /findbugs
+/activemq-data
+/data
 /hsqldb
 /ebms-admin.properties
 /ebms-admin.embedded.properties

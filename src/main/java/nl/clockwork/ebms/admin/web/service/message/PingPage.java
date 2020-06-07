@@ -102,14 +102,14 @@ public class PingPage extends BasePage
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
 					o.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
 					o.resetToPartyIds();
-					t.add(getPage().get("feedback"));
-					t.add(getPage().get("form"));
 				}
 				catch (JAXBException e)
 				{
 					log.error("",e);
 					error(e.getMessage());
 				}
+				t.add(getPage().get("feedback"));
+				t.add(getPage().get("form"));
 			};
 			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;
@@ -127,14 +127,14 @@ public class PingPage extends BasePage
 					val o = getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
 					o.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,o.getFromPartyId()));
-					t.add(getPage().get("feedback"));
-					t.add(getPage().get("form"));
 				}
 				catch (JAXBException e)
 				{
 					log.error("",e);
 					error(e.getMessage());
 				}
+				t.add(getPage().get("feedback"));
+				t.add(getPage().get("form"));
 			};
 			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
 			return result;

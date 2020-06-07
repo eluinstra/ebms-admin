@@ -10,7 +10,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.cxf.common.util.StringUtils;
 import org.fusesource.hawtbuf.ByteArrayInputStream;
 
-import io.vavr.control.Either;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.val;
@@ -35,27 +34,18 @@ public class EbMSMessageZipper
 	{
 		try (val o = new ZipOutputStream(out))
 		{
-			addEntry(o,"message.xml",new ByteArrayInputStream(message.getContent().getBytes())).getOrElseThrow(e -> e);
+			addEntry(o,"message.xml",new ByteArrayInputStream(message.getContent().getBytes()));
 	    for (EbMSAttachment a : message.getAttachments())
 				addEntry(o,"attachments/" + (StringUtils.isEmpty(a.getName()) ? a.getContentId() + Utils.getFileExtension(a.getContentType()) : a.getName()),a.getContent().getInputStream());
 		}
 	}
 
-	private Either<IOException,Void> addEntry(ZipOutputStream out, String name, InputStream content)
+	private void addEntry(ZipOutputStream out, String name, InputStream content) throws IOException
 	{
-		try
-		{
-			val entry = new ZipEntry(name);
-			//entry.setSize(content.getSize());
-			out.putNextEntry(entry);
-			IOUtils.copy(content,out);
-			out.closeEntry();
-			return Either.right(null);
-		}
-		catch (IOException e)
-		{
-			return Either.left(e);
-		}
+		val entry = new ZipEntry(name);
+		//entry.setSize(content.getSize());
+		out.putNextEntry(entry);
+		IOUtils.copy(content,out);
+		out.closeEntry();
 	}
-
 }
