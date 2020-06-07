@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import org.apache.wicket.core.request.handler.PageProvider;
 import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
@@ -134,13 +135,9 @@ public class WicketApplication extends WebApplication
 	{
 		val result = new MenuItem(id,"extensions");
 		val i = new AtomicInteger(1);
-		extensionProviders.forEach(p ->
-		{
-			MenuItem epmi = new MenuItem(result,"" + i.getAndIncrement(),p.getName());
-			//result.addChild(epmi);
-			//p.getMenuItems().forEach(m -> epmi.addChild(m));
-			p.addMenuItems(epmi);
-		});
+		extensionProviders.stream()
+				.map(p -> p.createSubMenu(result,i.getAndIncrement(),p.getName()))
+				.collect(Collectors.toList());
 		return result;
 	}
 

@@ -16,7 +16,6 @@
 package nl.clockwork.ebms.admin.web.menu;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.wicket.util.io.IClusterable;
@@ -54,7 +53,7 @@ public class MenuItem implements IClusterable
 
 	public List<MenuItem> getChildren()
 	{
-		return Collections.unmodifiableList(children);
+		return children;
 	}
 
 	@Override
@@ -62,5 +61,4 @@ public class MenuItem implements IClusterable
 	{
 		return id;
 	}
-
 }

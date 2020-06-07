@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.cxf.common.util.StringUtils;
 import org.fusesource.hawtbuf.ByteArrayInputStream;
 

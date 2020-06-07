@@ -22,6 +22,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.DispatcherType;
 
@@ -52,6 +53,7 @@ import lombok.val;
 import lombok.var;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.DBMigrate.BaselineVersion;
+import nl.clockwork.ebms.admin.web.ExtensionProvider;
 import nl.clockwork.ebms.admin.web.configuration.JdbcURL;
 
 @FieldDefaults(level = AccessLevel.PROTECTED)
@@ -168,16 +170,27 @@ public class StartEmbedded extends Start
 		val url = "jdbc:hsqldb:hsql://localhost:" + server.getPort() + "/" + server.getDatabaseName(0,true);
 		val user = "sa";
 		val password = "";
-		Location[] locations = {new Location("classpath:/nl/clockwork/ebms/db/migration/hsqldb")};
+		Location[] locations = getDbMigrationLocations(new Location("classpath:/nl/clockwork/ebms/db/migration/hsqldb"));
 		var config = Flyway.configure()
 				.dataSource(url,user,password)
 				.locations(locations)
-				.ignoreMissingMigrations(true);
+				.ignoreMissingMigrations(true)
+				.outOfOrder(true);
 		if (StringUtils.isNotEmpty(ebmsVersion))
 				config = config
 						.baselineVersion(BaselineVersion.getBaselineVersion(ebmsVersion).orElseThrow(() -> new ParseException("ebmsVersion " + ebmsVersion + " not found!")))
 						.baselineOnMigrate(true);
 		config.load().migrate();
+	}
+
+	private static Location[] getDbMigrationLocations(Location dbMigrationLocation)
+	{
+		val result = ExtensionProvider.get().stream()
+				.filter(p -> !StringUtils.isEmpty(p.getDbMigrationLocation()))
+				.map(p -> new Location(p.getDbMigrationLocation() + "/hsqldb"))
+				.collect(Collectors.toList());
+		result.add(0,dbMigrationLocation);
+		return result.toArray(new Location[]{});
 	}
 
 	private void initEbMSServer(Map<String,String> properties, Server server) throws MalformedURLException, IOException
