@@ -74,7 +74,7 @@ public class MessagesPage extends BasePage
 			item.add(new Label("messageNr",o.getMessageNr()));
 			item.add(createFilterConversationIdLink("filterConversationId",item.getModel()));
 			item.add(createViewRefToMessageIdLink("viewRefToMessageId",item.getModel()));
-			item.add(InstantLabel.of("timestamp",Model.of(o.getTimestamp()),Constants.DATETIME_FORMAT));
+			item.add(InstantLabel.of("timestamp",Model.of(item.getModelObject().getTimestamp()),Constants.DATETIME_FORMAT));
 			item.add(new Label("cpaId",o.getCpaId()));
 			item.add(new Label("fromPartyId",o.getFromPartyId()));
 			item.add(new Label("fromRole",o.getFromRole()));

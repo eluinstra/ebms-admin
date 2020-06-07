@@ -306,7 +306,7 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 	{
 		val result = TextArea.<String>builder()
 				.id(id)
-				.model(Model.of(getModelObject().getContent()))
+				.model(PropertyModel.of(getModel(),"content"))
 				.isVisible(() -> showContent)
 				.build();
 		result.setOutputMarkupPlaceholderTag(true);

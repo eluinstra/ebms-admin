@@ -31,6 +31,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import lombok.AccessLevel;
@@ -233,7 +234,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 	{
 		val result = TextArea.<String>builder()
 				.id(id)
-				.model(Model.of(getModelObject().getContent()))
+				.model(PropertyModel.of(getModel(),"content"))
 				.isVisible(() -> showContent)
 				.build();
 		result.setOutputMarkupPlaceholderTag(true);

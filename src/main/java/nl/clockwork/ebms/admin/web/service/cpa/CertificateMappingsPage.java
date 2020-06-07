@@ -24,7 +24,6 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -61,9 +60,9 @@ public class CertificateMappingsPage extends BasePage
 		protected void populateItem(final Item<CertificateMapping> item)
 		{
 			val o = item.getModelObject();
-			item.add(new Label("source",Model.of(createLabel(o.getSource()))));
-			item.add(new Label("destination",Model.of(createLabel(o.getDestination()))));
-			item.add(new Label("cpaId",Model.of(o.getCpaId())));
+			item.add(new Label("source",createLabel(o.getSource())));
+			item.add(new Label("destination",createLabel(o.getDestination())));
+			item.add(new Label("cpaId",o.getCpaId()));
 			item.add(createEditButton("editCertificate",item.getModel()));
 			item.add(createDeleteButton("delete",o));
 			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));

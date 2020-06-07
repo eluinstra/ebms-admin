@@ -22,7 +22,6 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -58,8 +57,8 @@ public class URLMappingsPage extends BasePage
 		protected void populateItem(final Item<URLMapping> item)
 		{
 			val o = item.getModelObject();
-			item.add(new Label("source",Model.of(o.getSource())));
-			item.add(new Label("destination",Model.of(o.getDestination())));
+			item.add(new Label("source",o.getSource()));
+			item.add(new Label("destination",o.getDestination()));
 			item.add(createEditButton("editUrl",item.getModel()));
 			item.add(createDeleteButton("delete",item.getModel()));
 			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));

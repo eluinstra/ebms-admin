@@ -144,6 +144,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 		return result;
 	}
 
+	@Override
 	protected void writeAttachmentsToZip(String messageId, int messageNr, final ZipOutputStream zip)
 	{
 		jdbcTemplate.query(
