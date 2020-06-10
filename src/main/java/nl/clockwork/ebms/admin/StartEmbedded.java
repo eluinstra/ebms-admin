@@ -44,11 +44,8 @@ import org.hsqldb.server.EbMSServerProperties;
 import org.hsqldb.server.ServerAcl.AclFormatException;
 import org.hsqldb.server.ServerConfiguration;
 import org.hsqldb.server.ServerConstants;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.context.support.XmlWebApplicationContext;
 
 import lombok.AccessLevel;
 import lombok.val;
@@ -84,28 +81,28 @@ public class StartEmbedded extends Start
 		if (cmd.hasOption("jmx"))
 			start.initJMX(start.server);
 
-//		val context = new XmlWebApplicationContext();
-//		context.setConfigLocations(getConfigLocations("classpath:nl/clockwork/ebms/admin/applicationContext.embedded.xml"));
-		val context = new AnnotationConfigWebApplicationContext();
-		context.register(EmbeddedAppConfig.class);
-		val contextLoaderListener = new ContextLoaderListener(context);
-		if (cmd.hasOption("soap") || !cmd.hasOption("headless"))
-			start.handlerCollection.addHandler(start.createWebContextHandler(cmd,contextLoaderListener));
-		start.handlerCollection.addHandler(start.createEbMSContextHandler(properties,contextLoaderListener));
-
-		System.out.println("Starting web server...");
-
-		try
+		try (val context = new AnnotationConfigWebApplicationContext())
 		{
-			start.server.start();
+			context.register(EmbeddedAppConfig.class);
+			val contextLoaderListener = new ContextLoaderListener(context);
+			if (cmd.hasOption("soap") || !cmd.hasOption("headless"))
+				start.handlerCollection.addHandler(start.createWebContextHandler(cmd,contextLoaderListener));
+			start.handlerCollection.addHandler(start.createEbMSContextHandler(properties,contextLoaderListener));
+	
+			System.out.println("Starting web server...");
+	
+			try
+			{
+				start.server.start();
+			}
+			catch (Exception e)
+			{
+				start.server.stop();
+				System.exit(1);
+			}
+			System.out.println("Web server started.");
+			start.server.join();
 		}
-		catch (Exception e)
-		{
-			start.server.stop();
-			System.exit(1);
-		}
-		System.out.println("Web server started.");
-		start.server.join();
 	}
 
 	protected static Options createOptions()
@@ -123,11 +120,7 @@ public class StartEmbedded extends Start
 	
 	private static Map<String,String> getProperties(String...files) throws IOException
 	{
-		try (val applicationContext = new ClassPathXmlApplicationContext(files))
-		{
-			val properties = (PropertySourcesPlaceholderConfigurer)applicationContext.getBean("propertyConfigurer");
-			return properties.getProperties();
-		}
+		return EmbeddedAppConfig.properties().getProperties();
 	}
 
 	private void initHSQLDB(CommandLine cmd, Map<String,String> properties) throws IOException, AclFormatException, URISyntaxException, ParseException

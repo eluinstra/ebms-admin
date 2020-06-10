@@ -1,6 +1,5 @@
 package nl.clockwork.ebms.admin;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -13,7 +12,7 @@ import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.CommonConfig;
 import nl.clockwork.ebms.admin.dao.AdminDAOConfig;
-import nl.clockwork.ebms.admin.web.WebConfig;
+import nl.clockwork.ebms.admin.web.EmbeddedWebConfig;
 import nl.clockwork.ebms.cache.CacheConfig;
 import nl.clockwork.ebms.client.ClientConfig;
 import nl.clockwork.ebms.cpa.CPAManagerConfig;
@@ -41,6 +40,7 @@ import nl.clockwork.ebms.validation.ValidationConfig;
 	DAOConfig.class,
 	DataSourceConfig.class,
 	EbMSProcessorConfig.class,
+	EmbeddedWebConfig.class,
 	EncryptionConfig.class,
 	EventListenerConfig.class,
 	EventManagerConfig.class,
@@ -50,13 +50,12 @@ import nl.clockwork.ebms.validation.ValidationConfig;
 	ServerConfig.class,
 	ServiceConfig.class,
 	SigningConfig.class,
-	ValidationConfig.class,
-	WebConfig.class})
+	ValidationConfig.class})
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EmbeddedAppConfig
 {
 	@Bean("propertyConfigurer")
-	public PropertySourcesPlaceholderConfigurer properties()
+	public static PropertySourcesPlaceholderConfigurer properties()
 	{
 		val configDir = System.getProperty("ebms.configDir");
 		PropertySourcesPlaceholderConfigurer c = new PropertySourcesPlaceholderConfigurer();
@@ -68,13 +67,5 @@ public class EmbeddedAppConfig
 		c.setLocations(resources);
 		c.setIgnoreResourceNotFound(true);
 		return c;
-	}
-
-	public static void main(String[] args)
-	{
-		try(AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(EmbeddedAppConfig.class))
-		{
-			
-		}
 	}
 }

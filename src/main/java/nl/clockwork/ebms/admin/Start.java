@@ -59,7 +59,7 @@ import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.springframework.web.context.ContextLoaderListener;
-import org.springframework.web.context.support.XmlWebApplicationContext;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -96,24 +96,26 @@ public class Start
 		if (cmd.hasOption("jmx"))
 			start.initJMX(start.server);
 
-		val context = new XmlWebApplicationContext();
-		context.setConfigLocations(getConfigLocations("classpath:nl/clockwork/ebms/admin/applicationContext.xml"));
-		val contextLoaderListener = new ContextLoaderListener(context);
-		start.handlerCollection.addHandler(start.createWebContextHandler(cmd,contextLoaderListener));
-
-		System.out.println("Starting web server...");
-
-		try
+		try (val context = new AnnotationConfigWebApplicationContext())
 		{
-			start.server.start();
+			context.register(EmbeddedAppConfig.class);
+			val contextLoaderListener = new ContextLoaderListener(context);
+			start.handlerCollection.addHandler(start.createWebContextHandler(cmd,contextLoaderListener));
+	
+			System.out.println("Starting web server...");
+	
+			try
+			{
+				start.server.start();
+			}
+			catch (Exception e)
+			{
+				start.server.stop();
+				System.exit(1);
+			}
+			System.out.println("Web server started.");
+			start.server.join();
 		}
-		catch (Exception e)
-		{
-			start.server.stop();
-			System.exit(1);
-		}
-		System.out.println("Web server started.");
-		start.server.join();
 	}
 
 	protected static Options createOptions()
