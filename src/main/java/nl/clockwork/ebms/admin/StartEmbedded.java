@@ -44,8 +44,10 @@ import org.hsqldb.server.EbMSServerProperties;
 import org.hsqldb.server.ServerAcl.AclFormatException;
 import org.hsqldb.server.ServerConfiguration;
 import org.hsqldb.server.ServerConstants;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
 import lombok.AccessLevel;
@@ -82,8 +84,10 @@ public class StartEmbedded extends Start
 		if (cmd.hasOption("jmx"))
 			start.initJMX(start.server);
 
-		val context = new XmlWebApplicationContext();
-		context.setConfigLocations(getConfigLocations("classpath:nl/clockwork/ebms/admin/applicationContext.embedded.xml"));
+//		val context = new XmlWebApplicationContext();
+//		context.setConfigLocations(getConfigLocations("classpath:nl/clockwork/ebms/admin/applicationContext.embedded.xml"));
+		val context = new AnnotationConfigWebApplicationContext();
+		context.register(EmbeddedAppConfig.class);
 		val contextLoaderListener = new ContextLoaderListener(context);
 		if (cmd.hasOption("soap") || !cmd.hasOption("headless"))
 			start.handlerCollection.addHandler(start.createWebContextHandler(cmd,contextLoaderListener));
