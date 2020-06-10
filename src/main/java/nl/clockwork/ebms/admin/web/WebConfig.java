@@ -81,23 +81,23 @@ public class WebConfig
 	{
 		val httpConduitConfigurer = new HTTPConduitConfigurer()
 		{
-	    public void configure(String name, String address, HTTPConduit c)
-	    {
-	        val httpClientPolicy = new HTTPClientPolicy();
-	        httpClientPolicy.setConnection(ConnectionType.KEEP_ALIVE);
-	        httpClientPolicy.setMaxRetransmits(1);
-	        httpClientPolicy.setAllowChunking(false);
-	        c.setClient(httpClientPolicy);
-	    }
+			public void configure(String name, String address, HTTPConduit c)
+			{
+				val httpClientPolicy = new HTTPClientPolicy();
+				httpClientPolicy.setConnection(ConnectionType.KEEP_ALIVE);
+				httpClientPolicy.setMaxRetransmits(1);
+				httpClientPolicy.setAllowChunking(false);
+				c.setClient(httpClientPolicy);
+			}
 		};
-		cxf().setExtension(httpConduitConfigurer, HTTPConduitConfigurer.class);
+		cxf().setExtension(httpConduitConfigurer,HTTPConduitConfigurer.class);
 	}
 
 	@Bean
 	public SpringBus cxf()
 	{
 		val result = new SpringBus();
-		LoggingFeature f = new LoggingFeature();
+		val f = new LoggingFeature();
 		f.setPrettyLogging(true);
 		result.setFeatures(Collections.singletonList(f));
 		return result;
@@ -112,10 +112,9 @@ public class WebConfig
 
 	private JaxWsProxyFactoryBean proxyFactoryBean(Class<?> clazz, String url)
 	{
-		JaxWsProxyFactoryBean proxyFactory = new JaxWsProxyFactoryBean();
+		val proxyFactory = new JaxWsProxyFactoryBean();
 		proxyFactory.setServiceClass(clazz);
 		proxyFactory.setAddress(serviceUrl + "/cpa");
 		return proxyFactory;
 	}
-
 }

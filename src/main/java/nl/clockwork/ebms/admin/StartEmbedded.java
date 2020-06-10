@@ -167,7 +167,7 @@ public class StartEmbedded extends Start
 		val url = "jdbc:hsqldb:hsql://localhost:" + server.getPort() + "/" + server.getDatabaseName(0,true);
 		val user = "sa";
 		val password = "";
-		Location[] locations = getDbMigrationLocations(new Location("classpath:/nl/clockwork/ebms/db/migration/hsqldb"));
+		val locations = getDbMigrationLocations(new Location("classpath:/nl/clockwork/ebms/db/migration/hsqldb"));
 		var config = Flyway.configure()
 				.dataSource(url,user,password)
 				.locations(locations)

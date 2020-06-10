@@ -27,8 +27,8 @@ public class AppConfig
 	public PropertySourcesPlaceholderConfigurer properties()
 	{
 		val configDir = System.getProperty("ebms.configDir");
-		PropertySourcesPlaceholderConfigurer c = new PropertySourcesPlaceholderConfigurer();
-		Resource[] resources = new Resource[]{
+		val c = new PropertySourcesPlaceholderConfigurer();
+		val resources = new Resource[]{
 				new ClassPathResource("nl/clockwork/ebms/admin/default.properties"),
 				new FileSystemResource(configDir + "ebms-admin.advanced.properties"),
 				new FileSystemResource(configDir + "ebms-admin.properties")};
