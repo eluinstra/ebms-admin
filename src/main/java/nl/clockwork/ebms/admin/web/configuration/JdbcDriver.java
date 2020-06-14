@@ -28,17 +28,16 @@ import lombok.experimental.FieldDefaults;
 @Getter
 public enum JdbcDriver
 {
-	HSQLDB("org.hsqldb.jdbcDriver","jdbc:hsqldb:hsql://%s/%s","select 1 from information_schema.system_tables"),
-	MYSQL("com.mysql.jdbc.Driver","jdbc:mysql://%s/%s","select 1"),
-	MARIADB("org.mariadb.jdbc.Driver","jdbc:mysql://%s/%s","select 1"),
-	POSTGRESQL("org.postgresql.Driver","jdbc:postgresql://%s/%s","select 1"),
-	MSSQL("com.microsoft.sqlserver.jdbc.SQLServerDriver","jdbc:sqlserver://%s;databaseName=%s;","select 1"),
-	ORACLE("oracle.jdbc.OracleDriver","jdbc:oracle:thin:@//%s/%s","select 1 from dual"),
-	ORACLE_("oracle.jdbc.OracleDriver","jdbc:oracle:thin:@%s:%s","select 1 from dual");
+	HSQLDB("org.hsqldb.jdbcDriver","jdbc:hsqldb:hsql://%s/%s"),
+	MYSQL("com.mysql.jdbc.Driver","jdbc:mysql://%s/%s"),
+	MARIADB("org.mariadb.jdbc.Driver","jdbc:mysql://%s/%s"),
+	POSTGRESQL("org.postgresql.Driver","jdbc:postgresql://%s/%s"),
+	MSSQL("com.microsoft.sqlserver.jdbc.SQLServerDriver","jdbc:sqlserver://%s;databaseName=%s;"),
+	ORACLE("oracle.jdbc.OracleDriver","jdbc:oracle:thin:@//%s/%s"),
+	ORACLE_("oracle.jdbc.OracleDriver","jdbc:oracle:thin:@%s:%s");
 	
 	String driverClassName;
 	String urlExpr;
-	String testQuery;
 
 	public static Optional<JdbcDriver> getJdbcDriver(String driverClassName)
 	{

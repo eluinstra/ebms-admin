@@ -160,7 +160,6 @@ public class EbMSAdminPropertiesWriter
 		properties.setProperty("ebms.jdbc.url",jdbcProperties.getUrl());
 		properties.setProperty("ebms.jdbc.username",jdbcProperties.getUsername());
 		properties.setProperty("ebms.jdbc.password",StringUtils.defaultString(jdbcProperties.getPassword()));
-		properties.setProperty("ebms.pool.testQuery",jdbcProperties.getDriver().getTestQuery());
   }
   
 }
