@@ -72,7 +72,7 @@ public class EbMSDAOImpl extends nl.clockwork.ebms.admin.dao.mysql.EbMSDAOImpl
 			" and time_stamp < ?" +
 			(status.length == 0 ? " and status is not null" : " and status in (" + join(status,",") + ")") +
 			" group by " + getDateFormat(timeUnit.getSqlDateFormat()),
-			(RowMapper<Object>)(rs,rowNum) ->
+			(rs,rowNum) ->
 			{
 				result.put(rs.getTimestamp("time").toLocalDateTime(),rs.getInt("nr"));
 				return null;

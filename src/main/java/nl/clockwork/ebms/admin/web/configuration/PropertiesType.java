@@ -16,6 +16,7 @@
 package nl.clockwork.ebms.admin.web.configuration;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -31,8 +32,8 @@ public enum PropertiesType
 	
 	String propertiesFile;
 
-	public static PropertiesType getPropertiesType(String propertiesFile)
+	public static Optional<PropertiesType> getPropertiesType(String propertiesFile)
 	{
-		return Arrays.stream(PropertiesType.values()).filter(p -> p.propertiesFile.equals(propertiesFile)).findFirst().orElse(null);
+		return Arrays.stream(PropertiesType.values()).filter(p -> p.propertiesFile.equals(propertiesFile)).findFirst();
 	}
 }

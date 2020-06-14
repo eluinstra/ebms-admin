@@ -60,13 +60,14 @@ public class EbMSAdminPropertiesPage extends BasePage
 	PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer;
 	PropertiesType propertiesType;
 
-	public EbMSAdminPropertiesPage() throws IOException
+	public EbMSAdminPropertiesPage() throws IOException, IllegalStateException
 	{
 		this(null);
 	}
-	public EbMSAdminPropertiesPage(IModel<EbMSAdminPropertiesFormData> model) throws IOException
+	public EbMSAdminPropertiesPage(IModel<EbMSAdminPropertiesFormData> model) throws IllegalStateException
 	{
-		propertiesType = PropertiesType.getPropertiesType(propertySourcesPlaceholderConfigurer.getOverridePropertiesFile().getFilename());
+		val f = propertySourcesPlaceholderConfigurer.getOverridePropertiesFile().getFilename();
+		propertiesType = PropertiesType.getPropertiesType(f).orElseThrow(() -> new IllegalStateException("No PropertiesType found for " + propertySourcesPlaceholderConfigurer.getOverridePropertiesFile().getFilename()));
 		add(new BootstrapFeedbackPanel("feedback"));
 		if (model == null)
 		{

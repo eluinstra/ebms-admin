@@ -72,7 +72,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 			" and time_stamp < ?" +
 			(status.length == 0 ? " and status is not null" : " and status in (" + join(status,",") + ")") +
 			" group by date_trunc('" + getDateFormat(timeUnit.getSqlDateFormat()) + "',time_stamp)",
-			(RowMapper<Object>)(rs,rowNum) ->
+			(rs,rowNum) ->
 			{
 				result.put(rs.getTimestamp("time").toLocalDateTime(),rs.getInt("nr"));
 				return null;

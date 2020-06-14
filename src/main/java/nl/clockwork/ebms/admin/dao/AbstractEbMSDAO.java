@@ -126,7 +126,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 					.toRole(rs.getString("to_role"))
 					.service(rs.getString("service"))
 					.action(rs.getString("action"))
-					.status(rs.getObject("status") == null ? null : EbMSMessageStatus.get(rs.getInt("status")))
+					.status(rs.getObject("status") == null ? null : EbMSMessageStatus.get(rs.getInt("status")).orElse(null))
 					.statusTime(toInstant(rs.getTimestamp("status_time")))
 					.attachments(attachments)
 					.event(getEvent.get())
@@ -144,7 +144,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	TransactionTemplate transactionTemplate;
 	@NonNull
 	JdbcTemplate jdbcTemplate;
-	RowMapper<CPA> cpaRowMapper = (RowMapper<CPA>)(rs,rowNum) ->
+	RowMapper<CPA> cpaRowMapper = (rs,rowNum) ->
 	{
 		return CPA.of(rs.getString("cpa_id"),rs.getString("cpa"));
 	};
@@ -297,7 +297,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			" where message_id = ?" +
 			" and message_nr = ?" +
 			" and content_id = ?",
-			(RowMapper<EbMSAttachment>)(rs,rowNum) ->
+			(rs,rowNum) ->
 			{
 				try
 				{
@@ -334,7 +334,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			" from ebms_attachment" + 
 			" where message_id = ?" +
 			" and message_nr = ?",
-			(RowMapper<EbMSAttachment>)(rs,rowNum) ->
+			(rs,rowNum) ->
 			{
 				return EbMSAttachment.builder()
 						.name(rs.getString("name"))
@@ -355,7 +355,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				"select time_to_live, time_stamp, retries" +
 				" from ebms_event" +
 				" where message_id = ?",
-				(RowMapper<EbMSEvent>)(rs,rowNum) ->
+				(rs,rowNum) ->
 				{
 					return EbMSEvent.of(toInstant(rs.getTimestamp("time_to_live")),toInstant(rs.getTimestamp("time_stamp")),rs.getInt("retries"));
 				},
@@ -374,12 +374,12 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			"select message_id, time_stamp, uri, status, error_message" + 
 			" from ebms_event_log" + 
 			" where message_id = ?",
-			(RowMapper<EbMSEventLog>)(rs,rowNum) ->
+			(rs,rowNum) ->
 			{
 				return EbMSEventLog.builder()
 						.timestamp(toInstant(rs.getTimestamp("time_stamp")))
 						.uri(rs.getString("uri"))
-						.status(EbMSEventStatus.get(rs.getInt("status")))
+						.status(EbMSEventStatus.get(rs.getInt("status")).orElse(null))
 						.errorMessage(rs.getString("error_message"))
 						.build();
 			},
@@ -416,7 +416,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			" and time_stamp < ?" +
 			(status.length == 0 ? " and status is not null" : " and status in (" + join(status,",") + ")") +
 			" group by trunc(time_stamp,'" + getDateFormat(timeUnit.getSqlDateFormat()) + "')",
-			(RowMapper<Object>)(rs,rowNum) ->
+			(rs,rowNum) ->
 			{
 				result.put(rs.getTimestamp("time").toLocalDateTime(),rs.getInt("nr"));
 				return null;
@@ -450,7 +450,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			getMessageFilter(filter,parameters) +
 			" order by time_stamp desc",
 			parameters.toArray(new Object[0]),
-			(RowMapper<Object>)(rs,rowNum) ->
+			(rs,rowNum) ->
 			{
 				try
 				{
@@ -488,7 +488,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				" from ebms_message" + 
 				" where message_id = ?" +
 				" and message_nr = ?",
-				(RowMapper<Object>)(rs,rowNum) ->
+				(rs,rowNum) ->
 				{
 					try
 					{
@@ -521,7 +521,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			" from ebms_attachment" + 
 			" where message_id = ?" +
 			" and message_nr = ?",
-			(RowMapper<Object>)(rs,rowNum) ->
+			(rs,rowNum) ->
 			{
 				try
 				{

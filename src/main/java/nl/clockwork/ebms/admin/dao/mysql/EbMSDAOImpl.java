@@ -78,7 +78,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 			" and m.message_nr = ?" +
 			" and m.id = a.ebms_message_id" +
 			" and a.content_id = ?",
-			(RowMapper<EbMSAttachment>)(rs,rowNum) ->
+			(rs,rowNum) ->
 			{
 				try
 				{
@@ -108,7 +108,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 			" where m.message_id = ?" +
 			" and m.message_nr = ?" +
 			" and m.id = a.ebms_message_id",
-			(RowMapper<EbMSAttachment>)(rs,rownNum) ->
+			(rs,rownNum) ->
 			{
 				return EbMSAttachment.builder()
 						.name(rs.getString("name"))
@@ -133,7 +133,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 			" and time_stamp < ?" +
 			(status.length == 0 ? " and status is not null" : " and status in (" + join(status,",") + ")") +
 			" group by date_format(time_stamp,'" + getDateFormat(timeUnit.getSqlDateFormat()) + "')",
-			(RowMapper<Object>)(rs,rowNum) ->
+			(rs,rowNum) ->
 			{
 				result.put(rs.getTimestamp("time").toLocalDateTime(),rs.getInt("nr"));
 				return null;
@@ -153,7 +153,7 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 			" where m.message_id = ?" +
 			" and m.message_nr = ?" +
 			" and m.id = a.ebms_message_id",
-			(RowMapper<Object>)(rs,rowNum) ->
+			(rs,rowNum) ->
 			{
 				try
 				{

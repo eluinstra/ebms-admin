@@ -16,6 +16,7 @@
 package nl.clockwork.ebms.admin.web.configuration;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -39,9 +40,9 @@ public enum JdbcDriver
 	String urlExpr;
 	String preferredTestQuery;
 
-	public static JdbcDriver getJdbcDriver(String driverClassName)
+	public static Optional<JdbcDriver> getJdbcDriver(String driverClassName)
 	{
-		return Arrays.stream(JdbcDriver.values()).filter(j -> j.driverClassName.equals(driverClassName)).findFirst().orElse(null);
+		return Arrays.stream(JdbcDriver.values()).filter(j -> j.driverClassName.equals(driverClassName)).findFirst();
 	}
 	public String createJdbcURL(String hostname, Integer port, String database)
 	{

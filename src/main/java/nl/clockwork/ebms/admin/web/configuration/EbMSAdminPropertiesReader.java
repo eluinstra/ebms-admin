@@ -164,7 +164,7 @@ public class EbMSAdminPropertiesReader
 
 	private void read(Properties properties, JdbcPropertiesFormData jdbcProperties) throws MalformedURLException
 	{
-		jdbcProperties.setDriver(JdbcDriver.getJdbcDriver(properties.getProperty("ebms.jdbc.driverClassName")));
+		jdbcProperties.setDriver(JdbcDriver.getJdbcDriver(properties.getProperty("ebms.jdbc.driverClassName")).orElse(null));
 		//jdbcProperties.setJdbcURL(properties.getProperty("ebms.jdbc.url"));
 		Utils.parseJdbcURL(properties.getProperty("ebms.jdbc.url"),jdbcProperties);
 		jdbcProperties.setUsername(properties.getProperty("ebms.jdbc.username"));

@@ -16,6 +16,7 @@
 package nl.clockwork.ebms.admin.web;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.feedback.FeedbackMessage;
@@ -42,9 +43,9 @@ public class BootstrapAlertFeedbackPanel extends FeedbackPanel
 		int errorCode;
 		String cssClass;
 
-		public static ErrorLevel getErrorLevel(int errorCode)
+		public static Optional<ErrorLevel> getErrorLevel(int errorCode)
 		{
-			return Arrays.stream(ErrorLevel.values()).filter(e -> errorCode == e.errorCode).findFirst().orElse(null);
+			return Arrays.stream(ErrorLevel.values()).filter(e -> errorCode == e.errorCode).findFirst();
 		}
 	}
 
@@ -63,7 +64,7 @@ public class BootstrapAlertFeedbackPanel extends FeedbackPanel
 	@Override
 	protected String getCSSClass(FeedbackMessage message)
 	{
-		return "alert " + ErrorLevel.getErrorLevel(message.getLevel()).getCssClass() + " alert-dismissable";
+		return "alert " + ErrorLevel.getErrorLevel(message.getLevel()).map(l -> l.cssClass).orElse(ErrorLevel.UNDEFINED.cssClass) + " alert-dismissable";
 	}
 	
 	@Override

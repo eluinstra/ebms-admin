@@ -71,7 +71,7 @@ public class LoadEbMSAdminPropertiesButton extends Button
 			page.info(new StringResourceModel("properties.loaded",page,Model.of(file)).getString());
 			setResponsePage(page);
 		}
-		catch (IOException e)
+		catch (IOException | IllegalStateException e)
 		{
 			log.error("",e);
 			error(e.getMessage());
