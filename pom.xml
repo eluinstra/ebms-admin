@@ -271,9 +271,9 @@
 			<version>6.4.2</version>
 		</dependency>
 		<dependency>
-			<groupId>com.mchange</groupId>
-			<artifactId>c3p0</artifactId>
-			<version>0.9.5.5</version>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>3.4.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hsqldb</groupId>
@@ -308,6 +308,12 @@
 			<groupId>com.oracle.jdbc</groupId>
 			<artifactId>ojdbc8</artifactId>
 			<version>18.3.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.ibm.db2.jcc</groupId>
+			<artifactId>db2jcc</artifactId>
+			<version>db2jcc4</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

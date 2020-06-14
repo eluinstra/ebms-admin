@@ -38,7 +38,7 @@ public enum JdbcDriver
 	
 	String driverClassName;
 	String urlExpr;
-	String preferredTestQuery;
+	String testQuery;
 
 	public static Optional<JdbcDriver> getJdbcDriver(String driverClassName)
 	{

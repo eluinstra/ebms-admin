@@ -169,6 +169,6 @@ public class EbMSAdminPropertiesReader
 		Utils.parseJdbcURL(properties.getProperty("ebms.jdbc.url"),jdbcProperties);
 		jdbcProperties.setUsername(properties.getProperty("ebms.jdbc.username"));
 		jdbcProperties.setPassword(properties.getProperty("ebms.jdbc.password"));
-		//jdbcProperties.setPreferredTestQuery(properties.getProperty("ebms.pool.preferredTestQuery"));
+		//jdbcProperties.setTestQuery(properties.getProperty("ebms.pool.testQuery"));
 	}
 }
