@@ -32,6 +32,8 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.common.logging.LogUtils;
+import org.eclipse.jetty.server.ConnectionLimit;
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.FilterHolder;
@@ -115,6 +117,7 @@ public class StartEmbedded extends Start
 		result.addOption("headless",false,"start without web interface");
 		result.addOption("disableEbMSServer",false,"disable ebms server");
 		result.addOption("disableEbMSClient",false,"disable ebms client");
+		result.addOption("ebms.connectionLimit",true,"set connection limit on ebms interface (default: none)");
 		return result;
 	}
 	
@@ -192,15 +195,13 @@ public class StartEmbedded extends Start
 
 	private void initEbMSServer(Map<String,String> properties, Server server) throws MalformedURLException, IOException
 	{
-		if (!"true".equals(properties.get("ebms.ssl")))
-		{
-			server.addConnector(createEbMSHttpConnector(properties));
-		}
-		else
-		{
-			SslContextFactory.Server factory = createEbMSSslContextFactory(properties);
-			server.addConnector(createEbMSHttpsConnector(properties,factory));
-		}
+		
+		Connector connector = "true".equals(properties.get("ebms.ssl")) ? 
+				createEbMSHttpsConnector(properties,createEbMSSslContextFactory(properties)) : 
+					createEbMSHttpConnector(properties);
+		if (properties.containsKey("ebms.connectionLimit"))
+			server.addBean(new ConnectionLimit(Integer.parseInt(properties.get("ebms.connectionLimit")),connector));
+		server.addConnector(connector);
 	}
 
 	private ServerConnector createEbMSHttpConnector(Map<String,String> properties)
