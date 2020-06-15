@@ -38,7 +38,7 @@ import nl.clockwork.ebms.admin.web.configuration.ServicePropertiesFormPanel.Serv
 import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.SignaturePropertiesFormData;
 import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormData;
 import nl.clockwork.ebms.client.EbMSHttpClientFactory.EbMSHttpClientType;
-import nl.clockwork.ebms.event.listener.EventListenerFactory.EventListenerType;
+import nl.clockwork.ebms.event.listener.EventListenerConfig.EventListenerType;
 import nl.clockwork.ebms.security.KeyStoreType;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)

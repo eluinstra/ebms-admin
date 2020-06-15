@@ -40,7 +40,7 @@ import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.web.menu.MenuDivider;
 import nl.clockwork.ebms.admin.web.menu.MenuItem;
 import nl.clockwork.ebms.admin.web.menu.MenuLinkItem;
-import nl.clockwork.ebms.event.listener.EventListenerFactory.EventListenerType;
+import nl.clockwork.ebms.event.listener.EventListenerConfig.EventListenerType;
 
 /**
  * Application object for your web application. If you want to run this application without deploying, run the Start class.
