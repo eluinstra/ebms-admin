@@ -19,6 +19,7 @@ hooks
 /activemq-data
 /data
 /hsqldb
+/ignite
 /ebms-admin.properties
 /ebms-admin.embedded.properties
 /log4j.xml
