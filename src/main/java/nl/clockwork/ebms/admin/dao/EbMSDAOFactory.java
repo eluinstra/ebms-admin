@@ -24,6 +24,7 @@ import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.dao.AbstractDAOFactory.DefaultDAOFactory;
+import nl.clockwork.ebms.transaction.TransactionManagerConfig.TransactionManagerType;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EbMSDAOFactory extends DefaultDAOFactory<EbMSDAO>
@@ -31,9 +32,13 @@ public class EbMSDAOFactory extends DefaultDAOFactory<EbMSDAO>
 	TransactionTemplate transactionTemplate;
 	JdbcTemplate jdbcTemplate;
 
-	public EbMSDAOFactory(@NonNull DataSource dataSource, TransactionTemplate transactionTemplate, JdbcTemplate jdbcTemplate)
+	public EbMSDAOFactory(
+			TransactionManagerType transactionManagerType,
+			DataSource dataSource,
+			@NonNull TransactionTemplate transactionTemplate,
+			@NonNull JdbcTemplate jdbcTemplate)
 	{
-		super(dataSource);
+		super(transactionManagerType,dataSource);
 		this.transactionTemplate = transactionTemplate;
 		this.jdbcTemplate = jdbcTemplate;
 	}
@@ -41,7 +46,7 @@ public class EbMSDAOFactory extends DefaultDAOFactory<EbMSDAO>
 	@Override
 	public Class<EbMSDAO> getObjectType()
 	{
-		return nl.clockwork.ebms.admin.dao.EbMSDAO.class;
+		return EbMSDAO.class;
 	}
 
 	@Override

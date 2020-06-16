@@ -32,7 +32,7 @@ import nl.clockwork.ebms.cache.CacheConfig;
 import nl.clockwork.ebms.client.ClientConfig;
 import nl.clockwork.ebms.cpa.CPAManagerConfig;
 import nl.clockwork.ebms.dao.DAOConfig;
-import nl.clockwork.ebms.dao.DataSourceConfig;
+import nl.clockwork.ebms.datasource.DataSourceConfig;
 import nl.clockwork.ebms.encryption.EncryptionConfig;
 import nl.clockwork.ebms.event.listener.EventListenerConfig;
 import nl.clockwork.ebms.event.processor.EventManagerConfig;
@@ -43,6 +43,7 @@ import nl.clockwork.ebms.security.KeyStoreConfig;
 import nl.clockwork.ebms.server.ServerConfig;
 import nl.clockwork.ebms.service.ServiceConfig;
 import nl.clockwork.ebms.signing.SigningConfig;
+import nl.clockwork.ebms.transaction.TransactionManagerConfig;
 import nl.clockwork.ebms.validation.ValidationConfig;
 
 @Configuration(proxyBeanMethods = false)
@@ -65,6 +66,7 @@ import nl.clockwork.ebms.validation.ValidationConfig;
 	ServerConfig.class,
 	ServiceConfig.class,
 	SigningConfig.class,
+	TransactionManagerConfig.class,
 	ValidationConfig.class})
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EmbeddedAppConfig
