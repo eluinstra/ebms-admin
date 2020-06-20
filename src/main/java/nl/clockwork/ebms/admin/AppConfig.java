@@ -30,7 +30,7 @@ import nl.clockwork.ebms.admin.dao.AdminDAOConfig;
 import nl.clockwork.ebms.admin.dao.DataSourceConfig;
 import nl.clockwork.ebms.admin.web.WebConfig;
 
-@Configuration(proxyBeanMethods = false)
+@Configuration
 @Import({
 	AdminDAOConfig.class,
 	DataSourceConfig.class,

@@ -15,6 +15,10 @@
  */
 package nl.clockwork.ebms.admin.dao;
 
+import static io.vavr.API.$;
+import static io.vavr.API.Case;
+import static io.vavr.API.Match;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.ResultSet;
@@ -36,13 +40,11 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.io.CachedOutputStream;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import static io.vavr.API.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -61,7 +63,6 @@ import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
 import nl.clockwork.ebms.admin.web.message.TimeUnit;
-import nl.clockwork.ebms.dao.DAOException;
 import nl.clockwork.ebms.event.processor.EbMSEventStatus;
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
@@ -481,37 +482,30 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	@Override
 	public void writeMessageToZip(String messageId, int messageNr, final ZipOutputStream zip)
 	{
-		try
-		{
-			jdbcTemplate.queryForObject(
-				"select content" + 
-				" from ebms_message" + 
-				" where message_id = ?" +
-				" and message_nr = ?",
-				(rs,rowNum) ->
+		jdbcTemplate.queryForObject(
+			"select content" + 
+			" from ebms_message" + 
+			" where message_id = ?" +
+			" and message_nr = ?",
+			(rs,rowNum) ->
+			{
+				try
 				{
-					try
-					{
-						val entry = new ZipEntry("message.xml");
-						zip.putNextEntry(entry);
-						zip.write(rs.getString("content").getBytes());
-						zip.closeEntry();
-						return null;
-					}
-					catch (IOException e)
-					{
-						throw new SQLException(e);
-					}
-				},
-				messageId,
-				messageNr
-			);
-			writeAttachmentsToZip(messageId, messageNr, zip);
-		}
-		catch (DataAccessException e)
-		{
-			throw new DAOException(e);
-		}
+					val entry = new ZipEntry("message.xml");
+					zip.putNextEntry(entry);
+					zip.write(rs.getString("content").getBytes());
+					zip.closeEntry();
+					return null;
+				}
+				catch (IOException e)
+				{
+					throw new SQLException(e);
+				}
+			},
+			messageId,
+			messageNr
+		);
+		writeAttachmentsToZip(messageId, messageNr, zip);
 	}
 
 	protected void writeAttachmentsToZip(String messageId, int messageNr, final ZipOutputStream zip)

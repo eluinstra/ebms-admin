@@ -30,7 +30,7 @@ import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 
-@Configuration(proxyBeanMethods = false)
+@Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DataSourceConfig
 {
