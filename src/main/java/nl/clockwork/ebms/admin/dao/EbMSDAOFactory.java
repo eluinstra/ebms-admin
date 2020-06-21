@@ -20,6 +20,8 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import com.querydsl.sql.SQLQueryFactory;
+
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
@@ -29,18 +31,24 @@ import nl.clockwork.ebms.transaction.TransactionManagerConfig.TransactionManager
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EbMSDAOFactory extends DefaultDAOFactory<EbMSDAO>
 {
+	@NonNull
 	TransactionTemplate transactionTemplate;
+	@NonNull
 	JdbcTemplate jdbcTemplate;
+	@NonNull
+	SQLQueryFactory queryFactory;
 
 	public EbMSDAOFactory(
 			TransactionManagerType transactionManagerType,
 			DataSource dataSource,
 			@NonNull TransactionTemplate transactionTemplate,
-			@NonNull JdbcTemplate jdbcTemplate)
+			@NonNull JdbcTemplate jdbcTemplate,
+			@NonNull SQLQueryFactory queryFactory)
 	{
 		super(transactionManagerType,dataSource);
 		this.transactionTemplate = transactionTemplate;
 		this.jdbcTemplate = jdbcTemplate;
+		this.queryFactory = queryFactory;
 	}
 
 	@Override
@@ -52,30 +60,30 @@ public class EbMSDAOFactory extends DefaultDAOFactory<EbMSDAO>
 	@Override
 	public EbMSDAO createHSqlDbDAO()
 	{
-		return new nl.clockwork.ebms.admin.dao.hsqldb.EbMSDAOImpl(transactionTemplate,jdbcTemplate);
+		return new HSQLDBEbMSDAO(transactionTemplate,jdbcTemplate,queryFactory);
 	}
 
 	@Override
 	public EbMSDAO createMySqlDAO()
 	{
-		return new nl.clockwork.ebms.admin.dao.mysql.EbMSDAOImpl(transactionTemplate,jdbcTemplate);
+		return new MySQLEbMSDAO(transactionTemplate,jdbcTemplate,queryFactory);
 	}
 
 	@Override
 	public EbMSDAO createPostgresDAO()
 	{
-		return new nl.clockwork.ebms.admin.dao.postgresql.EbMSDAOImpl(transactionTemplate,jdbcTemplate);
+		return new PostgreSQLEbMSDAO(transactionTemplate,jdbcTemplate,queryFactory);
 	}
 
 	@Override
 	public EbMSDAO createOracleDAO()
 	{
-		return new nl.clockwork.ebms.admin.dao.oracle.EbMSDAOImpl(transactionTemplate,jdbcTemplate);
+		return new OracleEbMSDAO(transactionTemplate,jdbcTemplate,queryFactory);
 	}
 
 	@Override
 	public EbMSDAO createMsSqlDAO()
 	{
-		return new nl.clockwork.ebms.admin.dao.mssql.EbMSDAOImpl(transactionTemplate,jdbcTemplate);
+		return new MSSQLEbMSDAO(transactionTemplate,jdbcTemplate,queryFactory);
 	}
 }

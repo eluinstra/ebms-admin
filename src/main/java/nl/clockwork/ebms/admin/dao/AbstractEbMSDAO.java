@@ -15,24 +15,19 @@
  */
 package nl.clockwork.ebms.admin.dao;
 
-import static io.vavr.API.$;
-import static io.vavr.API.Case;
-import static io.vavr.API.Match;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -44,6 +39,14 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.support.TransactionTemplate;
+
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.dsl.DateTimePath;
+import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.sql.SQLQuery;
+import com.querydsl.sql.SQLQueryFactory;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -64,6 +67,12 @@ import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
 import nl.clockwork.ebms.admin.web.message.TimeUnit;
 import nl.clockwork.ebms.event.processor.EbMSEventStatus;
+import nl.clockwork.ebms.querydsl.InstantType;
+import nl.clockwork.ebms.querydsl.model.QCpa;
+import nl.clockwork.ebms.querydsl.model.QEbmsAttachment;
+import nl.clockwork.ebms.querydsl.model.QEbmsEvent;
+import nl.clockwork.ebms.querydsl.model.QEbmsEventLog;
+import nl.clockwork.ebms.querydsl.model.QEbmsMessage;
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @AllArgsConstructor
@@ -76,6 +85,8 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	public static class EbMSMessageRowMapper implements RowMapper<EbMSMessage>
 	{
 		@NonNull
+		SQLQueryFactory queryFactory;
+		@NonNull
 		@Default
 		Supplier<List<EbMSAttachment>> getAttachments = () -> Collections.emptyList();
 		@NonNull
@@ -85,27 +96,30 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		@Default
 		Supplier<List<EbMSEventLog>> getEvents = () -> Collections.emptyList();
 		boolean detail;
+		QEbmsMessage messageTable = QEbmsMessage.ebmsMessage;
 
-		public String getBaseQuery()
+		public SQLQuery<Tuple> getBaseQuery()
 		{
-			return "select" +
-				" time_stamp," +
-				" cpa_id," +
-				" conversation_id," +
-				" message_id," +
-				" message_nr," +
-				" ref_to_message_id," +
-				" time_to_live," +
-				" from_party_id," +
-				" from_role," +
-				" to_party_id," +
-				" to_role," +
-				" service," +
-				" action," +
-				(detail ? " content," : "") +
-				" status," +
-				" status_time" +
-				" from ebms_message";
+			val paths = new ArrayList<Expression<?>>(Arrays.asList(
+					messageTable.timeStamp,
+					messageTable.cpaId,
+					messageTable.conversationId,
+					messageTable.messageId,
+					messageTable.messageNr,
+					messageTable.refToMessageId,
+					messageTable.timeToLive,
+					messageTable.fromPartyId,
+					messageTable.fromRole,
+					messageTable.toPartyId,
+					messageTable.toRole,
+					messageTable.service,
+					messageTable.action,
+					messageTable.status,
+					messageTable.statusTime));
+			if (detail)
+				paths.add(messageTable.content);
+			return queryFactory.select(paths.toArray(new Expression<?>[]{}))
+					.from(messageTable);
 		}
 		
 		@Override
@@ -114,13 +128,13 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			val attachments = getAttachments.get();
 			val events = getEvents.get();
 			val builder = EbMSMessage.builder()
-					.timestamp(toInstant(rs.getTimestamp("time_stamp")))
+					.timestamp(InstantType.toInstant(rs.getTimestamp("time_stamp")))
 					.cpaId(rs.getString("cpa_id"))
 					.conversationId(rs.getString("conversation_id"))
 					.messageId(rs.getString("message_id"))
 					.messageNr(rs.getInt("message_nr"))
 					.refToMessageId(rs.getString("ref_to_message_id"))
-					.timeToLive(toInstant(rs.getTimestamp("time_to_live")))
+					.timeToLive(InstantType.toInstant(rs.getTimestamp("time_to_live")))
 					.fromPartyId(rs.getString("from_party_id"))
 					.fromRole(rs.getString("from_role"))
 					.toPartyId(rs.getString("to_party_id"))
@@ -128,7 +142,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 					.service(rs.getString("service"))
 					.action(rs.getString("action"))
 					.status(rs.getObject("status") == null ? null : EbMSMessageStatus.get(rs.getInt("status")).orElse(null))
-					.statusTime(toInstant(rs.getTimestamp("status_time")))
+					.statusTime(InstantType.toInstant(rs.getTimestamp("status_time")))
 					.attachments(attachments)
 					.event(getEvent.get())
 					.events(events);
@@ -145,6 +159,13 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	TransactionTemplate transactionTemplate;
 	@NonNull
 	JdbcTemplate jdbcTemplate;
+	@NonNull
+	SQLQueryFactory queryFactory;
+	QCpa cpaTable = QCpa.cpa1;
+	QEbmsMessage messageTable = QEbmsMessage.ebmsMessage;
+	QEbmsAttachment attachmentTable = QEbmsAttachment.ebmsAttachment;
+	QEbmsEvent eventTable = QEbmsEvent.ebmsEvent;
+	QEbmsEventLog eventLogTable = QEbmsEventLog.ebmsEventLog;
 	RowMapper<CPA> cpaRowMapper = (rs,rowNum) ->
 	{
 		return CPA.of(rs.getString("cpa_id"),rs.getString("cpa"));
@@ -155,12 +176,14 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	{
 		try
 		{
+			val query = queryFactory.select(cpaTable.all())
+					.from(cpaTable)
+					.where(cpaTable.cpaId.eq(cpaId))
+					.getSQL();
 			return jdbcTemplate.queryForObject(
-				"select * from cpa" +
-				" where cpa_id = ?",
-				cpaRowMapper,
-				cpaId
-			);
+					query.getSQL(),
+					query.getNullFriendlyBindings().toArray(),
+					cpaRowMapper);
 		}
 		catch (EmptyResultDataAccessException e)
 		{
@@ -168,37 +191,44 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		}
 	}
 
-	protected static Instant toInstant(Timestamp timestamp)
-	{
-		return timestamp == null ? null : timestamp.toInstant();
-	}
-
 	@Override
 	public int countCPAs()
 	{
-		return jdbcTemplate.queryForObject("select count(cpa_id) from cpa",Integer.class);
+		val query = queryFactory.select(cpaTable.cpaId.count())
+				.from(cpaTable)
+				.getSQL();
+		return jdbcTemplate.queryForObject(
+				query.getSQL(),
+				query.getNullFriendlyBindings().toArray(),
+				Integer.class);
 	}
 	
 	@Override
 	public List<String> selectCPAIds()
 	{
+		val query = queryFactory.select(cpaTable.cpaId)
+				.from(cpaTable)
+				.orderBy(cpaTable.cpaId.asc())
+				.getSQL();
 		return jdbcTemplate.queryForList(
-			"select cpa_id" +
-			" from cpa" +
-			" order by cpa_id",
-			String.class
-		);
+				query.getSQL(),
+				query.getNullFriendlyBindings().toArray(),
+				String.class);
 	}
-	
-	public abstract String selectCPAsQuery(long first, long count);
 	
 	@Override
 	public List<CPA> selectCPAs(long first, long count)
 	{
+		val query = queryFactory.select(cpaTable.all())
+				.from(cpaTable)
+				.orderBy(cpaTable.cpaId.asc())
+				.limit(count)
+				.offset(first)
+				.getSQL();
 		return jdbcTemplate.query(
-			selectCPAsQuery(first,count),
-			cpaRowMapper
-		);
+				query.getSQL(),
+				query.getNullFriendlyBindings().toArray(),
+				cpaRowMapper);
 	}
 
 	@Override
@@ -211,34 +241,35 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	public EbMSMessage findMessage(String messageId, int messageNr)
 	{
 		val rowMapper = EbMSMessageRowMapper.builder()
+				.queryFactory(queryFactory)
 				.getAttachments(() -> getAttachments(messageId,messageNr))
 				.getEvent(() -> getEvent(messageId))
 				.getEvents(() -> getEvents(messageId))
 				.detail(true)
 				.build();
+		val query = rowMapper.getBaseQuery()
+				.where(messageTable.messageId.eq(messageId)
+						.and(messageTable.messageNr.eq(messageNr)))
+				.getSQL();
 		return jdbcTemplate.queryForObject(
-				rowMapper.getBaseQuery() + 
-			" where message_id = ?" +
-			" and message_nr = ?",
-			rowMapper,
-			messageId,
-			messageNr
-		);
+				query.getSQL(),
+				query.getNullFriendlyBindings().toArray(),
+				rowMapper);
 	}
 
 	@Override
 	public boolean existsResponseMessage(String messageId)
 	{
+		val query = queryFactory.select(messageTable.messageId.count())
+				.from(messageTable)
+				.where(messageTable.refToMessageId.eq(messageId)
+						.and(messageTable.messageNr.eq(0))
+						.and(messageTable.service.eq(EbMSAction.EBMS_SERVICE_URI)))
+				.getSQL();
 		return jdbcTemplate.queryForObject(
-			"select count(*) from ebms_message" + 
-			" where ref_to_message_id = ?" +
-			" and message_nr = ?" +
-			" and service = ?",
-			Integer.class,
-			messageId,
-			0,
-			EbMSAction.EBMS_SERVICE_URI
-		) > 0;
+				query.getSQL(),
+				query.getNullFriendlyBindings().toArray(),
+				Integer.class) > 0;
 	}
 
 	@Override
@@ -249,75 +280,75 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				.getEvents(() -> getEvents(messageId))
 				.detail(true)
 				.build();
+		val query = rowMapper.getBaseQuery()
+				.where(messageTable.refToMessageId.eq(messageId)
+						.and(messageTable.messageNr.eq(0))
+						.and(messageTable.service.eq(EbMSAction.EBMS_SERVICE_URI)))
+				.getSQL();
 		return jdbcTemplate.queryForObject(
-				rowMapper.getBaseQuery() + 
-				" where ref_to_message_id = ?" +
-				" and message_nr = ?" +
-				" and service = ?",
-				rowMapper,
-				messageId,
-				0,
-				EbMSAction.EBMS_SERVICE_URI
-		);
+				query.getSQL(),
+				query.getNullFriendlyBindings().toArray(),
+				rowMapper);
 	}
 
 	@Override
 	public int countMessages(EbMSMessageFilter filter)
 	{
-		val parameters = new ArrayList<Object>();
+		val query = queryFactory.select(messageTable.messageId.count())
+				.from(messageTable)
+				.where(getMessageFilter(messageTable,filter,new BooleanBuilder()))
+				.getSQL();
 		return jdbcTemplate.queryForObject(
-			"select count(message_id)" +
-			" from ebms_message" +
-			" where 1 = 1" +
-			getMessageFilter(filter,parameters),
-			Integer.class,
-			parameters.toArray(new Object[0])
-		);
+				query.getSQL(),
+				query.getNullFriendlyBindings().toArray(),
+				Integer.class);
 	}
-	
-	public abstract String selectMessagesQuery(EbMSMessageFilter filter, long first, long count, List<Object> parameters);
 	
 	@Override
 	public List<EbMSMessage> selectMessages(EbMSMessageFilter filter, long first, long count)
 	{
-		val parameters = new ArrayList<Object>();
-		val rowMapper = new EbMSMessageRowMapper();
+		val rowMapper = EbMSMessageRowMapper.builder().queryFactory(queryFactory).build();
+		val query = rowMapper.getBaseQuery()
+				.where(getMessageFilter(messageTable,filter,new BooleanBuilder()))
+				.orderBy(messageTable.timeStamp.desc())
+				.limit(count)
+				.offset(first)
+				.getSQL();
 		return jdbcTemplate.query(
-			selectMessagesQuery(filter,first,count,parameters),
-			parameters.toArray(new Object[0]),
-			rowMapper
-		);
+				query.getSQL(),
+				query.getNullFriendlyBindings().toArray(),
+				rowMapper);
 	}
 	
 	@Override
 	public EbMSAttachment findAttachment(String messageId, int messageNr, String contentId)
 	{
+		val query = queryFactory.select(attachmentTable.name,attachmentTable.contentId,attachmentTable.contentType,attachmentTable.content)
+				.from(attachmentTable)
+				.where(attachmentTable.messageId.eq(messageId)
+						.and(attachmentTable.messageNr.eq(messageNr))
+						.and(attachmentTable.contentId.eq(contentId)))
+				.orderBy(attachmentTable.orderNr.asc())
+				.getSQL();
 		return jdbcTemplate.queryForObject(
-			"select name, content_id, content_type, content" + 
-			" from ebms_attachment" + 
-			" where message_id = ?" +
-			" and message_nr = ?" +
-			" and content_id = ?",
-			(rs,rowNum) ->
-			{
-				try
+				query.getSQL(),
+				query.getNullFriendlyBindings().toArray(),
+				(rs,rowNum) ->
 				{
-					return EbMSAttachment.builder()
-							.name(rs.getString("name"))
-							.contentId(rs.getString("content_id"))
-							.contentType(rs.getString("content_type"))
-							.content(createCachedOutputStream(rs.getBinaryStream("content")))
-							.build();
-				}
-				catch (IOException e)
-				{
-					throw new SQLException(e);
-				}
-			},
-			messageId,
-			messageNr,
-			contentId
-		);
+					try
+					{
+						return EbMSAttachment.builder()
+								.name(rs.getString("name"))
+								.contentId(rs.getString("content_id"))
+								.contentType(rs.getString("content_type"))
+								.content(createCachedOutputStream(rs.getBinaryStream("content")))
+								.build();
+					}
+					catch (IOException e)
+					{
+						throw new SQLException(e);
+					}
+				});
 	}
 
 	protected CachedOutputStream createCachedOutputStream(InputStream in) throws IOException
@@ -330,38 +361,39 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 
 	protected List<EbMSAttachment> getAttachments(String messageId, int messageNr)
 	{
+		val query = queryFactory.select(attachmentTable.name,attachmentTable.contentId,attachmentTable.contentType)
+				.from(attachmentTable)
+				.where(attachmentTable.messageId.eq(messageId)
+						.and(attachmentTable.messageNr.eq(messageNr)))
+				.getSQL();
 		return jdbcTemplate.query(
-			"select name, content_id, content_type" + 
-			" from ebms_attachment" + 
-			" where message_id = ?" +
-			" and message_nr = ?",
-			(rs,rowNum) ->
-			{
-				return EbMSAttachment.builder()
-						.name(rs.getString("name"))
-						.contentId(rs.getString("content_id"))
-						.contentType(rs.getString("content_type"))
-						.build();
-			},
-			messageId,
-			messageNr
-		);
+				query.getSQL(),
+				query.getNullFriendlyBindings().toArray(),
+				(rs,rowNum) ->
+				{
+					return EbMSAttachment.builder()
+							.name(rs.getString("name"))
+							.contentId(rs.getString("content_id"))
+							.contentType(rs.getString("content_type"))
+							.build();
+				});
 	}
 
 	private EbMSEvent getEvent(String messageId)
 	{
 		try
 		{
+			val query = queryFactory.select(eventTable.timeToLive,eventTable.timeStamp,eventTable.retries)
+					.from(eventTable)
+					.where(eventTable.messageId.eq(messageId))
+					.getSQL();
 			return jdbcTemplate.queryForObject(
-				"select time_to_live, time_stamp, retries" +
-				" from ebms_event" +
-				" where message_id = ?",
-				(rs,rowNum) ->
-				{
-					return EbMSEvent.of(toInstant(rs.getTimestamp("time_to_live")),toInstant(rs.getTimestamp("time_stamp")),rs.getInt("retries"));
-				},
-				messageId
-			);
+					query.getSQL(),
+					query.getNullFriendlyBindings().toArray(),
+					(rs,rowNum) ->
+					{
+						return EbMSEvent.of(InstantType.toInstant(rs.getTimestamp("time_to_live")),InstantType.toInstant(rs.getTimestamp("time_stamp")),rs.getInt("retries"));
+					});
 		}
 		catch (EmptyResultDataAccessException e)
 		{
@@ -371,262 +403,196 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 
 	private List<EbMSEventLog> getEvents(String messageId)
 	{
+		val query = queryFactory.select(eventLogTable.messageId,eventLogTable.timeStamp,eventLogTable.uri,eventLogTable.status,eventLogTable.errorMessage)
+				.from(eventLogTable)
+				.where(eventLogTable.messageId.eq(messageId))
+				.getSQL();
 		return jdbcTemplate.query(
-			"select message_id, time_stamp, uri, status, error_message" + 
-			" from ebms_event_log" + 
-			" where message_id = ?",
-			(rs,rowNum) ->
-			{
-				return EbMSEventLog.builder()
-						.timestamp(toInstant(rs.getTimestamp("time_stamp")))
-						.uri(rs.getString("uri"))
-						.status(EbMSEventStatus.get(rs.getInt("status")).orElse(null))
-						.errorMessage(rs.getString("error_message"))
-						.build();
-			},
-			messageId
-		);
+				query.getSQL(),
+				query.getNullFriendlyBindings().toArray(),
+				(rs,rowNum) ->
+				{
+					return EbMSEventLog.builder()
+							.timestamp(InstantType.toInstant(rs.getTimestamp("time_stamp")))
+							.uri(rs.getString("uri"))
+							.status(EbMSEventStatus.get(rs.getInt("status")).orElse(null))
+							.errorMessage(rs.getString("error_message"))
+							.build();
+				});
 	}
 	
 	@Override
-	public List<String> selectMessageIds(String cpaId, String fromRole, String toRole, EbMSMessageStatus...status)
+	public List<String> selectMessageIds(String cpaId, String fromRole, String toRole, EbMSMessageStatus...statuses)
 	{
+		val query = queryFactory.select(messageTable.messageId)
+				.from(messageTable)
+				.where(messageTable.cpaId.eq(cpaId)
+						.and(messageTable.fromRole.eq(fromRole))
+						.and(messageTable.toRole.eq(toRole))
+						.and(messageTable.statusRaw.in(EbMSMessageStatus.getIds(statuses))))
+				.orderBy(messageTable.timeStamp.desc())
+				.getSQL();
 		return jdbcTemplate.queryForList(
-			"select message_id" + 
-			" from ebms_message" + 
-			" where cpa_id = ?" +
-			" and from_role = ?" +
-			" and to_role = ?" +
-			" and status in (" + join(status,",") + ")" +
-			" order by time_stamp desc",
-			String.class,
-			cpaId,
-			fromRole,
-			toRole
-		);
+				query.getSQL(),
+				query.getNullFriendlyBindings().toArray(),
+				String.class);
 	}
 	
 	@Override
-	public HashMap<LocalDateTime,Integer> selectMessageTraffic(LocalDateTime from, LocalDateTime to, TimeUnit timeUnit, EbMSMessageStatus...status)
+	public HashMap<String,Integer> selectMessageTraffic(LocalDateTime from, LocalDateTime to, TimeUnit timeUnit, EbMSMessageStatus...statuses)
 	{
-		val result = new HashMap<LocalDateTime,Integer>();
+		val query = queryFactory.select(getTimestamp(messageTable.timeStampRaw,timeUnit).as("time"), messageTable.messageId.count().as("nr"))
+				.from(messageTable)
+				.where(messageTable.timeStampRaw.goe(Timestamp.valueOf(from))
+						.and(messageTable.timeStampRaw.lt(Timestamp.valueOf(to)))
+						.and(statuses.length == 0 ? messageTable.statusRaw.isNotNull() : messageTable.statusRaw.in(EbMSMessageStatus.getIds(statuses))))
+				.groupBy(getTimestamp(messageTable.timeStampRaw,timeUnit))
+				.getSQL();
+		val result = new HashMap<String,Integer>();
 		jdbcTemplate.query(
-			"select trunc(time_stamp,'" + getDateFormat(timeUnit.getSqlDateFormat()) + "') time, count(*) nr" + 
-			" from ebms_message" + 
-			" where time_stamp >= ? " +
-			" and time_stamp < ?" +
-			(status.length == 0 ? " and status is not null" : " and status in (" + join(status,",") + ")") +
-			" group by trunc(time_stamp,'" + getDateFormat(timeUnit.getSqlDateFormat()) + "')",
-			(rs,rowNum) ->
-			{
-				result.put(rs.getTimestamp("time").toLocalDateTime(),rs.getInt("nr"));
-				return null;
-			},
-			Timestamp.valueOf(from),
-			Timestamp.valueOf(to)
-		);
+				query.getSQL(),
+				query.getNullFriendlyBindings().toArray(),
+				(rs,rowNum) ->
+				{
+					result.put(rs.getObject("time",Integer.class).toString(),rs.getInt("nr"));
+					return null;
+				});
 		return result;
 	}
-	
-	protected String getDateFormat(String timeUnitDateFormat)
-	{
-		return Match(timeUnitDateFormat).of(
-				Case($("mm"),"mi"),
-				Case($(),timeUnitDateFormat));
-	}
 
-	protected String join(EbMSMessageStatus[] array, String delimiter)
-	{
-		return Arrays.stream(array).map(s -> Integer.toString(s.getId())).collect(Collectors.joining(delimiter));
-	}
-	
 	@Override
 	public void printMessagesToCSV(final CSVPrinter printer, EbMSMessageFilter filter)
 	{
-		val parameters = new ArrayList<Object>();
-		val rowMapper = EbMSMessageRowMapper.builder().build();
+		val rowMapper = EbMSMessageRowMapper.builder().queryFactory(queryFactory).build();
+		val query = rowMapper.getBaseQuery()
+				.where(getMessageFilter(messageTable,filter,new BooleanBuilder()))
+				.orderBy(messageTable.timeStamp.desc())
+				.getSQL();
 		jdbcTemplate.query(
-			rowMapper.getBaseQuery() +
-			" where 1 = 1" +
-			getMessageFilter(filter,parameters) +
-			" order by time_stamp desc",
-			parameters.toArray(new Object[0]),
-			(rs,rowNum) ->
-			{
-				try
+				query.getSQL(),
+				query.getNullFriendlyBindings().toArray(),
+				(rs,rowNum) ->
 				{
-					printer.print(rs.getString("message_id"));
-					printer.print(rs.getInt("message_nr"));
-					printer.print(rs.getString("ref_to_message_id"));
-					printer.print(rs.getString("conversation_id"));
-					printer.print(rs.getTimestamp("time_stamp"));
-					printer.print(rs.getTimestamp("time_to_live"));
-					printer.print(rs.getString("cpa_id"));
-					printer.print(rs.getString("from_role"));
-					printer.print(rs.getString("to_role"));
-					printer.print(rs.getString("service"));
-					printer.print(rs.getString("action"));
-					printer.print(rs.getObject("status") == null ? null : EbMSMessageStatus.get(rs.getInt("status")));
-					printer.print(rs.getTimestamp("status_time"));
-					printer.println();
-					return null;
-				}
-				catch (IOException e)
-				{
-					throw new SQLException(e);
-				}
-			}
-		);
+					try
+					{
+						printer.print(rs.getString("message_id"));
+						printer.print(rs.getInt("message_nr"));
+						printer.print(rs.getString("ref_to_message_id"));
+						printer.print(rs.getString("conversation_id"));
+						printer.print(rs.getTimestamp("time_stamp"));
+						printer.print(rs.getTimestamp("time_to_live"));
+						printer.print(rs.getString("cpa_id"));
+						printer.print(rs.getString("from_role"));
+						printer.print(rs.getString("to_role"));
+						printer.print(rs.getString("service"));
+						printer.print(rs.getString("action"));
+						printer.print(rs.getObject("status") == null ? null : EbMSMessageStatus.get(rs.getInt("status")));
+						printer.print(rs.getTimestamp("status_time"));
+						printer.println();
+						return null;
+					}
+					catch (IOException e)
+					{
+						throw new SQLException(e);
+					}
+				});
 	}
 
 	@Override
 	public void writeMessageToZip(String messageId, int messageNr, final ZipOutputStream zip)
 	{
+		val query = queryFactory.select(messageTable.content)
+				.from(messageTable)
+				.where(messageTable.messageId.eq(messageId)
+						.and(messageTable.messageNr.eq(messageNr)))
+				.getSQL();
 		jdbcTemplate.queryForObject(
-			"select content" + 
-			" from ebms_message" + 
-			" where message_id = ?" +
-			" and message_nr = ?",
-			(rs,rowNum) ->
-			{
-				try
+				query.getSQL(),
+				query.getNullFriendlyBindings().toArray(),
+				(rs,rowNum) ->
 				{
-					val entry = new ZipEntry("message.xml");
-					zip.putNextEntry(entry);
-					zip.write(rs.getString("content").getBytes());
-					zip.closeEntry();
-					return null;
-				}
-				catch (IOException e)
-				{
-					throw new SQLException(e);
-				}
-			},
-			messageId,
-			messageNr
-		);
-		writeAttachmentsToZip(messageId, messageNr, zip);
+					try
+					{
+						val entry = new ZipEntry("message.xml");
+						zip.putNextEntry(entry);
+						zip.write(rs.getString("content").getBytes());
+						zip.closeEntry();
+						return null;
+					}
+					catch (IOException e)
+					{
+						throw new SQLException(e);
+					}
+				});
+		writeAttachmentsToZip(messageId,messageNr,zip);
 	}
 
 	protected void writeAttachmentsToZip(String messageId, int messageNr, final ZipOutputStream zip)
 	{
+		val query = queryFactory.select(attachmentTable.name,attachmentTable.contentId,attachmentTable.contentType,attachmentTable.content)
+				.from(attachmentTable)
+				.where(attachmentTable.messageId.eq(messageId)
+						.and(attachmentTable.messageNr.eq(messageNr)))
+				.getSQL();
 		jdbcTemplate.query(
-			"select name, content_id, content_type, content" + 
-			" from ebms_attachment" + 
-			" where message_id = ?" +
-			" and message_nr = ?",
-			(rs,rowNum) ->
-			{
-				try
+				query.getSQL(),
+				query.getNullFriendlyBindings().toArray(),
+				(rs,rowNum) ->
 				{
-					val entry = new ZipEntry("attachments/" + (StringUtils.isEmpty(rs.getString("name")) ? rs.getString("content_id") + Utils.getFileExtension(rs.getString("content_type")) : rs.getString("name")));
-					entry.setComment("Content-Type: " + rs.getString("content_type"));
-					zip.putNextEntry(entry);
-					IOUtils.copy(rs.getBinaryStream("content"),zip);
-					zip.closeEntry();
-					return null;
-				}
-				catch (IOException e)
-				{
-					throw new SQLException(e);
-				}
-			},
-			messageId,
-			messageNr
-		);
+					try
+					{
+						val entry = new ZipEntry("attachments/" + (StringUtils.isEmpty(rs.getString("name")) ? rs.getString("content_id") + Utils.getFileExtension(rs.getString("content_type")) : rs.getString("name")));
+						entry.setComment("Content-Type: " + rs.getString("content_type"));
+						zip.putNextEntry(entry);
+						IOUtils.copy(rs.getBinaryStream("content"),zip);
+						zip.closeEntry();
+						return null;
+					}
+					catch (IOException e)
+					{
+						throw new SQLException(e);
+					}
+				});
 	}
 	
-	protected String getMessageFilter(EbMSMessageFilter messageFilter, List<Object> parameters)
+	protected BooleanBuilder getMessageFilter(QEbmsMessage table, EbMSMessageFilter messageFilter, BooleanBuilder builder)
 	{
-		val result = new StringBuffer();
+		builder = nl.clockwork.ebms.dao.EbMSDAO.applyFilter(table,messageFilter,builder);
 		if (messageFilter != null)
 		{
-			if (messageFilter.getCpaId() != null)
-			{
-				parameters.add(messageFilter.getCpaId());
-				result.append(" and cpa_id = ?");
-			}
-			if (messageFilter.getFromParty() != null)
-			{
-				if (messageFilter.getFromParty().getPartyId() != null)
-				{
-					parameters.add(messageFilter.getFromParty().getPartyId());
-					result.append(" and from_party_id = ?");
-				}
-				if (messageFilter.getFromParty().getRole() != null)
-				{
-					parameters.add(messageFilter.getFromParty().getRole());
-					result.append(" and from_role = ?");
-				}
-			}
-			if (messageFilter.getToParty() != null)
-			{
-				if (messageFilter.getToParty().getPartyId() != null)
-				{
-					parameters.add(messageFilter.getToParty().getPartyId());
-					result.append(" and to_party_id = ?");
-				}
-				if (messageFilter.getToParty().getRole() != null)
-				{
-					parameters.add(messageFilter.getToParty().getRole());
-					result.append(" and to_role = ?");
-				}
-			}
-			if (messageFilter.getService() != null)
-			{
-				parameters.add(messageFilter.getService());
-				result.append(" and service = ?");
-			}
-			if (messageFilter.getAction() != null)
-			{
-				parameters.add(messageFilter.getAction());
-				result.append(" and action = ?");
-			}
-			if (messageFilter.getConversationId() != null)
-			{
-				parameters.add(messageFilter.getConversationId());
-				result.append(" and conversation_id = ?");
-			}
-			if (messageFilter.getMessageId() != null)
-			{
-				parameters.add(messageFilter.getMessageId());
-				result.append(" and message_id = ?");
-			}
 			if (messageFilter.getMessageNr() != null)
-			{
-				parameters.add(messageFilter.getMessageNr());
-				result.append(" and message_nr = ?");
-			}
-			if (messageFilter.getRefToMessageId() != null)
-			{
-				parameters.add(messageFilter.getRefToMessageId());
-				result.append(" and ref_to_message_id = ?");
-			}
+				builder.and(table.messageNr.eq(messageFilter.getMessageNr()));
 			if (messageFilter.getStatuses().size() > 0)
-			{
-				String ids = messageFilter.getStatuses().stream().map(s -> Integer.toString(s.getId())).collect(Collectors.joining(","));
-				result.append(" and status in (" + ids + ")");
-			}
+				builder.and(table.statusRaw.in(EbMSMessageStatus.getIds(messageFilter.getStatuses())));
 			if (messageFilter.getServiceMessage() != null)
 			{
-				parameters.add(EbMSAction.EBMS_SERVICE_URI);
 				if (messageFilter.getServiceMessage())
-					result.append(" and service = ?");
+					builder.and(table.service.eq(EbMSAction.EBMS_SERVICE_URI));
 				else
-					result.append(" and service <> ?");
+					builder.and(table.service.ne(EbMSAction.EBMS_SERVICE_URI));
 			}
 			if (messageFilter.getFrom() != null)
-			{
-				parameters.add(messageFilter.getFrom());
-				result.append(" and time_stamp >= ?");
-			}
+				builder.and(table.timeStampRaw.goe(Timestamp.from(messageFilter.getFrom().atZone(ZoneId.systemDefault()).toInstant())));
 			if (messageFilter.getTo() != null)
-			{
-				parameters.add(messageFilter.getTo());
-				result.append(" and time_stamp < ?");
-			}
+				builder.and(table.timeStampRaw.lt(Timestamp.from(messageFilter.getTo().atZone(ZoneId.systemDefault()).toInstant())));
 		}
-		return result.toString();
+		return builder;
 	}
-	
+
+	private NumberExpression<Integer> getTimestamp(DateTimePath<Timestamp> timeStampRaw, TimeUnit timeUnit)
+	{
+		switch (timeUnit)
+		{
+			case HOUR:
+				return timeStampRaw.minute();
+			case DAY:
+				return timeStampRaw.hour();
+			case MONTH:
+				return timeStampRaw.dayOfMonth();
+			case YEAR:
+				return timeStampRaw.month();
+			default:
+				return null;
+		}
+	}
 }

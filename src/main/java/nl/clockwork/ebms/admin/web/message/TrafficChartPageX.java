@@ -181,12 +181,12 @@ public class TrafficChartPageX extends BasePage
 			result.setyAxis(new Axis().setTitle(new Title("Messages")));
 			result.setLegend(new Legend().setLayout(LegendLayout.VERTICAL).setAlign(HorizontalAlignment.RIGHT).setVerticalAlign(VerticalAlignment.TOP).setX(0).setY(1000).setBorderWidth(0));
 			result.setSeries(Arrays.stream(o.getEbMSMessageTrafficChartOption().getEbMSMessageTrafficChartSeries())
-					.map(s -> new SimpleSeries().setName(s.getName()).setColor(s.getColorX()).setData(getMessages(dates,s.getEbMSMessageStatuses())))
+					.map(s -> new SimpleSeries().setName(s.getName()).setColor(s.getColorX()).setData(getMessages(dateStrings,s.getEbMSMessageStatuses())))
 					.collect(Collectors.toList()));
 			return result;
 		}
 
-		private List<Number> getMessages(List<LocalDateTime> dates, EbMSMessageStatus...status)
+		private List<Number> getMessages(List<String> dates, EbMSMessageStatus...status)
 		{
 			val o = getModelObject();
 			val messageTraffic = ebMSDAO.selectMessageTraffic(o.from,o.getTo(),o.timeUnit,status);

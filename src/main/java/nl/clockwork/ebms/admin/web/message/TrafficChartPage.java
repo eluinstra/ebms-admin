@@ -223,18 +223,17 @@ public class TrafficChartPage extends BasePage
 								.setLabel(ds.getName())
 								.setBackgroundColor(ds.getColor())
 								.setBorderColor(ds.getColor())
-								.setData(IntegerValue.of(getMessages(dates,ds.getEbMSMessageStatuses())))
+								.setData(IntegerValue.of(getMessages(dateStrings,ds.getEbMSMessageStatuses())))
 								.setFill(false))
 						.collect(Collectors.toList()));
 		}
 
-		private List<Integer> getMessages(List<LocalDateTime> dates, EbMSMessageStatus...status)
+		private List<Integer> getMessages(List<String> dates, EbMSMessageStatus...status)
 		{
 			val o = getModelObject();
 			val messageTraffic = ebMSDAO.selectMessageTraffic(o.from,o.getTo(),o.timeUnit,status);
 			return dates.stream().map(d -> messageTraffic.containsKey(d) ? messageTraffic.get(d) : 0).collect(Collectors.toList());
 		}
-
 	}
 	
 	private List<LocalDateTime> calculateDates(TemporalAmount period, LocalDateTime from, LocalDateTime to)

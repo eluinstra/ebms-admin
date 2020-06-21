@@ -13,17 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.clockwork.ebms.admin.dao.mysql;
-
-import static io.vavr.API.$;
-import static io.vavr.API.Case;
-import static io.vavr.API.Match;
+package nl.clockwork.ebms.admin.dao;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -32,39 +25,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import lombok.val;
-import nl.clockwork.ebms.EbMSMessageStatus;
-import nl.clockwork.ebms.admin.dao.AbstractEbMSDAO;
+import com.querydsl.sql.SQLQueryFactory;
+
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.web.Utils;
-import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
-import nl.clockwork.ebms.admin.web.message.TimeUnit;
 
-public class EbMSDAOImpl extends AbstractEbMSDAO
+public class MySQLEbMSDAO extends AbstractEbMSDAO
 {
-	public EbMSDAOImpl(TransactionTemplate transactionTemplate, JdbcTemplate jdbcTemplate)
+	public MySQLEbMSDAO(TransactionTemplate transactionTemplate, JdbcTemplate jdbcTemplate, SQLQueryFactory queryFactory)
 	{
-		super(transactionTemplate,jdbcTemplate);
-	}
-
-	@Override
-	public String selectCPAsQuery(long first, long count)
-	{
-		return "select * from cpa" +
-			" order by cpa_id" +
-			" limit " + count + " offset " + first
-		;
-	}
-	
-	@Override
-	public String selectMessagesQuery(EbMSMessageFilter filter, long first, long count, List<Object> parameters)
-	{
-		return EbMSMessageRowMapper.builder().build().getBaseQuery() +
-			" where 1 = 1" +
-			getMessageFilter(filter,parameters) +
-			" order by time_stamp desc" +
-			" limit " + count + " offset " + first
-		;
+		super(transactionTemplate,jdbcTemplate,queryFactory);
 	}
 
 	@Override
@@ -121,29 +91,6 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 	}
 
 	@Override
-	public HashMap<LocalDateTime,Integer> selectMessageTraffic(LocalDateTime from, LocalDateTime to, TimeUnit timeUnit, EbMSMessageStatus...status)
-	{
-		val result = new HashMap<LocalDateTime,Integer>();
-		jdbcTemplate.query(
-			//"select date_format(time_stamp,'" + getDateFormat(timeUnit.getTimeUnitDateFormat()) + "') time, count(*) nr" + 
-			"select str_to_date(date_format(time_stamp,'" + getDateFormat(timeUnit.getSqlDateFormat()) + "'),'%Y-%m-%d %k:%i:%s') time, count(*) nr" + 
-			" from ebms_message" + 
-			" where time_stamp >= ? " +
-			" and time_stamp < ?" +
-			(status.length == 0 ? " and status is not null" : " and status in (" + join(status,",") + ")") +
-			" group by date_format(time_stamp,'" + getDateFormat(timeUnit.getSqlDateFormat()) + "')",
-			(rs,rowNum) ->
-			{
-				result.put(rs.getTimestamp("time").toLocalDateTime(),rs.getInt("nr"));
-				return null;
-			},
-			Timestamp.valueOf(from),
-			Timestamp.valueOf(to)
-		);
-		return result;
-	}
-
-	@Override
 	protected void writeAttachmentsToZip(String messageId, int messageNr, final ZipOutputStream zip)
 	{
 		jdbcTemplate.query(
@@ -171,15 +118,5 @@ public class EbMSDAOImpl extends AbstractEbMSDAO
 			messageId,
 			messageNr
 		);
-	}
-	
-	protected String getDateFormat(String timeUnitDateFormat)
-	{
-		return Match(timeUnitDateFormat).of(
-				Case($("mm"),"%Y-%m-%d %k:%i:00"),
-				Case($("HH"),"%Y-%m-%d %k:00:00"),
-				Case($("dd"),"%Y-%m-%d 00:00:00"),
-				Case($("MM"),"%Y-%m-01 00:00:00"),
-				Case($(),timeUnitDateFormat));
 	}
 }
