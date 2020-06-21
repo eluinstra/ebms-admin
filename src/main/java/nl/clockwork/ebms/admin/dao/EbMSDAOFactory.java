@@ -18,7 +18,6 @@ package nl.clockwork.ebms.admin.dao;
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import com.querydsl.sql.SQLQueryFactory;
 
@@ -32,8 +31,6 @@ import nl.clockwork.ebms.transaction.TransactionManagerConfig.TransactionManager
 public class EbMSDAOFactory extends DefaultDAOFactory<EbMSDAO>
 {
 	@NonNull
-	TransactionTemplate transactionTemplate;
-	@NonNull
 	JdbcTemplate jdbcTemplate;
 	@NonNull
 	SQLQueryFactory queryFactory;
@@ -41,12 +38,10 @@ public class EbMSDAOFactory extends DefaultDAOFactory<EbMSDAO>
 	public EbMSDAOFactory(
 			TransactionManagerType transactionManagerType,
 			DataSource dataSource,
-			@NonNull TransactionTemplate transactionTemplate,
 			@NonNull JdbcTemplate jdbcTemplate,
 			@NonNull SQLQueryFactory queryFactory)
 	{
 		super(transactionManagerType,dataSource);
-		this.transactionTemplate = transactionTemplate;
 		this.jdbcTemplate = jdbcTemplate;
 		this.queryFactory = queryFactory;
 	}
@@ -60,30 +55,30 @@ public class EbMSDAOFactory extends DefaultDAOFactory<EbMSDAO>
 	@Override
 	public EbMSDAO createHSqlDbDAO()
 	{
-		return new HSQLDBEbMSDAO(transactionTemplate,jdbcTemplate,queryFactory);
+		return new HSQLDBEbMSDAO(jdbcTemplate,queryFactory);
 	}
 
 	@Override
 	public EbMSDAO createMySqlDAO()
 	{
-		return new MySQLEbMSDAO(transactionTemplate,jdbcTemplate,queryFactory);
+		return new MySQLEbMSDAO(jdbcTemplate,queryFactory);
 	}
 
 	@Override
 	public EbMSDAO createPostgresDAO()
 	{
-		return new PostgreSQLEbMSDAO(transactionTemplate,jdbcTemplate,queryFactory);
+		return new PostgreSQLEbMSDAO(jdbcTemplate,queryFactory);
 	}
 
 	@Override
 	public EbMSDAO createOracleDAO()
 	{
-		return new OracleEbMSDAO(transactionTemplate,jdbcTemplate,queryFactory);
+		return new OracleEbMSDAO(jdbcTemplate,queryFactory);
 	}
 
 	@Override
 	public EbMSDAO createMsSqlDAO()
 	{
-		return new MSSQLEbMSDAO(transactionTemplate,jdbcTemplate,queryFactory);
+		return new MSSQLEbMSDAO(jdbcTemplate,queryFactory);
 	}
 }

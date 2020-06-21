@@ -30,11 +30,10 @@ import nl.clockwork.ebms.event.processor.EbMSEventStatus;
 @Builder
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@AllArgsConstructor(staticName = "of")
+@AllArgsConstructor
 public class EbMSEventLog implements IClusterable
 {
 	private static final long serialVersionUID = 1L;
-	EbMSMessage message;
 	@NonNull
 	Instant timestamp;
 	@NonNull

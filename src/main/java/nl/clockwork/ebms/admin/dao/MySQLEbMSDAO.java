@@ -23,23 +23,24 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import com.querydsl.sql.SQLQueryFactory;
 
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.web.Utils;
+import nl.clockwork.ebms.querydsl.CachedOutputStreamType;
 
 public class MySQLEbMSDAO extends AbstractEbMSDAO
 {
-	public MySQLEbMSDAO(TransactionTemplate transactionTemplate, JdbcTemplate jdbcTemplate, SQLQueryFactory queryFactory)
+	public MySQLEbMSDAO(JdbcTemplate jdbcTemplate, SQLQueryFactory queryFactory)
 	{
-		super(transactionTemplate,jdbcTemplate,queryFactory);
+		super(jdbcTemplate,queryFactory);
 	}
 
 	@Override
 	public EbMSAttachment findAttachment(String messageId, int messageNr, String contentId)
 	{
+		
 		return jdbcTemplate.queryForObject(
 			"select a.name, a.content_id, a.content_type, a.content" + 
 			" from ebms_message m, ebms_attachment a" + 
@@ -55,7 +56,7 @@ public class MySQLEbMSDAO extends AbstractEbMSDAO
 							.name(rs.getString("name"))
 							.contentId(rs.getString("content_id"))
 							.contentType(rs.getString("content_type"))
-							.content(createCachedOutputStream(rs.getBinaryStream("content")))
+							.content(CachedOutputStreamType.createCachedOutputStream(rs.getBinaryStream("content")))
 							.build();
 				}
 				catch (IOException e)

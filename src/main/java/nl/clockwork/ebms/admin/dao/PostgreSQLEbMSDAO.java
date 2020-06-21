@@ -16,15 +16,13 @@
 package nl.clockwork.ebms.admin.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import com.querydsl.sql.SQLQueryFactory;
 
 public class PostgreSQLEbMSDAO extends AbstractEbMSDAO
 {
-
-	public PostgreSQLEbMSDAO(TransactionTemplate transactionTemplate, JdbcTemplate jdbcTemplate, SQLQueryFactory queryFactory)
+	public PostgreSQLEbMSDAO(JdbcTemplate jdbcTemplate, SQLQueryFactory queryFactory)
 	{
-		super(transactionTemplate,jdbcTemplate,queryFactory);
+		super(jdbcTemplate,queryFactory);
 	}
 }

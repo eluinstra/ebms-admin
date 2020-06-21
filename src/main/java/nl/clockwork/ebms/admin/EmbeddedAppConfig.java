@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import lombok.AccessLevel;
 import lombok.val;

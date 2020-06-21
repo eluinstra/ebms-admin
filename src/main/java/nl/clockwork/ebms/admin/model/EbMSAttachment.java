@@ -30,7 +30,7 @@ import lombok.experimental.NonFinal;
 @Builder
 @Value
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@AllArgsConstructor(staticName = "of")
+@AllArgsConstructor
 public class EbMSAttachment implements IClusterable
 {
 	private static final long serialVersionUID = 1L;
@@ -44,4 +44,14 @@ public class EbMSAttachment implements IClusterable
 	@NonNull
 	String contentType;
 	CachedOutputStream content;
+
+	public EbMSAttachment(@NonNull String name, @NonNull String contentId, @NonNull String contentType)
+	{
+		this(null,name,contentId,contentType,null);
+	}
+
+	public EbMSAttachment(@NonNull String name, @NonNull String contentId, @NonNull String contentType, CachedOutputStream content)
+	{
+		this(null,name,contentId,contentType,content);
+	}
 }

@@ -24,7 +24,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import com.querydsl.sql.SQLQueryFactory;
 
@@ -50,8 +49,7 @@ public abstract class AdminDAOConfig
 	@Bean("ebMSAdminDAO")
 	public EbMSDAO ebMSDAO() throws Exception
 	{
-		val transactionTemplate = new TransactionTemplate(dataSourceTransactionManager);
 		val jdbcTemplate = new JdbcTemplate(dataSource);
-		return new EbMSDAOFactory(transactionManagerType,dataSource,transactionTemplate,jdbcTemplate,queryFactory).getObject();
+		return new EbMSDAOFactory(transactionManagerType,dataSource,jdbcTemplate,queryFactory).getObject();
 	}
 }

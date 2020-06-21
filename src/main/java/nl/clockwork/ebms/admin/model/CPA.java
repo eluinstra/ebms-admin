@@ -15,7 +15,10 @@
  */
 package nl.clockwork.ebms.admin.model;
 
+import javax.xml.bind.JAXBException;
+
 import org.apache.wicket.util.io.IClusterable;
+import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -24,12 +27,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.jaxb.JAXBParser;
 
 @Builder
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
-@AllArgsConstructor(staticName = "of")
+@AllArgsConstructor
 public class CPA implements IClusterable
 {
 	private static final long serialVersionUID = 1L;
@@ -37,4 +41,10 @@ public class CPA implements IClusterable
 	String cpaId;
 	@NonNull
 	String cpa;
+
+	public CPA(String cpaId, CollaborationProtocolAgreement cpa) throws JAXBException
+	{
+		this.cpaId = cpaId;
+		this.cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpa);
+	}
 }

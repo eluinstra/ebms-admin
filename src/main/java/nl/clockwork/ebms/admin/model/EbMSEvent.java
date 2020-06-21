@@ -29,7 +29,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@AllArgsConstructor(staticName = "of")
+@AllArgsConstructor
 public class EbMSEvent implements IClusterable
 {
 	private static final long serialVersionUID = 1L;
