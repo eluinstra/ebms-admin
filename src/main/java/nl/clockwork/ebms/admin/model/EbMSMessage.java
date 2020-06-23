@@ -19,7 +19,10 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.wicket.util.io.IClusterable;
+import org.w3c.dom.Document;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -29,11 +32,12 @@ import lombok.Data;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.EbMSMessageStatus;
+import nl.clockwork.ebms.util.DOMUtils;
 
 @Builder
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@AllArgsConstructor(staticName = "of")
+@AllArgsConstructor
 public class EbMSMessage implements IClusterable
 {
 	private static final long serialVersionUID = 1L;
@@ -68,4 +72,47 @@ public class EbMSMessage implements IClusterable
 	@NonNull
 	@Default
 	List<EbMSEventLog> events = Collections.emptyList();
+
+	public EbMSMessage(@NonNull Instant timestamp, @NonNull String cpaId, @NonNull String conversationId, @NonNull String messageId, int messageNr, String refToMessageId, Instant timeToLive, @NonNull String fromPartyId, String fromRole, @NonNull String toPartyId, String toRole, @NonNull String service, @NonNull String action, EbMSMessageStatus status, Instant statusTime)
+	{
+		this.timestamp = timestamp;
+		this.cpaId = cpaId;
+		this.conversationId = conversationId;
+		this.messageId = messageId;
+		this.messageNr = messageNr;
+		this.refToMessageId = refToMessageId;
+		this.timeToLive = timeToLive;
+		this.fromPartyId = fromPartyId;
+		this.fromRole = fromRole;
+		this.toPartyId = toPartyId;
+		this.toRole = toRole;
+		this.service = service;
+		this.action = action;
+		this.status = status;
+		this.statusTime = statusTime;
+		this.attachments = Collections.emptyList();
+		this.events = Collections.emptyList();
+	}
+
+	public EbMSMessage(@NonNull Instant timestamp, @NonNull String cpaId, @NonNull String conversationId, @NonNull String messageId, int messageNr, String refToMessageId, Instant timeToLive, @NonNull String fromPartyId, String fromRole, @NonNull String toPartyId, String toRole, @NonNull String service, @NonNull String action, Document content, EbMSMessageStatus status, Instant statusTime) throws TransformerException
+	{
+		this.timestamp = timestamp;
+		this.cpaId = cpaId;
+		this.conversationId = conversationId;
+		this.messageId = messageId;
+		this.messageNr = messageNr;
+		this.refToMessageId = refToMessageId;
+		this.timeToLive = timeToLive;
+		this.fromPartyId = fromPartyId;
+		this.fromRole = fromRole;
+		this.toPartyId = toPartyId;
+		this.toRole = toRole;
+		this.service = service;
+		this.action = action;
+		this.content = DOMUtils.toString(content);
+		this.status = status;
+		this.statusTime = statusTime;
+		this.attachments = Collections.emptyList();
+		this.events = Collections.emptyList();
+	}
 }

@@ -16,18 +16,12 @@
 package nl.clockwork.ebms.admin.dao;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -36,23 +30,18 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.Tuple;
+import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.core.types.dsl.NumberExpression;
-import com.querydsl.sql.SQLQuery;
 import com.querydsl.sql.SQLQueryFactory;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Builder.Default;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
@@ -66,7 +55,6 @@ import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
 import nl.clockwork.ebms.admin.web.message.TimeUnit;
-import nl.clockwork.ebms.querydsl.InstantType;
 import nl.clockwork.ebms.querydsl.model.QCpa;
 import nl.clockwork.ebms.querydsl.model.QEbmsAttachment;
 import nl.clockwork.ebms.querydsl.model.QEbmsEvent;
@@ -77,82 +65,6 @@ import nl.clockwork.ebms.querydsl.model.QEbmsMessage;
 @AllArgsConstructor
 public abstract class AbstractEbMSDAO implements EbMSDAO
 {
-	@Builder
-	@NoArgsConstructor(force = true)
-	@AllArgsConstructor(staticName = "of")
-	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-	public static class EbMSMessageRowMapper implements RowMapper<EbMSMessage>
-	{
-		@NonNull
-		SQLQueryFactory queryFactory;
-		@NonNull
-		@Default
-		Supplier<List<EbMSAttachment>> getAttachments = () -> Collections.emptyList();
-		@NonNull
-		@Default
-		Supplier<EbMSEvent> getEvent = () -> null;
-		@NonNull
-		@Default
-		Supplier<List<EbMSEventLog>> getEvents = () -> Collections.emptyList();
-		boolean detail;
-		QEbmsMessage messageTable = QEbmsMessage.ebmsMessage;
-
-		public SQLQuery<Tuple> getBaseQuery()
-		{
-			val paths = new ArrayList<Expression<?>>(Arrays.asList(
-					messageTable.timeStamp,
-					messageTable.cpaId,
-					messageTable.conversationId,
-					messageTable.messageId,
-					messageTable.messageNr,
-					messageTable.refToMessageId,
-					messageTable.timeToLive,
-					messageTable.fromPartyId,
-					messageTable.fromRole,
-					messageTable.toPartyId,
-					messageTable.toRole,
-					messageTable.service,
-					messageTable.action,
-					messageTable.status,
-					messageTable.statusTime));
-			if (detail)
-				paths.add(messageTable.content);
-			return queryFactory.select(paths.toArray(new Expression<?>[]{}))
-					.from(messageTable);
-		}
-		
-		@Override
-		public EbMSMessage mapRow(ResultSet rs, int rowNum) throws SQLException
-		{
-			val attachments = getAttachments.get();
-			val events = getEvents.get();
-			val builder = EbMSMessage.builder()
-					.timestamp(InstantType.toInstant(rs.getTimestamp("time_stamp")))
-					.cpaId(rs.getString("cpa_id"))
-					.conversationId(rs.getString("conversation_id"))
-					.messageId(rs.getString("message_id"))
-					.messageNr(rs.getInt("message_nr"))
-					.refToMessageId(rs.getString("ref_to_message_id"))
-					.timeToLive(InstantType.toInstant(rs.getTimestamp("time_to_live")))
-					.fromPartyId(rs.getString("from_party_id"))
-					.fromRole(rs.getString("from_role"))
-					.toPartyId(rs.getString("to_party_id"))
-					.toRole(rs.getString("to_role"))
-					.service(rs.getString("service"))
-					.action(rs.getString("action"))
-					.status(rs.getObject("status") == null ? null : EbMSMessageStatus.get(rs.getInt("status")).orElse(null))
-					.statusTime(InstantType.toInstant(rs.getTimestamp("status_time")))
-					.attachments(attachments)
-					.event(getEvent.get())
-					.events(events);
-			if (detail)
-				builder.content(rs.getString("content"));
-			EbMSMessage result = builder.build();
-			attachments.forEach(a -> a.setMessage(result));
-			return result;
-		}
-	}
-
 	@NonNull
 	JdbcTemplate jdbcTemplate;
 	@NonNull
@@ -162,6 +74,10 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	QEbmsAttachment attachmentTable = QEbmsAttachment.ebmsAttachment;
 	QEbmsEvent eventTable = QEbmsEvent.ebmsEvent;
 	QEbmsEventLog eventLogTable = QEbmsEventLog.ebmsEventLog;
+	Expression<?>[] ebMSMessageColumns = {messageTable.timeStamp,messageTable.cpaId,messageTable.conversationId,messageTable.messageId,messageTable.messageNr,messageTable.refToMessageId,messageTable.timeToLive,messageTable.fromPartyId,messageTable.fromRole,messageTable.toPartyId,messageTable.toRole,messageTable.service,messageTable.action,messageTable.status,messageTable.statusTime};
+	Expression<?>[] ebMSMessageDetailColumns = {messageTable.timeStamp,messageTable.cpaId,messageTable.conversationId,messageTable.messageId,messageTable.messageNr,messageTable.refToMessageId,messageTable.timeToLive,messageTable.fromPartyId,messageTable.fromRole,messageTable.toPartyId,messageTable.toRole,messageTable.service,messageTable.action,messageTable.content,messageTable.status,messageTable.statusTime};
+	ConstructorExpression<EbMSMessage> ebMSMessageProjection = Projections.constructor(EbMSMessage.class,ebMSMessageColumns);
+	ConstructorExpression<EbMSMessage> ebMSMessageDetailProjection = Projections.constructor(EbMSMessage.class,ebMSMessageDetailColumns);
 	
 	@Override
 	@Transactional(transactionManager = "dataSourceTransactionManager")
@@ -215,21 +131,15 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	@Transactional(transactionManager = "dataSourceTransactionManager")
 	public EbMSMessage findMessage(String messageId, int messageNr)
 	{
-		val rowMapper = EbMSMessageRowMapper.builder()
-				.queryFactory(queryFactory)
-				.getAttachments(() -> getAttachments(messageId,messageNr))
-				.getEvent(() -> getEvent(messageId))
-				.getEvents(() -> getEvents(messageId))
-				.detail(true)
-				.build();
-		val query = rowMapper.getBaseQuery()
+		val result = queryFactory.select(ebMSMessageDetailProjection)
+				.from(messageTable)
 				.where(messageTable.messageId.eq(messageId)
 						.and(messageTable.messageNr.eq(messageNr)))
-				.getSQL();
-		return jdbcTemplate.queryForObject(
-				query.getSQL(),
-				query.getNullFriendlyBindings().toArray(),
-				rowMapper);
+				.fetchOne();
+		result.setAttachments(getAttachments(messageId,messageNr));
+		result.setEvent(getEvent(messageId));
+		result.setEvents(getEvents(messageId));
+		return result;
 	}
 
 	@Override
@@ -247,20 +157,14 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	@Override
 	public EbMSMessage findResponseMessage(String messageId)
 	{
-		val rowMapper = EbMSMessageRowMapper.builder()
-				.getAttachments(() -> Collections.emptyList())
-				.getEvents(() -> getEvents(messageId))
-				.detail(true)
-				.build();
-		val query = rowMapper.getBaseQuery()
+		val result = queryFactory.select(ebMSMessageDetailProjection)
+				.from(messageTable)
 				.where(messageTable.refToMessageId.eq(messageId)
 						.and(messageTable.messageNr.eq(0))
 						.and(messageTable.service.eq(EbMSAction.EBMS_SERVICE_URI)))
-				.getSQL();
-		return jdbcTemplate.queryForObject(
-				query.getSQL(),
-				query.getNullFriendlyBindings().toArray(),
-				rowMapper);
+				.fetchOne();
+		result.setEvents(getEvents(messageId));
+		return result;
 	}
 
 	@Override
@@ -274,19 +178,16 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 	
 	@Override
+	@Transactional(transactionManager = "dataSourceTransactionManager")
 	public List<EbMSMessage> selectMessages(EbMSMessageFilter filter, long first, long count)
 	{
-		val rowMapper = EbMSMessageRowMapper.builder().queryFactory(queryFactory).build();
-		val query = rowMapper.getBaseQuery()
+		return queryFactory.select(ebMSMessageProjection)
+				.from(messageTable)
 				.where(getMessageFilter(messageTable,filter,new BooleanBuilder()))
 				.orderBy(messageTable.timeStamp.desc())
 				.limit(count)
 				.offset(first)
-				.getSQL();
-		return jdbcTemplate.query(
-				query.getSQL(),
-				query.getNullFriendlyBindings().toArray(),
-				rowMapper);
+				.fetch();
 	}
 	
 	@Override
@@ -361,8 +262,8 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	@Override
 	public void printMessagesToCSV(final CSVPrinter printer, EbMSMessageFilter filter)
 	{
-		val rowMapper = EbMSMessageRowMapper.builder().queryFactory(queryFactory).build();
-		val query = rowMapper.getBaseQuery()
+		val query = queryFactory.select(ebMSMessageColumns)
+				.from(messageTable)
 				.where(getMessageFilter(messageTable,filter,new BooleanBuilder()))
 				.orderBy(messageTable.timeStamp.desc())
 				.getSQL();
@@ -461,7 +362,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 			if (messageFilter.getMessageNr() != null)
 				builder.and(table.messageNr.eq(messageFilter.getMessageNr()));
 			if (messageFilter.getStatuses().size() > 0)
-				builder.and(table.statusRaw.in(messageFilter.getStatuses().stream().map(s -> s.getId()).collect(Collectors.toList())));
+				builder.and(table.status.in(messageFilter.getStatuses()));
 			if (messageFilter.getServiceMessage() != null)
 			{
 				if (messageFilter.getServiceMessage())
@@ -470,9 +371,9 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 					builder.and(table.service.ne(EbMSAction.EBMS_SERVICE_URI));
 			}
 			if (messageFilter.getFrom() != null)
-				builder.and(table.timeStampRaw.goe(Timestamp.from(messageFilter.getFrom().atZone(ZoneId.systemDefault()).toInstant())));
+				builder.and(table.timeStamp.goe(messageFilter.getFrom().atZone(ZoneId.systemDefault()).toInstant()));
 			if (messageFilter.getTo() != null)
-				builder.and(table.timeStampRaw.lt(Timestamp.from(messageFilter.getTo().atZone(ZoneId.systemDefault()).toInstant())));
+				builder.and(table.timeStamp.lt(messageFilter.getTo().atZone(ZoneId.systemDefault()).toInstant()));
 		}
 		return builder;
 	}
