@@ -53,7 +53,6 @@ import lombok.AccessLevel;
 import lombok.val;
 import lombok.var;
 import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.admin.DBMigrate.BaselineVersion;
 import nl.clockwork.ebms.admin.web.ExtensionProvider;
 import nl.clockwork.ebms.admin.web.configuration.JdbcURL;
 
@@ -112,7 +111,6 @@ public class StartEmbedded extends Start
 		val result = Start.createOptions();
 		result.addOption("hsqldb",false,"start hsqldb server");
 		result.addOption("hsqldbDir",true,"set hsqldb location (default: hsqldb)");
-		result.addOption("ebmsVersion",true,"set current ebmsVersion for hsqldb update (default: none)");
 		result.addOption("soap",false,"start soap service");
 		result.addOption("headless",false,"start without web interface");
 		result.addOption("disableEbMSServer",false,"disable ebms server");
@@ -162,10 +160,10 @@ public class StartEmbedded extends Start
 		org.hsqldb.server.Server server = new org.hsqldb.server.Server();
 		server.setProperties(props);
 		server.start();
-		initDatabase(server,cmd.getOptionValue("ebmsVersion"));
+		initDatabase(server);
 	}
 
-	private void initDatabase(org.hsqldb.server.Server server, String ebmsVersion) throws ParseException
+	private void initDatabase(org.hsqldb.server.Server server) throws ParseException
 	{
 		val url = "jdbc:hsqldb:hsql://localhost:" + server.getPort() + "/" + server.getDatabaseName(0,true);
 		val user = "sa";
@@ -176,10 +174,6 @@ public class StartEmbedded extends Start
 				.locations(locations)
 				.ignoreMissingMigrations(true)
 				.outOfOrder(true);
-		if (StringUtils.isNotEmpty(ebmsVersion))
-				config = config
-						.baselineVersion(BaselineVersion.getBaselineVersion(ebmsVersion).orElseThrow(() -> new ParseException("ebmsVersion " + ebmsVersion + " not found!")))
-						.baselineOnMigrate(true);
 		config.load().migrate();
 	}
 

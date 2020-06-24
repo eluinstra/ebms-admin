@@ -137,7 +137,8 @@ public class DBMigrate
 		var config = Flyway.configure()
 				.dataSource(jdbcUrl,username,password)
 				.locations(location)
-				.ignoreMissingMigrations(true);
+				.ignoreMissingMigrations(true)
+				.outOfOrder(true);
 		if (StringUtils.isNotEmpty(baselineVersion))
 			config = config
 					.baselineVersion(baselineVersion)
