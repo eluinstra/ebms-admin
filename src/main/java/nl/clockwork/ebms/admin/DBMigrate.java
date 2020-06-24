@@ -16,7 +16,6 @@
 package nl.clockwork.ebms.admin;
 
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -77,7 +76,7 @@ public class DBMigrate
 		HSQLDB("jdbc:hsqldb:",BASEPATH + "hsqldb",false),
 		HSQLDB_STRICT("jdbc:hsqldb:",BASEPATH + "hsqldb.strict",true),
 		MSSQL("jdbc:sqlserver:",BASEPATH + "mssql",false),
-		MYSQL("jdbc:sqlserver:",BASEPATH + "mysql",false),
+		MYSQL("jdbc:mysql:",BASEPATH + "mysql",false),
 		ORACLE("jdbc:oracle:",BASEPATH + "oracle",false),
 		ORACLE_STRICT("jdbc:oracle:",BASEPATH + "oracle.strict",true),
 		POSTGRES("jdbc:postgresql:",BASEPATH + "postgresql",false),
@@ -90,7 +89,7 @@ public class DBMigrate
 		public static Optional<String> getLocation(String jdbcUrl, boolean strict)
 		{
 			return Arrays.stream(values())
-					.filter(l -> jdbcUrl.startsWith(l.jdbcUrl) && (l.strict == strict) || EnumSet.of(MSSQL,MYSQL).contains(l))
+					.filter(l -> jdbcUrl.startsWith(l.jdbcUrl) && (l.strict == strict))
 					.map(l -> l.location)
 					.findFirst();
 		}
@@ -143,7 +142,9 @@ public class DBMigrate
 			config = config
 					.baselineVersion(baselineVersion)
 					.baselineOnMigrate(true);
+		System.out.println("Migration starting...");
 		config.load().migrate();
+		System.out.println("Migration finished");
 	}
 
 	private static String parseLocation(String jdbcUrl, boolean isStrict) throws ParseException
