@@ -41,7 +41,7 @@ public class EbMSDAOFactory extends DefaultDAOFactory<EbMSDAO>
 			@NonNull JdbcTemplate jdbcTemplate,
 			@NonNull SQLQueryFactory queryFactory)
 	{
-		super(transactionManagerType,dataSource);
+		super(dataSource);
 		this.jdbcTemplate = jdbcTemplate;
 		this.queryFactory = queryFactory;
 	}

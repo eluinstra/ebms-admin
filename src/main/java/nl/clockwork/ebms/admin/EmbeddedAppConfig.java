@@ -74,15 +74,15 @@ public class EmbeddedAppConfig
 	@Bean("propertyConfigurer")
 	public static PropertySourcesPlaceholderConfigurer properties()
 	{
+		val result = new PropertySourcesPlaceholderConfigurer();
 		val configDir = System.getProperty("ebms.configDir");
-		val c = new PropertySourcesPlaceholderConfigurer();
 		val resources = new Resource[]{
 				new ClassPathResource("nl/clockwork/ebms/default.properties"),
 				new ClassPathResource("nl/clockwork/ebms/admin/default.properties"),
 				new FileSystemResource(configDir + "ebms-admin.embedded.advanced.properties"),
 				new FileSystemResource(configDir + "ebms-admin.embedded.properties")};
-		c.setLocations(resources);
-		c.setIgnoreResourceNotFound(true);
-		return c;
+		result.setLocations(resources);
+		result.setIgnoreResourceNotFound(true);
+		return result;
 	}
 }

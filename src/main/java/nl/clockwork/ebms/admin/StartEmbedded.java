@@ -73,7 +73,7 @@ public class StartEmbedded extends Start
 		val start = new StartEmbedded();
 		start.init(cmd);
 		start.server.setHandler(start.handlerCollection);
-		val properties = getProperties("nl/clockwork/ebms/admin/applicationConfig.embedded.xml");
+		val properties = getProperties();
 
 		start.initHSQLDB(cmd,properties);
 		start.initWebServer(cmd,start.server);
@@ -119,7 +119,7 @@ public class StartEmbedded extends Start
 		return result;
 	}
 	
-	private static Map<String,String> getProperties(String...files) throws IOException
+	private static Map<String,String> getProperties() throws IOException
 	{
 		return EmbeddedAppConfig.properties().getProperties();
 	}
