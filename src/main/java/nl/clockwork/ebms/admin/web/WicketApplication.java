@@ -37,6 +37,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.admin.EmbeddedAppConfig;
+import nl.clockwork.ebms.admin.PropertySourcesPlaceholderConfigurer;
 import nl.clockwork.ebms.admin.web.menu.MenuDivider;
 import nl.clockwork.ebms.admin.web.menu.MenuItem;
 import nl.clockwork.ebms.admin.web.menu.MenuLinkItem;
@@ -58,6 +60,7 @@ public class WicketApplication extends WebApplication
 	List<MenuItem> menuItems = new ArrayList<>();
 	Map<String,MessageProvider.MessageViewPanel> messageViewPanels = new HashMap<>();
 	Map<String,MessageProvider.MessageEditPanel> messageEditPanels = new HashMap<>();
+	PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = EmbeddedAppConfig.PROPERTY_SOURCE;
 	
 	public WicketApplication(@NonNull Integer maxItemsPerPage, @NonNull EventListenerType eventListenerType)
 	{

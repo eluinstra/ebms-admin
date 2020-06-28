@@ -27,7 +27,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IClusterable;
 
 import lombok.AccessLevel;
@@ -37,12 +36,12 @@ import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import nl.clockwork.ebms.admin.PropertySourcesPlaceholderConfigurer;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapPanelBorder;
 import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.ResetButton;
+import nl.clockwork.ebms.admin.web.WicketApplication;
 import nl.clockwork.ebms.admin.web.configuration.ConsolePropertiesFormPanel.ConsolePropertiesFormData;
 import nl.clockwork.ebms.admin.web.configuration.CorePropertiesFormPanel.CorePropertiesFormData;
 import nl.clockwork.ebms.admin.web.configuration.EncryptionPropertiesFormPanel.EncryptionPropertiesFormData;
@@ -56,8 +55,6 @@ import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.Si
 public class EbMSAdminPropertiesPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="propertyConfigurer")
-	PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer;
 	PropertiesType propertiesType;
 
 	public EbMSAdminPropertiesPage() throws IOException, IllegalStateException
@@ -66,7 +63,8 @@ public class EbMSAdminPropertiesPage extends BasePage
 	}
 	public EbMSAdminPropertiesPage(IModel<EbMSAdminPropertiesFormData> model) throws IllegalStateException
 	{
-		val f = propertySourcesPlaceholderConfigurer.getOverridePropertiesFile().getFilename();
+		val propertySourcesPlaceholderConfigurer = WicketApplication.get().getPropertySourcesPlaceholderConfigurer();
+		val f = propertySourcesPlaceholderConfigurer .getOverridePropertiesFile().getFilename();
 		propertiesType = PropertiesType.getPropertiesType(f).orElseThrow(() -> new IllegalStateException("No PropertiesType found for " + propertySourcesPlaceholderConfigurer.getOverridePropertiesFile().getFilename()));
 		add(new BootstrapFeedbackPanel("feedback"));
 		if (model == null)

@@ -121,7 +121,7 @@ public class StartEmbedded extends Start
 	
 	private static Map<String,String> getProperties() throws IOException
 	{
-		return EmbeddedAppConfig.properties().getProperties();
+		return EmbeddedAppConfig.PROPERTY_SOURCE.getProperties();
 	}
 
 	private void initHSQLDB(CommandLine cmd, Map<String,String> properties) throws IOException, AclFormatException, URISyntaxException, ParseException

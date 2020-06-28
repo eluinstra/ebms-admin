@@ -15,9 +15,9 @@
  */
 package nl.clockwork.ebms.admin;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -68,11 +68,18 @@ import nl.clockwork.ebms.validation.ValidationConfig;
 	SigningConfig.class,
 	TransactionManagerConfig.class,
 	ValidationConfig.class})
+@PropertySource(value = {
+		"classpath:nl/clockwork/ebms/default.properties",
+		"classpath:nl/clockwork/ebms/admin/default.properties",
+		"file:${ebms.configDir}ebms-admin.embedded.advanced.properties",
+		"file:${ebms.configDir}ebms-admin.embedded.properties"},
+		ignoreResourceNotFound = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EmbeddedAppConfig
 {
-	@Bean("propertyConfigurer")
-	public static PropertySourcesPlaceholderConfigurer properties()
+	public static PropertySourcesPlaceholderConfigurer PROPERTY_SOURCE = propertySourcesPlaceholderConfigurer();
+	
+	private static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer()
 	{
 		val result = new PropertySourcesPlaceholderConfigurer();
 		val configDir = System.getProperty("ebms.configDir");
