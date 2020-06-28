@@ -15,9 +15,9 @@
  */
 package nl.clockwork.ebms.admin;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
@@ -32,14 +32,20 @@ import nl.clockwork.ebms.admin.web.WebConfig;
 
 @Configuration
 @Import({
-	AdminDAOConfig.class,
-	DataSourceConfig.class,
-	WebConfig.class})
+		AdminDAOConfig.class,
+		DataSourceConfig.class,
+		WebConfig.class})
+@PropertySource(value = {
+		"classpath:nl/clockwork/ebms/admin/default.properties",
+		"file:${ebms.configDir}ebms-admin.embedded.advanced.properties",
+		"file:${ebms.configDir}ebms-admin.embedded.properties"},
+		ignoreResourceNotFound = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AppConfig
 {
-	@Bean
-	public PropertySourcesPlaceholderConfigurer properties()
+	public static PropertySourcesPlaceholderConfigurer PROPERTY_SOURCE = propertySourcesPlaceholderConfigurer();
+	
+	private static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer()
 	{
 		val configDir = System.getProperty("ebms.configDir");
 		val c = new PropertySourcesPlaceholderConfigurer();

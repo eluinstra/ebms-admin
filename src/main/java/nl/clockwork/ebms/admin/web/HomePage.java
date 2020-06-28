@@ -50,5 +50,4 @@ public class HomePage extends BasePage
 	{
 		return getLocalizer().getString("home",this);
 	}
-
 }
