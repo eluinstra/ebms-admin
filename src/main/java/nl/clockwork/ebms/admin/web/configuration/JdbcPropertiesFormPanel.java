@@ -98,7 +98,7 @@ public class JdbcPropertiesFormPanel extends Panel
 			{
 				if (!o.getDriver().getDriverClassName().equals(JdbcDriver.HSQLDB.getDriverClassName()) && !classExists(o.getDriver().getDriverClassName()))
 					error(getString("driver.jdbc.missing",getModel()));
-				t.add(get("feedback"));
+				t.add(JdbcPropertiesFormPanel.this.get("feedback"));
 				t.add(getURLComponent());
 			};
 			result.add(OnChangeAjaxBehavior.builder()
