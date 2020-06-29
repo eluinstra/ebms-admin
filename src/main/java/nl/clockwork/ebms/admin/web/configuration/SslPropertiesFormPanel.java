@@ -20,9 +20,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.form.CheckBoxMultipleChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
+import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
@@ -102,8 +102,7 @@ public class SslPropertiesFormPanel extends Panel
 					.isVisible(() -> enableSslOverridePropeties && getModelObject().isOverrideDefaultProtocols())
 					.build();
 			result.add(
-					new CheckBoxMultipleChoice<String>("enabledProtocols",getModelObject().getSupportedProtocols())
-					.setSuffix("<br/>")
+					new ListMultipleChoice<String>("enabledProtocols",getModelObject().getSupportedProtocols())
 					.setLabel(new ResourceModel("lbl.enabledProtocols"))
 			);
 			return result;
@@ -129,8 +128,7 @@ public class SslPropertiesFormPanel extends Panel
 					.id(id)
 					.isVisible(() -> enableSslOverridePropeties && getModelObject().isOverrideDefaultCipherSuites())
 					.build();
-			result.add(new CheckBoxMultipleChoice<String>("enabledCipherSuites",getModelObject().getSupportedCipherSuites())
-					.setSuffix("<br/>")
+			result.add(new ListMultipleChoice<String>("enabledCipherSuites",getModelObject().getSupportedCipherSuites())
 					.setLabel(new ResourceModel("lbl.enabledCipherSuites"))
 			);
 			return result;
