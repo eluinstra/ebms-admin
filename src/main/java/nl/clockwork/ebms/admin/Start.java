@@ -47,6 +47,7 @@ import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
+import org.eclipse.jetty.server.ConnectionLimit;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -125,6 +126,7 @@ public class Start
 		result.addOption("host",true,"set host");
 		result.addOption("port",true,"set port");
 		result.addOption("path",true,"set path");
+		result.addOption("connectionLimit",true,"set connection limit (default: none)");
 		result.addOption("ssl",false,"use ssl");
 		result.addOption("protocols",true,"set ssl protocols");
 		result.addOption("cipherSuites",true,"set ssl cipherSuites");
@@ -164,15 +166,11 @@ public class Start
 
 	protected void initWebServer(CommandLine cmd, Server server) throws MalformedURLException, IOException
 	{
-		if (!cmd.hasOption("ssl"))
-		{
-			server.addConnector(createHttpConnector(cmd));
-		}
-		else
-		{
-			val factory = createSslContextFactory(cmd);
-			server.addConnector(createHttpsConnector(cmd,factory));
-		}
+		val connector = cmd.hasOption("ssl") ? createHttpsConnector(cmd,createSslContextFactory(cmd)) : createHttpConnector(cmd);
+		server.addConnector(connector);
+		String connectionLimit = cmd.getOptionValue("connectionLimit");
+		if (connectionLimit != null)
+			server.addBean(new ConnectionLimit(Integer.parseInt(connectionLimit),connector));
 	}
 
 	private ServerConnector createHttpConnector(CommandLine cmd)

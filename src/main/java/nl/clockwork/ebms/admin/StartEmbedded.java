@@ -115,7 +115,6 @@ public class StartEmbedded extends Start
 		result.addOption("headless",false,"start without web interface");
 		result.addOption("disableEbMSServer",false,"disable ebms server");
 		result.addOption("disableEbMSClient",false,"disable ebms client");
-		result.addOption("ebmsConnectionLimit",true,"set connection limit on ebms interface (default: none)");
 		return result;
 	}
 	
@@ -193,9 +192,10 @@ public class StartEmbedded extends Start
 		Connector connector = "true".equals(properties.get("ebms.ssl")) ? 
 				createEbMSHttpsConnector(properties,createEbMSSslContextFactory(properties)) : 
 					createEbMSHttpConnector(properties);
-		if (properties.containsKey("ebmsConnectionLimit"))
-			server.addBean(new ConnectionLimit(Integer.parseInt(properties.get("ebmsConnectionLimit")),connector));
 		server.addConnector(connector);
+		String connectionLimit = properties.get("ebms.connectionLimit");
+		if (StringUtils.isNotEmpty(connectionLimit))
+			server.addBean(new ConnectionLimit(Integer.parseInt(connectionLimit),connector));
 	}
 
 	private ServerConnector createEbMSHttpConnector(Map<String,String> properties)
