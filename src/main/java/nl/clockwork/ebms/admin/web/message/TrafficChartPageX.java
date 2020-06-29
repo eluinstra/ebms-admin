@@ -190,7 +190,7 @@ public class TrafficChartPageX extends BasePage
 		{
 			val o = getModelObject();
 			val messageTraffic = ebMSDAO.selectMessageTraffic(o.from,o.getTo(),o.timeUnit,status);
-			return dates.stream().map(d -> messageTraffic.containsKey(d) ? messageTraffic.get(d) : 0).collect(Collectors.toList());
+			return dates.stream().map(d -> messageTraffic.containsKey(Integer.parseInt(d)) ? messageTraffic.get(Integer.parseInt(d)) : 0).collect(Collectors.toList());
 		}
 
 	}

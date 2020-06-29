@@ -248,7 +248,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	
 	@Override
 	@Transactional(transactionManager = "dataSourceTransactionManager")
-	public Map<String,Integer> selectMessageTraffic(LocalDateTime from, LocalDateTime to, TimeUnit timeUnit, EbMSMessageStatus...statuses)
+	public Map<Integer,Integer> selectMessageTraffic(LocalDateTime from, LocalDateTime to, TimeUnit timeUnit, EbMSMessageStatus...statuses)
 	{
 		val result = queryFactory.select(getTimestamp(messageTable.timeStamp,timeUnit).as("time"), messageTable.messageId.count().as("nr"))
 				.from(messageTable)
@@ -257,7 +257,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 						.and(statuses.length == 0 ? messageTable.status.isNotNull() : messageTable.status.in(statuses)))
 				.groupBy(getTimestamp(messageTable.timeStamp,timeUnit))
 				.fetch();
-		return result.stream().collect(Collectors.toMap(t -> t.get(0,Integer.class).toString(),t -> t.get(1,Long.class).intValue()));
+		return result.stream().collect(Collectors.toMap(t -> t.get(0,Integer.class),t -> t.get(1,Long.class).intValue()));
 	}
 
 	@Override
