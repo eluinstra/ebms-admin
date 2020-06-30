@@ -63,6 +63,7 @@ import nl.clockwork.ebms.querydsl.model.QEbmsMessage;
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @AllArgsConstructor
+@Transactional(transactionManager = "dataSourceTransactionManager")
 public abstract class AbstractEbMSDAO implements EbMSDAO
 {
 	@NonNull
@@ -80,7 +81,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	ConstructorExpression<EbMSMessage> ebMSMessageDetailProjection = Projections.constructor(EbMSMessage.class,ebMSMessageDetailColumns);
 	
 	@Override
-	@Transactional(transactionManager = "dataSourceTransactionManager")
 	public CPA findCPA(String cpaId)
 	{
 		return queryFactory.select(Projections.constructor(CPA.class,cpaTable.cpaId,cpaTable.cpa))
@@ -90,7 +90,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 
 	@Override
-	@Transactional(transactionManager = "dataSourceTransactionManager")
 	public long countCPAs()
 	{
 		return queryFactory.select(cpaTable.cpaId.count())
@@ -99,7 +98,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 	
 	@Override
-	@Transactional(transactionManager = "dataSourceTransactionManager")
 	public List<String> selectCPAIds()
 	{
 		return queryFactory.select(cpaTable.cpaId)
@@ -109,7 +107,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 	
 	@Override
-	@Transactional(transactionManager = "dataSourceTransactionManager")
 	public List<CPA> selectCPAs(long first, long count)
 	{
 		return queryFactory.select(Projections.constructor(CPA.class,cpaTable.cpaId,cpaTable.cpa))
@@ -121,14 +118,12 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 
 	@Override
-	@Transactional(transactionManager = "dataSourceTransactionManager")
 	public EbMSMessage findMessage(String messageId)
 	{
 		return findMessage(messageId,0);
 	}
 
 	@Override
-	@Transactional(transactionManager = "dataSourceTransactionManager")
 	public EbMSMessage findMessage(String messageId, int messageNr)
 	{
 		val result = queryFactory.select(ebMSMessageDetailProjection)
@@ -144,7 +139,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 
 	@Override
-	@Transactional(transactionManager = "dataSourceTransactionManager")
 	public boolean existsResponseMessage(String messageId)
 	{
 		return queryFactory.select(messageTable.messageId.count())
@@ -169,7 +163,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 
 	@Override
-	@Transactional(transactionManager = "dataSourceTransactionManager")
 	public long countMessages(EbMSMessageFilter filter)
 	{
 		return queryFactory.select(messageTable.messageId.count())
@@ -179,7 +172,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 	
 	@Override
-	@Transactional(transactionManager = "dataSourceTransactionManager")
 	public List<EbMSMessage> selectMessages(EbMSMessageFilter filter, long first, long count)
 	{
 		return queryFactory.select(ebMSMessageProjection)
@@ -192,7 +184,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 	
 	@Override
-	@Transactional(transactionManager = "dataSourceTransactionManager")
 	public EbMSAttachment findAttachment(String messageId, int messageNr, String contentId)
 	{
 		return queryFactory.select(Projections.constructor(EbMSAttachment.class,attachmentTable.name,attachmentTable.contentId,attachmentTable.contentType,attachmentTable.content))
@@ -204,7 +195,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				.fetchOne();
 	}
 
-	@Transactional(transactionManager = "dataSourceTransactionManager")
 	protected List<EbMSAttachment> getAttachments(String messageId, int messageNr)
 	{
 		return queryFactory.select(Projections.constructor(EbMSAttachment.class,attachmentTable.name,attachmentTable.contentId,attachmentTable.contentType))
@@ -214,7 +204,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				.fetch();
 	}
 
-	@Transactional(transactionManager = "dataSourceTransactionManager")
 	private EbMSEvent getEvent(String messageId)
 	{
 		return queryFactory.select(Projections.constructor(EbMSEvent.class,eventTable.timeToLive,eventTable.timeStamp,eventTable.retries))
@@ -223,7 +212,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				.fetchOne();
 	}
 
-	@Transactional(transactionManager = "dataSourceTransactionManager")
 	private List<EbMSEventLog> getEvents(String messageId)
 	{
 		return queryFactory.select(Projections.constructor(EbMSEventLog.class,eventLogTable.timeStamp,eventLogTable.uri,eventLogTable.status,eventLogTable.errorMessage))
@@ -233,7 +221,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 	
 	@Override
-	@Transactional(transactionManager = "dataSourceTransactionManager")
 	public List<String> selectMessageIds(String cpaId, String fromRole, String toRole, EbMSMessageStatus...statuses)
 	{
 		return queryFactory.select(messageTable.messageId)
@@ -247,7 +234,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	}
 	
 	@Override
-	@Transactional(transactionManager = "dataSourceTransactionManager")
 	public Map<Integer,Integer> selectMessageTraffic(LocalDateTime from, LocalDateTime to, TimeUnit timeUnit, EbMSMessageStatus...statuses)
 	{
 		val result = queryFactory.select(getTimestamp(messageTable.timeStamp,timeUnit).as("time"), messageTable.messageId.count().as("nr"))

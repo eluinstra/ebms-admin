@@ -26,7 +26,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.springframework.transaction.annotation.Transactional;
 
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -48,7 +47,6 @@ import nl.clockwork.ebms.admin.web.WicketApplication;
 import nl.clockwork.ebms.admin.web.message.MessageFilterPanel.MessageFilterFormData;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Transactional(transactionManager = "dataSourceTransactionManager")
 public class TrafficPage extends BasePage
 {
 	private class EbMSMessageDataView extends DataView<EbMSMessage>

@@ -337,9 +337,9 @@ public class Start
 	{
 		System.out.println("Configuring web server client certificate authentication:");
 		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.ClientCertificateAuthenticationFilter.class); 
-		String clientTrustStoreType = cmd.getOptionValue("clientTrustStoreType",DEFAULT_KEYSTORE_TYPE);
-		String clientTrustStorePath = cmd.getOptionValue("clientTrustStorePath");
-		String clientTrustStorePassword = cmd.getOptionValue("clientTrustStorePassword");
+		val clientTrustStoreType = cmd.getOptionValue("clientTrustStoreType",DEFAULT_KEYSTORE_TYPE);
+		val clientTrustStorePath = cmd.getOptionValue("clientTrustStorePath");
+		val clientTrustStorePassword = cmd.getOptionValue("clientTrustStorePassword");
 		val trustStore = getResource(clientTrustStorePath);
 		if (trustStore != null && trustStore.exists())
 		{
@@ -429,21 +429,27 @@ public class Start
 	protected SecurityHandler getSecurityHandler()
 	{
 		val result = new ConstraintSecurityHandler();
+		val constraintMappings = Collections.singletonList(createConstraintMapping(createAuthenticationConstraint()));
+		result.setConstraintMappings(constraintMappings);
+		result.setAuthenticator(new BasicAuthenticator());
+		result.setLoginService(new HashLoginService(REALM,REALM_FILE));
+		return result;
+	}
 
+	private ConstraintMapping createConstraintMapping(Constraint constraint)
+	{
+		val mapping = new ConstraintMapping();
+		mapping.setPathSpec("/*");
+		mapping.setConstraint(constraint);
+		return mapping;
+	}
+
+	private Constraint createAuthenticationConstraint()
+	{
 		val constraint = new Constraint();
 		constraint.setName("auth");
 		constraint.setAuthenticate(true);
 		constraint.setRoles(new String[]{"user","admin"});
-
-		val mapping = new ConstraintMapping();
-		mapping.setPathSpec("/*");
-		mapping.setConstraint(constraint);
-
-		result.setConstraintMappings(Collections.singletonList(mapping));
-		result.setAuthenticator(new BasicAuthenticator());
-		result.setLoginService(new HashLoginService(REALM,REALM_FILE));
-
-		return result;
+		return constraint;
 	}
-
 }
