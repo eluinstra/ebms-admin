@@ -15,10 +15,8 @@
  */
 package nl.clockwork.ebms.admin;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
@@ -41,6 +39,9 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.common.logging.LogUtils;
+import org.beryx.textio.StringInputReader;
+import org.beryx.textio.TextIO;
+import org.beryx.textio.TextIoFactory;
 import org.eclipse.jetty.jmx.ConnectorServer;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.security.ConstraintMapping;
@@ -81,6 +82,7 @@ public class Start
 	protected static final String REALM_FILE = "realm.properties";
 	Server server = new Server();
 	ContextHandlerCollection handlerCollection = new ContextHandlerCollection();
+	TextIO textIO = TextIoFactory.getTextIO();
 
 	public static void main(String[] args) throws Exception
 	{
@@ -390,30 +392,23 @@ public class Start
 
 	protected void createRealmFile(File file) throws IOException, NoSuchAlgorithmException
 	{
-		val reader = new BufferedReader(new InputStreamReader(System.in));
-		val username = readLine("enter username: ",reader);
-		val password = readPassword(reader);
+		val username = textIO.newStringInputReader()
+				.withDefaultValue("admin")
+				.read("enter username");
+		val password = readPassword();
 		System.out.println("Writing to file: " + file.getAbsoluteFile());
 		FileUtils.writeStringToFile(file,username + ": " + password + ",user",Charset.defaultCharset(),false);
 	}
 
-	protected String readLine(String prompt, BufferedReader reader) throws IOException
+	private String readPassword() throws IOException, NoSuchAlgorithmException
 	{
+		StringInputReader reader = textIO.newStringInputReader()
+				.withMinLength(8)
+				.withInputMasking(true);
 		while (true)
 		{
-			System.out.print(prompt);
-			val result = reader.readLine();
-			if (StringUtils.isNotBlank(result))
-				return result;
-		}
-	}
-
-	private String readPassword(BufferedReader reader) throws IOException, NoSuchAlgorithmException
-	{
-		while (true)
-		{
-			val result = toMD5(readLine("enter password: ",reader));
-			val password = toMD5(readLine("re-enter password: ",reader));
+			val result = toMD5(reader.read("enter password"));
+			val password = toMD5(reader.read("re-enter password"));
 			if (result.equals(password))
 				return result;
 			else

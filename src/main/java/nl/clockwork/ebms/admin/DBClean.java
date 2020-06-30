@@ -35,7 +35,7 @@ import nl.clockwork.ebms.querydsl.model.QEbmsMessageEvent;
 @RequiredArgsConstructor
 public class DBClean extends Start
 {
-	private static final int DAY_IN_SECONDS = 60 * 60 * 24;
+	private static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
 	public static void main(String[] args) throws Exception
 	{
@@ -63,9 +63,9 @@ public class DBClean extends Start
 	{
 		val result = new Options();
 		result.addOption("h",false,"print this message");
-		result.addOption("cmd",true,"objects to clean [cpa|messages]");
+		result.addOption("cmd",true,"objects to clean [vales: cpa|messages]");
 		result.addOption("cpaId",true,"the cpaId of the CPA to delete");
-		result.addOption("dateFrom",true,"the date from which objects will be deleted (format: YYYYMMDD)");
+		result.addOption("dateFrom",true,"the date from which objects will be deleted [format: YYYYMMDD][default: " + dateFormatter.format(LocalDate.now().minusDays(30)) + "]");
 		return result;
 	}
 
@@ -78,7 +78,6 @@ public class DBClean extends Start
 	QEbmsMessageEvent messageEventTable = QEbmsMessageEvent.ebmsMessageEvent;
 	QEbmsEvent eventTable = QEbmsEvent.ebmsEvent;
 	QEbmsEventLog eventLogTable = QEbmsEventLog.ebmsEventLog;
-	private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 	
 	private void execute(final org.apache.commons.cli.CommandLine cmd) throws Exception
 	{
@@ -115,8 +114,10 @@ public class DBClean extends Start
 		{
 			if (queryFactory.select(cpaTable.cpaId).from(cpaTable).where(cpaTable.cpaId.eq(cpaId)).fetchCount() > 0)
 			{
-				val ok = readLine("WARNING: This command will delete all messages and data related to cpa " + cpaId + ". Are you sure?(Y/N): ",reader);
-				if (ok.equalsIgnoreCase("Y"))
+				val ok = textIO.newBooleanInputReader()
+						.withDefaultValue(false)
+						.read("WARNING: This command will delete all messages and data related to cpa " + cpaId + ". Are you sure?");
+				if (ok)
 					cleanCPA(cpaId);
 			}
 			else
@@ -134,6 +135,7 @@ public class DBClean extends Start
 		val dateFrom = createDateFrom(cmd.getOptionValue("dateFrom"));
 		if (dateFrom != null)
 		{
+			print("using fromDate " + dateFrom);
 			val status = transactionManager.getTransaction(null);
 			try
 			{
@@ -145,20 +147,18 @@ public class DBClean extends Start
 			}
 			transactionManager.commit(status);
 		}
+		print("Unable to parse date " + cmd.getOptionValue("dateFrom"));
 	}
 
-	private Instant createDateFrom(String s)
+	private static Instant createDateFrom(String s)
 	{
 		try
 		{
 			val date = StringUtils.isEmpty(s) ? LocalDate.now().minusDays(30) : LocalDate.parse(s,dateFormatter);
-			val result = date.atStartOfDay(ZoneId.systemDefault()).toInstant();
-			print("using fromDate " + result);
-			return result;
+			return date.atStartOfDay(ZoneId.systemDefault()).toInstant();
 		}
 		catch (DateTimeParseException e)
 		{
-			print("Unable to parse date " + s);
 			return null;
 		}
 	}
