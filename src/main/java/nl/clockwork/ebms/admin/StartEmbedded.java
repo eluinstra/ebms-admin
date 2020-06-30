@@ -80,7 +80,7 @@ public class StartEmbedded extends Start
 		if (!cmd.hasOption("disableEbMSServer"))
 			start.initEbMSServer(properties,start.server);
 		if (cmd.hasOption("jmx"))
-			start.initJMX(start.server);
+			start.initJMX(cmd,start.server);
 
 		try (val context = new AnnotationConfigWebApplicationContext())
 		{

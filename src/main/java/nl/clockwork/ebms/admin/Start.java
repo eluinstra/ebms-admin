@@ -27,6 +27,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.management.remote.JMXServiceURL;
@@ -95,7 +96,7 @@ public class Start
 
 		start.initWebServer(cmd,start.server);
 		if (cmd.hasOption("jmx"))
-			start.initJMX(start.server);
+			start.initJMX(cmd,start.server);
 
 		try (val context = new AnnotationConfigWebApplicationContext())
 		{
@@ -143,7 +144,10 @@ public class Start
 		result.addOption("clientTrustStorePath",true,"set client truststore path");
 		result.addOption("clientTrustStorePassword",true,"set client truststore password");
 		result.addOption("configDir",true,"set config directory (default=current dir)");
-		result.addOption("jmx",false,"start mbean server");
+		result.addOption("jmx",false,"start jmx server (default: false)");
+		result.addOption("jmxPort",true,"set jmx port");
+		result.addOption("jmxAccessFile",true,"set jmx access file");
+		result.addOption("jmxPasswordFile",true,"set jmx password file");
 		return result;
 	}
 	
@@ -166,18 +170,17 @@ public class Start
 
 	protected void initWebServer(CommandLine cmd, Server server) throws MalformedURLException, IOException
 	{
-		val connector = cmd.hasOption("ssl") ? createHttpsConnector(cmd,createSslContextFactory(cmd)) : createHttpConnector(cmd);
+		val connector = cmd.hasOption("ssl") ? createHttpsConnector(cmd,createSslContextFactory(cmd,cmd.hasOption("clientAuthentication"))) : createHttpConnector(cmd);
 		server.addConnector(connector);
-		String connectionLimit = cmd.getOptionValue("connectionLimit");
-		if (connectionLimit != null)
-			server.addBean(new ConnectionLimit(Integer.parseInt(connectionLimit),connector));
+		if (cmd.hasOption("connectionLimit"))
+			server.addBean(new ConnectionLimit(Integer.parseInt(cmd.getOptionValue("connectionLimit")),connector));
 	}
 
 	private ServerConnector createHttpConnector(CommandLine cmd)
 	{
 		val result = new ServerConnector(this.server);
-		result.setHost(cmd.getOptionValue("host") == null ? "0.0.0.0" : cmd.getOptionValue("host"));
-		result.setPort(cmd.getOptionValue("port") == null ? 8080 : Integer.parseInt(cmd.getOptionValue("port")));
+		result.setHost(cmd.getOptionValue("host","0.0.0.0"));
+		result.setPort(Integer.parseInt(cmd.getOptionValue("port","8080")));
 		result.setName("web");
 		System.out.println("Web server configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + getPath(cmd));
 		if (cmd.hasOption("soap"))
@@ -185,11 +188,11 @@ public class Start
 		return result;
 	}
 
-	private SslContextFactory.Server createSslContextFactory(CommandLine cmd) throws MalformedURLException, IOException
+	private SslContextFactory.Server createSslContextFactory(CommandLine cmd, boolean clientAuthentication) throws MalformedURLException, IOException
 	{
 		val result = new SslContextFactory.Server();
 		addKeyStore(cmd,result);
-		if (cmd.hasOption("clientAuthentication"))
+		if (clientAuthentication)
 			addTrustStore(cmd,result);
 		result.setExcludeCipherSuites();
 		return result;
@@ -245,8 +248,8 @@ public class Start
 	private ServerConnector createHttpsConnector(CommandLine cmd, SslContextFactory.Server sslContectFactory)
 	{
 		val connector = new ServerConnector(this.server,sslContectFactory);
-		connector.setHost(cmd.getOptionValue("host") == null ? "0.0.0.0" : cmd.getOptionValue("host"));
-		connector.setPort(cmd.getOptionValue("port") == null ? 8443 : Integer.parseInt(cmd.getOptionValue("port")));
+		connector.setHost(cmd.getOptionValue("host","0.0.0.0"));
+		connector.setPort(Integer.parseInt(cmd.getOptionValue("port","8443")));
 		connector.setName("web");
 		System.out.println("Web server configured on https://" + Utils.getHost(connector.getHost()) + ":" + connector.getPort() + getPath(cmd));
 		if (cmd.hasOption("soap"))
@@ -256,18 +259,31 @@ public class Start
 
 	protected String getPath(CommandLine cmd)
 	{
-		return cmd.getOptionValue("path") == null ? "/" : cmd.getOptionValue("path");
+		return cmd.getOptionValue("path","/");
 	}
 
-	protected void initJMX(Server server) throws Exception
+	protected void initJMX(CommandLine cmd, Server server) throws Exception
 	{
-		System.out.println("Starting mbean server...");
+		System.out.println("Starting jmx server...");
 		val mBeanContainer = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
 		server.addBean(mBeanContainer);
 		server.addBean(Log.getLog());
-		val jmxURL = new JMXServiceURL("rmi",null,1999,"/jndi/rmi:///jmxrmi");
-		val jmxServer = new ConnectorServer(jmxURL,"org.eclipse.jetty.jmx:name=rmiconnectorserver");
+		val jmxURL = new JMXServiceURL("rmi",null,Integer.parseInt(cmd.getOptionValue("jmxPort","1999")),"/jndi/rmi:///jmxrmi");
+		//val sslContextFactory = cmd.hasOption("ssl") ? createSslContextFactory(cmd,false) : null;
+		val jmxServer = new ConnectorServer(jmxURL,createEnv(cmd),"org.eclipse.jetty.jmx:name=rmiconnectorserver");//,sslContextFactory);
 		server.addBean(jmxServer);
+		System.out.println("Jmx server configured on " + jmxURL);
+	}
+
+	private Map<String,Object> createEnv(CommandLine cmd)
+	{
+		val result = new HashMap<String, Object>();
+		if (cmd.hasOption("jmxAccessFile") && cmd.hasOption("jmxPasswordFile"))
+		{
+			result.put("jmx.remote.x.access.file",cmd.hasOption("jmxAccessFile"));
+			result.put("jmx.remote.x.password.file",cmd.hasOption("jmxPasswordFile"));
+		}
+		return result;
 	}
 
 	protected ServletContextHandler createWebContextHandler(CommandLine cmd, ContextLoaderListener contextLoaderListener) throws Exception
