@@ -100,7 +100,7 @@ public class Start
 
 		try (val context = new AnnotationConfigWebApplicationContext())
 		{
-			context.register(EmbeddedAppConfig.class);
+			context.register(AppConfig.class);
 			val contextLoaderListener = new ContextLoaderListener(context);
 			start.handlerCollection.addHandler(start.createWebContextHandler(cmd,contextLoaderListener));
 	
@@ -397,7 +397,7 @@ public class Start
 		FileUtils.writeStringToFile(file,username + ": " + password + ",user",Charset.defaultCharset(),false);
 	}
 
-	private String readLine(String prompt, BufferedReader reader) throws IOException
+	protected String readLine(String prompt, BufferedReader reader) throws IOException
 	{
 		while (true)
 		{
