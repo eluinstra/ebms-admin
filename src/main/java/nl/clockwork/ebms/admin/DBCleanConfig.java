@@ -21,7 +21,6 @@ import org.springframework.context.annotation.PropertySource;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.CommonConfig;
 import nl.clockwork.ebms.dao.DAOConfig;
 import nl.clockwork.ebms.datasource.DataSourceConfig;
 import nl.clockwork.ebms.datasource.QueryDSLConfig;
@@ -30,7 +29,6 @@ import nl.clockwork.ebms.transaction.TransactionManagerConfig;
 
 @Configuration
 @Import({
-		CommonConfig.class,
 		DAOConfig.class,
 		DataSourceConfig.class,
 		JMSConfig.class,
@@ -43,7 +41,12 @@ import nl.clockwork.ebms.transaction.TransactionManagerConfig;
 		"file:${ebms.configDir}ebms-admin.embedded.properties"},
 		ignoreResourceNotFound = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@PropertySource(value = {
+		"classpath:nl/clockwork/ebms/default.properties",
+		"classpath:nl/clockwork/ebms/admin/default.properties",
+		"file:${ebms.configDir}ebms-admin.embedded.advanced.properties",
+		"file:${ebms.configDir}ebms-admin.embedded.properties"},
+		ignoreResourceNotFound = true)
 public class DBCleanConfig
 {
-	public static PropertySourcesPlaceholderConfigurer PROPERTY_SOURCE = EmbeddedAppConfig.PROPERTY_SOURCE;
 }
