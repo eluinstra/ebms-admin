@@ -29,7 +29,6 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.transaction.PlatformTransactionManager;
 
 import com.querydsl.sql.SQLExpressions;
 import com.querydsl.sql.SQLQueryFactory;
@@ -39,12 +38,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import lombok.var;
 import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.Action;
 import nl.clockwork.ebms.querydsl.model.QCpa;
 import nl.clockwork.ebms.querydsl.model.QEbmsAttachment;
 import nl.clockwork.ebms.querydsl.model.QEbmsEvent;
 import nl.clockwork.ebms.querydsl.model.QEbmsEventLog;
 import nl.clockwork.ebms.querydsl.model.QEbmsMessage;
 import nl.clockwork.ebms.querydsl.model.QEbmsMessageEvent;
+import nl.clockwork.ebms.transaction.DataSourceTransactionTemplate;
+import nl.clockwork.ebms.transaction.TransactionTemplate;
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @RequiredArgsConstructor
@@ -69,8 +71,8 @@ public class DBClean extends Start
 	private static DBClean createDBClean(AnnotationConfigApplicationContext context)
 	{
 		val queryFactory = context.getBean(SQLQueryFactory.class);
-		val transactionManager = context.getBean("dataSourceTransactionManager",PlatformTransactionManager.class);
-		val dbClean = new DBClean(queryFactory,transactionManager);
+		val transactionTemplate = context.getBean(DataSourceTransactionTemplate.class);
+		val dbClean = new DBClean(queryFactory,transactionTemplate);
 		return dbClean;
 	}
 
@@ -85,7 +87,7 @@ public class DBClean extends Start
 	}
 
 	SQLQueryFactory queryFactory;
-	PlatformTransactionManager transactionManager;
+	TransactionTemplate transactionTemplate;
 	BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 	QCpa cpaTable = QCpa.cpa1;
 	QEbmsMessage messageTable = QEbmsMessage.ebmsMessage;
@@ -124,8 +126,7 @@ public class DBClean extends Start
 	private void executeCleanCPA(CommandLine cmd) throws IOException
 	{
 		val cpaId = cmd.getOptionValue("cpaId");
-		val status = transactionManager.getTransaction(null);
-		try
+		Action action = () ->
 		{
 			if (queryFactory.select(cpaTable.cpaId).from(cpaTable).where(cpaTable.cpaId.eq(cpaId)).fetchCount() > 0)
 			{
@@ -137,12 +138,8 @@ public class DBClean extends Start
 			}
 			else
 				print("CPA " + cpaId + " not found!");
-		}
-		catch (Exception e)
-		{
-			transactionManager.rollback(status);
-		}
-		transactionManager.commit(status);
+		};
+		transactionTemplate.executeTransaction(action);
 	}
 
 	private void executeCleanMessages(CommandLine cmd) throws IOException
@@ -151,16 +148,7 @@ public class DBClean extends Start
 		if (dateFrom != null)
 		{
 			print("using fromDate " + dateFrom);
-			val status = transactionManager.getTransaction(null);
-			try
-			{
-				cleanMessages(dateFrom);
-			}
-			catch (Exception e)
-			{
-				transactionManager.rollback(status);
-			}
-			transactionManager.commit(status);
+			transactionTemplate.executeTransaction(() -> cleanMessages(dateFrom));
 		}
 		print("Unable to parse date " + cmd.getOptionValue("dateFrom"));
 	}
