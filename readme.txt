@@ -25,7 +25,7 @@ These properties van be edited in ebms-admin.embedded.properties if available an
 = Release Notes
 ===============
 ebms-admin-2.17.0.jar:
-- added options to enable high availability and horizontal scaling
+- added options to enable high availability and horizontal scaling (and throttling)
 - changed properties:
 	- renamed command line argument propertiesFilesDir to configDir
 	- removed property log4j.file (use -Dlog4j.configurationFile=log4j2.xml instead)
@@ -40,7 +40,7 @@ ebms-admin-2.17.0.jar:
 	- DBMigrate (java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.DBMigrate -h)
 	- DBClean (java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.DBClean -h)
 - upgrade to ebms-core-2.17.0.jar:
-	- added options to enable availability and horizontal scaling
+	- added options to enable availability and horizontal scaling (and throttling)
 	- added option to use SSL clientCerttificate defined in the CPA to send messages (https.useClientCertificate)
 		- added CertificateMapper SOAP service to override defined SSL clientCertificate
 	- cleaned up and split up SOAP interfaces
