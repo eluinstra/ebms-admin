@@ -7,10 +7,11 @@ The ebms-admin app is a fully functional EbMS adapter that uses the ebms-core ja
 The ebms-admin app consists of an ebms-adapter and a web and a soap interface to manage the ebms-adapter.
 The ebms-adapter is configured through the ebms-admin properties file that can be generated in the EbMSAdminPropertiesPage.
 The web and soap interfaces are configured through the application's command line properties (see below for examples)
-The database scripts can be found in https://repo.maven.apache.org/maven2/nl/clockwork/ebms/ebms-core/2.17.0/ebms-core-2.17.0-sources.jar/resources/scripts/database/
+The database master scripts can be found in https://repo.maven.apache.org/maven2/nl/clockwork/ebms/ebms-core/2.17.0/ebms-core-2.17.0-sources.jar/resources/scripts/database/
+The database update scripts can be found in https://repo.maven.apache.org/maven2/nl/clockwork/ebms/ebms-core/2.17.0/ebms-core-2.17.0-sources.jar/src/main/resources/nl/clockwork/ebms/db/migration/
 
 See 'Start EbMS Admin Console with embedded EbMS adapter' below for usage
-See 'Configure 2 EbMS Admin Consoles with embedded EbMS adapter to communicate with each other' below for a test scenario involving 2 EbMS Admin Consoles
+See 'Configure 2 EbMS Admin Consoles with embedded EbMS adapter to communicate with each other' below for a test scenario with 2 EbMS Admin Consoles
 
 IMPORTANT:
 set property https.clientCertificateAuthentication to false, unless you know what you are doing!!!
@@ -24,18 +25,30 @@ These properties van be edited in ebms-admin.embedded.properties if available an
 = Release Notes
 ===============
 ebms-admin-2.17.0.jar:
-- renamed command line argument propertiesFilesDir by configDir
-- removed property log4j.file (use -Dlog4j.configurationFile=log4j2.xml instead)
+- added options to enable high availability and horizontal scaling
+- changed properties:
+	- renamed command line argument propertiesFilesDir to configDir
+	- removed property log4j.file (use -Dlog4j.configurationFile=log4j2.xml instead)
+	- added ssl commandline properties protocols and cipherSuites
+	- added jmx commandline properties
+	- added commandline properties disableEbMSClient and disableEbMSServer
 - split up CPAService into CPAService and URLMapper
 - added new SOAP service CertificateMapper
 - updated EbMS Admin Properties Page
 - removed EbMS Core Properties Page
+- added database java commandline tools:
+	- DBMigrate (java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.DBMigrate -h)
+	- DBClean (java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.DBClean -h)
 - upgrade to ebms-core-2.17.0.jar:
+	- added options to enable availability and horizontal scaling
 	- added option to use SSL clientCerttificate defined in the CPA to send messages (https.useClientCertificate)
 		- added CertificateMapper SOAP service to override defined SSL clientCertificate
 	- cleaned up and split up SOAP interfaces
-	- removed properties:
-		- removed operations:
+	- changed SOAP Services:
+		- renamed operations from EbMSMessageService:
+			- GetMessageIds to GetUnprocessedMessageIds
+			- GetMessageEvents to GetUnprocessedMessageEvents
+		- removed operations from EbMSMessageService:
 			- SendMessageWithAttachments (use SendMessage from ebmsMTOM instead)
 			- GetMassageStatus is replaced by GetMessageStatusByMessageId, old GetMessageStatus is removed
 			- ProcessMessages (use ProcessMessage instead)
@@ -47,8 +60,10 @@ ebms-admin-2.17.0.jar:
 			- patch.digipoort.enable (not necessary anymore)
 			- patch.oracle.enable (not necessary anymore)
 			- patch.cleo.enable (not necessary anymore)
+			- cache.disabled (use cache.type instead)
+			- eventProcessor.enabled=true (use eventProcessor.type=NONE instead)
 		- changed default value of property
-			- http.base64Writer to false
+			- http.base64Writer to false (writer is disabled anyway because of an issue)
 			- https.clientCertificateAuthentication to false
 		- added properties:
 			- https.useClientCertificate=false
@@ -56,22 +71,35 @@ ebms-admin-2.17.0.jar:
 			- client.keystore.defaultAlias=
 			- signature.keystore.keyPassword=${signature.keystore.password}
 			- encryption.keystore.keyPassword=${encryption.keystore.password}
-	- coding improvements
-		- added lombok
+			- cache.type=DEFAULT (allowed values: DEFAULT(=SPRING) | EHCACHE | IGNITE)
+			- eventProcessor.type=DEFAULT (allowed values: NONE | DEFAULT(=DAO) | JMS)
+			- deliveryManager.type=DEFAULT (allowed types: DEFAULT(=DAO) | JMS)
+			- eventListener.type=DEFAULT (allowed values: DEFAULT(=LOGGING) | DAO | SIMPLE_JMS | JMS | JMS_TEXT)
+			- transactionManager.type=DEFAULT (allowed values: DEFAULT | ATOMIKOS)
+		* see src/main/resources/nl/clockwork/ebms/default.properties for all available properties
+	- implemented JMS components (for scaling)
+	- added Atomikos transaction manager (for JMS)
+	- added Apache Ignite cache manager (for scaling)
+	- added Flyway to install and upgrade database 
+	- code improvements
+		- added lombok and vavr
 		- made objects immutable where possible
-		- changed spring bean configuration from using setters to using constructors and builders
+		- moved spring bean configuration from xml to code
 		- restructured classes and packages
+		- reconfigured caching and transactions
+		- split up DAO
+		- replaced jdbcTemplate by querydsl
+		- replace commons-logging by slf4j
 		- lots of other improvements
 	- updated libraries
-	- database updates
-- coding improvements
-	- added lombok
-	- made objects immutable where possible
-	- changed spring bean configuration from using setters to using constructors and builders
-	- restructured classes and packages
-	- using Wicket models instead of objects
-	- lots of other improvements
+	- database updates and improved indices
 - updated libraries
+- updated keystores and CPAs
+
+ebms-admin-2.16.7.jar:
+- upgrade to ebms-core-2.16.7.jar:
+	- disabled base64Writer because of a bug when sending base64 encoded content
+	- fixed using header defined in property x509CertificateHeader
 
 ebms-admin-2.16.6.jar:
 - fixed CXF logging
@@ -134,35 +162,43 @@ ebms-admin-2.16.1.jar
 =====================================================
 show help:
 > java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.StartEmbedded -h
-usage: Start [-authentication] [-clientAuthentication]
-       [-clientCertificateHeader <arg>] [-clientTrustStorePassword <arg>]
-       [-clientTrustStorePath <arg>] [-clientTrustStoreType <arg>] [-h]
-       [-headless] [-host <arg>] [-hsqldb] [-hsqldbDir <arg>] [-jmx]
-       [-keyStorePassword <arg>] [-keyStorePath <arg>] [-keyStoreType
-       <arg>] [-path <arg>] [-port <arg>] [-configDir <arg>]
-       [-soap] [-ssl] [-trustStorePassword <arg>] [-trustStorePath <arg>]
+usage: Start [-authentication] [-cipherSuites <arg>]
+       [-clientAuthentication] [-clientCertificateHeader <arg>]
+       [-clientTrustStorePassword <arg>] [-clientTrustStorePath <arg>]
+       [-clientTrustStoreType <arg>] [-configDir <arg>] [-connectionLimit
+       <arg>] [-disableEbMSClient] [-disableEbMSServer] [-h] [-headless]
+       [-host <arg>] [-hsqldb] [-hsqldbDir <arg>] [-jmx] [-jmxAccessFile
+       <arg>] [-jmxPasswordFile <arg>] [-jmxPort <arg>] [-keyStorePassword
+       <arg>] [-keyStorePath <arg>] [-keyStoreType <arg>] [-path <arg>]
+       [-port <arg>] [-protocols <arg>] [-soap] [-ssl]
+       [-trustStorePassword <arg>] [-trustStorePath <arg>]
        [-trustStoreType <arg>]
- -authentication                   use basic / client certificate
-                                   authentication
+ -authentication                   use basic / client certificate authentication
+ -cipherSuites <arg>               set ssl cipherSuites
  -clientAuthentication             require ssl client authentication
  -clientCertificateHeader <arg>    set client certificate header
  -clientTrustStorePassword <arg>   set client truststore password
  -clientTrustStorePath <arg>       set client truststore path
- -clientTrustStoreType <arg>       set client truststore type
-                                   (deault=PKCS12)
+ -clientTrustStoreType <arg>       set client truststore type (deault=PKCS12)
+ -configDir <arg>                  set config directory (default=current dir)
+ -connectionLimit <arg>            set connection limit (default: none)
+ -disableEbMSClient                disable ebms client
+ -disableEbMSServer                disable ebms server
  -h                                print this message
  -headless                         start without web interface
  -host <arg>                       set host
  -hsqldb                           start hsqldb server
  -hsqldbDir <arg>                  set hsqldb location (default: hsqldb)
- -jmx                              start mbean server
+ -jmx                              start jmx server (default: false)
+ -jmxAccessFile <arg>              set jmx access file
+ -jmxPasswordFile <arg>            set jmx password file
+ -jmxPort <arg>                    set jmx port
  -keyStorePassword <arg>           set keystore password
  -keyStorePath <arg>               set keystore path
  -keyStoreType <arg>               set keystore type (deault=PKCS12)
  -path <arg>                       set path
  -port <arg>                       set port
- -configDir <arg>                  set config directory
-                                   (default=current dir)
+ -protocols <arg>                  set ssl protocols
  -soap                             start soap service
  -ssl                              use ssl
  -trustStorePassword <arg>         set truststore password
@@ -244,30 +280,36 @@ If you want to override 'advanced' properties from the default.properties file t
 =====================================
 show help:
 > java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.Start -h
-usage: Start [-authentication] [-clientAuthentication]
-       [-clientCertificateHeader <arg>] [-clientTrustStorePassword <arg>]
-       [-clientTrustStorePath <arg>] [-clientTrustStoreType <arg>] [-h]
-       [-host <arg>] [-jmx] [-keyStorePassword <arg>] [-keyStorePath
-       <arg>] [-keyStoreType <arg>] [-path <arg>] [-port <arg>]
-       [-configDir <arg>] [-ssl] [-trustStorePassword <arg>]
+usage: Start [-authentication] [-cipherSuites <arg>]
+       [-clientAuthentication] [-clientCertificateHeader <arg>]
+       [-clientTrustStorePassword <arg>] [-clientTrustStorePath <arg>]
+       [-clientTrustStoreType <arg>] [-configDir <arg>] [-connectionLimit
+       <arg>] [-h] [-host <arg>] [-jmx] [-jmxAccessFile <arg>]
+       [-jmxPasswordFile <arg>] [-jmxPort <arg>] [-keyStorePassword <arg>]
+       [-keyStorePath <arg>] [-keyStoreType <arg>] [-path <arg>] [-port
+       <arg>] [-protocols <arg>] [-ssl] [-trustStorePassword <arg>]
        [-trustStorePath <arg>] [-trustStoreType <arg>]
- -authentication                   use basic / client certificate
-                                   authentication
+ -authentication                   use basic / client certificate authentication
+ -cipherSuites <arg>               set ssl cipherSuites
  -clientAuthentication             require ssl client authentication
  -clientCertificateHeader <arg>    set client certificate header
  -clientTrustStorePassword <arg>   set client truststore password
  -clientTrustStorePath <arg>       set client truststore path
- -clientTrustStoreType <arg>       set client truststore type
-                                   (deault=PKCS12)
+ -clientTrustStoreType <arg>       set client truststore type (deault=PKCS12)
+ -configDir <arg>                  set config directory (default=current dir)
+ -connectionLimit <arg>            set connection limit (default: none)
  -h                                print this message
  -host <arg>                       set host
- -jmx                              start mbean server
+ -jmx                              start jmx server (default: false)
+ -jmxAccessFile <arg>              set jmx access file
+ -jmxPasswordFile <arg>            set jmx password file
+ -jmxPort <arg>                    set jmx port
  -keyStorePassword <arg>           set keystore password
  -keyStorePath <arg>               set keystore path
  -keyStoreType <arg>               set keystore type (deault=PKCS12)
  -path <arg>                       set path
  -port <arg>                       set port
- -configDir <arg>                  set config directory
+ -protocols <arg>                  set ssl protocols
  -ssl                              use ssl
  -trustStorePassword <arg>         set truststore password
  -trustStorePath <arg>             set truststore path
