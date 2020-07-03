@@ -68,7 +68,7 @@ public class StartEmbedded extends Start
 			printUsage(options);
 
 		System.setProperty("org.apache.activemq.SERIALIZABLE_PACKAGES","*");
-		System.setProperty("eventProcessor.start","" + !cmd.hasOption("disableEbMSClient"));
+		System.setProperty("eventProcessor.start",String.valueOf(!cmd.hasOption("disableEbMSClient")));
 
 		val start = new StartEmbedded();
 		start.init(cmd);
@@ -85,6 +85,7 @@ public class StartEmbedded extends Start
 		try (val context = new AnnotationConfigWebApplicationContext())
 		{
 			context.register(EmbeddedAppConfig.class);
+			getConfigClasses().forEach(c -> context.register(c));
 			val contextLoaderListener = new ContextLoaderListener(context);
 			if (cmd.hasOption("soap") || !cmd.hasOption("headless"))
 				start.handlerCollection.addHandler(start.createWebContextHandler(cmd,contextLoaderListener));

@@ -33,7 +33,7 @@ public abstract class ExtensionProvider
 		return result;
 	}
 
-	public abstract String getSpringConfigurationFile();
+	public abstract Class<?> getSpringConfigurationClass();
 	public abstract String getDbMigrationLocation();
 	public abstract String getName();
 	public abstract MenuItem createSubMenu(MenuItem parent, int index, String name);

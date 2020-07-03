@@ -47,7 +47,7 @@ public abstract class AdminDAOConfig
 	SQLQueryFactory queryFactory;
 
 	@Bean("ebMSAdminDAO")
-	public EbMSDAO ebMSDAO() throws Exception
+	public EbMSDAO ebMSDAO()
 	{
 		val jdbcTemplate = new JdbcTemplate(dataSource);
 		return new EbMSDAOFactory(transactionManagerType,dataSource,jdbcTemplate,queryFactory).getObject();

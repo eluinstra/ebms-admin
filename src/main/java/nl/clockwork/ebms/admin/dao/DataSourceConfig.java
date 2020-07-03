@@ -15,8 +15,6 @@
  */
 package nl.clockwork.ebms.admin.dao;
 
-import java.beans.PropertyVetoException;
-
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -58,7 +56,7 @@ public class DataSourceConfig
 	int maxPoolSize;
 	
 	@Bean(destroyMethod = "close")
-	public DataSource dataSource() throws PropertyVetoException
+	public DataSource dataSource()
 	{
 		val config = new HikariConfig();
 		config.setDriverClassName(driverClassName);

@@ -75,6 +75,7 @@ public class DBMigrate
 		DB2_STRICT("jdbc:db2:",BASEPATH + "db2.strict",true),
 		HSQLDB("jdbc:hsqldb:",BASEPATH + "hsqldb",false),
 		HSQLDB_STRICT("jdbc:hsqldb:",BASEPATH + "hsqldb.strict",true),
+		MARIADB("jdbc:mariadb:",BASEPATH + "mysql",false),
 		MSSQL("jdbc:sqlserver:",BASEPATH + "mssql",false),
 		MYSQL("jdbc:mysql:",BASEPATH + "mysql",false),
 		ORACLE("jdbc:oracle:",BASEPATH + "oracle",false),

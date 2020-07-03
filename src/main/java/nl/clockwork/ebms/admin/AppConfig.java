@@ -48,13 +48,13 @@ public class AppConfig
 	private static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer()
 	{
 		val configDir = System.getProperty("ebms.configDir");
-		val c = new PropertySourcesPlaceholderConfigurer();
+		val result = new PropertySourcesPlaceholderConfigurer();
 		val resources = new Resource[]{
 				new ClassPathResource("nl/clockwork/ebms/admin/default.properties"),
 				new FileSystemResource(configDir + "ebms-admin.advanced.properties"),
 				new FileSystemResource(configDir + "ebms-admin.properties")};
-		c.setLocations(resources);
-		c.setIgnoreResourceNotFound(true);
-		return c;
+		result.setLocations(resources);
+		result.setIgnoreResourceNotFound(true);
+		return result;
 	}
 }

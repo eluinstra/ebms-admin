@@ -25,6 +25,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -103,6 +104,7 @@ public class Start
 		try (val context = new AnnotationConfigWebApplicationContext())
 		{
 			context.register(AppConfig.class);
+			getConfigClasses().forEach(c -> context.register(c));
 			val contextLoaderListener = new ContextLoaderListener(context);
 			start.handlerCollection.addHandler(start.createWebContextHandler(cmd,contextLoaderListener));
 	
@@ -152,15 +154,13 @@ public class Start
 		result.addOption("jmxPasswordFile",true,"set jmx password file");
 		return result;
 	}
-	
-	protected static String[] getConfigLocations(String configLocation)
+
+	protected static List<Class<?>> getConfigClasses()
 	{
-		val result = ExtensionProvider.get().stream()
-				.filter(p -> !StringUtils.isEmpty(p.getSpringConfigurationFile()))
-				.map(p -> p.getSpringConfigurationFile())
+		return ExtensionProvider.get().stream()
+				.filter(p -> p.getSpringConfigurationClass() != null)
+				.map(p -> p.getSpringConfigurationClass())
 				.collect(Collectors.toList());
-		result.add(0,configLocation);
-		return result.toArray(new String[]{});
 	}
 
 	protected void init(CommandLine cmd)

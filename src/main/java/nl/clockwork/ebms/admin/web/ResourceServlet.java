@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.wicket.util.io.IOUtils;
 
 import lombok.val;
-import static nl.clockwork.ebms.Predicates.endsWith;;
+import static nl.clockwork.ebms.Predicates.endsWith;
 
 public class ResourceServlet extends GenericServlet
 {

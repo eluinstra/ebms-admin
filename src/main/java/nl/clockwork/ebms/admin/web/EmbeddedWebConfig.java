@@ -91,14 +91,14 @@ public class EmbeddedWebConfig
 	@Bean
 	public Endpoint ebMSMessageServiceMTOMEndpoint()
 	{
-		val endpoint = new EndpointImpl(cxf(),ebMSMessageServiceMTOM);
-		endpoint.setAddress("/ebmsMTOM");
-		endpoint.setServiceName(new QName("http://service.ebms.clockwork.nl/","EbMSMessageServiceImplService"));
-		endpoint.setEndpointName(new QName("http://service.ebms.clockwork.nl/","EbMSMessageServiceImplPort"));
-		endpoint.publish();
-		val binding = (SOAPBinding)endpoint.getBinding();
+		val result = new EndpointImpl(cxf(),ebMSMessageServiceMTOM);
+		result.setAddress("/ebmsMTOM");
+		result.setServiceName(new QName("http://service.ebms.clockwork.nl/","EbMSMessageServiceImplService"));
+		result.setEndpointName(new QName("http://service.ebms.clockwork.nl/","EbMSMessageServiceImplPort"));
+		result.publish();
+		val binding = (SOAPBinding)result.getBinding();
 		binding.setMTOMEnabled(true);
-		return endpoint;
+		return result;
 	}
 
 	@Bean
@@ -113,9 +113,9 @@ public class EmbeddedWebConfig
 
 	private Endpoint publishEndpoint(Object service, String address)
 	{
-		val endpoint = new EndpointImpl(cxf(),service);
-		endpoint.setAddress(address);
-		endpoint.publish();
-		return endpoint;
+		val result = new EndpointImpl(cxf(),service);
+		result.setAddress(address);
+		result.publish();
+		return result;
 	}
 }

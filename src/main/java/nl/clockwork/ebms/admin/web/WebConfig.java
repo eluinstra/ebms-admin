@@ -127,9 +127,9 @@ public class WebConfig
 
 	private JaxWsProxyFactoryBean proxyFactoryBean(Class<?> clazz, String url)
 	{
-		val proxyFactory = new JaxWsProxyFactoryBean();
-		proxyFactory.setServiceClass(clazz);
-		proxyFactory.setAddress(serviceUrl + "/cpa");
-		return proxyFactory;
+		val result = new JaxWsProxyFactoryBean();
+		result.setServiceClass(clazz);
+		result.setAddress(serviceUrl + "/cpa");
+		return result;
 	}
 }
