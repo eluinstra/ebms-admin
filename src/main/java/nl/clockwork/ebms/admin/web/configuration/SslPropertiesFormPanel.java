@@ -16,7 +16,6 @@
 package nl.clockwork.ebms.admin.web.configuration;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -156,10 +155,10 @@ public class SslPropertiesFormPanel extends Panel
 		final List<String> supportedProtocols = Arrays.asList(Utils.getSupportedSSLProtocols());
 		@NonNull
 		List<String> enabledProtocols = Arrays.asList("TLSv1.2");
-		boolean overrideDefaultCipherSuites = false;
+		boolean overrideDefaultCipherSuites = true;
 		final List<String> supportedCipherSuites = Arrays.asList(Utils.getSupportedSSLCipherSuites());
 		@NonNull
-		List<String> enabledCipherSuites = Collections.emptyList();
+		List<String> enabledCipherSuites = Arrays.asList("TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384","TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384");
 		boolean requireClientAuthentication = true;
 		boolean verifyHostnames = true;
 		@NonNull

@@ -167,7 +167,7 @@ public class CorePropertiesFormPanel extends Panel
 		EventListenerType eventListener = EventListenerType.DEFAULT;
 		String jmsBrokerUrl = "vm://localhost";
 		boolean jmsVirtualTopics = false;
-		boolean startEmbeddedBroker = true;
+		boolean startEmbeddedBroker = false;
 		String activeMQConfigFile = "classpath:nl/clockwork/ebms/activemq.xml";
 		boolean deleteMessageContentOnProcessed = false;
 		boolean storeDuplicateMessage = true;
