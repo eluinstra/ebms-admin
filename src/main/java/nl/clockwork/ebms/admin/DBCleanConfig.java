@@ -23,8 +23,8 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.dao.DAOConfig;
 import nl.clockwork.ebms.datasource.DataSourceConfig;
-import nl.clockwork.ebms.datasource.QueryDSLConfig;
 import nl.clockwork.ebms.jms.JMSConfig;
+import nl.clockwork.ebms.querydsl.QueryDSLConfig;
 import nl.clockwork.ebms.transaction.TransactionManagerConfig;
 
 @Configuration
