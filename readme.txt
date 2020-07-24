@@ -55,7 +55,7 @@ ebms-admin-2.17.0.jar:
 			- GetMessageEvents to GetUnprocessedMessageEvents
 		- removed operations from EbMSMessageService:
 			- SendMessageWithAttachments (use SendMessage from ebmsMTOM instead)
-			- GetMassageStatus is replaced by GetMessageStatusByMessageId, old GetMessageStatus is removed
+			- GetMessageStatus is replaced by GetMessageStatusByMessageId, old GetMessageStatus is removed
 			- ProcessMessages (use ProcessMessage instead)
 			- ProcessMessageEvents (use ProcessMessageEvent instead)
 		- split up CPAService into CPAService and URLMapper
