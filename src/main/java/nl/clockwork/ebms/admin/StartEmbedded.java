@@ -34,6 +34,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.common.logging.LogUtils;
 import org.eclipse.jetty.server.ConnectionLimit;
 import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.FilterHolder;
@@ -201,7 +203,9 @@ public class StartEmbedded extends Start
 
 	private ServerConnector createEbMSHttpConnector(Map<String,String> properties)
 	{
-		val result = new ServerConnector(this.server);
+		HttpConfiguration httpConfig = new HttpConfiguration();
+		httpConfig.setSendServerVersion(false);
+		val result = new ServerConnector(this.server,new HttpConnectionFactory(httpConfig));
 		result.setHost(StringUtils.isEmpty(properties.get("ebms.host")) ? "0.0.0.0" : properties.get("ebms.host"));
 		result.setPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
 		result.setName("ebms");
@@ -261,7 +265,9 @@ public class StartEmbedded extends Start
 
 	private ServerConnector createEbMSHttpsConnector(Map<String,String> properties, SslContextFactory.Server sslContextFactory)
 	{
-		val result = new ServerConnector(this.server,sslContextFactory);
+		HttpConfiguration httpConfig = new HttpConfiguration();
+		httpConfig.setSendServerVersion(false);
+		val result = new ServerConnector(this.server,sslContextFactory,new HttpConnectionFactory(httpConfig));
 		result.setHost(StringUtils.isEmpty(properties.get("ebms.host")) ? "0.0.0.0" : properties.get("ebms.host"));
 		result.setPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
 		result.setName("ebms");
