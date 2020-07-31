@@ -22,7 +22,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.servlet.DispatcherType;
 
@@ -42,7 +41,6 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.flywaydb.core.Flyway;
-import org.flywaydb.core.api.Location;
 import org.hsqldb.persist.HsqlProperties;
 import org.hsqldb.server.EbMSServerProperties;
 import org.hsqldb.server.ServerAcl.AclFormatException;
@@ -55,7 +53,6 @@ import lombok.AccessLevel;
 import lombok.val;
 import lombok.var;
 import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.admin.web.ExtensionProvider;
 import nl.clockwork.ebms.admin.web.configuration.JdbcURL;
 
 @FieldDefaults(level = AccessLevel.PROTECTED)
@@ -77,7 +74,18 @@ public class StartEmbedded extends Start
 		start.server.setHandler(start.handlerCollection);
 		val properties = getProperties();
 
-		start.initHSQLDB(cmd,properties);
+		JdbcURL jdbcURL = start.initHSQLDB(cmd,properties);
+		if (jdbcURL != null)
+		{
+			System.out.println("Starting hsqldb...");
+			start.startHSQLDBServer(cmd,jdbcURL);
+			start.initDatabase(false,properties);
+		}
+		else
+		{
+			if (cmd.hasOption("migrateDb"))
+				start.initDatabase(cmd.hasOption("migrateStrict"),properties);
+		}
 		start.initWebServer(cmd,start.server);
 		if (!cmd.hasOption("disableEbMSServer"))
 			start.initEbMSServer(properties,start.server);
@@ -114,6 +122,8 @@ public class StartEmbedded extends Start
 		val result = Start.createOptions();
 		result.addOption("hsqldb",false,"start hsqldb server");
 		result.addOption("hsqldbDir",true,"set hsqldb location (default: hsqldb)");
+		result.addOption("migrateDb",false,"use flyway to migrate db");
+		result.addOption("migrateStrict",false,"use strict db schema to migrate");
 		result.addOption("soap",false,"start soap service");
 		result.addOption("headless",false,"start without web interface");
 		result.addOption("disableEbMSServer",false,"disable ebms server");
@@ -126,22 +136,22 @@ public class StartEmbedded extends Start
 		return EmbeddedAppConfig.PROPERTY_SOURCE.getProperties();
 	}
 
-	private void initHSQLDB(CommandLine cmd, Map<String,String> properties) throws IOException, AclFormatException, URISyntaxException, ParseException
+	private JdbcURL initHSQLDB(CommandLine cmd, Map<String,String> properties) throws IOException, AclFormatException, URISyntaxException, ParseException
 	{
+		JdbcURL result = null;
 		if (properties.get("ebms.jdbc.driverClassName").startsWith("org.hsqldb.jdbc") && cmd.hasOption("hsqldb"))
 		{
-			val jdbcURL = nl.clockwork.ebms.admin.web.configuration.Utils.parseJdbcURL(properties.get("ebms.jdbc.url"),new JdbcURL());
-			if (!jdbcURL.getHost().matches("(localhost|127.0.0.1)"))
+			result = nl.clockwork.ebms.admin.web.configuration.Utils.parseJdbcURL(properties.get("ebms.jdbc.url"),new JdbcURL());
+			if (!result.getHost().matches("(localhost|127.0.0.1)"))
 			{
-				System.out.println("Cannot start server on " + jdbcURL.getHost());
+				System.out.println("Cannot start server on " + result.getHost());
 				System.exit(1);
 			}
-			System.out.println("Starting hsqldb...");
-			startHSQLDBServer(cmd,jdbcURL);
 		}
+		return result;
 	}
 
-	public void startHSQLDBServer(CommandLine cmd, JdbcURL jdbcURL) throws IOException, AclFormatException, URISyntaxException, ParseException
+	public org.hsqldb.server.Server startHSQLDBServer(CommandLine cmd, JdbcURL jdbcURL) throws IOException, AclFormatException, URISyntaxException, ParseException
 	{
 		val options = new ArrayList<>();
 		options.add("-database.0");
@@ -162,31 +172,24 @@ public class StartEmbedded extends Start
 		org.hsqldb.server.Server server = new org.hsqldb.server.Server();
 		server.setProperties(props);
 		server.start();
-		initDatabase(server);
+		return server;
 	}
 
-	private void initDatabase(org.hsqldb.server.Server server) throws ParseException
+	private void initDatabase(boolean strict, Map<String,String> properties) throws ParseException
 	{
-		val url = "jdbc:hsqldb:hsql://localhost:" + server.getPort() + "/" + server.getDatabaseName(0,true);
-		val user = "sa";
-		val password = "";
-		val locations = getDbMigrationLocations(new Location("classpath:/nl/clockwork/ebms/db/migration/hsqldb"));
-		var config = Flyway.configure()
-				.dataSource(url,user,password)
-				.locations(locations)
-				.ignoreMissingMigrations(true)
-				.outOfOrder(true);
-		config.load().migrate();
-	}
-
-	private static Location[] getDbMigrationLocations(Location dbMigrationLocation)
-	{
-		val result = ExtensionProvider.get().stream()
-				.filter(p -> !StringUtils.isEmpty(p.getDbMigrationLocation()))
-				.map(p -> new Location(p.getDbMigrationLocation() + "/hsqldb"))
-				.collect(Collectors.toList());
-		result.add(0,dbMigrationLocation);
-		return result.toArray(new Location[]{});
+		val jdbcUrl = properties.get("ebms.jdbc.url");
+		val user = properties.get("ebms.jdbc.username");
+		val password = properties.get("ebms.jdbc.password");
+		val locations = DBMigrate.Location.getLocation(jdbcUrl,strict);
+		locations.ifPresent(l ->
+		{
+			var config = Flyway.configure()
+					.dataSource(jdbcUrl,user,password)
+					.locations(l)
+					.ignoreMissingMigrations(true)
+					.outOfOrder(true);
+			config.load().migrate();
+		});
 	}
 
 	private void initEbMSServer(Map<String,String> properties, Server server) throws MalformedURLException, IOException
