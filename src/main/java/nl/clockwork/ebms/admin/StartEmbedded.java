@@ -32,12 +32,10 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.common.logging.LogUtils;
 import org.eclipse.jetty.server.ConnectionLimit;
-import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.flywaydb.core.Flyway;
@@ -65,17 +63,14 @@ public class StartEmbedded extends Start
 		val cmd = new DefaultParser().parse(options,args);
 		if (cmd.hasOption("h"))
 			printUsage(options);
-
 		System.setProperty("org.apache.activemq.SERIALIZABLE_PACKAGES","*");
 		if (cmd.hasOption("disableEbMSClient"))
 			System.setProperty("eventProcessor.type","NONE");
-
 		val start = new StartEmbedded();
 		start.init(cmd);
 		start.server.setHandler(start.handlerCollection);
 		val properties = getProperties();
-
-		JdbcURL jdbcURL = start.initHSQLDB(cmd,properties);
+		val jdbcURL = start.initHSQLDB(cmd,properties);
 		if (jdbcURL != null)
 		{
 			System.out.println("Starting hsqldb...");
@@ -92,7 +87,6 @@ public class StartEmbedded extends Start
 			start.initEbMSServer(properties,start.server);
 		if (cmd.hasOption("jmx"))
 			start.initJMX(cmd,start.server);
-
 		try (val context = new AnnotationConfigWebApplicationContext())
 		{
 			context.register(EmbeddedAppConfig.class);
@@ -101,9 +95,7 @@ public class StartEmbedded extends Start
 			if (cmd.hasOption("soap") || !cmd.hasOption("headless"))
 				start.handlerCollection.addHandler(start.createWebContextHandler(cmd,contextLoaderListener));
 			start.handlerCollection.addHandler(start.createEbMSContextHandler(properties,contextLoaderListener));
-	
 			System.out.println("Starting web server...");
-	
 			try
 			{
 				start.server.start();
@@ -170,7 +162,7 @@ public class StartEmbedded extends Start
 		ServerConfiguration.translateDefaultDatabaseProperty(props);
 		ServerConfiguration.translateDefaultNoSystemExitProperty(props);
 		ServerConfiguration.translateAddressProperty(props);
-		org.hsqldb.server.Server server = new org.hsqldb.server.Server();
+		val server = new org.hsqldb.server.Server();
 		server.setProperties(props);
 		server.start();
 		return server;
@@ -196,18 +188,18 @@ public class StartEmbedded extends Start
 	private void initEbMSServer(Map<String,String> properties, Server server) throws MalformedURLException, IOException
 	{
 		
-		Connector connector = "true".equals(properties.get("ebms.ssl")) ? 
+		val connector = "true".equals(properties.get("ebms.ssl")) ? 
 				createEbMSHttpsConnector(properties,createEbMSSslContextFactory(properties)) : 
 					createEbMSHttpConnector(properties);
 		server.addConnector(connector);
-		String connectionLimit = properties.get("ebms.connectionLimit");
+		val connectionLimit = properties.get("ebms.connectionLimit");
 		if (StringUtils.isNotEmpty(connectionLimit))
 			server.addBean(new ConnectionLimit(Integer.parseInt(connectionLimit),connector));
 	}
 
 	private ServerConnector createEbMSHttpConnector(Map<String,String> properties)
 	{
-		HttpConfiguration httpConfig = new HttpConfiguration();
+		val httpConfig = new HttpConfiguration();
 		httpConfig.setSendServerVersion(false);
 		val result = new ServerConnector(this.server,new HttpConnectionFactory(httpConfig));
 		result.setHost(StringUtils.isEmpty(properties.get("ebms.host")) ? "0.0.0.0" : properties.get("ebms.host"));
@@ -269,7 +261,7 @@ public class StartEmbedded extends Start
 
 	private ServerConnector createEbMSHttpsConnector(Map<String,String> properties, SslContextFactory.Server sslContextFactory)
 	{
-		HttpConfiguration httpConfig = new HttpConfiguration();
+		val httpConfig = new HttpConfiguration();
 		httpConfig.setSendServerVersion(false);
 		val result = new ServerConnector(this.server,sslContextFactory,new HttpConnectionFactory(httpConfig));
 		result.setHost(StringUtils.isEmpty(properties.get("ebms.host")) ? "0.0.0.0" : properties.get("ebms.host"));
@@ -284,18 +276,12 @@ public class StartEmbedded extends Start
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		result.setVirtualHosts(new String[] {"@ebms"});
 		result.setContextPath("/");
+		if (!StringUtils.isEmpty(properties.get("http.requestsPerSecond")))
+			result.addFilter(createRateLimiterFilterHolder(properties.get("http.requestsPerSecond")),"/*",EnumSet.allOf(DispatcherType.class));
 		if ("true".equals(properties.get("https.clientCertificateAuthentication").toLowerCase()))
-			result.addFilter(createClientCertificateManagerFilterHolder(properties),"/*",EnumSet.allOf(DispatcherType.class));
+			result.addFilter(createClientCertificateManagerFilterHolder(properties.get("https.clientCertificateHeader")),"/*",EnumSet.allOf(DispatcherType.class));
 		result.addServlet(nl.clockwork.ebms.server.servlet.EbMSServlet.class,properties.get("ebms.path"));
 		result.addEventListener(contextLoaderListener);
 		return result;
 	}
-
-	private FilterHolder createClientCertificateManagerFilterHolder(Map<String,String> properties)
-	{
-		FilterHolder result = new FilterHolder(nl.clockwork.ebms.server.servlet.ClientCertificateManagerFilter.class); 
-		result.setInitParameter("x509CertificateHeader",properties.get("https.clientCertificateHeader"));
-		return result;
-	}
-
 }

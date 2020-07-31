@@ -40,7 +40,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.common.logging.LogUtils;
-import org.beryx.textio.StringInputReader;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextIoFactory;
 import org.eclipse.jetty.jmx.ConnectorServer;
@@ -92,24 +91,19 @@ public class Start
 		val cmd = new DefaultParser().parse(options,args);
 		if (cmd.hasOption("h"))
 			printUsage(options);
-
 		val start = new Start();
 		start.init(cmd);
 		start.server.setHandler(start.handlerCollection);
-
 		start.initWebServer(cmd,start.server);
 		if (cmd.hasOption("jmx"))
 			start.initJMX(cmd,start.server);
-
 		try (val context = new AnnotationConfigWebApplicationContext())
 		{
 			context.register(AppConfig.class);
 			getConfigClasses().forEach(c -> context.register(c));
 			val contextLoaderListener = new ContextLoaderListener(context);
 			start.handlerCollection.addHandler(start.createWebContextHandler(cmd,contextLoaderListener));
-	
 			System.out.println("Starting web server...");
-	
 			try
 			{
 				start.server.start();
@@ -132,6 +126,7 @@ public class Start
 		result.addOption("port",true,"set port");
 		result.addOption("path",true,"set path");
 		result.addOption("connectionLimit",true,"set connection limit (default: none)");
+		result.addOption("requestsPerSecond",true,"set requests per second limit (default: none)");
 		result.addOption("ssl",false,"use ssl");
 		result.addOption("protocols",true,"set ssl protocols");
 		result.addOption("cipherSuites",true,"set ssl cipherSuites");
@@ -209,10 +204,10 @@ public class Start
 		if (keyStore != null && keyStore.exists())
 		{
 			System.out.println("Using keyStore " + keyStore.getURI());
-			String protocols = cmd.getOptionValue("protocols");
+			val protocols = cmd.getOptionValue("protocols");
 			if (!StringUtils.isEmpty(protocols))
 				sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(protocols,',')));
-			String cipherSuites = cmd.getOptionValue("cipherSuites");
+			val cipherSuites = cmd.getOptionValue("cipherSuites");
 			if (!StringUtils.isEmpty(cipherSuites))
 				sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(cipherSuites,',')));
 			sslContextFactory.setKeyStoreType(keyStoreType);
@@ -294,6 +289,8 @@ public class Start
 		result.setVirtualHosts(new String[] {"@web"});
 		result.setInitParameter("configuration","deployment");
 		result.setContextPath(getPath(cmd));
+		if (!StringUtils.isEmpty(cmd.getOptionValue("requestsPerSecond")))
+			result.addFilter(createRateLimiterFilterHolder(cmd.getOptionValue("requestsPerSecond")),"/*",EnumSet.allOf(DispatcherType.class));
 		if (cmd.hasOption("authentication"))
 		{
 			if (!cmd.hasOption("clientAuthentication"))
@@ -308,7 +305,7 @@ public class Start
 			}
 			else if (cmd.hasOption("ssl") && cmd.hasOption("clientAuthentication"))
 			{
-				result.addFilter(createClientCertificateManagerFilterHolder(cmd),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
+				result.addFilter(createClientCertificateManagerFilterHolder(cmd.getOptionValue("clientCertificateHeader")),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
 				result.addFilter(createClientCertificateAuthenticationFilterHolder(cmd),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
 			}
 		}
@@ -328,10 +325,17 @@ public class Start
 		return result;
 	}
 
-	private FilterHolder createClientCertificateManagerFilterHolder(CommandLine cmd)
+	protected FilterHolder createRateLimiterFilterHolder(String requestsPerSecond)
+	{
+		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.RateLimiterFilter.class); 
+		result.setInitParameter("permitsPerSecond",requestsPerSecond);
+		return result;
+	}
+
+	protected FilterHolder createClientCertificateManagerFilterHolder(String clientCertificateHeader)
 	{
 		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.ClientCertificateManagerFilter.class); 
-		result.setInitParameter("x509CertificateHeader",cmd.getOptionValue("clientCertificateHeader"));
+		result.setInitParameter("x509CertificateHeader",clientCertificateHeader);
 		return result;
 	}
 
@@ -402,7 +406,7 @@ public class Start
 
 	private String readPassword() throws IOException, NoSuchAlgorithmException
 	{
-		StringInputReader reader = textIO.newStringInputReader()
+		val reader = textIO.newStringInputReader()
 				.withMinLength(8)
 				.withInputMasking(true);
 		while (true)
