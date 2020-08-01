@@ -44,6 +44,7 @@ import org.hsqldb.server.EbMSServerProperties;
 import org.hsqldb.server.ServerAcl.AclFormatException;
 import org.hsqldb.server.ServerConfiguration;
 import org.hsqldb.server.ServerConstants;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
@@ -65,7 +66,7 @@ public class StartEmbedded extends Start
 			printUsage(options);
 		System.setProperty("org.apache.activemq.SERIALIZABLE_PACKAGES","*");
 		if (cmd.hasOption("disableEbMSClient"))
-			System.setProperty("eventProcessor.type","NONE");
+			System.setProperty("eventProcessor.start","false");
 		val start = new StartEmbedded();
 		start.init(cmd);
 		start.server.setHandler(start.handlerCollection);
@@ -82,32 +83,49 @@ public class StartEmbedded extends Start
 			if (cmd.hasOption("migrateDb"))
 				start.initDatabase(cmd.hasOption("migrateStrict"),properties);
 		}
-		start.initWebServer(cmd,start.server);
-		if (!cmd.hasOption("disableEbMSServer"))
-			start.initEbMSServer(properties,start.server);
 		if (cmd.hasOption("jmx"))
 			start.initJMX(cmd,start.server);
-		try (val context = new AnnotationConfigWebApplicationContext())
-		{
-			context.register(EmbeddedAppConfig.class);
-			getConfigClasses().forEach(c -> context.register(c));
-			val contextLoaderListener = new ContextLoaderListener(context);
-			if (cmd.hasOption("soap") || !cmd.hasOption("headless"))
-				start.handlerCollection.addHandler(start.createWebContextHandler(cmd,contextLoaderListener));
-			start.handlerCollection.addHandler(start.createEbMSContextHandler(properties,contextLoaderListener));
-			System.out.println("Starting web server...");
-			try
+		
+		if (cmd.hasOption("soap") || !cmd.hasOption("headless") || !cmd.hasOption("disableEbMSServer"))
+			try (val context = new AnnotationConfigWebApplicationContext())
 			{
-				start.server.start();
+				context.register(EmbeddedAppConfig.class);
+				getConfigClasses().forEach(c -> context.register(c));
+				val contextLoaderListener = new ContextLoaderListener(context);
+				if (cmd.hasOption("soap") || !cmd.hasOption("headless"))
+				{
+					start.initWebServer(cmd,start.server);
+					start.handlerCollection.addHandler(start.createWebContextHandler(cmd,contextLoaderListener));
+				}
+				if (!cmd.hasOption("disableEbMSServer"))
+				{
+					start.initEbMSServer(properties,start.server);
+					start.handlerCollection.addHandler(start.createEbMSContextHandler(properties,contextLoaderListener));
+				}
+				System.out.println("Starting web server...");
+				try
+				{
+					start.server.start();
+				}
+				catch (Exception e)
+				{
+					start.server.stop();
+					System.exit(1);
+				}
+				System.out.println("Web server started.");
+				start.server.join();
 			}
-			catch (Exception e)
+		else
+			try (val context = new AnnotationConfigApplicationContext())
 			{
-				start.server.stop();
-				System.exit(1);
+				context.register(EmbeddedAppConfig.class);
+				getConfigClasses().forEach(c -> context.register(c));
+				System.out.println("Starting server...");
+				context.refresh();
+				context.start();
+				System.out.println("Server started.");
+				Thread.currentThread().join();
 			}
-			System.out.println("Web server started.");
-			start.server.join();
-		}
 	}
 
 	protected static Options createOptions()
