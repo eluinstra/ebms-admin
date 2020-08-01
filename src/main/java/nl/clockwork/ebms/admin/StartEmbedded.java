@@ -115,8 +115,8 @@ public class StartEmbedded extends Start
 		val result = Start.createOptions();
 		result.addOption("hsqldb",false,"start hsqldb server");
 		result.addOption("hsqldbDir",true,"set hsqldb location (default: hsqldb)");
-		result.addOption("migrateDb",false,"use flyway to migrate db");
-		result.addOption("migrateStrict",false,"use strict db schema to migrate");
+		result.addOption("updateDb",false,"update db automatically");
+		result.addOption("updateStrict",false,"use strict db schema to update");
 		result.addOption("soap",false,"start soap service");
 		result.addOption("headless",false,"start without web interface");
 		result.addOption("disableEbMSServer",false,"disable ebms server");
