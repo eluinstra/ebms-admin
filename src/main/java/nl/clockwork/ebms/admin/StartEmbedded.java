@@ -80,8 +80,8 @@ public class StartEmbedded extends Start
 		}
 		else
 		{
-			if (cmd.hasOption("migrateDb"))
-				start.initDatabase(cmd.hasOption("migrateStrict"),properties);
+			if (cmd.hasOption("updateDb"))
+				start.initDatabase(cmd.hasOption("updateStrict"),properties);
 		}
 		if (cmd.hasOption("jmx"))
 			start.initJMX(cmd,start.server);
