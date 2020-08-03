@@ -53,21 +53,33 @@ public class EbMSDAOFactory extends DefaultDAOFactory<EbMSDAO>
 	}
 
 	@Override
-	public EbMSDAO createHSqlDbDAO()
+	public EbMSDAO createDB2DAO()
+	{
+		return new DB2EbMSDAO(jdbcTemplate,queryFactory);
+	}
+
+	@Override
+	public EbMSDAO createH2DAO()
+	{
+		return new H2EbMSDAO(jdbcTemplate,queryFactory);
+	}
+
+	@Override
+	public EbMSDAO createHSQLDBDAO()
 	{
 		return new HSQLDBEbMSDAO(jdbcTemplate,queryFactory);
 	}
 
 	@Override
-	public EbMSDAO createMySqlDAO()
+	public EbMSDAO createMSSQLDAO()
 	{
-		return new MySQLEbMSDAO(jdbcTemplate,queryFactory);
+		return new MSSQLEbMSDAO(jdbcTemplate,queryFactory);
 	}
 
 	@Override
-	public EbMSDAO createPostgresDAO()
+	public EbMSDAO createMySQLDAO()
 	{
-		return new PostgreSQLEbMSDAO(jdbcTemplate,queryFactory);
+		return new MySQLEbMSDAO(jdbcTemplate,queryFactory);
 	}
 
 	@Override
@@ -77,8 +89,8 @@ public class EbMSDAOFactory extends DefaultDAOFactory<EbMSDAO>
 	}
 
 	@Override
-	public EbMSDAO createMsSqlDAO()
+	public EbMSDAO createPostgreSQLDAO()
 	{
-		return new MSSQLEbMSDAO(jdbcTemplate,queryFactory);
+		return new PostgreSQLEbMSDAO(jdbcTemplate,queryFactory);
 	}
 }

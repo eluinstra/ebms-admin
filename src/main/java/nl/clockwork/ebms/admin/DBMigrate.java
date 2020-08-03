@@ -34,6 +34,7 @@ import lombok.ToString;
 import lombok.val;
 import lombok.var;
 import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.datasource.DataSourceConfig.Location;
 
 public class DBMigrate
 {
@@ -60,38 +61,6 @@ public class DBMigrate
 			return Arrays.stream(values())
 					.filter(v -> ebmsVersion.startsWith(v.ebmsVersion))
 					.map(v -> v.baselineVersion)
-					.findFirst();
-		}
-	}
-
-	public static final String BASEPATH = "classpath:/nl/clockwork/ebms/db/migration/";
-
-	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-	@AllArgsConstructor
-	@Getter
-	enum Location
-	{
-		DB2("jdbc:db2:",BASEPATH + "db2",false),
-		DB2_STRICT("jdbc:db2:",BASEPATH + "db2.strict",true),
-		HSQLDB("jdbc:hsqldb:",BASEPATH + "hsqldb",false),
-		HSQLDB_STRICT("jdbc:hsqldb:",BASEPATH + "hsqldb.strict",true),
-		MARIADB("jdbc:mariadb:",BASEPATH + "mysql",false),
-		MSSQL("jdbc:sqlserver:",BASEPATH + "mssql",false),
-		MYSQL("jdbc:mysql:",BASEPATH + "mysql",false),
-		ORACLE("jdbc:oracle:",BASEPATH + "oracle",false),
-		ORACLE_STRICT("jdbc:oracle:",BASEPATH + "oracle.strict",true),
-		POSTGRES("jdbc:postgresql:",BASEPATH + "postgresql",false),
-		POSTGRES_STRICT("jdbc:postgresql:",BASEPATH + "postgresql.strict",true);
-		
-		String jdbcUrl;
-		String location;
-		boolean strict;
-		
-		public static Optional<String> getLocation(String jdbcUrl, boolean strict)
-		{
-			return Arrays.stream(values())
-					.filter(l -> jdbcUrl.startsWith(l.jdbcUrl) && (l.strict == strict))
-					.map(l -> l.location)
 					.findFirst();
 		}
 	}
