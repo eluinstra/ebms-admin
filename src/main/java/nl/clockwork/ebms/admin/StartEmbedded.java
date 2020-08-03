@@ -294,8 +294,10 @@ public class StartEmbedded extends Start
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		result.setVirtualHosts(new String[] {"@ebms"});
 		result.setContextPath("/");
-		if (!StringUtils.isEmpty(properties.get("http.requestsPerSecond")))
-			result.addFilter(createRateLimiterFilterHolder(properties.get("http.requestsPerSecond")),"/*",EnumSet.allOf(DispatcherType.class));
+		if (!StringUtils.isEmpty(properties.get("ebms.queriesPerSecond")))
+			result.addFilter(createRateLimiterFilterHolder(properties.get("ebms.queriesPerSecond")),"/*",EnumSet.allOf(DispatcherType.class));
+		if (!StringUtils.isEmpty(properties.get("ebms.userQueriesPerSecond")))
+			result.addFilter(createUserRateLimiterFilterHolder(properties.get("ebms.userQueriesPerSecond")),"/*",EnumSet.allOf(DispatcherType.class));
 		if ("true".equals(properties.get("https.clientCertificateAuthentication").toLowerCase()))
 			result.addFilter(createClientCertificateManagerFilterHolder(properties.get("https.clientCertificateHeader")),"/*",EnumSet.allOf(DispatcherType.class));
 		result.addServlet(nl.clockwork.ebms.server.servlet.EbMSServlet.class,properties.get("ebms.path"));

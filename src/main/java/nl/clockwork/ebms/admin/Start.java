@@ -126,7 +126,8 @@ public class Start
 		result.addOption("port",true,"set port");
 		result.addOption("path",true,"set path");
 		result.addOption("connectionLimit",true,"set connection limit (default: none)");
-		result.addOption("requestsPerSecond",true,"set requests per second limit (default: none)");
+		result.addOption("queriesPerSecond",true,"set requests per second limit (default: none)");
+		result.addOption("userQueriesPerSecond",true,"set requests per user per secondlimit (default: none)");
 		result.addOption("ssl",false,"use ssl");
 		result.addOption("protocols",true,"set ssl protocols");
 		result.addOption("cipherSuites",true,"set ssl cipherSuites");
@@ -289,8 +290,10 @@ public class Start
 		result.setVirtualHosts(new String[] {"@web"});
 		result.setInitParameter("configuration","deployment");
 		result.setContextPath(getPath(cmd));
-		if (!StringUtils.isEmpty(cmd.getOptionValue("requestsPerSecond")))
-			result.addFilter(createRateLimiterFilterHolder(cmd.getOptionValue("requestsPerSecond")),"/*",EnumSet.allOf(DispatcherType.class));
+		if (!StringUtils.isEmpty(cmd.getOptionValue("queriesPerSecond")))
+			result.addFilter(createRateLimiterFilterHolder(cmd.getOptionValue("queriesPerSecond")),"/*",EnumSet.allOf(DispatcherType.class));
+		if (!StringUtils.isEmpty(cmd.getOptionValue("userQueriesPerSecond")))
+			result.addFilter(createUserRateLimiterFilterHolder(cmd.getOptionValue("userQueriesPerSecond")),"/*",EnumSet.allOf(DispatcherType.class));
 		if (cmd.hasOption("authentication"))
 		{
 			if (!cmd.hasOption("clientAuthentication"))
@@ -325,10 +328,17 @@ public class Start
 		return result;
 	}
 
-	protected FilterHolder createRateLimiterFilterHolder(String requestsPerSecond)
+	protected FilterHolder createRateLimiterFilterHolder(String queriesPerSecond)
 	{
 		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.RateLimiterFilter.class); 
-		result.setInitParameter("permitsPerSecond",requestsPerSecond);
+		result.setInitParameter("queriesPerSecond",queriesPerSecond);
+		return result;
+	}
+
+	protected FilterHolder createUserRateLimiterFilterHolder(String queriesPerSecond)
+	{
+		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.RateLimiterFilter.class); 
+		result.setInitParameter("queriesPerSecond",queriesPerSecond);
 		return result;
 	}
 
