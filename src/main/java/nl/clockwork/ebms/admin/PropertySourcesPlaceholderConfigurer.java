@@ -16,6 +16,7 @@
 package nl.clockwork.ebms.admin;
 
 import java.io.IOException;
+import java.util.AbstractMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -48,6 +49,8 @@ public class PropertySourcesPlaceholderConfigurer extends org.springframework.co
 	{
 		val properties = mergeProperties();
 		return properties.entrySet().stream()
+				.map(e -> System.getProperty((String)e.getKey()) == null ? e : new AbstractMap.SimpleEntry<String,String>((String)e.getKey(),System.getProperty((String)e.getKey())))
+				.map(e -> System.getenv((String)e.getKey()) == null ? e : new AbstractMap.SimpleEntry<String,String>((String)e.getKey(),System.getenv((String)e.getKey())))
 				.collect(Collectors.toMap(e -> (String)e.getKey(), e -> (String)e.getValue()));
 	}
 }
