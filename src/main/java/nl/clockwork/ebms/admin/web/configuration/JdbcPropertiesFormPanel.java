@@ -184,10 +184,10 @@ public class JdbcPropertiesFormPanel extends Panel
 	public static class JdbcPropertiesFormData extends JdbcURL implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		JdbcDriver driver = JdbcDriver.HSQLDB;
+		JdbcDriver driver;
 		@NonNull
-		String username = "sa";
-		String password = null;
+		String username;
+		String password;
 
 		public List<JdbcDriver> getDrivers()
 		{

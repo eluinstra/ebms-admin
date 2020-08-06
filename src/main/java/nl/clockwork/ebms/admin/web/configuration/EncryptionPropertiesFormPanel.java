@@ -83,7 +83,7 @@ public class EncryptionPropertiesFormPanel extends Panel
 	public static class EncryptionPropertiesFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		boolean encryption = false;
+		boolean encryption;
 		@NonNull
 		JavaKeyStorePropertiesFormData keystoreProperties = new JavaKeyStorePropertiesFormData();
 	}

@@ -113,11 +113,11 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 	public static class JavaKeyStorePropertiesFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		KeyStoreType type = KeyStoreType.PKCS12;
+		KeyStoreType type;
 		@NonNull
-		String uri = "nl/clockwork/ebms/keystore.p12";
+		String uri;
 		@NonNull
-		String password = "password";
+		String password;
 		String defaultAlias;
 	}
 }

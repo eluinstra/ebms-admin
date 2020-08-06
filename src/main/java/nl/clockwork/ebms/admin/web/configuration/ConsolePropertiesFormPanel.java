@@ -60,6 +60,6 @@ public class ConsolePropertiesFormPanel extends Panel
 	public static class ConsolePropertiesFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		int maxItemsPerPage = 20;
+		int maxItemsPerPage;
 	}
 }

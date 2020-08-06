@@ -16,6 +16,7 @@
 package nl.clockwork.ebms.admin.web.configuration;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -151,16 +152,16 @@ public class SslPropertiesFormPanel extends Panel
 	public static class SslPropertiesFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		boolean overrideDefaultProtocols = true;
+		boolean overrideDefaultProtocols;
 		final List<String> supportedProtocols = Arrays.asList(Utils.getSupportedSSLProtocols());
 		@NonNull
-		List<String> enabledProtocols = Arrays.asList("TLSv1.2");
-		boolean overrideDefaultCipherSuites = true;
+		List<String> enabledProtocols = Collections.emptyList();
+		boolean overrideDefaultCipherSuites;
 		final List<String> supportedCipherSuites = Arrays.asList(Utils.getSupportedSSLCipherSuites());
 		@NonNull
-		List<String> enabledCipherSuites = Arrays.asList("TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384","TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384");
-		boolean requireClientAuthentication = true;
-		boolean verifyHostnames = true;
+		List<String> enabledCipherSuites = Collections.emptyList();
+		boolean requireClientAuthentication;
+		boolean verifyHostnames;
 		@NonNull
 		JavaKeyStorePropertiesFormData keystoreProperties = new JavaKeyStorePropertiesFormData();
 		@NonNull

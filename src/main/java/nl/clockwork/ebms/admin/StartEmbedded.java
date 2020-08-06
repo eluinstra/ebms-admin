@@ -21,7 +21,7 @@ import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.Map;
+import java.util.Properties;
 
 import javax.servlet.DispatcherType;
 
@@ -133,17 +133,17 @@ public class StartEmbedded extends Start
 		return result;
 	}
 	
-	private static Map<String,String> getProperties() throws IOException
+	private static Properties getProperties() throws IOException
 	{
 		return EmbeddedAppConfig.PROPERTY_SOURCE.getProperties();
 	}
 
-	private JdbcURL getHsqlDbJdbcUrl(CommandLine cmd, Map<String,String> properties) throws IOException, AclFormatException, URISyntaxException, ParseException
+	private JdbcURL getHsqlDbJdbcUrl(CommandLine cmd, Properties properties) throws IOException, AclFormatException, URISyntaxException, ParseException
 	{
 		JdbcURL result = null;
-		if (properties.get("ebms.jdbc.driverClassName").startsWith("org.hsqldb.jdbc") && cmd.hasOption("hsqldb"))
+		if (properties.getProperty("ebms.jdbc.driverClassName").startsWith("org.hsqldb.jdbc") && cmd.hasOption("hsqldb"))
 		{
-			result = nl.clockwork.ebms.admin.web.configuration.Utils.parseJdbcURL(properties.get("ebms.jdbc.url"),new JdbcURL());
+			result = nl.clockwork.ebms.admin.web.configuration.Utils.parseJdbcURL(properties.getProperty("ebms.jdbc.url"),new JdbcURL());
 			if (!result.getHost().matches("(localhost|127.0.0.1)"))
 			{
 				System.out.println("Cannot start server on " + result.getHost());
@@ -177,104 +177,104 @@ public class StartEmbedded extends Start
 		return server;
 	}
 
-	private void initEbMSServer(Map<String,String> properties, Server server) throws MalformedURLException, IOException
+	private void initEbMSServer(Properties properties, Server server) throws MalformedURLException, IOException
 	{
 		
-		val connector = "true".equals(properties.get("ebms.ssl")) ? 
+		val connector = "true".equals(properties.getProperty("ebms.ssl")) ? 
 				createEbMSHttpsConnector(properties,createEbMSSslContextFactory(properties)) : 
 					createEbMSHttpConnector(properties);
 		server.addConnector(connector);
-		val connectionLimit = properties.get("ebms.connectionLimit");
+		val connectionLimit = properties.getProperty("ebms.connectionLimit");
 		if (StringUtils.isNotEmpty(connectionLimit))
 			server.addBean(new ConnectionLimit(Integer.parseInt(connectionLimit),connector));
 	}
 
-	private ServerConnector createEbMSHttpConnector(Map<String,String> properties)
+	private ServerConnector createEbMSHttpConnector(Properties properties)
 	{
 		val httpConfig = new HttpConfiguration();
 		httpConfig.setSendServerVersion(false);
 		val result = new ServerConnector(this.server,new HttpConnectionFactory(httpConfig));
-		result.setHost(StringUtils.isEmpty(properties.get("ebms.host")) ? "0.0.0.0" : properties.get("ebms.host"));
-		result.setPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
+		result.setHost(StringUtils.isEmpty(properties.getProperty("ebms.host")) ? "0.0.0.0" : properties.getProperty("ebms.host"));
+		result.setPort(StringUtils.isEmpty(properties.getProperty("ebms.port"))  ? 8888 : Integer.parseInt(properties.getProperty("ebms.port")));
 		result.setName("ebms");
-		System.out.println("EbMS service configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + properties.get("ebms.path"));
+		System.out.println("EbMS service configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + properties.getProperty("ebms.path"));
 		return result;
 	}
 
-	private SslContextFactory.Server createEbMSSslContextFactory(Map<String,String> properties) throws MalformedURLException, IOException
+	private SslContextFactory.Server createEbMSSslContextFactory(Properties properties) throws MalformedURLException, IOException
 	{
 		val result = new SslContextFactory.Server();
 		addEbMSKeyStore(properties,result);
-		if ("true".equals(properties.get("https.requireClientAuthentication")))
+		if ("true".equals(properties.getProperty("https.requireClientAuthentication")))
 			addEbMSTrustStore(properties,result);
 		result.setExcludeCipherSuites();
 		return result;
 	}
 
-	private void addEbMSKeyStore(Map<String,String> properties, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
+	private void addEbMSKeyStore(Properties properties, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
 	{
-		val keyStore = getResource(properties.get("keystore.path"));
+		val keyStore = getResource(properties.getProperty("keystore.path"));
 		if (keyStore != null && keyStore.exists())
 		{
-			if (!StringUtils.isEmpty(properties.get("https.protocols")))
-				sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(properties.get("https.protocols"),',')));
-			if (!StringUtils.isEmpty(properties.get("https.cipherSuites")))
-				sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(properties.get("https.cipherSuites"),',')));
-			sslContextFactory.setKeyStoreType(properties.get("keystore.type"));
+			if (!StringUtils.isEmpty(properties.getProperty("https.protocols")))
+				sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.protocols"),',')));
+			if (!StringUtils.isEmpty(properties.getProperty("https.cipherSuites")))
+				sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.cipherSuites"),',')));
+			sslContextFactory.setKeyStoreType(properties.getProperty("keystore.type"));
 			sslContextFactory.setKeyStoreResource(keyStore);
-			sslContextFactory.setKeyStorePassword(properties.get("keystore.password"));
-			String certAlias = properties.get("keystore.defaultAlias");
+			sslContextFactory.setKeyStorePassword(properties.getProperty("keystore.password"));
+			String certAlias = properties.getProperty("keystore.defaultAlias");
 			if (StringUtils.isNotEmpty(certAlias))
 				sslContextFactory.setCertAlias(certAlias);
 		}
 		else
 		{
-			System.out.println("EbMS service not available: keyStore " + properties.get("keystore.path") + " not found!");
+			System.out.println("EbMS service not available: keyStore " + properties.getProperty("keystore.path") + " not found!");
 			System.exit(1);
 		}
 	}
 
-	private void addEbMSTrustStore(Map<String,String> properties, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
+	private void addEbMSTrustStore(Properties properties, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
 	{
-		val trustStore = getResource(properties.get("truststore.path"));
+		val trustStore = getResource(properties.getProperty("truststore.path"));
 		if (trustStore != null && trustStore.exists())
 		{
 			sslContextFactory.setNeedClientAuth(true);
-			sslContextFactory.setTrustStoreType(properties.get("truststore.type"));
+			sslContextFactory.setTrustStoreType(properties.getProperty("truststore.type"));
 			sslContextFactory.setTrustStoreResource(trustStore);
-			sslContextFactory.setTrustStorePassword(properties.get("truststore.password"));
+			sslContextFactory.setTrustStorePassword(properties.getProperty("truststore.password"));
 		}
 		else
 		{
-			System.out.println("EbMS service not available: trustStore " + properties.get("truststore.path") + " not found!");
+			System.out.println("EbMS service not available: trustStore " + properties.getProperty("truststore.path") + " not found!");
 			System.exit(1);
 		}
 	}
 
-	private ServerConnector createEbMSHttpsConnector(Map<String,String> properties, SslContextFactory.Server sslContextFactory)
+	private ServerConnector createEbMSHttpsConnector(Properties properties, SslContextFactory.Server sslContextFactory)
 	{
 		val httpConfig = new HttpConfiguration();
 		httpConfig.setSendServerVersion(false);
 		val result = new ServerConnector(this.server,sslContextFactory,new HttpConnectionFactory(httpConfig));
-		result.setHost(StringUtils.isEmpty(properties.get("ebms.host")) ? "0.0.0.0" : properties.get("ebms.host"));
-		result.setPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
+		result.setHost(StringUtils.isEmpty(properties.getProperty("ebms.host")) ? "0.0.0.0" : properties.getProperty("ebms.host"));
+		result.setPort(StringUtils.isEmpty(properties.getProperty("ebms.port"))  ? 8888 : Integer.parseInt(properties.getProperty("ebms.port")));
 		result.setName("ebms");
-		System.out.println("EbMS service configured on https://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + properties.get("ebms.path"));
+		System.out.println("EbMS service configured on https://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + properties.getProperty("ebms.path"));
 		return result;
 	}
 
-	protected ServletContextHandler createEbMSContextHandler(Map<String,String> properties, ContextLoaderListener contextLoaderListener) throws IOException, NoSuchAlgorithmException
+	protected ServletContextHandler createEbMSContextHandler(Properties properties, ContextLoaderListener contextLoaderListener) throws IOException, NoSuchAlgorithmException
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		result.setVirtualHosts(new String[] {"@ebms"});
 		result.setContextPath("/");
-		if (!StringUtils.isEmpty(properties.get("ebms.queriesPerSecond")))
-			result.addFilter(createRateLimiterFilterHolder(properties.get("ebms.queriesPerSecond")),"/*",EnumSet.allOf(DispatcherType.class));
-		if (!StringUtils.isEmpty(properties.get("ebms.userQueriesPerSecond")))
-			result.addFilter(createUserRateLimiterFilterHolder(properties.get("ebms.userQueriesPerSecond")),"/*",EnumSet.allOf(DispatcherType.class));
-		if ("true".equals(properties.get("https.clientCertificateAuthentication").toLowerCase()))
-			result.addFilter(createClientCertificateManagerFilterHolder(properties.get("https.clientCertificateHeader")),"/*",EnumSet.allOf(DispatcherType.class));
-		result.addServlet(nl.clockwork.ebms.server.servlet.EbMSServlet.class,properties.get("ebms.path"));
+		if (!StringUtils.isEmpty(properties.getProperty("ebms.queriesPerSecond")))
+			result.addFilter(createRateLimiterFilterHolder(properties.getProperty("ebms.queriesPerSecond")),"/*",EnumSet.allOf(DispatcherType.class));
+		if (!StringUtils.isEmpty(properties.getProperty("ebms.userQueriesPerSecond")))
+			result.addFilter(createUserRateLimiterFilterHolder(properties.getProperty("ebms.userQueriesPerSecond")),"/*",EnumSet.allOf(DispatcherType.class));
+		if ("true".equals(properties.getProperty("https.clientCertificateAuthentication").toLowerCase()))
+			result.addFilter(createClientCertificateManagerFilterHolder(properties.getProperty("https.clientCertificateHeader")),"/*",EnumSet.allOf(DispatcherType.class));
+		result.addServlet(nl.clockwork.ebms.server.servlet.EbMSServlet.class,properties.getProperty("ebms.path"));
 		result.addEventListener(contextLoaderListener);
 		return result;
 	}

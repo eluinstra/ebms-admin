@@ -16,7 +16,6 @@
 package nl.clockwork.ebms.admin.web.configuration;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.Properties;
@@ -45,23 +44,20 @@ import nl.clockwork.ebms.security.KeyStoreType;
 @AllArgsConstructor
 public class EbMSAdminPropertiesReader
 {
-	Reader reader;
+	Properties properties;
 
 	public EbMSAdminPropertiesFormData read(PropertiesType propertiesType) throws IOException
 	{
 		val result = new EbMSAdminPropertiesFormData();
-		val properties = new Properties();
 		switch (propertiesType)
 		{
 			case EBMS_ADMIN:
-				properties.load(reader);
 				read(properties,result.getConsoleProperties());
 				read(properties,result.getCoreProperties());
 				read(properties,result.getServiceProperties());
 				read(properties,result.getJdbcProperties());
 				break;
 			case EBMS_ADMIN_EMBEDDED:
-				properties.load(reader);
 				read(properties,result.getConsoleProperties());
 				read(properties,result.getCoreProperties());
 				read(properties,result.getHttpProperties());
@@ -119,14 +115,15 @@ public class EbMSAdminPropertiesReader
 		sslProperties.setEnabledCipherSuites(Arrays.asList(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.cipherSuites",""),','))));
 		sslProperties.setRequireClientAuthentication(new Boolean(properties.getProperty("https.requireClientAuthentication")));
 		sslProperties.setVerifyHostnames(new Boolean(properties.getProperty("https.verifyHostnames")));
-		sslProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("keystore.type","JKS").toUpperCase()));
+		sslProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("keystore.type","PKCS12").toUpperCase()));
 		sslProperties.getKeystoreProperties().setUri(properties.getProperty("keystore.path"));
 		sslProperties.getKeystoreProperties().setPassword(properties.getProperty("keystore.password"));
 		sslProperties.getKeystoreProperties().setDefaultAlias(properties.getProperty("keystore.defaultAlias"));
-		sslProperties.getClientKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("client.keystore.type","JKS").toUpperCase()));
+		sslProperties.getClientKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("client.keystore.type","PKCS12").toUpperCase()));
 		sslProperties.getClientKeystoreProperties().setUri(properties.getProperty("client.keystore.path"));
+		sslProperties.getClientKeystoreProperties().setPassword(properties.getProperty("client.keystore.password"));
 		sslProperties.getClientKeystoreProperties().setDefaultAlias(properties.getProperty("client.keystore.defaultAlias"));
-		sslProperties.getTruststoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("truststore.type","JKS").toUpperCase()));
+		sslProperties.getTruststoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("truststore.type","PKCS12").toUpperCase()));
 		sslProperties.getTruststoreProperties().setUri(properties.getProperty("truststore.path"));
 		sslProperties.getTruststoreProperties().setPassword(properties.getProperty("truststore.password"));
 	}
@@ -145,7 +142,7 @@ public class EbMSAdminPropertiesReader
 		signatureProperties.setSigning(!StringUtils.isEmpty(properties.getProperty("signature.keystore.path")));
 		if (signatureProperties.isSigning())
 		{
-			signatureProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("signature.keystore.type","JKS").toUpperCase()));
+			signatureProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("signature.keystore.type","PKCS12").toUpperCase()));
 			signatureProperties.getKeystoreProperties().setUri(properties.getProperty("signature.keystore.path"));
 			signatureProperties.getKeystoreProperties().setPassword(properties.getProperty("signature.keystore.password"));
 		}
@@ -156,7 +153,7 @@ public class EbMSAdminPropertiesReader
 		encryptionProperties.setEncryption(!StringUtils.isEmpty(properties.getProperty("encryption.keystore.path")));
 		if (encryptionProperties.isEncryption())
 		{
-			encryptionProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("encryption.keystore.type","JKS").toUpperCase()));
+			encryptionProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("encryption.keystore.type","PKCS12").toUpperCase()));
 			encryptionProperties.getKeystoreProperties().setUri(properties.getProperty("encryption.keystore.path"));
 			encryptionProperties.getKeystoreProperties().setPassword(properties.getProperty("encryption.keystore.password"));
 		}

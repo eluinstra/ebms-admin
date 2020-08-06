@@ -15,8 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -71,10 +69,9 @@ public class EbMSAdminPropertiesPage extends BasePage
 		{
 			try
 			{
-				val file = new File(propertiesType.getPropertiesFile());
-				val reader = new FileReader(file);
-				model = Model.of(new EbMSAdminPropertiesReader(reader).read(propertiesType));
-				this.info(new StringResourceModel("properties.loaded",this,Model.of(file)).getString());
+				val properties = WicketApplication.get().getPropertySourcesPlaceholderConfigurer().getProperties();
+				model = Model.of(new EbMSAdminPropertiesReader(properties).read(propertiesType));
+				this.info(new StringResourceModel("properties.loaded",this).getString());
 			}
 			catch (IOException e)
 			{

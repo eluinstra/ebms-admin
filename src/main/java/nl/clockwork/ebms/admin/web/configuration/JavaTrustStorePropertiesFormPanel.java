@@ -110,10 +110,10 @@ public class JavaTrustStorePropertiesFormPanel extends Panel
 	public static class JavaTrustStorePropertiesFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		KeyStoreType type = KeyStoreType.PKCS12;
+		KeyStoreType type;
 		@NonNull
-		String uri = "nl/clockwork/ebms/truststore.p12";
+		String uri;
 		@NonNull
-		String password = "password";
+		String password;
 	}
 }

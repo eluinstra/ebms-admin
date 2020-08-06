@@ -158,14 +158,14 @@ public class HttpPropertiesFormPanel extends Panel
 	{
 		private static final long serialVersionUID = 1L;
 		@NonNull
-		String host = "0.0.0.0";
+		String host;
 		@NonNull
-		Integer port = 8888;
+		Integer port;
 		//@NonNull
-		String path = "/ebms";
-		boolean chunkedStreamingMode = true;
-		boolean base64Writer = false;
-		boolean ssl = true;
+		String path;
+		boolean chunkedStreamingMode;
+		boolean base64Writer;
+		boolean ssl;
 		@NonNull
 		SslPropertiesFormData sslProperties = new SslPropertiesFormData();
 		boolean proxy;

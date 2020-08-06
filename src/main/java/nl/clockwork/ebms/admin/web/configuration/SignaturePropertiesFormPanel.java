@@ -84,7 +84,7 @@ public class SignaturePropertiesFormPanel extends Panel
 	public static class SignaturePropertiesFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		boolean signing = true;
+		boolean signing;
 		@NonNull
 		JavaKeyStorePropertiesFormData keystoreProperties = new JavaKeyStorePropertiesFormData();
 	}

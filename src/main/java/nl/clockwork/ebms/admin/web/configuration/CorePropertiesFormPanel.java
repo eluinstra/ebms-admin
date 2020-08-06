@@ -162,16 +162,16 @@ public class CorePropertiesFormPanel extends Panel
 	{
 		private static final long serialVersionUID = 1L;
 		@NonNull
-		EbMSHttpClientType httpClient = EbMSHttpClientType.DEFAULT;
+		EbMSHttpClientType httpClient;
 		@NonNull
-		EventListenerType eventListener = EventListenerType.DEFAULT;
-		String jmsBrokerUrl = "vm://localhost";
-		boolean jmsVirtualTopics = false;
-		boolean startEmbeddedBroker = false;
-		String activeMQConfigFile = "classpath:nl/clockwork/ebms/activemq.xml";
-		boolean deleteMessageContentOnProcessed = false;
-		boolean storeDuplicateMessage = true;
-		boolean storeDuplicateMessageContent = true;
+		EventListenerType eventListener;
+		String jmsBrokerUrl;
+		boolean jmsVirtualTopics;
+		boolean startEmbeddedBroker;
+		String activeMQConfigFile;
+		boolean deleteMessageContentOnProcessed;
+		boolean storeDuplicateMessage;
+		boolean storeDuplicateMessageContent;
 
 		public List<EbMSHttpClientType> getHttpClients()
 		{

@@ -16,7 +16,6 @@
 package nl.clockwork.ebms.admin.web.configuration;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 
 import org.apache.wicket.markup.html.form.Button;
@@ -31,6 +30,7 @@ import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import nl.clockwork.ebms.admin.web.WicketApplication;
 import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormData;
 
 @Slf4j
@@ -64,11 +64,10 @@ public class LoadEbMSAdminPropertiesButton extends Button
 	{
 		try
 		{
-			val file = new File(propertiesType.getPropertiesFile());
-			val reader = new FileReader(file);
-			ebMSAdminPropertiesFormData = new EbMSAdminPropertiesReader(reader).read(propertiesType);
+			val properties = WicketApplication.get().getPropertySourcesPlaceholderConfigurer().getProperties();
+			ebMSAdminPropertiesFormData = new EbMSAdminPropertiesReader(properties).read(propertiesType);
 			val page = new EbMSAdminPropertiesPage(Model.of(ebMSAdminPropertiesFormData));
-			page.info(new StringResourceModel("properties.loaded",page,Model.of(file)).getString());
+			page.info(new StringResourceModel("properties.loaded",page).getString());
 			setResponsePage(page);
 		}
 		catch (IOException | IllegalStateException e)

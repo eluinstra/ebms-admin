@@ -85,6 +85,6 @@ public class ServicePropertiesFormPanel extends Panel
 	{
 		private static final long serialVersionUID = 1L;
 		@NonNull
-		String url = "http://localhost:8089/adapter";
+		String url;
 	}
 }
