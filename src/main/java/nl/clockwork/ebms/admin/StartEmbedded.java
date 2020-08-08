@@ -69,13 +69,7 @@ public class StartEmbedded extends Start
 		start.init(cmd);
 		start.server.setHandler(start.handlerCollection);
 		val properties = getProperties();
-		val jdbcURL = start.getHsqlDbJdbcUrl(cmd,properties);
-		if (jdbcURL != null)
-		{
-			System.setProperty("ebms.jdbc.update","true");
-			System.out.println("Starting hsqldb...");
-			start.startHSQLDBServer(cmd,jdbcURL);
-		}
+		start.startHSQLDB(cmd,properties);
 		if (cmd.hasOption("jmx"))
 			start.initJMX(cmd,start.server);
 		
@@ -136,6 +130,17 @@ public class StartEmbedded extends Start
 	private static Properties getProperties() throws IOException
 	{
 		return EmbeddedAppConfig.PROPERTY_SOURCE.getProperties();
+	}
+
+	private void startHSQLDB(CommandLine cmd, Properties properties) throws IOException, AclFormatException, URISyntaxException, ParseException
+	{
+		val jdbcURL = getHsqlDbJdbcUrl(cmd,properties);
+		if (jdbcURL != null)
+		{
+			System.setProperty("ebms.jdbc.update","true");
+			System.out.println("Starting hsqldb...");
+			startHSQLDBServer(cmd,jdbcURL);
+		}
 	}
 
 	private JdbcURL getHsqlDbJdbcUrl(CommandLine cmd, Properties properties) throws IOException, AclFormatException, URISyntaxException, ParseException
