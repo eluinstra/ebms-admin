@@ -37,7 +37,7 @@ public class Utils
 	private enum Status
 	{
 		SUCCESS(EnumSet.of(EbMSMessageStatus.PROCESSED,EbMSMessageStatus.FORWARDED,EbMSMessageStatus.DELIVERED),"success","text-success"),
-		WARNING(EnumSet.of(EbMSMessageStatus.RECEIVED,EbMSMessageStatus.SENDING),"warning","text-warning"),
+		WARNING(EnumSet.of(EbMSMessageStatus.RECEIVED,EbMSMessageStatus.CREATED),"warning","text-warning"),
 		DANGER(EnumSet.of(EbMSMessageStatus.UNAUTHORIZED,EbMSMessageStatus.NOT_RECOGNIZED,EbMSMessageStatus.FAILED,EbMSMessageStatus.DELIVERY_FAILED,EbMSMessageStatus.EXPIRED),"danger","text-danger");
 		
 		EnumSet<EbMSMessageStatus> statuses;
