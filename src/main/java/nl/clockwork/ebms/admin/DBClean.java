@@ -35,6 +35,7 @@ import com.querydsl.sql.SQLExpressions;
 import com.querydsl.sql.SQLQueryFactory;
 
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import lombok.var;
@@ -59,19 +60,11 @@ public class DBClean extends Start
 		if (cmd.hasOption("h"))
 			printUsage(options);
 		
-		try (val context = new AnnotationConfigApplicationContext(DBCleanConfig.class))
+		try (val context = new AnnotationConfigApplicationContext(DBConfig.class))
 		{
 			val dbClean = createDBClean(context);
 			dbClean.execute(cmd);
 		}
-	}
-
-	private static DBClean createDBClean(AnnotationConfigApplicationContext context)
-	{
-		val queryFactory = context.getBean(SQLQueryFactory.class);
-		val transactionManager = context.getBean("dataSourceTransactionManager",PlatformTransactionManager.class);
-		val dbClean = new DBClean(queryFactory,transactionManager);
-		return dbClean;
 	}
 
 	protected static Options createOptions()
@@ -84,7 +77,16 @@ public class DBClean extends Start
 		return result;
 	}
 
+	private static DBClean createDBClean(AnnotationConfigApplicationContext context)
+	{
+		val queryFactory = context.getBean(SQLQueryFactory.class);
+		val transactionManager = context.getBean("dataSourceTransactionManager",PlatformTransactionManager.class);
+		return new DBClean(queryFactory,transactionManager);
+	}
+
+	@NonNull
 	SQLQueryFactory queryFactory;
+	@NonNull
 	PlatformTransactionManager transactionManager;
 	BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 	QCpa cpaTable = QCpa.cpa1;
@@ -94,9 +96,8 @@ public class DBClean extends Start
 	QEbmsEvent eventTable = QEbmsEvent.ebmsEvent;
 	QEbmsEventLog eventLogTable = QEbmsEventLog.ebmsEventLog;
 	
-	private void execute(final org.apache.commons.cli.CommandLine cmd) throws Exception
+	private void execute(final CommandLine cmd) throws Exception
 	{
-		
 		switch(cmd.getOptionValue("cmd",""))
 		{
 			case("cpa"):

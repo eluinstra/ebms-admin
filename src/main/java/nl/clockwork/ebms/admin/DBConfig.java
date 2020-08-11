@@ -47,6 +47,6 @@ import nl.clockwork.ebms.transaction.TransactionManagerConfig;
 		"file:${ebms.configDir}ebms-admin.embedded.advanced.properties",
 		"file:${ebms.configDir}ebms-admin.embedded.properties"},
 		ignoreResourceNotFound = true)
-public class DBCleanConfig
+public class DBConfig
 {
 }
