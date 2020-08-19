@@ -24,22 +24,41 @@ These properties van be edited in ebms-admin.embedded.properties if available an
 ===============
 = Release Notes
 ===============
+ebms-admin-2.17.3.jar:
+- upgrade to ebms-core-2.17.3.jar:
+	- fixed URL Mapping
+	- renamed status SENDING to CREATED
+	- updated libraries
+
 ebms-admin-2.17.2.jar:
 - improved properties configuration
-- improved database update
+- moved  flyway db migration to ebms-core
+- changed commandline arguments:
+	- removed db migration arguments updateDb and updateStrict
+	- renamed rate limiter argument requestsPerSecond to queriesPerSecond
+	- added user rate limiter argument userQueriesPerSecond
 - upgrade to ebms-core-2.17.2.jar:
 	- added UserRateLimiterFilter
 	- added EventListenerFilter
+		- added default property eventListener.filter=
 	- added h2 database support
+	- added flyway db migration
+		- added default properties
+			- ebms.jdbc.update=false
+			- ebms.jdbc.strict=false
 
 ebms-admin-2.17.1.1.jar:
 - fixed updateDb option
+- changed commandline arguments:
 
 ebms-admin-2.17.1.jar:
 - improved logging
 - removed Server response header
 - added flyway migration
 - added rate limiter
+- changed commandline arguments:
+	- added db migration arguments updateDb and updateStrict
+	- added rate limiter argument requestsPerSecond
 - upgrade to ebms-core-2.17.1.jar:
 	- improved logging
 	- improved error responses
@@ -47,6 +66,7 @@ ebms-admin-2.17.1.jar:
 	- fixed configuration issue, that causes send events to be rejected
 	- fixed server, client and api mode
 	- added rate limiter
+		- added default property http.requestsPerSecond=
 
 ebms-admin-2.17.0.1.jar:
 - changed default settings
@@ -55,17 +75,17 @@ ebms-admin-2.17.0.1.jar:
 
 ebms-admin-2.17.0.jar:
 - added options to enable high availability and horizontal scaling (and throttling)
-- changed properties:
-	- renamed command line argument propertiesFilesDir to configDir
+- changed command line arguments:
+	- renamed propertiesFilesDir to configDir
 	- removed property log4j.file (use -Dlog4j.configurationFile=log4j2.xml instead)
-	- added ssl commandline properties protocols and cipherSuites
-	- added jmx commandline properties
-	- added commandline properties disableEbMSClient and disableEbMSServer
+	- added ssl arguments protocols and cipherSuites
+	- added jmx arguments
+	- added arguments disableEbMSClient and disableEbMSServer
 - split up CPAService into CPAService and URLMapper
 - added new SOAP service CertificateMapper
 - updated EbMS Admin Properties Page
 - removed EbMS Core Properties Page
-- added database java commandline tools:
+- added database java command line tools:
 	- DBMigrate (java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.DBMigrate -h)
 	- DBClean (java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.DBClean -h)
 - upgrade to ebms-core-2.17.0.jar:
@@ -190,7 +210,7 @@ ebms-admin-2.16.1.jar
 = Start EbMS Admin Console with embedded EbMS adapter
 =====================================================
 show help:
-> java -cp ebms-admin-2.17.2.jar nl.clockwork.ebms.admin.StartEmbedded -h
+> java -cp ebms-admin-2.17.3.jar nl.clockwork.ebms.admin.StartEmbedded -h
 usage: Start [-authentication] [-cipherSuites <arg>]
        [-clientAuthentication] [-clientCertificateHeader <arg>]
        [-clientTrustStorePassword <arg>] [-clientTrustStorePath <arg>]
@@ -237,53 +257,53 @@ usage: Start [-authentication] [-cipherSuites <arg>]
  -userQueriesPerSecond <arg>       set requests per user per secondlimit (default: none)
 
 start with the embedded hsqldb server:
-> java -cp ebms-admin-2.17.2.jar nl.clockwork.ebms.admin.StartEmbedded -hsqldb
+> java -cp ebms-admin-2.17.3.jar nl.clockwork.ebms.admin.StartEmbedded -hsqldb
 
 start using a postgresql jdbc driver:
-> java -cp postgresql-9.3-1102-jdbc41.jar:ebms-admin-2.17.2.jar nl.clockwork.ebms.admin.StartEmbedded
+> java -cp postgresql-42.2.14.jar:ebms-admin-2.17.3.jar nl.clockwork.ebms.admin.StartEmbedded
 
 start on port 8000 (instead of 8080):
-> java -cp ebms-admin-2.17.2.jar nl.clockwork.ebms.admin.StartEmbedded -port 8000
+> java -cp ebms-admin-2.17.3.jar nl.clockwork.ebms.admin.StartEmbedded -port 8000
 
 start with soap interface:
-> java -cp ebms-admin-2.17.2.jar nl.clockwork.ebms.admin.StartEmbedded -soap
+> java -cp ebms-admin-2.17.3.jar nl.clockwork.ebms.admin.StartEmbedded -soap
 
 start with soap interface and without a web interface:
-> java -cp ebms-admin-2.17.2.jar nl.clockwork.ebms.admin.StartEmbedded -soap -headless
+> java -cp ebms-admin-2.17.3.jar nl.clockwork.ebms.admin.StartEmbedded -soap -headless
 
 start with config directory conf/
-> java -cp ebms-admin-2.17.2.jar nl.clockwork.ebms.admin.StartEmbedded -configDir conf/
+> java -cp ebms-admin-2.17.3.jar nl.clockwork.ebms.admin.StartEmbedded -configDir conf/
 
 start with a log4j2 file conf/log4j2.xml:
-> java -Dlog4j.configurationFile=conf/log4j2.xml -cp ebms-admin-2.17.2.jar nl.clockwork.ebms.admin.StartEmbedded
+> java -Dlog4j.configurationFile=conf/log4j2.xml -cp ebms-admin-2.17.3.jar nl.clockwork.ebms.admin.StartEmbedded
 
 start without using the default java truststore:
-> java -Djavax.net.ssl.trustStore= -cp ebms-admin-2.17.2.jar nl.clockwork.ebms.admin.StartEmbedded
+> java -Djavax.net.ssl.trustStore= -cp ebms-admin-2.17.3.jar nl.clockwork.ebms.admin.StartEmbedded
 
 start with https using keystore keystore.p12
-> java -Djavax.net.ssl.trustStore= -cp ebms-admin-2.17.2.jar nl.clockwork.ebms.admin.StartEmbedded \
+> java -Djavax.net.ssl.trustStore= -cp ebms-admin-2.17.3.jar nl.clockwork.ebms.admin.StartEmbedded \
 	-ssl -keyStoreType PKCS12 -keyStorePath keystore.p12 -keyStorePassword password
 
 start with https using keystore keystore.p12
 	and require client authentication using truststore truststore.p12 (which holds the client's certificate chain)
-> java -Djavax.net.ssl.trustStore= -cp ebms-admin-2.17.2.jar nl.clockwork.ebms.admin.StartEmbedded \
+> java -Djavax.net.ssl.trustStore= -cp ebms-admin-2.17.3.jar nl.clockwork.ebms.admin.StartEmbedded \
 	-ssl -keyStoreType PKCS12 -keyStorePath keystore.p12 -keyStorePassword password \
 	-clientAuthentication -trustStoreType PKCS12 -trustStorePath truststore.p12 -trustStorePassword password
 
 start with https using keystore keystore.p12
 	and require ssl client authentication using truststore truststore.p12 (which holds the client's certificate chain)
 	and authenticate client ssl certificate using clientTruststore.p12 (which holds the client's certificate)
-> java -Djavax.net.ssl.trustStore= -cp ebms-admin-2.17.2.jar nl.clockwork.ebms.admin.StartEmbedded \
+> java -Djavax.net.ssl.trustStore= -cp ebms-admin-2.17.3.jar nl.clockwork.ebms.admin.StartEmbedded \
 	-ssl -keyStoreType PKCS12 -keyStorePath keystore.p12 -keyStorePassword password \
 	-clientAuthentication -trustStoreType PKCS12 -trustStorePath truststore.p12 -trustStorePassword password \
 	-authentication -clientTrustStoreType PKCS12 -clientTrustStorePath clientTruststore.p12 -clientTrustStorePassword password
 
 start using basic authentication
-> java -cp ebms-admin-2.17.2.jar nl.clockwork.ebms.admin.StartEmbedded -authentication
+> java -cp ebms-admin-2.17.3.jar nl.clockwork.ebms.admin.StartEmbedded -authentication
 
 start hsqldb and ebms-admin as 2 separate applications:
 > java -cp ebms-admin-2.17.0-SNAPSHOT.jar org.hsqldb.server.Server --database.0 file:hsqldb/ebms --dbname.0 ebms -port 9001
-> java -Djavax.net.ssl.trustStore= -cp ebms-admin-2.17.2.jar nl.clockwork.ebms.admin.StartEmbedded -soap
+> java -Djavax.net.ssl.trustStore= -cp ebms-admin-2.17.3.jar nl.clockwork.ebms.admin.StartEmbedded -soap
 
 When you start you can see the following information in the console:
 Using config directory: 
@@ -293,13 +313,13 @@ Using config directory:
 [Server@f0da945]: To close normally, connect and execute SHUTDOWN SQL
 [Server@f0da945]: From command line, use [Ctrl]+[C] to abort abruptly
 EbMS tables already exist
-Using keyStore jar:file:/home/digipoort/ebms-admin-2.17.2.jar!/keystore.p12
-Using trustStore jar:file:/home/digipoort/ebms-admin-2.17.2.jar!/truststore.p12
+Using keyStore jar:file:/home/digipoort/ebms-admin-2.17.3.jar!/keystore.p12
+Using trustStore jar:file:/home/digipoort/ebms-admin-2.17.3.jar!/truststore.p12
 Web server configured on https://localhost:8443/
 SOAP service configured on https://localhost:8443/service
 EbMS service configured on https://0.0.0.0:8888/digipoortStub
 Configuring web server client certificate authentication:
-Using clientTrustStore jar:file:/home/digipoort/ebms-admin-2.17.2.jar!/clientTruststore.p12
+Using clientTrustStore jar:file:/home/digipoort/ebms-admin-2.17.3.jar!/clientTruststore.p12
 Starting web server...
 
 Next configure the remote EbMS service in http://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage
@@ -310,7 +330,7 @@ If you want to override 'advanced' properties from the default.properties file t
 = Start EbMS Admin Console standalone
 =====================================
 show help:
-> java -cp ebms-admin-2.17.2.jar nl.clockwork.ebms.admin.Start -h
+> java -cp ebms-admin-2.17.3.jar nl.clockwork.ebms.admin.Start -h
 usage: Start [-authentication] [-cipherSuites <arg>]
        [-clientAuthentication] [-clientCertificateHeader <arg>]
        [-clientTrustStorePassword <arg>] [-clientTrustStorePath <arg>]
@@ -350,7 +370,7 @@ usage: Start [-authentication] [-cipherSuites <arg>]
  -userQueriesPerSecond <arg>       set requests per user per secondlimit (default: none)
 
 start:
-> java -cp ebms-admin-2.17.2.jar nl.clockwork.ebms.admin.Start
+> java -cp ebms-admin-2.17.3.jar nl.clockwork.ebms.admin.Start
 
 ===========================================================================================
 = Configure 2 EbMS Admin Consoles with embedded EbMS adapter to communicate with each other
@@ -358,9 +378,9 @@ start:
 Example using 2 ebms adapters (or see https://github.com/eluinstra/ebms-docker for a docker example):
 
 - create directory overheid
-- copy ebms-admin-2.17.2.jar to overheid
+- copy ebms-admin-2.17.3.jar to overheid
 - start admin console on port 8000 with a hsqldb server:
-> java -cp ebms-admin-2.17.2.jar nl.clockwork.ebms.admin.StartEmbedded -port 8000 -hsqldb
+> java -cp ebms-admin-2.17.3.jar nl.clockwork.ebms.admin.StartEmbedded -port 8000 -hsqldb
 
 - open web browser at http://localhost:8000
 - configure properties at http://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage
@@ -371,9 +391,9 @@ Example using 2 ebms adapters (or see https://github.com/eluinstra/ebms-docker f
 - upload CPA cpaStubEBF.rm.https.signed.xml at http://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.service.cpa.CPAUploadPage
 
 - create directory digipoort
-- copy ebms-admin-2.17.2.jar to digipoort
+- copy ebms-admin-2.17.3.jar to digipoort
 - start admin console on default port 8080 with a hsqldb server:
-> java -cp ebms-admin-2.17.2.jar nl.clockwork.ebms.admin.StartEmbedded -hsqldb
+> java -cp ebms-admin-2.17.3.jar nl.clockwork.ebms.admin.StartEmbedded -hsqldb
 - open web browser at http://localhost:8080
 - configure properties at http://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage
 	- use default properties, so no changes
