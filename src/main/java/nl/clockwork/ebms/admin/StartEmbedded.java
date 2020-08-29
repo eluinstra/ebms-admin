@@ -72,8 +72,7 @@ public class StartEmbedded extends Start
 		start.startHSQLDB(cmd,properties);
 		if (cmd.hasOption("jmx"))
 			start.initJMX(cmd,start.server);
-		
-		if (cmd.hasOption("soap") || !cmd.hasOption("headless") || !cmd.hasOption("disableEbMSServer"))
+		if (cmd.hasOption("soap") || cmd.hasOption("health") || !cmd.hasOption("headless") || !cmd.hasOption("disableEbMSServer"))
 			try (val context = new AnnotationConfigWebApplicationContext())
 			{
 				context.register(EmbeddedAppConfig.class);
@@ -83,6 +82,11 @@ public class StartEmbedded extends Start
 				{
 					start.initWebServer(cmd,start.server);
 					start.handlerCollection.addHandler(start.createWebContextHandler(cmd,contextLoaderListener));
+				}
+				if (cmd.hasOption("health"))
+				{
+					start.initHealthServer(cmd,start.server);
+					start.handlerCollection.addHandler(start.createHealthContextHandler(cmd,contextLoaderListener));
 				}
 				if (!cmd.hasOption("disableEbMSServer"))
 				{
@@ -120,8 +124,6 @@ public class StartEmbedded extends Start
 		val result = Start.createOptions();
 		result.addOption("hsqldb",false,"start hsqldb server");
 		result.addOption("hsqldbDir",true,"set hsqldb location (default: hsqldb)");
-		result.addOption("soap",false,"start soap service");
-		result.addOption("headless",false,"start without web interface");
 		result.addOption("disableEbMSServer",false,"disable ebms server");
 		result.addOption("disableEbMSClient",false,"disable ebms client");
 		return result;

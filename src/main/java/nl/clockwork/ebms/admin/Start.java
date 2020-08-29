@@ -94,7 +94,6 @@ public class Start
 		val start = new Start();
 		start.init(cmd);
 		start.server.setHandler(start.handlerCollection);
-		start.initWebServer(cmd,start.server);
 		if (cmd.hasOption("jmx"))
 			start.initJMX(cmd,start.server);
 		try (val context = new AnnotationConfigWebApplicationContext())
@@ -102,7 +101,16 @@ public class Start
 			context.register(AppConfig.class);
 			getConfigClasses().forEach(c -> context.register(c));
 			val contextLoaderListener = new ContextLoaderListener(context);
-			start.handlerCollection.addHandler(start.createWebContextHandler(cmd,contextLoaderListener));
+			if (cmd.hasOption("soap") || !cmd.hasOption("headless"))
+			{
+				start.initWebServer(cmd,start.server);
+				start.handlerCollection.addHandler(start.createWebContextHandler(cmd,contextLoaderListener));
+			}
+			if (cmd.hasOption("health"))
+			{
+				start.initHealthServer(cmd,start.server);
+				start.handlerCollection.addHandler(start.createHealthContextHandler(cmd,contextLoaderListener));
+			}
 			System.out.println("Starting web server...");
 			try
 			{
@@ -125,6 +133,10 @@ public class Start
 		result.addOption("host",true,"set host");
 		result.addOption("port",true,"set port");
 		result.addOption("path",true,"set path");
+		result.addOption("soap",false,"start soap service");
+		result.addOption("headless",false,"start without web interface");
+		result.addOption("health",false,"start health service");
+		result.addOption("healthPort",true,"set health service port");
 		result.addOption("connectionLimit",true,"set connection limit (default: none)");
 		result.addOption("queriesPerSecond",true,"set requests per second limit (default: none)");
 		result.addOption("userQueriesPerSecond",true,"set requests per user per secondlimit (default: none)");
@@ -180,9 +192,26 @@ public class Start
 		result.setHost(cmd.getOptionValue("host","0.0.0.0"));
 		result.setPort(Integer.parseInt(cmd.getOptionValue("port","8080")));
 		result.setName("web");
-		System.out.println("Web server configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + getPath(cmd));
+		if (!cmd.hasOption("headless"))
+			System.out.println("Web server configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + getPath(cmd));
 		if (cmd.hasOption("soap"))
 			System.out.println("SOAP service configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + "/service");
+		return result;
+	}
+
+	protected void initHealthServer(CommandLine cmd, Server server) throws MalformedURLException, IOException
+	{
+		val connector = createHealthConnector(cmd);
+		server.addConnector(connector);
+	}
+
+	private ServerConnector createHealthConnector(CommandLine cmd)
+	{
+		val result = new ServerConnector(this.server);
+		result.setHost(cmd.getOptionValue("host","0.0.0.0"));
+		result.setPort(Integer.parseInt(cmd.getOptionValue("healthPort","8008")));
+		result.setName("health");
+		System.out.println("Health service configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + "/health");
 		return result;
 	}
 
@@ -249,7 +278,8 @@ public class Start
 		connector.setHost(cmd.getOptionValue("host","0.0.0.0"));
 		connector.setPort(Integer.parseInt(cmd.getOptionValue("port","8443")));
 		connector.setName("web");
-		System.out.println("Web server configured on https://" + Utils.getHost(connector.getHost()) + ":" + connector.getPort() + getPath(cmd));
+		if (!cmd.hasOption("headless"))
+			System.out.println("Web server configured on https://" + Utils.getHost(connector.getHost()) + ":" + connector.getPort() + getPath(cmd));
 		if (cmd.hasOption("soap"))
 			System.out.println("SOAP service configured on https://" + Utils.getHost(connector.getHost()) + ":" + connector.getPort() + "/service");
 		return connector;
@@ -391,7 +421,17 @@ public class Start
 		return result;
 	}
 
-	protected static void printUsage(Options options)
+	protected ServletContextHandler createHealthContextHandler(CommandLine cmd, ContextLoaderListener contextLoaderListener) throws Exception
+	{
+		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
+		result.setVirtualHosts(new String[] {"@health"});
+		result.setInitParameter("configuration","deployment");
+		result.setContextPath("/");
+		result.addServlet(nl.clockwork.ebms.server.servlet.HealthServlet.class,"/health/*");
+		return result;
+	}
+
+		protected static void printUsage(Options options)
 	{
 		val formatter = new HelpFormatter();
 		formatter.printHelp("Start",options,true);
