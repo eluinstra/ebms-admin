@@ -24,6 +24,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -40,7 +41,7 @@ import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @AllArgsConstructor
-public class DBExecute extends Start
+public class DBExecute
 {
 	public static void main(String[] args) throws Exception
 	{
@@ -66,6 +67,13 @@ public class DBExecute extends Start
 		result.addOption("h",false,"print this message");
 		result.addOption("file",true,"path to database script file");
 		return result;
+	}
+
+	private static void printUsage(Options options)
+	{
+		val formatter = new HelpFormatter();
+		formatter.printHelp("DBExecute",options,true);
+		System.exit(0);
 	}
 
 	private static DBExecute createDBExecute(AnnotationConfigApplicationContext context)

@@ -51,6 +51,7 @@ import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.web.configuration.JdbcURL;
+import nl.clockwork.ebms.server.servlet.EbMSServlet;
 
 @FieldDefaults(level = AccessLevel.PROTECTED)
 public class StartEmbedded extends Start
@@ -58,20 +59,25 @@ public class StartEmbedded extends Start
 	public static void main(String[] args) throws Exception
 	{
 		LogUtils.setLoggerClass(org.apache.cxf.common.logging.Slf4jLogger.class);
+		val app = new StartEmbedded();
+		app.startService(args);
+	}
+
+	private void startService(String[] args) throws ParseException, IOException, AclFormatException, URISyntaxException, Exception, MalformedURLException, NoSuchAlgorithmException, InterruptedException
+	{
 		val options = createOptions();
 		val cmd = new DefaultParser().parse(options,args);
 		if (cmd.hasOption("h"))
 			printUsage(options);
-		System.setProperty("org.apache.activemq.SERIALIZABLE_PACKAGES","*");
+		setProperty("org.apache.activemq.SERIALIZABLE_PACKAGES","*");
 		if (cmd.hasOption("disableEbMSClient"))
-			System.setProperty("eventProcessor.start","false");
-		val start = new StartEmbedded();
-		start.init(cmd);
-		start.server.setHandler(start.handlerCollection);
+			setProperty("eventProcessor.start","false");
+		init(cmd);
+		server.setHandler(handlerCollection);
 		val properties = getProperties();
-		start.startHSQLDB(cmd,properties);
+		startHSQLDB(cmd,properties);
 		if (cmd.hasOption("jmx"))
-			start.initJMX(cmd,start.server);
+			initJMX(cmd,server);
 		if (cmd.hasOption("soap") || cmd.hasOption("health") || !cmd.hasOption("headless") || !cmd.hasOption("disableEbMSServer"))
 			try (val context = new AnnotationConfigWebApplicationContext())
 			{
@@ -80,48 +86,48 @@ public class StartEmbedded extends Start
 				val contextLoaderListener = new ContextLoaderListener(context);
 				if (cmd.hasOption("soap") || !cmd.hasOption("headless"))
 				{
-					start.initWebServer(cmd,start.server);
-					start.handlerCollection.addHandler(start.createWebContextHandler(cmd,contextLoaderListener));
+					initWebServer(cmd,server);
+					handlerCollection.addHandler(createWebContextHandler(cmd,contextLoaderListener));
 				}
 				if (cmd.hasOption("health"))
 				{
-					start.initHealthServer(cmd,start.server);
-					start.handlerCollection.addHandler(start.createHealthContextHandler(cmd,contextLoaderListener));
+					initHealthServer(cmd,server);
+					handlerCollection.addHandler(createHealthContextHandler(cmd,contextLoaderListener));
 				}
 				if (!cmd.hasOption("disableEbMSServer"))
 				{
-					start.initEbMSServer(properties,start.server);
-					start.handlerCollection.addHandler(start.createEbMSContextHandler(properties,contextLoaderListener));
+					initEbMSServer(properties,server);
+					handlerCollection.addHandler(createEbMSContextHandler(properties,contextLoaderListener));
 				}
-				System.out.println("Starting web server...");
+				println("Starting Server...");
 				try
 				{
-					start.server.start();
+					server.start();
 				}
 				catch (Exception e)
 				{
-					start.server.stop();
-					System.exit(1);
+					server.stop();
+					exit(1);
 				}
-				System.out.println("Web server started.");
-				start.server.join();
+				println("Server started.");
+				server.join();
 			}
 		else
 			try (val context = new AnnotationConfigApplicationContext())
 			{
 				context.register(EmbeddedAppConfig.class);
 				getConfigClasses().forEach(c -> context.register(c));
-				System.out.println("Starting server...");
+				println("Starting Server...");
 				context.refresh();
 				context.start();
-				System.out.println("Server started.");
+				println("Server started.");
 				Thread.currentThread().join();
 			}
 	}
 
-	protected static Options createOptions()
+	protected Options createOptions()
 	{
-		val result = Start.createOptions();
+		val result = super.createOptions();
 		result.addOption("hsqldb",false,"start hsqldb server");
 		result.addOption("hsqldbDir",true,"set hsqldb location (default: hsqldb)");
 		result.addOption("disableEbMSServer",false,"disable ebms server");
@@ -129,7 +135,7 @@ public class StartEmbedded extends Start
 		return result;
 	}
 	
-	private static Properties getProperties() throws IOException
+	private Properties getProperties() throws IOException
 	{
 		return EmbeddedAppConfig.PROPERTY_SOURCE.getProperties();
 	}
@@ -139,8 +145,8 @@ public class StartEmbedded extends Start
 		val jdbcURL = getHsqlDbJdbcUrl(cmd,properties);
 		if (jdbcURL != null)
 		{
-			System.setProperty("ebms.jdbc.update","true");
-			System.out.println("Starting hsqldb...");
+			setProperty("ebms.jdbc.update","true");
+			println("Starting HSQLDB Server...");
 			startHSQLDBServer(cmd,jdbcURL);
 		}
 	}
@@ -153,8 +159,8 @@ public class StartEmbedded extends Start
 			result = nl.clockwork.ebms.admin.web.configuration.Utils.parseJdbcURL(properties.getProperty("ebms.jdbc.url"),new JdbcURL());
 			if (!result.getHost().matches("(localhost|127.0.0.1)"))
 			{
-				System.out.println("Cannot start server on " + result.getHost());
-				System.exit(1);
+				println("Cannot start HSQLDB Server on " + result.getHost());
+				exit(1);
 			}
 		}
 		return result;
@@ -200,11 +206,11 @@ public class StartEmbedded extends Start
 	{
 		val httpConfig = new HttpConfiguration();
 		httpConfig.setSendServerVersion(false);
-		val result = new ServerConnector(this.server,new HttpConnectionFactory(httpConfig));
+		val result = new ServerConnector(server,new HttpConnectionFactory(httpConfig));
 		result.setHost(StringUtils.isEmpty(properties.getProperty("ebms.host")) ? "0.0.0.0" : properties.getProperty("ebms.host"));
 		result.setPort(StringUtils.isEmpty(properties.getProperty("ebms.port"))  ? 8888 : Integer.parseInt(properties.getProperty("ebms.port")));
 		result.setName("ebms");
-		System.out.println("EbMS service configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + properties.getProperty("ebms.path"));
+		println("EbMS Service configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + properties.getProperty("ebms.path"));
 		return result;
 	}
 
@@ -236,8 +242,8 @@ public class StartEmbedded extends Start
 		}
 		else
 		{
-			System.out.println("EbMS service not available: keyStore " + properties.getProperty("keystore.path") + " not found!");
-			System.exit(1);
+			println("EbMS Service not available: keyStore " + properties.getProperty("keystore.path") + " not found!");
+			exit(1);
 		}
 	}
 
@@ -253,8 +259,8 @@ public class StartEmbedded extends Start
 		}
 		else
 		{
-			System.out.println("EbMS service not available: trustStore " + properties.getProperty("truststore.path") + " not found!");
-			System.exit(1);
+			println("EbMS Service not available: trustStore " + properties.getProperty("truststore.path") + " not found!");
+			exit(1);
 		}
 	}
 
@@ -262,11 +268,11 @@ public class StartEmbedded extends Start
 	{
 		val httpConfig = new HttpConfiguration();
 		httpConfig.setSendServerVersion(false);
-		val result = new ServerConnector(this.server,sslContextFactory,new HttpConnectionFactory(httpConfig));
+		val result = new ServerConnector(server,sslContextFactory,new HttpConnectionFactory(httpConfig));
 		result.setHost(StringUtils.isEmpty(properties.getProperty("ebms.host")) ? "0.0.0.0" : properties.getProperty("ebms.host"));
 		result.setPort(StringUtils.isEmpty(properties.getProperty("ebms.port"))  ? 8888 : Integer.parseInt(properties.getProperty("ebms.port")));
 		result.setName("ebms");
-		System.out.println("EbMS service configured on https://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + properties.getProperty("ebms.path"));
+		println("EbMS Service configured on https://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + properties.getProperty("ebms.path"));
 		return result;
 	}
 
@@ -281,7 +287,7 @@ public class StartEmbedded extends Start
 			result.addFilter(createUserRateLimiterFilterHolder(properties.getProperty("ebms.userQueriesPerSecond")),"/*",EnumSet.allOf(DispatcherType.class));
 		if ("true".equals(properties.getProperty("https.clientCertificateAuthentication").toLowerCase()))
 			result.addFilter(createClientCertificateManagerFilterHolder(properties.getProperty("https.clientCertificateHeader")),"/*",EnumSet.allOf(DispatcherType.class));
-		result.addServlet(nl.clockwork.ebms.server.servlet.EbMSServlet.class,properties.getProperty("ebms.path"));
+		result.addServlet(EbMSServlet.class,properties.getProperty("ebms.path"));
 		result.addEventListener(contextLoaderListener);
 		return result;
 	}

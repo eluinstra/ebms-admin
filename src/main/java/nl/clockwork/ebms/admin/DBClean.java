@@ -26,8 +26,11 @@ import java.time.format.DateTimeParseException;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.lang3.StringUtils;
+import org.beryx.textio.TextIO;
+import org.beryx.textio.TextIoFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -49,9 +52,10 @@ import nl.clockwork.ebms.querydsl.model.QEbmsMessageEvent;
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @RequiredArgsConstructor
-public class DBClean extends Start
+public class DBClean implements SystemInterface
 {
 	private static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+	TextIO textIO = TextIoFactory.getTextIO();
 
 	public static void main(String[] args) throws Exception
 	{
@@ -67,7 +71,7 @@ public class DBClean extends Start
 		}
 	}
 
-	protected static Options createOptions()
+	private static Options createOptions()
 	{
 		val result = new Options();
 		result.addOption("h",false,"print this message");
@@ -75,6 +79,13 @@ public class DBClean extends Start
 		result.addOption("cpaId",true,"the cpaId of the CPA to delete");
 		result.addOption("dateFrom",true,"the date from which objects will be deleted [format: YYYYMMDD][default: " + dateFormatter.format(LocalDate.now().minusDays(30)) + "]");
 		return result;
+	}
+
+	private static void printUsage(Options options)
+	{
+		val formatter = new HelpFormatter();
+		formatter.printHelp("DBClean",options,true);
+		System.exit(0);
 	}
 
 	private static DBClean createDBClean(AnnotationConfigApplicationContext context)
@@ -108,7 +119,7 @@ public class DBClean extends Start
 				executeCleanMessages(cmd);
 				break;
 			default:
-				print(cmd.getOptionValue("cmd") + " not recognized");
+				println(cmd.getOptionValue("cmd") + " not recognized");
 		}
 	}
 
@@ -116,7 +127,7 @@ public class DBClean extends Start
 	{
 		if (!cmd.hasOption("cpaId"))
 		{
-			print("Option cpaId missing");
+			println("Option cpaId missing");
 			return false;
 		}
 		return true;
@@ -137,7 +148,7 @@ public class DBClean extends Start
 					cleanCPA(cpaId);
 			}
 			else
-				print("CPA " + cpaId + " not found!");
+				println("CPA " + cpaId + " not found!");
 		}
 		catch (Exception e)
 		{
@@ -151,7 +162,7 @@ public class DBClean extends Start
 		val dateFrom = createDateFrom(cmd.getOptionValue("dateFrom"));
 		if (dateFrom != null)
 		{
-			print("using fromDate " + dateFrom);
+			println("using fromDate " + dateFrom);
 			val status = transactionManager.getTransaction(null);
 			try
 			{
@@ -163,7 +174,7 @@ public class DBClean extends Start
 			}
 			transactionManager.commit(status);
 		}
-		print("Unable to parse date " + cmd.getOptionValue("dateFrom"));
+		println("Unable to parse date " + cmd.getOptionValue("dateFrom"));
 	}
 
 	private static Instant createDateFrom(String s)
@@ -184,23 +195,23 @@ public class DBClean extends Start
 		val selectMessageIdsByCpaId = SQLExpressions.select(messageTable.messageId).from(messageTable).where(messageTable.cpaId.eq(cpaId));
 
 		var result = queryFactory.delete(eventLogTable).where(eventLogTable.messageId.in(selectMessageIdsByCpaId)).execute();
-		print(result + " eventLogs deleted");
+		println(result + " eventLogs deleted");
 
 		result = queryFactory.delete(eventTable).where(eventTable.messageId.in(selectMessageIdsByCpaId)).execute();
-		print(result + " events deleted");
+		println(result + " events deleted");
 
 		result = queryFactory.delete(messageEventTable).where(messageEventTable.messageId.in(selectMessageIdsByCpaId)).execute();
-		print(result + " messageEvents deleted");
+		println(result + " messageEvents deleted");
 
 		result = queryFactory.delete(attachmentTable).where(attachmentTable.messageId.in(selectMessageIdsByCpaId)).execute();
-		print(result + " attachments deleted");
+		println(result + " attachments deleted");
 
 		result = queryFactory.delete(messageTable).where(messageTable.cpaId.eq(cpaId)).execute();
-		print(result + " messages deleted");
+		println(result + " messages deleted");
 
 		//result = queryFactory.delete(cpaTable).where(cpaTable.cpaId.eq(cpaId)).execute();
 		//print("cpa " + cpaId + " deleted");
-		print("delete cpa " + cpaId + " in ebms-admin to delete it from the cache!!!");
+		println("delete cpa " + cpaId + " in ebms-admin to delete it from the cache!!!");
 	}
 
 	private void cleanMessages(Instant dateFrom)
@@ -208,23 +219,18 @@ public class DBClean extends Start
 		val selectMessageIdsByPersistTime = SQLExpressions.select(messageTable.messageId).from(messageTable).where(messageTable.persistTime.loe(dateFrom));
 
 		var result = queryFactory.delete(eventLogTable).where(eventLogTable.messageId.in(selectMessageIdsByPersistTime)).execute();
-		print(result + " eventLogs deleted");
+		println(result + " eventLogs deleted");
 
 		result = queryFactory.delete(eventTable).where(eventTable.messageId.in(selectMessageIdsByPersistTime)).execute();
-		print(result + " events deleted");
+		println(result + " events deleted");
 
 		result = queryFactory.delete(messageEventTable).where(messageEventTable.messageId.in(selectMessageIdsByPersistTime)).execute();
-		print(result + " messageEvents deleted");
+		println(result + " messageEvents deleted");
 
 		result = queryFactory.delete(attachmentTable).where(attachmentTable.messageId.in(selectMessageIdsByPersistTime)).execute();
-		print(result + " attachments deleted");
+		println(result + " attachments deleted");
 
 		result = queryFactory.delete(messageTable).where(messageTable.persistTime.loe(dateFrom)).execute();
-		print(result + " messages deleted");
-	}
-
-	private void print(String s)
-	{
-		System.out.println(s);
+		println(result + " messages deleted");
 	}
 }

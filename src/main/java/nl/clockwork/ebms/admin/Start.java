@@ -36,10 +36,12 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.common.logging.LogUtils;
+import org.apache.cxf.transport.servlet.CXFServlet;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextIoFactory;
 import org.eclipse.jetty.jmx.ConnectorServer;
@@ -70,10 +72,11 @@ import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.web.ExtensionProvider;
 import nl.clockwork.ebms.security.KeyStoreType;
+import nl.clockwork.ebms.server.servlet.HealthServlet;
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @RequiredArgsConstructor
-public class Start
+public class Start implements SystemInterface
 {
 	protected static final String DEFAULT_KEYSTORE_TYPE = KeyStoreType.PKCS12.name();
 	protected static final String DEFAULT_KEYSTORE_FILE = "nl/clockwork/ebms/keystore.p12";
@@ -87,15 +90,20 @@ public class Start
 	public static void main(String[] args) throws Exception
 	{
 		LogUtils.setLoggerClass(org.apache.cxf.common.logging.Slf4jLogger.class);
+		val app = new Start();
+		app.startService(args);
+	}
+
+	private void startService(String[] args) throws ParseException, Exception, MalformedURLException, IOException, InterruptedException
+	{
 		val options = createOptions();
 		val cmd = new DefaultParser().parse(options,args);
 		if (cmd.hasOption("h"))
 			printUsage(options);
-		val start = new Start();
-		start.init(cmd);
-		start.server.setHandler(start.handlerCollection);
+		init(cmd);
+		server.setHandler(handlerCollection);
 		if (cmd.hasOption("jmx"))
-			start.initJMX(cmd,start.server);
+			initJMX(cmd,server);
 		try (val context = new AnnotationConfigWebApplicationContext())
 		{
 			context.register(AppConfig.class);
@@ -103,30 +111,30 @@ public class Start
 			val contextLoaderListener = new ContextLoaderListener(context);
 			if (cmd.hasOption("soap") || !cmd.hasOption("headless"))
 			{
-				start.initWebServer(cmd,start.server);
-				start.handlerCollection.addHandler(start.createWebContextHandler(cmd,contextLoaderListener));
+				initWebServer(cmd,server);
+				handlerCollection.addHandler(createWebContextHandler(cmd,contextLoaderListener));
 			}
 			if (cmd.hasOption("health"))
 			{
-				start.initHealthServer(cmd,start.server);
-				start.handlerCollection.addHandler(start.createHealthContextHandler(cmd,contextLoaderListener));
+				initHealthServer(cmd,server);
+				handlerCollection.addHandler(createHealthContextHandler(cmd,contextLoaderListener));
 			}
-			System.out.println("Starting web server...");
+			println("Starting Server...");
 			try
 			{
-				start.server.start();
+				server.start();
 			}
 			catch (Exception e)
 			{
-				start.server.stop();
-				System.exit(1);
+				server.stop();
+				exit(1);
 			}
-			System.out.println("Web server started.");
-			start.server.join();
+			println("Server started.");
+			server.join();
 		}
 	}
 
-	protected static Options createOptions()
+	protected Options createOptions()
 	{
 		val result = new Options();
 		result.addOption("h",false,"print this message");
@@ -163,7 +171,14 @@ public class Start
 		return result;
 	}
 
-	protected static List<Class<?>> getConfigClasses()
+	protected void printUsage(Options options)
+	{
+		val formatter = new HelpFormatter();
+		formatter.printHelp(getClass().getSimpleName(),options,true);
+		exit(0);
+	}
+
+	protected List<Class<?>> getConfigClasses()
 	{
 		return ExtensionProvider.get().stream()
 				.filter(p -> p.getSpringConfigurationClass() != null)
@@ -174,8 +189,8 @@ public class Start
 	protected void init(CommandLine cmd)
 	{
 		val configDir = cmd.getOptionValue("configDir","");
-		System.setProperty("ebms.configDir",configDir);
-		System.out.println("Using config directory: " + configDir);
+		setProperty("ebms.configDir",configDir);
+		println("Using config directory: " + configDir);
 	}
 
 	protected void initWebServer(CommandLine cmd, Server server) throws MalformedURLException, IOException
@@ -193,25 +208,25 @@ public class Start
 		result.setPort(Integer.parseInt(cmd.getOptionValue("port","8080")));
 		result.setName("web");
 		if (!cmd.hasOption("headless"))
-			System.out.println("Web server configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + getPath(cmd));
+			println("Web Server configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + getPath(cmd));
 		if (cmd.hasOption("soap"))
-			System.out.println("SOAP service configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + "/service");
+			println("SOAP Service configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + "/service");
 		return result;
 	}
 
 	protected void initHealthServer(CommandLine cmd, Server server) throws MalformedURLException, IOException
 	{
-		val connector = createHealthConnector(cmd);
+		val connector = createHealthConnector(cmd,server);
 		server.addConnector(connector);
 	}
 
-	private ServerConnector createHealthConnector(CommandLine cmd)
+	private ServerConnector createHealthConnector(CommandLine cmd, Server server)
 	{
-		val result = new ServerConnector(this.server);
+		val result = new ServerConnector(server);
 		result.setHost(cmd.getOptionValue("host","0.0.0.0"));
 		result.setPort(Integer.parseInt(cmd.getOptionValue("healthPort","8008")));
 		result.setName("health");
-		System.out.println("Health service configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + "/health");
+		println("Health Service configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + "/health");
 		return result;
 	}
 
@@ -233,7 +248,7 @@ public class Start
 		val keyStore = getResource(keyStorePath);
 		if (keyStore != null && keyStore.exists())
 		{
-			System.out.println("Using keyStore " + keyStore.getURI());
+			println("Using keyStore " + keyStore.getURI());
 			val protocols = cmd.getOptionValue("protocols");
 			if (!StringUtils.isEmpty(protocols))
 				sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(protocols,',')));
@@ -246,8 +261,8 @@ public class Start
 		}
 		else
 		{
-			System.out.println("Web server not available: keyStore " + keyStorePath + " not found!");
-			System.exit(1);
+			println("Web Server not available: keyStore " + keyStorePath + " not found!");
+			exit(1);
 		}
 	}
 
@@ -259,7 +274,7 @@ public class Start
 		val trustStore = getResource(trustStorePath);
 		if (trustStore != null && trustStore.exists())
 		{
-			System.out.println("Using trustStore " + trustStore.getURI());
+			println("Using trustStore " + trustStore.getURI());
 			sslContextFactory.setNeedClientAuth(true);
 			sslContextFactory.setTrustStoreType(trustStoreType);
 			sslContextFactory.setTrustStoreResource(trustStore);
@@ -267,8 +282,8 @@ public class Start
 		}
 		else
 		{
-			System.out.println("Web server not available: trustStore " + trustStorePath + " not found!");
-			System.exit(1);
+			println("Web Server not available: trustStore " + trustStorePath + " not found!");
+			exit(1);
 		}
 	}
 
@@ -279,9 +294,9 @@ public class Start
 		connector.setPort(Integer.parseInt(cmd.getOptionValue("port","8443")));
 		connector.setName("web");
 		if (!cmd.hasOption("headless"))
-			System.out.println("Web server configured on https://" + Utils.getHost(connector.getHost()) + ":" + connector.getPort() + getPath(cmd));
+			println("Web Server configured on https://" + Utils.getHost(connector.getHost()) + ":" + connector.getPort() + getPath(cmd));
 		if (cmd.hasOption("soap"))
-			System.out.println("SOAP service configured on https://" + Utils.getHost(connector.getHost()) + ":" + connector.getPort() + "/service");
+			println("SOAP Service configured on https://" + Utils.getHost(connector.getHost()) + ":" + connector.getPort() + "/service");
 		return connector;
 	}
 
@@ -292,7 +307,7 @@ public class Start
 
 	protected void initJMX(CommandLine cmd, Server server) throws Exception
 	{
-		System.out.println("Starting jmx server...");
+		println("Starting JMX Server...");
 		val mBeanContainer = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
 		server.addBean(mBeanContainer);
 		server.addBean(Log.getLog());
@@ -300,7 +315,7 @@ public class Start
 		//val sslContextFactory = cmd.hasOption("ssl") ? createSslContextFactory(cmd,false) : null;
 		val jmxServer = new ConnectorServer(jmxURL,createEnv(cmd),"org.eclipse.jetty.jmx:name=rmiconnectorserver");//,sslContextFactory);
 		server.addBean(jmxServer);
-		System.out.println("Jmx server configured on " + jmxURL);
+		println("JMX Server configured on " + jmxURL);
 	}
 
 	private Map<String,Object> createEnv(CommandLine cmd)
@@ -328,10 +343,10 @@ public class Start
 		{
 			if (!cmd.hasOption("clientAuthentication"))
 			{
-				System.out.println("Configuring web server basic authentication:");
+				println("Configuring Web Server basic authentication:");
 				val file = new File(REALM_FILE);
 				if (file.exists())
-					System.out.println("Using file " + file.getAbsoluteFile());
+					println("Using file " + file.getAbsoluteFile());
 				else
 					createRealmFile(file);
 				result.setSecurityHandler(getSecurityHandler());
@@ -343,7 +358,7 @@ public class Start
 			}
 		}
 		if (cmd.hasOption("soap"))
-			result.addServlet(org.apache.cxf.transport.servlet.CXFServlet.class,"/service/*");
+			result.addServlet(CXFServlet.class,"/service/*");
 		if (!cmd.hasOption("headless"))
 		{
 			val servletHolder = new ServletHolder(nl.clockwork.ebms.admin.web.ResourceServlet.class);
@@ -381,7 +396,7 @@ public class Start
 
 	private FilterHolder createClientCertificateAuthenticationFilterHolder(CommandLine cmd) throws MalformedURLException, IOException
 	{
-		System.out.println("Configuring web server client certificate authentication:");
+		println("Configuring Web Server client certificate authentication:");
 		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.ClientCertificateAuthenticationFilter.class); 
 		val clientTrustStoreType = cmd.getOptionValue("clientTrustStoreType",DEFAULT_KEYSTORE_TYPE);
 		val clientTrustStorePath = cmd.getOptionValue("clientTrustStorePath");
@@ -389,7 +404,7 @@ public class Start
 		val trustStore = getResource(clientTrustStorePath);
 		if (trustStore != null && trustStore.exists())
 		{
-			System.out.println("Using clientTrustStore " + trustStore.getURI());
+			println("Using clientTrustStore " + trustStore.getURI());
 			result.setInitParameter("trustStoreType",clientTrustStoreType);
 			result.setInitParameter("trustStorePath",clientTrustStorePath);
 			result.setInitParameter("trustStorePassword",clientTrustStorePassword);
@@ -397,8 +412,8 @@ public class Start
 		}
 		else
 		{
-			System.out.println("Web server not available: clientTrustStore " + clientTrustStorePath + " not found!");
-			System.exit(1);
+			println("Web Server not available: clientTrustStore " + clientTrustStorePath + " not found!");
+			exit(1);
 			return null;
 		}
 	}
@@ -427,15 +442,8 @@ public class Start
 		result.setVirtualHosts(new String[] {"@health"});
 		result.setInitParameter("configuration","deployment");
 		result.setContextPath("/");
-		result.addServlet(nl.clockwork.ebms.server.servlet.HealthServlet.class,"/health/*");
+		result.addServlet(HealthServlet.class,"/health/*");
 		return result;
-	}
-
-		protected static void printUsage(Options options)
-	{
-		val formatter = new HelpFormatter();
-		formatter.printHelp("Start",options,true);
-		System.exit(0);
 	}
 
 	protected Resource getResource(String path) throws MalformedURLException, IOException
@@ -450,7 +458,7 @@ public class Start
 				.withDefaultValue("admin")
 				.read("enter username");
 		val password = readPassword();
-		System.out.println("Writing to file: " + file.getAbsoluteFile());
+		println("Writing to file: " + file.getAbsoluteFile());
 		FileUtils.writeStringToFile(file,username + ": " + password + ",user",Charset.defaultCharset(),false);
 	}
 
@@ -466,7 +474,7 @@ public class Start
 			if (result.equals(password))
 				return result;
 			else
-				System.out.println("Passwords don't match! Try again.");
+				println("Passwords don't match! Try again.");
 		}
 	}
 	
