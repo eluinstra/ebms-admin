@@ -38,17 +38,17 @@ import lombok.extern.slf4j.Slf4j;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.message.CachedOutputResourceStream;
 import nl.clockwork.ebms.jaxb.JAXBParser;
-import nl.clockwork.ebms.service.model.EbMSMessageContent;
-import nl.clockwork.ebms.service.model.EbMSMessageContext;
+import nl.clockwork.ebms.service.model.Message;
+import nl.clockwork.ebms.service.model.MessageProperties;
 
 @Slf4j
-public class DownloadEbMSMessageContentLink extends Link<EbMSMessageContent>
+public class DownloadEbMSMessageLink extends Link<Message>
 {
 	private static final long serialVersionUID = 1L;
 
-	public DownloadEbMSMessageContentLink(String id, IModel<EbMSMessageContent> model)
+	public DownloadEbMSMessageLink(String id, IModel<Message> model)
 	{
-		super(id,Args.notNull(model,"messageContent"));
+		super(id,Args.notNull(model,"message"));
 	}
 
 	@Override
@@ -73,13 +73,13 @@ public class DownloadEbMSMessageContentLink extends Link<EbMSMessageContent>
 		}
 	}
 
-	private void writeMessageToZip(EbMSMessageContent messageContent, ZipOutputStream zip) throws IOException, JAXBException
+	private void writeMessageToZip(Message message, ZipOutputStream zip) throws IOException, JAXBException
 	{
-		val entry = new ZipEntry("messageContext.xml");
+		val entry = new ZipEntry("messageProperties.xml");
 		zip.putNextEntry(entry);
-		zip.write(JAXBParser.getInstance(EbMSMessageContext.class).handle(new JAXBElement<>(new QName("http://www.clockwork.nl/ebms/2.0","messageContext"),EbMSMessageContext.class,messageContent.getContext())).getBytes());
+		zip.write(JAXBParser.getInstance(MessageProperties.class).handle(new JAXBElement<>(new QName("http://www.ordina.nl/ebms/2.18","messageProperties"),MessageProperties.class,message.getProperties())).getBytes());
 		zip.closeEntry();
-		for (val dataSource: messageContent.getDataSources())
+		for (val dataSource: message.getDataSources())
 		{
 			val e = new ZipEntry("datasources/" + (StringUtils.isEmpty(dataSource.getName()) ? UUID.randomUUID() + Utils.getFileExtension(dataSource.getContentType()) : dataSource.getName()));
 			entry.setComment("Content-Type: " + dataSource.getContentType());
@@ -89,10 +89,10 @@ public class DownloadEbMSMessageContentLink extends Link<EbMSMessageContent>
 		}
 	}
 
-	private ResourceStreamRequestHandler createRequestHandler(EbMSMessageContent messageContent, IResourceStream resourceStream)
+	private ResourceStreamRequestHandler createRequestHandler(Message messageContent, IResourceStream resourceStream)
 	{
 		return new ResourceStreamRequestHandler(resourceStream)
-				.setFileName("messageContent." + messageContent.getContext().getMessageId() + ".zip")
+				.setFileName("message." + messageContent.getProperties().getMessageId() + ".zip")
 				.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 

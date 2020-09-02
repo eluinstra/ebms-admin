@@ -35,12 +35,12 @@ import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.web.AjaxButton;
 import nl.clockwork.ebms.admin.web.Consumer;
-import nl.clockwork.ebms.service.model.EbMSDataSource;
+import nl.clockwork.ebms.service.model.DataSource;
 
 public class DefaultDataSourcesPanel extends DataSourcesPanel
 {
 	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-	private class EbMSDataSourceListView extends ListView<EbMSDataSource>
+	private class EbMSDataSourceListView extends ListView<DataSource>
 	{
 		private static final long serialVersionUID = 1L;
 		@NonNull
@@ -54,7 +54,7 @@ public class DefaultDataSourcesPanel extends DataSourcesPanel
 		}
 
 		@Override
-		protected void populateItem(final ListItem<EbMSDataSource> item)
+		protected void populateItem(final ListItem<DataSource> item)
 		{
 			item.setModel(new CompoundPropertyModel<>(item.getModel()));
 			item.add(new Label("name"));
@@ -104,7 +104,7 @@ public class DefaultDataSourcesPanel extends DataSourcesPanel
 	}
 	
 	@Override
-	public List<EbMSDataSource> getDataSources()
+	public List<DataSource> getDataSources()
 	{
 		return ((DataSourcesForm)this.get("form")).getModelObject().getDataSources();
 	}
@@ -113,7 +113,7 @@ public class DefaultDataSourcesPanel extends DataSourcesPanel
 	public static class DataSourcesModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		List<EbMSDataSource> dataSources = new ArrayList<EbMSDataSource>();
+		List<DataSource> dataSources = new ArrayList<DataSource>();
 	}
 
 }

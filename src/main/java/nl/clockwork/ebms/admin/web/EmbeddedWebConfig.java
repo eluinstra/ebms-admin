@@ -67,25 +67,25 @@ public class EmbeddedWebConfig
 	@Bean
 	public Endpoint cpaServiceEndpoint()
 	{
-		return publishEndpoint(cpaService,"/cpa");
+		return publishEndpoint(cpaService,"/cpa","http://www.ordina.nl/cpa/2.18","CPAService","CPAPort");
 	}
 
 	@Bean
 	public Endpoint urlMappingServiceEndpoint()
 	{
-		return publishEndpoint(urlMappingService,"/urlMapping");
+		return publishEndpoint(urlMappingService,"/urlMapping","http://www.ordina.nl/cpa/urlMapping/2.18","URLMappingService","URLMappingPort");
 	}
 
 	@Bean
 	public Endpoint certificateMappingServiceEndpoint()
 	{
-		return publishEndpoint(certificateMappingService,"/certificateMapping");
+		return publishEndpoint(certificateMappingService,"/certificateMapping","http://www.ordina.nl/cpa/certificateMapping/2.18","CertificateMappingService","CertificateMappingPort");
 	}
 
 	@Bean
 	public Endpoint ebMSMessageServiceEndpoint()
 	{
-		return publishEndpoint(ebMSMessageService,"/ebms");
+		return publishEndpoint(ebMSMessageService,"/ebms","http://www.ordina.nl/ebms/2.18","EbMSMessageService","EbMSMessagePort");
 	}
 
 	@Bean
@@ -93,8 +93,8 @@ public class EmbeddedWebConfig
 	{
 		val result = new EndpointImpl(cxf(),ebMSMessageServiceMTOM);
 		result.setAddress("/ebmsMTOM");
-		result.setServiceName(new QName("http://service.ebms.clockwork.nl/","EbMSMessageServiceImplService"));
-		result.setEndpointName(new QName("http://service.ebms.clockwork.nl/","EbMSMessageServiceImplPort"));
+		result.setServiceName(new QName("http://www.ordina.nl/ebms/2.18","EbMSMessageService"));
+		result.setEndpointName(new QName("http://www.ordina.nl/ebms/2.18","EbMSMessagePort"));
 		result.publish();
 		val binding = (SOAPBinding)result.getBinding();
 		binding.setMTOMEnabled(true);
@@ -111,10 +111,12 @@ public class EmbeddedWebConfig
 		return result;
 	}
 
-	private Endpoint publishEndpoint(Object service, String address)
+	private Endpoint publishEndpoint(Object service, String address, String namespaceUri, String serviceName, String endpointName)
 	{
 		val result = new EndpointImpl(cxf(),service);
 		result.setAddress(address);
+		result.setServiceName(new QName(namespaceUri,serviceName));
+		result.setEndpointName(new QName(namespaceUri,endpointName));
 		result.publish();
 		return result;
 	}

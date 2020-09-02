@@ -38,8 +38,8 @@ import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.message.CachedOutputResourceStream;
 import nl.clockwork.ebms.event.listener.EbMSMessageEventType;
 import nl.clockwork.ebms.service.EbMSMessageService;
-import nl.clockwork.ebms.service.model.EbMSMessageContext;
-import nl.clockwork.ebms.service.model.EbMSMessageEvent;
+import nl.clockwork.ebms.service.model.MessageEvent;
+import nl.clockwork.ebms.service.model.MessageFilter;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -49,12 +49,12 @@ public class DownloadEbMSMessageEventsCSVLink extends Link<Void>
 	@NonNull
 	EbMSMessageService ebMSMessageService;
 	@NonNull
-	IModel<EbMSMessageContext> filter;
+	IModel<MessageFilter> filter;
 	@NonNull
 	EbMSMessageEventType[] eventTypes;
 
 	@Builder
-	public DownloadEbMSMessageEventsCSVLink(String id, @NonNull EbMSMessageService ebMSMessageService, @NonNull IModel<EbMSMessageContext> filter, @NonNull EbMSMessageEventType...eventTypes)
+	public DownloadEbMSMessageEventsCSVLink(String id, @NonNull EbMSMessageService ebMSMessageService, @NonNull IModel<MessageFilter> filter, @NonNull EbMSMessageEventType...eventTypes)
 	{
 		super(id);
 		this.ebMSMessageService = ebMSMessageService;
@@ -80,7 +80,7 @@ public class DownloadEbMSMessageEventsCSVLink extends Link<Void>
 		}
 	}
 
-	private void printMessagesToCSV(CSVPrinter printer, List<EbMSMessageEvent> messageEvents) throws IOException
+	private void printMessagesToCSV(CSVPrinter printer, List<MessageEvent> messageEvents) throws IOException
 	{
 		for (val event: messageEvents)
 			printer.printRecord(event.getMessageId(),event.getType().name());

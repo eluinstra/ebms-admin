@@ -42,17 +42,17 @@ import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.admin.web.WicketApplication;
 import nl.clockwork.ebms.event.listener.EbMSMessageEventType;
 import nl.clockwork.ebms.service.EbMSMessageService;
-import nl.clockwork.ebms.service.model.EbMSMessageContext;
-import nl.clockwork.ebms.service.model.EbMSMessageEvent;
+import nl.clockwork.ebms.service.model.MessageEvent;
+import nl.clockwork.ebms.service.model.MessageFilter;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MessageEventsPage extends BasePage
 {
-	private class MessageEventDataView extends DataView<EbMSMessageEvent>
+	private class MessageEventDataView extends DataView<MessageEvent>
 	{
 		private static final long serialVersionUID = 1L;
 
-		protected MessageEventDataView(String id, IDataProvider<EbMSMessageEvent> dataProvider)
+		protected MessageEventDataView(String id, IDataProvider<MessageEvent> dataProvider)
 		{
 			super(id,dataProvider);
 			setOutputMarkupId(true);
@@ -65,7 +65,7 @@ public class MessageEventsPage extends BasePage
 		}
 
 		@Override
-		protected void populateItem(final Item<EbMSMessageEvent> item)
+		protected void populateItem(final Item<MessageEvent> item)
 		{
 			val o = item.getModelObject();
 			item.add(createViewLink("view",item.getModel(),new Label("messageId",o.getMessageId())));
@@ -73,7 +73,7 @@ public class MessageEventsPage extends BasePage
 			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 
-		private Link<Void> createViewLink(String id, final IModel<EbMSMessageEvent> model, Component...components)
+		private Link<Void> createViewLink(String id, final IModel<MessageEvent> model, Component...components)
 		{
 			Action onClick = () ->
 			{
@@ -97,15 +97,15 @@ public class MessageEventsPage extends BasePage
 
 	public MessageEventsPage()
 	{
-		this(Model.of(new EbMSMessageContext()),EbMSMessageEventType.values());
+		this(Model.of(new MessageFilter()),EbMSMessageEventType.values());
 	}
 
-	public MessageEventsPage(IModel<EbMSMessageContext> filterModel, EbMSMessageEventType[] eventTypes)
+	public MessageEventsPage(IModel<MessageFilter> filterModel, EbMSMessageEventType[] eventTypes)
 	{
 		this(filterModel,eventTypes,null);
 	}
 
-	public MessageEventsPage(IModel<EbMSMessageContext> filter, EbMSMessageEventType[] eventTypes, final WebPage responsePage)
+	public MessageEventsPage(IModel<MessageFilter> filter, EbMSMessageEventType[] eventTypes, final WebPage responsePage)
 	{
 		this.maxItemsPerPage = WicketApplication.get().getMaxItemsPerPage();
 		val container = new WebMarkupContainer("container");

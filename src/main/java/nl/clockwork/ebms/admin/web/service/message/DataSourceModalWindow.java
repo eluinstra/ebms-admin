@@ -42,13 +42,13 @@ import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.Consumer;
 import nl.clockwork.ebms.admin.web.Utils;
-import nl.clockwork.ebms.service.model.EbMSDataSource;
+import nl.clockwork.ebms.service.model.DataSource;
 
 public class DataSourceModalWindow extends ModalWindow
 {
 	private static final long serialVersionUID = 1L;
 
-	public DataSourceModalWindow(String id, final List<EbMSDataSource> dataSources, final Component...components)
+	public DataSourceModalWindow(String id, final List<DataSource> dataSources, final Component...components)
 	{
 		super(id);
 		setCssClassName(ModalWindow.CSS_CLASS_GRAY);
@@ -66,10 +66,10 @@ public class DataSourceModalWindow extends ModalWindow
 	public class DataSourcePanel extends Panel
 	{
 		private static final long serialVersionUID = 1L;
-		private List<EbMSDataSource> dataSources;
+		private List<DataSource> dataSources;
 		private Component[] components;
 
-		public DataSourcePanel(String id, List<EbMSDataSource> dataSources, Component[] components)
+		public DataSourcePanel(String id, List<DataSource> dataSources, Component[] components)
 		{
 			super(id);
 			this.dataSources = dataSources;
@@ -77,7 +77,7 @@ public class DataSourceModalWindow extends ModalWindow
 			add(new DataSourceForm("form"));
 		}
 		
-		public void addDataSource(EbMSDataSource dataSource)
+		public void addDataSource(DataSource dataSource)
 		{
 			dataSources.add(dataSource);
 		}
@@ -119,7 +119,7 @@ public class DataSourceModalWindow extends ModalWindow
 				Consumer<AjaxRequestTarget> onSubmit = t ->
 				{
 					val o = getModelObject();
-					o.getFile().forEach(f -> addDataSource(new EbMSDataSource(
+					o.getFile().forEach(f -> addDataSource(new DataSource(
 								StringUtils.isBlank(o.getName()) ? f.getClientFileName() : o.getName(),
 								StringUtils.isBlank(o.getContentType()) ? Utils.getContentType(f.getClientFileName()) : o.getContentType(),
 								f.getBytes())));
@@ -162,7 +162,7 @@ public class DataSourceModalWindow extends ModalWindow
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
 	@EqualsAndHashCode(callSuper = true)
-	public static class DataSourceModel extends EbMSDataSource
+	public static class DataSourceModel extends DataSource
 	{
 		private static final long serialVersionUID = 1L;
 		List<FileUpload> file;

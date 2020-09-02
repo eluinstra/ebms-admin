@@ -58,25 +58,25 @@ public class WebConfig
 	@Bean(name = "cpaService")
 	public Object cpaClientProxy()
 	{
-		return proxyFactoryBean(CPAService.class,serviceUrl + "/cpa").create();
+		return proxyFactoryBean(CPAService.class,serviceUrl + "/cpa","http://www.ordina.nl/cpa/2.18","CPAService","CPAPort").create();
 	}
 
 	@Bean(name = "urlMappingService")
 	public Object urlMappingClientProxy()
 	{
-		return proxyFactoryBean(CPAService.class,serviceUrl + "/cpa").create();
+		return proxyFactoryBean(CPAService.class,serviceUrl + "/urlMapping","http://www.ordina.nl/cpa/urlMapping/2.18","URLMappingService","URLMappingPort").create();
 	}
 
-	@Bean(name = "certificateService")
-	public Object certificateClientProxy()
+	@Bean(name = "certificateMappingService")
+	public Object certificateMappingClientProxy()
 	{
-		return proxyFactoryBean(CPAService.class,serviceUrl + "/cpa").create();
+		return proxyFactoryBean(CPAService.class,serviceUrl + "/certificateMapping","http://www.ordina.nl/cpa/certificateMapping/2.18","CertificateMappingService","CertificateMappingPort").create();
 	}
 
 	@Bean(name = "ebMSMessageService")
 	public Object ebMSMessageClientProxy()
 	{
-		return proxyFactoryBean(CPAService.class,serviceUrl + "/cpa").create();
+		return proxyFactoryBean(CPAService.class,serviceUrl + "/ebms","http://www.ordina.nl/ebms/2.18","EbMSMessageService","EbMSMessagePort").create();
 	}
 
 	@Bean(name = "ebMSMessageServiceMTOM")
@@ -86,8 +86,8 @@ public class WebConfig
     setMTOM(proxyFactory); 
 		proxyFactory.setServiceClass(EbMSMessageServiceMTOM.class);
 		proxyFactory.setAddress(serviceUrl + "/ebmsMTOM");
-		proxyFactory.setServiceName(new QName("http://service.ebms.clockwork.nl/","EbMSMessageServiceImplService"));
-		proxyFactory.setEndpointName(new QName("http://service.ebms.clockwork.nl/","EbMSMessageServiceImplPort"));
+		proxyFactory.setServiceName(new QName("http://www.ordina.nl/ebms/2.18","EbMSMessageService"));
+		proxyFactory.setEndpointName(new QName("http://www.ordina.nl/ebms/2.18","EbMSMessagePort"));
 		return proxyFactory.create();
 	}
 
@@ -125,11 +125,13 @@ public class WebConfig
     proxyFactory.setProperties(props);
 	}
 
-	private JaxWsProxyFactoryBean proxyFactoryBean(Class<?> clazz, String url)
+	private JaxWsProxyFactoryBean proxyFactoryBean(Class<?> clazz, String url, String namespaceUri, String serviceName, String endpointName)
 	{
 		val result = new JaxWsProxyFactoryBean();
 		result.setServiceClass(clazz);
-		result.setAddress(serviceUrl + "/cpa");
+		result.setAddress(serviceUrl + url);
+		result.setServiceName(new QName(namespaceUri,serviceName));
+		result.setEndpointName(new QName(namespaceUri,endpointName));
 		return result;
 	}
 }

@@ -17,9 +17,9 @@ package nl.clockwork.ebms.admin.web.service.message;
 
 import java.util.List;
 
-import nl.clockwork.ebms.service.model.EbMSDataSource;
+import nl.clockwork.ebms.service.model.DataSource;
 
 public interface DataSources
 {
-	List<EbMSDataSource> getDataSources();
+	List<DataSource> getDataSources();
 }

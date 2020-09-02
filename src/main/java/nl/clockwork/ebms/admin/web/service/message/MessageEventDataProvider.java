@@ -30,30 +30,30 @@ import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.event.listener.EbMSMessageEventType;
 import nl.clockwork.ebms.service.EbMSMessageService;
-import nl.clockwork.ebms.service.model.EbMSMessageContext;
-import nl.clockwork.ebms.service.model.EbMSMessageEvent;
+import nl.clockwork.ebms.service.model.MessageEvent;
+import nl.clockwork.ebms.service.model.MessageFilter;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor(staticName = "of")
-public class MessageEventDataProvider implements IDataProvider<EbMSMessageEvent>
+public class MessageEventDataProvider implements IDataProvider<MessageEvent>
 {
 	private static final long serialVersionUID = 1L;
 	@NonNull
 	private EbMSMessageService ebMSMessageService;
 	@NonNull
-	private EbMSMessageContext filter;
+	private MessageFilter filter;
 	@NonNull
 	private EbMSMessageEventType[] eventTypes;
 
 	@Override
-	public Iterator<? extends EbMSMessageEvent> iterator(long first, long count)
+	public Iterator<? extends MessageEvent> iterator(long first, long count)
 	{
 		val messageEvents = Utils.toList(ebMSMessageService.getUnprocessedMessageEvents(filter,eventTypes,(int)(first+count)));
-		return messageEvents == null ? new ArrayList<EbMSMessageEvent>().iterator() : messageEvents.listIterator((int)first);
+		return messageEvents == null ? new ArrayList<MessageEvent>().iterator() : messageEvents.listIterator((int)first);
 	}
 
 	@Override
-	public IModel<EbMSMessageEvent> model(EbMSMessageEvent messageEvent)
+	public IModel<MessageEvent> model(MessageEvent messageEvent)
 	{
 		return Model.of(messageEvent);
 	}

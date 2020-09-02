@@ -28,7 +28,7 @@ import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.service.EbMSMessageService;
-import nl.clockwork.ebms.service.model.EbMSMessageContext;
+import nl.clockwork.ebms.service.model.MessageFilter;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor(staticName = "of")
@@ -36,7 +36,7 @@ public class MessageDataProvider implements IDataProvider<String>
 {
 	private static final long serialVersionUID = 1L;
 	EbMSMessageService ebMSMessageService;
-	EbMSMessageContext filter;
+	MessageFilter filter;
 
 	@Override
 	public Iterator<? extends String> iterator(long first, long count)

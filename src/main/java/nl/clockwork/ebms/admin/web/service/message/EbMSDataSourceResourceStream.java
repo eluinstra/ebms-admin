@@ -26,31 +26,31 @@ import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.service.model.EbMSDataSource;
+import nl.clockwork.ebms.service.model.DataSource;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor(staticName = "of")
 public class EbMSDataSourceResourceStream extends AbstractResourceStream
 {
 	private static final long serialVersionUID = 1L;
-	EbMSDataSource ebMSDataSource;
+	DataSource dataSource;
 
 	@Override
 	public String getContentType()
 	{
-		return ebMSDataSource.getContentType();
+		return dataSource.getContentType();
 	}
 	
 	@Override
 	public Bytes length()
 	{
-		return Bytes.bytes(ebMSDataSource.getContent().length);
+		return Bytes.bytes(dataSource.getContent().length);
 	}
 	
 	@Override
 	public InputStream getInputStream() throws ResourceStreamNotFoundException
 	{
-		return new ByteArrayInputStream(ebMSDataSource.getContent());
+		return new ByteArrayInputStream(dataSource.getContent());
 	}
 	
 	@Override

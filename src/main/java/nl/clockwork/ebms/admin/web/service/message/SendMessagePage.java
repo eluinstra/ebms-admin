@@ -57,9 +57,9 @@ import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.jaxb.JAXBParser;
 import nl.clockwork.ebms.service.EbMSMessageService;
 import nl.clockwork.ebms.service.cpa.CPAService;
-import nl.clockwork.ebms.service.model.EbMSDataSource;
-import nl.clockwork.ebms.service.model.EbMSMessageContent;
-import nl.clockwork.ebms.service.model.EbMSMessageContext;
+import nl.clockwork.ebms.service.model.DataSource;
+import nl.clockwork.ebms.service.model.MessageRequest;
+import nl.clockwork.ebms.service.model.MessageRequestProperties;
 import nl.clockwork.ebms.service.model.Party;
 
 @Slf4j
@@ -84,13 +84,13 @@ public class SendMessagePage extends BasePage
 		return getLocalizer().getString("messageSend",this);
 	}
 
-	public class MessageForm extends Form<EbMSMessageContextData>
+	public class MessageForm extends Form<EbMSMessagePropertiesData>
 	{
 		private static final long serialVersionUID = 1L;
 
 		public MessageForm(String id)
 		{
-			super(id,new CompoundPropertyModel<>(new EbMSMessageContextData()));
+			super(id,new CompoundPropertyModel<>(new EbMSMessagePropertiesData()));
 			setMultiPart(true);
 			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",createCPAIdChoice("cpaId")));
 			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",createFromPartyIdChoice("fromParty.partyId")));
@@ -236,8 +236,8 @@ public class SendMessagePage extends BasePage
 				try
 				{
 					val o = getModelObject();
-					val messageContent = new EbMSMessageContent(o,o.getDataSources());
-					val messageId = ebMSMessageService.sendMessage(messageContent);
+					val message = new MessageRequest(o,o.getDataSources());
+					val messageId = ebMSMessageService.sendMessage(message);
 					info(new StringResourceModel("sendMessage.ok",Model.of(messageId)).getString());
 				}
 				catch (Exception e)
@@ -253,16 +253,16 @@ public class SendMessagePage extends BasePage
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@EqualsAndHashCode(callSuper = true)
-	public class EbMSMessageContextData extends EbMSMessageContext
+	public class EbMSMessagePropertiesData extends MessageRequestProperties
 	{
 		private static final long serialVersionUID = 1L;
 		final List<String> fromPartyIds = new ArrayList<>();
 		final List<String> fromRoles = new ArrayList<>();
 		final List<String> services = new ArrayList<>();
 		final List<String> actions = new ArrayList<>();
-		final List<EbMSDataSource> dataSources = new ArrayList<>();
+		final List<DataSource> dataSources = new ArrayList<>();
 
-		public EbMSMessageContextData()
+		public EbMSMessagePropertiesData()
 		{
 			setFromParty(new Party());
 		}
@@ -314,20 +314,20 @@ public class SendMessagePage extends BasePage
 	}
 
 	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-	public static class EbMSDataSourceListView extends ListView<EbMSDataSource>
+	public static class EbMSDataSourceListView extends ListView<DataSource>
 	{
 		private static final long serialVersionUID = 1L;
 		@NonNull
 		DataSourcesForm dataSourcesForm;
 
-		public EbMSDataSourceListView(String id, List<EbMSDataSource> dataSources, @NonNull DataSourcesForm dataSourcesForm)
+		public EbMSDataSourceListView(String id, List<DataSource> dataSources, @NonNull DataSourcesForm dataSourcesForm)
 		{
 			super(id,dataSources);
 			this.dataSourcesForm = dataSourcesForm;
 		}
 
 		@Override
-		protected void populateItem(final ListItem<EbMSDataSource> item)
+		protected void populateItem(final ListItem<DataSource> item)
 		{
 			item.setModel(new CompoundPropertyModel<>(item.getModel()));
 			item.add(new Label("name"));
@@ -346,11 +346,11 @@ public class SendMessagePage extends BasePage
 		}
 	}
 
-	public class DataSourcesForm extends Form<List<EbMSDataSource>>
+	public class DataSourcesForm extends Form<List<DataSource>>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public DataSourcesForm(String id, IModel<List<EbMSDataSource>> model)
+		public DataSourcesForm(String id, IModel<List<DataSource>> model)
 		{
 			super(id,model);
 			val dataSources_ = new EbMSDataSourceListView("dataSources",model.getObject(),this);

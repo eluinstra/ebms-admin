@@ -43,26 +43,26 @@ import nl.clockwork.ebms.admin.web.InstantLabel;
 import nl.clockwork.ebms.admin.web.Link;
 import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.service.EbMSMessageService;
-import nl.clockwork.ebms.service.model.EbMSDataSource;
-import nl.clockwork.ebms.service.model.EbMSMessageContent;
+import nl.clockwork.ebms.service.model.DataSource;
+import nl.clockwork.ebms.service.model.Message;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class MessagePage extends BasePage implements IGenericComponent<EbMSMessageContent,MessagePage>
+public class MessagePage extends BasePage implements IGenericComponent<Message,MessagePage>
 {
 	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-	private class EbMSDataSourcePropertyListView extends PropertyListView<EbMSDataSource>
+	private class EbMSDataSourcePropertyListView extends PropertyListView<DataSource>
 	{
 		private static final long serialVersionUID = 1L;
 		AtomicInteger i = new AtomicInteger(1);
 
-		public EbMSDataSourcePropertyListView(String id, IModel<List<EbMSDataSource>> list)
+		public EbMSDataSourcePropertyListView(String id, IModel<List<DataSource>> list)
 		{
 			super(id,list);
 		}
 
 		@Override
-		protected void populateItem(ListItem<EbMSDataSource> item)
+		protected void populateItem(ListItem<DataSource> item)
 		{
 			val o = item.getModelObject();
 			if (StringUtils.isEmpty(o.getName()))
@@ -71,12 +71,12 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 			item.add(new Label("contentType"));
 		}
 	}
-	private class LoadableDetachableEbMSDataSourceModel extends LoadableDetachableModel<List<EbMSDataSource>>
+	private class LoadableDetachableEbMSDataSourceModel extends LoadableDetachableModel<List<DataSource>>
 	{
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		protected List<EbMSDataSource> load()
+		protected List<DataSource> load()
 		{
 			return getModelObject().getDataSources();
 		}
@@ -86,24 +86,24 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 	@SpringBean(name="ebMSMessageService")
 	EbMSMessageService ebMSMessageService;
 
-	public MessagePage(IModel<EbMSMessageContent> model, WebPage responsePage, MessageProcessor messageProcessor)
+	public MessagePage(IModel<Message> model, WebPage responsePage, MessageProcessor messageProcessor)
 	{
 		setModel(new CompoundPropertyModel<>(model));
 		add(new BootstrapFeedbackPanel("feedback"));
-		add(new Label("context.messageId"));
-		add(new Label("context.conversationId"));
+		add(new Label("message.messageId"));
+		add(new Label("message.conversationId"));
 		add(createViewRefToMessageIdLink("viewRefToMessageId",messageProcessor));
-		add(InstantLabel.of("context.timestamp",Constants.DATETIME_FORMAT));
-		add(new Label("context.cpaId"));
-		add(new Label("context.fromParty.partyId"));
-		add(new Label("context.fromParty.role"));
-		add(new Label("context.toParty.partyId"));
-		add(new Label("context.toParty.role"));
-		add(new Label("context.service"));
-		add(new Label("context.action"));
+		add(InstantLabel.of("message.timestamp",Constants.DATETIME_FORMAT));
+		add(new Label("message.cpaId"));
+		add(new Label("message.fromParty.partyId"));
+		add(new Label("message.fromParty.role"));
+		add(new Label("message.toParty.partyId"));
+		add(new Label("message.toParty.role"));
+		add(new Label("message.service"));
+		add(new Label("message.action"));
 		add(new EbMSDataSourcePropertyListView("dataSources",new LoadableDetachableEbMSDataSourceModel()));
 		add(new PageLink("back",responsePage));
-		add(new DownloadEbMSMessageContentLink("download",model));
+		add(new DownloadEbMSMessageLink("download",model));
 		add(createProcessLink("process",messageProcessor,responsePage));
 	}
 
@@ -117,11 +117,11 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 	{
 		Action onClick = () -> setResponsePage(
 				new MessagePage(
-						Model.of(ebMSMessageService.getMessage(getModelObject().getContext().getRefToMessageId(),null)),
+						Model.of(ebMSMessageService.getMessage(getModelObject().getProperties().getRefToMessageId(),null)),
 						this,
 						messageProcessor));
 		val result = new Link<Void>(id,onClick);
-		result.add(new Label("context.refToMessageId"));
+		result.add(new Label("message.refToMessageId"));
 		return result;
 	}
 	
@@ -131,7 +131,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		{
 			try
 			{
-				messageProcessor.processMessage(getModelObject().getContext().getMessageId());
+				messageProcessor.processMessage(getModelObject().getProperties().getMessageId());
 				setResponsePage(responsePage);
 			}
 			catch (Exception e)

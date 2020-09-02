@@ -41,7 +41,7 @@ import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.admin.web.WicketApplication;
 import nl.clockwork.ebms.service.EbMSMessageService;
-import nl.clockwork.ebms.service.model.EbMSMessageContext;
+import nl.clockwork.ebms.service.model.MessageFilter;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MessagesPage extends BasePage
@@ -94,15 +94,15 @@ public class MessagesPage extends BasePage
 
 	public MessagesPage()
 	{
-		this(Model.of(new EbMSMessageContext()));
+		this(Model.of(new MessageFilter()));
 	}
 
-	public MessagesPage(IModel<EbMSMessageContext> filter)
+	public MessagesPage(IModel<MessageFilter> filter)
 	{
 		this(filter,null);
 	}
 
-	public MessagesPage(IModel<EbMSMessageContext> filter, final WebPage responsePage)
+	public MessagesPage(IModel<MessageFilter> filter, final WebPage responsePage)
 	{
 		this.maxItemsPerPage = WicketApplication.get().getMaxItemsPerPage();
 		val container = new WebMarkupContainer("container");

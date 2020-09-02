@@ -29,15 +29,14 @@ import lombok.NonNull;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.EbMSMessageStatus;
-import nl.clockwork.ebms.service.model.EbMSMessageContext;
+import nl.clockwork.ebms.service.model.MessageFilter;
 import nl.clockwork.ebms.service.model.Party;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@ToString
-public class EbMSMessageFilter extends EbMSMessageContext
+public class EbMSMessageFilter extends MessageFilter
 {
 	private static final long serialVersionUID = 1L;
 	Integer messageNr;
@@ -49,7 +48,7 @@ public class EbMSMessageFilter extends EbMSMessageContext
 	@Builder(builderMethodName = "ebMSMessageFilterBuilder")
 	public EbMSMessageFilter(@NonNull String cpaId, @NonNull Party fromParty, Party toParty, String service, String action, Instant timestamp, String conversationId, String messageId, String refToMessageId, EbMSMessageStatus messageStatus, Integer messageNr, Boolean serviceMessage, List<EbMSMessageStatus> statuses, LocalDateTime from, LocalDateTime to)
 	{
-		super(cpaId,fromParty,toParty,service,action,timestamp,conversationId,messageId,refToMessageId,messageStatus);
+		super(cpaId,fromParty,toParty,service,action,conversationId,messageId,refToMessageId);
 		this.messageNr = messageNr;
 		this.serviceMessage = serviceMessage;
 		if (statuses != null) this.statuses = statuses;

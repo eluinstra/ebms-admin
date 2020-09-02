@@ -57,8 +57,8 @@ import nl.clockwork.ebms.admin.web.WicketApplication;
 import nl.clockwork.ebms.jaxb.JAXBParser;
 import nl.clockwork.ebms.service.EbMSMessageService;
 import nl.clockwork.ebms.service.cpa.CPAService;
-import nl.clockwork.ebms.service.model.EbMSMessageContent;
-import nl.clockwork.ebms.service.model.EbMSMessageContext;
+import nl.clockwork.ebms.service.model.MessageRequest;
+import nl.clockwork.ebms.service.model.MessageRequestProperties;
 import nl.clockwork.ebms.service.model.Party;
 
 @Slf4j
@@ -84,14 +84,14 @@ public class SendMessagePageX extends BasePage
 	}
 
 	@FieldDefaults(level = AccessLevel.PRIVATE)
-	public class MessageForm extends Form<EbMSMessageContextData>
+	public class MessageForm extends Form<EbMSMessagePropertiesData>
 	{
 		private static final long serialVersionUID = 1L;
 		DataSourcesPanel dataSources;
 
 		public MessageForm(String id)
 		{
-			super(id,new CompoundPropertyModel<>(new EbMSMessageContextData()));
+			super(id,new CompoundPropertyModel<>(new EbMSMessagePropertiesData()));
 			setMultiPart(true);
 			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",createCPAIdChoice("cpaId")));
 			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",createFromPartyIdChoice("fromParty.partyId")));
@@ -339,8 +339,8 @@ public class SendMessagePageX extends BasePage
 				try
 				{
 					val o = getModelObject();
-					val messageContent = new EbMSMessageContent(o,dataSources.getDataSources());
-					val messageId = ebMSMessageService.sendMessage(messageContent);
+					val message = new MessageRequest(o,dataSources.getDataSources());
+					val messageId = ebMSMessageService.sendMessage(message);
 					info(new StringResourceModel("sendMessage.ok",Model.of(messageId)).getString());
 				}
 				catch (Exception e)
@@ -356,7 +356,7 @@ public class SendMessagePageX extends BasePage
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@EqualsAndHashCode(callSuper = true)
-	public class EbMSMessageContextData extends EbMSMessageContext
+	public class EbMSMessagePropertiesData extends MessageRequestProperties
 	{
 		private static final long serialVersionUID = 1L;
 		final List<String> fromPartyIds = new ArrayList<>();
@@ -367,7 +367,7 @@ public class SendMessagePageX extends BasePage
 		final List<String> actions = new ArrayList<>();
 		boolean rawInput;
 
-		public EbMSMessageContextData()
+		public EbMSMessagePropertiesData()
 		{
 			setFromParty(new Party());
 			setToParty(new Party());

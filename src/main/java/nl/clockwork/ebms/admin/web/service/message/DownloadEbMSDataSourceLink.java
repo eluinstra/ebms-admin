@@ -27,13 +27,13 @@ import org.apache.wicket.util.resource.IResourceStream;
 
 import lombok.val;
 import nl.clockwork.ebms.admin.web.Utils;
-import nl.clockwork.ebms.service.model.EbMSDataSource;
+import nl.clockwork.ebms.service.model.DataSource;
 
-public class DownloadEbMSDataSourceLink extends Link<EbMSDataSource>
+public class DownloadEbMSDataSourceLink extends Link<DataSource>
 {
 	private static final long serialVersionUID = 1L;
 
-	public DownloadEbMSDataSourceLink(String id, IModel<EbMSDataSource> model)
+	public DownloadEbMSDataSourceLink(String id, IModel<DataSource> model)
 	{
 		super(id,Args.notNull(model,"ebMSDataSource"));
 		add(new Label("name"));

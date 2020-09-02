@@ -36,7 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.message.CachedOutputResourceStream;
 import nl.clockwork.ebms.service.EbMSMessageService;
-import nl.clockwork.ebms.service.model.EbMSMessageContext;
+import nl.clockwork.ebms.service.model.MessageFilter;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -45,9 +45,9 @@ public class DownloadEbMSMessageIdsCSVLink extends Link<Void>
 	private static final long serialVersionUID = 1L;
 	@NonNull
 	private EbMSMessageService ebMSMessageService;
-	private IModel<EbMSMessageContext> filter;
+	private IModel<MessageFilter> filter;
 
-	public DownloadEbMSMessageIdsCSVLink(String id, @NonNull EbMSMessageService ebMSMessageService, @NonNull IModel<EbMSMessageContext> filter)
+	public DownloadEbMSMessageIdsCSVLink(String id, @NonNull EbMSMessageService ebMSMessageService, @NonNull IModel<MessageFilter> filter)
 	{
 		super(id);
 		this.ebMSMessageService = ebMSMessageService;
