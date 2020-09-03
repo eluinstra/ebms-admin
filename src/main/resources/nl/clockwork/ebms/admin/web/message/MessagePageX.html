@@ -90,8 +90,8 @@
 				<p class="form-control-static"><wicket:container wicket:id="statusTime"/></p>
 			</div>
 		</div>
-		<div class="form-group" wicket:id="nextEvent">
-			<label class="col-lg-2 control-label"><wicket:message key="lbl.nextEvent"/></label>
+		<div class="form-group" wicket:id="sendTask">
+			<label class="col-lg-2 control-label"><wicket:message key="lbl.sendTask"/></label>
 			<div class="col-lg-10 table-responsive">
 				<table class="table table-striped">
 					<tr>
@@ -107,20 +107,20 @@
 					</tr>
 					<tr>
 						<td>
-							<p class="form-control-static"><wicket:container wicket:id="event.timestamp"/></p>
+							<p class="form-control-static"><wicket:container wicket:id="sendTask.timestamp"/></p>
 						</td>
 						<td>
-							<p class="form-control-static"><wicket:container wicket:id="event.retries"/></p>
+							<p class="form-control-static"><wicket:container wicket:id="sendTask.retries"/></p>
 						</td>
 						<td>
-							<p class="form-control-static"><wicket:container wicket:id="event.timeToLive"/></p>
+							<p class="form-control-static"><wicket:container wicket:id="sendTask.timeToLive"/></p>
 						</td>
 					</tr>
 				</table>
 			</div>
 		</div>
-		<div class="form-group" wicket:id="eventLog">
-			<label class="col-lg-2 control-label"><wicket:message key="lbl.eventLog"/></label>
+		<div class="form-group" wicket:id="sendLog">
+			<label class="col-lg-2 control-label"><wicket:message key="lbl.sendLog"/></label>
 			<div class="col-lg-10 table-responsive">
 				<table class="table table-striped">
 					<tr>
@@ -134,7 +134,7 @@
 							<label><wicket:message key="lbl.status"/></label>
 						</td>
 					</tr>
-					<tr wicket:id="events">
+					<tr wicket:id="sendLogs">
 						<td>
 							<p class="form-control-static"><wicket:container wicket:id="timestamp"/></p>
 						</td>

@@ -25,13 +25,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.event.processor.EbMSEventStatus;
+import nl.clockwork.ebms.send.SendTaskStatus;
 
 @Builder
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
-public class EbMSEventLog implements IClusterable
+public class SendLog implements IClusterable
 {
 	private static final long serialVersionUID = 1L;
 	@NonNull
@@ -39,6 +39,6 @@ public class EbMSEventLog implements IClusterable
 	@NonNull
 	String uri;
 	@NonNull
-	EbMSEventStatus status;
+	SendTaskStatus status;
 	String errorMessage;
 }

@@ -45,7 +45,7 @@ import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
-import nl.clockwork.ebms.admin.model.EbMSEventLog;
+import nl.clockwork.ebms.admin.model.SendLog;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
 import nl.clockwork.ebms.admin.web.AjaxLink;
@@ -61,25 +61,25 @@ import nl.clockwork.ebms.admin.web.TextArea;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.admin.web.WicketApplication;
-import nl.clockwork.ebms.event.processor.EbMSEventStatus;
+import nl.clockwork.ebms.send.SendTaskStatus;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MessagePageX extends BasePage implements IGenericComponent<EbMSMessage,MessagePageX>
 {
-	private class EbMSEventLogPropertyListView extends PropertyListView<EbMSEventLog>
+	private class EbMSSendLogPropertyListView extends PropertyListView<SendLog>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public EbMSEventLogPropertyListView(String id, IModel<List<EbMSEventLog>> list)
+		public EbMSSendLogPropertyListView(String id, IModel<List<SendLog>> list)
 		{
 			super(id,list);
 		}
 
 		@Override
-		protected void populateItem(ListItem<EbMSEventLog> item)
+		protected void populateItem(ListItem<SendLog> item)
 		{
 			val o = item.getModelObject();
-			val errorMessageModalWindow = new ErrorMessageModalWindow("errorMessageWindow","eventError",o.getErrorMessage());
+			val errorMessageModalWindow = new ErrorMessageModalWindow("errorMessageWindow","sendError",o.getErrorMessage());
 			item.add(InstantLabel.of("timestamp",Constants.DATETIME_FORMAT));
 			item.add(new Label("uri"));
 			item.add(errorMessageModalWindow);
@@ -87,19 +87,19 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 					.id("showErrorMessageWindow")
 					.onClick(t -> errorMessageModalWindow.show(t))
 					.build();
-			link.setEnabled(EbMSEventStatus.FAILED.equals(item.getModelObject().getStatus()));
+			link.setEnabled(SendTaskStatus.FAILED.equals(item.getModelObject().getStatus()));
 			link.add(new Label("status"));
 			item.add(link);
 		}
 	}
-	private class LoadableDetachableEbMSEventLogModel extends LoadableDetachableModel <List<EbMSEventLog>>
+	private class LoadableDetachableSendLogModel extends LoadableDetachableModel <List<SendLog>>
 	{
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		protected List<EbMSEventLog> load()
+		protected List<SendLog> load()
 		{
-			return getModelObject().getEvents();
+			return getModelObject().getSendLogs();
 		}
 	}
 	private class LoadableDetachableEbMSAttachmentModel extends LoadableDetachableModel<List<EbMSAttachment>>
@@ -139,8 +139,8 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 		add(createActionField("action"));
 		add(createViewMessageErrorLink("viewMessageError"));
 		add(InstantLabel.of("statusTime",Constants.DATETIME_FORMAT));
-		add(createNextEventContainer("nextEvent"));
-		add(createEventLogContainer("eventLog"));
+		add(createSendTaskContainer("sendTask"));
+		add(createSendLogContainer("sendLog"));
 		add(createRawOutputContainer("rawOutputContainer"));
 		messageViewPanel = createMessageViewPanel("attachments");
 		add(messageViewPanel);
@@ -184,7 +184,7 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 			this.title = title;
 			setCssClassName(ModalWindow.CSS_CLASS_GRAY);
 			setContent(new ErrorMessagePanel(this,Model.of(errorMessage)));
-			setCookieName("eventError");
+			setCookieName("sendError");
 			setCloseButtonCallback(new nl.clockwork.ebms.admin.web.CloseButtonCallback());
 		}
 		
@@ -197,12 +197,12 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 
 	private Link<Void> createViewRefToMessageIdLink(String id)
 	{
-		val link = Link.<Void>builder()
+		val result = Link.<Void>builder()
 				.id(id)
 				.onClick(() -> setResponsePage(new MessagePageX(MessageDataModel.of(ebMSDAO,ebMSDAO.findMessage(getModelObject().getRefToMessageId())),MessagePageX.this)))
 				.build();
-		link.add(new Label("refToMessageId"));
-		return link;
+		result.add(new Label("refToMessageId"));
+		return result;
 	}
 	
 	private Component[] createActionField(String id)
@@ -220,42 +220,42 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 
 	private AjaxLink<Void> createViewMessageErrorLink(String id)
 	{
-		val linkMessageError = AjaxLink.<Void>builder()
+		val result = AjaxLink.<Void>builder()
 				.id(id)
 				.onClick(t -> setResponsePage(new MessagePageX(Model.of(ebMSDAO.findResponseMessage(getModelObject().getMessageId())),MessagePageX.this)))
 				.build();
-		linkMessageError.setEnabled(
+		result.setEnabled(
 				EnumSet.of(EbMSMessageStatus.RECEIVED,EbMSMessageStatus.PROCESSED,EbMSMessageStatus.DELIVERED,EbMSMessageStatus.FAILED,EbMSMessageStatus.DELIVERY_FAILED)
 				.contains(getModelObject().getStatus()) ? ebMSDAO.existsResponseMessage(getModelObject().getMessageId()) : false);
-		linkMessageError.add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(getModelObject().getStatus()))));
-		linkMessageError.add(new Label("status"));
-		return linkMessageError;
+		result.add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(getModelObject().getStatus()))));
+		result.add(new Label("status"));
+		return result;
 	}
 
-	private WebMarkupContainer createNextEventContainer(String id)
+	private WebMarkupContainer createSendTaskContainer(String id)
 	{
-		val nextEvent = new WebMarkupContainer(id);
-		nextEvent.setVisible(getModelObject().getEvent() != null);
-		if (getModelObject().getEvent() != null)
+		val result = new WebMarkupContainer(id);
+		result.setVisible(getModelObject().getSendTask() != null);
+		if (getModelObject().getSendTask() != null)
 		{
-			nextEvent.add(InstantLabel.of("event.timestamp",Constants.DATETIME_FORMAT));
-			nextEvent.add(new Label("event.retries"));
-			nextEvent.add(InstantLabel.of("event.timeToLive",Constants.DATETIME_FORMAT));
+			result.add(InstantLabel.of("sendTask.timestamp",Constants.DATETIME_FORMAT));
+			result.add(new Label("sendTask.retries"));
+			result.add(InstantLabel.of("sendTask.timeToLive",Constants.DATETIME_FORMAT));
 		}
-		return nextEvent;
+		return result;
 	}
 
-	private WebMarkupContainer createEventLogContainer(String id)
+	private WebMarkupContainer createSendLogContainer(String id)
 	{
-		WebMarkupContainer eventLog = new WebMarkupContainer(id);
-		eventLog.setVisible(getModelObject().getEvents().size() > 0);
-		eventLog.add(new EbMSEventLogPropertyListView("events",new LoadableDetachableEbMSEventLogModel()));
-		return eventLog;
+		val result = new WebMarkupContainer(id);
+		result.setVisible(getModelObject().getSendLogs().size() > 0);
+		result.add(new EbMSSendLogPropertyListView("sendLogs",new LoadableDetachableSendLogModel()));
+		return result;
 	}
 
 	private WebMarkupContainer createRawOutputContainer(String id)
 	{
-		WebMarkupContainer rawOutputContainer = WebMarkupContainer.builder()
+		val result = WebMarkupContainer.builder()
 				.id(id)
 				.isVisible(() -> WicketApplication.get().getMessageViewPanels().containsKey(MessageProvider.createId(getModelObject().getService(),getModelObject().getAction())))
 				.build();
@@ -280,8 +280,8 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 			t.add(getPage());
 		};
 		rawOutput.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
-		rawOutputContainer.add(rawOutput);
-		return rawOutputContainer;
+		result.add(rawOutput);
+		return result;
 	}
 
 	private Panel createMessageViewPanel(String id)

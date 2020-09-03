@@ -49,16 +49,16 @@ import nl.clockwork.ebms.EbMSAction;
 import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.model.CPA;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
-import nl.clockwork.ebms.admin.model.EbMSEvent;
-import nl.clockwork.ebms.admin.model.EbMSEventLog;
+import nl.clockwork.ebms.admin.model.SendTask;
+import nl.clockwork.ebms.admin.model.SendLog;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
 import nl.clockwork.ebms.admin.web.message.TimeUnit;
 import nl.clockwork.ebms.querydsl.model.QCpa;
 import nl.clockwork.ebms.querydsl.model.QEbmsAttachment;
-import nl.clockwork.ebms.querydsl.model.QEbmsEvent;
-import nl.clockwork.ebms.querydsl.model.QEbmsEventLog;
+import nl.clockwork.ebms.querydsl.model.QSendTask;
+import nl.clockwork.ebms.querydsl.model.QSendLog;
 import nl.clockwork.ebms.querydsl.model.QEbmsMessage;
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
@@ -73,8 +73,8 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	QCpa cpaTable = QCpa.cpa1;
 	QEbmsMessage messageTable = QEbmsMessage.ebmsMessage;
 	QEbmsAttachment attachmentTable = QEbmsAttachment.ebmsAttachment;
-	QEbmsEvent eventTable = QEbmsEvent.ebmsEvent;
-	QEbmsEventLog eventLogTable = QEbmsEventLog.ebmsEventLog;
+	QSendTask sendTaskTable = QSendTask.sendTask;
+	QSendLog sendLogTable = QSendLog.sendLog;
 	Expression<?>[] ebMSMessageColumns = {messageTable.timeStamp,messageTable.cpaId,messageTable.conversationId,messageTable.messageId,messageTable.messageNr,messageTable.refToMessageId,messageTable.timeToLive,messageTable.fromPartyId,messageTable.fromRole,messageTable.toPartyId,messageTable.toRole,messageTable.service,messageTable.action,messageTable.status,messageTable.statusTime};
 	Expression<?>[] ebMSMessageDetailColumns = {messageTable.timeStamp,messageTable.cpaId,messageTable.conversationId,messageTable.messageId,messageTable.messageNr,messageTable.refToMessageId,messageTable.timeToLive,messageTable.fromPartyId,messageTable.fromRole,messageTable.toPartyId,messageTable.toRole,messageTable.service,messageTable.action,messageTable.content,messageTable.status,messageTable.statusTime};
 	ConstructorExpression<EbMSMessage> ebMSMessageProjection = Projections.constructor(EbMSMessage.class,ebMSMessageColumns);
@@ -132,8 +132,8 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 						.and(messageTable.messageNr.eq(messageNr)))
 				.fetchOne();
 		result.setAttachments(getAttachments(messageId,messageNr));
-		result.setEvent(getEvent(messageId));
-		result.setEvents(getEvents(messageId));
+		result.setSendTask(getSendTask(messageId));
+		result.setSendLogs(getSendLogs(messageId));
 		result.getAttachments().forEach(a -> a.setMessage(result));
 		return result;
 	}
@@ -158,7 +158,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 						.and(messageTable.messageNr.eq(0))
 						.and(messageTable.service.eq(EbMSAction.EBMS_SERVICE_URI)))
 				.fetchOne();
-		result.setEvents(getEvents(messageId));
+		result.setSendLogs(getSendLogs(messageId));
 		return result;
 	}
 
@@ -204,19 +204,19 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				.fetch();
 	}
 
-	private EbMSEvent getEvent(String messageId)
+	private SendTask getSendTask(String messageId)
 	{
-		return queryFactory.select(Projections.constructor(EbMSEvent.class,eventTable.timeToLive,eventTable.timeStamp,eventTable.retries))
-				.from(eventTable)
-				.where(eventTable.messageId.eq(messageId))
+		return queryFactory.select(Projections.constructor(SendTask.class,sendTaskTable.timeToLive,sendTaskTable.timeStamp,sendTaskTable.retries))
+				.from(sendTaskTable)
+				.where(sendTaskTable.messageId.eq(messageId))
 				.fetchOne();
 	}
 
-	private List<EbMSEventLog> getEvents(String messageId)
+	private List<SendLog> getSendLogs(String messageId)
 	{
-		return queryFactory.select(Projections.constructor(EbMSEventLog.class,eventLogTable.timeStamp,eventLogTable.uri,eventLogTable.status,eventLogTable.errorMessage))
-				.from(eventLogTable)
-				.where(eventLogTable.messageId.eq(messageId))
+		return queryFactory.select(Projections.constructor(SendLog.class,sendLogTable.timeStamp,sendLogTable.uri,sendLogTable.status,sendLogTable.errorMessage))
+				.from(sendLogTable)
+				.where(sendLogTable.messageId.eq(messageId))
 				.fetch();
 	}
 	

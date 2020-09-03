@@ -43,7 +43,7 @@ import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
-import nl.clockwork.ebms.admin.model.EbMSEventLog;
+import nl.clockwork.ebms.admin.model.SendLog;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.AjaxLink;
 import nl.clockwork.ebms.admin.web.BasePage;
@@ -55,24 +55,24 @@ import nl.clockwork.ebms.admin.web.StringModel;
 import nl.clockwork.ebms.admin.web.TextArea;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
-import nl.clockwork.ebms.event.processor.EbMSEventStatus;
+import nl.clockwork.ebms.send.SendTaskStatus;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MessagePage extends BasePage implements IGenericComponent<EbMSMessage,MessagePage>
 {
-	private class EbMSEventLogPropertyListView extends PropertyListView<EbMSEventLog>
+	private class SendLogPropertyListView extends PropertyListView<SendLog>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public EbMSEventLogPropertyListView(String id, IModel<List<EbMSEventLog>> list)
+		public SendLogPropertyListView(String id, IModel<List<SendLog>> list)
 		{
 			super(id,list);
 		}
 
 		@Override
-		protected void populateItem(ListItem<EbMSEventLog> item)
+		protected void populateItem(ListItem<SendLog> item)
 		{
-			val errorMessageModalWindow = new ErrorMessageModalWindow("errorMessageWindow","eventError",item.getModelObject().getErrorMessage());
+			val errorMessageModalWindow = new ErrorMessageModalWindow("errorMessageWindow","sendError",item.getModelObject().getErrorMessage());
 			item.add(InstantLabel.of("timestamp",Constants.DATETIME_FORMAT));
 			item.add(new Label("uri"));
 			item.add(errorMessageModalWindow);
@@ -80,19 +80,19 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 					.id("showErrorMessageWindow")
 					.onClick(t -> errorMessageModalWindow.show(t))
 					.build();
-			link.setEnabled(EbMSEventStatus.FAILED.equals(item.getModelObject().getStatus()));
+			link.setEnabled(SendTaskStatus.FAILED.equals(item.getModelObject().getStatus()));
 			link.add(new Label("status"));
 			item.add(link);
 		}
 	}
-	private class LoadableDetachableEbMSEventLogModel extends LoadableDetachableModel <List<EbMSEventLog>>
+	private class LoadableDetachableSendLogModel extends LoadableDetachableModel <List<SendLog>>
 	{
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		protected List<EbMSEventLog> load()
+		protected List<SendLog> load()
 		{
-			return getModelObject().getEvents();
+			return getModelObject().getSendLogs();
 		}
 	}
 	private class LoadableDetachableEbMSAttachmentModel extends LoadableDetachableModel<List<EbMSAttachment>>
@@ -129,8 +129,8 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		add(createViewMessageErrorLink("viewMessageError"));
 		add(InstantLabel.of("statusTime",Constants.DATETIME_FORMAT));
 		add(new AttachmentsPanel("attachments",new LoadableDetachableEbMSAttachmentModel()).setVisible(getModelObject().getAttachments().size() > 0));
-		add(createNextEventContainer("nextEvent"));
-		add(createEventLogContainer("eventLog"));
+		add(createsendTaskContainer("sendTask"));
+		add(createSendLogContainer("sendLog"));
 		add(new PageLink("back",responsePage));
 		add(new DownloadEbMSMessageLink("download",ebMSDAO,model));
 		val content = createContentField("content");
@@ -162,7 +162,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 			this.title = title;
 			setCssClassName(ModalWindow.CSS_CLASS_GRAY);
 			setContent(new ErrorMessagePanel(this,Model.of(errorMessage)));
-			setCookieName("eventError");
+			setCookieName("sendError");
 			setCloseButtonCallback(new nl.clockwork.ebms.admin.web.CloseButtonCallback());
 		}
 
@@ -209,24 +209,24 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		return result;
 	}
 
-	private WebMarkupContainer createNextEventContainer(String id)
+	private WebMarkupContainer createsendTaskContainer(String id)
 	{
 		val result = new WebMarkupContainer(id);
-		result.setVisible(getModelObject().getEvent() != null);
-		if (getModelObject().getEvent() != null)
+		result.setVisible(getModelObject().getSendTask() != null);
+		if (getModelObject().getSendTask() != null)
 		{
-			result.add(InstantLabel.of("event.timestamp",Constants.DATETIME_FORMAT));
-			result.add(new Label("event.retries"));
-			result.add(InstantLabel.of("event.timeToLive",Constants.DATETIME_FORMAT));
+			result.add(InstantLabel.of("sendTask.timestamp",Constants.DATETIME_FORMAT));
+			result.add(new Label("sendTask.retries"));
+			result.add(InstantLabel.of("sendTask.timeToLive",Constants.DATETIME_FORMAT));
 		}
 		return result;
 	}
 
-	private WebMarkupContainer createEventLogContainer(String id)
+	private WebMarkupContainer createSendLogContainer(String id)
 	{
 		val result = new WebMarkupContainer(id);
-		result.setVisible(getModelObject().getEvents().size() > 0);
-		result.add(new EbMSEventLogPropertyListView("events",new LoadableDetachableEbMSEventLogModel()));
+		result.setVisible(getModelObject().getSendLogs().size() > 0);
+		result.add(new SendLogPropertyListView("sendLogs",new LoadableDetachableSendLogModel()));
 		return result;
 	}
 
