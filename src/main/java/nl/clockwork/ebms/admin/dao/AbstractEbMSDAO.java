@@ -55,11 +55,11 @@ import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
 import nl.clockwork.ebms.admin.web.message.TimeUnit;
-import nl.clockwork.ebms.querydsl.model.QCpa;
-import nl.clockwork.ebms.querydsl.model.QEbmsAttachment;
-import nl.clockwork.ebms.querydsl.model.QSendTask;
-import nl.clockwork.ebms.querydsl.model.QSendLog;
-import nl.clockwork.ebms.querydsl.model.QEbmsMessage;
+import nl.clockwork.ebms.cpa.QCpa;
+import nl.clockwork.ebms.model.QEbmsAttachment;
+import nl.clockwork.ebms.model.QEbmsMessage;
+import nl.clockwork.ebms.task.QSendLog;
+import nl.clockwork.ebms.task.QSendTask;
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @AllArgsConstructor
@@ -75,15 +75,20 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	QEbmsAttachment attachmentTable = QEbmsAttachment.ebmsAttachment;
 	QSendTask sendTaskTable = QSendTask.sendTask;
 	QSendLog sendLogTable = QSendLog.sendLog;
-	Expression<?>[] ebMSMessageColumns = {messageTable.timeStamp,messageTable.cpaId,messageTable.conversationId,messageTable.messageId,messageTable.messageNr,messageTable.refToMessageId,messageTable.timeToLive,messageTable.fromPartyId,messageTable.fromRole,messageTable.toPartyId,messageTable.toRole,messageTable.service,messageTable.action,messageTable.status,messageTable.statusTime};
-	Expression<?>[] ebMSMessageDetailColumns = {messageTable.timeStamp,messageTable.cpaId,messageTable.conversationId,messageTable.messageId,messageTable.messageNr,messageTable.refToMessageId,messageTable.timeToLive,messageTable.fromPartyId,messageTable.fromRole,messageTable.toPartyId,messageTable.toRole,messageTable.service,messageTable.action,messageTable.content,messageTable.status,messageTable.statusTime};
+	Expression<?>[] ebMSMessageColumns = {messageTable.timeStamp,messageTable.cpaId,messageTable.conversationId,messageTable.messageId,messageTable.messageNr,messageTable.refToMessageId,messageTable.timeToLive,messageTable.fromPartyId,messageTable.fromRole,messageTable.toPartyId,messageTable.toRole,messageTable.service,messageTable.action,messageTable.content,messageTable.status,messageTable.statusTime};
+	Expression<?>[] ebMSMessagePropertyColumns = {messageTable.timeStamp,messageTable.cpaId,messageTable.conversationId,messageTable.messageId,messageTable.messageNr,messageTable.refToMessageId,messageTable.timeToLive,messageTable.fromPartyId,messageTable.fromRole,messageTable.toPartyId,messageTable.toRole,messageTable.service,messageTable.action,messageTable.status,messageTable.statusTime};
+	ConstructorExpression<CPA> cpaProjection = Projections.constructor(CPA.class,cpaTable.cpaId,cpaTable.cpa);
 	ConstructorExpression<EbMSMessage> ebMSMessageProjection = Projections.constructor(EbMSMessage.class,ebMSMessageColumns);
-	ConstructorExpression<EbMSMessage> ebMSMessageDetailProjection = Projections.constructor(EbMSMessage.class,ebMSMessageDetailColumns);
+	ConstructorExpression<EbMSMessage> ebMSMessagePropertyProjection = Projections.constructor(EbMSMessage.class,ebMSMessagePropertyColumns);
+	ConstructorExpression<EbMSAttachment> ebMSAttachmentProjection = Projections.constructor(EbMSAttachment.class,attachmentTable.name,attachmentTable.contentId,attachmentTable.contentType,attachmentTable.content);
+	ConstructorExpression<EbMSAttachment> ebMSAttachmentPropertiesProjection = Projections.constructor(EbMSAttachment.class,attachmentTable.name,attachmentTable.contentId,attachmentTable.contentType);
+	ConstructorExpression<SendTask> sendTaskProjection = Projections.constructor(SendTask.class,sendTaskTable.timeToLive,sendTaskTable.timeStamp,sendTaskTable.retries);
+	ConstructorExpression<SendLog> sendLogProjection = Projections.constructor(SendLog.class,sendLogTable.timeStamp,sendLogTable.uri,sendLogTable.status,sendLogTable.errorMessage);
 	
 	@Override
 	public CPA findCPA(String cpaId)
 	{
-		return queryFactory.select(Projections.constructor(CPA.class,cpaTable.cpaId,cpaTable.cpa))
+		return queryFactory.select(cpaProjection)
 				.from(cpaTable)
 				.where(cpaTable.cpaId.eq(cpaId))
 				.fetchOne();
@@ -109,7 +114,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	@Override
 	public List<CPA> selectCPAs(long first, long count)
 	{
-		return queryFactory.select(Projections.constructor(CPA.class,cpaTable.cpaId,cpaTable.cpa))
+		return queryFactory.select(cpaProjection)
 				.from(cpaTable)
 				.orderBy(cpaTable.cpaId.asc())
 				.limit(count)
@@ -126,7 +131,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	@Override
 	public EbMSMessage findMessage(String messageId, int messageNr)
 	{
-		val result = queryFactory.select(ebMSMessageDetailProjection)
+		val result = queryFactory.select(ebMSMessageProjection)
 				.from(messageTable)
 				.where(messageTable.messageId.eq(messageId)
 						.and(messageTable.messageNr.eq(messageNr)))
@@ -152,7 +157,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	@Override
 	public EbMSMessage findResponseMessage(String messageId)
 	{
-		val result = queryFactory.select(ebMSMessageDetailProjection)
+		val result = queryFactory.select(ebMSMessageProjection)
 				.from(messageTable)
 				.where(messageTable.refToMessageId.eq(messageId)
 						.and(messageTable.messageNr.eq(0))
@@ -174,7 +179,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	@Override
 	public List<EbMSMessage> selectMessages(EbMSMessageFilter filter, long first, long count)
 	{
-		return queryFactory.select(ebMSMessageProjection)
+		return queryFactory.select(ebMSMessagePropertyProjection)
 				.from(messageTable)
 				.where(getMessageFilter(messageTable,filter,new BooleanBuilder()))
 				.orderBy(messageTable.timeStamp.desc())
@@ -186,7 +191,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	@Override
 	public EbMSAttachment findAttachment(String messageId, int messageNr, String contentId)
 	{
-		return queryFactory.select(Projections.constructor(EbMSAttachment.class,attachmentTable.name,attachmentTable.contentId,attachmentTable.contentType,attachmentTable.content))
+		return queryFactory.select(ebMSAttachmentProjection)
 				.from(attachmentTable)
 				.where(attachmentTable.messageId.eq(messageId)
 						.and(attachmentTable.messageNr.eq(messageNr))
@@ -197,7 +202,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 
 	protected List<EbMSAttachment> getAttachments(String messageId, int messageNr)
 	{
-		return queryFactory.select(Projections.constructor(EbMSAttachment.class,attachmentTable.name,attachmentTable.contentId,attachmentTable.contentType))
+		return queryFactory.select(ebMSAttachmentPropertiesProjection)
 				.from(attachmentTable)
 				.where(attachmentTable.messageId.eq(messageId)
 						.and(attachmentTable.messageNr.eq(messageNr)))
@@ -206,7 +211,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 
 	private SendTask getSendTask(String messageId)
 	{
-		return queryFactory.select(Projections.constructor(SendTask.class,sendTaskTable.timeToLive,sendTaskTable.timeStamp,sendTaskTable.retries))
+		return queryFactory.select(sendTaskProjection)
 				.from(sendTaskTable)
 				.where(sendTaskTable.messageId.eq(messageId))
 				.fetchOne();
@@ -214,7 +219,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 
 	private List<SendLog> getSendLogs(String messageId)
 	{
-		return queryFactory.select(Projections.constructor(SendLog.class,sendLogTable.timeStamp,sendLogTable.uri,sendLogTable.status,sendLogTable.errorMessage))
+		return queryFactory.select(sendLogProjection)
 				.from(sendLogTable)
 				.where(sendLogTable.messageId.eq(messageId))
 				.fetch();
@@ -249,7 +254,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	@Override
 	public void printMessagesToCSV(final CSVPrinter printer, EbMSMessageFilter filter)
 	{
-		val query = queryFactory.select(ebMSMessageColumns)
+		val query = queryFactory.select(ebMSMessagePropertyColumns)
 				.from(messageTable)
 				.where(getMessageFilter(messageTable,filter,new BooleanBuilder()))
 				.orderBy(messageTable.timeStamp.desc())
