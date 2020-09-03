@@ -61,7 +61,7 @@ import nl.clockwork.ebms.admin.web.TextArea;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.admin.web.WicketApplication;
-import nl.clockwork.ebms.send.SendTaskStatus;
+import nl.clockwork.ebms.task.SendTaskStatus;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MessagePageX extends BasePage implements IGenericComponent<EbMSMessage,MessagePageX>

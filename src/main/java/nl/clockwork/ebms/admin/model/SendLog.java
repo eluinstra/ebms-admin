@@ -25,7 +25,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.send.SendTaskStatus;
+import nl.clockwork.ebms.task.SendTaskStatus;
 
 @Builder
 @Data
