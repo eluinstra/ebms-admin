@@ -28,7 +28,7 @@ import lombok.NonNull;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.Utils;
-import nl.clockwork.ebms.event.listener.EbMSMessageEventType;
+import nl.clockwork.ebms.event.MessageEventType;
 import nl.clockwork.ebms.service.EbMSMessageService;
 import nl.clockwork.ebms.service.model.MessageEvent;
 import nl.clockwork.ebms.service.model.MessageFilter;
@@ -43,7 +43,7 @@ public class MessageEventDataProvider implements IDataProvider<MessageEvent>
 	@NonNull
 	private MessageFilter filter;
 	@NonNull
-	private EbMSMessageEventType[] eventTypes;
+	private MessageEventType[] eventTypes;
 
 	@Override
 	public Iterator<? extends MessageEvent> iterator(long first, long count)

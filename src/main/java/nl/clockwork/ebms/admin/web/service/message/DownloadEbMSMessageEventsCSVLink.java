@@ -36,7 +36,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.message.CachedOutputResourceStream;
-import nl.clockwork.ebms.event.listener.EbMSMessageEventType;
+import nl.clockwork.ebms.event.MessageEventType;
 import nl.clockwork.ebms.service.EbMSMessageService;
 import nl.clockwork.ebms.service.model.MessageEvent;
 import nl.clockwork.ebms.service.model.MessageFilter;
@@ -51,10 +51,10 @@ public class DownloadEbMSMessageEventsCSVLink extends Link<Void>
 	@NonNull
 	IModel<MessageFilter> filter;
 	@NonNull
-	EbMSMessageEventType[] eventTypes;
+	MessageEventType[] eventTypes;
 
 	@Builder
-	public DownloadEbMSMessageEventsCSVLink(String id, @NonNull EbMSMessageService ebMSMessageService, @NonNull IModel<MessageFilter> filter, @NonNull EbMSMessageEventType...eventTypes)
+	public DownloadEbMSMessageEventsCSVLink(String id, @NonNull EbMSMessageService ebMSMessageService, @NonNull IModel<MessageFilter> filter, @NonNull MessageEventType...eventTypes)
 	{
 		super(id);
 		this.ebMSMessageService = ebMSMessageService;

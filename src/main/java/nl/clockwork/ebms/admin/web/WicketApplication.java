@@ -42,7 +42,7 @@ import nl.clockwork.ebms.admin.PropertySourcesPlaceholderConfigurer;
 import nl.clockwork.ebms.admin.web.menu.MenuDivider;
 import nl.clockwork.ebms.admin.web.menu.MenuItem;
 import nl.clockwork.ebms.admin.web.menu.MenuLinkItem;
-import nl.clockwork.ebms.event.listener.EventListenerConfig.EventListenerType;
+import nl.clockwork.ebms.event.MessageEventListenerConfig.EventListenerType;
 
 /**
  * Application object for your web application. If you want to run this application without deploying, run the Start class.

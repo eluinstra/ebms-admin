@@ -41,7 +41,7 @@ import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.Supplier;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.client.EbMSHttpClientFactory.EbMSHttpClientType;
-import nl.clockwork.ebms.event.listener.EventListenerConfig.EventListenerType;
+import nl.clockwork.ebms.event.MessageEventListenerConfig.EventListenerType;
 
 public class CorePropertiesFormPanel extends Panel
 {

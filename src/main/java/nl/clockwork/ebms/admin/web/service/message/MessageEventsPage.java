@@ -40,7 +40,7 @@ import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.admin.web.WicketApplication;
-import nl.clockwork.ebms.event.listener.EbMSMessageEventType;
+import nl.clockwork.ebms.event.MessageEventType;
 import nl.clockwork.ebms.service.EbMSMessageService;
 import nl.clockwork.ebms.service.model.MessageEvent;
 import nl.clockwork.ebms.service.model.MessageFilter;
@@ -97,15 +97,15 @@ public class MessageEventsPage extends BasePage
 
 	public MessageEventsPage()
 	{
-		this(Model.of(new MessageFilter()),EbMSMessageEventType.values());
+		this(Model.of(new MessageFilter()),MessageEventType.values());
 	}
 
-	public MessageEventsPage(IModel<MessageFilter> filterModel, EbMSMessageEventType[] eventTypes)
+	public MessageEventsPage(IModel<MessageFilter> filterModel, MessageEventType[] eventTypes)
 	{
 		this(filterModel,eventTypes,null);
 	}
 
-	public MessageEventsPage(IModel<MessageFilter> filter, EbMSMessageEventType[] eventTypes, final WebPage responsePage)
+	public MessageEventsPage(IModel<MessageFilter> filter, MessageEventType[] eventTypes, final WebPage responsePage)
 	{
 		this.maxItemsPerPage = WicketApplication.get().getMaxItemsPerPage();
 		val container = new WebMarkupContainer("container");
@@ -116,7 +116,7 @@ public class MessageEventsPage extends BasePage
 		add(navigator);
 		add(new MaxItemsPerPageChoice("maxItemsPerPage",new PropertyModel<>(this,"maxItemsPerPage"),navigator,container));
 		add(new PageLink("back",responsePage).setVisible(responsePage != null));
-		add(new DownloadEbMSMessageEventsCSVLink("download",ebMSMessageService,filter,EbMSMessageEventType.values()));
+		add(new DownloadEbMSMessageEventsCSVLink("download",ebMSMessageService,filter,MessageEventType.values()));
 	}
 
 	@Override

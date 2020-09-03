@@ -48,7 +48,7 @@ import nl.clockwork.ebms.querydsl.model.QEbmsAttachment;
 import nl.clockwork.ebms.querydsl.model.QSendTask;
 import nl.clockwork.ebms.querydsl.model.QSendLog;
 import nl.clockwork.ebms.querydsl.model.QEbmsMessage;
-import nl.clockwork.ebms.querydsl.model.QEbmsMessageEvent;
+import nl.clockwork.ebms.querydsl.model.QMessageEvent;
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @RequiredArgsConstructor
@@ -103,7 +103,7 @@ public class DBClean implements SystemInterface
 	QCpa cpaTable = QCpa.cpa1;
 	QEbmsMessage messageTable = QEbmsMessage.ebmsMessage;
 	QEbmsAttachment attachmentTable = QEbmsAttachment.ebmsAttachment;
-	QEbmsMessageEvent messageEventTable = QEbmsMessageEvent.ebmsMessageEvent;
+	QMessageEvent messageEventTable = QMessageEvent.ebmsMessageEvent;
 	QSendTask sendTaskTable = QSendTask.sendTask;
 	QSendLog sendLogTable = QSendLog.sendLog;
 	
