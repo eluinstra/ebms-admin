@@ -44,11 +44,11 @@ import lombok.val;
 import lombok.var;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.cpa.QCpa;
+import nl.clockwork.ebms.delivery.task.QDeliveryLog;
+import nl.clockwork.ebms.delivery.task.QDeliveryTask;
 import nl.clockwork.ebms.event.QMessageEvent;
 import nl.clockwork.ebms.model.QEbmsAttachment;
 import nl.clockwork.ebms.model.QEbmsMessage;
-import nl.clockwork.ebms.task.QSendLog;
-import nl.clockwork.ebms.task.QSendTask;
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @RequiredArgsConstructor
@@ -104,8 +104,8 @@ public class DBClean implements SystemInterface
 	QEbmsMessage messageTable = QEbmsMessage.ebmsMessage;
 	QEbmsAttachment attachmentTable = QEbmsAttachment.ebmsAttachment;
 	QMessageEvent messageEventTable = QMessageEvent.ebmsMessageEvent;
-	QSendTask sendTaskTable = QSendTask.sendTask;
-	QSendLog sendLogTable = QSendLog.sendLog;
+	QDeliveryTask deliveryTaskTable = QDeliveryTask.deliveryTask;
+	QDeliveryLog deliveryLogTable = QDeliveryLog.deliveryLog;
 	
 	private void execute(final CommandLine cmd) throws Exception
 	{
@@ -194,11 +194,11 @@ public class DBClean implements SystemInterface
 	{
 		val selectMessageIdsByCpaId = SQLExpressions.select(messageTable.messageId).from(messageTable).where(messageTable.cpaId.eq(cpaId));
 
-		var result = queryFactory.delete(sendLogTable).where(sendLogTable.messageId.in(selectMessageIdsByCpaId)).execute();
-		println(result + " sendLogs deleted");
+		var result = queryFactory.delete(deliveryLogTable).where(deliveryLogTable.messageId.in(selectMessageIdsByCpaId)).execute();
+		println(result + " deliveryLogs deleted");
 
-		result = queryFactory.delete(sendTaskTable).where(sendTaskTable.messageId.in(selectMessageIdsByCpaId)).execute();
-		println(result + " sendTasks deleted");
+		result = queryFactory.delete(deliveryTaskTable).where(deliveryTaskTable.messageId.in(selectMessageIdsByCpaId)).execute();
+		println(result + " deliveryTasks deleted");
 
 		result = queryFactory.delete(messageEventTable).where(messageEventTable.messageId.in(selectMessageIdsByCpaId)).execute();
 		println(result + " messageEvents deleted");
@@ -218,11 +218,11 @@ public class DBClean implements SystemInterface
 	{
 		val selectMessageIdsByPersistTime = SQLExpressions.select(messageTable.messageId).from(messageTable).where(messageTable.persistTime.loe(dateFrom));
 
-		var result = queryFactory.delete(sendLogTable).where(sendLogTable.messageId.in(selectMessageIdsByPersistTime)).execute();
-		println(result + " sendLogs deleted");
+		var result = queryFactory.delete(deliveryLogTable).where(deliveryLogTable.messageId.in(selectMessageIdsByPersistTime)).execute();
+		println(result + " deliveryLogs deleted");
 
-		result = queryFactory.delete(sendTaskTable).where(sendTaskTable.messageId.in(selectMessageIdsByPersistTime)).execute();
-		println(result + " sendTasks deleted");
+		result = queryFactory.delete(deliveryTaskTable).where(deliveryTaskTable.messageId.in(selectMessageIdsByPersistTime)).execute();
+		println(result + " deliveryTasks deleted");
 
 		result = queryFactory.delete(messageEventTable).where(messageEventTable.messageId.in(selectMessageIdsByPersistTime)).execute();
 		println(result + " messageEvents deleted");

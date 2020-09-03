@@ -36,7 +36,7 @@ import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyP
 import nl.clockwork.ebms.admin.web.configuration.ServicePropertiesFormPanel.ServicePropertiesFormData;
 import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.SignaturePropertiesFormData;
 import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormData;
-import nl.clockwork.ebms.client.EbMSHttpClientFactory.EbMSHttpClientType;
+import nl.clockwork.ebms.delivery.client.EbMSHttpClientFactory.EbMSHttpClientType;
 import nl.clockwork.ebms.event.MessageEventListenerConfig.EventListenerType;
 import nl.clockwork.ebms.security.KeyStoreType;
 

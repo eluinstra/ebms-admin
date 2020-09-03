@@ -49,17 +49,17 @@ import nl.clockwork.ebms.EbMSAction;
 import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.model.CPA;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
-import nl.clockwork.ebms.admin.model.SendTask;
-import nl.clockwork.ebms.admin.model.SendLog;
+import nl.clockwork.ebms.admin.model.DeliveryTask;
+import nl.clockwork.ebms.admin.model.DeliveryLog;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
 import nl.clockwork.ebms.admin.web.message.TimeUnit;
 import nl.clockwork.ebms.cpa.QCpa;
+import nl.clockwork.ebms.delivery.task.QDeliveryLog;
+import nl.clockwork.ebms.delivery.task.QDeliveryTask;
 import nl.clockwork.ebms.model.QEbmsAttachment;
 import nl.clockwork.ebms.model.QEbmsMessage;
-import nl.clockwork.ebms.task.QSendLog;
-import nl.clockwork.ebms.task.QSendTask;
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @AllArgsConstructor
@@ -73,8 +73,8 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	QCpa cpaTable = QCpa.cpa1;
 	QEbmsMessage messageTable = QEbmsMessage.ebmsMessage;
 	QEbmsAttachment attachmentTable = QEbmsAttachment.ebmsAttachment;
-	QSendTask sendTaskTable = QSendTask.sendTask;
-	QSendLog sendLogTable = QSendLog.sendLog;
+	QDeliveryTask deliveryTaskTable = QDeliveryTask.deliveryTask;
+	QDeliveryLog deliveryLogTable = QDeliveryLog.deliveryLog;
 	Expression<?>[] ebMSMessageColumns = {messageTable.timeStamp,messageTable.cpaId,messageTable.conversationId,messageTable.messageId,messageTable.messageNr,messageTable.refToMessageId,messageTable.timeToLive,messageTable.fromPartyId,messageTable.fromRole,messageTable.toPartyId,messageTable.toRole,messageTable.service,messageTable.action,messageTable.content,messageTable.status,messageTable.statusTime};
 	Expression<?>[] ebMSMessagePropertyColumns = {messageTable.timeStamp,messageTable.cpaId,messageTable.conversationId,messageTable.messageId,messageTable.messageNr,messageTable.refToMessageId,messageTable.timeToLive,messageTable.fromPartyId,messageTable.fromRole,messageTable.toPartyId,messageTable.toRole,messageTable.service,messageTable.action,messageTable.status,messageTable.statusTime};
 	ConstructorExpression<CPA> cpaProjection = Projections.constructor(CPA.class,cpaTable.cpaId,cpaTable.cpa);
@@ -82,8 +82,8 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	ConstructorExpression<EbMSMessage> ebMSMessagePropertyProjection = Projections.constructor(EbMSMessage.class,ebMSMessagePropertyColumns);
 	ConstructorExpression<EbMSAttachment> ebMSAttachmentProjection = Projections.constructor(EbMSAttachment.class,attachmentTable.name,attachmentTable.contentId,attachmentTable.contentType,attachmentTable.content);
 	ConstructorExpression<EbMSAttachment> ebMSAttachmentPropertiesProjection = Projections.constructor(EbMSAttachment.class,attachmentTable.name,attachmentTable.contentId,attachmentTable.contentType);
-	ConstructorExpression<SendTask> sendTaskProjection = Projections.constructor(SendTask.class,sendTaskTable.timeToLive,sendTaskTable.timeStamp,sendTaskTable.retries);
-	ConstructorExpression<SendLog> sendLogProjection = Projections.constructor(SendLog.class,sendLogTable.timeStamp,sendLogTable.uri,sendLogTable.status,sendLogTable.errorMessage);
+	ConstructorExpression<DeliveryTask> deliveryTaskProjection = Projections.constructor(DeliveryTask.class,deliveryTaskTable.timeToLive,deliveryTaskTable.timeStamp,deliveryTaskTable.retries);
+	ConstructorExpression<DeliveryLog> deliveryLogProjection = Projections.constructor(DeliveryLog.class,deliveryLogTable.timeStamp,deliveryLogTable.uri,deliveryLogTable.status,deliveryLogTable.errorMessage);
 	
 	@Override
 	public CPA findCPA(String cpaId)
@@ -137,8 +137,8 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 						.and(messageTable.messageNr.eq(messageNr)))
 				.fetchOne();
 		result.setAttachments(getAttachments(messageId,messageNr));
-		result.setSendTask(getSendTask(messageId));
-		result.setSendLogs(getSendLogs(messageId));
+		result.setDeliveryTask(getDeliveryTask(messageId));
+		result.setDeliveryLogs(getDeliveryLogs(messageId));
 		result.getAttachments().forEach(a -> a.setMessage(result));
 		return result;
 	}
@@ -163,7 +163,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 						.and(messageTable.messageNr.eq(0))
 						.and(messageTable.service.eq(EbMSAction.EBMS_SERVICE_URI)))
 				.fetchOne();
-		result.setSendLogs(getSendLogs(messageId));
+		result.setDeliveryLogs(getDeliveryLogs(messageId));
 		return result;
 	}
 
@@ -209,19 +209,19 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				.fetch();
 	}
 
-	private SendTask getSendTask(String messageId)
+	private DeliveryTask getDeliveryTask(String messageId)
 	{
-		return queryFactory.select(sendTaskProjection)
-				.from(sendTaskTable)
-				.where(sendTaskTable.messageId.eq(messageId))
+		return queryFactory.select(deliveryTaskProjection)
+				.from(deliveryTaskTable)
+				.where(deliveryTaskTable.messageId.eq(messageId))
 				.fetchOne();
 	}
 
-	private List<SendLog> getSendLogs(String messageId)
+	private List<DeliveryLog> getDeliveryLogs(String messageId)
 	{
-		return queryFactory.select(sendLogProjection)
-				.from(sendLogTable)
-				.where(sendLogTable.messageId.eq(messageId))
+		return queryFactory.select(deliveryLogProjection)
+				.from(deliveryLogTable)
+				.where(deliveryLogTable.messageId.eq(messageId))
 				.fetch();
 	}
 	

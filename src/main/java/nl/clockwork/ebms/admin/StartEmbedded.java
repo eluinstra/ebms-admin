@@ -71,7 +71,7 @@ public class StartEmbedded extends Start
 			printUsage(options);
 		setProperty("org.apache.activemq.SERIALIZABLE_PACKAGES","*");
 		if (cmd.hasOption("disableEbMSClient"))
-			setProperty("sendTaskHandler.start","false");
+			setProperty("deliveryTaskHandler.start","false");
 		init(cmd);
 		server.setHandler(handlerCollection);
 		val properties = getProperties();

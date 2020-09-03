@@ -43,7 +43,7 @@ import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
-import nl.clockwork.ebms.admin.model.SendLog;
+import nl.clockwork.ebms.admin.model.DeliveryLog;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.AjaxLink;
 import nl.clockwork.ebms.admin.web.BasePage;
@@ -55,22 +55,22 @@ import nl.clockwork.ebms.admin.web.StringModel;
 import nl.clockwork.ebms.admin.web.TextArea;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
-import nl.clockwork.ebms.task.SendTaskStatus;
+import nl.clockwork.ebms.delivery.task.DeliveryTaskStatus;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MessagePage extends BasePage implements IGenericComponent<EbMSMessage,MessagePage>
 {
-	private class SendLogPropertyListView extends PropertyListView<SendLog>
+	private class DeliveryLogPropertyListView extends PropertyListView<DeliveryLog>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public SendLogPropertyListView(String id, IModel<List<SendLog>> list)
+		public DeliveryLogPropertyListView(String id, IModel<List<DeliveryLog>> list)
 		{
 			super(id,list);
 		}
 
 		@Override
-		protected void populateItem(ListItem<SendLog> item)
+		protected void populateItem(ListItem<DeliveryLog> item)
 		{
 			val errorMessageModalWindow = new ErrorMessageModalWindow("errorMessageWindow","sendError",item.getModelObject().getErrorMessage());
 			item.add(InstantLabel.of("timestamp",Constants.DATETIME_FORMAT));
@@ -80,19 +80,19 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 					.id("showErrorMessageWindow")
 					.onClick(t -> errorMessageModalWindow.show(t))
 					.build();
-			link.setEnabled(SendTaskStatus.FAILED.equals(item.getModelObject().getStatus()));
+			link.setEnabled(DeliveryTaskStatus.FAILED.equals(item.getModelObject().getStatus()));
 			link.add(new Label("status"));
 			item.add(link);
 		}
 	}
-	private class LoadableDetachableSendLogModel extends LoadableDetachableModel <List<SendLog>>
+	private class LoadableDetachableDeliveryLogModel extends LoadableDetachableModel <List<DeliveryLog>>
 	{
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		protected List<SendLog> load()
+		protected List<DeliveryLog> load()
 		{
-			return getModelObject().getSendLogs();
+			return getModelObject().getDeliveryLogs();
 		}
 	}
 	private class LoadableDetachableEbMSAttachmentModel extends LoadableDetachableModel<List<EbMSAttachment>>
@@ -129,8 +129,8 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		add(createViewMessageErrorLink("viewMessageError"));
 		add(InstantLabel.of("statusTime",Constants.DATETIME_FORMAT));
 		add(new AttachmentsPanel("attachments",new LoadableDetachableEbMSAttachmentModel()).setVisible(getModelObject().getAttachments().size() > 0));
-		add(createsendTaskContainer("sendTask"));
-		add(createSendLogContainer("sendLog"));
+		add(createDeliveryTaskContainer("deliveryTask"));
+		add(createDeliveryLogContainer("deliveryLog"));
 		add(new PageLink("back",responsePage));
 		add(new DownloadEbMSMessageLink("download",ebMSDAO,model));
 		val content = createContentField("content");
@@ -209,24 +209,24 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		return result;
 	}
 
-	private WebMarkupContainer createsendTaskContainer(String id)
+	private WebMarkupContainer createDeliveryTaskContainer(String id)
 	{
 		val result = new WebMarkupContainer(id);
-		result.setVisible(getModelObject().getSendTask() != null);
-		if (getModelObject().getSendTask() != null)
+		result.setVisible(getModelObject().getDeliveryTask() != null);
+		if (getModelObject().getDeliveryTask() != null)
 		{
-			result.add(InstantLabel.of("sendTask.timestamp",Constants.DATETIME_FORMAT));
-			result.add(new Label("sendTask.retries"));
-			result.add(InstantLabel.of("sendTask.timeToLive",Constants.DATETIME_FORMAT));
+			result.add(InstantLabel.of("deliveryTask.timestamp",Constants.DATETIME_FORMAT));
+			result.add(new Label("deliveryTask.retries"));
+			result.add(InstantLabel.of("deliveryTask.timeToLive",Constants.DATETIME_FORMAT));
 		}
 		return result;
 	}
 
-	private WebMarkupContainer createSendLogContainer(String id)
+	private WebMarkupContainer createDeliveryLogContainer(String id)
 	{
 		val result = new WebMarkupContainer(id);
-		result.setVisible(getModelObject().getSendLogs().size() > 0);
-		result.add(new SendLogPropertyListView("sendLogs",new LoadableDetachableSendLogModel()));
+		result.setVisible(getModelObject().getDeliveryLogs().size() > 0);
+		result.add(new DeliveryLogPropertyListView("deliveryLogs",new LoadableDetachableDeliveryLogModel()));
 		return result;
 	}
 

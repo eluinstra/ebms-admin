@@ -64,9 +64,9 @@ public class EbMSMessage implements IClusterable
 	Instant statusTime;
 	@NonNull
 	List<EbMSAttachment> attachments = Collections.emptyList();
-	SendTask sendTask;
+	DeliveryTask deliveryTask;
 	@NonNull
-	List<SendLog> sendLogs = Collections.emptyList();
+	List<DeliveryLog> deliveryLogs = Collections.emptyList();
 
 	public EbMSMessage(@NonNull Instant timestamp, @NonNull String cpaId, @NonNull String conversationId, @NonNull String messageId, int messageNr, String refToMessageId, Instant timeToLive, @NonNull String fromPartyId, String fromRole, @NonNull String toPartyId, String toRole, @NonNull String service, @NonNull String action, EbMSMessageStatus status, Instant statusTime)
 	{
@@ -86,7 +86,7 @@ public class EbMSMessage implements IClusterable
 		this.status = status;
 		this.statusTime = statusTime;
 		this.attachments = Collections.emptyList();
-		this.sendLogs = Collections.emptyList();
+		this.deliveryLogs = Collections.emptyList();
 	}
 
 	public EbMSMessage(@NonNull Instant timestamp, @NonNull String cpaId, @NonNull String conversationId, @NonNull String messageId, int messageNr, String refToMessageId, Instant timeToLive, @NonNull String fromPartyId, String fromRole, @NonNull String toPartyId, String toRole, @NonNull String service, @NonNull String action, Document content, EbMSMessageStatus status, Instant statusTime) throws TransformerException
@@ -108,6 +108,6 @@ public class EbMSMessage implements IClusterable
 		this.status = status;
 		this.statusTime = statusTime;
 		this.attachments = Collections.emptyList();
-		this.sendLogs = Collections.emptyList();
+		this.deliveryLogs = Collections.emptyList();
 	}
 }
