@@ -32,7 +32,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IClusterable;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.val;
@@ -129,7 +128,6 @@ public class CertificateMappingPage extends BasePage
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
-	@AllArgsConstructor
 	public static class CertificateMappingFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;

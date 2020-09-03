@@ -52,12 +52,11 @@ public class MySQLEbMSDAO extends AbstractEbMSDAO
 			{
 				try
 				{
-					return EbMSAttachment.builder()
-							.name(rs.getString("name"))
-							.contentId(rs.getString("content_id"))
-							.contentType(rs.getString("content_type"))
-							.content(CachedOutputStreamType.createCachedOutputStream(rs.getBinaryStream("content")))
-							.build();
+					return new EbMSAttachment(
+							rs.getString("name"),
+							rs.getString("content_id"),
+							rs.getString("content_type"),
+							CachedOutputStreamType.createCachedOutputStream(rs.getBinaryStream("content")));
 				}
 				catch (IOException e)
 				{
@@ -78,14 +77,7 @@ public class MySQLEbMSDAO extends AbstractEbMSDAO
 			" where m.message_id = ?" +
 			" and m.message_nr = ?" +
 			" and m.id = a.ebms_message_id",
-			(rs,rownNum) ->
-			{
-				return EbMSAttachment.builder()
-						.name(rs.getString("name"))
-						.contentId(rs.getString("content_id"))
-						.contentType(rs.getString("content_type"))
-						.build();
-			},
+			(rs,rownNum) -> new EbMSAttachment(rs.getString("name"),rs.getString("content_id"),rs.getString("content_type")),
 			messageId,
 			messageNr
 		);

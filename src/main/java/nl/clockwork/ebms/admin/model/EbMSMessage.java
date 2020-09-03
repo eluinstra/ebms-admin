@@ -25,19 +25,16 @@ import org.apache.wicket.util.io.IClusterable;
 import org.w3c.dom.Document;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Builder.Default;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.util.DOMUtils;
 
-@Builder
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@AllArgsConstructor
+@NoArgsConstructor
 public class EbMSMessage implements IClusterable
 {
 	private static final long serialVersionUID = 1L;
@@ -66,11 +63,9 @@ public class EbMSMessage implements IClusterable
 	EbMSMessageStatus status;
 	Instant statusTime;
 	@NonNull
-	@Default
 	List<EbMSAttachment> attachments = Collections.emptyList();
 	SendTask sendTask;
 	@NonNull
-	@Default
 	List<SendLog> sendLogs = Collections.emptyList();
 
 	public EbMSMessage(@NonNull Instant timestamp, @NonNull String cpaId, @NonNull String conversationId, @NonNull String messageId, int messageNr, String refToMessageId, Instant timeToLive, @NonNull String fromPartyId, String fromRole, @NonNull String toPartyId, String toRole, @NonNull String service, @NonNull String action, EbMSMessageStatus status, Instant statusTime)
