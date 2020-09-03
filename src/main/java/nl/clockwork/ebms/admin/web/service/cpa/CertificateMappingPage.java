@@ -45,9 +45,9 @@ import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.DropDownChoice;
 import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.service.cpa.CPAService;
-import nl.clockwork.ebms.service.cpa.certificate.CertificateMapping;
-import nl.clockwork.ebms.service.cpa.certificate.CertificateMappingService;
+import nl.clockwork.ebms.cpa.CPAService;
+import nl.clockwork.ebms.cpa.certificate.CertificateMapping;
+import nl.clockwork.ebms.cpa.certificate.CertificateMappingService;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)

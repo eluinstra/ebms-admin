@@ -20,7 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import nl.clockwork.ebms.admin.Utils;
-import nl.clockwork.ebms.service.cpa.CPAService;
+import nl.clockwork.ebms.cpa.CPAService;
 
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;

@@ -34,9 +34,9 @@ import org.springframework.context.annotation.Configuration;
 import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.cpa.CPAService;
 import nl.clockwork.ebms.event.MessageEventListenerConfig.EventListenerType;
 import nl.clockwork.ebms.service.EbMSMessageServiceMTOM;
-import nl.clockwork.ebms.service.cpa.CPAService;
 
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE)

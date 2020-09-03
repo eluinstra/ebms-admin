@@ -36,8 +36,8 @@ import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
-import nl.clockwork.ebms.service.cpa.url.URLMapping;
-import nl.clockwork.ebms.service.cpa.url.URLMappingService;
+import nl.clockwork.ebms.cpa.url.URLMapping;
+import nl.clockwork.ebms.cpa.url.URLMappingService;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)

@@ -47,9 +47,9 @@ import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.Consumer;
 import nl.clockwork.ebms.admin.web.DropDownChoice;
 import nl.clockwork.ebms.admin.web.ResetButton;
+import nl.clockwork.ebms.cpa.CPAService;
 import nl.clockwork.ebms.jaxb.JAXBParser;
 import nl.clockwork.ebms.service.EbMSMessageService;
-import nl.clockwork.ebms.service.cpa.CPAService;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)

@@ -38,7 +38,7 @@ import nl.clockwork.ebms.admin.web.Link;
 import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.PageClassLink;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
-import nl.clockwork.ebms.service.cpa.CPAService;
+import nl.clockwork.ebms.cpa.CPAService;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)

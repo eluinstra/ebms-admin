@@ -27,8 +27,8 @@ import lombok.AllArgsConstructor;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.Utils;
-import nl.clockwork.ebms.service.cpa.url.URLMapping;
-import nl.clockwork.ebms.service.cpa.url.URLMappingService;
+import nl.clockwork.ebms.cpa.url.URLMapping;
+import nl.clockwork.ebms.cpa.url.URLMappingService;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor(staticName = "of")

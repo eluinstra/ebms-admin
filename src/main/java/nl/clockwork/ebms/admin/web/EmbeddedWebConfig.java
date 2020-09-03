@@ -32,12 +32,12 @@ import org.springframework.context.annotation.Configuration;
 import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.cpa.CPAService;
+import nl.clockwork.ebms.cpa.certificate.CertificateMappingService;
+import nl.clockwork.ebms.cpa.url.URLMappingService;
 import nl.clockwork.ebms.event.MessageEventListenerConfig.EventListenerType;
 import nl.clockwork.ebms.service.EbMSMessageService;
 import nl.clockwork.ebms.service.EbMSMessageServiceMTOM;
-import nl.clockwork.ebms.service.cpa.CPAService;
-import nl.clockwork.ebms.service.cpa.certificate.CertificateMappingService;
-import nl.clockwork.ebms.service.cpa.url.URLMappingService;
 
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE)

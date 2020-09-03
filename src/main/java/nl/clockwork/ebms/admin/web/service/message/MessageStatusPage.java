@@ -36,8 +36,8 @@ import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.TextField;
+import nl.clockwork.ebms.cpa.CPAService;
 import nl.clockwork.ebms.service.EbMSMessageService;
-import nl.clockwork.ebms.service.cpa.CPAService;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)

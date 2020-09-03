@@ -27,8 +27,8 @@ import lombok.AllArgsConstructor;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.Utils;
-import nl.clockwork.ebms.service.cpa.certificate.CertificateMapping;
-import nl.clockwork.ebms.service.cpa.certificate.CertificateMappingService;
+import nl.clockwork.ebms.cpa.certificate.CertificateMapping;
+import nl.clockwork.ebms.cpa.certificate.CertificateMappingService;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor(staticName = "of")
