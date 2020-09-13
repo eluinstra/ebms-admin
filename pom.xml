@@ -201,7 +201,7 @@
 			<groupId>de.adesso.wicked-charts</groupId>
 			<artifactId>wicked-charts-wicket8</artifactId>
 			<version>3.2.1</version>
-			<exclusions>
+<!-- 			<exclusions>
 				<exclusion>
 					<groupId>com.fasterxml.jackson.core</groupId>
 					<artifactId>jackson-core</artifactId>
@@ -215,7 +215,7 @@
 					<artifactId>jackson-databind</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
+ -->		</dependency>
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-frontend-jaxws</artifactId>
@@ -335,6 +335,11 @@
 		</dependency>
 	</dependencies>
 	<repositories>
+		<repository>
+			<id>jcenter</id>
+			<name>jcenter</name>
+			<url>https://jcenter.bintray.com</url>
+		</repository>
 		<repository>
 			<id>maven.oracle.com</id>
 			<releases>
