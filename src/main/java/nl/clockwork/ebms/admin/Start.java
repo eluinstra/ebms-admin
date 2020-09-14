@@ -221,6 +221,9 @@ public class Start
 
 		handler.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
 		
+		if (cmd.hasOption("soap"))
+			handler.addServlet(org.apache.cxf.transport.servlet.CXFServlet.class,"/service/*");
+
 		FilterHolder filterHolder = new FilterHolder(org.apache.wicket.protocol.http.WicketFilter.class); 
 		filterHolder.setInitParameter("applicationClassName","nl.clockwork.ebms.admin.web.WicketApplication");
 		filterHolder.setInitParameter("filterMappingUrlPattern","/*");
