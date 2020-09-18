@@ -1,20 +1,38 @@
 title: EbMS Adapter
 lang: en
 description: EbMS adapter for Java
-# baseurl: "" # the subpath of your site, e.g. /blog
-# url: "" # the base hostname & protocol for your site, e.g. http://example.com
-github_username:  eluinstra
-markown: GFM
+
 # theme: jekyll-rtd-theme
 remote_theme: rundocs/jekyll-rtd-theme
 
 repository: eluinstra/ebms-admin
 
-# nav_version: true
-# edit: true
+addons_branch: true
+edit: true
 
 copyright:
   revision: true
 
+addons:
+  - github
+  - i18n
+  - plugins
+  - analytics
+
+# sort
 readme_index:
   with_frontmatter: true
+
+sass:
+  style: compressed
+
+exclude:
+  - Makefile
+  - Gemfile
+  - Gemfile.lock
+
+# optional plugins
+plugins:
+  - jemoji
+  - jekyll-avatar
+  - jekyll-mentions

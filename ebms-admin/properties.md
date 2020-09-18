@@ -5,7 +5,7 @@ sort: 5
 # Default Properties
 
 Below the [default properties](https://github.com/eluinstra/ebms-admin/blob/ebms-admin-2.17.x/src/main/resources/nl/clockwork/ebms/admin/default.properties) of ebms-admin. These properties can be overriden by ebms-admin.properties.
-For the default properties of ebms-core see [Properties]({% link ebms-core/properties.md %})
+For the default properties of ebms-core see [Properties]({{ site.baseurl }}{% link ebms-core/properties.md %})
 
 ### User Interface
 ```
