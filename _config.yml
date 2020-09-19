@@ -30,6 +30,7 @@ exclude:
   - Makefile
   - Gemfile
   - Gemfile.lock
+  - assets/images/src
 
 # optional plugins
 plugins:

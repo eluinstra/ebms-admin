@@ -4,9 +4,7 @@ sort: 1
 
 # Introduction
 
-This library contains the core functionality of the EbMS adapter including:
-- a servlet to use the adapter in a servlet container
-- CPA, URL, Certificate and EbMSMessage (SOAP) Interfaces to control the EbMS adapter
+This library implements the [EbMS 2.0 specification](http://www.ebxml.org/specs/ebMS2.pdf).
 
 Implemented:
 -	Core Functionality

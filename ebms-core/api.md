@@ -2,7 +2,7 @@
 sort: 6
 ---
 
-# EbMS API
+# Adapter APIs
 
 ## CPA
 The CPAService contains functionality to control CPAs  

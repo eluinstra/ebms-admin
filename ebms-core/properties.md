@@ -4,7 +4,7 @@ sort: 4
 
 # Default Properties
 
-Below the [default properties](https://github.com/eluinstra/ebms-core/blob/ebms-core-2.17.x/src/main/resources/nl/clockwork/ebms/default.properties) of ebms-core.
+Below the contents of the [default.properties](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.data.versions.ebms.core.branch }}/src/main/resources/nl/clockwork/ebms/default.properties) file of ebms-core v{{ site.data.versions.ebms.core.version }}.
 
 ### Core
 ```
