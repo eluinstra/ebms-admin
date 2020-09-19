@@ -54,22 +54,22 @@ sort: 7
 	- changed default value of property
 		- http.base64Writer to false (writer is disabled anyway because of an issue)
 		- https.clientCertificateAuthentication to false
-	- added properties:
+	- added properties:\
 		- https.useClientCertificate=false
 		- client.keystore.keyPassword=${client.keystore.password}
 		- client.keystore.defaultAlias=
 		- signature.keystore.keyPassword=${signature.keystore.password}
 		- encryption.keystore.keyPassword=${encryption.keystore.password}
-		- cache.type=DEFAULT (allowed values: DEFAULT(=SPRING) | EHCACHE | IGNITE)
-		- eventProcessor.type=DEFAULT (allowed values: NONE | DEFAULT(=DAO) | JMS)
-		- deliveryManager.type=DEFAULT (allowed types: DEFAULT(=DAO) | JMS)
-		- eventListener.type=DEFAULT (allowed values: DEFAULT(=LOGGING) | DAO | SIMPLE_JMS | JMS | JMS_TEXT)
-		- transactionManager.type=DEFAULT (allowed values: DEFAULT | ATOMIKOS)
+		- cache.type=DEFAULT (allowed values: DEFAULT(=	SPRING) \| EHCACHE \| IGNITE)
+		- eventProcessor.type=DEFAULT (allowed values: NONE \| DEFAULT(=DAO) \| JMS)
+		- deliveryManager.type=DEFAULT (allowed types: DEFAULT(=DAO) \| JMS)
+		- eventListener.type=DEFAULT (allowed values: DEFAULT(=LOGGING) \| DAO \| SIMPLE_JMS \| JMS \| JMS_TEXT)
+		- transactionManager.type=DEFAULT (allowed values: DEFAULT \| ATOMIKOS)
 	* see src/main/resources/nl/clockwork/ebms/default.properties for all available properties
 - implemented JMS components (for scaling)
 - added Atomikos transaction manager (for JMS)
 - added Apache Ignite cache manager (for scaling)
-- added Flyway to install and upgrade database 
+- added Flyway to install and upgrade database
 - code improvements
 	- added lombok and vavr
 	- made objects immutable where possible

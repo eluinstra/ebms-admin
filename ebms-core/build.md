@@ -8,15 +8,15 @@ sort: 3
 ebms-core is compiled and tested with OpenJDK 8  
 
 ### Maven
-ebms-core is released in the Central Maven repository:
+ebms-core is released in the [Central Maven repository](https://mvnrepository.com/artifact/nl.clockwork.ebms/ebms-core/{{ site.data.ebms.core.version }}):
 ```
 <dependency>
   <groupId>nl.clockwork.ebms</groupId>
   <artifactId>ebms-core</artifactId>
-  <version>{{ site.data.versions.ebms.core.version }}</version>
+  <version>{{ site.data.ebms.core.version }}</version>
 </dependency>
 ```
-ebms-core includes Oracle ojdbc 8. If you don't use Oracle then you can exclude the jar. Otherwise add the following \<server> element to the \<servers> section of the Maven ~/.m2/settings.xml:
+ebms-core includes Oracle ojdbc 8. If you don't use Oracle database then you can exclude the jar. Otherwise add the following `<server>` element to the `<servers>` section of the Maven ~/.m2/settings.xml:
 ```
  <server>
     <id>maven.oracle.com</id>
@@ -41,13 +41,13 @@ ebms-core includes Oracle ojdbc 8. If you don't use Oracle then you can exclude 
     </configuration>
   </server>
 ```
-Replace the \<username> and \<password> entries with your OTN user name and password.
-
+Replace the `<username>` and `<password>` entries with your OTN user name and password.
+```
 mvn package
-
+```
 ### Eclipse
 - install https://marketplace.eclipse.org/content/m2e-apt
-- install lombok (since v2.17.0)
+- install lombok (since [v2.17.0]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2170jar))
 
 ### History
-ebms-core < v2.16.0 is compiled and tested with Oracle JDK 6
+ebms-core < [v2.16.0]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2160jar) is compiled and tested with Oracle JDK 6
