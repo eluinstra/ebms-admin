@@ -22,7 +22,7 @@ This library implements the [EbMS 2.0 specification](http://www.ebxml.org/specs/
 ### Not implemented
 -	Core Functionality
 	-	Packaging
--	Additional Features:
+-	Additional Features
 	-	Message Order Module
 	-	Multi-Hop Module
 
