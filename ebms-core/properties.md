@@ -21,7 +21,7 @@ cache.type=DEFAULT
 cache.configLocation=
 ```
 ### DeliveryTaskHandler
-The DeliveryTaskHandler is used to [send EbMS Messages]({{ site.baseurl }}/ebms-core/api.html#sendMessage) reliable asynchronously.
+The DeliveryTaskHandler is used to [send EbMS Messages]({{ site.baseurl }}/ebms-core/api.html#sendMessage) asynchronously.
 Set `deliveryTaskHandler.type` to `JMS`, `QUARTZ` or `QUARTZ_JMS` when you are [scaling]({{ site.baseurl }}/ebms-admin/deployment.html#scaling) the EbMS Adapter, otherwise leave it set to `DEFAULT`or set it to `QUARTZ`.
 When using `JMS`or `QUARTZ_JMS` configure [JMS](#jms) and the [TransactionManager](#transactionmanager).
 ```

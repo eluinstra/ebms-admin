@@ -2,7 +2,7 @@
 sort: 6
 ---
 
-# Adapter API
+# EbMS API
 
 ebms-core v{{ site.data.ebms.core.version }}
 
