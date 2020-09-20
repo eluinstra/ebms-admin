@@ -6,7 +6,7 @@ sort: 1
 
 This library implements the [EbMS 2.0 specification](http://www.ebxml.org/specs/ebMS2.pdf).
 
-Implemented:
+### Implemented
 -	Core Functionality
 	-	Security Module
 		-	Signature
@@ -19,14 +19,14 @@ Implemented:
 	-	Message Service Handler Ping Service
 -	HTTP(S) Protocol
 
-Not implemented:
+### Not implemented
 -	Core Functionality
-	o	Packaging
+	-	Packaging
 -	Additional Features:
-	o	Message Order Module
-	o	Multi-Hop Module
+	-	Message Order Module
+	-	Multi-Hop Module
 
-Remarks:
+### Remarks
 -	Duplicate messages will always be eliminated
 -	Only standalone MSH level messages are supported
 -	Only acts as ToPartyMSH, not as nextMSH

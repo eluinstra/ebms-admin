@@ -51,7 +51,6 @@ usage: Start [-authentication] [-cipherSuites <arg>]
  -trustStorePath <arg>             set truststore path  
  -trustStoreType <arg>             set truststore type (deault=PKCS12)  
  -userQueriesPerSecond <arg>       set requests per user per secondlimit (default: none)  
-
 ```
 
 #### Start with the embedded HSQLDB server
@@ -63,6 +62,7 @@ java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admi
 java -cp postgresql-42.2.14.jar:ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded
 ```
 #### Start on port 8000 (instead of 8080)
+Start SOAP/Web interface on port 8000 (instead of 8080)
 ```
 java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -port 8000
 ```
@@ -70,7 +70,7 @@ java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admi
 ```
 java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap
 ```
-#### Start with SOAP interface and without a web interface
+#### Start with SOAP interface and without a Web interface
 ```
 java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap -headless
 ```
@@ -87,13 +87,13 @@ java -Dlog4j.configurationFile=conf/log4j2.xml -cp ebms-admin-{{ site.data.ebms.
 java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded
 ```
 #### Start with HTTPS
-Start with HTTPS using keystore keystore.p12
+Start with HTTPS SOAP/Web interface using keystore keystore.p12
 ```
 java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded \
 -ssl -keyStoreType PKCS12 -keyStorePath keystore.p12 -keyStorePassword password
 ```
 #### Start with HTTPS and client authentication
-Start with HTTPS using keystore keystore.p12  
+Start with HTTPS SOAP/Web interface using keystore keystore.p12  
 and require client authentication using truststore truststore.p12 (which holds the client's certificate chain)
 ```
 java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded \
@@ -101,10 +101,9 @@ java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }
 -clientAuthentication -trustStoreType PKCS12 -trustStorePath truststore.p12 -trustStorePassword password
 ```
 #### Start with HTTPS, client authentication and client certifiate authentication
-Start with HTTPS using keystore keystore.p12  
+Start with HTTPS SOAP/Web interface using keystore keystore.p12  
 and require ssl client authentication using truststore truststore.p12 (which holds the client's certificate chain)  
 and authenticate client ssl certificate using clientTruststore.p12 (which holds the client's certificate)
-
 ```
 java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded \
 -ssl -keyStoreType PKCS12 -keyStorePath keystore.p12 -keyStorePassword password \
@@ -112,6 +111,7 @@ java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }
 -authentication -clientTrustStoreType PKCS12 -clientTrustStorePath clientTruststore.p12 -clientTrustStorePassword password
 ```
 #### Start using basic authentication
+Start using basic authentication on SOAP/Web interface
 ```
 java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -authentication
 ```

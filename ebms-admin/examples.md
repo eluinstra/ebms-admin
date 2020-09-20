@@ -30,9 +30,9 @@ In this example you will configure 2 ebms adapters that will communicate with ea
 #### Create and configure party Overheid
 
 - create directory overheid
-- copy ebms-admin-2.17.3.jar to overheid
+- copy ebms-admin-{{ site.data.ebms.core.version }}.jar to overheid
 - start admin console on port 8000 with a hsqldb server
-```java -cp ebms-admin-2.17.3.jar nl.clockwork.ebms.admin.StartEmbedded -port 8000 -hsqldb```
+```java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -port 8000 -hsqldb```
 
 - open web browser at https://localhost:8000
 - configure properties at [EbMSAdminPropertiesPage](https://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage)
@@ -45,9 +45,9 @@ In this example you will configure 2 ebms adapters that will communicate with ea
 #### Create and configure party Digipoort
 
 - create directory digipoort
-- copy ebms-admin-2.17.3.jar to digipoort
+- copy ebms-admin-{{ site.data.ebms.core.version }}.jar to digipoort
 - start admin console on default port 8080 with a hsqldb server
-```java -cp ebms-admin-2.17.3.jar nl.clockwork.ebms.admin.StartEmbedded -hsqldb```
+```java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -hsqldb```
 - open web browser at [localhost](https://localhost:8080)
 - configure properties at [EbMSAdminPropertiesPage](https://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage)
 	- use default properties, so no changes

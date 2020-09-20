@@ -2,7 +2,7 @@
 sort: 6
 ---
 
-# Adapter APIs
+# Adapter API
 
 ebms-core v{{ site.data.ebms.core.version }}
 
@@ -42,35 +42,47 @@ The EbMSMessageService contains functionality to override CPA's certificates
 ## EbMS Message
 The EbMSMessageService contains functionality for sending and receiving EbMS messages
 
-##### ping(cpaId, fromParty, toParty)
-performs an EbMS ping action for CPA cpaId, from party fromParty and to party toParty
+##### ping(cpaId, fromPartyId, toPartyId)
+{: #ping}
+Performs an EbMS ping action for CPA `cpaId`, from party `fromPartyId` to party `toPartyId`
 
-##### sendMessage(messageContent)
-sends the message content messageContent as an EbMS message  
+##### sendMessage(message)
+{: #sendMessage}
+Sends message `message` as an EbMS message 
 returns the messageId of the generated EbMS message
 
-##### getMessageIds(filter, maxNr)
-{: #getMessageIds }
-returns a list of messageIds of messages with the status `RECEIVED` that satisfy the messageContext filter.  
-If maxNr is given, then maxNr messageIds are returned
+##### resendMessage(messageId)
+{: #resendMessage }
+Resends message `messageId` as an EbMS message 
+returns the messageId of the new EbMS message
+
+##### getUnprocessedMessageIds(messageFilter, maxNr)
+{: #getUnprocessedMessageIds }
+Gets all messageIds of messages with status `RECEIVED` that satisfy filter `messageFilter`.  
+If `maxNr` is given, then maxNr messageIds are returned
 
 ##### getMessage(messageId, process)
 {: #getMessage }
-returns the message content of the message identified by messageId.  
-If process is true, the message is given the status `PROCESSED`, which means that it is no longer returned to the list of getMessageIds
+Returns the message identified by `messageId`.  
+If `process` is true, the message is given the status `PROCESSED`, which means that it is no longer returned in the list of [getUnprocessedMessageIds](#getUnprocessedMessageIds)
 
 ##### processMessage(messageId)
 {: #processMessage }
-sets the status of the message identified by messageId to `PROCESSED`, so that it is no longer returned to the list of getMessageIds
+Sets the status of the message identified by `messageId` to `PROCESSED`, so that it is no longer returned in the list of [getUnprocessedMessageIds](#getUnprocessedMessageIds)
 
-##### getMessageEvents(messageContext, eventTypes, maxNr)
-{: #getMessageEvents }
-returns the events that satisfy the messageContext filter and the eventTypes eventTypes.  
+##### getMessageStatus(messageId)
+{: #getMessageStatus}
+Returns the message status of the message identified by `messageId`
+
+##### getUnprocessedMessageEvents(messageFilter, eventTypes, maxNr)
+{: #getUnprocessedMessageEvents }
+Returns the events that satisfy filter `messageFilter` and event types `eventTypes`.  
 If maxNr is given, then maxNr events are returned. The possible event types are
 - `RECEIVED` - when a message is received
 - `DELIVERED` - when a message has been sent successfully
 - `FAILED` - when a message returns an error while sending
-- `EXPIRED` - when a message could not be sent within the number of attempts and time agreed in the CPA
+- `EXPIRED` - when a message could not be sent within the number of attempts and time defined in the CPA
+Events can only be retreived with this method when [EventListener property]({{ site.baseurl }}/ebms-core/properties.html#eventlistener ) `eventListener.type` is set to `DAO`
 
 ##### processMessageEvent(messageId)
-set processed to true for all currently known events for the message identified by `messageId`, so that it is no longer returned in the list of [getMessageEvents](#getMessageEvents) (and [getMessageIds](#getMessageIds))
+Sets processed to true for the event of the message identified by `messageId`, so that it is no longer returned in the list of [getUnprocessedMessageEvents](#getUnprocessedMessageEvents) (and [getUnprocessedMessageIds](#getUnprocessedMessageIds) in case of a `RECEIVED` event)

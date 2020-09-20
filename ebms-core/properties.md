@@ -43,10 +43,22 @@ messageQueue.maxEntries=64
 messageQueue.timeout=30000
 ```
 ### EventListener
+When receiving a message a `RECEIVE` event is generated. After a message is sent, a `DELIVERED`, `FAILED` or `EXPIRED` event is generated.
+By `DEFAULT` these events are logged to file, but it is also possible to persist and consume these events.
+For that you can choose from the `type`s
+- `DAO` which stores it to database
+- `SIMPLE_JMS` which stores the messageId to JMS
+- `JMS` which stores all message properties to JMS
+- `JMS_TEXT` which stores all message properties to JMS as a text message
+
+When `DAO` is selected, you can get the events by calling [getUnProcessedEvents]({{ site.baseurl }}/ebms-core/api.html#getUnprocessedMessageEvents).
+When one of the JMS listeners is selected, you can get the events by listening to a `QUEUE` of `TOPIC` depending on the `destinationType`.
 ```
 # EventListenerType = DEFAULT(=LOGGING) | DAO | SIMPLE_JMS | JMS | JMS_TEXT
 eventListener.type=DEFAULT
 eventListener.filter=
+# DestinationType=QUEUE | TOPIC
+eventListener.jms.destinationType=QUEUE
 ```
 ### TransactionManager
 ```
@@ -87,19 +99,26 @@ http.proxy.nonProxyHosts=127.0.0.1,localhost
 http.proxy.username=
 http.proxy.password=
 ```
-### EbMS Storage
+### EbMS Message Storage
+If `deleteContentOnProcessed=true` then the attachments of a received message are deleted right after it has been processed and the attachments of a sent message are deleted right after it has been acknowledged (, failed or expired).  
+If `ebmsMessage.storeDuplicateContent=false` then the attachments of a duplicate message are not stored. If `ebmsMessage.storeDuplicate=false` then the whole duplicate message is not stored.
 ```
 ebmsMessage.deleteContentOnProcessed=false
 ebmsMessage.storeDuplicate=true
 ebmsMessage.storeDuplicateContent=true
 ```
 ### Overflow attachments to disk
+A large attachment will be cached in a temporary file if it exceeds the `memoryTreshold`. The temporary files are written to `outputDirectory` if set, otherwise to the default temp directory. To enable file encryption set `cipherTransformation` to a stream or 8-bit block cipher transformation (like RC4, AES/CTR/NoPadding, etc). Note: This will result in an increased processing time.
 ```
 ebmsMessage.attachment.memoryTreshold=131072
 ebmsMessage.attachment.outputDirectory=
 ebmsMessage.attachment.cipherTransformation=
 ```
 ### Auto retry acknowledgements, incl. max and interval (in minutes)
+It is possible to retry sending best-effort messages after a technical error (like a connection error).
+`ebmsMessage.nrAutoRetries` sets the maximum number of retries.
+`autoRetryInterval` sets the retry interval in 
+Note: This is not according to the EbMS Specifications, but will not violate them either
 ```
 ebmsMessage.nrAutoRetries=0
 ebmsMessage.autoRetryInterval=5
@@ -139,7 +158,6 @@ jms.broker.username=
 jms.broker.password=
 jms.broker.start=false
 jms.brokerURL=vm://localhost
-jms.destinationType=QUEUE
 jms.pool.minPoolSize=32
 jms.pool.maxPoolSize=32
 ```
