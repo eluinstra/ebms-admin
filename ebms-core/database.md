@@ -16,8 +16,8 @@ The EbMS Adapter supports the following databases:
 - [Oracle](#oracle)
 - [PostgreSQL](#postgresql)
 
-The database master scripts can be found [here](https://github.com/eluinstra/ebms-core/tree/ebms-core-2.17.x/resources/scripts/database/master/)  
-The database update scripts can be found [here](https://github.com/eluinstra/ebms-core/tree/ebms-core-2.17.x/src/main/resources/nl/clockwork/ebms/db/migration)  
+The database master scripts can be found [here](https://github.com/eluinstra/ebms-core/tree/ebms-core-{{ site.data.ebms.branch.version }}/resources/scripts/database/master/)  
+The database update scripts can be found [here](https://github.com/eluinstra/ebms-core/tree/ebms-core-{{ site.data.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/db/migration)  
 ebms-core also supports automatic database migration through [Flyway](#flyway)
 
 You can find the JDBC settings for the supported databases below.  

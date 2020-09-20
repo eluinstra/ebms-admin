@@ -16,6 +16,7 @@ ebms-core is released in the [Central Maven repository](https://mvnrepository.co
   <version>{{ site.data.ebms.core.version }}</version>
 </dependency>
 ```
+##### Configure
 ebms-core includes Oracle ojdbc 8. If you don't use Oracle database then you can exclude the jar. Otherwise add the following `<server>` element to the `<servers>` section of the Maven ~/.m2/settings.xml:
 ```
  <server>
@@ -42,8 +43,24 @@ ebms-core includes Oracle ojdbc 8. If you don't use Oracle database then you can
   </server>
 ```
 Replace the `<username>` and `<password>` entries with your OTN user name and password.
+
+##### Build
 ```
-mvn package
+mvn clean package
+```
+##### Generate reports
+```
+mvn site
+# or to generate individual reports:
+mvn surefire:test
+mvn jxr:jxr
+mvn jxr:test-jxr
+mvn checkstyle:checkstyle
+mvn com.github.spotbugs:spotbugs-maven-plugin:gui
+mvn pmd:pmd
+mvn jdepend:generate
+mvn cobertura:cobertura
+mvn org.owasp:dependency-check-maven:check
 ```
 ### Eclipse
 - install https://marketplace.eclipse.org/content/m2e-apt

@@ -12,7 +12,7 @@ For the default properties of ebms-core see [Properties]({{ site.baseurl }}{% li
 maxItemsPerPage=20
 ```
 
-### Host
+### EbMS Server
 ```
 ebms.host=0.0.0.0
 ebms.port=8888
@@ -22,7 +22,7 @@ ebms.connectionLimit=
 ebms.queriesPerSecond=
 ebms.userQueriesPerSecond=
 ```
-### SSL
+### Server SSL
 ```
 https.protocols=TLSv1.2
 https.cipherSuites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
