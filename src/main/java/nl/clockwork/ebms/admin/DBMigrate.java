@@ -90,7 +90,7 @@ public class DBMigrate
 	protected static void printUsage(Options options)
 	{
 		val formatter = new HelpFormatter();
-		formatter.printHelp("Start",options,true);
+		formatter.printHelp("DBMigrate",options,true);
 		val versions = Arrays.stream(BaselineVersion.values()).map(v -> v.ebmsVersion).collect(Collectors.joining("\n"));
 		System.out.println("\nValid ebmsVersions:\n" + versions);
 		System.exit(0);
