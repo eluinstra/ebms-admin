@@ -75,6 +75,8 @@ java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admi
 java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap -headless
 ```
 #### Start with config directory conf/
+By default the config directory is the directory from which you start the ebms-admin.
+You can change the config directory by setting `configDir`  
 ```
 java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -configDir conf/
 ```
@@ -87,23 +89,23 @@ java -Dlog4j.configurationFile=conf/log4j2.xml -cp ebms-admin-{{ site.data.ebms.
 java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded
 ```
 #### Start with HTTPS
-Start with HTTPS SOAP/Web interface using keystore keystore.p12
+Start with HTTPS SOAP/Web interface using keystore `keystore.p12`
 ```
 java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded \
 -ssl -keyStoreType PKCS12 -keyStorePath keystore.p12 -keyStorePassword password
 ```
 #### Start with HTTPS and client authentication
-Start with HTTPS SOAP/Web interface using keystore keystore.p12  
-and require client authentication using truststore truststore.p12 (which holds the client's certificate chain)
+Start with HTTPS SOAP/Web interface using keystore `keystore.p12`  
+and require SSL client authentication using truststore `truststore.p12` (which holds the client's certificate chain)
 ```
 java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded \
 -ssl -keyStoreType PKCS12 -keyStorePath keystore.p12 -keyStorePassword password \
 -clientAuthentication -trustStoreType PKCS12 -trustStorePath truststore.p12 -trustStorePassword password
 ```
 #### Start with HTTPS, client authentication and client certifiate authentication
-Start with HTTPS SOAP/Web interface using keystore keystore.p12  
-and require ssl client authentication using truststore truststore.p12 (which holds the client's certificate chain)  
-and authenticate client ssl certificate using clientTruststore.p12 (which holds the client's certificate)
+Start with HTTPS SOAP/Web interface using keystore `keystore.p12`  
+and require SSL client authentication using truststore `truststore.p12` (which holds the client's certificate chain)  
+and authenticate client SSL certificate using `clientTruststore.p12` (which holds the client's certificate)
 ```
 java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded \
 -ssl -keyStoreType PKCS12 -keyStorePath keystore.p12 -keyStorePassword password \
@@ -150,6 +152,3 @@ Configuring web server client certificate authentication:
 Using clientTrustStore jar:file:/home/digipoort/ebms-admin-{{ site.data.ebms.core.version }}.jar!/clientTruststore.p12
 Starting web server...
 ```
-Next configure the remote EbMS service in [EbMSAdminPropertiesPage](https://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage).
-
-If you want to override 'advanced' properties from the default.properties file that are not included in the ebms-admin.embedded.properties file, then create the file ebms-admin.embedded.advanced.properties in the configDir and add the properties to that file.

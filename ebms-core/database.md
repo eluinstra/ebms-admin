@@ -87,26 +87,26 @@ When using the XA driver execute the following script (**replace \<username>@\<d
 ```
 	USE [master]
 	GO
-	CREATE USER [\<username>@\<database>] FOR LOGIN [\<username>@\<database>] WITH DEFAULT_SCHEMA=[dbo]
+	CREATE USER [<username>@<database>] FOR LOGIN [<username>@<database>] WITH DEFAULT_SCHEMA=[dbo]
 	use [master]
 	GO
-	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_commit] TO [\<username>@\<database>]
-	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_end] TO [\<username>@\<database>]
-	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_forget] TO [\<username>@\<database>]
-	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_forget_ex] TO [\<username>@\<database>]
-	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_init] TO [\<username>@\<database>]
-	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_init_ex] TO [\<username>@\<database>]
-	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_prepare] TO [\<username>@\<database>]
-	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_prepare_ex] TO [\<username>@\<database>] 
-	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_recover] TO [\<username>@\<database>]
-	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_rollback] TO [\<username>@\<database>]
-	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_rollback_ex] TO [\<username>@\<database>]
-	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_start] TO [\<username>@\<database>]
+	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_commit] TO [<username>@<database>]
+	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_end] TO [<username>@<database>]
+	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_forget] TO [<username>@<database>]
+	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_forget_ex] TO [<username>@<database>]
+	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_init] TO [<username>@<database>]
+	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_init_ex] TO [<username>@<database>]
+	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_prepare] TO [<username>@<database>]
+	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_prepare_ex] TO [<username>@<database>] 
+	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_recover] TO [<username>@<database>]
+	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_rollback] TO [<username>@<database>]
+	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_rollback_ex] TO [<username>@<database>]
+	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_start] TO [<username>@<database>]
 	GO
 	or:
 	use [master]
 	GO
-	EXEC sp_addrolemember [SqlJDBCXAUser], \<username>@\<database>
+	EXEC sp_addrolemember [SqlJDBCXAUser], <username>@<database>
 	GO
 ```
 ### Quartz

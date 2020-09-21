@@ -4,8 +4,14 @@ sort: 5
 
 # Default Properties
 
-Below the [default properties](https://github.com/eluinstra/ebms-admin/blob/ebms-admin-2.17.x/src/main/resources/nl/clockwork/ebms/admin/default.properties) of ebms-admin. These properties can be overriden by ebms-admin.properties.
+Below the [default properties](https://github.com/eluinstra/ebms-admin/blob/ebms-admin-2.17.x/src/main/resources/nl/clockwork/ebms/admin/default.properties) of ebms-admin.
 For the default properties of ebms-core see [here]({{ site.baseurl }}{% link ebms-core/properties.md %}).
+
+If you want to override properties create the file `ebms-admin.embedded.properties` in the [configDir]({{ site.baseurl }}/ebms-admin/commands.html#configdir) and add the properties to that file.  
+
+You can also configure the basic properties at [EbMSAdminPropertiesPage](https://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage).
+If you want to override 'advanced' properties from the default.properties file that are not included in the `ebms-admin.embedded.properties` file, then create the file `ebms-admin.embedded.advanced.properties` in the [configDir]({{ site.baseurl }}/ebms-admin/commands.html#configdir) and add the advanced properties to that file.
+
 
 ### User Interface
 ```
