@@ -56,7 +56,7 @@ Removes Certificate mapping identified by source Certificate `source`
 Returns a list of all Certificate mappings
 
 ## EbMSMessageService
-The [EbMSMessageService](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.data.ebms.branch.version }}/src/main/java/nl/clockwork/ebms/service/EbMSMessageService.java) contains functionality for sending and receiving EbMS messages. There is also an MTOM [EbMSMessageService](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.data.ebms.branch.version }}/src/main/java/nl/clockwork/ebms/service/EbMSMessageServiceMTOM.java) available.
+The [EbMSMessageService](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.data.ebms.branch.version }}/src/main/java/nl/clockwork/ebms/service/EbMSMessageService.java) contains functionality for sending and receiving EbMS messages. There is also an MTOM [EbMSMessageService](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.data.ebms.branch.version }}/src/main/java/nl/clockwork/ebms/service/EbMSMessageServiceMTOM.java) available, which is more efficient.
 
 ###### ping(cpaId, fromPartyId, toPartyId)
 {: #ping}

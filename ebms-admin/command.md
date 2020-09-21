@@ -110,6 +110,18 @@ java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }
 -clientAuthentication -trustStoreType PKCS12 -trustStorePath truststore.p12 -trustStorePassword password \
 -authentication -clientTrustStoreType PKCS12 -clientTrustStorePath clientTruststore.p12 -clientTrustStorePassword password
 ```
+#### Start in EbMS Server mode
+```
+java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -headless -disableEbMSClient
+```
+#### Start in EbMS Client mode
+```
+java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -headless -disableEbMSServer
+```
+#### Start in SOAP API mode
+```
+java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap -disableEbMSServer -disableEbMSClient
+```
 #### Start using basic authentication
 Start using basic authentication on SOAP/Web interface
 ```
