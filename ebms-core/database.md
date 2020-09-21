@@ -81,6 +81,39 @@ ebms.jdbc.driverClassName=com.microsoft.sqlserver.jdbc.SQLServerXADataSource
 ebms.jdbc.url=jdbc:sqlserver://<host>:<port>;[instanceName=<instanceName>;]databaseName=<dbname>;
 ```
 Download drivers [here](https://docs.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server?view=sql-server-ver15)
+
+### XA Driver
+When using the XA driver execute the following script (**replace \<username>@\<database> first**)  
+```
+	USE [master]
+	GO
+	CREATE USER [\<username>@\<database>] FOR LOGIN [\<username>@\<database>] WITH DEFAULT_SCHEMA=[dbo]
+	use [master]
+	GO
+	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_commit] TO [\<username>@\<database>]
+	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_end] TO [\<username>@\<database>]
+	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_forget] TO [\<username>@\<database>]
+	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_forget_ex] TO [\<username>@\<database>]
+	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_init] TO [\<username>@\<database>]
+	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_init_ex] TO [\<username>@\<database>]
+	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_prepare] TO [\<username>@\<database>]
+	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_prepare_ex] TO [\<username>@\<database>] 
+	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_recover] TO [\<username>@\<database>]
+	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_rollback] TO [\<username>@\<database>]
+	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_rollback_ex] TO [\<username>@\<database>]
+	GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_start] TO [\<username>@\<database>]
+	GO
+	or:
+	use [master]
+	GO
+	EXEC sp_addrolemember [SqlJDBCXAUser], \<username>@\<database>
+	GO
+```
+### Quartz
+When [`deliveryTaskHandler.type`]({{ site.baseurl }}/ebms-core/properties.html#deliverytaskhandler) is set to `JMS`or `QUARTZ_JMS` then set
+```
+deliveryTaskHandler.quartz.jdbc.selectWithLockSQL=SELECT * FROM {0}LOCKS UPDLOCK WHERE LOCK_NAME = ?
+```
 ## MySQL
 ```
 # JDBC driver
@@ -89,7 +122,13 @@ ebms.jdbc.driverClassName=com.mysql.cj.jdbc.Driver
 ebms.jdbc.driverClassName=com.mysql.cj.jdbc.MysqlXADataSource
 ebms.jdbc.url=jdbc:mysql://<host>:<port>/<dbname>
 ```
-Download drivers [here](https://dev.mysql.com/downloads/connector/j/)
+Download drivers [here](https://dev.mysql.com/downloads/connector/j/)  
+
+### XA Driver
+When using the XA driver add line the following line to `my.ini` or `my.cnf`
+```
+default-time-zone='+02:00'
+```
 ## Oracle
 ```
 # JDBC driver
@@ -107,7 +146,16 @@ ebms.jdbc.driverClassName=org.postgresql.Driver
 ebms.jdbc.driverClassName=org.postgresql.xa.PGXADataSource
 ebms.jdbc.url=jdbc:postgresql://<host>:<port>/<dbname>
 ```
-Download drivers [here](https://jdbc.postgresql.org/download.html)
+Download drivers [here](https://jdbc.postgresql.org/download.html)  
+
+### XA Driver
+If you get the following error when using the XA driver
+```
+org.postgresql.util.PSQLException: ERROR: prepared transactions are disabled Hint: Set max_prepared_transactions to a nonzero value.
+```
+then enable the `max_prepared_transactions` attribute in `data/postgresql.conf`
+
+
 ## Flyway
 Database migration through Flyway is enabled through the following [EbMS property]({{ site.baseurl }}/ebms-core/properties.html#datastore) (since [v2.17.2]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2172jar))
 ```

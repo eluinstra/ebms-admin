@@ -48,7 +48,7 @@ If your application connects to different parties using different CPAs, then you
 ### Scaling with serverId
 {: #scaling-serverid}
 ![image]({{ site.baseurl }}/assets/images/ebms-scaling-serverid.svg)  
-You can deploy different EbMS adapters [each configured with a unique serverId]({{ site.baseurl }}/ebms-core/properties.html#core). Each EbMS adapter will then handle its own requests. For this all EbMS adapters have to use the same database (cache and queues). The EbMS adapters need to be placed behind a load balancer so all the EbMS adapters are exposed at the same endpoint. In this way the load will spread amoungst the different EbMS adapters. You can also place a load balancer between your application(s) and the EbMS adapters.
+You can deploy different EbMS adapters [each configured with a unique serverId]({{ site.baseurl }}/ebms-core/properties.html#core). Each EbMS adapter will then handle its own requests. For this all EbMS adapters have to use the same [database]({{ site.baseurl }}/ebms-admin/properties.html#datastore) ([cache]({{ site.baseurl }}/ebms-core/properties.html#cache) and [queues]({{ site.baseurl }}/ebms-core/properties.html#jms)). The EbMS adapters need to be placed behind a load balancer so all the EbMS adapters are exposed at the same endpoint. In this way the load will spread amoungst the different EbMS adapters. You can also place a load balancer between your application(s) and the EbMS adapters.
 
 ### Advanced scaling
 {: #scaling-advanced}

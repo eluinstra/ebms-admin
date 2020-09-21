@@ -23,7 +23,7 @@ cache.configLocation=
 ### DeliveryTaskHandler
 The DeliveryTaskHandler is used to [send EbMS Messages]({{ site.baseurl }}/ebms-core/api.html#sendMessage) asynchronously.
 Set `deliveryTaskHandler.type` to `JMS`, `QUARTZ` or `QUARTZ_JMS` when you are [scaling]({{ site.baseurl }}/ebms-admin/deployment.html#scaling) the EbMS Adapter, otherwise leave it set to `DEFAULT`or set it to `QUARTZ`.
-When using `JMS`or `QUARTZ_JMS` configure [JMS](#jms) and the [TransactionManager](#transactionmanager).
+When `deliveryTaskHandler.type` is set to `JMS`or `QUARTZ_JMS` configure [JMS](#jms) and the [TransactionManager](#transactionmanager).
 ```
 # DeliveryTaskHandlerType = DEFAULT(=DAO) | JMS | QUARTZ | QUARTZ_JMS
 deliveryTaskHandler.start=true
@@ -52,6 +52,7 @@ deliveryTaskManager.autoRetryInterval=5
 ### DeliveryManager
 The DeliveryManager is used to handle EbMS [Ping]({{ site.baseurl }}/ebms-core/api.html#ping) and [MessageStatus]({{ site.baseurl }}/ebms-core/api.html#getMessageStatus) calls.
 Set `deliveryManager.type` to `JMS` when you are [scaling]({{ site.baseurl }}/ebms-admin/deployment.html#scaling) the EbMS Adapter, otherwise leave it set to `DEFAULT`.
+When `deliveryManager.type` is set to `JMS` configure [JMS](#jms).
 ```
 # DeliveryManagerType = DEFAULT(=DAO) | JMS
 deliveryManager.type=DEFAULT
@@ -70,7 +71,7 @@ For that you can choose from the EventListenerTypes
 - `JMS_TEXT` which stores all message properties to JMS as a text message
 
 When `DAO` is selected, you can get the events by calling [getUnProcessedEvents]({{ site.baseurl }}/ebms-core/api.html#getUnprocessedMessageEvents).
-When one of the JMS listeners is selected, you can get the events by listening to a `QUEUE` or `TOPIC` depending on the `destinationType`.
+When one of the JMS listeners is selected, you can get the events by listening to a `QUEUE` or `TOPIC` depending on the `destinationType`. You then also have to configure [JMS](#jms).
 Events can be filtered by providing a comma separated list of events to be filtered out in `eventListener.filter`.
 ```
 # EventListenerType = DEFAULT(=LOGGING) | DAO | SIMPLE_JMS | JMS | JMS_TEXT
@@ -170,6 +171,7 @@ encryption.keystore.keyPassword=${encryption.keystore.password}
 ```
 ### JMS
 You can find the default ActiveMQ configuration file [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.data.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/activemq.xml).
+JMS can be used in the [DeliveryTaskHandler](#DeliveryTaskHandler), the [DeliveryManager](#DeliveryManager) and the [EventListener](#EventListener)
 ```
 jms.broker.config=classpath:nl/clockwork/ebms/activemq.xml
 jms.broker.username=
