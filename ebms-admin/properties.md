@@ -10,8 +10,14 @@ For the default properties of ebms-core see [here]({{ site.baseurl }}{% link ebm
 If you want to override properties create the file `ebms-admin.embedded.properties` in the [configDir]({{ site.baseurl }}/ebms-admin/commands.html#configdir) and add the properties to that file.  
 
 You can also configure the basic properties at [EbMSAdminPropertiesPage](https://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage).
-If you want to override 'advanced' properties from the default.properties file that are not included in the `ebms-admin.embedded.properties` file, then create the file `ebms-admin.embedded.advanced.properties` in the [configDir]({{ site.baseurl }}/ebms-admin/commands.html#configdir) and add the advanced properties to that file.
+If you want to override advanced properties that are not included in the `ebms-admin.embedded.properties` file, then create the file `ebms-admin.embedded.advanced.properties` in the [configDir]({{ site.baseurl }}/ebms-admin/commands.html#configdir) and add the advanced properties to that file.  
 
+You can also override properties by setting them as environment variables.
+You can for example override property `ebms.port` with value `80` as follows
+```
+export ebms_port=80
+```
+This is especially useful when configuring containers
 
 ### User Interface
 ```

@@ -2,7 +2,7 @@
 sort: 3
 ---
 
-# Build
+# Development
 
 ## Java
 ebms-core is compiled and tested with OpenJDK 8  
@@ -44,10 +44,31 @@ ebms-core includes Oracle ojdbc 8. If you don't use Oracle database then you can
 ```
 Replace the `<username>` and `<password>` entries with your OTN user name and password.
 
+### Sources
+You can find the sources [here](https://sourceforge.net/p/muleebmsadapter/code/ci/master/tree/) and [here](https://github.com/eluinstra/ebms-core)
+
 ### Build
 ```
 mvn clean package
 ```
+
+### Testing
+The ebms-core project contains a couple of tests for signing, encryption and the DAOFactory.
+You can test the EbMS functionality through a using ebms-admin as follows:
+- download and install Java 8
+- download and install SoapUI 5.x.x
+- download [ebms-admin-{{ site.data.ebms.core.version }}.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-{{ site.data.ebms.core.version }}/ebms-admin-{{ site.data.ebms.core.version }}.jar)
+- download the override properties file [ebms-admin.embedded.properties](https://github.com/eluinstra/ebms-core/blob/ebms-core-2.17.x/resources/test/ebms-admin.embedded.properties)
+- download the SoapUI project [EbMS-soapui-project.xml](https://github.com/eluinstra/ebms-core/blob/ebms-core-2.17.x/resources/test/EbMS-soapui-project.xml)
+- create directory `test` and copy `ebms-admin-{{ site.data.ebms.core.version }}.jar` and `ebms-admin.embedded.properties` to `test`
+- move to directory `test`
+- start ebms-admin
+```
+java -Djavax.net.ssl.trustStore= -Debms.jdbc.update=true -cp ebms-admin-2.17.3.jar nl.clockwork.ebms.admin.StartEmbedded -hsqldb -soap
+```
+- open SoapUI and load `EbMS-soapui-project.xml`
+- run the testsuite
+
 ### Generate reports
 ```
 mvn site
@@ -62,6 +83,7 @@ mvn jdepend:generate
 mvn cobertura:cobertura
 mvn org.owasp:dependency-check-maven:check
 ```
+
 ## Eclipse
 - install https://marketplace.eclipse.org/content/m2e-apt
 - install lombok (since [v2.17.0]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2170jar))

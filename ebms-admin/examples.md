@@ -4,8 +4,8 @@ sort: 6
 
 # Examples
 
-Below you'll find and simple example of how to configure 2 EbMS Admin Consoles with embedded EbMS adapter to communicate with each other.
-You can also find this and other examples configured in Docker, Kubernetes and Ansible.
+[Below](#example) you'll find and simple example of how to configure 2 EbMS Admin Consoles with embedded EbMS adapter to communicate with each other.
+You can also find this and other examples configured in [Docker](#docker), [Kubernetes](#kubernetes) and [Ansible](#ansible).
 
 ## Docker
 
@@ -24,6 +24,7 @@ For Ansible examples see
 - [https://github.com/eluinstra/ebms-ansible](https://github.com/eluinstra/ebms-ansible)
 
 ## Example with 2 EbMS adapters
+{: #example}
 
 In this example you will configure 2 ebms adapters that will communicate with each other. One represents the party `Overheid`, the other one represents the party `Digipoort`. They will use the `aanleveren` and `afleveren` services as defined in the CPA.
 
