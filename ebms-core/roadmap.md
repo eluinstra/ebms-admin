@@ -14,4 +14,4 @@ sort: 8
 
 ### improvements
 
-- replace byte array oriented signing and encryption libraries by streaming oriented to improve memory usage
+- replace byte array oriented signing and encryption libraries by streaming oriented ones

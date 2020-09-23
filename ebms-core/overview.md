@@ -19,7 +19,7 @@ If you want to use ebms-core in your own application you have to add the [jar]({
 You also have to add the Spring configuration class [MainCondig.java](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.data.ebms.branch.version }}/src/main/java/nl/clockwork/ebms/MainConfig.java) to your project or replace it by your custom implementation.  
 Finally you have to add the [EbMSServlet](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.data.ebms.branch.version }}/src/main/java/nl/clockwork/ebms/server/servlet/EbMSServlet.java) class to your web configuration expose the EbMS Interface.  
 Your application can manage the adapter through the [EbMS API]({{ site.baseurl }}{% link ebms-core/api.md %}). This API can also be exposed as SOAP Services.  
-The adapter stores its data in the [EbMS database]({{ site.baseurl }}{% link ebms-core/database.md %}).  
+The adapter stores its data in the [EbMS database]({{ site.baseurl }}{% link ebms-core/database.md %}).
 
 ## Advanced
 

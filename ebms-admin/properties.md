@@ -32,7 +32,7 @@ maxItemsPerPage=20
 
 ### EbMS Server
 
-Properties for the EbMS server endpoint used to connect to another EbMS adapter.
+Properties for the EbMS Server endpoint used to connect to another EbMS adapter.
 
 ```properties
 ebms.host=0.0.0.0
@@ -48,6 +48,8 @@ ebms.userQueriesPerSecond=
 
 `https.protocols` and `https.cipherSuites` override [these]({{ site.baseurl }}/ebms-core/properties.html#ssl) default ebms-core properties. If `https.requireClientAuthentication=true` then the [EbMS Server](#ebms-server) endpoint requires SSL client authentication.
 
+When SSL offloading is used and the EbMS adapter does not handle incoming SSL itself (see [reverse proxy example]({{ site.baseurl }}/ebms-admin/deployment.html#reverse-proxy)) and the EbMS adapter is using [SSL client certificate validation]({{ site.baseurl }}/ebms-core/properties.html#ssl), then the SSL client certificate can be forwarded as a Base64 DER-encoded HTTP header to the EbMS adapter. The header name can be set in `https.clientCertificateHeader` (since [v2.16.7]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2167jar)).
+
 ```properties
 https.protocols=TLSv1.2
 https.cipherSuites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
@@ -57,7 +59,7 @@ https.clientCertificateHeader=
 
 ### Server SSL keystore
 
-Keystore for the [EbMS Server](#ebms-server) endpoint.
+Holds the SSL key (and related certificates) for the [EbMS Server](#ebms-server) endpoint.
 
 ```properties
 # KeystoreType: JCEKS | JKS | DKS | PKCS11 | PKCS12

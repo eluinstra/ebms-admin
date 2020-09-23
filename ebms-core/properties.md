@@ -123,6 +123,10 @@ http.errors.server.unrecoverable=501,505,510
 
 ### SSL
 
+The EbMS HTTP client has the option to use SSL client certificate from the matching CPA when sending a message. This option works **ONLY** as long as the receiving party will trust the SSL client certificate. This option can be enabled by setting property `https.useClientCertificate` to true.  
+
+The EbMS adapter supports SSL client certificate validation. This means that the SSL clientCertificate of the incoming request will be validated against the matching CPA. This option **ONLY** works as long as the other parties use the SSL client certificates defined in the CPAs and the client certificates are trusted in the [truststore]({{ site.baseurl }}/ebms-core/properties.html#truststore). This option can be enabled by setting property `https.clientCertificateAuthentication` to true.
+
 ```properties
 https.protocols=
 https.cipherSuites=
@@ -154,7 +158,7 @@ ebmsMessage.storeDuplicateContent=true
 
 ### Overflow attachments to disk
 
-A large attachment will be cached in a temporary file if it exceeds the `ebmsMessage.attachment.memoryTreshold` which by default is `128Kb`. The temporary files are written to `ebmsMessage.attachment.outputDirectory` if set, otherwise to the default temp directory. To enable file encryption set `ebmsMessage.attachment.cipherTransformation` to a stream or 8-bit block cipher transformation (like RC4, AES/CTR/NoPadding, etc). This will result in an increased processing time.
+Large EbMS attachments will be cached in a temporary files if they exceed the `ebmsMessage.attachment.memoryTreshold` which by default is `128Kb`. The temporary files are written to `ebmsMessage.attachment.outputDirectory` if set, otherwise to the default temp directory. To enable file encryption set `ebmsMessage.attachment.cipherTransformation` to a stream or 8-bit block cipher transformation (like RC4, AES/CTR/NoPadding, etc). Note: This will result in an increased processing time.
 
 ```properties
 ebmsMessage.attachment.memoryTreshold=131072
@@ -173,6 +177,8 @@ truststore.password=password
 
 ### SSL Client keystore
 
+Holds the SSL client keys (and related certificates) used by the EbMS HTTP client.
+
 ```properties
 # KeystoreType: JCEKS | JKS | DKS | PKCS11 | PKCS12
 client.keystore.type=PKCS12
@@ -184,6 +190,8 @@ client.keystore.defaultAlias=
 
 ### EbMS Signature keystore
 
+Holds the different signature keys (and related certificates) of the signature certificates defined in the different CPAs the EbMS adapter is using.
+
 ```properties
 # KeystoreType: JCEKS | JKS | DKS | PKCS11 | PKCS12
 signature.keystore.type=PKCS12
@@ -193,6 +201,8 @@ signature.keystore.keyPassword=${signature.keystore.password}
 ```
 
 ### EbMS Encryption keystore
+
+Holds the different encryption keys (and related certificates) of the encryption certificates defined in the different CPAs the EbMS adapter is using.
 
 ```properties
 # KeystoreType: JCEKS | JKS | DKS | PKCS11 | PKCS12

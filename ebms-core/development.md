@@ -6,7 +6,7 @@ sort: 3
 
 ## Java
 
-ebms-core is compiled and tested with OpenJDK 8  
+ebms-core is compiled and tested with OpenJDK 8
 
 ## Maven
 
@@ -63,8 +63,8 @@ mvn clean package
 
 ### Testing
 
-The ebms-core project contains a couple of tests for signing, encryption and the DAOFactory.
-You can test the EbMS functionality through a using ebms-admin as follows:
+The ebms-core project contains a couple of tests for signing, encryption and the DAOFactory. You can test the EbMS functionality through a using ebms-admin as follows
+
 - download and install Java 8
 - download and install SoapUI 5.x.x
 - download [ebms-admin-{{ site.data.ebms.core.version }}.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-{{ site.data.ebms.core.version }}/ebms-admin-{{ site.data.ebms.core.version }}.jar)
@@ -96,5 +96,6 @@ mvn org.owasp:dependency-check-maven:check
 ```
 
 ## Eclipse
+
 - install https://marketplace.eclipse.org/content/m2e-apt
 - install lombok (since [v2.17.0]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2170jar))

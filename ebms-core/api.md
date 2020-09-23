@@ -7,6 +7,7 @@ sort: 6
 ebms-core v{{ site.data.ebms.core.version }}
 
 The Adapter API consists of the following services
+
 - [CPAService](#cpaservice)
 - [UrlMappingService](#urlmappingservice)
 - [CertificateMappingService](#certificatemappingservice)
