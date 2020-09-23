@@ -49,13 +49,13 @@ sort: 9
 	- added SSL arguments `protocols` and `cipherSuites`
 	- added JMX arguments
 	- added arguments `disableEbMSClient` and `disableEbMSServer`
-- split up CPAService into CPAService and URLMapper
-- added new SOAP service CertificateMapper
+- split up `CPAService` into `CPAService` and `URLMapper`
+- added new SOAP service `CertificateMapper`
 - updated EbMS Admin Properties Page
 - removed EbMS Core Properties Page
 - added database java command line tools
-	- DBMigrate (java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.DBMigrate -h)
-	- DBClean (java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.DBClean -h)
+	- `DBMigrate` (`java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.DBMigrate -h`)
+	- `DBClean` (`java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.DBClean -h`)
 
 ### ebms-admin-2.16.7.jar
 

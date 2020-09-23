@@ -20,7 +20,7 @@ sort: 3
 - Create the file `ebms-admin.embedded.properties` in `ebms-admin` and [configure the properties]({{ site.baseurl }}{% link ebms-admin/properties.md %})
 - [Configure Flyway]({{ site.baseurl }}/ebms-admin/database.html#initialize-flyway) if you want to migrate your database automatically or load the [database scripts]({{ site.baseurl }}/ebms-core/database.html#database-scripts) manually
 
-Configure the EbMS interface through [properties]({{ site.baseurl }}/ebms-admin/properties.html#ebms-server). Configure the Web and SOAP interface through [command line options]({{ site.baseurl }}/ebms-admin/command.html#start-on-port-8000-instead-of-8080).
+The EbMS interface is configured through [properties]({{ site.baseurl }}/ebms-admin/properties.html#ebms-server). The Web and SOAP interfaces are configured through [command line options]({{ site.baseurl }}/ebms-admin/command.html#start-on-port-8000-instead-of-8080).
 
 See [here]({{ site.baseurl }}{% link ebms-core/overview.md %}) for a functional overview of the EbMS adapter.
 
