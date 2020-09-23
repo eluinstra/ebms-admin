@@ -3,12 +3,15 @@ sort: 2
 ---
 
 # Overview
+
 You can use ebms-core by integrating it into your own Java application, or you can use it as a standalone SOAP Service through [ebms-admin console]({{ site.baseurl }}{% link ebms-admin/introduction.md %})
 
 ![image]({{ site.baseurl }}/assets/images/ebms-overview.svg)
 
 ## Basic
+
 It offers the following interfaces
+
 - EbMS Interface to connect to other EbMS adapters
 - [EbMS/SOAP API]({{ site.baseurl }}{% link ebms-core/api.md %}) to connect to applications to manage the EbMS adapter  
 
@@ -19,7 +22,16 @@ Your application can manage the adapter through the [EbMS API]({{ site.baseurl }
 The adapter stores its data in the [EbMS database]({{ site.baseurl }}{% link ebms-core/database.md %}).  
 
 ## Advanced
+
 ### EventListener
+
 You can track sent and received messages if you enable the [EventListener]({{ site.baseurl}}/ebms-core/properties.html#eventlistener).
 
 ### Scaling
+
+The EbMS adapter provides the following components to support different [scaling scenarios]({{ site.baseurl }}/ebms-admin/deployment.html#scaling)
+
+- [CacheManager]({{ site.baseurl}}/ebms-core/properties.html#cache)
+- [DeliveryTaskHandler]({{ site.baseurl}}/ebms-core/properties.html#deliverytaskhandler)
+- [TransactionManager]({{ site.baseurl}}/ebms-core/properties.html#transactionmanager)
+- [DeliveryManager]({{ site.baseurl}}/ebms-core/properties.html#deliverymanager)

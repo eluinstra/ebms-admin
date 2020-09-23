@@ -7,6 +7,7 @@ sort: 1
 This library implements the [EbMS 2.0 specification](http://www.ebxml.org/specs/ebMS2.pdf).
 
 ### Implemented
+
 -	Core Functionality
 	-	Security Module
 		-	Signature
@@ -20,6 +21,7 @@ This library implements the [EbMS 2.0 specification](http://www.ebxml.org/specs/
 -	HTTP(S) Protocol
 
 ### Not implemented
+
 -	Core Functionality
 	-	Packaging
 -	Additional Features
@@ -27,6 +29,7 @@ This library implements the [EbMS 2.0 specification](http://www.ebxml.org/specs/
 	-	Multi-Hop Module
 
 ### Remarks
+
 -	Duplicate messages will always be eliminated
 -	Only standalone MSH level messages are supported
 -	Only acts as ToPartyMSH, not as nextMSH

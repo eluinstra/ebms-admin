@@ -5,11 +5,13 @@ sort: 7
 # Release Notes
 
 ### ebms-core-2.17.3.jar
+
 - fixed URL Mapping
 - renamed status SENDING to CREATED
 - updated libraries
 
 ### ebms-core-2.17.2.jar
+
 - added UserRateLimiterFilter
 - added EventListenerFilter
 	- added default property eventListener.filter=
@@ -20,6 +22,7 @@ sort: 7
 		- ebms.jdbc.strict=false
 
 ### ebms-core-2.17.1.jar
+
 - improved logging
 - improved error responses
 - fixed auto retry responses only if best effort
@@ -29,6 +32,7 @@ sort: 7
 	- added default property http.requestsPerSecond=
 
 ### ebms-core-2.17.0.jar
+
 - added options to enable high availability and horizontal scaling (and throttling)
 - added option to use SSL clientCerttificate defined in the CPA to send messages (https.useClientCertificate)
 	- added CertificateMapper SOAP service to override defined SSL clientCertificate
@@ -84,27 +88,32 @@ sort: 7
 - database updates and improved indices
 
 ### ebms-core-2.16.7.jar
+
 - disabled base64Writer because of a bug when sending base64 encoded content
 - fixed using header defined in property x509CertificateHeader
 
 ### ebms-core-2.16.6.jar
+
 - fixed bug: the references in a signed acknowledgment is not validated correctly, which will not set the status of the message to DELIVERED but eventually to EXPIRED instead
 - fixed issue using asynchronous messaging and no receive deliveryChannel can be found. The message will be stored and returned synchronously as an error now
 - fixed deliveryChannel validation not handled correctly, causing a SOAP fault being returned instead of a EbMS MessageError in case of an error
 
 ### ebms-core-2.16.5.jar
+
 - optimized memory usage by using CachedOutputStream for attachments that overflows to disk:
 	- added property ebmsMessage.attachment.memoryTreshold - default: 128KB 
 	- added property ebmsMessage.attachment.outputDirectory - default: <tempDir>
 	- added property ebmsMessage.attachment.cipherTransformation - default: none
 
 ### ebms-core-2.16.4.jar
+
 - fixed EbMSEventProcessor: the processor sometimes stops processing after an error occurs, so the ebms adapter stops sending messages
 - fixed query in deleteEbMSAttachmentsOnMessageProcessed
 - fixed messageId: the hostname is not prepended anymore when the messageId is given
 - added new MTOM EbMS soap service
 
 ### ebms-core-2.16.3.jar
+
 - fixed bug: messages are sometimes sent more than once at (almost) the same time
 - improved EbMSEventProcessor
 - renamed property jobScheduler.enabled to eventProcessor.enabled
@@ -117,14 +126,16 @@ sort: 7
 - renamed property http.errors.server.irrecoverable to http.errors.server.unrecoverable
 
 ### ebms-core-2.16.2.jar
+
 - removed MIME-Version header
 
 ### ebms-core-2.16.1.jar
+
 - improved client ssl behaviour
 - added keystore type support
 - minor improvements
 
 ### ebms-core-2.16.0.jar
+
 - upgraded to java 8
 - minor improvements
-

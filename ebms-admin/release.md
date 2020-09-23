@@ -5,9 +5,11 @@ sort: 9
 # Release Notes
 
 ### ebms-admin-2.17.3.jar
+
 - upgrade to [ebms-core-2.17.3.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2173jar)
 
 ### ebms-admin-2.17.2.jar
+
 - upgrade to [ebms-core-2.17.2.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2172jar)
 - improved properties configuration
 - moved  flyway db migration to ebms-core
@@ -17,10 +19,12 @@ sort: 9
 	- added user rate limiter argument userQueriesPerSecond
 
 ### ebms-admin-2.17.1.1.jar
+
 - fixed updateDb option
 - changed commandline arguments:
 
 ### ebms-admin-2.17.1.jar
+
 - upgrade to [ebms-core-2.17.1.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2171jar)
 - improved logging
 - removed Server response header
@@ -31,11 +35,13 @@ sort: 9
 	- added rate limiter argument requestsPerSecond
 
 ### ebms-admin-2.17.0.1.jar
+
 - changed default settings
 - changed configuration of the test scenario
 - updated CPA endpoints
 
 ### ebms-admin-2.17.0.jar
+
 - upgrade to [ebms-core-2.17.0.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2170jar)
 - added options to enable high availability and horizontal scaling (and throttling)
 - changed command line arguments:
@@ -53,32 +59,40 @@ sort: 9
 	- DBClean (java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.DBClean -h)
 
 ### ebms-admin-2.16.7.jar
+
 - upgrade to [ebms-core-2.16.7.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2167jar)
 
 ### ebms-admin-2.16.6.jar
+
 - upgrade to [ebms-core-2.16.6.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2166jar)
 - fixed CXF logging
 
 ### ebms-admin-2.16.5.jar
+
 - upgrade to [ebms-core-2.16.5.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2165jar)
 
 ### ebms-admin-2.16.4.jar
+
 - upgrade to [ebms-core-2.16.4.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2164jar)
 - added new MTOM EbMS soap service endpoint on /service/ebmsMTOM
 
 ### ebms-admin-2.16.3.jar
+
 - upgrade to [ebms-core-2.16.3.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2163jar)
 - minor configuration improvements
 
 ### ebms-admin-2.16.2a.jar
+
 - fixed reading the encryption keystore property which caused an error opening the Configuration Page after the encryption keystore was set
 - minor layout improvements
 
 ### ebms-admin-2.16.2.jar
+
 - upgrade to [ebms-core-2.16.2.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2162jar)
 - fixed default value of log4j.file property which caused a startup error when ebms-admin-2.16.1.jar was fresh installed 
 
 ### ebms-admin-2.16.1.jar
+
 - upgrade to [ebms-core-2.16.1.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2161jar)
 - upgraded to java 8
 - https support for web and soap interfaces (including client certificate authentication)

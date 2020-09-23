@@ -36,64 +36,67 @@ In this example you will configure 2 ebms adapters that will communicate with ea
 
 ### Create and configure party Overheid
 
-- create directory overheid
-- copy ebms-admin-{{ site.data.ebms.core.version }}.jar to overheid
-- start admin console on port 8000 with a hsqldb server
-```java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -port 8000 -soap -hsqldb```
-
-- open web browser at [localhost](http://localhost:8000)
+- create directory `overheid`
+- copy ebms-admin-{{ site.data.ebms.core.version }}.jar to `overheid`
+- start ebms-admin on port `8000` with the SOAP Interface using a HSQLDB server
+```
+java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -port 8000 -soap -hsqldb
+```
+- open web browser at [http://localhost:8000](http://localhost:8000)
 - configure properties at [EbMSAdminPropertiesPage](https://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage)
 	- set port `8088`
 	- set database port `9000`
 	- save
-	- restart admin console
-- upload CPA cpaStubEBF.rm.https.signed.xml at [CPAUploadPage](http://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.service.cpa.CPAUploadPage)
+	- restart ebms-admin
+- upload CPA `cpaStubEBF.rm.https.signed.xml` at [CPAUploadPage](http://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.service.cpa.CPAUploadPage)
 
 ### Create and configure party Digipoort
 
-- create directory digipoort
-- copy ebms-admin-{{ site.data.ebms.core.version }}.jar to digipoort
-- start admin console on default port 8080 with a hsqldb server
-```java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap -hsqldb```
-- open web browser at [localhost](http://localhost:8080)
+- create directory `digipoort`
+- copy ebms-admin-{{ site.data.ebms.core.version }}.jar to `digipoort`
+- start ebms-admin on default port `8080` with the SOAP Interface using a HSQLDB server
+```
+java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap -hsqldb
+```
+- open web browser at [http://localhost:8080](http://localhost:8080)
 - configure properties at [EbMSAdminPropertiesPage](http://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage)
 	- use default properties, so no changes
 	- save
-	- restart admin console
+	- restart ebms-admin
 - upload CPA cpaStubEBF.rm.https.signed.xml at [CPAUploadPage](http://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.service.cpa.CPAUploadPage)
+
+### Send messages from party DigiPoort to Overheid
+
+- send a ping to party OVerheid at the [Ping Page](http://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.service.message.PingPage)
+	- CPA Id `cpaStubEBF.rm.https.signed`
+	- From Party Id `urn:osb:oin:00000000000000000000`
+	- To Party Id `urn:osb:oin:000000000000000000001`
+- send a message to party OVerheid at the [SendMessage Page](http://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.service.message.SendMessagePageX)
+	- CPA Id `cpaStubEBF.rm.https.signed`
+	- From Party Id `urn:osb:oin:00000000000000000000`
+	- From Role `DIGIPOORT`
+	- To Party Id `urn:osb:oin:00000000000000000001`
+	- To Role `OVERHEID`
+	- Service `urn:osb:services:osb:afleveren:1.1$1.0`
+	- Action `afleveren`
+	- Add a Data Source [Optional]
+- view traffic at the [Traffic Page](http://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.message.TrafficPage)
+- find the different endpoints of the [SOAP Interface]({{ site.baseurl }}{% link ebms-admin/soap.md %}) [here](http://localhost:8080/service)
 
 ### Send messages from party Overheid to Digipoort
 
-- execute a ping the other adapter at the [Ping Page](http://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.service.message.PingPage)
+- send a ping to party Digipoort at the [Ping Page](http://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.service.message.PingPage)
 	- CPA Id `cpaStubEBF.rm.https.signed.xml`
 	- From Party Id `urn:osb:oin:00000000000000000001`
 	- To Party Id `urn:osb:oin:00000000000000000000`
-- send a message to the other adapter at the [SendMessage Page](http://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.service.message.SendMessagePageX)
+- send a message to party Digipoort at the [SendMessage Page](http://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.service.message.SendMessagePageX)
 	- CPA Id `cpaStubEBF.rm.https.signed.xml`
 	- From Party Id `urn:osb:oin:00000000000000000001`
 	- From Role `OVERHEID`
 	- To Party Id `urn:osb:oin:00000000000000000000`
 	- To Role `DIGIPOORT`
-	- Service `urn:osb:services:osb:afleveren:1.1$1.0 urn:osb:services:osb:aanleveren:1.1$1.0`
+	- Service `urn:osb:services:osb:afleveren:1.1$1.0`
 	- Action `bevestigAfleveren`
 	- Add a Data Source [Optional]
 - view traffic at the [Traffic Page](http://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.message.TrafficPage)
 - find the different endpoints of the [SOAP Interface]({{ site.baseurl }}{% link ebms-admin/soap.md %}) [here](http://localhost:8000/service)
-		
-### Send messages from party DigiPoort to Overheid
-
-- execute a ping the other adapter at the [Ping Page](http://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.service.message.PingPage)
-	- CPA Id `CPA_EBFStub`
-	- From Party Id `urn:osb:oin:00000000000000000000`
-	- To Party Id `urn:osb:oin:000000000000000000001`
-- send a message to the other adapter at the [SendMessage Page](http://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.service.message.SendMessagePageX)
-	- CPA Id `CPA_EBFStub`
-	- From Party Id `urn:osb:oin:00000000000000000000`
-	- From Role `DIGIPOORT`
-	- To Party Id `urn:osb:oin:00000000000000000001`
-	- To Role `OVERHEID`
-	- Service `urn:osb:services:osb:afleveren:1.1$1.0 urn:osb:services:osb:aanleveren:1.1$1.0`
-	- Action `afleveren`
-	- Add a Data Source [Optional]
-- view traffic at the [Traffic Page](http://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.message.TrafficPage)
-- find the different endpoints of the [SOAP Interface]({{ site.baseurl }}{% link ebms-admin/soap.md %}) [here](http://localhost:8080/service)

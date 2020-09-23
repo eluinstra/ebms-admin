@@ -2,31 +2,39 @@
 sort: 5
 ---
 
-# Default Properties
+# Properties
 
-Below the [default properties](https://github.com/eluinstra/ebms-admin/blob/ebms-admin-2.17.x/src/main/resources/nl/clockwork/ebms/admin/default.properties) of ebms-admin.
-For the default properties of ebms-core see [here]({{ site.baseurl }}{% link ebms-core/properties.md %}).
+Below the [default properties](#default-properties) of ebms-admin. For the default properties of ebms-core see [here]({{ site.baseurl }}{% link ebms-core/properties.md %}).
 
-If you want to override properties create the file `ebms-admin.embedded.properties` in the [configDir]({{ site.baseurl }}/ebms-admin/commands.html#configdir) and add the properties to that file.  
+## Override Properties
 
-You can also configure the basic properties at [EbMSAdminPropertiesPage](https://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage).
-If you want to override advanced properties that are not included in the `ebms-admin.embedded.properties` file, then create the file `ebms-admin.embedded.advanced.properties` in the [configDir]({{ site.baseurl }}/ebms-admin/commands.html#configdir) and add the advanced properties to that file.  
+If you want to override properties create the file `ebms-admin.embedded.properties` in the [configDir]({{ site.baseurl }}/ebms-admin/command.html#configDir) and add the properties to that file.
 
-You can also override properties by setting them as environment variables.
-You can for example override property `ebms.port` with value `80` as follows
-```
+You can also configure the basic properties at [EbMSAdminPropertiesPage](https://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage). If you want to override advanced properties that are not included in the `ebms-admin.embedded.properties` file, then create the file `ebms-admin.embedded.advanced.properties` in the [configDir]({{ site.baseurl }}/ebms-admin/command.html#configDir) and add the advanced properties to that file.
+
+You can also override properties by setting them as environment variables. You can for example override property `ebms.port` with value `80` as follows
+
+```sh
 export ebms_port=80
 ```
+
 This is especially useful when configuring containers
 
+## Default Properties
+
+Below the contents of the [default.properties](https://github.com/eluinstra/ebms-core/blob/ebms-admin-{{ site.data.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/admin/default.properties) file of ebms-admin v{{ site.data.ebms.core.version }}. These are the default settings for ebms-admin.
+
 ### User Interface
-```
+
+```properties
 maxItemsPerPage=20
 ```
 
 ### EbMS Server
+
 Properties for the EbMS server endpoint used to connect to another EbMS adapter.
-```
+
+```properties
 ebms.host=0.0.0.0
 ebms.port=8888
 ebms.path=/ebms
@@ -35,26 +43,35 @@ ebms.connectionLimit=
 ebms.queriesPerSecond=
 ebms.userQueriesPerSecond=
 ```
+
 ### SSL
-`https.protocols` and `https.cipherSuites` override [these]({{ site.baseurl }}/ebms-core/properties.html#ssl) default ebms-core properties.
-If `https.requireClientAuthentication=true` then the [EbMS Server](#ebms-server) endpoint requires SSL client authentication.
-```
+
+`https.protocols` and `https.cipherSuites` override [these]({{ site.baseurl }}/ebms-core/properties.html#ssl) default ebms-core properties. If `https.requireClientAuthentication=true` then the [EbMS Server](#ebms-server) endpoint requires SSL client authentication.
+
+```properties
 https.protocols=TLSv1.2
 https.cipherSuites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 https.requireClientAuthentication=false
 https.clientCertificateHeader=
 ```
+
 ### Server SSL keystore
+
 Keystore for the [EbMS Server](#ebms-server) endpoint.
-```
+
+```properties
+# KeystoreType: JCEKS | JKS | DKS | PKCS11 | PKCS12
 keystore.type=PKCS12
 keystore.path=nl/clockwork/ebms/keystore.p12
 keystore.password=password
 keystore.defaultAlias=
 ```
-### Datastore
+
+### Database
+
 These properties override [these]({{ site.baseurl }}/ebms-core/properties.html#datastore) default ebms-core properties.
-```
+
+```properties
 ebms.jdbc.driverClassName=org.hsqldb.jdbcDriver
 ebms.jdbc.url=jdbc:hsqldb:hsql://localhost:9001/ebms
 ebms.jdbc.username=sa
