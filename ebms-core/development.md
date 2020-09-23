@@ -22,7 +22,7 @@ ebms-core is released in the [Central Maven repository](https://mvnrepository.co
 
 ### Configure
 
-ebms-core includes Oracle ojdbc 8. If you don't use Oracle database then you can exclude the jar. Otherwise add the following `<server>` element to the `<servers>` section of the Maven ~/.m2/settings.xml:
+ebms-core includes Oracle ojdbc8 driver. If you don't use an Oracle database then you can exclude the driver. Otherwise add the following `<server>` element to the `<servers>` section of the Maven ~/.m2/settings.xml to add the Oracle maven repository:
 
 ```xml
  <server>
@@ -49,7 +49,7 @@ ebms-core includes Oracle ojdbc 8. If you don't use Oracle database then you can
   </server>
 ```
 
-Replace the `<username>` and `<password>` entries with your OTN user name and password.
+Replace the `<username>` and `<password>` entries with your OTN username and password.
 
 ### Sources
 
@@ -63,7 +63,7 @@ mvn clean package
 
 ### Testing
 
-The ebms-core project contains a couple of tests for signing, encryption and the DAOFactory. You can test the EbMS functionality through a using ebms-admin as follows
+The ebms-core project contains a couple of tests for signing, encryption and the `DAOFactory`. You can test the EbMS functionality through a using ebms-admin as follows
 
 - download and install Java 8
 - download and install SoapUI 5.x.x

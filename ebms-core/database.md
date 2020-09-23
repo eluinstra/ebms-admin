@@ -6,7 +6,8 @@ sort: 5
 
 ebms-core v{{ site.data.ebms.core.version }}
 
-The EbMS Adapter supports the following databases:
+The EbMS Adapter supports the following databases
+
 - [DB2](#db2)
 - [H2](#h2)
 - [HSQLDB](#hsqldb)
@@ -16,8 +17,6 @@ The EbMS Adapter supports the following databases:
 - [Oracle](#oracle)
 - [PostgreSQL](#postgresql)
 
-You can find the [JDBC settings](#jdbc-settings) for the supported databases as well as links to the JDBC drivers below.
-
 ## Database Scripts
 
 The database master scripts can be found [here](https://github.com/eluinstra/ebms-core/tree/ebms-core-{{ site.data.ebms.branch.version }}/resources/scripts/database/master/)  
@@ -25,6 +24,8 @@ The database update scripts can be found [here](https://github.com/eluinstra/ebm
 ebms-core also supports automatic database migration through [Flyway](#flyway)
 
 ## JDBC Settings
+
+You can find the JDBC settings for the supported databases as well as links to the JDBC drivers below.
 
 ### JDBC Common
 
@@ -34,6 +35,8 @@ ebms.jdbc.password=<password>
 ```
 
 ### DB2
+
+since v2.14.0
 
 ```properties
 # JDBC driver

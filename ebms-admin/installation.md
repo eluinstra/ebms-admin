@@ -43,7 +43,7 @@ Starting Server...
 Server started.
 ```
 
-It shows how the Web interface, SOAP interface en EbMS Server endpoints are configured. You can find the different [SOAP interface]({{ site.baseurl }}{% link ebms-admin/soap.md %}) endpoints when you open your browser at http://localhost:8080/service.
+It shows how the Web interface, SOAP interface en EbMS Server endpoints are configured. You can find the different [SOAP interface]({{ site.baseurl }}{% link ebms-admin/soap.md %}) endpoints when you open your browser at [http://localhost:8080/service](http://localhost:8080/service).
 
 
 See [here]({{ site.baseurl }}{% link ebms-admin/command.md %}) for all command line options. See [here]({{ site.baseurl }}{% link ebms-admin/examples.md %}) for more examples.

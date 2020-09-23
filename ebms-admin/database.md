@@ -46,7 +46,7 @@ Note: If you run Flyway for the first time on an existing database, then you hav
 #### Migrate PostgreSQL database
 {: #migrate}
 
-Migrate PostgreSQL database `ebms` on `localhost:5432` with user credentials `username`/`password`
+Migrate a PostgreSQL database `ebms` on `localhost:5432` with user credentials `username`/`password`
 
 ```sh
 java -cp postgresql-42.2.16.jar:ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBMigrate \
@@ -57,7 +57,7 @@ java -cp postgresql-42.2.16.jar:ebms-admin-{{ site.data.ebms.core.version }}.jar
 #### Initialize existing PostgreSQL database
 {: #initialize}
 
-Initialize and migrate existing PostgreSQL database `ebms` on `localhost:5432` with user credentials `username`/`password` on EbMS database v2.15.x
+Initialize and migrate an existing PostgreSQL database `ebms` on `localhost:5432` that is on EbMS database v2.15.x
 
 ```sh
 java -cp postgresql-42.2.16.jar:ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBMigrate \
@@ -84,16 +84,16 @@ usage: DBClean [-cmd <arg>] [-cpaId <arg>] [-dateFrom <arg>] [-h]
 
 #### Cleanup messages from PostgreSQL database
 
-Cleanup EbMS messages (and related objects) with persistence date before 30 days ago from PostgreSQL database
+Cleanup all EbMS messages (and related objects) with persistence date before 30 days ago
 
 ```sh
-java -cp postgresql-42.2.16.jar:ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBMigrate -cmd messages
+java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBMigrate -cmd messages
 ```
 
 #### Cleanup CPA from PostgreSQL database
 
-Cleanup CPA with cpaId `1` (and all related EbMS messages and other objects) from PostgreSQL database
+Cleanup CPA with cpaId `1` (and all related EbMS messages and other objects)
 
 ```sh
-java -cp postgresql-42.2.16.jar:ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBMigrate -cmd cpa -cpaId=1
+java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBMigrate -cmd cpa -cpaId=1
 ```

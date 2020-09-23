@@ -4,7 +4,8 @@ sort: 2
 
 # Deployment Scenarios
 
-To communicate with another application over EbMS:
+To communicate with another application over EbMS
+
 - an application communicates with the EbMS adapter through the [SOAP API]({{ site.baseurl }}{% link ebms-admin/soap.md %}) over HTTP(S)
 - the EbMS adapter communicates with another EbMS adapter through the EbMS Interface over HTTP(S).
 
@@ -63,6 +64,6 @@ You can deploy different EbMS adapters [each configured with a unique serverId](
 ### Advanced scaling
 {: #scaling-advanced}
 
-You can start the EbMS adapter in [EbMS Server]({{ site.baseurl }}/ebms-admin/command.html#start-in-ebms-server-mode), [EbMS Client]({{ site.baseurl }}/ebms-admin/command.html#start-in-ebms-client-mode) or [SOAP API]({{ site.baseurl }}/ebms-admin/command.html#start-in-soap-api-mode) mode. You can also start multiple EbMS Servers, EbMS Clients and SOAP APIs simultaniously. All EbMS Servers, EbMS Clients and SOAP APIs have to use the same [database]({{ site.baseurl }}/ebms-admin/properties.html#database) ([cache]({{ site.baseurl }}/ebms-core/properties.html#cache) and [queues]({{ site.baseurl }}/ebms-core/properties.html#jms)). In this way you can divide the load over different components.
+You can start the EbMS adapter in [EbMS Server]({{ site.baseurl }}/ebms-admin/command.html#start-in-ebms-server-mode), [EbMS Client]({{ site.baseurl }}/ebms-admin/command.html#start-in-ebms-client-mode), [SOAP API]({{ site.baseurl }}/ebms-admin/command.html#start-in-soap-api-mode) or [Web Interface]({{ site.baseurl }}/ebms-admin/command.html#start-in-web-interface-mode) mode. You can also start multiple EbMS Servers, EbMS Clients, SOAP APIs and Web Interfaces simultaniously. All EbMS Servers, EbMS Clients, SOAP APIs and Web Interfaces have to use the same [database]({{ site.baseurl }}/ebms-admin/properties.html#database) ([cache]({{ site.baseurl }}/ebms-core/properties.html#cache) and [queues]({{ site.baseurl }}/ebms-core/properties.html#jms)). In this way you can divide the load over different components.
 
 ![image]({{ site.baseurl }}/assets/images/ebms-scaling-advanced.svg)
