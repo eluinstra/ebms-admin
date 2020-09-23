@@ -7,7 +7,7 @@ sort: 3
 ## Requisites
 
 - download and install Java 8 (or later)
-- provide a database and download the JDBC driver. See [here]({{ site.baseurl }}{% link ebms-core/database.md %}) for the supported databases.
+- provide a [supported database]({{ site.baseurl }}{% link ebms-core/database.md %}) and download the appropriate JDBC driver
 - download [ebms-admin-{{ site.data.ebms.core.version }}.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-{{ site.data.ebms.core.version }}/ebms-admin-{{ site.data.ebms.core.version }}.jar)
 
 ## Installation
@@ -18,7 +18,7 @@ sort: 3
 ## Configuration
 
 - Create the file `ebms-admin.embedded.properties` in `ebms-admin` and [configure the properties]({{ site.baseurl }}{% link ebms-admin/properties.md %})
-- [Configure Flyway]({{ site.baseurl }}/ebms-admin/database.html#initialize-flyway) if you want to migrate your database automatically or load the [database scripts]({{ site.baseurl }}/ebms-core/database.html#database-scripts) manually
+- [Configure Flyway]({{ site.baseurl }}/ebms-admin/database.html#initialize-flyway) to load the database scripts automatically or load the [database scripts]({{ site.baseurl }}/ebms-core/database.html#database-scripts) manually
 
 The EbMS interface is configured through [properties]({{ site.baseurl }}/ebms-admin/properties.html#ebms-server). The Web and SOAP interfaces are configured through [command line options]({{ site.baseurl }}/ebms-admin/command.html#start-on-port-8000-instead-of-8080).
 
@@ -31,6 +31,20 @@ See [here]({{ site.baseurl }}{% link ebms-core/overview.md %}) for a functional 
 ```
 java -cp <jdbc-driver>.jar:ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap
 ```
+
+When you start you can see the following information in the console
+
+```sh
+Using config directory: 
+Web Server configured on http://localhost:8080/
+SOAP Service configured on http://localhost:8080/service
+EbMS Service configured on https://localhost:8888/ebms
+Starting Server...
+Server started.
+```
+
+It shows how the Web interface, SOAP interface en EbMS Server endpoints are configured. You can find the different endpoints of the [SOAP Interface]({{ site.baseurl }}{% link ebms-admin/soap.md %}) at http://localhost:8080/service.
+
 
 See [here]({{ site.baseurl }}{% link ebms-admin/command.md %}) for all command line options. See [here]({{ site.baseurl }}{% link ebms-admin/examples.md %}) for more examples.
 

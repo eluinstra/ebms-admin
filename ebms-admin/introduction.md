@@ -4,7 +4,7 @@ sort: 1
 
 # Introduction
 
-ebms-admin is a standalone EbMS adapter that uses an embedded Jetty server. ebms-admin exposes a Web and a SOAP interface over HTTP(S) to manage the EbMS adapter and it uses a database to store the data. The EbMS adapter is configured through command line options and a properties file. It supports also basic and client certificate authentication for the Web and SOAP interfaces.
+ebms-admin is a standalone EbMS adapter that uses an embedded Jetty server. ebms-admin exposes a Web and a SOAP interface over HTTP(S) to manage the EbMS adapter and it uses a database to store the data. ebms-admin is configured through command line options and a properties file. It also supports basic and client certificate authentication for the Web and SOAP interfaces.
 
 See [here]({{ site.baseurl }}{% link ebms-admin/installation.md %}) for installation and configuration  
 See [here]({{ site.baseurl }}{% link ebms-admin/deployment.md %}) for different deployment scenarios  

@@ -68,7 +68,7 @@ java -cp postgresql-42.2.14.jar:ebms-admin-{{ site.data.ebms.core.version }}.jar
 
 ## Start on port 8000 (instead of 8080)
 
-Start SOAP/Web interface on port `8000` (instead of `8080`)
+Start Web/SOAP interface on port `8000` (instead of `8080`)
 
 ```sh
 java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -port 8000
@@ -109,7 +109,7 @@ java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }
 
 ## Start with HTTPS
 
-Start with HTTPS SOAP/Web interface using keystore `keystore.p12`
+Start with HTTPS Web/SOAP interface using keystore `keystore.p12`
 
 ```sh
 java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded \
@@ -118,7 +118,7 @@ java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }
 
 ## Start with HTTPS and client authentication
 
-Start with HTTPS SOAP/Web interface using keystore `keystore.p12`  
+Start with HTTPS Web/SOAP interface using keystore `keystore.p12`  
 and require SSL client authentication using truststore `truststore.p12` (which holds the client's certificate chain)
 
 ```sh
@@ -129,7 +129,7 @@ java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }
 
 ## Start with HTTPS, client authentication and client certifiate authentication
 
-Start with HTTPS SOAP/Web interface using keystore `keystore.p12`  
+Start with HTTPS Web/SOAP interface using keystore `keystore.p12`  
 and require SSL client authentication using truststore `truststore.p12` (which holds the client's certificate chain)  
 and authenticate client SSL certificate using `clientTruststore.p12` (which holds the client's certificate)
 
@@ -160,7 +160,7 @@ java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }
 
 ## Start using basic authentication
 
-Start using basic authentication on SOAP/Web interface
+Start using basic authentication on Web/SOAP interface
 
 ```sh
 java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -authentication
@@ -171,24 +171,4 @@ java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admi
 ```sh
 java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar org.hsqldb.server.Server --database.0 file:hsqldb/ebms --dbname.0 ebms -port 9001
 java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap
-```
-
-When you start you can see the following information in the console
-
-```sh
-Using config directory:
-[Server@f0da945]: Database [index=0, id=0, db=file:hsqldb/ebms, alias=ebms] opened successfully in 420 ms.
-[Server@f0da945]: Startup sequence completed in 424 ms.
-[Server@f0da945]: 2019-12-27 15:07:57.319 HSQLDB server 2.5.0 is online on port 9001
-[Server@f0da945]: To close normally, connect and execute SHUTDOWN SQL
-[Server@f0da945]: From command line, use [Ctrl]+[C] to abort abruptly
-EbMS tables already exist
-Using keyStore jar:file:/home/digipoort/ebms-admin-{{ site.data.ebms.core.version }}.jar!/keystore.p12
-Using trustStore jar:file:/home/digipoort/ebms-admin-{{ site.data.ebms.core.version }}.jar!/truststore.p12
-Web server configured on https://localhost:8443/
-SOAP service configured on https://localhost:8443/service
-EbMS service configured on https://0.0.0.0:8888/digipoortStub
-Configuring web server client certificate authentication:
-Using clientTrustStore jar:file:/home/digipoort/ebms-admin-{{ site.data.ebms.core.version }}.jar!/clientTruststore.p12
-Starting web server...
 ```
