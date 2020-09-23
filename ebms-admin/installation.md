@@ -32,7 +32,7 @@ See [here]({{ site.baseurl }}{% link ebms-core/overview.md %}) for a functional 
 java -cp <jdbc-driver>.jar:ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap
 ```
 
-When you start you can see the following information in the console
+When you start ebms-admin you can see the following output in your console
 
 ```sh
 Using config directory: 
@@ -43,7 +43,7 @@ Starting Server...
 Server started.
 ```
 
-It shows how the Web interface, SOAP interface en EbMS Server endpoints are configured. You can find the different endpoints of the [SOAP Interface]({{ site.baseurl }}{% link ebms-admin/soap.md %}) at http://localhost:8080/service.
+It shows how the Web interface, SOAP interface en EbMS Server endpoints are configured. You can find the different [SOAP interface]({{ site.baseurl }}{% link ebms-admin/soap.md %}) endpoints when you open your browser at http://localhost:8080/service.
 
 
 See [here]({{ site.baseurl }}{% link ebms-admin/command.md %}) for all command line options. See [here]({{ site.baseurl }}{% link ebms-admin/examples.md %}) for more examples.
