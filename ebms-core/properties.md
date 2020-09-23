@@ -114,6 +114,9 @@ http.base64Writer=false
 
 ### HTTP Errors
 
+Defines the recoverable and unrecoverable errors to determine the unrecoverable errors on which the EbMS adapter will let a sent message fail.  
+By default the EbM adapter will fail on all recoverable errors except for `408` and `429` and will only fail on unrecoverable errors `501`, `505` and `510`. Recoverable errors are `1xx`, `3xx` and `4xx` errors. Unrecoverable errors are `5xx` errors.
+
 ```properties
 http.errors.informational.recoverable=
 http.errors.redirection.recoverable=
@@ -123,7 +126,7 @@ http.errors.server.unrecoverable=501,505,510
 
 ### SSL
 
-The EbMS HTTP client has the option to use SSL client certificate from the matching CPA when sending a message. This option works **ONLY** as long as the receiving party will trust the SSL client certificate. This option can be enabled by setting property `https.useClientCertificate` to true.  
+The EbMS HTTP client has the option to use SSL client certificate from the matching CPA when sending a message. This option works **ONLY** as long as the receiving party will trust the SSL client certificate. You can override a certificate by creating a [Certificate Mapping]({{ site.baseurl }}/ebms-core/api.html#certificatemappingservice). This option can be enabled by setting property `https.useClientCertificate` to true.  
 
 The EbMS adapter supports SSL client certificate validation. This means that the SSL clientCertificate of the incoming request will be validated against the matching CPA. This option **ONLY** works as long as the other parties use the SSL client certificates defined in the CPAs and the client certificates are trusted in the [truststore]({{ site.baseurl }}/ebms-core/properties.html#truststore). This option can be enabled by setting property `https.clientCertificateAuthentication` to true.
 
@@ -167,6 +170,8 @@ ebmsMessage.attachment.cipherTransformation=
 ```
 
 ### Truststore
+
+Holds all SSL, Signature and Encryption trust certificates.
 
 ```properties
 # TruststoreType: JCEKS | JKS | DKS | PKCS11 | PKCS12
@@ -241,6 +246,8 @@ ebms.jdbc.strict=false
 ```
 
 ### Datastore connection pool
+
+Set `ebms.pool.minPoolSize` and `ebms.pool.maxPoolSize` to your needs. Do not set `ebms.pool.testQuery` if you are using a JDBC 4 compliant driver. The rest of the defaults should be fine.
 
 ```properties
 ebms.pool.autoCommit=true

@@ -20,7 +20,7 @@ The database master scripts can be found [here](https://github.com/eluinstra/ebm
 The database update scripts can be found [here](https://github.com/eluinstra/ebms-core/tree/ebms-core-{{ site.data.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/db/migration)  
 ebms-core also supports automatic database migration through [Flyway](#flyway)
 
-You can find the JDBC settings for the supported databases below.
+You can find the JDBC settings for the supported databases as well as links to the JDBC drivers below.
 
 ## JDBC Common
 
