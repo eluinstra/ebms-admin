@@ -198,7 +198,7 @@ then enable the `max_prepared_transactions` attribute in `data/postgresql.conf`
 
 ## Flyway
 
-Database migration through Flyway is enabled through the following [EbMS property]({{ site.baseurl }}/ebms-core/properties.html#datastore) (since [v2.17.2]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2172jar))
+Database migration through Flyway is enabled through the following [EbMS property]({{ site.baseurl }}/ebms-core/properties.html#database) (since [v2.17.2]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2172jar))
 
 ```properties
 ebms.jdbc.update=true

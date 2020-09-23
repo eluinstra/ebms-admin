@@ -232,7 +232,7 @@ jms.pool.minPoolSize=32
 jms.pool.maxPoolSize=32
 ```
 
-### Datastore
+### Database
 
 See [here]({{ site.baseurl }}{% link ebms-core/database.md %}) for the supported databases.
 
@@ -245,7 +245,7 @@ ebms.jdbc.update=false
 ebms.jdbc.strict=false
 ```
 
-### Datastore connection pool
+### Database connection pool
 
 Set `ebms.pool.minPoolSize` and `ebms.pool.maxPoolSize` to your needs. Do not set `ebms.pool.testQuery` if you are using a JDBC 4 compliant driver. The rest of the defaults should be fine.
 

@@ -71,7 +71,7 @@ keystore.defaultAlias=
 
 ### Database
 
-These properties override [these]({{ site.baseurl }}/ebms-core/properties.html#datastore) default ebms-core properties.
+These properties override [these]({{ site.baseurl }}/ebms-core/properties.html#database) default ebms-core properties.
 
 ```properties
 ebms.jdbc.driverClassName=org.hsqldb.jdbcDriver
