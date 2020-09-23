@@ -4,7 +4,7 @@ sort: 2
 
 # Overview
 
-You can use ebms-core by integrating it into your own Java application, or you can use it as a standalone SOAP Service through [ebms-admin console]({{ site.baseurl }}{% link ebms-admin/introduction.md %})
+You can use ebms-core by integrating it into your own Java application, or you can use it as a standalone SOAP Service through [ebms-admin]({{ site.baseurl }}{% link ebms-admin/introduction.md %})
 
 ![image]({{ site.baseurl }}/assets/images/ebms-overview.svg)
 

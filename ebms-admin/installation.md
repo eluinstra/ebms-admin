@@ -10,26 +10,28 @@ sort: 3
 - provide a database and download the JDBC driver. See [here]({{ site.baseurl }}{% link ebms-core/database.md %}) for the supported databases.
 - download [ebms-admin-{{ site.data.ebms.core.version }}.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-{{ site.data.ebms.core.version }}/ebms-admin-{{ site.data.ebms.core.version }}.jar)
 
-## Install
+## Installation
 
 - create directory `ebms-admin`
 - copy ebms-admin-{{ site.data.ebms.core.version }}.jar to `ebms-admin`
 
-## Configure
+## Configuration
 
-- Create the file `ebms-admin.embedded.properties` in `ebms-admin` and [configure]({{ site.baseurl }}{% link ebms-admin/properties.md %}) the properties
-- [Configure Flyway]({{ site.baseurl }}/ebms-admin/database.html#initialize-flyway) if you want to migrate your database automatically
+- Create the file `ebms-admin.embedded.properties` in `ebms-admin` and [configure the properties]({{ site.baseurl }}{% link ebms-admin/properties.md %})
+- [Configure Flyway]({{ site.baseurl }}/ebms-admin/database.html#initialize-flyway) if you want to migrate your database automatically or load the [database scripts]({{ site.baseurl }}/ebms-core/database.html#database-scripts) manually
+
+Configure the EbMS interface through [properties]({{ site.baseurl }}/ebms-admin/properties.html#ebms-server). Configure the Web and SOAP interface through [command line options]({{ site.baseurl }}/ebms-admin/command.html#start-on-port-8000-instead-of-8080).
 
 See [here]({{ site.baseurl }}{% link ebms-core/overview.md %}) for a functional overview of the EbMS adapter.
 
 ## Start
 
-- start ebms-admin on default port `8080` with the SOAP interface enabled and using a JDBC driver `<jdbc-driver>.jar`
+- start ebms-admin on default port `8080` with the SOAP interface enabled and using JDBC driver `<jdbc-driver>.jar`
 
 ```
 java -cp <jdbc-driver>.jar:ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap
 ```
 
-See [here]({{ site.baseurl }}{% link ebms-admin/command.md %}) for all command line options.
+See [here]({{ site.baseurl }}{% link ebms-admin/command.md %}) for all command line options. See [here]({{ site.baseurl }}{% link ebms-admin/examples.md %}) for more examples.
 
 You can install ebms-admin as a Java service on Windows or Linux using a *Java Service Wrapper*.

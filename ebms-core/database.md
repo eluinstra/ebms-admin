@@ -16,20 +16,24 @@ The EbMS Adapter supports the following databases:
 - [Oracle](#oracle)
 - [PostgreSQL](#postgresql)
 
+You can find the [JDBC settings](#jdbc-settings) for the supported databases as well as links to the JDBC drivers below.
+
+## Database Scripts
+
 The database master scripts can be found [here](https://github.com/eluinstra/ebms-core/tree/ebms-core-{{ site.data.ebms.branch.version }}/resources/scripts/database/master/)  
 The database update scripts can be found [here](https://github.com/eluinstra/ebms-core/tree/ebms-core-{{ site.data.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/db/migration)  
 ebms-core also supports automatic database migration through [Flyway](#flyway)
 
-You can find the JDBC settings for the supported databases as well as links to the JDBC drivers below.
+## JDBC Settings
 
-## JDBC Common
+### JDBC Common
 
 ```properties
 ebms.jdbc.username=<username>
 ebms.jdbc.password=<password>
 ```
 
-## DB2
+### DB2
 
 ```properties
 # JDBC driver
@@ -41,7 +45,7 @@ ebms.jdbc.url=jdbc:db2://<host>:<port>/<dbname>
 
 Download drivers [here](https://www.ibm.com/support/pages/db2-jdbc-driver-versions-and-downloads)
 
-## H2
+### H2
 
 since [v2.17.2]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2172jar)
 
@@ -58,7 +62,7 @@ ebms.jdbc.url=jdbc:h2:tcp://<host>:<port>/<path>
 
 Download drivers [here](http://www.h2database.com/html/download.html)
 
-## HSQLDB
+### HSQLDB
 
 ```properties
 # JDBC driver
@@ -75,7 +79,7 @@ ebms.jdbc.url=jdbc:hsqldb:hsql://<host>:<port>/<dbname>
 
 Download drivers [here](https://sourceforge.net/projects/hsqldb/files/hsqldb/)
 
-## MariaDB
+### MariaDB
 
 ```properties
 # JDBC driver
@@ -87,7 +91,7 @@ ebms.jdbc.url=jdbc:mysql://<host>:<port>/<dbname>
 
 Download drivers [here](https://downloads.mariadb.org/connector-java/)
 
-## MS SQL Server
+### MS SQL Server
 
 ```properties
 # JDBC driver
@@ -99,7 +103,7 @@ ebms.jdbc.url=jdbc:sqlserver://<host>:<port>;[instanceName=<instanceName>;]datab
 
 Download drivers [here](https://docs.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server)
 
-### XA Driver
+#### XA Driver
 
 When using the XA driver execute the following script (**replace \<username>@\<database> first**)
 
@@ -129,7 +133,7 @@ EXEC sp_addrolemember [SqlJDBCXAUser], <username>@<database>
 GO
 ```
 
-### Quartz
+#### Quartz
 
 When [`deliveryTaskHandler.type`]({{ site.baseurl }}/ebms-core/properties.html#deliverytaskhandler) is set to `JMS`or `QUARTZ_JMS` then set
 
@@ -137,7 +141,7 @@ When [`deliveryTaskHandler.type`]({{ site.baseurl }}/ebms-core/properties.html#d
 deliveryTaskHandler.quartz.jdbc.selectWithLockSQL=SELECT * FROM {0}LOCKS UPDLOCK WHERE LOCK_NAME = ?
 ```
 
-## MySQL
+### MySQL
 
 ```properties
 # JDBC driver
@@ -149,7 +153,7 @@ ebms.jdbc.url=jdbc:mysql://<host>:<port>/<dbname>
 
 Download drivers [here](https://dev.mysql.com/downloads/connector/j/)
 
-### XA Driver
+#### XA Driver
 
 When using the XA driver add line the following line to `my.ini` or `my.cnf`
 
@@ -157,7 +161,7 @@ When using the XA driver add line the following line to `my.ini` or `my.cnf`
 default-time-zone='+02:00'
 ```
 
-## Oracle
+### Oracle
 
 ```properties
 # JDBC driver
@@ -169,7 +173,7 @@ ebms.jdbc.url=jdbc:oracle:thin:@<host>:<port>:<dbname>
 
 Download drivers [here](https://www.oracle.com/database/technologies/appdev/jdbc-downloads.html)
 
-## PostgreSQL
+### PostgreSQL
 
 ```properties
 # JDBC driver
@@ -181,7 +185,7 @@ ebms.jdbc.url=jdbc:postgresql://<host>:<port>/<dbname>
 
 Download drivers [here](https://jdbc.postgresql.org/download.html)
 
-### XA Driver
+#### XA Driver
 
 If you get the following error when using the XA driver
 

@@ -38,7 +38,7 @@ Valid ebmsVersions:
 2.17
 ```
 
-See [here]({{ site.baseurl }}{% link ebms-core/database.md %}) for the right settings for your database.  
+See [here]({{ site.baseurl }}{% link ebms-core/database.md %}) for database settings.  
 Note: If you run Flyway for the first time on an existing database, then you have to use the argument `-ebmsVersion` with your current EbMS database version to [initialize the database](#initialize).
 
 ### Examples
