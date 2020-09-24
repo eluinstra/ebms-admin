@@ -4,7 +4,7 @@ sort: 4
 
 # Default Properties
 
-Below the contents of the [default.properties](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.data.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/default.properties) file of ebms-core. These are the default settings for ebms-core.
+Below the contents of the [default.properties](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/default.properties) file of ebms-core. These are the default settings for ebms-core.
 
 ### Core
 
@@ -16,7 +16,7 @@ ebms.serverId=
 
 ### Cache
 
-Set `deliveryTaskHandler.type` to `IGNITE` or `EHCACHE` when you are [scaling]({{ site.baseurl }}/ebms-admin/deployment.html#scaling) the EbMS Adapter, otherwise leave it set to `DEFAULT`. You can also disable caching by setting `deliveryTaskHandler.type` to `NONE`, but this is not adviced. The scaling configuration for `IGNITE` works out of the box, the scaling configuration for `EHCACHE` you have to configure yourself. You can find the default configuration file for `IGNITE` [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.data.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/ignite.xml) and you can find the default configuration file for `EHCACHE` [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.data.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/ehcache.xml).
+Set `deliveryTaskHandler.type` to `IGNITE` or `EHCACHE` when you are [scaling]({{ site.baseurl }}/ebms-admin/deployment.html#scaling) the EbMS Adapter, otherwise leave it set to `DEFAULT`. You can also disable caching by setting `deliveryTaskHandler.type` to `NONE`, but this is not adviced. The scaling configuration for `IGNITE` works out of the box, the scaling configuration for `EHCACHE` you have to configure yourself. You can find the default configuration file for `IGNITE` [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/ignite.xml) and you can find the default configuration file for `EHCACHE` [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/ehcache.xml).
 
 ```properties
 # CacheType: NONE | DEFAULT (SPRING) | EHCACHE | IGNITE
@@ -219,7 +219,7 @@ encryption.keystore.keyPassword=${encryption.keystore.password}
 
 ### JMS
 
-You can find the default ActiveMQ configuration file [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.data.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/activemq.xml).
+You can find the default ActiveMQ configuration file [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/activemq.xml).
 JMS can be used in the [DeliveryTaskHandler](#deliverytaskhandler), the [DeliveryManager](#deliverymanager) and the [EventListener](#eventlistener)
 
 ```properties

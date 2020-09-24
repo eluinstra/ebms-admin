@@ -13,7 +13,7 @@ The EbMS API consists of the following services
 
 ## CPAService
 
-The [CPAService](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.data.ebms.branch.version }}/src/main/java/nl/clockwork/ebms/cpa/CPAService.java) contains functionality to manage CPAs.
+The [CPAService](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.ebms.branch.version }}/src/main/java/nl/clockwork/ebms/cpa/CPAService.java) contains functionality to manage CPAs.
 
 ### validateCPA(cpa)
 {: #validateCPA}
@@ -43,7 +43,7 @@ Returns the CPA identified by `cpaId`.
 
 ## UrlMappingService
 
-The [UrlMappingService](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.data.ebms.branch.version }}/src/main/java/nl/clockwork/ebms/cpa/url/URLMappingService.java) contains functionality to override CPA's urls.
+The [UrlMappingService](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.ebms.branch.version }}/src/main/java/nl/clockwork/ebms/cpa/url/URLMappingService.java) contains functionality to override CPA's urls.
 
 ### setURLMapping(urlMapping)
 {: #setURLMapping}
@@ -62,7 +62,7 @@ Returns a list of all URL mappings.
 
 ## CertificateMappingService
 
-The [CertificateMappingService](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.data.ebms.branch.version }}/src/main/java/nl/clockwork/ebms/cpa/certificate/CertificateMappingService.java) contains functionality to override CPA's certificates.
+The [CertificateMappingService](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.ebms.branch.version }}/src/main/java/nl/clockwork/ebms/cpa/certificate/CertificateMappingService.java) contains functionality to override CPA's certificates.
 
 ### setCertificateMapping(certificateMapping)
 {: #setCertificateMapping}
@@ -81,7 +81,7 @@ Returns a list of all Certificate mappings.
 
 ## EbMSMessageService
 
-The [EbMSMessageService](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.data.ebms.branch.version }}/src/main/java/nl/clockwork/ebms/service/EbMSMessageService.java) contains functionality for sending and receiving EbMS messages. There is also an MTOM [EbMSMessageService](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.data.ebms.branch.version }}/src/main/java/nl/clockwork/ebms/service/EbMSMessageServiceMTOM.java) available, which is more efficient.
+The [EbMSMessageService](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.ebms.branch.version }}/src/main/java/nl/clockwork/ebms/service/EbMSMessageService.java) contains functionality for sending and receiving EbMS messages. There is also an MTOM [EbMSMessageService](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.ebms.branch.version }}/src/main/java/nl/clockwork/ebms/service/EbMSMessageServiceMTOM.java) available, which is more efficient.
 
 ### ping(cpaId, fromPartyId, toPartyId)
 {: #ping}

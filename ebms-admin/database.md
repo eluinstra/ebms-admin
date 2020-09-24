@@ -17,7 +17,7 @@ You can use Flyway to migrate your database. To initialize Flyway for the first 
 With DBMigrate you can migrate your database using Flyway (since [v2.17.0]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2170jar)). ebms-core also supports [automatic update through Flyway]({{ site.baseurl }}/ebms-core/database.html#flyway).
 
 ```sh
-java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBMigrate -h
+java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBMigrate -h
 usage: DBMigrate [-ebmsVersion <arg>] [-h] [-jdbcUrl <arg>] [-password <arg>]
        [-strict] [-username <arg>]
  -ebmsVersion <arg>   set current ebmsVersion (default: none)
@@ -49,7 +49,7 @@ Note: If you run Flyway for the first time on an existing database, then you hav
 Migrate a PostgreSQL database `ebms` on `localhost:5432` with user credentials `username`/`password`
 
 ```sh
-java -cp postgresql-42.2.16.jar:ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBMigrate \
+java -cp postgresql-42.2.16.jar:ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBMigrate \
 -jdbcUrl jdbc:postgresql://localhost:5432/ebms \
 -username=username -password=password
 ```
@@ -60,7 +60,7 @@ java -cp postgresql-42.2.16.jar:ebms-admin-{{ site.data.ebms.core.version }}.jar
 Initialize and migrate an existing PostgreSQL database `ebms` on `localhost:5432` that is on EbMS database v2.15.x
 
 ```sh
-java -cp postgresql-42.2.16.jar:ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBMigrate \
+java -cp postgresql-42.2.16.jar:ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBMigrate \
 -ebmsVersion 2.15 \
 -jdbcUrl jdbc:postgresql://localhost:5432/ebms \
 -username username -password password
@@ -71,7 +71,7 @@ java -cp postgresql-42.2.16.jar:ebms-admin-{{ site.data.ebms.core.version }}.jar
 With DBClean you can cleanup your database (since [v2.17.0]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2170jar)). You have to configure the [database properties]({{ site.baseurl }}/ebms-admin/properties.html#database) before using DBClean.
 
 ```sh
-java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBClean -h
+java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBClean -h
 usage: DBClean [-cmd <arg>] [-cpaId <arg>] [-dateFrom <arg>] [-h]
  -cmd <arg>        objects to clean [vales: cpa|messages]
  -cpaId <arg>      the cpaId of the CPA to delete
@@ -87,7 +87,7 @@ usage: DBClean [-cmd <arg>] [-cpaId <arg>] [-dateFrom <arg>] [-h]
 Cleanup all EbMS messages (and related objects) with persistence date before 30 days ago
 
 ```sh
-java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBMigrate -cmd messages
+java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBMigrate -cmd messages
 ```
 
 #### Cleanup CPA from PostgreSQL database
@@ -95,5 +95,5 @@ java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admi
 Cleanup CPA with cpaId `1` (and all related EbMS messages and other objects)
 
 ```sh
-java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBMigrate -cmd cpa -cpaId=1
+java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBMigrate -cmd cpa -cpaId=1
 ```

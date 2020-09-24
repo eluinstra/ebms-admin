@@ -7,7 +7,7 @@ sort: 4
 ### Show help
 
 ```sh
-java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -h
+java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -h
 usage: Start [-authentication] [-cipherSuites <arg>]
        [-clientAuthentication] [-clientCertificateHeader <arg>]
        [-clientTrustStorePassword <arg>] [-clientTrustStorePath <arg>]
@@ -57,13 +57,13 @@ usage: Start [-authentication] [-cipherSuites <arg>]
 ### Start with the embedded HSQLDB server
 
 ```sh
-java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -hsqldb
+java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -hsqldb
 ```
 
 ### Start using a PostgreSQL JDBC driver
 
 ```sh
-java -cp postgresql-42.2.14.jar:ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded
+java -cp postgresql-42.2.14.jar:ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded
 ```
 
 ### Start on port 8000 (instead of 8080)
@@ -71,19 +71,19 @@ java -cp postgresql-42.2.14.jar:ebms-admin-{{ site.data.ebms.core.version }}.jar
 Start Web/SOAP interface on port `8000` (instead of `8080`)
 
 ```sh
-java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -port 8000
+java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -port 8000
 ```
 
 ### Start with SOAP interface
 
 ```sh
-java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap
+java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap
 ```
 
 ### Start with SOAP interface and without a Web interface
 
 ```sh
-java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap -headless
+java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap -headless
 ```
 
 ### Start with config directory conf/
@@ -92,19 +92,19 @@ java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admi
 By default the config directory is the directory from which you start the ebms-admin. You can change the config directory by setting `configDir`
 
 ```sh
-java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -configDir conf/
+java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -configDir conf/
 ```
 
 ### Start with a custom log4j2 file conf/log4j2.xml
 
 ```sh
-java -Dlog4j.configurationFile=conf/log4j2.xml -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded
+java -Dlog4j.configurationFile=conf/log4j2.xml -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded
 ```
 
 ### Start without using the default Java truststore
 
 ```sh
-java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded
+java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded
 ```
 
 ### Start with HTTPS
@@ -112,7 +112,7 @@ java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }
 Start with HTTPS Web/SOAP interface using keystore `keystore.p12`
 
 ```sh
-java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded \
+java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded \
 -ssl -keyStoreType PKCS12 -keyStorePath keystore.p12 -keyStorePassword password
 ```
 
@@ -122,7 +122,7 @@ Start with HTTPS Web/SOAP interface using keystore `keystore.p12`
 and require SSL client authentication using truststore `truststore.p12` (which holds the client's certificate chain)
 
 ```sh
-java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded \
+java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded \
 -ssl -keyStoreType PKCS12 -keyStorePath keystore.p12 -keyStorePassword password \
 -clientAuthentication -trustStoreType PKCS12 -trustStorePath truststore.p12 -trustStorePassword password
 ```
@@ -134,7 +134,7 @@ and require SSL client authentication using truststore `truststore.p12` (which h
 and authenticate client SSL certificate using `clientTruststore.p12` (which holds the client's certificate)
 
 ```sh
-java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded \
+java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded \
 -ssl -keyStoreType PKCS12 -keyStorePath keystore.p12 -keyStorePassword password \
 -clientAuthentication -trustStoreType PKCS12 -trustStorePath truststore.p12 -trustStorePassword password \
 -authentication -clientTrustStoreType PKCS12 -clientTrustStorePath clientTruststore.p12 -clientTrustStorePassword password
@@ -143,25 +143,25 @@ java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }
 ### Start in EbMS Server mode
 
 ```sh
-java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -headless -disableEbMSClient
+java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -headless -disableEbMSClient
 ```
 
 ### Start in EbMS Client mode
 
 ```sh
-java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -headless -disableEbMSServer
+java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -headless -disableEbMSServer
 ```
 
 ### Start in SOAP API mode
 
 ```sh
-java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap -headless -disableEbMSServer -disableEbMSClient
+java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap -headless -disableEbMSServer -disableEbMSClient
 ```
 
 ### Start in Web Interface mode
 
 ```sh
-java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -disableEbMSServer -disableEbMSClient
+java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -disableEbMSServer -disableEbMSClient
 ```
 
 ### Start using basic authentication
@@ -169,12 +169,12 @@ java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }
 Start using basic authentication on Web/SOAP interface
 
 ```sh
-java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -authentication
+java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -authentication
 ```
 
 ### Start hsqldb and ebms-admin as 2 separate applications
 
 ```sh
-java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar org.hsqldb.server.Server --database.0 file:hsqldb/ebms --dbname.0 ebms -port 9001
-java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap
+java -cp ebms-admin-{{ site.ebms.core.version }}.jar org.hsqldb.server.Server --database.0 file:hsqldb/ebms --dbname.0 ebms -port 9001
+java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap
 ```

@@ -31,16 +31,16 @@ In this example you will configure 2 ebms adapters that will communicate with ea
 ### Requisites
 
 - download and install Java 8 (or later)
-- download [ebms-admin-{{ site.data.ebms.core.version }}.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-{{ site.data.ebms.core.version }}/ebms-admin-{{ site.data.ebms.core.version }}.jar)
+- download [ebms-admin-{{ site.ebms.core.version }}.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-{{ site.ebms.core.version }}/ebms-admin-{{ site.ebms.core.version }}.jar)
 - download [cpaStubEBF.rm.https.signed.xml](https://raw.githubusercontent.com/eluinstra/ebms-admin/ebms-admin-2.17.3/resources/CPAs/cpaStubEBF.rm.https.signed.xml)
 
 ### Create and configure party Overheid
 
 - create directory `overheid`
-- copy ebms-admin-{{ site.data.ebms.core.version }}.jar to `overheid`
+- copy ebms-admin-{{ site.ebms.core.version }}.jar to `overheid`
 - start ebms-admin on port `8000` with the SOAP Interface using a HSQLDB server
 ```
-java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -port 8000 -soap -hsqldb
+java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -port 8000 -soap -hsqldb
 ```
 - open web browser at [http://localhost:8000](http://localhost:8000)
 - configure properties at the [EbMSAdmin Properties Page](https://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage)
@@ -53,10 +53,10 @@ java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admi
 ### Create and configure party Digipoort
 
 - create directory `digipoort`
-- copy ebms-admin-{{ site.data.ebms.core.version }}.jar to `digipoort`
+- copy ebms-admin-{{ site.ebms.core.version }}.jar to `digipoort`
 - start ebms-admin on default port `8080` with the SOAP Interface using a HSQLDB server
 ```
-java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap -hsqldb
+java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap -hsqldb
 ```
 - open web browser at [http://localhost:8080](http://localhost:8080)
 - configure properties at the [EbMSAdmin Properties Page](http://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage) [Optional]

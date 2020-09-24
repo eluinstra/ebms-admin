@@ -22,7 +22,7 @@ This is especially useful when configuring containers
 
 ## Default Properties
 
-Below the contents of the [default.properties](https://github.com/eluinstra/ebms-core/blob/ebms-admin-{{ site.data.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/admin/default.properties) file of ebms-admin v{{ site.data.ebms.core.version }}. These are the default settings for ebms-admin.
+Below the contents of the [default.properties](https://github.com/eluinstra/ebms-core/blob/ebms-admin-{{ site.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/admin/default.properties) file of ebms-admin v{{ site.ebms.core.version }}. These are the default settings for ebms-admin.
 
 ### User Interface
 

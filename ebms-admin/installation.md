@@ -8,12 +8,12 @@ sort: 3
 
 - download and install Java 8 (or later)
 - provide a [supported database]({{ site.baseurl }}{% link ebms-core/database.md %}) and download the appropriate JDBC driver
-- download [ebms-admin-{{ site.data.ebms.core.version }}.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-{{ site.data.ebms.core.version }}/ebms-admin-{{ site.data.ebms.core.version }}.jar)
+- download [ebms-admin-{{ site.ebms.core.version }}.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-{{ site.ebms.core.version }}/ebms-admin-{{ site.ebms.core.version }}.jar)
 
 ## Installation
 
 - create directory `ebms-admin`
-- copy ebms-admin-{{ site.data.ebms.core.version }}.jar to `ebms-admin`
+- copy ebms-admin-{{ site.ebms.core.version }}.jar to `ebms-admin`
 
 ## Configuration
 
@@ -29,7 +29,7 @@ See [here]({{ site.baseurl }}{% link ebms-core/overview.md %}) for a functional 
 - start ebms-admin on default port `8080` with the SOAP interface enabled and using JDBC driver `<jdbc-driver>.jar`
 
 ```
-java -cp <jdbc-driver>.jar:ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap
+java -cp <jdbc-driver>.jar:ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap
 ```
 
 When you start ebms-admin you can see the following output in your console

@@ -4,7 +4,7 @@ sort: 3
 
 # Development
 
-If you want to use ebms-core in your own application you have to add the [JAR](#maven) to your project. You also have to add the Spring configuration class [MainCondig.java](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.data.ebms.branch.version }}/src/main/java/nl/clockwork/ebms/MainConfig.java) to your project or replace it by your custom implementation. Finally you have to add the [EbMSServlet](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.data.ebms.branch.version }}/src/main/java/nl/clockwork/ebms/server/servlet/EbMSServlet.java) class to your web configuration to expose the EbMS Interface. Your application can manage the adapter through the [EbMS API]({{ site.baseurl }}{% link ebms-core/api.md %}). This API can also be exposed as SOAP Services.  
+If you want to use ebms-core in your own application you have to add the [JAR](#maven) to your project. You also have to add the Spring configuration class [MainCondig.java](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.ebms.branch.version }}/src/main/java/nl/clockwork/ebms/MainConfig.java) to your project or replace it by your custom implementation. Finally you have to add the [EbMSServlet](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.ebms.branch.version }}/src/main/java/nl/clockwork/ebms/server/servlet/EbMSServlet.java) class to your web configuration to expose the EbMS Interface. Your application can manage the adapter through the [EbMS API]({{ site.baseurl }}{% link ebms-core/api.md %}). This API can also be exposed as SOAP Services.  
 
 ## Java
 
@@ -12,13 +12,13 @@ ebms-core is compiled and tested with OpenJDK 8
 
 ## Maven
 
-ebms-core is released in the [Central Maven repository](https://mvnrepository.com/artifact/nl.clockwork.ebms/ebms-core/{{ site.data.ebms.core.version }}):
+ebms-core is released in the [Central Maven repository](https://mvnrepository.com/artifact/nl.clockwork.ebms/ebms-core/{{ site.ebms.core.version }}):
 
 ```xml
 <dependency>
   <groupId>nl.clockwork.ebms</groupId>
   <artifactId>ebms-core</artifactId>
-  <version>{{ site.data.ebms.core.version }}</version>
+  <version>{{ site.ebms.core.version }}</version>
 </dependency>
 ```
 
@@ -69,10 +69,10 @@ The ebms-core project contains a couple of tests for signing, encryption and the
 
 - download and install Java 8
 - download and install SoapUI 5.x.x
-- download [ebms-admin-{{ site.data.ebms.core.version }}.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-{{ site.data.ebms.core.version }}/ebms-admin-{{ site.data.ebms.core.version }}.jar)
+- download [ebms-admin-{{ site.ebms.core.version }}.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-{{ site.ebms.core.version }}/ebms-admin-{{ site.ebms.core.version }}.jar)
 - download the override properties file [ebms-admin.embedded.properties](https://github.com/eluinstra/ebms-core/blob/ebms-core-2.17.x/resources/test/ebms-admin.embedded.properties)
 - download the SoapUI project [EbMS-soapui-project.xml](https://github.com/eluinstra/ebms-core/blob/ebms-core-2.17.x/resources/test/EbMS-soapui-project.xml)
-- create directory `test` and copy `ebms-admin-{{ site.data.ebms.core.version }}.jar` and `ebms-admin.embedded.properties` to `test`
+- create directory `test` and copy `ebms-admin-{{ site.ebms.core.version }}.jar` and `ebms-admin.embedded.properties` to `test`
 - move to directory `test`
 - start ebms-admin
 ```sh
