@@ -4,8 +4,6 @@ sort: 5
 
 # Database support
 
-ebms-core v{{ site.data.ebms.core.version }}
-
 The EbMS Adapter supports the following databases
 
 - [DB2](#db2)

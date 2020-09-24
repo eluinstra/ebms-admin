@@ -4,8 +4,6 @@ sort: 6
 
 # EbMS API
 
-ebms-core v{{ site.data.ebms.core.version }}
-
 The EbMS API consists of the following services
 
 - [CPAService](#cpaservice)
