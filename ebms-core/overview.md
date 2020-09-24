@@ -4,34 +4,27 @@ sort: 2
 
 # Overview
 
-You can use ebms-core by integrating it into your own Java application, or you can use it as a standalone SOAP Service through [ebms-admin]({{ site.baseurl }}{% link ebms-admin/introduction.md %})
+You can use ebms-core by [integrating]({{ site.baseurl }}{% link ebms-core/development.md %}) it into your own Java application, or you can use it as a standalone SOAP Service through [ebms-admin]({{ site.baseurl }}{% link ebms-admin/introduction.md %}).
 
-![image]({{ site.baseurl }}/assets/images/ebms-overview.svg)
+![EbMS Overview]({{ site.baseurl }}/assets/images/ebms-overview.svg)
 
-## Basic
+## Basic Functionality
 
-It offers the following interfaces
+ebms-core offers the following interfaces
 
 - EbMS Interface to connect to other EbMS adapters
 - [EbMS/SOAP API]({{ site.baseurl }}{% link ebms-core/api.md %}) to connect to applications to manage the EbMS adapter  
 
-If you want to use ebms-core in your own application you have to add the [jar]({{ site.baseurl }}/ebms-core/development.html#maven) to your project and configure the adapter through [Spring Properties]({{ site.baseurl }}{% link ebms-core/properties.md %}).  
-You also have to add the Spring configuration class [MainCondig.java](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.data.ebms.branch.version }}/src/main/java/nl/clockwork/ebms/MainConfig.java) to your project or replace it by your custom implementation.  
-Finally you have to add the [EbMSServlet](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.data.ebms.branch.version }}/src/main/java/nl/clockwork/ebms/server/servlet/EbMSServlet.java) class to your web configuration expose the EbMS Interface.  
-Your application can manage the adapter through the [EbMS API]({{ site.baseurl }}{% link ebms-core/api.md %}). This API can also be exposed as SOAP Services.  
-The adapter stores its data in the [EbMS database]({{ site.baseurl }}{% link ebms-core/database.md %}).
+ ebms-core is configured through [properties]({{ site.baseurl }}{% link ebms-core/properties.md %}). Data is stored in the [database]({{ site.baseurl }}{% link ebms-core/database.md %}).
+
+You can configure [EbMS Message Storage]({{ site.baseurl }}/ebms-core/properties.html#ebms-message-storage) and [EbMS Attachments overflow to disk]({{ site.baseurl }}/ebms-core/properties.html#overflow-attachments-to-disk).
 
 ## Advanced
 
 ### EventListener
 
-You can track sent and received messages if you enable the [EventListener]({{ site.baseurl}}/ebms-core/properties.html#eventlistener).
+You can track sent and received messages if you configure the [EventListener]({{ site.baseurl }}/ebms-core/properties.html#eventlistener).
 
 ### Scaling
 
-The EbMS adapter provides the following components to support different [scaling scenarios]({{ site.baseurl }}/ebms-admin/deployment.html#scaling)
-
-- [CacheManager]({{ site.baseurl}}/ebms-core/properties.html#cache)
-- [DeliveryTaskHandler]({{ site.baseurl}}/ebms-core/properties.html#deliverytaskhandler)
-- [TransactionManager]({{ site.baseurl}}/ebms-core/properties.html#transactionmanager)
-- [DeliveryManager]({{ site.baseurl}}/ebms-core/properties.html#deliverymanager)
+To support [scaling with serverId]({{ site.baseurl }}/ebms-admin/deployment.html#scaling-serverid) and [advanced scaling]({{ site.baseurl }}/ebms-admin/deployment.html#scaling) the different components have to use the same [database]({{ site.baseurl }}{% link ebms-core/database.md %}). Also the internal [cache]({{ site.baseurl }}/ebms-core/properties.html#cache) has to be synchronized between the components. Furthermore you have to configure the [DeliveryManager]({{ site.baseurl }}/ebms-core/properties.html#deliverymanager). When using [advanced scaling]({{ site.baseurl }}/ebms-admin/deployment.html#scaling) you also have to configure the [DeliveryTaskHandler]({{ site.baseurl }}/ebms-core/properties.html#deliverytaskhandler).

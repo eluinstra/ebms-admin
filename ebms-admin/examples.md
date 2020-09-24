@@ -26,7 +26,7 @@ For Ansible examples see
 ## Example with 2 EbMS adapters
 {: #example}
 
-In this example you will configure 2 ebms adapters that will communicate with each other. One represents the party `Overheid`, the other one represents the party `Digipoort`. They will use the `aanleveren` and `afleveren` services as defined in the CPA.
+In this example you will configure 2 ebms adapters that will communicate with each other. One represents party `Overheid`, the other one represents party `Digipoort`. They will use the `aanleveren` and `afleveren` services as defined in the CPA.
 
 ### Requisites
 
@@ -43,12 +43,12 @@ In this example you will configure 2 ebms adapters that will communicate with ea
 java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -port 8000 -soap -hsqldb
 ```
 - open web browser at [http://localhost:8000](http://localhost:8000)
-- configure properties at [EbMSAdminPropertiesPage](https://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage)
+- configure properties at the [EbMSAdmin Properties Page](https://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage)
 	- set port `8088`
 	- set database port `9000`
 	- save
 	- restart ebms-admin
-- upload CPA `cpaStubEBF.rm.https.signed.xml` at [CPAUploadPage](http://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.service.cpa.CPAUploadPage)
+- upload CPA `cpaStubEBF.rm.https.signed.xml` at the [CPA Upload Page](http://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.service.cpa.CPAUploadPage)
 
 ### Create and configure party Digipoort
 
@@ -59,11 +59,11 @@ java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admi
 java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap -hsqldb
 ```
 - open web browser at [http://localhost:8080](http://localhost:8080)
-- configure properties at [EbMSAdminPropertiesPage](http://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage)
+- configure properties at the [EbMSAdmin Properties Page](http://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage) [Optional]
 	- use default properties, so no changes
 	- save
 	- restart ebms-admin
-- upload CPA cpaStubEBF.rm.https.signed.xml at [CPAUploadPage](http://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.service.cpa.CPAUploadPage)
+- upload CPA cpaStubEBF.rm.https.signed.xml at the [CPA Upload Page](http://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.service.cpa.CPAUploadPage)
 
 ### Send messages from party DigiPoort to Overheid
 

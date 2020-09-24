@@ -14,7 +14,7 @@ You can use Flyway to migrate your database. To initialize Flyway for the first 
 
 ## DBMigrate
 
-With DBMigrate you can migrate your database using Flyway (since [v2.17.0]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2170jar)). ebms-core also supports [automatic update through Flyway]({{ site.baseurl }}/ebms-core/database.html#flyway) now.
+With DBMigrate you can migrate your database using Flyway (since [v2.17.0]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2170jar)). ebms-core also supports [automatic update through Flyway]({{ site.baseurl }}/ebms-core/database.html#flyway).
 
 ```sh
 java -cp ebms-admin-{{ site.data.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBMigrate -h

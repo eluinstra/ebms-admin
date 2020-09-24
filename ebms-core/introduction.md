@@ -25,7 +25,7 @@ This library implements the [EbMS 2.0 specification](http://www.ebxml.org/specs/
 -	Core Functionality
 	-	Packaging
 -	Additional Features
-	-	Message Order Module
+	-	Message Order Module (see [roadmap]({{ site.baseurl }}/ebms-core/roadmap.html#release-218x))
 	-	Multi-Hop Module
 
 ### Remarks
