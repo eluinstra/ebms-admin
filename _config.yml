@@ -7,5 +7,7 @@ remote_theme: rundocs/jekyll-rtd-theme@v1.1.7
 
 repository: eluinstra/ebms-admin
 
+copyright: true
+
 readme_index:
   with_frontmatter: true
