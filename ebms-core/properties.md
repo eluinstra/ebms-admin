@@ -161,7 +161,7 @@ ebmsMessage.storeDuplicateContent=true
 
 ### Overflow attachments to disk
 
-Large EbMS attachments will be cached in a temporary files if they exceed the `ebmsMessage.attachment.memoryTreshold` which by default is `128Kb`. The temporary files are written to `ebmsMessage.attachment.outputDirectory` if set, otherwise to the default temp directory. To enable file encryption set `ebmsMessage.attachment.cipherTransformation` to a stream or 8-bit block cipher transformation (like RC4, AES/CTR/NoPadding, etc). Note: File encryption will result in an increased processing time.
+Large EbMS attachments will be cached in temporary files if they exceed the `ebmsMessage.attachment.memoryTreshold` which by default is `128Kb`. The temporary files are written to `ebmsMessage.attachment.outputDirectory` if set, otherwise to the default temp directory. To enable file encryption set `ebmsMessage.attachment.cipherTransformation` to a stream or 8-bit block cipher transformation (like RC4, AES/CTR/NoPadding, etc). Note: File encryption will result in an increased processing time.
 
 ```properties
 ebmsMessage.attachment.memoryTreshold=131072

@@ -95,10 +95,10 @@ By default the config directory is the directory from which you start the ebms-a
 java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -configDir conf/
 ```
 
-### Start with a custom log4j2 file conf/log4j2.xml
+### Start with a custom log4j2 file log4j2.xml
 
 ```sh
-java -Dlog4j.configurationFile=conf/log4j2.xml -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded
+java -Dlog4j.configurationFile=log4j2.xml -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded
 ```
 
 ### Start without using the default Java truststore

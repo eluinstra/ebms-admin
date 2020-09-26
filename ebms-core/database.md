@@ -53,6 +53,8 @@ since [v2.17.2]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2172jar)
 ```properties
 # JDBC and XA driver
 ebms.jdbc.driverClassName=org.h2.Driver
+# or XA driver
+ebms.jdbc.driverClassName=org.h2.jdbcx.JdbcDataSource
 # In memory
 ebms.jdbc.url=jdbc:h2:mem:<dbname>
 # or file
@@ -60,8 +62,6 @@ ebms.jdbc.url=jdbc:h2:<path>
 # or server
 ebms.jdbc.url=jdbc:h2:tcp://<host>:<port>/<path>
 ```
-
-Download drivers [here](http://www.h2database.com/html/download.html)
 
 ### HSQLDB
 
@@ -77,8 +77,6 @@ ebms.jdbc.url=jdbc:hsqldb:file:<path>
 # or server
 ebms.jdbc.url=jdbc:hsqldb:hsql://<host>:<port>/<dbname>
 ```
-
-Download drivers [here](https://sourceforge.net/projects/hsqldb/files/hsqldb/)
 
 ### MariaDB
 
@@ -102,36 +100,17 @@ ebms.jdbc.driverClassName=com.microsoft.sqlserver.jdbc.SQLServerXADataSource
 ebms.jdbc.url=jdbc:sqlserver://<host>:<port>;[instanceName=<instanceName>;]databaseName=<dbname>;
 ```
 
+Tested with MS SQL Server 2019
+
 Download drivers [here](https://docs.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server)
 
 #### XA Driver
 
-When using the XA driver execute the following script (**replace \<username>@\<database> first**)
+When using the XA driver execute the following script (**replace `<username>` first**)
 
 ```sql
-USE [master]
-GO
-CREATE USER [<username>@<database>] FOR LOGIN [<username>@<database>] WITH DEFAULT_SCHEMA=[dbo]
-use [master]
-GO
-GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_commit] TO [<username>@<database>]
-GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_end] TO [<username>@<database>]
-GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_forget] TO [<username>@<database>]
-GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_forget_ex] TO [<username>@<database>]
-GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_init] TO [<username>@<database>]
-GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_init_ex] TO [<username>@<database>]
-GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_prepare] TO [<username>@<database>]
-GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_prepare_ex] TO [<username>@<database>] 
-GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_recover] TO [<username>@<database>]
-GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_rollback] TO [<username>@<database>]
-GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_rollback_ex] TO [<username>@<database>]
-GRANT EXECUTE ON [dbo].[xp_sqljdbc_xa_start] TO [<username>@<database>]
-GO
-or:
-use [master]
-GO
-EXEC sp_addrolemember [SqlJDBCXAUser], <username>@<database>
-GO
+EXEC sp_sqljdbc_xa_install
+EXEC sp_addrolemember [SqlJDBCXAUser], '<username>'
 ```
 
 #### Quartz
