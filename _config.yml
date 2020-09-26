@@ -3,7 +3,7 @@ lang: en
 description: EbMS adapter for Java
 
 # theme: jekyll-rtd-theme
-remote_theme: rundocs/jekyll-rtd-theme@v1.1.7
+remote_theme: rundocs/jekyll-rtd-theme
 
 repository: eluinstra/ebms-admin
 
