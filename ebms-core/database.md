@@ -44,6 +44,8 @@ ebms.jdbc.driverClassName=com.ibm.db2.jcc.DB2XADataSource
 ebms.jdbc.url=jdbc:db2://<host>:<port>/<dbname>
 ```
 
+Tested with DB2 11.5.4.0
+
 Download drivers [here](https://www.ibm.com/support/pages/db2-jdbc-driver-versions-and-downloads)
 
 ### H2
@@ -63,6 +65,8 @@ ebms.jdbc.url=jdbc:h2:<path>
 ebms.jdbc.url=jdbc:h2:tcp://<host>:<port>/<path>
 ```
 
+Tested with H2 1.4.200
+
 ### HSQLDB
 
 ```properties
@@ -78,6 +82,8 @@ ebms.jdbc.url=jdbc:hsqldb:file:<path>
 ebms.jdbc.url=jdbc:hsqldb:hsql://<host>:<port>/<dbname>
 ```
 
+Tested with HSQLDB 2.5.1
+
 ### MariaDB
 
 ```properties
@@ -87,6 +93,8 @@ ebms.jdbc.driverClassName=org.mariadb.jdbc.Driver
 ebms.jdbc.driverClassName=
 ebms.jdbc.url=jdbc:mysql://<host>:<port>/<dbname>
 ```
+
+Tested with MariaDB 10.3.22
 
 Download drivers [here](https://downloads.mariadb.org/connector-java/)
 
@@ -106,7 +114,7 @@ Download drivers [here](https://docs.microsoft.com/en-us/sql/connect/jdbc/downlo
 
 #### XA Driver
 
-When using the XA driver execute the following script (**replace `<username>` first**)
+When using the XA driver execute the following script
 
 ```sql
 EXEC sp_sqljdbc_xa_install
@@ -131,6 +139,8 @@ ebms.jdbc.driverClassName=com.mysql.cj.jdbc.MysqlXADataSource
 ebms.jdbc.url=jdbc:mysql://<host>:<port>/<dbname>
 ```
 
+Tested with MySQL 8.0.21
+
 Download drivers [here](https://dev.mysql.com/downloads/connector/j/)
 
 #### XA Driver
@@ -151,6 +161,8 @@ ebms.jdbc.driverClassName=oracle.jdbc.xa.client.OracleXADataSource
 ebms.jdbc.url=jdbc:oracle:thin:@<host>:<port>:<dbname>
 ```
 
+Tested with Oracle XE 18c
+
 Download drivers [here](https://www.oracle.com/database/technologies/appdev/jdbc-downloads.html)
 
 ### PostgreSQL
@@ -162,6 +174,8 @@ ebms.jdbc.driverClassName=org.postgresql.Driver
 ebms.jdbc.driverClassName=org.postgresql.xa.PGXADataSource
 ebms.jdbc.url=jdbc:postgresql://<host>:<port>/<dbname>
 ```
+
+Tested with PostgreSQL 12.4
 
 Download drivers [here](https://jdbc.postgresql.org/download.html)
 
