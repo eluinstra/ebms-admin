@@ -16,7 +16,7 @@ ebms.serverId=
 
 ### Cache
 
-Set `deliveryTaskHandler.type` to `IGNITE` or `EHCACHE` when you are [scaling]({{ site.baseurl }}/ebms-admin/deployment.html#scaling) the EbMS Adapter, otherwise leave it set to `DEFAULT`. You can also disable caching by setting `deliveryTaskHandler.type` to `NONE`, but this is not adviced. The scaling configuration for `IGNITE` works out of the box, the scaling configuration for `EHCACHE` you have to configure yourself. You can find the default configuration file for `IGNITE` [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/ignite.xml) and you can find the default configuration file for `EHCACHE` [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/ehcache.xml).
+Set [`deliveryTaskHandler.type`](#deliverytaskhandler) to `IGNITE` or `EHCACHE` when you are [scaling]({{ site.baseurl }}/ebms-admin/deployment.html#scaling) the EbMS Adapter, otherwise leave it set to `DEFAULT`. You can also disable caching by setting [`deliveryTaskHandler.type`](#deliverytaskhandler) to `NONE`, but this is not adviced. The scaling configuration for `IGNITE` works out of the box, the scaling configuration for `EHCACHE` you have to configure yourself. You can find the default configuration file for `IGNITE` [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/ignite.xml) and you can find the default configuration file for `EHCACHE` [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/ehcache.xml).
 
 ```properties
 # CacheType: NONE | DEFAULT (SPRING) | EHCACHE | IGNITE
@@ -60,7 +60,7 @@ deliveryTaskManager.autoRetryInterval=5
 
 ### DeliveryManager
 
-The DeliveryManager is used to handle EbMS [Ping]({{ site.baseurl }}/ebms-core/api.html#ping) and [getMessageStatus]({{ site.baseurl }}/ebms-core/api.html#getMessageStatus) calls. Set `deliveryManager.type` to `JMS` when you are [scaling]({{ site.baseurl }}/ebms-admin/deployment.html#scaling) the EbMS Adapter, otherwise leave it set to `DEFAULT`. When `deliveryManager.type` is set to `JMS` configure [JMS](#jms).
+The DeliveryManager is used to handle EbMS [Ping]({{ site.baseurl }}/ebms-core/api.html#ping) and [getMessageStatus]({{ site.baseurl }}/ebms-core/api.html#getMessageStatus) calls. Set `deliveryManager.type` to `JMS` when you are [scaling]({{ site.baseurl }}/ebms-admin/deployment.html#scaling) the EbMS Adapter, otherwise leave it set to `DEFAULT`. When `deliveryManager.type=JMS` configure [JMS](#jms).
 
 ```properties
 # DeliveryManagerType: DEFAULT (DAO) | JMS
@@ -92,8 +92,7 @@ eventListener.jms.destinationType=QUEUE
 
 ### TransactionManager
 
-When `deliveryTaskHandler.type` is `DEFAULT` or `QUARTZ` then set `transactionManager.type=DEFAULT`.
-When `deliveryTaskHandler.type` is `JMS` or `QUARTZ_JMS` then set `transactionManager.type=ATOMIKOS` and select an XA driver for your [database]({{ site.baseurl }}{% link ebms-core/database.md %}).
+When [`deliveryTaskHandler.type`](#deliverytaskhandler) is set to `DEFAULT` or `QUARTZ` then set `transactionManager.type=DEFAULT`. When [`deliveryTaskHandler.type`](#deliverytaskhandler) is set to `JMS` or `QUARTZ_JMS` then set `transactionManager.type=ATOMIKOS` and select an XA driver for your [database]({{ site.baseurl }}{% link ebms-core/database.md %}).
 
 ```properties
 # TransactionManagerType: DEFAULT | BITRONIX | ATOMIKOS
@@ -242,11 +241,11 @@ encryption.keystore.keyPassword=${encryption.keystore.password}
  You can also start an internal ActiveMQ broker by setting `jms.broker.start=true` and set the path to the broker's configuration file in `jms.broker.config`. You can find the default ActiveMQ configuration file [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/activemq.xml).
 
 ```note
-When `deliveryTaskHandler.type` is set to `JMS` configure the ActiveMQ broker with `schedulerSupport="true"`
+When [`deliveryTaskHandler.type`](#deliverytaskhandler) is set to `JMS` configure the ActiveMQ broker with `schedulerSupport="true"`
 ```
 
 ```note
-When `eventListener.type` is set to `SIMPLE_JMS`, `JMS`, or `JMS_TEXT` or `deliveryTaskHandler.type` is set to `JMS` or `QUARTZ_JMS` use (the default) presistent delivery
+When [`eventListener.type`](#eventlistener) is set to `SIMPLE_JMS`, `JMS`, or `JMS_TEXT` or `deliveryTaskHandler.type` is set to `JMS` or `QUARTZ_JMS` use (the default) presistent delivery
 ```
 
 ```properties
