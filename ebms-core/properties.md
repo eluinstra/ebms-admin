@@ -26,7 +26,7 @@ cache.configLocation=
 
 ### DeliveryTaskHandler
 
-The DeliveryTaskHandler is used to [send EbMS Messages]({{ site.baseurl }}/ebms-core/api.html#sendMessage) asynchronously. Set `deliveryTaskHandler.type` to `JMS`, `QUARTZ` or `QUARTZ_JMS` when you are using [advanced scaling]({{ site.baseurl }}/ebms-admin/deployment.html#scaling-advanced), otherwise leave it set to `DEFAULT`or set it to `QUARTZ`. When `deliveryTaskHandler.type` is set to `JMS`or `QUARTZ_JMS` configure [JMS](#jms) and the [TransactionManager](#transactionmanager).
+The DeliveryTaskHandler is used to [send EbMS Messages]({{ site.baseurl }}/ebms-core/api.html#sendMessage) asynchronously. Set `deliveryTaskHandler.type` to `JMS`, `QUARTZ` or `QUARTZ_JMS` when you are using [advanced scaling]({{ site.baseurl }}/ebms-admin/deployment.html#scaling-advanced), otherwise leave it set to `DEFAULT` or set it to `QUARTZ`. When `deliveryTaskHandler.type` is set to `JMS` or `QUARTZ_JMS` configure [JMS](#jms) and the [TransactionManager](#transactionmanager).
 
 ```properties
 # DeliveryTaskHandlerType: DEFAULT (DAO) | JMS | QUARTZ | QUARTZ_JMS
@@ -47,7 +47,11 @@ deliveryTaskHandler.task.executionInterval=0
 
 ### DeliveryTaskManager
 
-It is possible to retry sending best-effort messages after a technical error (like a connection error). `ebmsMessage.nrAutoRetries` sets the maximum number of retries. `ebmsMessage.autoRetryInterval` sets the retry interval in minutes. Note: This is not according to the EbMS Specifications, but will not violate them either.
+It is possible to retry sending best-effort messages after a technical error (like a connection error). `ebmsMessage.nrAutoRetries` sets the maximum number of retries. `ebmsMessage.autoRetryInterval` sets the retry interval in minutes.
+
+```note
+This is not according to the EbMS Specifications, but will not violate them either.
+```
 
 ```properties
 deliveryTaskManager.nrAutoRetries=0
@@ -102,7 +106,10 @@ transactionManager.transactionTimeout=300
 ### HTTPClient
 
 Setting `http.client` to `APACHE` is not tested lately, so leave it to `DEFAULT`.  
-Note: The `http.base64Writer` property is disabled for now because of problems sending Base64 content.
+
+```note
+The `http.base64Writer` property is disabled for now because of problems sending Base64 content.
+```
 
 ```properties
 # EbMSHttpClientType: DEFAULT | APACHE
@@ -126,9 +133,17 @@ http.errors.server.unrecoverable=501,505,510
 
 ### SSL
 
-The EbMS HTTP client has the option to use SSL client certificate from the matching CPA when sending a message. This option works **ONLY** as long as the receiving party will trust the SSL client certificate. You can override a certificate by creating a [Certificate Mapping]({{ site.baseurl }}/ebms-core/api.html#certificatemappingservice). This option can be enabled by setting property `https.useClientCertificate` to true.  
+The EbMS HTTP client has the option to use SSL client certificate from the matching CPA when sending a message. You can override a certificate by creating a [Certificate Mapping]({{ site.baseurl }}/ebms-core/api.html#certificatemappingservice). This option can be enabled by setting property `https.useClientCertificate` to true.  
 
-The EbMS adapter supports SSL client certificate validation. This means that the SSL clientCertificate of the incoming request will be validated against the matching CPA. This option **ONLY** works as long as the other parties use the SSL client certificates defined in the CPAs and the client certificates are trusted in the [truststore]({{ site.baseurl }}/ebms-core/properties.html#truststore). This option can be enabled by setting property `https.clientCertificateAuthentication` to true.
+```note
+This option works **ONLY** as long as the receiving party will trust the SSL client certificate.
+```
+
+The EbMS adapter supports SSL client certificate validation. This means that the SSL clientCertificate of the incoming request will be validated against the matching CPA. This option can be enabled by setting property `https.clientCertificateAuthentication` to true.
+
+```note
+This option **ONLY** works as long as the other parties use the SSL client certificates defined in the CPAs and the client certificates are trusted in the [truststore]({{ site.baseurl }}/ebms-core/properties.html#truststore).
+```
 
 ```properties
 https.protocols=
@@ -161,7 +176,11 @@ ebmsMessage.storeDuplicateContent=true
 
 ### Overflow attachments to disk
 
-Large EbMS attachments will be cached in temporary files if they exceed the `ebmsMessage.attachment.memoryTreshold` which by default is `128Kb`. The temporary files are written to `ebmsMessage.attachment.outputDirectory` if set, otherwise to the default temp directory. To enable file encryption set `ebmsMessage.attachment.cipherTransformation` to a stream or 8-bit block cipher transformation (like RC4, AES/CTR/NoPadding, etc). Note: File encryption will result in an increased processing time.
+Large EbMS attachments will be cached in temporary files if they exceed the `ebmsMessage.attachment.memoryTreshold` which by default is `128Kb`. The temporary files are written to `ebmsMessage.attachment.outputDirectory` if set, otherwise to the default temp directory. To enable file encryption set `ebmsMessage.attachment.cipherTransformation` to a stream or 8-bit block cipher transformation (like RC4, AES/CTR/NoPadding, etc).
+
+```note
+Enabling file encryption will result in an increased processing time.
+```
 
 ```properties
 ebmsMessage.attachment.memoryTreshold=131072
@@ -221,6 +240,14 @@ encryption.keystore.keyPassword=${encryption.keystore.password}
 
 You can find the default ActiveMQ configuration file [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/activemq.xml).
 JMS can be used in the [DeliveryTaskHandler](#deliverytaskhandler), the [DeliveryManager](#deliverymanager) and the [EventListener](#eventlistener)
+
+```note
+When `deliveryTaskHandler.type` is set to `JMS` configure the ActiveMQ broker with `schedulerSupport="true"`
+```
+
+```note
+When `deliveryTaskHandler.type` is set to `JMS` or `QUARTZ_JMS` configure presistent delivery
+```
 
 ```properties
 jms.broker.config=classpath:nl/clockwork/ebms/activemq.xml

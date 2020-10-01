@@ -18,8 +18,7 @@ With DBMigrate you can migrate your database using Flyway (since [v2.17.0]({{ si
 
 ```sh
 java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBMigrate -h
-usage: DBMigrate [-ebmsVersion <arg>] [-h] [-jdbcUrl <arg>] [-password <arg>]
-       [-strict] [-username <arg>]
+usage: DBMigrate [-ebmsVersion <arg>] [-h] [-jdbcUrl <arg>] [-password <arg>] [-strict] [-username <arg>]
  -ebmsVersion <arg>   set current ebmsVersion (default: none)
  -h                   print this message
  -jdbcUrl <arg>       set jdbcUrl
@@ -39,7 +38,10 @@ Valid ebmsVersions:
 ```
 
 See [here]({{ site.baseurl }}{% link ebms-core/database.md %}) for database settings.  
-Note: If you run Flyway for the first time on an existing database, then you have to use the argument `-ebmsVersion` with your current EbMS database version to [initialize the database](#initialize).
+
+```note
+If you run Flyway for the first time on an existing database, then you have to use the argument `-ebmsVersion` with your current EbMS database version to [initialize the database](#initialize).
+```
 
 ### Examples
 
@@ -68,17 +70,18 @@ java -cp postgresql-42.2.16.jar:ebms-admin-{{ site.ebms.core.version }}.jar nl.c
 
 ## DBClean
 
-With DBClean you can cleanup your database (since [v2.17.0]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2170jar)). You have to configure the [database properties]({{ site.baseurl }}/ebms-admin/properties.html#database) before using DBClean.
+With DBClean you can cleanup your database (since [v2.17.0]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2170jar)). You have to configure the [database properties]({{ site.baseurl }}/ebms-admin/properties.html#database) before using DBClean. You can find message storage properties [here]({{ site.baseurl }}/ebms-core/properties.html#ebms-message-storage).
 
 ```sh
 java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBClean -h
-usage: DBClean [-cmd <arg>] [-cpaId <arg>] [-dateFrom <arg>] [-h]
- -cmd <arg>        objects to clean [vales: cpa|messages]
- -cpaId <arg>      the cpaId of the CPA to delete
- -dateFrom <arg>   the date from which objects will be deleted [format:
-                   YYYYMMDD][default: now - 30 days]
- -h                print this message
-```
+usage: DBClean [-cmd <arg>] [-configDir <arg>] [-cpaId <arg>] [-dateFrom <arg>] [-h]
+ -cmd <arg>         objects to clean [vales: cpa|messages]
+ -configDir <arg>   set config directory (default=current dir)
+ -cpaId <arg>       the cpaId of the CPA to delete
+ -dateFrom <arg>    the date from which objects will be deleted [format:
+                    YYYYMMDD][default: now - 30 days]
+ -h                 print this message
+ ```
 
 ### Examples
 

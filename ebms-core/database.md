@@ -187,7 +187,7 @@ If you get the following error when using the XA driver
 org.postgresql.util.PSQLException: ERROR: prepared transactions are disabled Hint: Set max_prepared_transactions to a nonzero value.
 ```
 
-then enable the `max_prepared_transactions` attribute in `data/postgresql.conf`
+then enable the `max_prepared_transactions` attribute in `postgresql.conf`
 
 
 ## Flyway
