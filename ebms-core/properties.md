@@ -132,16 +132,16 @@ http.errors.server.unrecoverable=501,505,510
 
 ### SSL
 
-The EbMS HTTP client has the option to use SSL client certificate from the matching CPA when sending a message. You can override a certificate by creating a [Certificate Mapping]({{ site.baseurl }}/ebms-core/api.html#certificatemappingservice). This option can be enabled by setting property `https.useClientCertificate` to true.  
+The EbMS HTTP client has the option to use SSL client certificate from the matching CPA when sending a message. You can **override** a certificate defined in a CPA by creating a [Certificate Mapping]({{ site.baseurl }}/ebms-core/api.html#certificatemappingservice). This option can be enabled by setting property `https.useClientCertificate` to true.  
 
 ```note
-This option works **ONLY** as long as the receiving party will trust the SSL client certificate.
+This option works **ONLY** as long as the other (receiving) party will trust the configured SSL client certificate.
 ```
 
 The EbMS adapter supports SSL client certificate validation. This means that the SSL clientCertificate of the incoming request will be validated against the matching CPA. This option can be enabled by setting property `https.clientCertificateAuthentication` to true.
 
 ```note
-This option **ONLY** works as long as the other parties use the SSL client certificates defined in the CPAs and the client certificates are trusted in the [truststore]({{ site.baseurl }}/ebms-core/properties.html#truststore).
+This option **ONLY** works as long as the other (sending) party uses the SSL client certificates defined in the CPA and the client certificates are trusted in the [truststore]({{ site.baseurl }}/ebms-core/properties.html#truststore).
 ```
 
 ```properties
@@ -238,14 +238,14 @@ encryption.keystore.keyPassword=${encryption.keystore.password}
 ### JMS
 
  JMS can be used by the [DeliveryTaskHandler](#deliverytaskhandler), the [DeliveryManager](#deliverymanager) and the [EventListener](#eventlistener). By default the `jms.brokerURL=vm://localhost` setting starts a persistent ActiveMQ broker that stores its data in the folder `activemq-data` and is reachable through `vm://localhost`. To use a diffent (external) broker configure `jms.brokerURL`. 
- You can also start an internal ActiveMQ broker by setting `jms.broker.start=true` and set the path to the broker's configuration file in `jms.broker.config`. You can find the default ActiveMQ configuration file [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/activemq.xml).
+ You can also start an internal ActiveMQ broker by setting `jms.broker.start=true` and set the path to the broker's configuration file in `jms.broker.config`. You can find the default ActiveMQ configuration file [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/activemq.xml). If you are using this configuration file, the broker's data is stored in the folder `data`.
 
 ```note
 When [`deliveryTaskHandler.type`](#deliverytaskhandler) is set to `JMS` configure the ActiveMQ broker with `schedulerSupport="true"`
 ```
 
 ```note
-When [`eventListener.type`](#eventlistener) is set to `SIMPLE_JMS`, `JMS`, or `JMS_TEXT` or `deliveryTaskHandler.type` is set to `JMS` or `QUARTZ_JMS` use (the default) presistent delivery
+When [`eventListener.type`](#eventlistener) is set to `SIMPLE_JMS`, `JMS`, or `JMS_TEXT` or [`deliveryTaskHandler.type`](#deliverytaskhandler) is set to `JMS` or `QUARTZ_JMS` use (the default) presistent delivery
 ```
 
 ```properties
