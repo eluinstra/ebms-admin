@@ -238,23 +238,23 @@ encryption.keystore.keyPassword=${encryption.keystore.password}
 
 ### JMS
 
-You can find the default ActiveMQ configuration file [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/activemq.xml).
-JMS can be used in the [DeliveryTaskHandler](#deliverytaskhandler), the [DeliveryManager](#deliverymanager) and the [EventListener](#eventlistener)
+ JMS can be used by the [DeliveryTaskHandler](#deliverytaskhandler), the [DeliveryManager](#deliverymanager) and the [EventListener](#eventlistener). By default the `jms.brokerURL=vm://localhost` setting starts a persistent ActiveMQ broker that stores its data in the folder `activemq-data` and is reachable through `vm://localhost`. To use a diffent (external) broker configure `jms.brokerURL`. 
+ You can also start an internal ActiveMQ broker by setting `jms.broker.start=true` and set the path to the broker's configuration file in `jms.broker.config`. You can find the default ActiveMQ configuration file [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/activemq.xml).
 
 ```note
 When `deliveryTaskHandler.type` is set to `JMS` configure the ActiveMQ broker with `schedulerSupport="true"`
 ```
 
 ```note
-When `deliveryTaskHandler.type` is set to `JMS` or `QUARTZ_JMS` configure presistent delivery
+When `eventListener.type` is set to `SIMPLE_JMS`, `JMS`, or `JMS_TEXT` or `deliveryTaskHandler.type` is set to `JMS` or `QUARTZ_JMS` use (the default) presistent delivery
 ```
 
 ```properties
+jms.brokerURL=vm://localhost
+jms.broker.start=false
 jms.broker.config=classpath:nl/clockwork/ebms/activemq.xml
 jms.broker.username=
 jms.broker.password=
-jms.broker.start=false
-jms.brokerURL=vm://localhost
 jms.pool.minPoolSize=32
 jms.pool.maxPoolSize=32
 ```
