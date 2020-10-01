@@ -41,12 +41,6 @@ import nl.clockwork.ebms.transaction.TransactionManagerConfig;
 		"file:${ebms.configDir}ebms-admin.embedded.properties"},
 		ignoreResourceNotFound = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@PropertySource(value = {
-		"classpath:nl/clockwork/ebms/default.properties",
-		"classpath:nl/clockwork/ebms/admin/default.properties",
-		"file:${ebms.configDir}ebms-admin.embedded.advanced.properties",
-		"file:${ebms.configDir}ebms-admin.embedded.properties"},
-		ignoreResourceNotFound = true)
 public class DBConfig
 {
 }

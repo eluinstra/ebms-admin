@@ -63,12 +63,16 @@ public class DBClean implements SystemInterface
 		val cmd = new DefaultParser().parse(options,args);
 		if (cmd.hasOption("h"))
 			printUsage(options);
-		
-		try (val context = new AnnotationConfigApplicationContext(DBConfig.class))
+		else
 		{
-			val dbClean = createDBClean(context);
-			dbClean.execute(cmd);
+			init(cmd);
+			try (val context = new AnnotationConfigApplicationContext(DBConfig.class))
+			{
+				val dbClean = createDBClean(context);
+				dbClean.execute(cmd);
+			}
 		}
+		System.exit(0);
 	}
 
 	private static Options createOptions()
@@ -78,6 +82,7 @@ public class DBClean implements SystemInterface
 		result.addOption("cmd",true,"objects to clean [vales: cpa|messages]");
 		result.addOption("cpaId",true,"the cpaId of the CPA to delete");
 		result.addOption("dateFrom",true,"the date from which objects will be deleted [format: YYYYMMDD][default: " + dateFormatter.format(LocalDate.now().minusDays(30)) + "]");
+		result.addOption("configDir",true,"set config directory (default=current dir)");
 		return result;
 	}
 
@@ -85,7 +90,13 @@ public class DBClean implements SystemInterface
 	{
 		val formatter = new HelpFormatter();
 		formatter.printHelp("DBClean",options,true);
-		System.exit(0);
+	}
+
+	private static void init(CommandLine cmd)
+	{
+		val configDir = cmd.getOptionValue("configDir","");
+		System.setProperty("ebms.configDir",configDir);
+		System.out.println("Using config directory: " + configDir);
 	}
 
 	private static DBClean createDBClean(AnnotationConfigApplicationContext context)
