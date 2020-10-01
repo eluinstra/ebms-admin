@@ -87,7 +87,7 @@ usage: DBClean [-cmd <arg>] [-cpaId <arg>] [-dateFrom <arg>] [-h]
 Cleanup all EbMS messages (and related objects) with persistence date before 30 days ago
 
 ```sh
-java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBMigrate -cmd messages
+java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBClean -cmd messages
 ```
 
 #### Cleanup CPA from PostgreSQL database
@@ -95,5 +95,5 @@ java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBM
 Cleanup CPA with cpaId `1` (and all related EbMS messages and other objects)
 
 ```sh
-java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBMigrate -cmd cpa -cpaId=1
+java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.DBClean -cmd cpa -cpaId=1
 ```
