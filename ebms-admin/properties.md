@@ -20,14 +20,34 @@ export ebms_port=80
 
 This is especially useful when configuring containers
 
+## Basic Properties
+
+- [Database](#database)
+- [EbMS Server](#ebms-server)
+- [SSL](#ssl)
+- [SSL Server keystore](#ssl-server-keystore)
+- [SSL Client Keystore]({{ site.baseurl }}/ebms-core/properties.html#ssl-client-keystore)
+- [Truststore]({{ site.baseurl }}/ebms-core/properties.html#truststore)
+- [Forward Proxy]({{ site.baseurl }}/ebms-core/properties.html#forward-proxy)
+- [Overflow attachments to disk]({{ site.baseurl }}/ebms-core/properties.html#overflow-attachments-to-disk)
+- [EbMS Signature keystore]({{ site.baseurl }}/ebms-core/properties.html#signature-keystore)
+- [EbMS Encryption keystore]({{ site.baseurl }}/ebms-core/properties.html#encryption-keystore)
+- [EbMS Message Storage]({{ site.baseurl }}/ebms-core/properties.html#ebms-message-storage)
+- [EbMS EventListener]({{ site.baseurl }}/ebms-core/properties.html#eventlistener)
+
 ## Default Properties
 
-Below the contents of the [default.properties](https://github.com/eluinstra/ebms-core/blob/ebms-admin-{{ site.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/admin/default.properties) file of ebms-admin v{{ site.ebms.core.version }}. These are the default settings for ebms-admin.
+Below the contents of ebms-admin's [default.properties](https://github.com/eluinstra/ebms-core/blob/ebms-admin-{{ site.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/admin/default.properties) file. These are the default settings for ebms-admin.
 
-### User Interface
+### Database
+
+These properties override [these]({{ site.baseurl }}/ebms-core/properties.html#database) default ebms-core properties.
 
 ```properties
-maxItemsPerPage=20
+ebms.jdbc.driverClassName=org.hsqldb.jdbcDriver
+ebms.jdbc.url=jdbc:hsqldb:hsql://localhost:9001/ebms
+ebms.jdbc.username=sa
+ebms.jdbc.password=
 ```
 
 ### EbMS Server
@@ -44,6 +64,18 @@ ebms.queriesPerSecond=
 ebms.userQueriesPerSecond=
 ```
 
+### SSL Server keystore
+
+Holds the SSL key (and related certificates) for the [EbMS Server](#ebms-server) endpoint.
+
+```properties
+# KeystoreType: JCEKS | JKS | DKS | PKCS11 | PKCS12
+keystore.type=PKCS12
+keystore.path=nl/clockwork/ebms/keystore.p12
+keystore.password=password
+keystore.defaultAlias=
+```
+
 ### SSL
 
 `https.protocols` and `https.cipherSuites` override [these]({{ site.baseurl }}/ebms-core/properties.html#ssl) default ebms-core properties. If `https.requireClientAuthentication=true` then the [EbMS Server](#ebms-server) endpoint requires SSL client authentication.
@@ -57,25 +89,8 @@ https.requireClientAuthentication=false
 https.clientCertificateHeader=
 ```
 
-### Server SSL keystore
-
-Holds the SSL key (and related certificates) for the [EbMS Server](#ebms-server) endpoint.
+### User Interface
 
 ```properties
-# KeystoreType: JCEKS | JKS | DKS | PKCS11 | PKCS12
-keystore.type=PKCS12
-keystore.path=nl/clockwork/ebms/keystore.p12
-keystore.password=password
-keystore.defaultAlias=
-```
-
-### Database
-
-These properties override [these]({{ site.baseurl }}/ebms-core/properties.html#database) default ebms-core properties.
-
-```properties
-ebms.jdbc.driverClassName=org.hsqldb.jdbcDriver
-ebms.jdbc.url=jdbc:hsqldb:hsql://localhost:9001/ebms
-ebms.jdbc.username=sa
-ebms.jdbc.password=
+maxItemsPerPage=20
 ```
