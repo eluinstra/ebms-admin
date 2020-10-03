@@ -90,8 +90,8 @@ Tested with HSQLDB 2.5.1
 # JDBC driver
 ebms.jdbc.driverClassName=org.mariadb.jdbc.Driver
 # or XA driver
-ebms.jdbc.driverClassName=
-ebms.jdbc.url=jdbc:mysql://<host>:<port>/<dbname>
+ebms.jdbc.driverClassName=org.mariadb.jdbc.MySQLDataSource
+ebms.jdbc.url=jdbc:mariadb://<host>:<port>/<dbname>
 ```
 
 Tested with MariaDB 10.3.22
@@ -164,6 +164,16 @@ ebms.jdbc.url=jdbc:oracle:thin:@<host>:<port>:<dbname>
 Tested with Oracle XE 18c
 
 Download drivers [here](https://www.oracle.com/database/technologies/appdev/jdbc-downloads.html)
+
+#### XA Driver
+
+When using the XA driver execute the following script
+
+```sql
+grant select on sys.dba_pending_transactions to <username>;
+grant select on sys.pending_trans$ to <username>;
+grant select on sys.dba_2pc_pending to <username>;
+```
 
 ### PostgreSQL
 
