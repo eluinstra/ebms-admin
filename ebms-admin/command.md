@@ -21,40 +21,40 @@ usage: StartEmbedded [-authentication] [-cipherSuites <arg>]
        [-trustStorePassword <arg>] [-trustStorePath <arg>]
        [-trustStoreType <arg>] [-userQueriesPerSecond <arg>]
  -authentication                   use basic / client certificate authentication
- -cipherSuites <arg>               set ssl cipherSuites
+ -cipherSuites <arg>               set ssl cipherSuites [default: <none>]
  -clientAuthentication             require ssl client authentication
- -clientCertificateHeader <arg>    set client certificate header
- -clientTrustStorePassword <arg>   set client truststore password
- -clientTrustStorePath <arg>       set client truststore path
- -clientTrustStoreType <arg>       set client truststore type (deault=PKCS12)
- -configDir <arg>                  set config directory (default=current dir)
- -connectionLimit <arg>            set connection limit (default: none)
+ -clientCertificateHeader <arg>    set client certificate header [default: <none>]
+ -clientTrustStorePassword <arg>   set client truststore password [default: <none>]
+ -clientTrustStorePath <arg>       set client truststore path [default: <none>]
+ -clientTrustStoreType <arg>       set client truststore type [default: PKCS12]
+ -configDir <arg>                  set config directory [default: startup directory]
+ -connectionLimit <arg>            set connection limit [default: <none>]
  -disableEbMSClient                disable ebms client
  -disableEbMSServer                disable ebms server
  -h                                print this message
  -headless                         start without web interface
  -health                           start health service
- -healthPort <arg>                 set health service port
- -host <arg>                       set host
+ -healthPort <arg>                 set health service port [default: 8008]
+ -host <arg>                       set host [default: 0.0.0.0]
  -hsqldb                           start hsqldb server
- -hsqldbDir <arg>                  set hsqldb location (default: hsqldb)
- -jmx                              start jmx server (default: false)
- -jmxAccessFile <arg>              set jmx access file
- -jmxPasswordFile <arg>            set jmx password file
- -jmxPort <arg>                    set jmx port
- -keyStorePassword <arg>           set keystore password
- -keyStorePath <arg>               set keystore path
- -keyStoreType <arg>               set keystore type (deault=PKCS12)
- -path <arg>                       set path
- -port <arg>                       set port
- -protocols <arg>                  set ssl protocols
- -queriesPerSecond <arg>           set requests per second limit (default: none)
+ -hsqldbDir <arg>                  set hsqldb location [default: hsqldb]
+ -jmx                              start jmx server
+ -jmxAccessFile <arg>              set jmx access file [default: none]
+ -jmxPasswordFile <arg>            set jmx password file [default: none]
+ -jmxPort <arg>                    set jmx port [default: 1999]
+ -keyStorePassword <arg>           set keystore password [default: password]
+ -keyStorePath <arg>               set keystore path [default: nl/clockwork/ebms/keystore.p12]
+ -keyStoreType <arg>               set keystore type [default: PKCS12]
+ -path <arg>                       set path [default: /ebms]
+ -port <arg>                       set port [default: 8080/8443]
+ -protocols <arg>                  set ssl protocols [default: <none>]
+ -queriesPerSecond <arg>           set requests per second limit [default: <none>]
  -soap                             start soap service
  -ssl                              use ssl
- -trustStorePassword <arg>         set truststore password
- -trustStorePath <arg>             set truststore path
- -trustStoreType <arg>             set truststore type (deault=PKCS12)
- -userQueriesPerSecond <arg>       set requests per user per secondlimit (default: none)
+ -trustStorePassword <arg>         set truststore password [default: <none>]
+ -trustStorePath <arg>             set truststore path [default: <none>]
+ -trustStoreType <arg>             set truststore type [default: PKCS12]
+ -userQueriesPerSecond <arg>       set requests per user per secondlimit [default: <none>]
 ```
 
 ### Start with the embedded HSQLDB server
@@ -69,7 +69,9 @@ java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.Sta
 java -cp postgresql-42.2.14.jar:ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded
 ```
 
-### Start on port 8000 (instead of 8080)
+### Start on port 8000
+
+Start on port 8000 (instead of default port 8080)
 
 Start Web/SOAP interface on port `8000` (instead of `8080`)
 
@@ -168,6 +170,8 @@ java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar
 ```
 
 ### Start Health service on port 8089
+
+Start Health service on port 8089 (instead of default port 8008)
 
 ```sh
 java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -health -healthPort 8089
