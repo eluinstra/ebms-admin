@@ -129,7 +129,7 @@ public class StartEmbedded extends Start
 	{
 		val result = super.createOptions();
 		result.addOption("hsqldb",false,"start hsqldb server");
-		result.addOption("hsqldbDir",true,"set hsqldb location (default: hsqldb)");
+		result.addOption("hsqldbDir",true,"set hsqldb location [default: hsqldb]");
 		result.addOption("disableEbMSServer",false,"disable ebms server");
 		result.addOption("disableEbMSClient",false,"disable ebms client");
 		return result;
