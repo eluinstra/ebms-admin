@@ -8,16 +8,17 @@ sort: 4
 
 ```sh
 java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -h
-usage: Start [-authentication] [-cipherSuites <arg>]
+usage: StartEmbedded [-authentication] [-cipherSuites <arg>]
        [-clientAuthentication] [-clientCertificateHeader <arg>]
        [-clientTrustStorePassword <arg>] [-clientTrustStorePath <arg>]
        [-clientTrustStoreType <arg>] [-configDir <arg>] [-connectionLimit
        <arg>] [-disableEbMSClient] [-disableEbMSServer] [-h] [-headless]
-       [-host <arg>] [-hsqldb] [-hsqldbDir <arg>] [-jmx] [-jmxAccessFile
-       <arg>] [-jmxPasswordFile <arg>] [-jmxPort <arg>] [-keyStorePassword
-       <arg>] [-keyStorePath <arg>] [-keyStoreType <arg>] [-path <arg>]
-       [-port <arg>] [-protocols <arg>] [-queriesPerSecond <arg>] [-soap]
-       [-ssl] [-trustStorePassword <arg>] [-trustStorePath <arg>]
+       [-health] [-healthPort <arg>] [-host <arg>] [-hsqldb] [-hsqldbDir
+       <arg>] [-jmx] [-jmxAccessFile <arg>] [-jmxPasswordFile <arg>]
+       [-jmxPort <arg>] [-keyStorePassword <arg>] [-keyStorePath <arg>]
+       [-keyStoreType <arg>] [-path <arg>] [-port <arg>] [-protocols
+       <arg>] [-queriesPerSecond <arg>] [-soap] [-ssl]
+       [-trustStorePassword <arg>] [-trustStorePath <arg>]
        [-trustStoreType <arg>] [-userQueriesPerSecond <arg>]
  -authentication                   use basic / client certificate authentication
  -cipherSuites <arg>               set ssl cipherSuites
@@ -32,6 +33,8 @@ usage: Start [-authentication] [-cipherSuites <arg>]
  -disableEbMSServer                disable ebms server
  -h                                print this message
  -headless                         start without web interface
+ -health                           start health service
+ -healthPort <arg>                 set health service port
  -host <arg>                       set host
  -hsqldb                           start hsqldb server
  -hsqldbDir <arg>                  set hsqldb location (default: hsqldb)
@@ -162,6 +165,12 @@ java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar
 
 ```sh
 java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -disableEbMSServer -disableEbMSClient
+```
+
+### Start Health service on port 8089
+
+```sh
+java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -health -healthPort 8089
 ```
 
 ### Start using basic authentication
