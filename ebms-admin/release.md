@@ -4,6 +4,11 @@ sort: 9
 
 # Release Notes
 
+### ebms-admin-2.17.4.jar
+
+- upgrade to [ebms-core-2.17.4.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2174jar)
+- fixed DBClean
+
 ### ebms-admin-2.17.3.jar
 
 - upgrade to [ebms-core-2.17.3.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2173jar)

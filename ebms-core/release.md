@@ -4,6 +4,13 @@ sort: 7
 
 # Release Notes
 
+### ebms-core-2.17.4.jar
+
+- implemented HealthServlet
+- fixed DB2 and Oracle XA configuration
+- fixed H2, MSSQL DAOs
+- fixed DB2, H2, MSSQL, MySQL/MariaDB and Oracle flyway scripts
+
 ### ebms-core-2.17.3.jar
 
 - fixed `URLMapper`
