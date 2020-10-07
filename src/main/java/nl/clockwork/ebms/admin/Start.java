@@ -78,9 +78,52 @@ import nl.clockwork.ebms.server.servlet.HealthServlet;
 @RequiredArgsConstructor
 public class Start implements SystemInterface
 {
+	private static final String HELP_OPTION = "h";
+	private static final String HOST_OPTION = "host";
+	private static final String PORT_OPTION = "port";
+	private static final String PATH_OPTION = "path";
+	private static final String SOAP_OPTION = "soap";
+	private static final String HEADLESS_OPTION = "headless";
+	private static final String HEALTH_OPTION = "health";
+	private static final String HEALTH_PORT_OPTION = "healthPort";
+	private static final String CONNECTION_LIMIT_OPTION = "connectionLimit";
+	private static final String QUERIES_PER_SECOND_OPTION = "queriesPerSecond";
+	private static final String USER_QUERIES_PER_SECOND_OPTION = "userQueriesPerSecond";
+	private static final String SSL_OPTION = "ssl";
+	private static final String PROTOCOLS_OPTION = "protocols";
+	private static final String CIPHER_SUITES_OPTION = "cipherSuites";
+	private static final String KEY_STORE_TYPE_OPTION = "keyStoreType";
+	private static final String KEY_STORE_PATH_OPTION = "keyStorePath";
+	private static final String KEY_STORE_PASSWORD_OPTION = "keyStorePassword";
+	private static final String CLIENT_AUTHENTICATION_OPTION = "clientAuthentication";
+	private static final String CLIENT_CERTIFICATE_HEADER_OPTION = "clientCertificateHeader";
+	private static final String TRUST_STORE_TYPE_OPTION = "trustStoreType";
+	private static final String TRUST_STORE_PATH_OPTION = "trustStorePath";
+	private static final String TRUST_STORE_PASSWORD_OPTION = "trustStorePassword";
+	private static final String AUTHENTICATION_OPTION = "authentication";
+	private static final String CLIENT_TRUST_STORE_TYPE_OPTION = "clientTrustStoreType";
+	private static final String CLIENT_TRUST_STORE_PATH_OPTION = "clientTrustStorePath";
+	private static final String CLIENT_TRUST_STORE_PASSWORD_OPTION = "clientTrustStorePassword";
+	private static final String CONFIG_DIR_OPTION = "configDir";
+	private static final String JMX_OPTION = "jmx";
+	private static final String JMX_PORT_OPTION = "jmxPort";
+	private static final String JMX_ACCESS_FILE_OPTION = "jmxAccessFile";
+	private static final String JMX_PASSWORD_FILE_OPTION = "jmxPasswordFile";
+	private static final String DEAULT_HOST = "0.0.0.0";
+	private static final String DEFAULT_PORT = "8080";
+	private static final String DEFAULT_SSL_PORT = "8443";
+	private static final String DEFAULT_PATH = "/";
+	private static final String DEFAULT_HEALTH_PORT = "8008";
+	protected static final String DEFAULT_JMS_PORT = "1999";
 	protected static final String DEFAULT_KEYSTORE_TYPE = KeyStoreType.PKCS12.name();
 	protected static final String DEFAULT_KEYSTORE_FILE = "nl/clockwork/ebms/keystore.p12";
 	protected static final String DEFAULT_KEYSTORE_PASSWORD = "password";
+	protected static final String DEFAULT_CONFIG_DIR = "";
+	private static final String WEB_CONNECTOR_NAME = "web";
+	private static final String HEALTH_CONNECTOR_NAME = "health";
+	private static final String SOAP_URL = "/service";
+	private static final String HEALTH_URL = "/health";
+	private static final String NONE = "<none>";
 	protected static final String REALM = "Realm";
 	protected static final String REALM_FILE = "realm.properties";
 	Server server = new Server();
@@ -98,23 +141,23 @@ public class Start implements SystemInterface
 	{
 		val options = createOptions();
 		val cmd = new DefaultParser().parse(options,args);
-		if (cmd.hasOption("h"))
+		if (cmd.hasOption(HELP_OPTION))
 			printUsage(options);
 		init(cmd);
 		server.setHandler(handlerCollection);
-		if (cmd.hasOption("jmx"))
+		if (cmd.hasOption(JMX_OPTION))
 			initJMX(cmd,server);
 		try (val context = new AnnotationConfigWebApplicationContext())
 		{
 			context.register(AppConfig.class);
 			getConfigClasses().forEach(c -> context.register(c));
 			val contextLoaderListener = new ContextLoaderListener(context);
-			if (cmd.hasOption("soap") || !cmd.hasOption("headless"))
+			if (cmd.hasOption(SOAP_OPTION) || !cmd.hasOption(HEADLESS_OPTION))
 			{
 				initWebServer(cmd,server);
 				handlerCollection.addHandler(createWebContextHandler(cmd,contextLoaderListener));
 			}
-			if (cmd.hasOption("health"))
+			if (cmd.hasOption(HEALTH_OPTION))
 			{
 				initHealthServer(cmd,server);
 				handlerCollection.addHandler(createHealthContextHandler(cmd,contextLoaderListener));
@@ -137,37 +180,37 @@ public class Start implements SystemInterface
 	protected Options createOptions()
 	{
 		val result = new Options();
-		result.addOption("h",false,"print this message");
-		result.addOption("host",true,"set host [default: 0.0.0.0]");
-		result.addOption("port",true,"set port [default: <8080|8443>]");
-		result.addOption("path",true,"set path [default: /]");
-		result.addOption("soap",false,"start soap service");
-		result.addOption("headless",false,"start without web interface");
-		result.addOption("health",false,"start health service");
-		result.addOption("healthPort",true,"set health service port [default: 8008]");
-		result.addOption("connectionLimit",true,"set connection limit [default: <none>]");
-		result.addOption("queriesPerSecond",true,"set requests per second limit [default: <none>]");
-		result.addOption("userQueriesPerSecond",true,"set requests per user per secondlimit [default: <none>]");
-		result.addOption("ssl",false,"use ssl");
-		result.addOption("protocols",true,"set ssl protocols [default: <none>]");
-		result.addOption("cipherSuites",true,"set ssl cipherSuites [default: <none>]");
-		result.addOption("keyStoreType",true,"set keystore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
-		result.addOption("keyStorePath",true,"set keystore path [default: " + DEFAULT_KEYSTORE_FILE + "]");
-		result.addOption("keyStorePassword",true,"set keystore password [default: " + DEFAULT_KEYSTORE_PASSWORD + "]");
-		result.addOption("clientAuthentication",false,"require ssl client authentication");
-		result.addOption("clientCertificateHeader",true,"set client certificate header [default: <none>]");
-		result.addOption("trustStoreType",true,"set truststore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
-		result.addOption("trustStorePath",true,"set truststore path [default: <none>]");
-		result.addOption("trustStorePassword",true,"set truststore password [default: <none>]");
-		result.addOption("authentication",false,"use basic | client certificate authentication");
-		result.addOption("clientTrustStoreType",true,"set client truststore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
-		result.addOption("clientTrustStorePath",true,"set client truststore path [default: <none>]");
-		result.addOption("clientTrustStorePassword",true,"set client truststore password [default: <none>]");
-		result.addOption("configDir",true,"set config directory [default: <startup_directory>]");
-		result.addOption("jmx",false,"start jmx server");
-		result.addOption("jmxPort",true,"set jmx port [default: 1999]");
-		result.addOption("jmxAccessFile",true,"set jmx access file [default: none]");
-		result.addOption("jmxPasswordFile",true,"set jmx password file [default: none]");
+		result.addOption(HELP_OPTION,false,"print this message");
+		result.addOption(HOST_OPTION,true,"set host [default: " + DEAULT_HOST + "]");
+		result.addOption(PORT_OPTION,true,"set port [default: <" + DEFAULT_PORT + "|" + DEFAULT_SSL_PORT + ">]");
+		result.addOption(PATH_OPTION,true,"set path [default: " + DEFAULT_PATH + "]");
+		result.addOption(SOAP_OPTION,false,"start SOAP service");
+		result.addOption(HEADLESS_OPTION,false,"start without web interface");
+		result.addOption(HEALTH_OPTION,false,"start health service");
+		result.addOption(HEALTH_PORT_OPTION,true,"set health service port [default: " + DEFAULT_HEALTH_PORT + "]");
+		result.addOption(CONNECTION_LIMIT_OPTION,true,"set connection limit [default: " + NONE + "]");
+		result.addOption(QUERIES_PER_SECOND_OPTION,true,"set requests per second limit [default: " + NONE + "]");
+		result.addOption(USER_QUERIES_PER_SECOND_OPTION,true,"set requests per user per secondlimit [default: " + NONE + "]");
+		result.addOption(SSL_OPTION,false,"use SSL");
+		result.addOption(PROTOCOLS_OPTION,true,"set SSL Protocols [default: " + NONE + "]");
+		result.addOption(CIPHER_SUITES_OPTION,true,"set SSL CipherSuites [default: " + NONE + "]");
+		result.addOption(KEY_STORE_TYPE_OPTION,true,"set keystore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
+		result.addOption(KEY_STORE_PATH_OPTION,true,"set keystore path [default: " + DEFAULT_KEYSTORE_FILE + "]");
+		result.addOption(KEY_STORE_PASSWORD_OPTION,true,"set keystore password [default: " + DEFAULT_KEYSTORE_PASSWORD + "]");
+		result.addOption(CLIENT_AUTHENTICATION_OPTION,false,"require SSL client authentication");
+		result.addOption(CLIENT_CERTIFICATE_HEADER_OPTION,true,"set client certificate header [default: " + NONE + "]");
+		result.addOption(TRUST_STORE_TYPE_OPTION,true,"set truststore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
+		result.addOption(TRUST_STORE_PATH_OPTION,true,"set truststore path [default: " + NONE + "]");
+		result.addOption(TRUST_STORE_PASSWORD_OPTION,true,"set truststore password [default: " + NONE + "]");
+		result.addOption(AUTHENTICATION_OPTION,false,"use basic | client certificate authentication");
+		result.addOption(CLIENT_TRUST_STORE_TYPE_OPTION,true,"set client truststore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
+		result.addOption(CLIENT_TRUST_STORE_PATH_OPTION,true,"set client truststore path [default: " + NONE + "]");
+		result.addOption(CLIENT_TRUST_STORE_PASSWORD_OPTION,true,"set client truststore password [default: " + NONE + "]");
+		result.addOption(CONFIG_DIR_OPTION,true,"set config directory [default: <startup_directory>]");
+		result.addOption(JMX_OPTION,false,"start JMX server");
+		result.addOption(JMX_PORT_OPTION,true,"set JMX port [default: " + DEFAULT_JMS_PORT + "]");
+		result.addOption(JMX_ACCESS_FILE_OPTION,true,"set JMX access file [default: " + NONE + "]");
+		result.addOption(JMX_PASSWORD_FILE_OPTION,true,"set JMX password file [default: " + NONE + "]");
 		return result;
 	}
 
@@ -188,29 +231,29 @@ public class Start implements SystemInterface
 
 	protected void init(CommandLine cmd)
 	{
-		val configDir = cmd.getOptionValue("configDir","");
+		val configDir = cmd.getOptionValue(CONFIG_DIR_OPTION,DEFAULT_CONFIG_DIR);
 		setProperty("ebms.configDir",configDir);
 		println("Using config directory: " + configDir);
 	}
 
 	protected void initWebServer(CommandLine cmd, Server server) throws MalformedURLException, IOException
 	{
-		val connector = cmd.hasOption("ssl") ? createHttpsConnector(cmd,createSslContextFactory(cmd,cmd.hasOption("clientAuthentication"))) : createHttpConnector(cmd);
+		val connector = cmd.hasOption(SSL_OPTION) ? createHttpsConnector(cmd,createSslContextFactory(cmd,cmd.hasOption(CLIENT_AUTHENTICATION_OPTION))) : createHttpConnector(cmd);
 		server.addConnector(connector);
-		if (cmd.hasOption("connectionLimit"))
-			server.addBean(new ConnectionLimit(Integer.parseInt(cmd.getOptionValue("connectionLimit")),connector));
+		if (cmd.hasOption(CONNECTION_LIMIT_OPTION))
+			server.addBean(new ConnectionLimit(Integer.parseInt(cmd.getOptionValue(CONNECTION_LIMIT_OPTION)),connector));
 	}
 
 	private ServerConnector createHttpConnector(CommandLine cmd)
 	{
 		val result = new ServerConnector(this.server);
-		result.setHost(cmd.getOptionValue("host","0.0.0.0"));
-		result.setPort(Integer.parseInt(cmd.getOptionValue("port","8080")));
-		result.setName("web");
-		if (!cmd.hasOption("headless"))
+		result.setHost(cmd.getOptionValue(HOST_OPTION,DEAULT_HOST));
+		result.setPort(Integer.parseInt(cmd.getOptionValue(PORT_OPTION,DEFAULT_PORT)));
+		result.setName(WEB_CONNECTOR_NAME);
+		if (!cmd.hasOption(HEADLESS_OPTION))
 			println("Web Server configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + getPath(cmd));
-		if (cmd.hasOption("soap"))
-			println("SOAP Service configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + "/service");
+		if (cmd.hasOption(SOAP_OPTION))
+			println("SOAP Service configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + SOAP_URL);
 		return result;
 	}
 
@@ -223,10 +266,10 @@ public class Start implements SystemInterface
 	private ServerConnector createHealthConnector(CommandLine cmd, Server server)
 	{
 		val result = new ServerConnector(server);
-		result.setHost(cmd.getOptionValue("host","0.0.0.0"));
-		result.setPort(Integer.parseInt(cmd.getOptionValue("healthPort","8008")));
-		result.setName("health");
-		println("Health Service configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + "/health");
+		result.setHost(cmd.getOptionValue(HOST_OPTION,DEAULT_HOST));
+		result.setPort(Integer.parseInt(cmd.getOptionValue(HEALTH_PORT_OPTION,DEFAULT_HEALTH_PORT)));
+		result.setName(HEALTH_CONNECTOR_NAME);
+		println("Health Service configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + HEALTH_URL);
 		return result;
 	}
 
@@ -242,17 +285,17 @@ public class Start implements SystemInterface
 
 	private void addKeyStore(CommandLine cmd, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
 	{
-		val keyStoreType = cmd.getOptionValue("keyStoreType",DEFAULT_KEYSTORE_TYPE);
-		val keyStorePath = cmd.getOptionValue("keyStorePath",DEFAULT_KEYSTORE_FILE);
-		val keyStorePassword = cmd.getOptionValue("keyStorePassword",DEFAULT_KEYSTORE_PASSWORD);
+		val keyStoreType = cmd.getOptionValue(KEY_STORE_TYPE_OPTION,DEFAULT_KEYSTORE_TYPE);
+		val keyStorePath = cmd.getOptionValue(KEY_STORE_PATH_OPTION,DEFAULT_KEYSTORE_FILE);
+		val keyStorePassword = cmd.getOptionValue(KEY_STORE_PASSWORD_OPTION,DEFAULT_KEYSTORE_PASSWORD);
 		val keyStore = getResource(keyStorePath);
 		if (keyStore != null && keyStore.exists())
 		{
 			println("Using keyStore " + keyStore.getURI());
-			val protocols = cmd.getOptionValue("protocols");
+			val protocols = cmd.getOptionValue(PROTOCOLS_OPTION);
 			if (!StringUtils.isEmpty(protocols))
 				sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(protocols,',')));
-			val cipherSuites = cmd.getOptionValue("cipherSuites");
+			val cipherSuites = cmd.getOptionValue(CIPHER_SUITES_OPTION);
 			if (!StringUtils.isEmpty(cipherSuites))
 				sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(cipherSuites,',')));
 			sslContextFactory.setKeyStoreType(keyStoreType);
@@ -268,9 +311,9 @@ public class Start implements SystemInterface
 
 	private void addTrustStore(CommandLine cmd, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
 	{
-		val trustStoreType = cmd.getOptionValue("trustStoreType",DEFAULT_KEYSTORE_TYPE);
-		val trustStorePath = cmd.getOptionValue("trustStorePath");
-		val trustStorePassword = cmd.getOptionValue("trustStorePassword");
+		val trustStoreType = cmd.getOptionValue(TRUST_STORE_TYPE_OPTION,DEFAULT_KEYSTORE_TYPE);
+		val trustStorePath = cmd.getOptionValue(TRUST_STORE_PATH_OPTION);
+		val trustStorePassword = cmd.getOptionValue(TRUST_STORE_PASSWORD_OPTION);
 		val trustStore = getResource(trustStorePath);
 		if (trustStore != null && trustStore.exists())
 		{
@@ -290,19 +333,19 @@ public class Start implements SystemInterface
 	private ServerConnector createHttpsConnector(CommandLine cmd, SslContextFactory.Server sslContectFactory)
 	{
 		val connector = new ServerConnector(this.server,sslContectFactory);
-		connector.setHost(cmd.getOptionValue("host","0.0.0.0"));
-		connector.setPort(Integer.parseInt(cmd.getOptionValue("port","8443")));
-		connector.setName("web");
-		if (!cmd.hasOption("headless"))
+		connector.setHost(cmd.getOptionValue(HOST_OPTION,DEAULT_HOST));
+		connector.setPort(Integer.parseInt(cmd.getOptionValue(PORT_OPTION,DEFAULT_SSL_PORT)));
+		connector.setName(WEB_CONNECTOR_NAME);
+		if (!cmd.hasOption(HEADLESS_OPTION))
 			println("Web Server configured on https://" + Utils.getHost(connector.getHost()) + ":" + connector.getPort() + getPath(cmd));
-		if (cmd.hasOption("soap"))
-			println("SOAP Service configured on https://" + Utils.getHost(connector.getHost()) + ":" + connector.getPort() + "/service");
+		if (cmd.hasOption(SOAP_OPTION))
+			println("SOAP Service configured on https://" + Utils.getHost(connector.getHost()) + ":" + connector.getPort() + SOAP_URL);
 		return connector;
 	}
 
 	protected String getPath(CommandLine cmd)
 	{
-		return cmd.getOptionValue("path","/");
+		return cmd.getOptionValue(PATH_OPTION,DEFAULT_PATH);
 	}
 
 	protected void initJMX(CommandLine cmd, Server server) throws Exception
@@ -311,7 +354,7 @@ public class Start implements SystemInterface
 		val mBeanContainer = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
 		server.addBean(mBeanContainer);
 		server.addBean(Log.getLog());
-		val jmxURL = new JMXServiceURL("rmi",null,Integer.parseInt(cmd.getOptionValue("jmxPort","1999")),"/jndi/rmi:///jmxrmi");
+		val jmxURL = new JMXServiceURL("rmi",null,Integer.parseInt(cmd.getOptionValue(JMX_PORT_OPTION,DEFAULT_JMS_PORT)),"/jndi/rmi:///jmxrmi");
 		//val sslContextFactory = cmd.hasOption("ssl") ? createSslContextFactory(cmd,false) : null;
 		val jmxServer = new ConnectorServer(jmxURL,createEnv(cmd),"org.eclipse.jetty.jmx:name=rmiconnectorserver");//,sslContextFactory);
 		server.addBean(jmxServer);
@@ -321,10 +364,10 @@ public class Start implements SystemInterface
 	private Map<String,Object> createEnv(CommandLine cmd)
 	{
 		val result = new HashMap<String, Object>();
-		if (cmd.hasOption("jmxAccessFile") && cmd.hasOption("jmxPasswordFile"))
+		if (cmd.hasOption(JMX_ACCESS_FILE_OPTION) && cmd.hasOption(JMX_PASSWORD_FILE_OPTION))
 		{
-			result.put("jmx.remote.x.access.file",cmd.hasOption("jmxAccessFile"));
-			result.put("jmx.remote.x.password.file",cmd.hasOption("jmxPasswordFile"));
+			result.put("jmx.remote.x.access.file",cmd.hasOption(JMX_ACCESS_FILE_OPTION));
+			result.put("jmx.remote.x.password.file",cmd.hasOption(JMX_PASSWORD_FILE_OPTION));
 		}
 		return result;
 	}
@@ -332,16 +375,16 @@ public class Start implements SystemInterface
 	protected ServletContextHandler createWebContextHandler(CommandLine cmd, ContextLoaderListener contextLoaderListener) throws Exception
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		result.setVirtualHosts(new String[] {"@web"});
+		result.setVirtualHosts(new String[] {"@" + WEB_CONNECTOR_NAME});
 		result.setInitParameter("configuration","deployment");
 		result.setContextPath(getPath(cmd));
-		if (!StringUtils.isEmpty(cmd.getOptionValue("queriesPerSecond")))
-			result.addFilter(createRateLimiterFilterHolder(cmd.getOptionValue("queriesPerSecond")),"/*",EnumSet.allOf(DispatcherType.class));
-		if (!StringUtils.isEmpty(cmd.getOptionValue("userQueriesPerSecond")))
-			result.addFilter(createUserRateLimiterFilterHolder(cmd.getOptionValue("userQueriesPerSecond")),"/*",EnumSet.allOf(DispatcherType.class));
-		if (cmd.hasOption("authentication"))
+		if (!StringUtils.isEmpty(cmd.getOptionValue(QUERIES_PER_SECOND_OPTION)))
+			result.addFilter(createRateLimiterFilterHolder(cmd.getOptionValue(QUERIES_PER_SECOND_OPTION)),"/*",EnumSet.allOf(DispatcherType.class));
+		if (!StringUtils.isEmpty(cmd.getOptionValue(USER_QUERIES_PER_SECOND_OPTION)))
+			result.addFilter(createUserRateLimiterFilterHolder(cmd.getOptionValue(USER_QUERIES_PER_SECOND_OPTION)),"/*",EnumSet.allOf(DispatcherType.class));
+		if (cmd.hasOption(AUTHENTICATION_OPTION))
 		{
-			if (!cmd.hasOption("clientAuthentication"))
+			if (!cmd.hasOption(CLIENT_AUTHENTICATION_OPTION))
 			{
 				println("Configuring Web Server basic authentication:");
 				val file = new File(REALM_FILE);
@@ -351,15 +394,15 @@ public class Start implements SystemInterface
 					createRealmFile(file);
 				result.setSecurityHandler(getSecurityHandler());
 			}
-			else if (cmd.hasOption("ssl") && cmd.hasOption("clientAuthentication"))
+			else if (cmd.hasOption(SSL_OPTION) && cmd.hasOption(CLIENT_AUTHENTICATION_OPTION))
 			{
-				result.addFilter(createClientCertificateManagerFilterHolder(cmd.getOptionValue("clientCertificateHeader")),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
+				result.addFilter(createClientCertificateManagerFilterHolder(cmd.getOptionValue(CLIENT_CERTIFICATE_HEADER_OPTION)),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
 				result.addFilter(createClientCertificateAuthenticationFilterHolder(cmd),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
 			}
 		}
-		if (cmd.hasOption("soap"))
-			result.addServlet(CXFServlet.class,"/service/*");
-		if (!cmd.hasOption("headless"))
+		if (cmd.hasOption(SOAP_OPTION))
+			result.addServlet(CXFServlet.class,SOAP_URL + "/*");
+		if (!cmd.hasOption(HEADLESS_OPTION))
 		{
 			val servletHolder = new ServletHolder(nl.clockwork.ebms.admin.web.ResourceServlet.class);
 			result.addServlet(servletHolder,"/css/*");
@@ -376,14 +419,14 @@ public class Start implements SystemInterface
 	protected FilterHolder createRateLimiterFilterHolder(String queriesPerSecond)
 	{
 		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.RateLimiterFilter.class); 
-		result.setInitParameter("queriesPerSecond",queriesPerSecond);
+		result.setInitParameter(QUERIES_PER_SECOND_OPTION,queriesPerSecond);
 		return result;
 	}
 
 	protected FilterHolder createUserRateLimiterFilterHolder(String queriesPerSecond)
 	{
 		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.RateLimiterFilter.class); 
-		result.setInitParameter("queriesPerSecond",queriesPerSecond);
+		result.setInitParameter(QUERIES_PER_SECOND_OPTION,queriesPerSecond);
 		return result;
 	}
 
@@ -398,16 +441,16 @@ public class Start implements SystemInterface
 	{
 		println("Configuring Web Server client certificate authentication:");
 		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.ClientCertificateAuthenticationFilter.class); 
-		val clientTrustStoreType = cmd.getOptionValue("clientTrustStoreType",DEFAULT_KEYSTORE_TYPE);
-		val clientTrustStorePath = cmd.getOptionValue("clientTrustStorePath");
-		val clientTrustStorePassword = cmd.getOptionValue("clientTrustStorePassword");
+		val clientTrustStoreType = cmd.getOptionValue(CLIENT_TRUST_STORE_TYPE_OPTION,DEFAULT_KEYSTORE_TYPE);
+		val clientTrustStorePath = cmd.getOptionValue(CLIENT_TRUST_STORE_PATH_OPTION);
+		val clientTrustStorePassword = cmd.getOptionValue(CLIENT_TRUST_STORE_PASSWORD_OPTION);
 		val trustStore = getResource(clientTrustStorePath);
 		if (trustStore != null && trustStore.exists())
 		{
 			println("Using clientTrustStore " + trustStore.getURI());
-			result.setInitParameter("trustStoreType",clientTrustStoreType);
-			result.setInitParameter("trustStorePath",clientTrustStorePath);
-			result.setInitParameter("trustStorePassword",clientTrustStorePassword);
+			result.setInitParameter(TRUST_STORE_TYPE_OPTION,clientTrustStoreType);
+			result.setInitParameter(TRUST_STORE_PATH_OPTION,clientTrustStorePath);
+			result.setInitParameter(TRUST_STORE_PASSWORD_OPTION,clientTrustStorePassword);
 			return result;
 		}
 		else
@@ -439,10 +482,10 @@ public class Start implements SystemInterface
 	protected ServletContextHandler createHealthContextHandler(CommandLine cmd, ContextLoaderListener contextLoaderListener) throws Exception
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		result.setVirtualHosts(new String[] {"@health"});
+		result.setVirtualHosts(new String[] {"@" + HEALTH_CONNECTOR_NAME});
 		result.setInitParameter("configuration","deployment");
-		result.setContextPath("/");
-		result.addServlet(HealthServlet.class,"/health/*");
+		result.setContextPath(DEFAULT_PATH);
+		result.addServlet(HealthServlet.class,HEALTH_URL + "/*");
 		return result;
 	}
 

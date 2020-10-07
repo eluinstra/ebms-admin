@@ -56,6 +56,8 @@ import nl.clockwork.ebms.server.servlet.EbMSServlet;
 @FieldDefaults(level = AccessLevel.PROTECTED)
 public class StartEmbedded extends Start
 {
+	private static final String HSQLDB_DIR = "hsqldb";
+
 	public static void main(String[] args) throws Exception
 	{
 		LogUtils.setLoggerClass(org.apache.cxf.common.logging.Slf4jLogger.class);
@@ -129,7 +131,7 @@ public class StartEmbedded extends Start
 	{
 		val result = super.createOptions();
 		result.addOption("hsqldb",false,"start hsqldb server");
-		result.addOption("hsqldbDir",true,"set hsqldb location [default: hsqldb]");
+		result.addOption("hsqldbDir",true,"set hsqldb location [default: " + HSQLDB_DIR + "]");
 		result.addOption("disableEbMSServer",false,"disable ebms server");
 		result.addOption("disableEbMSClient",false,"disable ebms client");
 		return result;
@@ -170,7 +172,7 @@ public class StartEmbedded extends Start
 	{
 		val options = new ArrayList<>();
 		options.add("-database.0");
-		options.add((cmd.hasOption("hsqldbDir") ? "file:" + cmd.getOptionValue("hsqldbDir") : "file:hsqldb") + "/" + jdbcURL.getDatabase());
+		options.add((cmd.hasOption("hsqldbDir") ? "file:" + cmd.getOptionValue("hsqldbDir") : "file:" + HSQLDB_DIR) + "/" + jdbcURL.getDatabase());
 		options.add("-dbname.0");
 		options.add(jdbcURL.getDatabase());
 		if (jdbcURL.getPort() != null)
