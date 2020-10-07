@@ -20,14 +20,14 @@ usage: StartEmbedded [-authentication] [-cipherSuites <arg>]
        <arg>] [-queriesPerSecond <arg>] [-soap] [-ssl]
        [-trustStorePassword <arg>] [-trustStorePath <arg>]
        [-trustStoreType <arg>] [-userQueriesPerSecond <arg>]
- -authentication                   use basic / client certificate authentication
+ -authentication                   use basic | client certificate authentication
  -cipherSuites <arg>               set ssl cipherSuites [default: <none>]
  -clientAuthentication             require ssl client authentication
  -clientCertificateHeader <arg>    set client certificate header [default: <none>]
  -clientTrustStorePassword <arg>   set client truststore password [default: <none>]
  -clientTrustStorePath <arg>       set client truststore path [default: <none>]
  -clientTrustStoreType <arg>       set client truststore type [default: PKCS12]
- -configDir <arg>                  set config directory [default: startup directory]
+ -configDir <arg>                  set config directory [default: <startup_directory>]
  -connectionLimit <arg>            set connection limit [default: <none>]
  -disableEbMSClient                disable ebms client
  -disableEbMSServer                disable ebms server
@@ -45,8 +45,8 @@ usage: StartEmbedded [-authentication] [-cipherSuites <arg>]
  -keyStorePassword <arg>           set keystore password [default: password]
  -keyStorePath <arg>               set keystore path [default: nl/clockwork/ebms/keystore.p12]
  -keyStoreType <arg>               set keystore type [default: PKCS12]
- -path <arg>                       set path [default: /ebms]
- -port <arg>                       set port [default: 8080/8443]
+ -path <arg>                       set path [default: /]
+ -port <arg>                       set port [default: <8080|8443>]
  -protocols <arg>                  set ssl protocols [default: <none>]
  -queriesPerSecond <arg>           set requests per second limit [default: <none>]
  -soap                             start soap service

@@ -123,7 +123,7 @@ EXEC sp_addrolemember [SqlJDBCXAUser], '<username>'
 
 #### Quartz
 
-When [`deliveryTaskHandler.type`]({{ site.baseurl }}/ebms-core/properties.html#deliverytaskhandler) is set to `JMS`or `QUARTZ_JMS` then set
+When [`deliveryTaskHandler.type`]({{ site.baseurl }}/ebms-core/properties.html#deliverytaskhandler) is set to `QUARTZ`or `QUARTZ_JMS` then set
 
 ```properties
 deliveryTaskHandler.quartz.jdbc.selectWithLockSQL=SELECT * FROM {0}LOCKS UPDLOCK WHERE LOCK_NAME = ?
@@ -208,4 +208,4 @@ Database migration through Flyway is enabled through the following [EbMS propert
 ebms.jdbc.update=true
 ```
 
-If you already have an existing database and want to use Flyway, then you first have to [initialize Flyway](/ebms-admin/database.html#initialize-flyway). Otherwise you can just enable the property.
+If you already have an existing database and want to use Flyway, then you first have to [initialize Flyway]({{ site.baseurl }}/ebms-admin/database.html#initialize-flyway). Otherwise you can just enable the property.
