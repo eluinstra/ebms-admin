@@ -159,7 +159,7 @@ public class MessageFilterPanel extends Panel
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
 					o.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
 					o.resetFromRoles();
 					o.resetToPartyIds(CPAUtils.getPartyIds(cpa));
@@ -193,7 +193,7 @@ public class MessageFilterPanel extends Panel
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
 					o.resetFromRoles(CPAUtils.getRoleNames(cpa,o.getFromParty().getPartyId()));
 					o.resetServices();
 					o.resetActions();
@@ -224,7 +224,7 @@ public class MessageFilterPanel extends Panel
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
 					o.resetServices(CPAUtils.getServiceNames(cpa,o.getFromParty().getRole()));
 					o.resetActions();
 					t.add(getFeedbackComponent());
@@ -254,7 +254,7 @@ public class MessageFilterPanel extends Panel
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
 					o.resetToRoles(CPAUtils.getRoleNames(cpa,o.getToParty().getPartyId()));
 					o.resetServices();
 					o.resetActions();
@@ -285,7 +285,7 @@ public class MessageFilterPanel extends Panel
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
 					o.resetServices(CPAUtils.getServiceNames(cpa,o.getToParty().getRole()));
 					o.resetActions();
 					t.add(getFeedbackComponent());
@@ -311,7 +311,7 @@ public class MessageFilterPanel extends Panel
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
 					o.resetActions(o.getFromParty() == null ? CPAUtils.getToActionNames(cpa,o.getToParty().getRole(),o.getService()) : CPAUtils.getFromActionNames(cpa,o.getFromParty().getRole(),o.getService()));
 					t.add(getFeedbackComponent());
 					t.add(getForm());

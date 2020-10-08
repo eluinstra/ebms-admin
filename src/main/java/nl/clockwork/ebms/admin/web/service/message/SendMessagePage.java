@@ -116,7 +116,7 @@ public class SendMessagePage extends BasePage
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
 					o.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
 					o.resetFromRoles(CPAUtils.getRoleNames(cpa));
 					o.resetServices();
@@ -145,7 +145,7 @@ public class SendMessagePage extends BasePage
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
 					o.resetFromRoles(CPAUtils.getRoleNames(cpa,o.getFromPartyId()));
 					o.resetServices(CPAUtils.getServiceNames(cpa,o.getFromRole()));
 					o.resetActions();
@@ -173,7 +173,7 @@ public class SendMessagePage extends BasePage
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
 					if (o.getFromPartyId() == null)
 						o.resetFromPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,o.getFromRole()));
 					o.resetServices(CPAUtils.getServiceNames(cpa,o.getFromRole()));
@@ -203,7 +203,7 @@ public class SendMessagePage extends BasePage
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaService.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
 					o.resetActions(CPAUtils.getFromActionNames(cpa,o.getFromRole(),o.getService()));
 					o.resetDataSources();
 				}
