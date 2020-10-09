@@ -76,6 +76,7 @@ public class StartEmbedded extends Start
 			setProperty("deliveryTaskHandler.start","false");
 		init(cmd);
 		server.setHandler(handlerCollection);
+		server.addBean(new CustomErrorHandler());
 		val properties = getProperties();
 		startHSQLDB(cmd,properties);
 		if (cmd.hasOption("jmx"))
