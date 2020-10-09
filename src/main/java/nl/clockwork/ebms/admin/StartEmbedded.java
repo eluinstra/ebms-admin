@@ -35,6 +35,8 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.common.logging.LogUtils;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.FilterHolder;
@@ -72,6 +74,7 @@ public class StartEmbedded extends Start
 		start.init(start.cmd);
 		
 		start.server.setHandler(start.handlerCollection);
+		start.server.addBean(new CustomErrorHandler());
 
 		start.properties = start.getProperties("nl/clockwork/ebms/admin/applicationConfig.embedded.xml");
 
@@ -213,7 +216,9 @@ public class StartEmbedded extends Start
 
 	private ServerConnector createEbMSHttpConnector(Map<String,String> properties)
 	{
-		ServerConnector result = new ServerConnector(this.server);
+		HttpConfiguration httpConfig = new HttpConfiguration();
+		httpConfig.setSendServerVersion(false);
+		ServerConnector result = new ServerConnector(this.server,new HttpConnectionFactory(httpConfig));
 		result.setHost(StringUtils.isEmpty(properties.get("ebms.host")) ? "0.0.0.0" : properties.get("ebms.host"));
 		result.setPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
 		result.setName("ebms");
@@ -269,7 +274,9 @@ public class StartEmbedded extends Start
 
 	private ServerConnector createEbMSHttpsConnector(Map<String,String> properties, SslContextFactory factory)
 	{
-		ServerConnector result = new ServerConnector(this.server,factory);
+		HttpConfiguration httpConfig = new HttpConfiguration();
+		httpConfig.setSendServerVersion(false);
+		ServerConnector result = new ServerConnector(this.server,factory,new HttpConnectionFactory(httpConfig));
 		result.setHost(StringUtils.isEmpty(properties.get("ebms.host")) ? "0.0.0.0" : properties.get("ebms.host"));
 		result.setPort(StringUtils.isEmpty(properties.get("ebms.port"))  ? 8888 : Integer.parseInt(properties.get("ebms.port")));
 		result.setName("ebms");
