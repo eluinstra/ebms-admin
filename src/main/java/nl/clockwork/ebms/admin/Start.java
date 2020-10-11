@@ -89,6 +89,7 @@ public class Start implements SystemInterface
 	private static final String CONNECTION_LIMIT_OPTION = "connectionLimit";
 	private static final String QUERIES_PER_SECOND_OPTION = "queriesPerSecond";
 	private static final String USER_QUERIES_PER_SECOND_OPTION = "userQueriesPerSecond";
+	private static final String AUDIT_LOGGING_OPTION = "auditLogging";
 	private static final String SSL_OPTION = "ssl";
 	private static final String PROTOCOLS_OPTION = "protocols";
 	private static final String CIPHER_SUITES_OPTION = "cipherSuites";
@@ -191,18 +192,19 @@ public class Start implements SystemInterface
 		result.addOption(CONNECTION_LIMIT_OPTION,true,"set connection limit [default: " + NONE + "]");
 		result.addOption(QUERIES_PER_SECOND_OPTION,true,"set requests per second limit [default: " + NONE + "]");
 		result.addOption(USER_QUERIES_PER_SECOND_OPTION,true,"set requests per user per secondlimit [default: " + NONE + "]");
-		result.addOption(SSL_OPTION,false,"use SSL");
+		result.addOption(AUDIT_LOGGING_OPTION,false,"enable audit logging");
+		result.addOption(SSL_OPTION,false,"enable SSL");
 		result.addOption(PROTOCOLS_OPTION,true,"set SSL Protocols [default: " + NONE + "]");
 		result.addOption(CIPHER_SUITES_OPTION,true,"set SSL CipherSuites [default: " + NONE + "]");
 		result.addOption(KEY_STORE_TYPE_OPTION,true,"set keystore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
 		result.addOption(KEY_STORE_PATH_OPTION,true,"set keystore path [default: " + DEFAULT_KEYSTORE_FILE + "]");
 		result.addOption(KEY_STORE_PASSWORD_OPTION,true,"set keystore password [default: " + DEFAULT_KEYSTORE_PASSWORD + "]");
-		result.addOption(CLIENT_AUTHENTICATION_OPTION,false,"require SSL client authentication");
+		result.addOption(CLIENT_AUTHENTICATION_OPTION,false,"enable SSL client authentication");
 		result.addOption(CLIENT_CERTIFICATE_HEADER_OPTION,true,"set client certificate header [default: " + NONE + "]");
 		result.addOption(TRUST_STORE_TYPE_OPTION,true,"set truststore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
 		result.addOption(TRUST_STORE_PATH_OPTION,true,"set truststore path [default: " + NONE + "]");
 		result.addOption(TRUST_STORE_PASSWORD_OPTION,true,"set truststore password [default: " + NONE + "]");
-		result.addOption(AUTHENTICATION_OPTION,false,"use basic | client certificate authentication");
+		result.addOption(AUTHENTICATION_OPTION,false,"enable basic | client certificate authentication");
 		result.addOption(CLIENT_TRUST_STORE_TYPE_OPTION,true,"set client truststore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
 		result.addOption(CLIENT_TRUST_STORE_PATH_OPTION,true,"set client truststore path [default: " + NONE + "]");
 		result.addOption(CLIENT_TRUST_STORE_PASSWORD_OPTION,true,"set client truststore password [default: " + NONE + "]");
@@ -378,6 +380,8 @@ public class Start implements SystemInterface
 		result.setVirtualHosts(new String[] {"@" + WEB_CONNECTOR_NAME});
 		result.setInitParameter("configuration","deployment");
 		result.setContextPath(getPath(cmd));
+		if (cmd.hasOption(AUDIT_LOGGING_OPTION))
+			result.addFilter(createRemoteAddressMDCFilterHolder(),"/*",EnumSet.allOf(DispatcherType.class));
 		if (!StringUtils.isEmpty(cmd.getOptionValue(QUERIES_PER_SECOND_OPTION)))
 			result.addFilter(createRateLimiterFilterHolder(cmd.getOptionValue(QUERIES_PER_SECOND_OPTION)),"/*",EnumSet.allOf(DispatcherType.class));
 		if (!StringUtils.isEmpty(cmd.getOptionValue(USER_QUERIES_PER_SECOND_OPTION)))
@@ -414,6 +418,11 @@ public class Start implements SystemInterface
 		result.setErrorHandler(createErrorHandler());
 		result.addEventListener(contextLoaderListener);
 		return result;
+	}
+
+	protected FilterHolder createRemoteAddressMDCFilterHolder()
+	{
+		return new FilterHolder(nl.clockwork.ebms.server.servlet.RemoteAddressMDCFilter.class);
 	}
 
 	protected FilterHolder createRateLimiterFilterHolder(String queriesPerSecond)

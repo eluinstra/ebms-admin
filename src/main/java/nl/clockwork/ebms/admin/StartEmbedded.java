@@ -52,6 +52,7 @@ import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.web.configuration.JdbcURL;
 import nl.clockwork.ebms.server.servlet.EbMSServlet;
+import nl.clockwork.ebms.util.LoggingUtils;
 
 @FieldDefaults(level = AccessLevel.PROTECTED)
 public class StartEmbedded extends Start
@@ -284,6 +285,8 @@ public class StartEmbedded extends Start
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		result.setVirtualHosts(new String[] {"@ebms"});
 		result.setContextPath("/");
+		if (LoggingUtils.Status.ENABLED.name().equals(properties.getProperty("logging.mdc")) && LoggingUtils.Status.ENABLED.name().equals(properties.getProperty("logging.mdc.audit")))
+			result.addFilter(createRemoteAddressMDCFilterHolder(),"/*",EnumSet.allOf(DispatcherType.class));
 		if (!StringUtils.isEmpty(properties.getProperty("ebms.queriesPerSecond")))
 			result.addFilter(createRateLimiterFilterHolder(properties.getProperty("ebms.queriesPerSecond")),"/*",EnumSet.allOf(DispatcherType.class));
 		if (!StringUtils.isEmpty(properties.getProperty("ebms.userQueriesPerSecond")))
