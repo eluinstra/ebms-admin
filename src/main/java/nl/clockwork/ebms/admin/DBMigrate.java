@@ -51,7 +51,8 @@ public class DBMigrate
 		VERSION_2_14("2.14","2.13.0"),
 		VERSION_2_15("2.15","2.15.0"),
 		VERSION_2_16("2.16","2.15.0"),
-		VERSION_2_17("2.17","2.17.0");
+		VERSION_2_17("2.17","2.17.0"),
+		VERSION_2_18("2.18","2.18.0");
 		
 		String ebmsVersion;
 		String baselineVersion;

@@ -25,10 +25,12 @@ import io.vavr.Function2;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.EbMSMessageStatus;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Utils
 {
 	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)

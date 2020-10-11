@@ -38,9 +38,12 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.val;
 import nl.clockwork.ebms.security.KeyStoreType;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Utils
 {
 	private static SSLEngine sslEngine;
