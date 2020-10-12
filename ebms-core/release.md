@@ -13,7 +13,6 @@ sort: 7
 - renamed EbMSMessageEvent to MessageEvent
 - renamed JMS SendTask queue from SEND to DELIVERY_TASK
 - renamed properties eventProcessor.* to deliveryTaskHandler.*
-- renamed property eventHandlerTask.executionInterval to taskHandler.task.executionInterval
 - renamed table ebms_event to send_task
 - renamed table ebms_event_log to send_log
 - renamed table ebms_message_event to ebms_event
