@@ -8,7 +8,6 @@ sort: 7
 
 - improved SOAP interface
 - added QuartzDeliveryTaskManager and QuartzJMSDeliveryTaskManager
-- added MDC logging
 - renamed EbMSEvent to DeliveryTask
 - renamed EbMSEventLog to DeliveryLog
 - renamed EbMSMessageEvent to MessageEvent
@@ -21,9 +20,9 @@ sort: 7
 
 ### [ebms-core-2.17.5.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.17.5/ebms-core-2.17.5.jar)
 
+- added MDC logging
 - improved XML parsing
 - improved error handling
-- fixed db2, h2, mssql, mysql/mariadb and oracle scripts and DAOs
 
 ### ebms-core-2.17.4.jar
 
