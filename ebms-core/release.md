@@ -4,6 +4,27 @@ sort: 7
 
 # Release Notes
 
+### [ebms-core-2.18.0.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.18.0/ebms-core-2.18.0.jar)
+
+- improved SOAP interface
+- added QuartzDeliveryTaskManager and QuartzJMSDeliveryTaskManager
+- added MDC logging
+- renamed EbMSEvent to DeliveryTask
+- renamed EbMSEventLog to DeliveryLog
+- renamed EbMSMessageEvent to MessageEvent
+- renamed JMS SendTask queue from SEND to DELIVERY_TASK
+- renamed properties eventProcessor.* to deliveryTaskHandler.*
+- renamed property eventHandlerTask.executionInterval to taskHandler.task.executionInterval
+- renamed table ebms_event to send_task
+- renamed table ebms_event_log to send_log
+- renamed table ebms_message_event to ebms_event
+
+### [ebms-core-2.17.5.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.17.5/ebms-core-2.17.5.jar)
+
+- improved XML parsing
+- improved error handling
+- fixed db2, h2, mssql, mysql/mariadb and oracle scripts and DAOs
+
 ### ebms-core-2.17.4.jar
 
 - implemented HealthServlet
@@ -93,6 +114,11 @@ sort: 7
 	- lots of other improvements
 - updated libraries
 - database updates and improved indices
+
+### [ebms-core-2.16.8.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.16.8/ebms-core-2.16.8.jar)
+
+- improved XML parsing
+- improved error handling
 
 ### ebms-core-2.16.7.jar
 

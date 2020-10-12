@@ -4,6 +4,17 @@ sort: 9
 
 # Release Notes
 
+### [ebms-admin-2.18.0.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.18.0/ebms-admin-2.18.0.jar)
+
+- upgrade to [ebms-core-2.18.0.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2180jar)
+- added RemoteAddressMDCFilter
+
+### [ebms-admin-2.17.5.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.17.5/ebms-admin-2.17.5.jar)
+
+- upgrade to [ebms-core-2.17.5.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2175jar)
+- fixed DBClean
+- added custom error handler
+
 ### ebms-admin-2.17.4.jar
 
 - upgrade to [ebms-core-2.17.4.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2174jar)
@@ -61,6 +72,11 @@ sort: 9
 - added database java command line tools
 	- `DBMigrate` (`java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.DBMigrate -h`)
 	- `DBClean` (`java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.DBClean -h`)
+
+### [ebms-admin-2.16.8.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.16.8/ebms-admin-2.16.8.jar)
+
+- upgrade to [ebms-core-2.16.8.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2168jar)
+- added custom error handler
 
 ### ebms-admin-2.16.7.jar
 
