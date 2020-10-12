@@ -12,7 +12,6 @@ sort: 9
 ### [ebms-admin-2.17.5.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.17.5/ebms-admin-2.17.5.jar)
 
 - upgrade to [ebms-core-2.17.5.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2175jar)
-- fixed DBClean
 - added custom error handler
 
 ### ebms-admin-2.17.4.jar
