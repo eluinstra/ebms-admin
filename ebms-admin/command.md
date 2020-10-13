@@ -8,8 +8,8 @@ sort: 4
 
 ```sh
 java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -h
-usage: StartEmbedded [-authentication] [-cipherSuites <arg>]
-       [-clientAuthentication] [-clientCertificateHeader <arg>]
+usage: StartEmbedded [-auditLogging] [-authentication] [-cipherSuites
+       <arg>] [-clientAuthentication] [-clientCertificateHeader <arg>]
        [-clientTrustStorePassword <arg>] [-clientTrustStorePath <arg>]
        [-clientTrustStoreType <arg>] [-configDir <arg>] [-connectionLimit
        <arg>] [-disableEbMSClient] [-disableEbMSServer] [-h] [-headless]
@@ -20,9 +20,10 @@ usage: StartEmbedded [-authentication] [-cipherSuites <arg>]
        <arg>] [-queriesPerSecond <arg>] [-soap] [-ssl]
        [-trustStorePassword <arg>] [-trustStorePath <arg>]
        [-trustStoreType <arg>] [-userQueriesPerSecond <arg>]
- -authentication                   use basic | client certificate authentication
- -cipherSuites <arg>               set ssl cipherSuites [default: <none>]
- -clientAuthentication             require ssl client authentication
+ -auditLogging                     enable audit logging
+ -authentication                   enable basic | client certificate authentication
+ -cipherSuites <arg>               set SSL CipherSuites [default: <none>]
+ -clientAuthentication             enable SSL client authentication
  -clientCertificateHeader <arg>    set client certificate header [default: <none>]
  -clientTrustStorePassword <arg>   set client truststore password [default: <none>]
  -clientTrustStorePath <arg>       set client truststore path [default: <none>]
@@ -38,23 +39,23 @@ usage: StartEmbedded [-authentication] [-cipherSuites <arg>]
  -host <arg>                       set host [default: 0.0.0.0]
  -hsqldb                           start hsqldb server
  -hsqldbDir <arg>                  set hsqldb location [default: hsqldb]
- -jmx                              start jmx server
- -jmxAccessFile <arg>              set jmx access file [default: none]
- -jmxPasswordFile <arg>            set jmx password file [default: none]
- -jmxPort <arg>                    set jmx port [default: 1999]
+ -jmx                              start JMX server
+ -jmxAccessFile <arg>              set JMX access file [default: <none>]
+ -jmxPasswordFile <arg>            set JMX password file [default: <none>]
+ -jmxPort <arg>                    set JMX port [default: 1999]
  -keyStorePassword <arg>           set keystore password [default: password]
  -keyStorePath <arg>               set keystore path [default: nl/clockwork/ebms/keystore.p12]
  -keyStoreType <arg>               set keystore type [default: PKCS12]
  -path <arg>                       set path [default: /]
  -port <arg>                       set port [default: <8080|8443>]
- -protocols <arg>                  set ssl protocols [default: <none>]
- -queriesPerSecond <arg>           set requests per second limit [default: <none>]
- -soap                             start soap service
- -ssl                              use ssl
+ -protocols <arg>                  set SSL Protocols [default: <none>]
+ -queriesPerSecond <arg>           set max requests per second [default: <none>]
+ -soap                             start SOAP service
+ -ssl                              enable SSL
  -trustStorePassword <arg>         set truststore password [default: <none>]
  -trustStorePath <arg>             set truststore path [default: <none>]
  -trustStoreType <arg>             set truststore type [default: PKCS12]
- -userQueriesPerSecond <arg>       set requests per user per secondlimit [default: <none>]
+ -userQueriesPerSecond <arg>       set max requests per user per second [default: <none>]
 ```
 
 ### Start with the embedded HSQLDB server
@@ -71,12 +72,16 @@ java -cp postgresql-42.2.14.jar:ebms-admin-{{ site.ebms.core.version }}.jar nl.c
 
 ### Start on port 8000
 
-Start on port 8000 (instead of default port 8080)
-
 Start Web/SOAP interface on port `8000` (instead of `8080`)
 
 ```sh
 java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -port 8000
+```
+
+### Start using IPv4 only sockets
+
+```sh
+java -Djava.net.preferIPv4Stack=true -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded
 ```
 
 ### Start with SOAP interface

@@ -4,7 +4,7 @@ sort: 1
 
 # Introduction
 
-This library implements the [EbMS 2.0 specification](http://www.ebxml.org/specs/ebMS2.pdf).
+ebms-core is a Java implementation of the [EbMS 2.0 specification](http://www.ebxml.org/specs/ebMS2.pdf).
 
 ### Implemented
 
