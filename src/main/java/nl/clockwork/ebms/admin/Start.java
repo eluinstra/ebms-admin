@@ -78,13 +78,13 @@ import nl.clockwork.ebms.server.servlet.HealthServlet;
 @RequiredArgsConstructor
 public class Start implements SystemInterface
 {
-	private static final String HELP_OPTION = "h";
+	protected static final String HELP_OPTION = "h";
 	private static final String HOST_OPTION = "host";
 	private static final String PORT_OPTION = "port";
 	private static final String PATH_OPTION = "path";
-	private static final String SOAP_OPTION = "soap";
-	private static final String HEADLESS_OPTION = "headless";
-	private static final String HEALTH_OPTION = "health";
+	protected static final String SOAP_OPTION = "soap";
+	protected static final String HEADLESS_OPTION = "headless";
+	protected static final String HEALTH_OPTION = "health";
 	private static final String HEALTH_PORT_OPTION = "healthPort";
 	private static final String CONNECTION_LIMIT_OPTION = "connectionLimit";
 	private static final String QUERIES_PER_SECOND_OPTION = "queriesPerSecond";
@@ -106,27 +106,27 @@ public class Start implements SystemInterface
 	private static final String CLIENT_TRUST_STORE_PATH_OPTION = "clientTrustStorePath";
 	private static final String CLIENT_TRUST_STORE_PASSWORD_OPTION = "clientTrustStorePassword";
 	private static final String CONFIG_DIR_OPTION = "configDir";
-	private static final String JMX_OPTION = "jmx";
+	protected static final String JMX_OPTION = "jmx";
 	private static final String JMX_PORT_OPTION = "jmxPort";
 	private static final String JMX_ACCESS_FILE_OPTION = "jmxAccessFile";
 	private static final String JMX_PASSWORD_FILE_OPTION = "jmxPasswordFile";
-	private static final String DEAULT_HOST = "0.0.0.0";
+	protected static final String DEFAULT_HOST = "0.0.0.0";
 	private static final String DEFAULT_PORT = "8080";
 	private static final String DEFAULT_SSL_PORT = "8443";
 	private static final String DEFAULT_PATH = "/";
 	private static final String DEFAULT_HEALTH_PORT = "8008";
-	protected static final String DEFAULT_JMS_PORT = "1999";
-	protected static final String DEFAULT_KEYSTORE_TYPE = KeyStoreType.PKCS12.name();
-	protected static final String DEFAULT_KEYSTORE_FILE = "nl/clockwork/ebms/keystore.p12";
-	protected static final String DEFAULT_KEYSTORE_PASSWORD = "password";
-	protected static final String DEFAULT_CONFIG_DIR = "";
+	private static final String DEFAULT_JMS_PORT = "1999";
+	private static final String DEFAULT_KEYSTORE_TYPE = KeyStoreType.PKCS12.name();
+	private static final String DEFAULT_KEYSTORE_FILE = "nl/clockwork/ebms/keystore.p12";
+	private static final String DEFAULT_KEYSTORE_PASSWORD = "password";
+	private static final String DEFAULT_CONFIG_DIR = "";
 	private static final String WEB_CONNECTOR_NAME = "web";
 	private static final String HEALTH_CONNECTOR_NAME = "health";
 	private static final String SOAP_URL = "/service";
 	private static final String HEALTH_URL = "/health";
 	private static final String NONE = "<none>";
-	protected static final String REALM = "Realm";
-	protected static final String REALM_FILE = "realm.properties";
+	private static final String REALM = "Realm";
+	private static final String REALM_FILE = "realm.properties";
 	Server server = new Server();
 	ContextHandlerCollection handlerCollection = new ContextHandlerCollection();
 	TextIO textIO = TextIoFactory.getTextIO();
@@ -182,7 +182,7 @@ public class Start implements SystemInterface
 	{
 		val result = new Options();
 		result.addOption(HELP_OPTION,false,"print this message");
-		result.addOption(HOST_OPTION,true,"set host [default: " + DEAULT_HOST + "]");
+		result.addOption(HOST_OPTION,true,"set host [default: " + DEFAULT_HOST + "]");
 		result.addOption(PORT_OPTION,true,"set port [default: <" + DEFAULT_PORT + "|" + DEFAULT_SSL_PORT + ">]");
 		result.addOption(PATH_OPTION,true,"set path [default: " + DEFAULT_PATH + "]");
 		result.addOption(SOAP_OPTION,false,"start SOAP service");
@@ -190,8 +190,8 @@ public class Start implements SystemInterface
 		result.addOption(HEALTH_OPTION,false,"start health service");
 		result.addOption(HEALTH_PORT_OPTION,true,"set health service port [default: " + DEFAULT_HEALTH_PORT + "]");
 		result.addOption(CONNECTION_LIMIT_OPTION,true,"set connection limit [default: " + NONE + "]");
-		result.addOption(QUERIES_PER_SECOND_OPTION,true,"set requests per second limit [default: " + NONE + "]");
-		result.addOption(USER_QUERIES_PER_SECOND_OPTION,true,"set requests per user per secondlimit [default: " + NONE + "]");
+		result.addOption(QUERIES_PER_SECOND_OPTION,true,"set max requests per second [default: " + NONE + "]");
+		result.addOption(USER_QUERIES_PER_SECOND_OPTION,true,"set max requests per user per second [default: " + NONE + "]");
 		result.addOption(AUDIT_LOGGING_OPTION,false,"enable audit logging");
 		result.addOption(SSL_OPTION,false,"enable SSL");
 		result.addOption(PROTOCOLS_OPTION,true,"set SSL Protocols [default: " + NONE + "]");
@@ -249,7 +249,7 @@ public class Start implements SystemInterface
 	private ServerConnector createHttpConnector(CommandLine cmd)
 	{
 		val result = new ServerConnector(this.server);
-		result.setHost(cmd.getOptionValue(HOST_OPTION,DEAULT_HOST));
+		result.setHost(cmd.getOptionValue(HOST_OPTION,DEFAULT_HOST));
 		result.setPort(Integer.parseInt(cmd.getOptionValue(PORT_OPTION,DEFAULT_PORT)));
 		result.setName(WEB_CONNECTOR_NAME);
 		if (!cmd.hasOption(HEADLESS_OPTION))
@@ -268,7 +268,7 @@ public class Start implements SystemInterface
 	private ServerConnector createHealthConnector(CommandLine cmd, Server server)
 	{
 		val result = new ServerConnector(server);
-		result.setHost(cmd.getOptionValue(HOST_OPTION,DEAULT_HOST));
+		result.setHost(cmd.getOptionValue(HOST_OPTION,DEFAULT_HOST));
 		result.setPort(Integer.parseInt(cmd.getOptionValue(HEALTH_PORT_OPTION,DEFAULT_HEALTH_PORT)));
 		result.setName(HEALTH_CONNECTOR_NAME);
 		println("Health Service configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + HEALTH_URL);
@@ -335,7 +335,7 @@ public class Start implements SystemInterface
 	private ServerConnector createHttpsConnector(CommandLine cmd, SslContextFactory.Server sslContectFactory)
 	{
 		val connector = new ServerConnector(this.server,sslContectFactory);
-		connector.setHost(cmd.getOptionValue(HOST_OPTION,DEAULT_HOST));
+		connector.setHost(cmd.getOptionValue(HOST_OPTION,DEFAULT_HOST));
 		connector.setPort(Integer.parseInt(cmd.getOptionValue(PORT_OPTION,DEFAULT_SSL_PORT)));
 		connector.setName(WEB_CONNECTOR_NAME);
 		if (!cmd.hasOption(HEADLESS_OPTION))
