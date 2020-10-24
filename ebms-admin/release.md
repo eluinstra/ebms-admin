@@ -4,6 +4,10 @@ sort: 9
 
 # Release Notes
 
+```note
+somehow ebms-admin-2.18.0 is performing very poor, so it is advised to use 2.17.x instead.
+```
+
 ### [ebms-admin-2.18.0.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.18.0/ebms-admin-2.18.0.jar)
 
 - upgrade to [ebms-core-2.18.0.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2180jar)
