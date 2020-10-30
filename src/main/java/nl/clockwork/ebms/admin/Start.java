@@ -148,6 +148,7 @@ public class Start implements SystemInterface
 		result.addOption("connectionLimit",true,"set connection limit [default: <none>]");
 		result.addOption("queriesPerSecond",true,"set requests per second limit [default: <none>]");
 		result.addOption("userQueriesPerSecond",true,"set requests per user per secondlimit [default: <none>]");
+		result.addOption("auditLogging",false,"enable audit logging");
 		result.addOption("ssl",false,"use ssl");
 		result.addOption("protocols",true,"set ssl protocols [default: <none>]");
 		result.addOption("cipherSuites",true,"set ssl cipherSuites [default: <none>]");
@@ -335,6 +336,8 @@ public class Start implements SystemInterface
 		result.setVirtualHosts(new String[] {"@web"});
 		result.setInitParameter("configuration","deployment");
 		result.setContextPath(getPath(cmd));
+		if (cmd.hasOption("auditLogging"))
+			result.addFilter(createRemoteAddressMDCFilterHolder(),"/*",EnumSet.allOf(DispatcherType.class));
 		if (!StringUtils.isEmpty(cmd.getOptionValue("queriesPerSecond")))
 			result.addFilter(createRateLimiterFilterHolder(cmd.getOptionValue("queriesPerSecond")),"/*",EnumSet.allOf(DispatcherType.class));
 		if (!StringUtils.isEmpty(cmd.getOptionValue("userQueriesPerSecond")))
@@ -371,6 +374,11 @@ public class Start implements SystemInterface
 		result.setErrorHandler(createErrorHandler());
 		result.addEventListener(contextLoaderListener);
 		return result;
+	}
+
+	protected FilterHolder createRemoteAddressMDCFilterHolder()
+	{
+		return new FilterHolder(nl.clockwork.ebms.server.servlet.RemoteAddressMDCFilter.class);
 	}
 
 	protected FilterHolder createRateLimiterFilterHolder(String queriesPerSecond)
