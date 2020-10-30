@@ -22,8 +22,6 @@ See [here]({{ site.baseurl }}{% link ebms-admin/examples.md %}) for different de
 ### Behind a reverse proxy
 {: #reverse-proxy}
 
-See the [URLMapping Service]({{ site.baseurl }}/ebms-core/api.html#urlmappingservice) for overriding the CPA's endpoint URL to point to the Reverse Proxy.
-
 #### Scenario 1
 
 ![EbMS Basic Deployment Scenario - Behind a reverse proxy - Scenario 1]({{ site.baseurl }}/assets/images/ebms-rproxy1.svg)
@@ -35,6 +33,8 @@ The reverse proxy is only used for incoming traffic.
 ![EbMS Basic Deployment Scenario - Behind a reverse proxy - Scenario 2]({{ site.baseurl }}/assets/images/ebms-rproxy2.svg)
 
 The reverse proxy is used for both incoming and outgoing traffic.
+
+See the [URLMapping Service]({{ site.baseurl }}/ebms-core/api.html#urlmappingservice) for overriding the CPA's endpoint URL to point to the Reverse Proxy.
 
 ### Using a forward proxy
 {: #forward-proxy}
