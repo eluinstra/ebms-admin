@@ -11,7 +11,11 @@ somehow ebms-admin-2.18.0 is performing very poor, so it is advised to use 2.17.
 ### [ebms-admin-2.18.0.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.18.0/ebms-admin-2.18.0.jar)
 
 - upgrade to [ebms-core-2.18.0.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2180jar)
-- added RemoteAddressMDCFilter
+
+### [ebms-admin-2.17.6.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.17.6/ebms-admin-2.17.6.jar)
+
+- upgrade to [ebms-core-2.17.6.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2176jar)
+- added `RemoteAddressMDCFilter`
 
 ### [ebms-admin-2.17.5.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.17.5/ebms-admin-2.17.5.jar)
 
@@ -21,7 +25,7 @@ somehow ebms-admin-2.18.0 is performing very poor, so it is advised to use 2.17.
 ### ebms-admin-2.17.4.jar
 
 - upgrade to [ebms-core-2.17.4.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2174jar)
-- fixed DBClean
+- fixed `DBClean`
 
 ### ebms-admin-2.17.3.jar
 

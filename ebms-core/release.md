@@ -17,6 +17,14 @@ sort: 7
 - renamed table ebms_event_log to send_log
 - renamed table ebms_message_event to ebms_event
 
+### [ebms-core-2.17.6.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.17.6/ebms-core-2.17.6.jar)
+
+- bugfix: `NullPointerException` occurs when an attachment has no name
+- added property `http.readTimeout`
+- added `RemoteAddressMDCFilter`
+- improved XSD validation
+- improved error handling
+
 ### [ebms-core-2.17.5.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.17.5/ebms-core-2.17.5.jar)
 
 - added MDC logging
@@ -25,7 +33,7 @@ sort: 7
 
 ### ebms-core-2.17.4.jar
 
-- implemented HealthServlet
+- implemented `HealthServlet`
 - fixed DB2 and Oracle XA configuration
 - fixed H2, MSSQL DAOs
 - fixed DB2, H2, MSSQL, MySQL/MariaDB and Oracle flyway scripts
