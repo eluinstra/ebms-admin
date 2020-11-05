@@ -64,19 +64,19 @@ public class WebConfig
 	@Bean(name = "urlMappingService")
 	public Object urlMappingClientProxy()
 	{
-		return proxyFactoryBean(CPAService.class,serviceUrl + "/cpa").create();
+		return proxyFactoryBean(CPAService.class,serviceUrl + "/urlMapping").create();
 	}
 
 	@Bean(name = "certificateService")
 	public Object certificateClientProxy()
 	{
-		return proxyFactoryBean(CPAService.class,serviceUrl + "/cpa").create();
+		return proxyFactoryBean(CPAService.class,serviceUrl + "/certificateMapping").create();
 	}
 
 	@Bean(name = "ebMSMessageService")
 	public Object ebMSMessageClientProxy()
 	{
-		return proxyFactoryBean(CPAService.class,serviceUrl + "/cpa").create();
+		return proxyFactoryBean(CPAService.class,serviceUrl + "/ebms").create();
 	}
 
 	@Bean(name = "ebMSMessageServiceMTOM")
@@ -129,7 +129,7 @@ public class WebConfig
 	{
 		val result = new JaxWsProxyFactoryBean();
 		result.setServiceClass(clazz);
-		result.setAddress(serviceUrl + "/cpa");
+		result.setAddress(url);
 		return result;
 	}
 }
