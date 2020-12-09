@@ -35,8 +35,11 @@ import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.event.listener.EventListenerConfig.EventListenerType;
+import nl.clockwork.ebms.service.EbMSMessageService;
 import nl.clockwork.ebms.service.EbMSMessageServiceMTOM;
 import nl.clockwork.ebms.service.cpa.CPAService;
+import nl.clockwork.ebms.service.cpa.certificate.CertificateMappingService;
+import nl.clockwork.ebms.service.cpa.url.URLMappingService;
 
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -64,19 +67,19 @@ public class WebConfig
 	@Bean(name = "urlMappingService")
 	public Object urlMappingClientProxy()
 	{
-		return proxyFactoryBean(CPAService.class,serviceUrl + "/urlMapping").create();
+		return proxyFactoryBean(URLMappingService.class,serviceUrl + "/urlMapping").create();
 	}
 
 	@Bean(name = "certificateService")
 	public Object certificateClientProxy()
 	{
-		return proxyFactoryBean(CPAService.class,serviceUrl + "/certificateMapping").create();
+		return proxyFactoryBean(CertificateMappingService.class,serviceUrl + "/certificateMapping").create();
 	}
 
 	@Bean(name = "ebMSMessageService")
 	public Object ebMSMessageClientProxy()
 	{
-		return proxyFactoryBean(CPAService.class,serviceUrl + "/ebms").create();
+		return proxyFactoryBean(EbMSMessageService.class,serviceUrl + "/ebms").create();
 	}
 
 	@Bean(name = "ebMSMessageServiceMTOM")
