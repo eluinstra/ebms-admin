@@ -64,7 +64,7 @@
 		<jdk.version>1.8</jdk.version>
 		<junit.jupiter.version>5.7.0</junit.jupiter.version>
 		<wicket.version>8.9.0</wicket.version>
-		<jetty.version>9.4.33.v20201020</jetty.version>
+		<jetty.version>9.4.35.v20201120</jetty.version>
 		<spring.version>5.2.9.RELEASE</spring.version>
 		<cxf.version>3.4.0</cxf.version>
 		<activemq.version>5.16.0</activemq.version>
