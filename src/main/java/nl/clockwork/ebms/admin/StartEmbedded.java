@@ -47,6 +47,8 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
+import com.microsoft.applicationinsights.web.internal.ApplicationInsightsServletContextListener;
+
 import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
@@ -283,6 +285,11 @@ public class StartEmbedded extends Start
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		result.setVirtualHosts(new String[] {"@ebms"});
 		result.setContextPath("/");
+		if ("true".equals(properties.getProperty("ebms.applicationInsights")))
+		{
+			result.addFilter(createWebRequestTrackingFilterHolder(),"/*",EnumSet.allOf(DispatcherType.class));
+			result.addEventListener(new ApplicationInsightsServletContextListener());
+		}
 		if (LoggingUtils.Status.ENABLED.name().equals(properties.getProperty("logging.mdc")) && LoggingUtils.Status.ENABLED.name().equals(properties.getProperty("logging.mdc.audit")))
 			result.addFilter(createRemoteAddressMDCFilterHolder(),"/*",EnumSet.allOf(DispatcherType.class));
 		if (!StringUtils.isEmpty(properties.getProperty("ebms.queriesPerSecond")))

@@ -66,6 +66,9 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
+import com.microsoft.applicationinsights.web.internal.ApplicationInsightsServletContextListener;
+import com.microsoft.applicationinsights.web.internal.WebRequestTrackingFilter;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -150,6 +153,7 @@ public class Start implements SystemInterface
 		result.addOption("queriesPerSecond",true,"set requests per second limit [default: <none>]");
 		result.addOption("userQueriesPerSecond",true,"set requests per user per secondlimit [default: <none>]");
 		result.addOption("auditLogging",false,"enable audit logging");
+		result.addOption("applicationInsights",false,"enable applicationInsights");
 		result.addOption("ssl",false,"use ssl");
 		result.addOption("protocols",true,"set ssl protocols [default: <none>]");
 		result.addOption("cipherSuites",true,"set ssl cipherSuites [default: <none>]");
@@ -337,6 +341,11 @@ public class Start implements SystemInterface
 		result.setVirtualHosts(new String[] {"@web"});
 		result.setInitParameter("configuration","deployment");
 		result.setContextPath(getPath(cmd));
+		if (cmd.hasOption("applicationInsights"))
+		{
+			result.addFilter(createWebRequestTrackingFilterHolder(),"/*",EnumSet.allOf(DispatcherType.class));
+			result.addEventListener(new ApplicationInsightsServletContextListener());
+		}
 		if (cmd.hasOption("auditLogging"))
 			result.addFilter(createRemoteAddressMDCFilterHolder(),"/*",EnumSet.allOf(DispatcherType.class));
 		if (!StringUtils.isEmpty(cmd.getOptionValue("queriesPerSecond")))
@@ -375,6 +384,11 @@ public class Start implements SystemInterface
 		result.setErrorHandler(createErrorHandler());
 		result.addEventListener(contextLoaderListener);
 		return result;
+	}
+
+	protected FilterHolder createWebRequestTrackingFilterHolder()
+	{
+		return new FilterHolder(WebRequestTrackingFilter.class);
 	}
 
 	protected FilterHolder createRemoteAddressMDCFilterHolder()
