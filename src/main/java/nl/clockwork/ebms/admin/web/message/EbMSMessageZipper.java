@@ -47,11 +47,12 @@ public class EbMSMessageZipper
 
 	private void writeMessageToZip(EbMSMessage message, OutputStream out) throws IOException
 	{
-		try (val o = new ZipOutputStream(out))
+		try (val zip = new ZipOutputStream(out))
 		{
-			addEntry(o,"message.xml",new ByteArrayInputStream(message.getContent().getBytes()));
+			addEntry(zip,"message.xml",new ByteArrayInputStream(message.getContent().getBytes()));
 	    for (EbMSAttachment a : message.getAttachments())
-				addEntry(o,"attachments/" + (StringUtils.isEmpty(a.getName()) ? a.getContentId() + Utils.getFileExtension(a.getContentType()) : a.getName()),a.getContent().getInputStream());
+				addEntry(zip,"attachments/" + (StringUtils.isEmpty(a.getName()) ? a.getContentId() + Utils.getFileExtension(a.getContentType()) : a.getName()),a.getContent().getInputStream());
+			zip.finish();
 		}
 	}
 

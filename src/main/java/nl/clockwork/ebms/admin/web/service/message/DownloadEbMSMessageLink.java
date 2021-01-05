@@ -87,6 +87,7 @@ public class DownloadEbMSMessageLink extends Link<Message>
 			zip.write(dataSource.getContent());
 			zip.closeEntry();
 		}
+		zip.finish();
 	}
 
 	private ResourceStreamRequestHandler createRequestHandler(Message messageContent, IResourceStream resourceStream)

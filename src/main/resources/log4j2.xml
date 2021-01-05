@@ -68,8 +68,6 @@
 
 		<AsyncLogger name="org.springframework.jdbc" level="WARN" />
 
-		<AsyncLogger name="com.mchange.v2" level="WARN" />
-
 	</Loggers>
 
 </Configuration>
