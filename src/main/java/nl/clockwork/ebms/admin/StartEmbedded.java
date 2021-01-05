@@ -105,14 +105,14 @@ public class StartEmbedded extends Start
 				try
 				{
 					server.start();
+					println("Server started.");
+					server.join();
 				}
 				catch (Exception e)
 				{
-					server.stop();
+					e.printStackTrace();
 					exit(1);
 				}
-				println("Server started.");
-				server.join();
 			}
 		else
 			try (val context = new AnnotationConfigApplicationContext())

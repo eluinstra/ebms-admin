@@ -123,14 +123,15 @@ public class Start implements SystemInterface
 			try
 			{
 				server.start();
+				println("Server started.");
+				server.join();
 			}
 			catch (Exception e)
 			{
 				server.stop();
+				context.close();
 				exit(1);
 			}
-			println("Server started.");
-			server.join();
 		}
 	}
 
