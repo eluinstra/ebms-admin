@@ -51,6 +51,7 @@ import nl.clockwork.ebms.validation.ValidationConfig;
 @Configuration
 @Import({
 		AdminDAOConfig.class,
+		nl.clockwork.ebms.security.azure.KeyStoreConfig.class,
 		CacheConfig.class,
 		ClientConfig.class,
 		CommonConfig.class,
