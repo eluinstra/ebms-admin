@@ -162,8 +162,12 @@ public class Start implements SystemInterface
 		result.addOption("keyStoreType",true,"set keystore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
 		result.addOption("keyStorePath",true,"set keystore path [default: " + DEFAULT_KEYSTORE_FILE + "]");
 		result.addOption("keyStorePassword",true,"set keystore password [default: " + DEFAULT_KEYSTORE_PASSWORD + "]");
-		result.addOption("keyStoreUri",true,"set keystore uri [default: <none>]");
-		result.addOption("keyStoreManagedIdentity",true,"set keystore managed identity [default: <none>]");
+
+		result.addOption("keyvaultUri",true,"set keystore uri [default: <none>]");
+		result.addOption("keyvaultTennantId",true,"set keystore tennant identity [default: <none>]");
+		result.addOption("keyvaultClientId",true,"set keyvault client id [default: <none>]");
+		result.addOption("keyvaultClientSecret",true,"set keyvault client secret [default: <none>]");
+
 		result.addOption("clientAuthentication",false,"require ssl client authentication");
 		result.addOption("clientCertificateHeader",true,"set client certificate header [default: <none>]");
 		result.addOption("trustStoreType",true,"set truststore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
@@ -245,9 +249,11 @@ public class Start implements SystemInterface
 		val result = new SslContextFactory.Server();
 		EbMSKeyStore ebMSKeyStore = cmd.getOptionValue("keyStoresType","").equals("AZURE")
 				? EbMSKeyStore.of(
-						cmd.getOptionValue("keyStoreUri"),
-						cmd.getOptionValue("keyStoreManagedIdentity"),
-						cmd.getOptionValue("keyStorePassword",DEFAULT_KEYSTORE_PASSWORD))
+						cmd.getOptionValue("keyvaultUri"),
+						cmd.getOptionValue("keyvaultTennantId"),
+						cmd.getOptionValue("keyvaultClientId"),
+						cmd.getOptionValue("keyvaultClientSecret")
+						)
 				: EbMSKeyStore.of(
 						KeyStoreType.valueOf(cmd.getOptionValue("keyStoreType",DEFAULT_KEYSTORE_TYPE)),
 						cmd.getOptionValue("keyStorePath",DEFAULT_KEYSTORE_FILE),

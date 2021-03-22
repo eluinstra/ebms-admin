@@ -54,6 +54,8 @@ public class PropertySourcesPlaceholderConfigurer extends org.springframework.co
 				.map(e -> System.getenv((String)e.getKey()) == null ? e : new AbstractMap.SimpleEntry<String,String>((String)e.getKey(),System.getenv((String)e.getKey())))
 				.map(e -> System.getenv(((String)e.getKey()).replaceAll("\\.","_")) == null ? e : new AbstractMap.SimpleEntry<String,String>((String)e.getKey(),System.getenv(((String)e.getKey()).replaceAll("\\.","_"))))
 				.collect(Collectors.toMap(e -> (String)e.getKey(), e -> (String)e.getValue())));
+		
+		result.store(System.out, "DUMP");
 		return result;
 	}
 }

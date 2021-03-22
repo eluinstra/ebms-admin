@@ -64,16 +64,16 @@ public class EbMSKeyStore
 		return keyStores.get(path);
 	}
 
-	public static EbMSKeyStore of(@NonNull String uri, @NonNull String managedIdentity, String password) throws GeneralSecurityException, IOException
+	public static EbMSKeyStore of(@NonNull String keyvaultURI, @NonNull String tennantID, @NonNull String clientID, @NonNull String clientSecret) throws GeneralSecurityException, IOException
 	{
-		return of(uri,managedIdentity,password,null);
+		return of(keyvaultURI,tennantID,clientID,clientSecret,null);
 	}
 
-	public static EbMSKeyStore of(@NonNull String uri, @NonNull String managedIdentity, String password, String defaultAlias) throws GeneralSecurityException, IOException
+	public static EbMSKeyStore of(@NonNull String keyvaultURI, @NonNull String tennantID, @NonNull String clientID, @NonNull String clientSecret, String defaultAlias) throws GeneralSecurityException, IOException
 	{
-		if (!keyStores.containsKey(uri))
-			keyStores.put(uri,new EbMSKeyStore(uri,nl.clockwork.ebms.security.azure.KeyStoreUtils.loadKeyStore(uri,managedIdentity),password,defaultAlias));
-		return keyStores.get(uri);
+		if (!keyStores.containsKey(keyvaultURI))
+			keyStores.put(keyvaultURI,new EbMSKeyStore("azure",nl.clockwork.ebms.security.azure.KeyStoreUtils.loadKeyStore(keyvaultURI, tennantID, clientID, clientSecret),"",defaultAlias));
+		return keyStores.get(keyvaultURI);
 	}
 
 	public Certificate getCertificate(String alias) throws KeyStoreException

@@ -225,9 +225,10 @@ public class StartEmbedded extends Start
 		val result = new SslContextFactory.Server();
 		EbMSKeyStore ebMSKeyStore = properties.getProperty("keystores.type","").equals("AZURE")
 				? EbMSKeyStore.of(
-						properties.getProperty("keystore.uri"),
-						properties.getProperty("keystore.managedIdentity"),
-						properties.getProperty("keystore.password"),
+						properties.getProperty("azure.keyvault.uri"),
+						properties.getProperty("azure.keyvault.tennantid"),
+						properties.getProperty("azure.keyvault.clientid"),
+						properties.getProperty("azure.keyvault.client.secret"),
 						properties.getProperty("keystore.defaultAlias"))
 				: EbMSKeyStore.of(
 						KeyStoreType.valueOf(properties.getProperty("keystore.type")),
