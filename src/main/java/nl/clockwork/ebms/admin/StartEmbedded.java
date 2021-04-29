@@ -18,6 +18,7 @@ package nl.clockwork.ebms.admin;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -47,10 +48,13 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
+import com.microsoft.applicationinsights.web.internal.ApplicationInsightsServletContextListener;
+
 import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.web.configuration.JdbcURL;
+import nl.clockwork.ebms.security.KeyStoreType;
 import nl.clockwork.ebms.server.servlet.EbMSServlet;
 import nl.clockwork.ebms.util.LoggingUtils;
 
@@ -192,7 +196,7 @@ public class StartEmbedded extends Start
 		return server;
 	}
 
-	private void initEbMSServer(Properties properties, Server server) throws MalformedURLException, IOException
+	private void initEbMSServer(Properties properties, Server server) throws GeneralSecurityException, IOException
 	{
 		
 		val connector = "true".equals(properties.getProperty("ebms.ssl")) ? 
@@ -216,40 +220,41 @@ public class StartEmbedded extends Start
 		return result;
 	}
 
-	private SslContextFactory.Server createEbMSSslContextFactory(Properties properties) throws MalformedURLException, IOException
+	private SslContextFactory.Server createEbMSSslContextFactory(Properties properties) throws GeneralSecurityException, IOException
 	{
 		val result = new SslContextFactory.Server();
-		addEbMSKeyStore(properties,result);
+		EbMSKeyStore ebMSKeyStore = properties.getProperty("keystores.type","").equals("AZURE")
+				? EbMSKeyStore.of(
+						properties.getProperty("azure.keyvault.uri"),
+						properties.getProperty("azure.keyvault.tennantid"),
+						properties.getProperty("azure.keyvault.clientid"),
+						properties.getProperty("azure.keyvault.client.secret"),
+						properties.getProperty("keystore.defaultAlias"))
+				: EbMSKeyStore.of(
+						KeyStoreType.valueOf(properties.getProperty("keystore.type")),
+						properties.getProperty("keystore.path"),
+						properties.getProperty("keystore.password"),
+						properties.getProperty("keystore.defaultAlias"));
+		addEbMSKeyStore(properties,result,ebMSKeyStore);
 		if ("true".equals(properties.getProperty("https.requireClientAuthentication")))
 			addEbMSTrustStore(properties,result);
 		result.setExcludeCipherSuites();
 		return result;
 	}
 
-	private void addEbMSKeyStore(Properties properties, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
+	private void addEbMSKeyStore(Properties properties, SslContextFactory.Server sslContextFactory, EbMSKeyStore ebMSKeyStore) throws GeneralSecurityException, IOException
 	{
-		val keyStore = getResource(properties.getProperty("keystore.path"));
-		if (keyStore != null && keyStore.exists())
-		{
-			if (!StringUtils.isEmpty(properties.getProperty("https.protocols")))
-				sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.protocols"),',')));
-			if (!StringUtils.isEmpty(properties.getProperty("https.cipherSuites")))
-				sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.cipherSuites"),',')));
-			sslContextFactory.setKeyStoreType(properties.getProperty("keystore.type"));
-			sslContextFactory.setKeyStoreResource(keyStore);
-			sslContextFactory.setKeyStorePassword(properties.getProperty("keystore.password"));
-			String certAlias = properties.getProperty("keystore.defaultAlias");
-			if (StringUtils.isNotEmpty(certAlias))
-				sslContextFactory.setCertAlias(certAlias);
-		}
-		else
-		{
-			println("EbMS Service not available: keyStore " + properties.getProperty("keystore.path") + " not found!");
-			exit(1);
-		}
+		if (!StringUtils.isEmpty(properties.getProperty("https.protocols")))
+			sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.protocols"),',')));
+		if (!StringUtils.isEmpty(properties.getProperty("https.cipherSuites")))
+			sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.cipherSuites"),',')));
+		sslContextFactory.setKeyStore(ebMSKeyStore.getKeyStore());
+		sslContextFactory.setKeyStorePassword(ebMSKeyStore.getPassword());
+		if (StringUtils.isNotEmpty(ebMSKeyStore.getDefaultAlias()))
+			sslContextFactory.setCertAlias(ebMSKeyStore.getDefaultAlias());
 	}
 
-	private void addEbMSTrustStore(Properties properties, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
+	private void addEbMSTrustStore(Properties properties, SslContextFactory.Server sslContextFactory) throws GeneralSecurityException, IOException
 	{
 		val trustStore = getResource(properties.getProperty("truststore.path"));
 		if (trustStore != null && trustStore.exists())
@@ -283,6 +288,11 @@ public class StartEmbedded extends Start
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		result.setVirtualHosts(new String[] {"@ebms"});
 		result.setContextPath("/");
+		if ("true".equals(properties.getProperty("ebms.applicationInsights")))
+		{
+			result.addFilter(createWebRequestTrackingFilterHolder(),"/*",EnumSet.allOf(DispatcherType.class));
+			result.addEventListener(new ApplicationInsightsServletContextListener());
+		}
 		if (LoggingUtils.Status.ENABLED.name().equals(properties.getProperty("logging.mdc")) && LoggingUtils.Status.ENABLED.name().equals(properties.getProperty("logging.mdc.audit")))
 			result.addFilter(createRemoteAddressMDCFilterHolder(),"/*",EnumSet.allOf(DispatcherType.class));
 		if (!StringUtils.isEmpty(properties.getProperty("ebms.queriesPerSecond")))

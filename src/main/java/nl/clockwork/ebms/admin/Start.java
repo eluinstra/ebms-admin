@@ -21,6 +21,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
+import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -65,6 +66,9 @@ import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+
+import com.microsoft.applicationinsights.web.internal.ApplicationInsightsServletContextListener;
+import com.microsoft.applicationinsights.web.internal.WebRequestTrackingFilter;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -150,12 +154,20 @@ public class Start implements SystemInterface
 		result.addOption("queriesPerSecond",true,"set requests per second limit [default: <none>]");
 		result.addOption("userQueriesPerSecond",true,"set requests per user per secondlimit [default: <none>]");
 		result.addOption("auditLogging",false,"enable audit logging");
+		result.addOption("applicationInsights",false,"enable applicationInsights");
 		result.addOption("ssl",false,"use ssl");
 		result.addOption("protocols",true,"set ssl protocols [default: <none>]");
 		result.addOption("cipherSuites",true,"set ssl cipherSuites [default: <none>]");
+		result.addOption("keyStoresType",true,"set keystores type [default: <none>]");
 		result.addOption("keyStoreType",true,"set keystore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
 		result.addOption("keyStorePath",true,"set keystore path [default: " + DEFAULT_KEYSTORE_FILE + "]");
 		result.addOption("keyStorePassword",true,"set keystore password [default: " + DEFAULT_KEYSTORE_PASSWORD + "]");
+
+		result.addOption("keyvaultUri",true,"set keystore uri [default: <none>]");
+		result.addOption("keyvaultTennantId",true,"set keystore tennant identity [default: <none>]");
+		result.addOption("keyvaultClientId",true,"set keyvault client id [default: <none>]");
+		result.addOption("keyvaultClientSecret",true,"set keyvault client secret [default: <none>]");
+
 		result.addOption("clientAuthentication",false,"require ssl client authentication");
 		result.addOption("clientCertificateHeader",true,"set client certificate header [default: <none>]");
 		result.addOption("trustStoreType",true,"set truststore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
@@ -168,8 +180,8 @@ public class Start implements SystemInterface
 		result.addOption("configDir",true,"set config directory [default: <startup_directory>]");
 		result.addOption("jmx",false,"start jmx server");
 		result.addOption("jmxPort",true,"set jmx port [default: 1999]");
-		result.addOption("jmxAccessFile",true,"set jmx access file [default: none]");
-		result.addOption("jmxPasswordFile",true,"set jmx password file [default: none]");
+		result.addOption("jmxAccessFile",true,"set jmx access file [default: <none>]");
+		result.addOption("jmxPasswordFile",true,"set jmx password file [default: <none>]");
 		return result;
 	}
 
@@ -195,7 +207,7 @@ public class Start implements SystemInterface
 		println("Using config directory: " + configDir);
 	}
 
-	protected void initWebServer(CommandLine cmd, Server server) throws MalformedURLException, IOException
+	protected void initWebServer(CommandLine cmd, Server server) throws GeneralSecurityException, IOException
 	{
 		val connector = cmd.hasOption("ssl") ? createHttpsConnector(cmd,createSslContextFactory(cmd,cmd.hasOption("clientAuthentication"))) : createHttpConnector(cmd);
 		server.addConnector(connector);
@@ -232,40 +244,37 @@ public class Start implements SystemInterface
 		return result;
 	}
 
-	private SslContextFactory.Server createSslContextFactory(CommandLine cmd, boolean clientAuthentication) throws MalformedURLException, IOException
+	private SslContextFactory.Server createSslContextFactory(CommandLine cmd, boolean clientAuthentication) throws GeneralSecurityException, IOException
 	{
 		val result = new SslContextFactory.Server();
-		addKeyStore(cmd,result);
+		EbMSKeyStore ebMSKeyStore = cmd.getOptionValue("keyStoresType","").equals("AZURE")
+				? EbMSKeyStore.of(
+						cmd.getOptionValue("keyvaultUri"),
+						cmd.getOptionValue("keyvaultTennantId"),
+						cmd.getOptionValue("keyvaultClientId"),
+						cmd.getOptionValue("keyvaultClientSecret")
+						)
+				: EbMSKeyStore.of(
+						KeyStoreType.valueOf(cmd.getOptionValue("keyStoreType",DEFAULT_KEYSTORE_TYPE)),
+						cmd.getOptionValue("keyStorePath",DEFAULT_KEYSTORE_FILE),
+						cmd.getOptionValue("keyStorePassword",DEFAULT_KEYSTORE_PASSWORD));
+		addKeyStore(cmd,result,ebMSKeyStore);
 		if (clientAuthentication)
 			addTrustStore(cmd,result);
 		result.setExcludeCipherSuites();
 		return result;
 	}
 
-	private void addKeyStore(CommandLine cmd, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
+	private void addKeyStore(CommandLine cmd, SslContextFactory.Server sslContextFactory, EbMSKeyStore ebMSKeyStore) throws MalformedURLException, IOException
 	{
-		val keyStoreType = cmd.getOptionValue("keyStoreType",DEFAULT_KEYSTORE_TYPE);
-		val keyStorePath = cmd.getOptionValue("keyStorePath",DEFAULT_KEYSTORE_FILE);
-		val keyStorePassword = cmd.getOptionValue("keyStorePassword",DEFAULT_KEYSTORE_PASSWORD);
-		val keyStore = getResource(keyStorePath);
-		if (keyStore != null && keyStore.exists())
-		{
-			println("Using keyStore " + keyStore.getURI());
-			val protocols = cmd.getOptionValue("protocols");
-			if (!StringUtils.isEmpty(protocols))
-				sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(protocols,',')));
-			val cipherSuites = cmd.getOptionValue("cipherSuites");
-			if (!StringUtils.isEmpty(cipherSuites))
-				sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(cipherSuites,',')));
-			sslContextFactory.setKeyStoreType(keyStoreType);
-			sslContextFactory.setKeyStoreResource(keyStore);
-			sslContextFactory.setKeyStorePassword(keyStorePassword);
-		}
-		else
-		{
-			println("Web Server not available: keyStore " + keyStorePath + " not found!");
-			exit(1);
-		}
+		val protocols = cmd.getOptionValue("protocols");
+		if (!StringUtils.isEmpty(protocols))
+			sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(protocols,',')));
+		val cipherSuites = cmd.getOptionValue("cipherSuites");
+		if (!StringUtils.isEmpty(cipherSuites))
+			sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(cipherSuites,',')));
+		sslContextFactory.setKeyStore(ebMSKeyStore.getKeyStore());
+		sslContextFactory.setKeyStorePassword(ebMSKeyStore.getPassword());
 	}
 
 	private void addTrustStore(CommandLine cmd, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
@@ -337,6 +346,11 @@ public class Start implements SystemInterface
 		result.setVirtualHosts(new String[] {"@web"});
 		result.setInitParameter("configuration","deployment");
 		result.setContextPath(getPath(cmd));
+		if (cmd.hasOption("applicationInsights"))
+		{
+			result.addFilter(createWebRequestTrackingFilterHolder(),"/*",EnumSet.allOf(DispatcherType.class));
+			result.addEventListener(new ApplicationInsightsServletContextListener());
+		}
 		if (cmd.hasOption("auditLogging"))
 			result.addFilter(createRemoteAddressMDCFilterHolder(),"/*",EnumSet.allOf(DispatcherType.class));
 		if (!StringUtils.isEmpty(cmd.getOptionValue("queriesPerSecond")))
@@ -375,6 +389,11 @@ public class Start implements SystemInterface
 		result.setErrorHandler(createErrorHandler());
 		result.addEventListener(contextLoaderListener);
 		return result;
+	}
+
+	protected FilterHolder createWebRequestTrackingFilterHolder()
+	{
+		return new FilterHolder(WebRequestTrackingFilter.class);
 	}
 
 	protected FilterHolder createRemoteAddressMDCFilterHolder()
