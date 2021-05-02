@@ -1,0 +1,24 @@
+@startuml
+' !include <C4/C4_Container>
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(user, "User")
+System_Ext(application, "Application", "Processes Messages")
+System_Boundary(ebmsAdapter, "EbMS Adapter") {
+  Container(admin, "EbMS Admin Application", "Java, Spring, Wicket")
+  ContainerDb(database, "EbMS Database", "DB2, HSQLDB, MariaDB, MSSQL, MySQL, Oracle or Postgres", "Holds CPAs, EbMS Messages and EbMS Events")
+  Container(cache, "Cache", "EhCache or Ignite", "Holds CPAs")
+  ' ContainerQueue(queue, "Queue", "ActiveMQ", "Holds Events")
+}
+System_Ext(ebmsAdapterA, "EbMS Adapter", "Processes EbMS Messages")
+
+Rel(user, admin, "Administers EbMS Admin", "HTTPS")
+Rel(application, admin, "Reads/writes CPAs, UrlMappings, CertificateMappings and Messages", "SOAP/HTTPS")
+Rel_R(admin, database, "Reads/writes", "JDBC")
+Rel_L(admin, cache, "Reads/writes")
+' Rel_L(admin, queue, "Reads/writes")
+Rel(admin, ebmsAdapterA, "Sends EbMS Messages to", "EbMS/HTTPS")
+Rel(ebmsAdapterA, admin, "Receives EbMS Messages from", "EbMS/HTTPS")
+
+SHOW_DYNAMIC_LEGEND()
+@enduml

@@ -9,17 +9,20 @@ System_Boundary(ebmsAdmin, "EbMS Admin Application") {
   Component(wicketServlet, "WicketServlet", "Java Servlet")
   Component(eventExecutor, "EventExecutor", "Runnable")
   Component(ebMSHttpHandler, "EbMSHttpHandler", "Spring Bean")
-  Component(wicketPage, "WicketPage", "Java Class")
   Boundary(business, " ") {
-    Component(wicketDataView, "DataView", "Java Class")
+    Component(wicketPage, "WicketPage", "Java Class")
     Component(ebMSService, "EbMSService", "Spring Bean")
     Component(ebmsMessageProcessor, "EbMSMessageProcessor", "Spring Bean")
     Component(eventHandler, "EventHandler", "Spring Bean")
     Component(cpaManager, "CPAManager", "Spring Bean")
     ' Component(eventManager, "EventManager", "Spring Bean")
+    ' UrlManager
+    ' CertificateManager
+    ' EbMSService uses CPAManager???
   }
   Component(ebmsServlet, "EbMSServlet", "Java Servlet")
   Component(ebmsClient, "EbMSClient", "Spring Bean")
+  Component(dao, "DAOImpl", "Spring Bean")
   ' Component(messageEventListener, "MessageEventListener", "Spring Bean")
 }
 ContainerDb(database, "EbMS Database", "DB2, H2, HSQLDB, MariaDB, MSSQL, MySQL, Oracle or Postgres", "Holds CPAs, EbMSMessages and Events")
@@ -29,10 +32,10 @@ System_Ext(ebmsAdapterA, "EbMS Adapter", "Processes EbMS Messages")
 
 Rel(user, wicketServlet, "Administers EbMS Admin", "HTTPS")
 Rel(wicketServlet, wicketPage, "Uses")
-Rel(business, database, "Reads/Writes", "JDBC")
+Rel(business, dao, "Uses", "JDBC")
+Rel(dao, database, "Reads/Writes", "JDBC")
 ' Rel(wicketPage, database, "Reads", "JDBC")
-Rel(wicketPage, wicketDataView, "Uses")
-Rel(wicketDataView, ebMSService, "Uses")
+Rel(wicketPage, ebMSService, "Uses")
 Rel(application, soapServlet, "Reads/writes CPAs, UrlMappings, CertificateMappings and Messages", "SOAP/HTTPS")
 Rel(soapServlet, ebMSService, "Uses")
 ' Rel(ebMSService, database, "Reads/writes", "JDBC")
@@ -53,10 +56,10 @@ Rel(ebmsServlet, ebMSHttpHandler, "Uses")
 Rel_D(ebmsAdapterA, ebmsServlet, "Receives EbMS Messages from", "EbMS/HTTPS")
 
 ' Lay_R(user, application)
-Lay_L(wicketServlet, soapServlet)
-Lay_D(cpaManager, database)
-Lay_R(ebmsServlet, ebmsClient)
-' Lay_R(ebMSService, wicketDataView)
+Lay_D(business, database)
+Lay_L(ebmsServlet, ebmsClient)
+Lay_D(wicketServlet, ebMSHttpHandler)
+Lay_R(wicketServlet, soapServlet)
 ' Lay_L(cpaManager, ebmsServlet)
 
 SHOW_DYNAMIC_LEGEND()
