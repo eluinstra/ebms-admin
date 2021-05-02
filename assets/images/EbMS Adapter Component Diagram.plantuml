@@ -1,0 +1,64 @@
+@startuml
+' !include <C4/C4_Component>
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Person(user, "User")
+System_Ext(application, "Application", "Processes Messages")
+System_Boundary(ebmsAdmin, "EbMS Admin Application") {
+  Component(soapServlet, "CXFServlet", "Java Servlet")
+  Component(wicketServlet, "WicketServlet", "Java Servlet")
+  Component(eventExecutor, "EventExecutor", "Runnable")
+  Component(ebMSHttpHandler, "EbMSHttpHandler", "Spring Bean")
+  Component(wicketPage, "WicketPage", "Java Class")
+  Boundary(business, " ") {
+    Component(wicketDataView, "DataView", "Java Class")
+    Component(ebMSService, "EbMSService", "Spring Bean")
+    Component(ebmsMessageProcessor, "EbMSMessageProcessor", "Spring Bean")
+    Component(eventHandler, "EventHandler", "Spring Bean")
+    Component(cpaManager, "CPAManager", "Spring Bean")
+    ' Component(eventManager, "EventManager", "Spring Bean")
+  }
+  Component(ebmsServlet, "EbMSServlet", "Java Servlet")
+  Component(ebmsClient, "EbMSClient", "Spring Bean")
+  ' Component(messageEventListener, "MessageEventListener", "Spring Bean")
+}
+ContainerDb(database, "EbMS Database", "DB2, H2, HSQLDB, MariaDB, MSSQL, MySQL, Oracle or Postgres", "Holds CPAs, EbMSMessages and Events")
+Container(cache, "Cache", "EhCache or Ignite", "Holds CPAs")
+' ContainerQueue(queue, "Queue", "ActiveMQ", "Holds Events")
+System_Ext(ebmsAdapterA, "EbMS Adapter", "Processes EbMS Messages")
+
+Rel(user, wicketServlet, "Administers EbMS Admin", "HTTPS")
+Rel(wicketServlet, wicketPage, "Uses")
+Rel(business, database, "Reads/Writes", "JDBC")
+' Rel(wicketPage, database, "Reads", "JDBC")
+Rel(wicketPage, wicketDataView, "Uses")
+Rel(wicketDataView, ebMSService, "Uses")
+Rel(application, soapServlet, "Reads/writes CPAs, UrlMappings, CertificateMappings and Messages", "SOAP/HTTPS")
+Rel(soapServlet, ebMSService, "Uses")
+' Rel(ebMSService, database, "Reads/writes", "JDBC")
+' Rel(ebmsMessageProcessor, database, "Reads/writes", "JDBC")
+Rel(ebmsMessageProcessor, cpaManager, "Uses")
+' Rel(cpaManager, database, "Reads CPAs", "JDBC")
+Rel(cpaManager, cache, "Reads/writes CPAs", "Proprietary")
+' Rel_L(ebmsMessageProcessor, queue, "Reads/writes")
+Rel(eventExecutor, eventHandler, "Uses")
+Rel_L(eventHandler, ebmsMessageProcessor, "Uses")
+Rel(eventHandler, cpaManager, "Uses")
+Rel_U(eventHandler, ebmsClient, "Uses")
+' Rel(eventHandler, database, "Reads/writes", "JDBC")
+Rel_U(ebmsClient, ebmsAdapterA, "Sends EbMS Messages to", "EbMS/HTTPS")
+Rel(ebMSHttpHandler, ebmsMessageProcessor, "Uses")
+Rel(ebmsServlet, ebMSHttpHandler, "Uses")
+' Rel_D(ebmsServlet, ebmsMessageProcessor, "Uses")
+Rel_D(ebmsAdapterA, ebmsServlet, "Receives EbMS Messages from", "EbMS/HTTPS")
+
+' Lay_R(user, application)
+Lay_L(wicketServlet, soapServlet)
+Lay_D(cpaManager, database)
+Lay_R(ebmsServlet, ebmsClient)
+' Lay_R(ebMSService, wicketDataView)
+' Lay_L(cpaManager, ebmsServlet)
+
+SHOW_DYNAMIC_LEGEND()
+@enduml
+ 

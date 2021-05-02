@@ -1,0 +1,23 @@
+@startuml
+skinparam BackgroundColor transparent
+skinparam componentStyle rectangle
+skinparam compnentBackgroundColor #White
+skinparam ArrowColor #Black
+
+[Application] as app #white
+[SOAP API(s)] as api #white
+[EbMS Client(s)] as ebmsC #white
+[EbMS Server(s)] as ebmsS #white
+database "EbMS DB" as db #white
+[Load Balancer] as lb #white
+cloud cloud as cloud #white
+
+app <--> api : SOAP/HTTP(S)
+api --> db : JDBC
+ebmsC -ri-> db : JDBC
+ebmsS -le-> db : JDBC
+ebmsC --> cloud : EbMS/HTTPS
+ebmsS <-- lb : EbMS/HTTP(S)
+lb <-- cloud : EbMS/HTTPS
+
+@enduml

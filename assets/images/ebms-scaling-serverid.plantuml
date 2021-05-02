@@ -1,0 +1,28 @@
+@startuml
+skinparam BackgroundColor transparent
+skinparam componentStyle rectangle
+skinparam compnentBackgroundColor #White
+skinparam ArrowColor #Black
+
+[Application] as app #white
+[Load Balancer] as lb1 #white;line.dotted
+[EbMS Adapter1] as ebms1 #white
+[EbMS Adapter2] as ebms2 #white
+database "EbMS DB" as db #white
+[Load Balancer] as lb2 #white
+cloud cloud as cloud #white
+file "ebms.serverId=1" as file1 #white
+file "ebms.serverId=2" as file2 #white
+
+app <--> lb1 : SOAP/HTTP(S)
+lb1 <--> ebms1 : SOAP/HTTP(S)
+lb1 <--> ebms2 : SOAP/HTTP(S)
+ebms1 -ri-> db
+ebms2 -le-> db
+ebms1 <--> lb2 : EbMS/HTTP(S)
+ebms2 <--> lb2 : EbMS/HTTP(S)
+lb2 <--> cloud : EbMS/HTTPS
+ebms1 -le-> file1
+ebms2 -ri-> file2
+
+@enduml

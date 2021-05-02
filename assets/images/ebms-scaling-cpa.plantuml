@@ -1,0 +1,21 @@
+@startuml
+skinparam BackgroundColor transparent
+skinparam componentStyle rectangle
+skinparam compnentBackgroundColor #White
+skinparam ArrowColor #Black
+
+[Application] as app #White
+[EbMS Adapter1] as ebms1 #White
+[EbMS Adapter2] as ebms2 #White
+cloud cloud as cloud #White
+file "CPA 1" as file1 #White
+file "CPA 2" as file2 #White
+
+app <--> ebms1 : SOAP/HTTP(S)
+app <--> ebms2 : SOAP/HTTP(S)
+ebms1 <--> cloud : EbMS/HTTPS
+ebms2 <--> cloud : EbMS/HTTPS
+ebms1 -le-> file1
+ebms2 -ri-> file2
+
+@enduml

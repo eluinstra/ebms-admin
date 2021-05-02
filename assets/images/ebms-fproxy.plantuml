@@ -1,0 +1,17 @@
+@startuml
+skinparam BackgroundColor transparent
+skinparam componentStyle rectangle
+skinparam compnentBackgroundColor #White
+skinparam ArrowColor #Black
+
+[Application] as app #White
+[EbMS Adapter] as ebms #White
+[Forward Proxy] as proxy #White
+cloud cloud as cloud #White
+
+app <-ri-> ebms : SOAP/HTTP(S)
+ebms <-ri- cloud : EbMS/HTTPS
+ebms -do-> proxy : EbMS/HTTPS
+proxy -up-> cloud : EbMS/HTTPS
+
+@enduml
