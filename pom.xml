@@ -1,21 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-
-    Copyright 2013 Clockwork
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-
--->
+<!-- Copyright 2013 Clockwork Licensed under the Apache License, Version 
+	2.0 (the "License"); you may not use this file except in compliance with 
+	the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -31,7 +21,7 @@
 	<issueManagement>
 		<system>Tickets</system>
 		<url>https://sourceforge.net/p/javaebmsadmin/tickets/</url>
-	</issueManagement>	
+	</issueManagement>
 	<developers>
 		<developer>
 			<id>eluinstra</id>
@@ -60,6 +50,7 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+
 	<properties>
 		<jdk.version>1.8</jdk.version>
 		<junit.jupiter.version>5.7.1</junit.jupiter.version>
@@ -76,13 +67,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<dependency.locations.enabled>false</dependency.locations.enabled>
 	</properties>
+
 	<dependencies>
-		<dependency>
-			<groupId>nl.clockwork.ebms</groupId>
-			<artifactId>ebms-core</artifactId>
-			<version>2.17.7-RC1</version>
-		</dependency>
-		
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -134,15 +120,21 @@
 			<groupId>org.beryx</groupId>
 			<artifactId>text-io</artifactId>
 			<version>3.4.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-		
+
 		<!-- cache -->
 		<dependency>
-		  <groupId>org.apache.ignite</groupId>
-		  <artifactId>ignite-slf4j</artifactId>
-		  <version>2.10.0</version>
+			<groupId>org.apache.ignite</groupId>
+			<artifactId>ignite-slf4j</artifactId>
+			<version>2.10.0</version>
 		</dependency>
-		
+
 		<!-- jetty -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
@@ -206,7 +198,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 		<!-- spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -228,7 +220,7 @@
 			<artifactId>spring-jms</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-		
+
 		<!-- cxf -->
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
@@ -267,12 +259,12 @@
 			<artifactId>activemq-spring</artifactId>
 			<version>${activemq.version}</version>
 		</dependency>
-		
+
 		<!-- database -->
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
-			<version>7.8.2</version>
+			<version>6.5.7</version>
 		</dependency>
 		<dependency>
 			<groupId>com.zaxxer</groupId>
@@ -285,11 +277,8 @@
 			<version>db2jcc4</version>
 			<scope>provided</scope>
 		</dependency>
-		<!--dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>1.4.200</version>
-		</dependency-->
+		<!--dependency> <groupId>com.h2database</groupId> <artifactId>h2</artifactId> 
+			<version>1.4.200</version> </dependency -->
 		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
@@ -325,7 +314,7 @@
 			<version>8.4.0.jre8</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<!-- azure -->
 		<dependency>
 			<groupId>com.microsoft.azure</groupId>
@@ -337,7 +326,14 @@
 			<artifactId>applicationinsights-logging-log4j2</artifactId>
 			<version>2.6.3</version>
 		</dependency>
-		
+
+		<!-- client -->
+		<dependency>
+			<groupId>nl.clockwork.ebms</groupId>
+			<artifactId>ebms-core</artifactId>
+			<version>2.17.7-RC1</version>
+		</dependency>
+
 		<!-- test -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
@@ -352,7 +348,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -362,7 +358,7 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
+
 	<repositories>
 		<repository>
 			<id>jcenter</id>
@@ -530,20 +526,25 @@
 				<version>3.2.4</version>
 				<configuration>
 					<transformers>
-						<transformer implementation="org.apache.maven.plugins.shade.resource.DontIncludeResourceTransformer">
+						<transformer
+							implementation="org.apache.maven.plugins.shade.resource.DontIncludeResourceTransformer">
 							<resource>ECLIPSEF.RSA</resource>
 							<resource>MSFTSIG.RSA</resource>
 						</transformer>
-						<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+						<transformer
+							implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 							<mainClass>nl.clockwork.ebms.admin.Main</mainClass>
 						</transformer>
-						<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+						<transformer
+							implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 							<resource>META-INF/spring.handlers</resource>
 						</transformer>
-						<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+						<transformer
+							implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 							<resource>META-INF/spring.schemas</resource>
 						</transformer>
-						<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+						<transformer
+							implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 							<resource>META-INF/cxf/bus-extensions.txt</resource>
 						</transformer>
 					</transformers>
@@ -646,9 +647,7 @@
 				<configuration>
 					<linkXref>true</linkXref>
 					<targetJdk>${jdk.version}</targetJdk>
-					<!--excludes>
-						<exclude>nl/clockwork/ebms/model/**/*.java</exclude>
-					</excludes-->
+					<!--excludes> <exclude>nl/clockwork/ebms/model/**/*.java</exclude> </excludes -->
 				</configuration>
 			</plugin>
 			<plugin>
