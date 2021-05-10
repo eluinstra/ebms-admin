@@ -15,6 +15,7 @@
  */
 package nl.clockwork.ebms.admin;
 
+import nl.clockwork.ebms.kafka.KafkaConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
@@ -33,6 +34,7 @@ import nl.clockwork.ebms.transaction.TransactionManagerConfig;
 		DataSourceConfig.class,
 		JMSConfig.class,
 		QueryDSLConfig.class,
+		KafkaConfig.class,
 		TransactionManagerConfig.class})
 @PropertySource(value = {
 		"classpath:nl/clockwork/ebms/default.properties",
