@@ -15,6 +15,7 @@
  */
 package nl.clockwork.ebms.admin;
 
+import nl.clockwork.ebms.kafka.KafkaConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
@@ -72,6 +73,7 @@ import nl.clockwork.ebms.validation.ValidationConfig;
 		EmbeddedWebConfig.class,
 		EncryptionConfig.class,
 		JMSConfig.class,
+		KafkaConfig.class,
 		KeyStoreConfig.class,
 		MessageEventListenerConfig.class,
 		QueryDSLConfig.class,
