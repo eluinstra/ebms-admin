@@ -1,0 +1,27 @@
+@startuml
+
+hide empty description
+
+title EbMS Message Status
+
+state Sending {
+  state "Created(10)" as Created
+  state "DeliveryFailed(11)" as DeliveryFailed
+  state "Delivered(12)" as Delivered
+  state "Expired(13)" as Expired 
+  [*] --> Created
+  Created --> DeliveryFailed : onMessageFailed()
+  Created --> Delivered : onMessageDelivered()
+  Created --> Expired : onMessageExpired()
+}
+
+state Receiving {
+  state "Received(2)" as Received
+  state "Processed(3)" as Processed
+  state "Failed(5)" as Failed
+  [*] --> Received : onMessageReceived()
+  Received --> Processed
+  Received --> Failed
+}
+
+@enduml
