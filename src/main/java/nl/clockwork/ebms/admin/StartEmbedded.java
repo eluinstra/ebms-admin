@@ -39,7 +39,11 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.hsqldb.persist.HsqlProperties;
+import org.hsqldb.server.EbMSServerProperties;
 import org.hsqldb.server.ServerAcl.AclFormatException;
+import org.hsqldb.server.ServerConfiguration;
+import org.hsqldb.server.ServerConstants;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -180,7 +184,14 @@ public class StartEmbedded extends Start
 			options.add("-port");
 			options.add(jdbcURL.getPort().toString());
 		}
+		val argProps = HsqlProperties.argArrayToProps(options.toArray(new String[0]),"server");
+		val props = new EbMSServerProperties(ServerConstants.SC_PROTOCOL_HSQL);
+		props.addProperties(argProps);
+		ServerConfiguration.translateDefaultDatabaseProperty(props);
+		ServerConfiguration.translateDefaultNoSystemExitProperty(props);
+		ServerConfiguration.translateAddressProperty(props);
 		val server = new org.hsqldb.server.Server();
+		server.setProperties(props);
 		server.start();
 		return server;
 	}
