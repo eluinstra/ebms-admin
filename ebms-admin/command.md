@@ -8,22 +8,25 @@ sort: 4
 
 ```sh
 java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -h
-usage: StartEmbedded [-auditLogging] [-authentication] [-cipherSuites
-       <arg>] [-clientAuthentication] [-clientCertificateHeader <arg>]
-       [-clientTrustStorePassword <arg>] [-clientTrustStorePath <arg>]
-       [-clientTrustStoreType <arg>] [-configDir <arg>] [-connectionLimit
-       <arg>] [-disableEbMSClient] [-disableEbMSServer] [-h] [-headless]
-       [-health] [-healthPort <arg>] [-host <arg>] [-hsqldb] [-hsqldbDir
-       <arg>] [-jmx] [-jmxAccessFile <arg>] [-jmxPasswordFile <arg>]
-       [-jmxPort <arg>] [-keyStorePassword <arg>] [-keyStorePath <arg>]
-       [-keyStoreType <arg>] [-path <arg>] [-port <arg>] [-protocols
-       <arg>] [-queriesPerSecond <arg>] [-soap] [-ssl]
-       [-trustStorePassword <arg>] [-trustStorePath <arg>]
+usage: StartEmbedded [-applicationInsights] [-auditLogging]
+       [-authentication] [-cipherSuites <arg>] [-clientAuthentication]
+       [-clientCertificateHeader <arg>] [-clientTrustStorePassword <arg>]
+       [-clientTrustStorePath <arg>] [-clientTrustStoreType <arg>]
+       [-configDir <arg>] [-connectionLimit <arg>] [-disableEbMSClient]
+       [-disableEbMSServer] [-h] [-headless] [-health] [-healthPort <arg>]
+       [-host <arg>] [-hsqldb] [-hsqldbDir <arg>] [-jmx] [-jmxAccessFile
+       <arg>] [-jmxPasswordFile <arg>] [-jmxPort <arg>] [-keyStorePassword
+       <arg>] [-keyStorePath <arg>] [-keyStoresType <arg>] [-keyStoreType
+       <arg>] [-keyvaultClientId <arg>] [-keyvaultClientSecret <arg>]
+       [-keyvaultTennantId <arg>] [-keyvaultUri <arg>] [-path <arg>]
+       [-port <arg>] [-protocols <arg>] [-queriesPerSecond <arg>] [-soap]
+       [-ssl] [-trustStorePassword <arg>] [-trustStorePath <arg>]
        [-trustStoreType <arg>] [-userQueriesPerSecond <arg>]
+ -applicationInsights              enable applicationInsights
  -auditLogging                     enable audit logging
- -authentication                   enable basic | client certificate authentication
- -cipherSuites <arg>               set SSL CipherSuites [default: <none>]
- -clientAuthentication             enable SSL client authentication
+ -authentication                   use basic | client certificate authentication
+ -cipherSuites <arg>               set ssl cipherSuites [default: <none>]
+ -clientAuthentication             require ssl client authentication
  -clientCertificateHeader <arg>    set client certificate header [default: <none>]
  -clientTrustStorePassword <arg>   set client truststore password [default: <none>]
  -clientTrustStorePath <arg>       set client truststore path [default: <none>]
@@ -39,23 +42,28 @@ usage: StartEmbedded [-auditLogging] [-authentication] [-cipherSuites
  -host <arg>                       set host [default: 0.0.0.0]
  -hsqldb                           start hsqldb server
  -hsqldbDir <arg>                  set hsqldb location [default: hsqldb]
- -jmx                              start JMX server
- -jmxAccessFile <arg>              set JMX access file [default: <none>]
- -jmxPasswordFile <arg>            set JMX password file [default: <none>]
- -jmxPort <arg>                    set JMX port [default: 1999]
+ -jmx                              start jmx server
+ -jmxAccessFile <arg>              set jmx access file [default: <none>]
+ -jmxPasswordFile <arg>            set jmx password file [default: <none>]
+ -jmxPort <arg>                    set jmx port [default: 1999]
  -keyStorePassword <arg>           set keystore password [default: password]
  -keyStorePath <arg>               set keystore path [default: nl/clockwork/ebms/keystore.p12]
+ -keyStoresType <arg>              set keystores type [default: <none>]
  -keyStoreType <arg>               set keystore type [default: PKCS12]
+ -keyvaultClientId <arg>           set keyvault client id [default: <none>]
+ -keyvaultClientSecret <arg>       set keyvault client secret [default: <none>]
+ -keyvaultTennantId <arg>          set keystore tennant identity [default: <none>]
+ -keyvaultUri <arg>                set keystore uri [default: <none>]
  -path <arg>                       set path [default: /]
  -port <arg>                       set port [default: <8080|8443>]
- -protocols <arg>                  set SSL Protocols [default: <none>]
- -queriesPerSecond <arg>           set max requests per second [default: <none>]
- -soap                             start SOAP service
- -ssl                              enable SSL
+ -protocols <arg>                  set ssl protocols [default: <none>]
+ -queriesPerSecond <arg>           set requests per second limit [default: <none>]
+ -soap                             start soap service
+ -ssl                              use ssl
  -trustStorePassword <arg>         set truststore password [default: <none>]
  -trustStorePath <arg>             set truststore path [default: <none>]
  -trustStoreType <arg>             set truststore type [default: PKCS12]
- -userQueriesPerSecond <arg>       set max requests per user per second [default: <none>]
+ -userQueriesPerSecond <arg>       set requests per user per secondlimit [default: <none>]
 ```
 
 ### Start with the embedded HSQLDB server
@@ -195,4 +203,17 @@ java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.Sta
 ```sh
 java -cp ebms-admin-{{ site.ebms.core.version }}.jar org.hsqldb.server.Server --database.0 file:hsqldb/ebms --dbname.0 ebms -port 9001
 java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap
+```
+
+### start ebms-admin serving admin and soap interface over ssl using azure keyvault certificate
+
+(since [v2.17.7]({{ site.baseurl }}/ebms-admin/release.html#ebms-admin-2177jar))
+note, the system property azure.keyvault.uri is required as some requests are made to the keystore before it is initialized in code.
+The sample values for azure are fictive and can not be used to actually run the adapter.
+
+```sh
+java -Dazure.keyvault.uri=https://key.vault.azure.net -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded \
+-ssl -soap -trustStoreType PKCS12 -trustStorePath truststore.p12 -trustStorePassword password \
+-keyStoresType AZURE -keyvaultUri https://key.vault.azure.net -keyvaultTennantId f487d075-71f0-486a-beab-7e8d3f873be5 \
+-keyvaultClientId https://digipoort -keyvaultClientSecret _17c.3xulKW~2crwjVTFRT8n-5LKo44uF5
 ```

@@ -17,6 +17,15 @@ sort: 7
 - renamed table ebms_event_log to send_log
 - renamed table ebms_message_event to ebms_event
 
+### [ebms-core-2.17.7.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.17.7/ebms-core-2.17.7.jar)
+
+- maven plugin version upgrades
+- dependency version upgrades, almost all dependencies updated to latest version which still runs on java 1.8
+- changed jaxb instant and duration converters to adapters
+- added azure keyvault integration
+- fixed issue with conversationId used as messageId
+- fixed NullPointerException when sending message in Best Effort mode
+
 ### [ebms-core-2.17.6.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.17.6/ebms-core-2.17.6.jar)
 
 - bugfix: `NullPointerException` occurs when an attachment has no name

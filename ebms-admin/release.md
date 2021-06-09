@@ -12,6 +12,18 @@ somehow ebms-admin-2.18.0 is performing very poor, so it is advised to use 2.17.
 
 - upgrade to [ebms-core-2.18.0.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2180jar)
 
+### [ebms-admin-2.17.7.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.17.7/ebms-admin-2.17.7.jar)
+
+- upgrade to [ebms-core-2.17.7.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2177jar)
+- changed the starting of the embedded hsqldb
+- maven plugin version upgrades
+- dependency version upgrades, almost all dependencies updated to latest version which still runs on java 1.8
+- bumped the end-dates of the test CPA's to 2022
+- added azure application insights and azure keyvault integration
+- fixed zip issues
+- fixed swallowing errors at server start (server thread)
+- upgraded jetty version
+
 ### [ebms-admin-2.17.6.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.17.6/ebms-admin-2.17.6.jar)
 
 - upgrade to [ebms-core-2.17.6.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2176jar)
