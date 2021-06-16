@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Properties;
 
@@ -38,11 +37,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
-import org.hsqldb.persist.HsqlProperties;
-import org.hsqldb.server.EbMSServerProperties;
 import org.hsqldb.server.ServerAcl.AclFormatException;
-import org.hsqldb.server.ServerConfiguration;
-import org.hsqldb.server.ServerConstants;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -208,24 +203,14 @@ public class StartEmbedded extends Start
 
 	public org.hsqldb.server.Server startHSQLDBServer(CommandLine cmd, JdbcURL jdbcURL) throws IOException, AclFormatException, URISyntaxException, ParseException
 	{
-		val options = new ArrayList<>();
-		options.add("-database.0");
-		options.add((cmd.hasOption(HSQLDB_DIR_OPTION) ? "file:" + cmd.getOptionValue(HSQLDB_DIR_OPTION) : "file:" + DEFAULT_HSQLDB_DIR) + "/" + jdbcURL.getDatabase());
-		options.add("-dbname.0");
-		options.add(jdbcURL.getDatabase());
-		if (jdbcURL.getPort() != null)
-		{
-			options.add("-port");
-			options.add(jdbcURL.getPort().toString());
-		}
-		val argProps = HsqlProperties.argArrayToProps(options.toArray(new String[0]),"server");
-		val props = new EbMSServerProperties(ServerConstants.SC_PROTOCOL_HSQL);
-		props.addProperties(argProps);
-		ServerConfiguration.translateDefaultDatabaseProperty(props);
-		ServerConfiguration.translateDefaultNoSystemExitProperty(props);
-		ServerConfiguration.translateAddressProperty(props);
 		val server = new org.hsqldb.server.Server();
-		server.setProperties(props);
+		server.setDatabasePath(0, String.format("file:%s/%s", cmd.getOptionValue("hsqldbDir", "hsqldb"), jdbcURL.getDatabase()));
+		server.setDatabaseName(0,  jdbcURL.getDatabase());
+		if (jdbcURL.getPort() != null) {
+			server.setPort(jdbcURL.getPort());			
+		}
+		server.setSilent(true);
+		server.setNoSystemExit(true);
 		server.start();
 		return server;
 	}
