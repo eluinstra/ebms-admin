@@ -4,6 +4,16 @@ sort: 7
 
 # Release Notes
 
+### [ebms-core-2.18.1.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.18.1/ebms-core-2.18.1.jar)
+
+- fix, notnull datasource
+- dependency and plugin version upgrades
+- fixed issue with conversationId used as messageId
+- jax instant and duration converter 2 adapters
+- added HTTP read timeout as requested by Capgemini
+- fixed bug: NullPointerException occurs when an attachment has no name
+- implemented a fix proposed by Lost Lemon, a too strict xsd validation causes the adapter to break at startup. added XXE vuln test taken from the 2.17 branch
+
 ### [ebms-core-2.18.0.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.18.0/ebms-core-2.18.0.jar)
 
 - improved SOAP interface

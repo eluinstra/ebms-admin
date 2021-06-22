@@ -5,8 +5,14 @@ sort: 9
 # Release Notes
 
 ```note
-somehow ebms-admin-2.18.0 is performing very poor, so it is advised to use 2.17.x instead.
+ebms-admin-2.18.1 and ebms-admin-2.17.7 are the latest versions.
 ```
+
+### [ebms-admin-2.18.0.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.18.1/ebms-admin-2.18.1.jar)
+
+- dependency and plugin version upgrades
+- various improvements and bugfixes
+- upgrade to [ebms-core-2.18.1.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2181jar)
 
 ### [ebms-admin-2.18.0.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.18.0/ebms-admin-2.18.0.jar)
 
