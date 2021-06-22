@@ -35,7 +35,6 @@ public class EbMSAttachment implements IClusterable
 	@NonFinal
 	@Setter
 	EbMSMessage message;
-	@NonNull
 	String name;
 	@NonNull
 	String contentId;
@@ -43,12 +42,12 @@ public class EbMSAttachment implements IClusterable
 	String contentType;
 	CachedOutputStream content;
 
-	public EbMSAttachment(@NonNull String name, @NonNull String contentId, @NonNull String contentType)
+	public EbMSAttachment(String name, @NonNull String contentId, @NonNull String contentType)
 	{
 		this(null,name,contentId,contentType,null);
 	}
 
-	public EbMSAttachment(@NonNull String name, @NonNull String contentId, @NonNull String contentType, CachedOutputStream content)
+	public EbMSAttachment(String name, @NonNull String contentId, @NonNull String contentType, CachedOutputStream content)
 	{
 		this(null,name,contentId,contentType,content);
 	}

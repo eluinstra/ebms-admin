@@ -90,17 +90,17 @@ public class MessagePage extends BasePage implements IGenericComponent<Message,M
 	{
 		setModel(new CompoundPropertyModel<>(model));
 		add(new BootstrapFeedbackPanel("feedback"));
-		add(new Label("message.messageId"));
-		add(new Label("message.conversationId"));
+		add(new Label("properties.messageId"));
+		add(new Label("properties.conversationId"));
 		add(createViewRefToMessageIdLink("viewRefToMessageId",messageProcessor));
-		add(InstantLabel.of("message.timestamp",Constants.DATETIME_FORMAT));
-		add(new Label("message.cpaId"));
-		add(new Label("message.fromParty.partyId"));
-		add(new Label("message.fromParty.role"));
-		add(new Label("message.toParty.partyId"));
-		add(new Label("message.toParty.role"));
-		add(new Label("message.service"));
-		add(new Label("message.action"));
+		add(InstantLabel.of("properties.timestamp",Constants.DATETIME_FORMAT));
+		add(new Label("properties.cpaId"));
+		add(new Label("properties.fromParty.partyId"));
+		add(new Label("properties.fromParty.role"));
+		add(new Label("properties.toParty.partyId"));
+		add(new Label("properties.toParty.role"));
+		add(new Label("properties.service"));
+		add(new Label("properties.action"));
 		add(new EbMSDataSourcePropertyListView("dataSources",new LoadableDetachableEbMSDataSourceModel()));
 		add(new PageLink("back",responsePage));
 		add(new DownloadEbMSMessageLink("download",model));
@@ -121,7 +121,7 @@ public class MessagePage extends BasePage implements IGenericComponent<Message,M
 						this,
 						messageProcessor));
 		val result = new Link<Void>(id,onClick);
-		result.add(new Label("message.refToMessageId"));
+		result.add(new Label("properties.refToMessageId"));
 		return result;
 	}
 	
