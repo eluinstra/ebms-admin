@@ -21,6 +21,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
+import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -66,6 +67,9 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
+import com.microsoft.applicationinsights.web.internal.ApplicationInsightsServletContextListener;
+import com.microsoft.applicationinsights.web.internal.WebRequestTrackingFilter;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -93,6 +97,7 @@ public class Start implements SystemInterface
 	private static final String SSL_OPTION = "ssl";
 	private static final String PROTOCOLS_OPTION = "protocols";
 	private static final String CIPHER_SUITES_OPTION = "cipherSuites";
+	private static final String KEY_STORES_TYPE_OPTION = "keyStoresType";
 	private static final String KEY_STORE_TYPE_OPTION = "keyStoreType";
 	private static final String KEY_STORE_PATH_OPTION = "keyStorePath";
 	private static final String KEY_STORE_PASSWORD_OPTION = "keyStorePassword";
@@ -127,6 +132,13 @@ public class Start implements SystemInterface
 	private static final String NONE = "<none>";
 	private static final String REALM = "Realm";
 	private static final String REALM_FILE = "realm.properties";
+	private static final String AZURE_INSIGHTS_OPTION = "applicationInsights";
+	private static final String AZURE_VAULTURI_OPTION = "keyvaultUri";
+	private static final String AZURE_VAULTTENANT_ID_OPTION = "keyvaultTennantId";
+	private static final String AZURE_VAULTCLIENT_ID_OPTION = "keyvaultClientId";
+	private static final String AZURE_VAULTCLIENT_SECRET_OPTION = "keyvaultClientSecret";
+	private static final String KEYSTORE_TYPE_AZURE = "AZURE";
+	
 	Server server = new Server();
 	ContextHandlerCollection handlerCollection = new ContextHandlerCollection();
 	TextIO textIO = TextIoFactory.getTextIO();
@@ -193,12 +205,18 @@ public class Start implements SystemInterface
 		result.addOption(QUERIES_PER_SECOND_OPTION,true,"set max requests per second [default: " + NONE + "]");
 		result.addOption(USER_QUERIES_PER_SECOND_OPTION,true,"set max requests per user per second [default: " + NONE + "]");
 		result.addOption(AUDIT_LOGGING_OPTION,false,"enable audit logging");
+		result.addOption(AZURE_INSIGHTS_OPTION,false,"enable applicationInsights");
 		result.addOption(SSL_OPTION,false,"enable SSL");
 		result.addOption(PROTOCOLS_OPTION,true,"set SSL Protocols [default: " + NONE + "]");
 		result.addOption(CIPHER_SUITES_OPTION,true,"set SSL CipherSuites [default: " + NONE + "]");
+		result.addOption(KEY_STORES_TYPE_OPTION,true,"set keystores type [default: <none>]");
 		result.addOption(KEY_STORE_TYPE_OPTION,true,"set keystore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
 		result.addOption(KEY_STORE_PATH_OPTION,true,"set keystore path [default: " + DEFAULT_KEYSTORE_FILE + "]");
 		result.addOption(KEY_STORE_PASSWORD_OPTION,true,"set keystore password [default: " + DEFAULT_KEYSTORE_PASSWORD + "]");
+		result.addOption(AZURE_VAULTURI_OPTION,true,"set keystore uri [default: <none>]");
+		result.addOption(AZURE_VAULTTENANT_ID_OPTION,true,"set keystore tenant identity [default: <none>]");
+		result.addOption(AZURE_VAULTCLIENT_ID_OPTION,true,"set keyvault client id [default: <none>]");
+		result.addOption(AZURE_VAULTCLIENT_SECRET_OPTION,true,"set keyvault client secret [default: <none>]");
 		result.addOption(CLIENT_AUTHENTICATION_OPTION,false,"enable SSL client authentication");
 		result.addOption(CLIENT_CERTIFICATE_HEADER_OPTION,true,"set client certificate header [default: " + NONE + "]");
 		result.addOption(TRUST_STORE_TYPE_OPTION,true,"set truststore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
@@ -238,7 +256,7 @@ public class Start implements SystemInterface
 		println("Using config directory: " + configDir);
 	}
 
-	protected void initWebServer(CommandLine cmd, Server server) throws MalformedURLException, IOException
+	protected void initWebServer(CommandLine cmd, Server server) throws GeneralSecurityException, IOException
 	{
 		val connector = cmd.hasOption(SSL_OPTION) ? createHttpsConnector(cmd,createSslContextFactory(cmd,cmd.hasOption(CLIENT_AUTHENTICATION_OPTION))) : createHttpConnector(cmd);
 		server.addConnector(connector);
@@ -275,40 +293,37 @@ public class Start implements SystemInterface
 		return result;
 	}
 
-	private SslContextFactory.Server createSslContextFactory(CommandLine cmd, boolean clientAuthentication) throws MalformedURLException, IOException
+	private SslContextFactory.Server createSslContextFactory(CommandLine cmd, boolean clientAuthentication) throws GeneralSecurityException, IOException
 	{
 		val result = new SslContextFactory.Server();
-		addKeyStore(cmd,result);
+		EbMSKeyStore ebMSKeyStore = KEYSTORE_TYPE_AZURE.equals(cmd.getOptionValue(KEY_STORES_TYPE_OPTION, ""))
+				? EbMSKeyStore.of(
+					cmd.getOptionValue(AZURE_VAULTURI_OPTION),
+					cmd.getOptionValue(AZURE_VAULTTENANT_ID_OPTION),
+					cmd.getOptionValue(AZURE_VAULTCLIENT_ID_OPTION),
+					cmd.getOptionValue(AZURE_VAULTCLIENT_SECRET_OPTION)
+				) : EbMSKeyStore.of(
+					KeyStoreType.valueOf(
+						cmd.getOptionValue(KEY_STORE_TYPE_OPTION, DEFAULT_KEYSTORE_TYPE)),
+						cmd.getOptionValue(KEY_STORE_PATH_OPTION,DEFAULT_KEYSTORE_FILE),
+						cmd.getOptionValue(KEY_STORE_PASSWORD_OPTION,DEFAULT_KEYSTORE_PASSWORD));
+		addKeyStore(cmd,result,ebMSKeyStore);
 		if (clientAuthentication)
 			addTrustStore(cmd,result);
 		result.setExcludeCipherSuites();
 		return result;
 	}
 
-	private void addKeyStore(CommandLine cmd, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
+	private void addKeyStore(CommandLine cmd, SslContextFactory.Server sslContextFactory, EbMSKeyStore ebMSKeyStore) throws MalformedURLException, IOException
 	{
-		val keyStoreType = cmd.getOptionValue(KEY_STORE_TYPE_OPTION,DEFAULT_KEYSTORE_TYPE);
-		val keyStorePath = cmd.getOptionValue(KEY_STORE_PATH_OPTION,DEFAULT_KEYSTORE_FILE);
-		val keyStorePassword = cmd.getOptionValue(KEY_STORE_PASSWORD_OPTION,DEFAULT_KEYSTORE_PASSWORD);
-		val keyStore = getResource(keyStorePath);
-		if (keyStore != null && keyStore.exists())
-		{
-			println("Using keyStore " + keyStore.getURI());
-			val protocols = cmd.getOptionValue(PROTOCOLS_OPTION);
-			if (!StringUtils.isEmpty(protocols))
-				sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(protocols,',')));
-			val cipherSuites = cmd.getOptionValue(CIPHER_SUITES_OPTION);
-			if (!StringUtils.isEmpty(cipherSuites))
-				sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(cipherSuites,',')));
-			sslContextFactory.setKeyStoreType(keyStoreType);
-			sslContextFactory.setKeyStoreResource(keyStore);
-			sslContextFactory.setKeyStorePassword(keyStorePassword);
-		}
-		else
-		{
-			println("Web Server not available: keyStore " + keyStorePath + " not found!");
-			exit(1);
-		}
+		val protocols = cmd.getOptionValue(PROTOCOLS_OPTION);
+		if (!StringUtils.isEmpty(protocols))
+			sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(protocols,',')));
+		val cipherSuites = cmd.getOptionValue(CIPHER_SUITES_OPTION);
+		if (!StringUtils.isEmpty(cipherSuites))
+			sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(cipherSuites,',')));
+		sslContextFactory.setKeyStore(ebMSKeyStore.getKeyStore());
+		sslContextFactory.setKeyStorePassword(ebMSKeyStore.getPassword());
 	}
 
 	private void addTrustStore(CommandLine cmd, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
@@ -380,6 +395,11 @@ public class Start implements SystemInterface
 		result.setVirtualHosts(new String[] {"@" + WEB_CONNECTOR_NAME});
 		result.setInitParameter("configuration","deployment");
 		result.setContextPath(getPath(cmd));
+		if (cmd.hasOption(AZURE_INSIGHTS_OPTION))
+		{
+			result.addFilter(createWebRequestTrackingFilterHolder(),"/*",EnumSet.allOf(DispatcherType.class));
+			result.addEventListener(new ApplicationInsightsServletContextListener());
+		}
 		if (cmd.hasOption(AUDIT_LOGGING_OPTION))
 			result.addFilter(createRemoteAddressMDCFilterHolder(),"/*",EnumSet.allOf(DispatcherType.class));
 		if (!StringUtils.isEmpty(cmd.getOptionValue(QUERIES_PER_SECOND_OPTION)))
@@ -420,6 +440,11 @@ public class Start implements SystemInterface
 		return result;
 	}
 
+	protected FilterHolder createWebRequestTrackingFilterHolder()
+	{
+		return new FilterHolder(WebRequestTrackingFilter.class);
+	}
+	
 	protected FilterHolder createRemoteAddressMDCFilterHolder()
 	{
 		return new FilterHolder(nl.clockwork.ebms.server.servlet.RemoteAddressMDCFilter.class);

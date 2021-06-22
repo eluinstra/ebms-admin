@@ -68,7 +68,7 @@
 		<junit.jupiter.version>5.7.1</junit.jupiter.version>
 		<wicket.version>8.12.0</wicket.version>
 		<jetty.version>9.4.40.v20210413</jetty.version>
-		<spring.version>5.2.14.RELEASE</spring.version>
+		<spring.version>5.2.15.RELEASE</spring.version>
 		<cxf.version>3.4.3</cxf.version>
 		<activemq.version>5.16.2</activemq.version>
 		<checkstyle.config.location>${basedir}/resources/reporting/checkstyle.xml</checkstyle.config.location>
@@ -323,6 +323,18 @@
 			<artifactId>mssql-jdbc</artifactId>
 			<version>8.4.0.jre8</version>
 			<scope>provided</scope>
+		</dependency>
+
+		<!-- azure -->
+		<dependency>
+			<groupId>com.microsoft.azure</groupId>
+			<artifactId>applicationinsights-web</artifactId>
+			<version>2.6.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.microsoft.azure</groupId>
+			<artifactId>applicationinsights-logging-log4j2</artifactId>
+			<version>2.6.3</version>
 		</dependency>
 
 		<!-- client -->
