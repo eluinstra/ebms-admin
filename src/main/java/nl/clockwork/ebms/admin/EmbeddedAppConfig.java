@@ -73,6 +73,7 @@ import nl.clockwork.ebms.validation.ValidationConfig;
 		EncryptionConfig.class,
 		JMSConfig.class,
 		KeyStoreConfig.class,
+		nl.clockwork.ebms.security.azure.KeyStoreConfig.class,
 		MessageEventListenerConfig.class,
 		QueryDSLConfig.class,
 		SchedulerConfig.class,
