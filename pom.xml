@@ -71,6 +71,7 @@
 		<spring.version>5.2.15.RELEASE</spring.version>
 		<cxf.version>3.4.3</cxf.version>
 		<activemq.version>5.16.2</activemq.version>
+		<querydsl.version>4.4.0</querydsl.version>
 		<checkstyle.config.location>${basedir}/resources/reporting/checkstyle.xml</checkstyle.config.location>
 		<checkstyle.header.file>${basedir}/resources/reporting/license.txt</checkstyle.header.file>
 		<checkstyle.cache.file>${project.build.directory}/checkstyle-cachefile</checkstyle.cache.file>
@@ -138,6 +139,24 @@
 					<artifactId>slf4j-api</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+
+		<!-- querydsl -->
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-sql</artifactId>
+			<version>${querydsl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-sql-spring</artifactId>
+			<version>${querydsl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-sql-codegen</artifactId>
+			<version>${querydsl.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- cache -->

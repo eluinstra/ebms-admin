@@ -22,12 +22,15 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.csv.CSVPrinter;
 
+import com.querydsl.core.BooleanBuilder;
+
 import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.model.CPA;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
 import nl.clockwork.ebms.admin.web.message.TimeUnit;
+import nl.clockwork.ebms.querydsl.model.QEbmsMessage;
 
 public interface EbMSDAO
 {
@@ -51,4 +54,41 @@ public interface EbMSDAO
 	
 	void writeMessageToZip(String messageId, int messageNr, ZipOutputStream stream);
 	void printMessagesToCSV(CSVPrinter printer, EbMSMessageFilter filter);
+
+
+	static BooleanBuilder applyFilter(QEbmsMessage table, EbMSMessageFilter messageContext, BooleanBuilder builder)
+	{
+		if (messageContext != null)
+		{
+			if (messageContext.getCpaId() != null)
+				builder.and(table.cpaId.eq(messageContext.getCpaId()));
+			if (messageContext.getFromParty() != null)
+			{
+				if (messageContext.getFromParty().getPartyId() != null)
+					builder.and(table.fromPartyId.eq(messageContext.getFromParty().getPartyId()));
+				if (messageContext.getFromParty().getRole() != null)
+					builder.and(table.fromRole.eq(messageContext.getFromParty().getRole()));
+			}
+			if (messageContext.getToParty() != null)
+			{
+				if (messageContext.getToParty().getPartyId() != null)
+					builder.and(table.toPartyId.eq(messageContext.getToParty().getPartyId()));
+				if (messageContext.getToParty().getRole() != null)
+					builder.and(table.toRole.eq(messageContext.getToParty().getRole()));
+			}
+			if (messageContext.getService() != null)
+				builder.and(table.service.eq(messageContext.getService()));
+			if (messageContext.getAction() != null)
+				builder.and(table.action.eq(messageContext.getAction()));
+			if (messageContext.getConversationId() != null)
+				builder.and(table.conversationId.eq(messageContext.getConversationId()));
+			if (messageContext.getMessageId() != null)
+				builder.and(table.messageId.eq(messageContext.getMessageId()));
+			if (messageContext.getRefToMessageId() != null)
+				builder.and(table.refToMessageId.eq(messageContext.getRefToMessageId()));
+			if (messageContext.getStatuses() != null)
+				builder.and(table.status.in(messageContext.getStatuses()));
+		}
+		return builder;
+	}
 }

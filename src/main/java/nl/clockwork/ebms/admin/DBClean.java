@@ -43,12 +43,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import lombok.var;
 import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.cpa.QCpa;
-import nl.clockwork.ebms.delivery.task.QDeliveryLog;
-import nl.clockwork.ebms.delivery.task.QDeliveryTask;
-import nl.clockwork.ebms.event.QMessageEvent;
-import nl.clockwork.ebms.model.QEbmsAttachment;
-import nl.clockwork.ebms.model.QEbmsMessage;
+import nl.clockwork.ebms.querydsl.model.QCpa;
+import nl.clockwork.ebms.querydsl.model.QDeliveryLog;
+import nl.clockwork.ebms.querydsl.model.QDeliveryTask;
+import nl.clockwork.ebms.querydsl.model.QEbmsAttachment;
+import nl.clockwork.ebms.querydsl.model.QEbmsMessage;
+import nl.clockwork.ebms.querydsl.model.QMessageEvent;
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @RequiredArgsConstructor
