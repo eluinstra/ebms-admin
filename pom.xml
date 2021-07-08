@@ -24,7 +24,7 @@
 	<groupId>nl.clockwork.ebms.admin</groupId>
 	<artifactId>ebms-admin</artifactId>
 	<packaging>jar</packaging>
-	<version>2.17.7</version>
+	<version>2.17.8-SNAPSHOT</version>
 	<name>EbMS Admin</name>
 	<description></description>
 	<url>https://sourceforge.net/projects/javaebmsadmin/</url>
@@ -136,6 +136,24 @@
 					<artifactId>slf4j-api</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+
+		<!-- querydsl -->
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-sql</artifactId>
+			<version>4.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-sql-spring</artifactId>
+			<version>4.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-sql-codegen</artifactId>
+			<version>4.3.1</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- cache -->
@@ -341,7 +359,7 @@
 		<dependency>
 			<groupId>nl.clockwork.ebms</groupId>
 			<artifactId>ebms-core</artifactId>
-			<version>2.17.7</version>
+			<version>2.17.8-SNAPSHOT</version>
 		</dependency>
 
 		<!-- test -->
