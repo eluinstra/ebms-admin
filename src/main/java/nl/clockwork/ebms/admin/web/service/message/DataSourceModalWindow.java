@@ -34,7 +34,6 @@ import org.apache.wicket.model.ResourceModel;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.web.AjaxButton;
@@ -121,6 +120,7 @@ public class DataSourceModalWindow extends ModalWindow
 					val o = getModelObject();
 					o.getFile().forEach(f -> addDataSource(new DataSource(
 								StringUtils.isBlank(o.getName()) ? f.getClientFileName() : o.getName(),
+								null,
 								StringUtils.isBlank(o.getContentType()) ? Utils.getContentType(f.getClientFileName()) : o.getContentType(),
 								f.getBytes())));
 					if (t != null)
@@ -160,7 +160,6 @@ public class DataSourceModalWindow extends ModalWindow
 
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
-	@NoArgsConstructor
 	@EqualsAndHashCode(callSuper = true)
 	public static class DataSourceModel extends DataSource
 	{

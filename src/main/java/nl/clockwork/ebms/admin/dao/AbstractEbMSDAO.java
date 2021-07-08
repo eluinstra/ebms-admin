@@ -55,11 +55,11 @@ import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
 import nl.clockwork.ebms.admin.web.message.TimeUnit;
-import nl.clockwork.ebms.cpa.QCpa;
-import nl.clockwork.ebms.delivery.task.QDeliveryLog;
-import nl.clockwork.ebms.delivery.task.QDeliveryTask;
-import nl.clockwork.ebms.model.QEbmsAttachment;
-import nl.clockwork.ebms.model.QEbmsMessage;
+import nl.clockwork.ebms.querydsl.model.QCpa;
+import nl.clockwork.ebms.querydsl.model.QDeliveryLog;
+import nl.clockwork.ebms.querydsl.model.QDeliveryTask;
+import nl.clockwork.ebms.querydsl.model.QEbmsAttachment;
+import nl.clockwork.ebms.querydsl.model.QEbmsMessage;
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @AllArgsConstructor
@@ -348,7 +348,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	
 	protected BooleanBuilder getMessageFilter(QEbmsMessage table, EbMSMessageFilter messageFilter, BooleanBuilder builder)
 	{
-		builder = nl.clockwork.ebms.dao.EbMSDAO.applyFilter(table,messageFilter,builder);
+		builder = EbMSDAO.applyFilter(table,messageFilter,builder);
 		if (messageFilter != null)
 		{
 			if (messageFilter.getMessageNr() != null)

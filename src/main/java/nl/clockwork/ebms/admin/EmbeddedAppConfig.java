@@ -44,7 +44,7 @@ import nl.clockwork.ebms.encryption.EncryptionConfig;
 import nl.clockwork.ebms.event.MessageEventListenerConfig;
 import nl.clockwork.ebms.jms.JMSConfig;
 import nl.clockwork.ebms.processor.EbMSProcessorConfig;
-import nl.clockwork.ebms.querydsl.QueryDSLConfig;
+import nl.clockwork.ebms.querydsl.model.QueryDSLConfig;
 import nl.clockwork.ebms.scheduler.SchedulerConfig;
 import nl.clockwork.ebms.security.KeyStoreConfig;
 import nl.clockwork.ebms.server.EbMSServerConfig;
