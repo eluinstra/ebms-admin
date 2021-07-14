@@ -18,6 +18,8 @@ package nl.clockwork.ebms.admin;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -32,6 +34,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextIoFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.querydsl.sql.SQLExpressions;
@@ -49,6 +52,8 @@ import nl.clockwork.ebms.querydsl.model.QDeliveryTask;
 import nl.clockwork.ebms.querydsl.model.QEbmsAttachment;
 import nl.clockwork.ebms.querydsl.model.QEbmsMessage;
 import nl.clockwork.ebms.querydsl.model.QMessageEvent;
+
+import javax.sql.DataSource;
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @RequiredArgsConstructor
@@ -103,13 +108,18 @@ public class DBClean implements SystemInterface
 	{
 		val queryFactory = context.getBean(SQLQueryFactory.class);
 		val transactionManager = context.getBean("dataSourceTransactionManager",PlatformTransactionManager.class);
-		return new DBClean(queryFactory,transactionManager);
+		val dataSource = context.getBean(DataSource.class);
+		val jdbctemplate =  new JdbcTemplate(dataSource);
+		return new DBClean(queryFactory,transactionManager, jdbctemplate);
 	}
 
 	@NonNull
 	SQLQueryFactory queryFactory;
 	@NonNull
 	PlatformTransactionManager transactionManager;
+	@NonNull
+	JdbcTemplate jdbcTemplate;
+
 	BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 	QCpa cpaTable = QCpa.cpa1;
 	QEbmsMessage messageTable = QEbmsMessage.ebmsMessage;
@@ -185,7 +195,8 @@ public class DBClean implements SystemInterface
 			}
 			transactionManager.commit(status);
 		}
-		println("Unable to parse date " + cmd.getOptionValue("dateFrom"));
+		else
+			println("Unable to parse date " + cmd.getOptionValue("dateFrom"));
 	}
 
 	private static Instant createDateFrom(String s)
@@ -201,6 +212,17 @@ public class DBClean implements SystemInterface
 		}
 	}
 
+	private boolean alternativeAttachmentImplementation() {
+		var vendor = "";
+		try(Connection connection = jdbcTemplate.getDataSource().getConnection())
+		{
+			vendor = connection.getMetaData().getDatabaseProductName();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		};
+		return vendor.equalsIgnoreCase("mysql") || vendor.equalsIgnoreCase("microsoft sql server");
+	}
+
 	private void cleanCPA(String cpaId)
 	{
 		val selectMessageIdsByCpaId = SQLExpressions.select(messageTable.messageId).from(messageTable).where(messageTable.cpaId.eq(cpaId));
@@ -214,7 +236,13 @@ public class DBClean implements SystemInterface
 		result = queryFactory.delete(messageEventTable).where(messageEventTable.messageId.in(selectMessageIdsByCpaId)).execute();
 		println(result + " messageEvents deleted");
 
-		result = queryFactory.delete(attachmentTable).where(attachmentTable.messageId.in(selectMessageIdsByCpaId)).execute();
+		if (alternativeAttachmentImplementation())
+		{
+			result = jdbcTemplate.update("delete from ebms_attachment where ebms_message_id in "
+					+ "(select id from ebms_message where cpa_id = ?)", cpaId);
+		} else {
+			result = queryFactory.delete(attachmentTable).where(attachmentTable.messageId.in(selectMessageIdsByCpaId)).execute();
+		}
 		println(result + " attachments deleted");
 
 		result = queryFactory.delete(messageTable).where(messageTable.cpaId.eq(cpaId)).execute();
@@ -238,7 +266,13 @@ public class DBClean implements SystemInterface
 		result = queryFactory.delete(messageEventTable).where(messageEventTable.messageId.in(selectMessageIdsByPersistTime)).execute();
 		println(result + " messageEvents deleted");
 
-		result = queryFactory.delete(attachmentTable).where(attachmentTable.messageId.in(selectMessageIdsByPersistTime)).execute();
+		if (alternativeAttachmentImplementation())
+		{
+			result = jdbcTemplate.update("delete from ebms_attachment where ebms_message_id in "
+					+ "(select id from ebms_message where persist_time <= ?)", new java.sql.Date(dateFrom.toEpochMilli()));
+		} else {
+			result = queryFactory.delete(attachmentTable).where(attachmentTable.messageId.in(selectMessageIdsByPersistTime)).execute();
+		}
 		println(result + " attachments deleted");
 
 		result = queryFactory.delete(messageTable).where(messageTable.persistTime.loe(dateFrom)).execute();
