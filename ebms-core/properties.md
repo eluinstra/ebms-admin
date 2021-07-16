@@ -309,3 +309,17 @@ By default these properties are commented-out.
 ```
 
 
+### Kafka
+
+(since [v2.18.2]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2182jar))
+The Kafka implementation is currently integrated as provided by Cap Gemini.
+It allows for the delivery task to be triggered on a Kafka topic.. The topic name is currently fixed `DELIVERY_TASK`
+
+```properties
+# DeliveryTaskHandlerType = DEFAULT(=DAO) | JMS | QUARTZ | QUARTZ_JMS | QUARTZ_KAFKA
+deliveryTaskHandler.type=QUARTZ_KAFKA
+
+# server url 
+kafka.serverUrl=localhost:9092
+
+```

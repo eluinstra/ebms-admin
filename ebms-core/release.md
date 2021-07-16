@@ -4,6 +4,12 @@ sort: 7
 
 # Release Notes
 
+### [ebms-core-2.18.2.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.18.2/ebms-core-2.18.2.jar)
+
+- removed querydsl (+ issue fixes)
+- added kafka integration for delivery events
+- added azure keyvault integration
+
 ### [ebms-core-2.18.1.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.18.1/ebms-core-2.18.1.jar)
 
 - fix, notnull datasource
@@ -26,6 +32,10 @@ sort: 7
 - renamed table ebms_event to send_task
 - renamed table ebms_event_log to send_log
 - renamed table ebms_message_event to ebms_event
+
+### [ebms-core-2.17.8.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.17.8/ebms-core-2.17.8.jar)
+
+- removed querydsl (+ issue fixes)
 
 ### [ebms-core-2.17.7.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.17.7/ebms-core-2.17.7.jar)
 
