@@ -8,14 +8,14 @@ sort: 9
 ebms-admin-2.18.2 and ebms-admin-2.17.8 are the latest versions.
 ```
 
-### [ebms-admin-2.18.2.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.18.2/ebms-admin-2.18.2.jar)
+### [ebms-admin-2.18.2.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.2/ebms-admin-2.18.2.jar)
 
 - fixed DBClean for mssql and mysql, deleting attachments
 - added kafka integration for delivery events
 - added azure application insights and azure keyvault integration
 - upgrade to [ebms-core-2.18.2.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2182jar)
 
-### [ebms-admin-2.18.1.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.18.1/ebms-admin-2.18.1.jar)
+### [ebms-admin-2.18.1.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.1/ebms-admin-2.18.1.jar)
 
 - dependency and plugin version upgrades
 - various improvements and bugfixes
@@ -25,7 +25,7 @@ ebms-admin-2.18.2 and ebms-admin-2.17.8 are the latest versions.
 
 - upgrade to [ebms-core-2.18.0.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2180jar)
 
-### [ebms-admin-2.17.8.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.17.8/ebms-admin-2.17.8.jar)
+### [ebms-admin-2.17.8.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.17.8/ebms-admin-2.17.8.jar)
 
 - fixed DBClean for mssql and mysql, deleting attachments
 - upgrade to [ebms-core-2.17.8.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2178jar)
