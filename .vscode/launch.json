@@ -1,0 +1,71 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Launch Current File",
+      "request": "launch",
+      "mainClass": "${file}"
+    },
+    {
+      "type": "java",
+      "name": "Launch DBClean",
+      "request": "launch",
+      "mainClass": "nl.clockwork.ebms.admin.DBClean",
+      "projectName": "ebms-admin"
+    },
+    {
+      "type": "java",
+      "name": "Launch DBExecute",
+      "request": "launch",
+      "mainClass": "nl.clockwork.ebms.admin.DBExecute",
+      "projectName": "ebms-admin"
+    },
+    {
+      "type": "java",
+      "name": "Launch DBMigrate",
+      "request": "launch",
+      "mainClass": "nl.clockwork.ebms.admin.DBMigrate",
+      "projectName": "ebms-admin"
+    },
+    {
+      "type": "java",
+      "name": "Launch JmsBroker",
+      "request": "launch",
+      "mainClass": "nl.clockwork.ebms.admin.JmsBroker",
+      "projectName": "ebms-admin"
+    },
+    {
+      "type": "java",
+      "name": "Launch Start",
+      "request": "launch",
+      "mainClass": "nl.clockwork.ebms.admin.Start",
+      "projectName": "ebms-admin"
+    },
+    {
+      "type": "java",
+      "name": "Launch StartEmbedded",
+      "request": "launch",
+      "mainClass": "nl.clockwork.ebms.admin.StartEmbedded",
+      "projectName": "ebms-admin",
+      "args": ["-hsqldb", "-soap", "-health"],
+      "vmArgs": ["-Djavax.net.ssl.trustStore=", "-Dlog4j.configurationFile=log4j2.xml", "-Debms.jdbc.update=true",
+        "-Dazure.keyvault.uri=https://ebms-keyvault.vault.azure.net/",
+        "-Dazure.keyvault.tenant-id=e3c5bc88-7ed8-4978-b0d4-1b3e90ed9f06",
+        "-Dazure.keyvault.client-id=http://eebmsss",
+        "-Dazure.keyvault.client-secret=Mlk9XAyCvhJtJdhL_i1H8DUm04rTZgY-_3"]
+    },
+    {
+      "type": "java",
+      "name": "Launch StartEmbedded SSL",
+      "request": "launch",
+      "mainClass": "nl.clockwork.ebms.admin.StartEmbedded",
+      "projectName": "ebms-admin",
+      "args": ["-hsqldb", "-ssl", "-soap", "-health"],
+      "vmArgs": ["-Djavax.net.ssl.trustStore=", "-Dlog4j.configurationFile=log4j2.xml", "-Debms.jdbc.update=true"]
+    }
+  ]
+}
