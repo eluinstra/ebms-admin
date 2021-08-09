@@ -55,6 +55,7 @@ import nl.clockwork.ebms.event.MessageEventListenerConfig.EventListenerType;
 import nl.clockwork.ebms.jaxrs.X509CertificateDeserializer;
 import nl.clockwork.ebms.jaxrs.X509CertificateSerializer;
 import nl.clockwork.ebms.service.EbMSMessageService;
+import nl.clockwork.ebms.service.EbMSMessageServiceImpl;
 import nl.clockwork.ebms.service.EbMSMessageServiceMTOM;
 
 @Configuration
@@ -162,7 +163,8 @@ public class EmbeddedWebConfig
 		val result = HashMap.<Class<?>,Object>ofEntries(
 			Tuple.of(CPAServiceImpl.class, cpaService),
 			Tuple.of(URLMappingServiceImpl.class, urlMappingService),
-			Tuple.of(CertificateMappingServiceImpl.class, certificateMappingService));
+			Tuple.of(CertificateMappingServiceImpl.class, certificateMappingService),
+			Tuple.of(EbMSMessageServiceImpl.class, ebMSMessageService));
 		return result;
 	}
 
