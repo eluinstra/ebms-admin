@@ -24,6 +24,7 @@ import javax.xml.ws.soap.SOAPBinding;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
 import org.apache.cxf.binding.BindingFactoryManager;
@@ -148,9 +149,7 @@ public class EmbeddedWebConfig
 		sf.setAddress("/rest");
 		sf.setProvider(createJacksonJsonProvider());
 		sf.setResourceClasses(getResourceClasses().keySet().toJavaList());
-		getResourceClasses().forEach((resourceClass,resourceObject) -> {
-			createResourceProvider(sf, resourceClass, resourceObject);
-		});
+		getResourceClasses().forEach((resourceClass,resourceObject) -> createResourceProvider(sf, resourceClass, resourceObject));
 		val manager = sf.getBus().getExtension(BindingFactoryManager.class);
 		val factory = new JAXRSBindingFactory();
 		factory.setBus(sf.getBus());
@@ -177,6 +176,7 @@ public class EmbeddedWebConfig
 
 	private ObjectMapper createObjectMapper() {
 		val result = new ObjectMapper();
+		result.registerModule(new Jdk8Module());
 		result.registerModule(createSimpleModule());
 		return result;
 	}
