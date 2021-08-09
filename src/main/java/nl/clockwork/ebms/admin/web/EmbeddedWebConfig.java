@@ -15,12 +15,15 @@
  */
 package nl.clockwork.ebms.admin.web;
 
+import java.security.cert.X509Certificate;
 import java.util.Collections;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Endpoint;
 import javax.xml.ws.soap.SOAPBinding;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
 import org.apache.cxf.binding.BindingFactoryManager;
@@ -36,14 +39,21 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import io.vavr.Tuple;
+import io.vavr.collection.HashMap;
+import io.vavr.collection.Map;
 import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.cpa.CPAService;
+import nl.clockwork.ebms.cpa.CPAServiceImpl;
 import nl.clockwork.ebms.cpa.certificate.CertificateMappingService;
+import nl.clockwork.ebms.cpa.certificate.CertificateMappingServiceImpl;
 import nl.clockwork.ebms.cpa.url.URLMappingService;
 import nl.clockwork.ebms.cpa.url.URLMappingServiceImpl;
 import nl.clockwork.ebms.event.MessageEventListenerConfig.EventListenerType;
+import nl.clockwork.ebms.jaxrs.X509CertificateDeserializer;
+import nl.clockwork.ebms.jaxrs.X509CertificateSerializer;
 import nl.clockwork.ebms.service.EbMSMessageService;
 import nl.clockwork.ebms.service.EbMSMessageServiceMTOM;
 
@@ -110,12 +120,6 @@ public class EmbeddedWebConfig
 	}
 
 	@Bean
-	public Server registerRestServices()
-	{
-		return createRestServer(urlMappingService);
-	}
-
-	@Bean
 	public SpringBus cxf()
 	{
 		val result = new SpringBus();
@@ -135,18 +139,54 @@ public class EmbeddedWebConfig
 		return result;
 	}
 
-	public Server createRestServer(Object service)
+	@Bean
+	public Server createRestServer()
 	{
-		JAXRSServerFactoryBean sf = new JAXRSServerFactoryBean();
+		val sf = new JAXRSServerFactoryBean();
 		sf.setBus(cxf());
 		sf.setAddress("/rest");
-		sf.setProvider(new JacksonJsonProvider());
-		sf.setResourceClasses(URLMappingServiceImpl.class);
-		sf.setResourceProvider(URLMappingServiceImpl.class, new SingletonResourceProvider(service));
-		BindingFactoryManager manager = sf.getBus().getExtension(BindingFactoryManager.class);
-		JAXRSBindingFactory factory = new JAXRSBindingFactory();
+		sf.setProvider(createJacksonJsonProvider());
+		sf.setResourceClasses(getResourceClasses().keySet().toJavaList());
+		getResourceClasses().forEach((resourceClass,resourceObject) -> {
+			createResourceProvider(sf, resourceClass, resourceObject);
+		});
+		val manager = sf.getBus().getExtension(BindingFactoryManager.class);
+		val factory = new JAXRSBindingFactory();
 		factory.setBus(sf.getBus());
 		manager.registerBindingFactory(JAXRSBindingFactory.JAXRS_BINDING_ID,factory);
 		return sf.create();
+	}
+
+	Map<Class<?>,Object> getResourceClasses()
+	{
+		val result = HashMap.<Class<?>,Object>ofEntries(
+			Tuple.of(CPAServiceImpl.class, cpaService),
+			Tuple.of(URLMappingServiceImpl.class, urlMappingService),
+			Tuple.of(CertificateMappingServiceImpl.class, certificateMappingService));
+		return result;
+	}
+
+	private JacksonJsonProvider createJacksonJsonProvider()
+	{
+		val result = new JacksonJsonProvider();
+		result.setMapper(createObjectMapper());
+		return result;
+	}
+
+	private ObjectMapper createObjectMapper() {
+		val result = new ObjectMapper();
+		result.registerModule(createSimpleModule());
+		return result;
+	}
+
+	private SimpleModule createSimpleModule() {
+		val result = new SimpleModule();
+		result.addSerializer(X509Certificate.class, new X509CertificateSerializer());
+		result.addDeserializer(X509Certificate.class, new X509CertificateDeserializer());
+		return result;
+	}
+
+	private void createResourceProvider(JAXRSServerFactoryBean sf, Class<?> resourceClass, Object resourceObject) {
+		sf.setResourceProvider(resourceClass, new SingletonResourceProvider(resourceObject));
 	}
 }
