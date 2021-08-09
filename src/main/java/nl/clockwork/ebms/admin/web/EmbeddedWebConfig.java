@@ -21,8 +21,15 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.Endpoint;
 import javax.xml.ws.soap.SOAPBinding;
 
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+
+import org.apache.cxf.binding.BindingFactoryManager;
 import org.apache.cxf.bus.spring.SpringBus;
+import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.ext.logging.LoggingFeature;
+import org.apache.cxf.jaxrs.JAXRSBindingFactory;
+import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
+import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +42,7 @@ import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.cpa.CPAService;
 import nl.clockwork.ebms.cpa.certificate.CertificateMappingService;
 import nl.clockwork.ebms.cpa.url.URLMappingService;
+import nl.clockwork.ebms.cpa.url.URLMappingServiceImpl;
 import nl.clockwork.ebms.event.MessageEventListenerConfig.EventListenerType;
 import nl.clockwork.ebms.service.EbMSMessageService;
 import nl.clockwork.ebms.service.EbMSMessageServiceMTOM;
@@ -102,6 +110,12 @@ public class EmbeddedWebConfig
 	}
 
 	@Bean
+	public Server registerRestServices()
+	{
+		return createRestServer(urlMappingService);
+	}
+
+	@Bean
 	public SpringBus cxf()
 	{
 		val result = new SpringBus();
@@ -119,5 +133,20 @@ public class EmbeddedWebConfig
 		result.setEndpointName(new QName(namespaceUri,endpointName));
 		result.publish();
 		return result;
+	}
+
+	public Server createRestServer(Object service)
+	{
+		JAXRSServerFactoryBean sf = new JAXRSServerFactoryBean();
+		sf.setBus(cxf());
+		sf.setAddress("/rest");
+		sf.setProvider(new JacksonJsonProvider());
+		sf.setResourceClasses(URLMappingServiceImpl.class);
+		sf.setResourceProvider(URLMappingServiceImpl.class, new SingletonResourceProvider(service));
+		BindingFactoryManager manager = sf.getBus().getExtension(BindingFactoryManager.class);
+		JAXRSBindingFactory factory = new JAXRSBindingFactory();
+		factory.setBus(sf.getBus());
+		manager.registerBindingFactory(JAXRSBindingFactory.JAXRS_BINDING_ID,factory);
+		return sf.create();
 	}
 }

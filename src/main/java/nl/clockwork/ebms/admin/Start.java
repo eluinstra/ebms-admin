@@ -33,6 +33,9 @@ import java.util.stream.Collectors;
 import javax.management.remote.JMXServiceURL;
 import javax.servlet.DispatcherType;
 
+import com.microsoft.applicationinsights.web.internal.ApplicationInsightsServletContextListener;
+import com.microsoft.applicationinsights.web.internal.WebRequestTrackingFilter;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -66,9 +69,6 @@ import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-
-import com.microsoft.applicationinsights.web.internal.ApplicationInsightsServletContextListener;
-import com.microsoft.applicationinsights.web.internal.WebRequestTrackingFilter;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
