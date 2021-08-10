@@ -56,6 +56,8 @@ import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.ConnectionLimit;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -266,7 +268,9 @@ public class Start implements SystemInterface
 
 	private ServerConnector createHttpConnector(CommandLine cmd)
 	{
-		val result = new ServerConnector(this.server);
+		val httpConfig = new HttpConfiguration();
+		httpConfig.setSendServerVersion(false);
+		val result = new ServerConnector(server,new HttpConnectionFactory(httpConfig));
 		result.setHost(cmd.getOptionValue(HOST_OPTION,DEFAULT_HOST));
 		result.setPort(Integer.parseInt(cmd.getOptionValue(PORT_OPTION,DEFAULT_PORT)));
 		result.setName(WEB_CONNECTOR_NAME);
@@ -347,17 +351,19 @@ public class Start implements SystemInterface
 		}
 	}
 
-	private ServerConnector createHttpsConnector(CommandLine cmd, SslContextFactory.Server sslContectFactory)
+	private ServerConnector createHttpsConnector(CommandLine cmd, SslContextFactory.Server sslContextFactory)
 	{
-		val connector = new ServerConnector(this.server,sslContectFactory);
-		connector.setHost(cmd.getOptionValue(HOST_OPTION,DEFAULT_HOST));
-		connector.setPort(Integer.parseInt(cmd.getOptionValue(PORT_OPTION,DEFAULT_SSL_PORT)));
-		connector.setName(WEB_CONNECTOR_NAME);
+		val httpConfig = new HttpConfiguration();
+		httpConfig.setSendServerVersion(false);
+		val result = new ServerConnector(server,sslContextFactory,new HttpConnectionFactory(httpConfig));
+		result.setHost(cmd.getOptionValue(HOST_OPTION,DEFAULT_HOST));
+		result.setPort(Integer.parseInt(cmd.getOptionValue(PORT_OPTION,DEFAULT_SSL_PORT)));
+		result.setName(WEB_CONNECTOR_NAME);
 		if (!cmd.hasOption(HEADLESS_OPTION))
-			println("Web Server configured on https://" + Utils.getHost(connector.getHost()) + ":" + connector.getPort() + getPath(cmd));
+			println("Web Server configured on https://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + getPath(cmd));
 		if (cmd.hasOption(SOAP_OPTION))
-			println("SOAP Service configured on https://" + Utils.getHost(connector.getHost()) + ":" + connector.getPort() + SOAP_URL);
-		return connector;
+			println("SOAP Service configured on https://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + SOAP_URL);
+		return result;
 	}
 
 	protected String getPath(CommandLine cmd)
