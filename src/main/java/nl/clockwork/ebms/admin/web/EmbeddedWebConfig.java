@@ -146,7 +146,7 @@ public class EmbeddedWebConfig
 	{
 		val sf = new JAXRSServerFactoryBean();
 		sf.setBus(cxf());
-		sf.setAddress("/rest");
+		sf.setAddress("/rest/v18");
 		sf.setProvider(createJacksonJsonProvider());
 		sf.setResourceClasses(getResourceClasses().keySet().toJavaList());
 		getResourceClasses().forEach((resourceClass,resourceObject) -> createResourceProvider(sf, resourceClass, resourceObject));
