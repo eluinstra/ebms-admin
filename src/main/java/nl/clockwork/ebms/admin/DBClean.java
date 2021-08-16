@@ -27,6 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 import javax.sql.DataSource;
@@ -91,6 +92,7 @@ public class DBClean implements SystemInterface
 		result.addOption("cmd",true,"objects to clean [vales: cpa|messages]");
 		result.addOption("cpaId",true,"the cpaId of the CPA to delete");
 		result.addOption("dateFrom",true,"the date from which objects will be deleted [format: YYYYMMDD][default: " + dateFormatter.format(LocalDate.now().minusDays(30)) + "]");
+		result.addOption("retentionDays", true, "the number of days that will be retained during deletion, overrules occurrence of dateFrom option");
 		result.addOption("configDir",true,"set config directory (default=current dir)");
 		return result;
 	}
@@ -186,7 +188,8 @@ public class DBClean implements SystemInterface
 
 	private void executeCleanMessages(CommandLine cmd) throws IOException
 	{
-		val dateFrom = createDateFrom(cmd.getOptionValue("dateFrom"));
+		val dateFrom = Objects.nonNull(cmd.getOptionValue("retentionDays")) ? createDateFromRetentionDays(cmd.getOptionValue("retentionDays")) 
+		                                                                    : createDateFrom(cmd.getOptionValue("dateFrom"));
 		if (dateFrom != null)
 		{
 			println("using fromDate " + dateFrom);
@@ -205,7 +208,20 @@ public class DBClean implements SystemInterface
 		else
 			println("Unable to parse date " + cmd.getOptionValue("dateFrom"));
 	}
-
+	
+	private static Instant createDateFromRetentionDays(String retentionDaysString)
+    {
+        try
+        {
+            val date = StringUtils.isEmpty(retentionDaysString) ? null : LocalDate.now().minusDays(Integer.parseInt(retentionDaysString));
+            return date.atStartOfDay(ZoneId.systemDefault()).toInstant();
+        }
+        catch (NumberFormatException e)
+        {
+            return null;
+        }
+    }
+	
 	private static Instant createDateFrom(String s)
 	{
 		try
