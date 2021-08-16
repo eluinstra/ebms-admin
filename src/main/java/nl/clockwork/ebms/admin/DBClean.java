@@ -25,6 +25,11 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+
+import javax.sql.DataSource;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -35,9 +40,10 @@ import org.beryx.textio.TextIO;
 import org.beryx.textio.TextIoFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.querydsl.sql.SQLExpressions;
 import com.querydsl.sql.SQLQueryFactory;
 
 import lombok.AccessLevel;
@@ -52,8 +58,6 @@ import nl.clockwork.ebms.querydsl.model.QDeliveryTask;
 import nl.clockwork.ebms.querydsl.model.QEbmsAttachment;
 import nl.clockwork.ebms.querydsl.model.QEbmsMessage;
 import nl.clockwork.ebms.querydsl.model.QMessageEvent;
-
-import javax.sql.DataSource;
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @RequiredArgsConstructor
@@ -230,57 +234,90 @@ public class DBClean implements SystemInterface
 
 	private void cleanCPA(String cpaId)
 	{
-		val selectMessageIdsByCpaId = SQLExpressions.select(messageTable.messageId).from(messageTable).where(messageTable.cpaId.eq(cpaId));
+	    val ids = queryFactory.select(messageTable.messageId).from(messageTable).where(messageTable.cpaId.eq(cpaId)).fetch();
+	    
+		Function<List<String>, Long> query = idList -> queryFactory.delete(deliveryLogTable).where(deliveryLogTable.messageId.in(idList)).execute();
+		defensiveDelete(ids, "deliveryLogs", query);
+		
+		query = idList -> queryFactory.delete(deliveryTaskTable).where(deliveryTaskTable.messageId.in(ids)).execute();
+		defensiveDelete(ids, "deliveryTasks", query);
 
-		var result = queryFactory.delete(deliveryLogTable).where(deliveryLogTable.messageId.in(selectMessageIdsByCpaId)).execute();
-		println(result + " deliveryLogs deleted");
-
-		result = queryFactory.delete(deliveryTaskTable).where(deliveryTaskTable.messageId.in(selectMessageIdsByCpaId)).execute();
-		println(result + " deliveryTasks deleted");
-
-		result = queryFactory.delete(messageEventTable).where(messageEventTable.messageId.in(selectMessageIdsByCpaId)).execute();
-		println(result + " messageEvents deleted");
+		query = idList -> queryFactory.delete(messageEventTable).where(messageEventTable.messageId.in(ids)).execute();
+		defensiveDelete(ids, "messageEvents", query);
 
 		if (alternativeAttachmentImplementation())
 		{
-			result = jdbcTemplate.update("delete from ebms_attachment where ebms_message_id in "
-					+ "(select id from ebms_message where cpa_id = ?)", cpaId);
+	        query = idList -> 
+            {
+                SqlParameterSource parameters = new MapSqlParameterSource("ids", idList);
+                return (long)jdbcTemplate.update("delete from ebms_attachment where ebms_message_id in "
+                + "(:ids)", parameters);
+            };
 		} else {
-			result = queryFactory.delete(attachmentTable).where(attachmentTable.messageId.in(selectMessageIdsByCpaId)).execute();
+			query = idList -> queryFactory.delete(attachmentTable).where(attachmentTable.messageId.in(idList)).execute();
 		}
-		println(result + " attachments deleted");
+		defensiveDelete(ids, "attachments", query);
+		
+		query = idList -> (long) queryFactory.delete(messageTable).where(messageTable.cpaId.eq(cpaId)).execute();
+		defensiveDelete(ids, "messages", query);
 
-		result = queryFactory.delete(messageTable).where(messageTable.cpaId.eq(cpaId)).execute();
-		println(result + " messages deleted");
-
-		//result = queryFactory.delete(cpaTable).where(cpaTable.cpaId.eq(cpaId)).execute();
-		//print("cpa " + cpaId + " deleted");
 		println("delete cpa " + cpaId + " in ebms-admin to delete it from the cache!!!");
 	}
 
 	private void cleanMessages(Instant dateFrom)
 	{
-		val selectMessageIdsByPersistTime = SQLExpressions.select(messageTable.messageId).from(messageTable).where(messageTable.persistTime.loe(dateFrom));
+		val ids = queryFactory.select(messageTable.messageId).from(messageTable).where(messageTable.persistTime.loe(dateFrom)).fetch();
+		
+		Function<List<String>, Long> query = idList -> queryFactory.delete(deliveryLogTable).where(deliveryLogTable.messageId.in(idList)).execute();
+		defensiveDelete(ids, "deliveryLogs", query);
 
-		var result = queryFactory.delete(deliveryLogTable).where(deliveryLogTable.messageId.in(selectMessageIdsByPersistTime)).execute();
-		println(result + " deliveryLogs deleted");
-
-		result = queryFactory.delete(deliveryTaskTable).where(deliveryTaskTable.messageId.in(selectMessageIdsByPersistTime)).execute();
-		println(result + " deliveryTasks deleted");
-
-		result = queryFactory.delete(messageEventTable).where(messageEventTable.messageId.in(selectMessageIdsByPersistTime)).execute();
-		println(result + " messageEvents deleted");
-
+		query = idList -> queryFactory.delete(deliveryTaskTable).where(deliveryTaskTable.messageId.in(idList)).execute();
+		defensiveDelete(ids, "deliveryTasks", query);
+		
+		query = idList -> queryFactory.delete(messageEventTable).where(messageEventTable.messageId.in(idList)).execute();
+		defensiveDelete(ids, "messageEvents", query);
+		
 		if (alternativeAttachmentImplementation())
 		{
-			result = jdbcTemplate.update("delete from ebms_attachment where ebms_message_id in "
-					+ "(select id from ebms_message where persist_time <= ?)", new java.sql.Date(dateFrom.toEpochMilli()));
+		    query = idList -> 
+		            {
+		            SqlParameterSource parameters = new MapSqlParameterSource("ids", idList);
+		            return (long)jdbcTemplate.update("delete from ebms_attachment where ebms_message_id in "
+					+ "(:ids)", parameters);
+		            };
 		} else {
-			result = queryFactory.delete(attachmentTable).where(attachmentTable.messageId.in(selectMessageIdsByPersistTime)).execute();
+			query = idList -> queryFactory.delete(attachmentTable).where(attachmentTable.messageId.in(idList)).execute();
 		}
-		println(result + " attachments deleted");
-
-		result = queryFactory.delete(messageTable).where(messageTable.persistTime.loe(dateFrom)).execute();
+		defensiveDelete(ids, "attachments", query);
+		
+		var result = queryFactory.delete(messageTable).where(messageTable.persistTime.loe(dateFrom)).execute();
 		println(result + " messages deleted");
 	}
+	
+	private void defensiveDelete(List<String> ids, String tableString, Function<List<String>,Long> query){
+	    int deleteBlockSize = 4000;//TODO make this configurable?
+        
+	    List<String> localCopy = new ArrayList<>(ids);
+	    
+        if (ids.size() == 0) {
+            println("no "+tableString+" objects to delete");
+        } else {
+            List<String> idsBlock = null;
+            int stopIndex = Math.min(deleteBlockSize, ids.size());
+            int nrOfRowsDeleted = 0;
+            do {
+                
+                idsBlock = localCopy.subList(0, stopIndex);
+                if (idsBlock.size() > 0) {
+                    nrOfRowsDeleted += query.apply(idsBlock);
+                    
+                    // corresponding entries in ids list will be cleared
+                    idsBlock.clear();
+                    stopIndex = Math.min(deleteBlockSize, localCopy.size());
+                }
+            } while (localCopy.size() > 0);
+            println(nrOfRowsDeleted +" "+tableString+ "rows deleted");
+        }
+	}
+	
 }
