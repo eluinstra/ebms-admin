@@ -176,7 +176,7 @@ public class DBClean implements SystemInterface
 		catch (Exception e)
 		{
 			e.printStackTrace();
-			transactionManager.rollback(status);
+		    transactionManager.rollback(status);
 		}
 	}
 
@@ -195,7 +195,7 @@ public class DBClean implements SystemInterface
 			catch (Exception e)
 			{
 			    e.printStackTrace();
-				transactionManager.rollback(status);
+			    transactionManager.rollback(status);
 			}
 		}
 		else
@@ -223,7 +223,9 @@ public class DBClean implements SystemInterface
 		} catch (SQLException e) {
 			e.printStackTrace();
 		};
-		return vendor.equalsIgnoreCase("mysql") || vendor.equalsIgnoreCase("microsoft sql server");
+		return vendor.equalsIgnoreCase("mysql") || 
+		       vendor.equalsIgnoreCase("microsoft sql server") || 
+		       vendor.equalsIgnoreCase("mariadb");
 	}
 
 	private void cleanCPA(String cpaId)
