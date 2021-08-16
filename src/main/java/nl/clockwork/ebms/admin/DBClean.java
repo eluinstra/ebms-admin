@@ -170,12 +170,14 @@ public class DBClean implements SystemInterface
 			}
 			else
 				println("CPA " + cpaId + " not found!");
+			
+			transactionManager.commit(status);
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 			transactionManager.rollback(status);
 		}
-		transactionManager.commit(status);
 	}
 
 	private void executeCleanMessages(CommandLine cmd) throws IOException
@@ -188,12 +190,13 @@ public class DBClean implements SystemInterface
 			try
 			{
 				cleanMessages(dateFrom);
+				transactionManager.commit(status);
 			}
 			catch (Exception e)
 			{
+			    e.printStackTrace();
 				transactionManager.rollback(status);
 			}
-			transactionManager.commit(status);
 		}
 		else
 			println("Unable to parse date " + cmd.getOptionValue("dateFrom"));
