@@ -16,6 +16,7 @@
 package nl.clockwork.ebms.admin.web;
 
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.Collections;
 
 import javax.xml.namespace.QName;
@@ -34,6 +35,7 @@ import org.apache.cxf.ext.logging.LoggingFeature;
 import org.apache.cxf.jaxrs.JAXRSBindingFactory;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
+import org.apache.cxf.jaxrs.openapi.OpenApiFeature;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -148,6 +150,7 @@ public class EmbeddedWebConfig
 		sf.setBus(cxf());
 		sf.setAddress("/rest/v18");
 		sf.setProvider(createJacksonJsonProvider());
+		sf.setFeatures(Arrays.asList(new OpenApiFeature()));
 		sf.setResourceClasses(getResourceClasses().keySet().toJavaList());
 		getResourceClasses().forEach((resourceClass,resourceObject) -> createResourceProvider(sf, resourceClass, resourceObject));
 		val manager = sf.getBus().getExtension(BindingFactoryManager.class);
