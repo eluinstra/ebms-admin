@@ -162,7 +162,7 @@ public class EmbeddedWebConfig
 		sf.setBus(cxf());
 		sf.setAddress("/rest/v18");
 		sf.setProvider(createJacksonJsonProvider());
-		sf.setFeatures(Arrays.asList(new OpenApiFeature()));
+		sf.setFeatures(Arrays.asList(createOpenApiFeature()));
 		sf.setResourceClasses(getResourceClasses().keySet().toJavaList());
 		getResourceClasses().forEach((resourceClass,resourceObject) -> createResourceProvider(sf,resourceClass,resourceObject));
 		registerBindingFactory(sf);
@@ -200,6 +200,13 @@ public class EmbeddedWebConfig
 		val result = new SimpleModule();
 		result.addSerializer(X509Certificate.class,new X509CertificateSerializer());
 		result.addDeserializer(X509Certificate.class,new X509CertificateDeserializer());
+		return result;
+	}
+
+	private OpenApiFeature createOpenApiFeature()
+	{
+		val result = new OpenApiFeature();
+		result.setSupportSwaggerUi(false);
 		return result;
 	}
 
