@@ -43,9 +43,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import io.vavr.Tuple;
-import io.vavr.collection.HashMap;
-import io.vavr.collection.Map;
 import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
@@ -152,26 +149,40 @@ public class EmbeddedWebConfig
 	}
 
 	@Bean
-	public Server createRestServer()
+	public Server createCPARestServer()
+	{
+		return createRestServer(CPAServiceImpl.class,cpaService,"/cpas");
+	}
+
+	@Bean
+	public Server createURLMappingCPARestServer()
+	{
+		return createRestServer(URLMappingServiceImpl.class,urlMappingService,"/urlMappings");
+	}
+
+	@Bean
+	public Server createCertificateMappingRestServer()
+	{
+		return createRestServer(CertificateMappingServiceImpl.class,certificateMappingService,"/certificateMappings");
+	}
+
+	@Bean
+	public Server createEbMSRestServer()
+	{
+		return createRestServer(EbMSMessageServiceImpl.class,ebMSMessageService,"/ebms");
+	}
+
+	public Server createRestServer(Class<?> resourceClass, Object resourceObject, String path)
 	{
 		val sf = new JAXRSServerFactoryBean();
 		sf.setBus(cxf());
-		sf.setAddress("/rest/v18");
+		sf.setAddress("/rest/v18" + path);
 		sf.setProvider(createJacksonJsonProvider());
 		sf.setFeatures(Arrays.asList(createOpenApiFeature()));
-		sf.setResourceClasses(getResourceClasses().keySet().toJavaList());
-		getResourceClasses().forEach((resourceClass,resourceObject) -> createResourceProvider(sf,resourceClass,resourceObject));
+		sf.setResourceClasses(resourceClass);
+		sf.setResourceProvider(resourceClass,new SingletonResourceProvider(resourceObject));
 		registerBindingFactory(sf);
 		return sf.create();
-	}
-
-	Map<Class<?>,Object> getResourceClasses()
-	{
-		return HashMap.<Class<?>,Object>ofEntries(
-			Tuple.of(CPAServiceImpl.class,cpaService),
-			Tuple.of(URLMappingServiceImpl.class,urlMappingService),
-			Tuple.of(CertificateMappingServiceImpl.class,certificateMappingService),
-			Tuple.of(EbMSMessageServiceImpl.class,ebMSMessageService));
 	}
 
 	private JacksonJsonProvider createJacksonJsonProvider()
@@ -193,13 +204,10 @@ public class EmbeddedWebConfig
 	private OpenApiFeature createOpenApiFeature()
 	{
 		val result = new OpenApiFeature();
+		result.setUseContextBasedConfig(true);
+		result.setScan(false);
 		result.setSupportSwaggerUi(false);
 		return result;
-	}
-
-	private void createResourceProvider(JAXRSServerFactoryBean sf, Class<?> resourceClass, Object resourceObject)
-	{
-		sf.setResourceProvider(resourceClass,new SingletonResourceProvider(resourceObject));
 	}
 
 	private void registerBindingFactory(final JAXRSServerFactoryBean sf)
