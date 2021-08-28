@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -25,7 +24,6 @@ import javax.xml.ws.soap.SOAPBinding;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
@@ -58,8 +56,6 @@ import nl.clockwork.ebms.cpa.certificate.CertificateMappingServiceImpl;
 import nl.clockwork.ebms.cpa.url.URLMappingService;
 import nl.clockwork.ebms.cpa.url.URLMappingServiceImpl;
 import nl.clockwork.ebms.event.MessageEventListenerConfig.EventListenerType;
-import nl.clockwork.ebms.jaxrs.X509CertificateDeserializer;
-import nl.clockwork.ebms.jaxrs.X509CertificateSerializer;
 import nl.clockwork.ebms.service.EbMSMessageService;
 import nl.clockwork.ebms.service.EbMSMessageServiceImpl;
 import nl.clockwork.ebms.service.EbMSMessageServiceMTOM;
@@ -190,16 +186,7 @@ public class EmbeddedWebConfig
 		val result = new ObjectMapper();
 		result.registerModule(new Jdk8Module());
 		result.registerModule(new JavaTimeModule());
-		result.registerModule(createSimpleModule());
 		result.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS,false);
-		return result;
-	}
-
-	private SimpleModule createSimpleModule()
-	{
-		val result = new SimpleModule();
-		result.addSerializer(X509Certificate.class,new X509CertificateSerializer());
-		result.addDeserializer(X509Certificate.class,new X509CertificateDeserializer());
 		return result;
 	}
 
