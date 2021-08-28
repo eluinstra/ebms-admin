@@ -30,6 +30,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
+import org.apache.cxf.Bus;
 import org.apache.cxf.binding.BindingFactoryManager;
 import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.endpoint.Server;
@@ -120,18 +121,27 @@ public class EmbeddedWebConfig
 		result.setServiceName(new QName("http://www.ordina.nl/ebms/2.18","EbMSMessageService"));
 		result.setEndpointName(new QName("http://www.ordina.nl/ebms/2.18","EbMSMessagePort"));
 		result.publish();
+		enableMTOM(result);
+		return result;
+	}
+
+	private void enableMTOM(final org.apache.cxf.jaxws.EndpointImpl result)
+	{
 		val binding = (SOAPBinding)result.getBinding();
 		binding.setMTOMEnabled(true);
-		return result;
 	}
 
 	@Bean
 	public SpringBus cxf()
 	{
 		val result = new SpringBus();
-		val f = new LoggingFeature();
-		f.setPrettyLogging(true);
-		result.setFeatures(Collections.singletonList(f));
+		result.setFeatures(Collections.singletonList(createLoggingFeature()));
+		return result;
+	}
+
+	private org.apache.cxf.ext.logging.LoggingFeature createLoggingFeature() {
+		val result = new LoggingFeature();
+		result.setPrettyLogging(true);
 		return result;
 	}
 
@@ -155,10 +165,7 @@ public class EmbeddedWebConfig
 		sf.setFeatures(Arrays.asList(new OpenApiFeature()));
 		sf.setResourceClasses(getResourceClasses().keySet().toJavaList());
 		getResourceClasses().forEach((resourceClass,resourceObject) -> createResourceProvider(sf,resourceClass,resourceObject));
-		val manager = sf.getBus().getExtension(BindingFactoryManager.class);
-		val factory = new JAXRSBindingFactory();
-		factory.setBus(sf.getBus());
-		manager.registerBindingFactory(JAXRSBindingFactory.JAXRS_BINDING_ID,factory);
+		registerBindingFactory(sf);
 		return sf.create();
 	}
 
@@ -178,7 +185,8 @@ public class EmbeddedWebConfig
 		return result;
 	}
 
-	private ObjectMapper createObjectMapper() {
+	private ObjectMapper createObjectMapper()
+	{
 		val result = new ObjectMapper();
 		result.registerModule(new Jdk8Module());
 		result.registerModule(new JavaTimeModule());
@@ -187,14 +195,28 @@ public class EmbeddedWebConfig
 		return result;
 	}
 
-	private SimpleModule createSimpleModule() {
+	private SimpleModule createSimpleModule()
+	{
 		val result = new SimpleModule();
 		result.addSerializer(X509Certificate.class,new X509CertificateSerializer());
 		result.addDeserializer(X509Certificate.class,new X509CertificateDeserializer());
 		return result;
 	}
 
-	private void createResourceProvider(JAXRSServerFactoryBean sf,Class<?> resourceClass,Object resourceObject) {
+	private void createResourceProvider(JAXRSServerFactoryBean sf, Class<?> resourceClass, Object resourceObject)
+	{
 		sf.setResourceProvider(resourceClass,new SingletonResourceProvider(resourceObject));
+	}
+
+	private void registerBindingFactory(final JAXRSServerFactoryBean sf)
+	{
+		val manager = sf.getBus().getExtension(BindingFactoryManager.class);
+		manager.registerBindingFactory(JAXRSBindingFactory.JAXRS_BINDING_ID,createBindingFactory(sf.getBus()));
+	}
+
+	private JAXRSBindingFactory createBindingFactory(final Bus bus) {
+		val result = new JAXRSBindingFactory();
+		result.setBus(bus);
+		return result;
 	}
 }
