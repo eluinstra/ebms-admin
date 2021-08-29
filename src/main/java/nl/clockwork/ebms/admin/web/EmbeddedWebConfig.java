@@ -22,6 +22,7 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.Endpoint;
 import javax.xml.ws.soap.SOAPBinding;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
@@ -181,7 +182,7 @@ public class EmbeddedWebConfig
 		sf.setFeatures(Arrays.asList(createOpenApiFeature()));
 		sf.setResourceClasses(resourceClass);
 		sf.setResourceProvider(resourceClass,new SingletonResourceProvider(resourceObject));
-		registerBindingFactory(sf);
+		registerBindingFactory(sf.getBus());
 		return sf.create();
 	}
 
@@ -198,6 +199,7 @@ public class EmbeddedWebConfig
 		result.registerModule(new Jdk8Module());
 		result.registerModule(new JavaTimeModule());
 		result.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS,false);
+		result.setSerializationInclusion(Include.NON_NULL);
 		return result;
 	}
 
@@ -210,10 +212,10 @@ public class EmbeddedWebConfig
 		return result;
 	}
 
-	private void registerBindingFactory(final JAXRSServerFactoryBean sf)
+	private void registerBindingFactory(final Bus bus)
 	{
-		val manager = sf.getBus().getExtension(BindingFactoryManager.class);
-		manager.registerBindingFactory(JAXRSBindingFactory.JAXRS_BINDING_ID,createBindingFactory(sf.getBus()));
+		val manager = bus.getExtension(BindingFactoryManager.class);
+		manager.registerBindingFactory(JAXRSBindingFactory.JAXRS_BINDING_ID,createBindingFactory(bus));
 	}
 
 	private JAXRSBindingFactory createBindingFactory(final Bus bus) {
