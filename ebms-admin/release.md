@@ -10,7 +10,7 @@ ebms-admin-2.18.3 and ebms-admin-2.17.8 are the latest versions.
 
 ### [ebms-admin-2.18.3.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.3/ebms-admin-2.18.3.jar)
 - DBClean implementation changed based on pull request by Lost Lemon
-- REST service implementation added, more information [here]({{ site.baseurl }}/ebms-admin/ebms-admin/rest.html)
+- REST service implementation added, more information [here]({{ site.baseurl }}/ebms-admin/rest.html)
 - upgrade to [ebms-core-2.18.3.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2183jar)
 
 ### [ebms-admin-2.18.2.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.2/ebms-admin-2.18.2.jar)
