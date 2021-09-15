@@ -1,18 +1,23 @@
 ---
-sort: 9
+sort: 10
 ---
 
 # Release Notes
 
 ```note
-ebms-admin-2.18.2 and ebms-admin-2.17.8 are the latest versions.
+ebms-admin-2.18.3 and ebms-admin-2.17.8 are the latest versions.
 ```
+
+### [ebms-admin-2.18.3.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.3/ebms-admin-2.18.3.jar)
+- DBClean implementation changed based on pull request by Lost Lemon
+- REST service implementation added, more information [here]({{ site.baseurl }}/ebms-admin/ebms-admin/rest.html)
+- upgrade to [ebms-core-2.18.3.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2183jar)
 
 ### [ebms-admin-2.18.2.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.2/ebms-admin-2.18.2.jar)
 
-- fixed DBClean for mssql and mysql, deleting attachments
-- added kafka integration for delivery events
-- added azure application insights and azure keyvault integration
+- fixed DBClean for MSSQL and MySQL, deleting attachments
+- added Apache Kafka integration for delivery events
+- added Microsoft Azure Application Insights and Microsoft Azure Key Vault integration
 - upgrade to [ebms-core-2.18.2.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2182jar)
 
 ### [ebms-admin-2.18.1.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.1/ebms-admin-2.18.1.jar)
@@ -27,7 +32,7 @@ ebms-admin-2.18.2 and ebms-admin-2.17.8 are the latest versions.
 
 ### [ebms-admin-2.17.8.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.17.8/ebms-admin-2.17.8.jar)
 
-- fixed DBClean for mssql and mysql, deleting attachments
+- fixed DBClean for MSSQL and MySQL, deleting attachments
 - upgrade to [ebms-core-2.17.8.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2178jar)
 
 ### [ebms-admin-2.17.7.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.17.7/ebms-admin-2.17.7.jar)
@@ -37,7 +42,7 @@ ebms-admin-2.18.2 and ebms-admin-2.17.8 are the latest versions.
 - maven plugin version upgrades
 - dependency version upgrades, almost all dependencies updated to latest version which still runs on java 1.8
 - bumped the end-dates of the test CPA's to 2022
-- added azure application insights and azure keyvault integration
+- added Microsoft Azure Application Insights and Microsoft Azure Key Vault integration
 - fixed zip issues
 - fixed swallowing errors at server start (server thread)
 - upgraded jetty version

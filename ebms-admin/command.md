@@ -205,7 +205,12 @@ java -cp ebms-admin-{{ site.ebms.core.version }}.jar org.hsqldb.server.Server --
 java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap
 ```
 
-### start ebms-admin serving admin and soap interface over ssl using azure keyvault certificate
+### start ebms-admin serving admin and soap interface over ssl using Microsoft Azure Key Vault certificate
+
+```note
+with the current azure-security-keyvault-jca implementation (version 1.0.0-beta.5) only the certificate and not the full chain is returned.
+this can cause problems with for instance the Microsoft Azure API Gateway which does not want to connect to a server which does not provide the full chain.
+```
 
 (since [v2.17.7]({{ site.baseurl }}/ebms-admin/release.html#ebms-admin-2177jar))
 note, the system property azure.keyvault.uri is required as some requests are made to the keystore before it is initialized in code.
@@ -216,4 +221,12 @@ java -Dazure.keyvault.uri=https://key.vault.azure.net -Djavax.net.ssl.trustStore
 -ssl -soap -trustStoreType PKCS12 -trustStorePath truststore.p12 -trustStorePassword password \
 -keyStoresType AZURE -keyvaultUri https://key.vault.azure.net -keyvaultTennantId f487d075-71f0-486a-beab-7e8d3f873be5 \
 -keyvaultClientId https://digipoort -keyvaultClientSecret _17c.3xulKW~2crwjVTFRT8n-5LKo44uF5
+```
+
+### start ebms-admin serving admin shipping logging and metrics to Microsoft Azure Application Insights
+
+By adding the -applicationInsights parameter the shipping of logging and metrics is enabled. Additional configuration needs to be done in Microsoft Azure.
+
+```sh
+java -Dazure.keyvault.uri=https://key.vault.azure.net -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap -applicationInsights
 ```

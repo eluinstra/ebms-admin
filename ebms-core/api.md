@@ -11,6 +11,8 @@ The EbMS API consists of the following services
 - [CertificateMappingService](#certificatemappingservice)
 - [EbMSMessageService](#ebmsmessageservice)
 
+These services are implemented as a SOAP interface and since EbMS 2.18.3 also as a REST interface.
+
 ## CPAService
 
 The [CPAService](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.ebms.branch.version }}/src/main/java/nl/clockwork/ebms/cpa/CPAService.java) contains functionality to manage CPAs.

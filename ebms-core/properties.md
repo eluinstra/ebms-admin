@@ -284,7 +284,7 @@ truststore.path=nl/clockwork/ebms/truststore.p12
 truststore.password=password
 ```
 
-### Azure keystore
+### Microsoft Azure Key Vault based keystore
 
 (since [v2.17.7]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2177jar))
 Azure keyvault can store the private keys and therefore be a substitute for the client and signature keystores.
@@ -308,11 +308,10 @@ By default these properties are commented-out.
 # azure.keyvault.client.secret=
 ```
 
-
-### Kafka
+### Apache Kafka
 
 (since [v2.18.2]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2182jar))
-The Kafka implementation is currently integrated as provided by Cap Gemini.
+The Apache Kafka implementation is currently integrated as provided by Cap Gemini.
 It allows for the delivery task to be triggered on a Kafka topic.. The topic name is currently fixed `DELIVERY_TASK`
 
 ```properties

@@ -4,11 +4,17 @@ sort: 7
 
 # Release Notes
 
+### [ebms-core-2.18.3.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.18.3/ebms-core-2.18.3.jar)
+
+- update CPAManager: changed streams, naming and extended tests
+- REST service interface added
+- (initial) Apache JMeter tests added for performance testing the SOAP and REST interface
+
 ### [ebms-core-2.18.2.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.18.2/ebms-core-2.18.2.jar)
 
-- removed querydsl (+ issue fixes)
-- added kafka integration for delivery events
-- added azure keyvault integration
+- removed Querydsl (+ issue fixes)
+- added Apache Kafka integration for delivery events
+- added Microsoft Azure Key Vault integration
 
 ### [ebms-core-2.18.1.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.18.1/ebms-core-2.18.1.jar)
 
@@ -42,7 +48,7 @@ sort: 7
 - maven plugin version upgrades
 - dependency version upgrades, almost all dependencies updated to latest version which still runs on java 1.8
 - changed jaxb instant and duration converters to adapters
-- added azure keyvault integration
+- added Microsoft Azure Key Vault integration
 - fixed issue with conversationId used as messageId
 - fixed NullPointerException when sending message in Best Effort mode
 
