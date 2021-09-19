@@ -348,7 +348,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 	
 	protected BooleanBuilder getMessageFilter(QEbmsMessage table, EbMSMessageFilter messageFilter, BooleanBuilder builder)
 	{
-		builder = EbMSDAO.applyFilter(table,messageFilter,builder);
+		builder = applyFilter(table,messageFilter,builder);
 		if (messageFilter != null)
 		{
 			if (messageFilter.getMessageNr() != null)
