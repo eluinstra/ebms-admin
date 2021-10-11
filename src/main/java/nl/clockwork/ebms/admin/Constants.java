@@ -22,4 +22,5 @@ public class Constants
 	public final static String DATE_YEAR_FORMAT = "yyyy";
 	public final static String DATETIME_FORMAT = "dd-MM-yyyy HH:mm:ss";
 	public final static String DATETIME_HOUR_FORMAT = "dd-MM-yyyy HH:mm";
+	public final static String DATE_FORMAT_YMD = "yyyyMMdd";
 }

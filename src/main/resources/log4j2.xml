@@ -28,7 +28,7 @@
 			<PatternLayout pattern="%d [%t] %-5p %c - %m%n" />
 			<Policies>
 				<TimeBasedTriggeringPolicy interval="1"/>
-			</Policies>                               
+			</Policies>
 		</RollingFile>
 	</Appenders>
 
