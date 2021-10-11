@@ -13,3 +13,4 @@ data
 hsqldb
 ignite
 logs
+docker-compose.win32.yml
