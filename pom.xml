@@ -622,7 +622,6 @@
 						<excludes>
 							<exclude>org.projectlombok:lombok</exclude>
 							<exclude>com.zaxxer:HikariCP-java7</exclude>
-							<exclude>com.h2database:h2</exclude>
 							<exclude>org.apache.geronimo.specs:geronimo-jta_1.1_spec</exclude>
 						</excludes>
 					</artifactSet>
