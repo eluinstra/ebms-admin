@@ -99,6 +99,7 @@ public class DBClean implements SystemInterface {
 		result.addOption("cpaId",true,"the cpaId of the CPA to delete");
 		result.addOption("dateFrom",true,"the date from which objects will be deleted [format: YYYYMMDD][default: " + dateFormatter.format(LocalDate.now().minusDays(30)) + "]");
 		result.addOption("retentionDays", true, "the number of days that will be retained during deletion, overrules occurrence of dateFrom option");
+		result.addOption("includeNoPersistDuration", false, "whether or not messages from CPAs without PersistDuration set will be deleted"); 
 		result.addOption("configDir",true,"set config directory (default=current dir)");
 		return result;
 	}
@@ -194,15 +195,22 @@ public class DBClean implements SystemInterface {
 
 	private void executeCleanMessages(CommandLine cmd) throws IOException
 	{
-		val dateFrom = Objects.nonNull(cmd.getOptionValue("retentionDays")) ? createDateFromRetentionDays(cmd.getOptionValue("retentionDays"))
+	    boolean includeNoPersistDuration = cmd.hasOption("includeNoPersistDuration"); 
+	    
+	    val dateFrom = Objects.nonNull(cmd.getOptionValue("retentionDays")) ? createDateFromRetentionDays(cmd.getOptionValue("retentionDays"))
 		                                                                    : createDateFrom(cmd.getOptionValue("dateFrom"));
 		if (dateFrom != null)
 		{
 			println("using fromDate " + dateFrom);
+			
+			if(includeNoPersistDuration) {
+			    println("Including messages from CPA's without PersistDuration set...");
+			}
+			
 			val status = transactionManager.getTransaction(null);
 			try
 			{
-				cleanMessages(dateFrom);
+				cleanMessages(dateFrom, includeNoPersistDuration);
 				transactionManager.commit(status);
 			}
 			catch (Exception e)
@@ -292,9 +300,14 @@ public class DBClean implements SystemInterface {
 
 	}
 
-	private void cleanMessages(Instant dateFrom) {
+	private void cleanMessages(Instant dateFrom, boolean includeNoPersistDuration) {
 		val ids = queryFactory.select(messageTable.messageId).from(messageTable).where(messageTable.persistTime.loe(dateFrom)).fetch();
-
+		
+		if (includeNoPersistDuration) {
+		    val idsWithoutPersistDuration = queryFactory.select(messageTable.messageId).from(messageTable).where(messageTable.timeStamp.loe(dateFrom).and(messageTable.persistTime.isNull())).fetch();
+		    ids.addAll(idsWithoutPersistDuration);
+		}
+		
 		if (ids.size() == 0) {
 			println("no messages to delete");
 		} else {
