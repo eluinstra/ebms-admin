@@ -86,6 +86,8 @@ public class DBClean implements SystemInterface {
 			{
 				val dbClean = createDBClean(context);
 				dbClean.execute(cmd);
+			} catch (Throwable t) {
+			    printErr(t);
 			}
 		}
 		System.exit(0);
