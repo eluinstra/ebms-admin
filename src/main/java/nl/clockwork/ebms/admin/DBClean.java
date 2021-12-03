@@ -48,6 +48,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import com.querydsl.sql.SQLQuery;
 import com.querydsl.sql.SQLQueryFactory;
 
 import lombok.AccessLevel;
@@ -148,11 +149,13 @@ public class DBClean implements SystemInterface {
 	    switch(cmd.getOptionValue("cmd",""))
 		{
 			case("cpa"):
-				validateCleanCPA(cmd);
+				println("Running CPA deletion script...");
+			    validateCleanCPA(cmd);
 				executeCleanCPA(cmd);
 				break;
 			case("messages"):
-				executeCleanMessages(cmd);
+				println("Running Message deletion script...");
+			    executeCleanMessages(cmd);
 				break;
 			default:
 				printWarn(cmd.getOptionValue("cmd") + " not recognized");
@@ -303,24 +306,37 @@ public class DBClean implements SystemInterface {
 	}
 
 	private void cleanMessages(Instant dateFrom, boolean includeNoPersistDuration) {
-		val ids = queryFactory.select(messageTable.messageId).from(messageTable).where(messageTable.persistTime.loe(dateFrom)).fetch();
+	    final SQLQuery<String> messageIdPersistTimeQuery = queryFactory.select(messageTable.messageId).from(messageTable).where(messageTable.persistTime.loe(dateFrom));
+        
+	    do {
+	        println("Deleting bucket of 100000 entries (based on persistTime)....");
+	        val ids = messageIdPersistTimeQuery.limit(100000L).fetch();
+	        deleteMessagesIdList(ids);
+	    } while(messageIdPersistTimeQuery.fetchCount() > 0);
 		
 		if (includeNoPersistDuration) {
-		    val idsWithoutPersistDuration = queryFactory.select(messageTable.messageId).from(messageTable).where(messageTable.timeStamp.loe(dateFrom).and(messageTable.persistTime.isNull())).fetch();
-		    ids.addAll(idsWithoutPersistDuration);
+		    final SQLQuery<String> messageIdTimeStampQuery = queryFactory.select(messageTable.messageId).from(messageTable).where(messageTable.persistTime.isNull().and(messageTable.timeStamp.loe(dateFrom)));
+            
+		    do {
+		        println("Deleting bucket of 100000 entries (includeNoPersistDuration=true)....");
+		        val idsWithoutPersistDuration = messageIdTimeStampQuery.limit(100000L).fetch();
+		        deleteMessagesIdList(idsWithoutPersistDuration);
+		    } while(messageIdTimeStampQuery.fetchCount() > 0);
 		}
-		
-		if (ids.size() == 0) {
-			println("no messages to delete");
+	}
+
+    private void deleteMessagesIdList(final java.util.List<java.lang.String> idsBucket) {
+        if (idsBucket.size() == 0) {
+			println("\tno messages to delete");
 		} else {
 			Function<List<String>, Long> query = idList -> queryFactory.delete(deliveryLogTable).where(deliveryLogTable.messageId.in(idList)).execute();
-			defensiveDelete(ids, "deliveryLogs", query);
+			defensiveDelete(idsBucket, "deliveryLogs", query);
 
 			query = idList -> queryFactory.delete(deliveryTaskTable).where(deliveryTaskTable.messageId.in(idList)).execute();
-			defensiveDelete(ids, "deliveryTasks", query);
+			defensiveDelete(idsBucket, "deliveryTasks", query);
 
 			query = idList -> queryFactory.delete(messageEventTable).where(messageEventTable.messageId.in(idList)).execute();
-			defensiveDelete(ids, "messageEvents", query);
+			defensiveDelete(idsBucket, "messageEvents", query);
 
 			if (alternativeAttachmentImplementation()) {
 			    query = idList ->
@@ -330,15 +346,15 @@ public class DBClean implements SystemInterface {
 				        SqlParameterSource parameterListEmbsMessageIds = new MapSqlParameterSource("embsMessageIds", ebmsMessageIds);
 					return (long) namedParameterJdbcTemplate.update("delete from ebms_attachment where ebms_message_id in (:embsMessageIds)", parameterListEmbsMessageIds);
 				};
-				defensiveDelete(ids, "attachments", query);
+				defensiveDelete(idsBucket, "attachments", query);
 			} else {
 				query = idList -> queryFactory.delete(attachmentTable).where(attachmentTable.messageId.in((List<String>) idList)).execute();
-				defensiveDelete(ids, "attachments", query);
+				defensiveDelete(idsBucket, "attachments", query);
 			}
 			query = idList -> queryFactory.delete(messageTable).where(messageTable.messageId.in((List<String>) idList)).execute();
-			defensiveDelete(ids, "messages", query);
+			defensiveDelete(idsBucket, "messages", query);
 		}
-	}
+    }
 
 	private void defensiveDelete(List<String> ids, String tableString, Function<List<String>,Long> query){
 	    int deleteBlockSize = 4000;//TODO make this configurable?
