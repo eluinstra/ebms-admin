@@ -26,7 +26,12 @@ public interface SystemInterface
 	{
 		System.out.println(s);
 	}
-
+	
+	default void printWarn(String s)
+    {
+        System.err.println(s);
+    }
+	
 	default void exit(int status)
 	{
 		System.exit(status);

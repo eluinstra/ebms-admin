@@ -5,11 +5,15 @@
 target
 .idea/
 
-*.properties
-*.xml
 *.log
 activemq-data
 data
 hsqldb
 ignite
 logs
+/dependency-reduced-pom.xml
+
+
+.idea
+*.iml
+/docker-compose.win32.yml
