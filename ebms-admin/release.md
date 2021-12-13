@@ -5,12 +5,18 @@ sort: 10
 # Release Notes
 
 ```note
-ebms-admin makes use of log4j which has a CVE (CVE-2021-44228) in versions below 2.15.0, therefore ebms-admin-2.17.10 has been updated to use this new dependency.
+ebms-admin makes use of log4j which has a CVE (CVE-2021-44228) in versions below 2.15.0, therefore ebms-admin-2.17.10 and ebms-admin-2.18.4 have been updated to use this new dependency.
 ```
 
 ```note
-ebms-admin-2.18.3 and ebms-admin-2.17.10 are the latest versions.
+ebms-admin-2.18.4 and ebms-admin-2.17.10 are the latest versions.
 ```
+
+### [ebms-admin-2.18.4.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.4/ebms-admin-2.18.4.jar)
+
+- DBClean implementation changed based on pull request by Lost Lemon
+- updated various dependencies [83d30c9](https://github.com/eluinstra/ebms-admin/commit/83d30c9116f6608d77c0ee1f60606712807615fb) 
+- upgrade to [ebms-core-2.18.4.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2184jar)
 
 ### [ebms-admin-2.18.3.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.3/ebms-admin-2.18.3.jar)
 
