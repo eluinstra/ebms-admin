@@ -39,6 +39,15 @@ sort: 7
 - renamed table ebms_event_log to send_log
 - renamed table ebms_message_event to ebms_event
 
+### [ebms-core-2.17.10.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.17.10/ebms-core-2.17.10.jar)
+
+- updated various dependencies [70b51a4](https://github.com/eluinstra/ebms-core/commit/70b51a47a1a8ebefb8c6f0a132aaa269b8af3327)
+
+### [ebms-core-2.17.9.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.17.9/ebms-core-2.17.9.jar)
+
+- update xmlsec dependency version
+- removed @NonNull for name in EbMSDataSource service model
+
 ### [ebms-core-2.17.8.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.17.8/ebms-core-2.17.8.jar)
 
 - removed querydsl (+ issue fixes)

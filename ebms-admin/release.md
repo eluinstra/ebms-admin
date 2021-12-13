@@ -5,10 +5,15 @@ sort: 10
 # Release Notes
 
 ```note
-ebms-admin-2.18.3 and ebms-admin-2.17.8 are the latest versions.
+ebms-admin makes use of log4j which has a CVE (CVE-2021-44228) in versions below 2.15.0, therefore ebms-admin-2.17.10 has been updated to use this new dependency.
+```
+
+```note
+ebms-admin-2.18.3 and ebms-admin-2.17.10 are the latest versions.
 ```
 
 ### [ebms-admin-2.18.3.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.3/ebms-admin-2.18.3.jar)
+
 - DBClean implementation changed based on pull request by Lost Lemon
 - REST service implementation added, more information [here]({{ site.baseurl }}/ebms-admin/rest.html)
 - upgrade to [ebms-core-2.18.3.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2183jar)
@@ -29,6 +34,17 @@ ebms-admin-2.18.3 and ebms-admin-2.17.8 are the latest versions.
 ### [ebms-admin-2.18.0.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.18.0/ebms-admin-2.18.0.jar)
 
 - upgrade to [ebms-core-2.18.0.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2180jar)
+
+### [ebms-admin-2.17.10.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.17.9/ebms-admin-2.17.9.jar)
+
+- updated log4j dependency to 2.15.0
+- updated various dependencies
+- upgrade to [ebms-core-2.17.10.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-21710jar)
+
+### [ebms-admin-2.17.9.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.17.9/ebms-admin-2.17.9.jar)
+
+- removed @NonNull for name in EbMSDataSource service model
+- upgrade to [ebms-core-2.17.9.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2179jar)
 
 ### [ebms-admin-2.17.8.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.17.8/ebms-admin-2.17.8.jar)
 
