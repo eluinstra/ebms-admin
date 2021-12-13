@@ -308,19 +308,22 @@ public class DBClean implements SystemInterface {
 	private void cleanMessages(Instant dateFrom, boolean includeNoPersistDuration) {
 	    final SQLQuery<String> messageIdPersistTimeQuery = queryFactory.select(messageTable.messageId).from(messageTable).where(messageTable.persistTime.loe(dateFrom));
         
+	    List<String> ids = null;
 	    do {
 	        println("Deleting bucket of 100000 entries (based on persistTime)....");
-	        val ids = messageIdPersistTimeQuery.limit(100000L).fetch();
+	        ids = messageIdPersistTimeQuery.limit(100000L).fetch();
 	        deleteMessagesIdList(ids);
+	        ids = null;
 	    } while(messageIdPersistTimeQuery.fetchCount() > 0);
 		
 		if (includeNoPersistDuration) {
 		    final SQLQuery<String> messageIdTimeStampQuery = queryFactory.select(messageTable.messageId).from(messageTable).where(messageTable.persistTime.isNull().and(messageTable.timeStamp.loe(dateFrom)));
-            
+		    List<String> idsWithoutPersistDuration = null;
 		    do {
 		        println("Deleting bucket of 100000 entries (includeNoPersistDuration=true)....");
-		        val idsWithoutPersistDuration = messageIdTimeStampQuery.limit(100000L).fetch();
+		        idsWithoutPersistDuration = messageIdTimeStampQuery.limit(100000L).fetch();
 		        deleteMessagesIdList(idsWithoutPersistDuration);
+		        idsWithoutPersistDuration = null;
 		    } while(messageIdTimeStampQuery.fetchCount() > 0);
 		}
 	}
