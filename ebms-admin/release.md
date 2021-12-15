@@ -5,12 +5,17 @@ sort: 10
 # Release Notes
 
 ```note
-ebms-admin makes use of log4j which has a CVE (CVE-2021-44228) in versions below 2.15.0, therefore ebms-admin-2.17.10 and ebms-admin-2.18.4 have been updated to use this new dependency.
+Due to the CVE's found in log4j these versions 2.16.8.1, 2.17.10.1 and 2.18.4.1 have been updated to include log4j 2.16.0.
 ```
 
 ```note
-ebms-admin-2.18.4 and ebms-admin-2.17.10 are the latest versions.
+ebms-admin-2.18.4.1, ebms-admin-2.17.10.1 and ebms-admin-2.16.8.1 are the latest versions.
 ```
+
+### [ebms-admin-2.18.4.1.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.4.1/ebms-admin-2.18.4.1.jar)
+
+- updated log4j dependency to 2.16.0
+- modified default log4j2.xml to format the message as %m{nolookups}
 
 ### [ebms-admin-2.18.4.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.4/ebms-admin-2.18.4.jar)
 
@@ -41,7 +46,12 @@ ebms-admin-2.18.4 and ebms-admin-2.17.10 are the latest versions.
 
 - upgrade to [ebms-core-2.18.0.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2180jar)
 
-### [ebms-admin-2.17.10.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.17.9/ebms-admin-2.17.9.jar)
+### [ebms-admin-2.17.10.1.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.17.10.1/ebms-admin-2.17.10.1.jar)
+
+- updated log4j dependency to 2.16.0
+- modified default log4j2.xml to format the message as %m{nolookups}
+
+### [ebms-admin-2.17.10.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.17.10/ebms-admin-2.17.10.jar)
 
 - updated log4j dependency to 2.15.0
 - updated various dependencies
@@ -136,6 +146,12 @@ ebms-admin-2.18.4 and ebms-admin-2.17.10 are the latest versions.
 - added database java command line tools
 	- `DBMigrate` (`java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.DBMigrate -h`)
 	- `DBClean` (`java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.DBClean -h`)
+
+
+### [ebms-admin-2.16.8.1.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.16.8.1/ebms-admin-2.16.8.1.jar)
+
+- updated log4j dependency to 2.16.0
+- modified default log4j2.xml to format the message as %m{nolookups}
 
 ### [ebms-admin-2.16.8.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.16.8/ebms-admin-2.16.8.jar)
 
