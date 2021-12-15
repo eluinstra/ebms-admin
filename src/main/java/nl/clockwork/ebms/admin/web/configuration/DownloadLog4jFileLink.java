@@ -40,7 +40,7 @@ public class DownloadLog4jFileLink extends Link<Void>
 	{
 		try
 		{
-			String fileName = UrlEncoder.QUERY_INSTANCE.encode("log4j.xml",getRequest().getCharset());
+			String fileName = UrlEncoder.QUERY_INSTANCE.encode("log4j2.xml",getRequest().getCharset());
 			IResourceStream resourceStream = new Log4jFileResourceStream(); 
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName,resourceStream));
 		}

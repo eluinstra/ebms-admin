@@ -25,7 +25,7 @@ public class Log4jFileResourceStream extends PackageResourceStream
 
 	public Log4jFileResourceStream() throws URISyntaxException
 	{
-		super(Log4jFileResourceStream.class,"/log4j.xml");
+		super(Log4jFileResourceStream.class,"/log4j2.xml");
 	}
 	
 	@Override
