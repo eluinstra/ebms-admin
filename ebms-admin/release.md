@@ -5,12 +5,17 @@ sort: 10
 # Release Notes
 
 ```note
-Due to the CVE's found in log4j these versions 2.16.8.1, 2.17.10.1 and 2.18.4.1 have been updated to include log4j 2.16.0.
+Due to the CVE's found in log4j these versions 2.16.8.2, 2.17.10.2 and 2.18.4.2 have been updated to include log4j 2.17.0.
 ```
 
 ```note
-ebms-admin-2.18.4.1, ebms-admin-2.17.10.1 and ebms-admin-2.16.8.1 are the latest versions.
+ebms-admin-2.18.4.2, ebms-admin-2.17.10.2 and ebms-admin-2.16.8.2 are the latest versions.
 ```
+
+### [ebms-admin-2.18.4.2.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.4.2/ebms-admin-2.18.4.2.jar)
+
+- updated log4j dependency to 2.17.0
+- updated spring, cxf dependencies
 
 ### [ebms-admin-2.18.4.1.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.4.1/ebms-admin-2.18.4.1.jar)
 
@@ -45,6 +50,11 @@ ebms-admin-2.18.4.1, ebms-admin-2.17.10.1 and ebms-admin-2.16.8.1 are the latest
 ### [ebms-admin-2.18.0.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.18.0/ebms-admin-2.18.0.jar)
 
 - upgrade to [ebms-core-2.18.0.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2180jar)
+
+### [ebms-admin-2.17.10.2.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.17.10.2/ebms-admin-2.17.10.2.jar)
+
+- updated log4j dependency to 2.17.0
+- updated spring, cxf dependencies
 
 ### [ebms-admin-2.17.10.1.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.17.10.1/ebms-admin-2.17.10.1.jar)
 
@@ -147,6 +157,11 @@ ebms-admin-2.18.4.1, ebms-admin-2.17.10.1 and ebms-admin-2.16.8.1 are the latest
 	- `DBMigrate` (`java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.DBMigrate -h`)
 	- `DBClean` (`java -cp ebms-admin-2.17.0.jar nl.clockwork.ebms.admin.DBClean -h`)
 
+
+### [ebms-admin-2.16.8.2.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.16.8.2/ebms-admin-2.16.8.2.jar)
+
+- updated log4j dependency to 2.17.0
+- updated spring, cxf, activemq dependencies
 
 ### [ebms-admin-2.16.8.1.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.16.8.1/ebms-admin-2.16.8.1.jar)
 
