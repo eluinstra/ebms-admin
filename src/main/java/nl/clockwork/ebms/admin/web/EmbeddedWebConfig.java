@@ -17,6 +17,8 @@ package nl.clockwork.ebms.admin.web;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Endpoint;
@@ -29,6 +31,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.Bus;
 import org.apache.cxf.binding.BindingFactoryManager;
 import org.apache.cxf.bus.spring.SpringBus;
@@ -39,6 +42,7 @@ import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
 import org.apache.cxf.jaxrs.openapi.OpenApiFeature;
 import org.apache.cxf.jaxws.EndpointImpl;
+import org.apache.cxf.rs.security.cors.CrossOriginResourceSharingFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -66,6 +70,8 @@ public class EmbeddedWebConfig
 	Integer maxItemsPerPage;
 	@Value("${eventListener.type}")
 	EventListenerType eventListenerType;
+	@Value("#{'${ebms.cors.allowOrigins}'.split(',')}")
+	List<String> allowOrigins;
 	@Autowired
 	CPAService cpaService;
 	@Autowired
@@ -178,12 +184,19 @@ public class EmbeddedWebConfig
 		val sf = new JAXRSServerFactoryBean();
 		sf.setBus(cxf());
 		sf.setAddress("/rest/v18" + path);
-		sf.setProvider(createJacksonJsonProvider());
+		sf.setProviders(Arrays.asList(createCrossOriginResourceSharingFilter(),createJacksonJsonProvider()));
 		sf.setFeatures(Arrays.asList(createOpenApiFeature()));
 		sf.setResourceClasses(resourceClass);
 		sf.setResourceProvider(resourceClass,new SingletonResourceProvider(resourceObject));
 		registerBindingFactory(sf.getBus());
 		return sf.create();
+	}
+
+	private CrossOriginResourceSharingFilter createCrossOriginResourceSharingFilter()
+	{
+		val result = new CrossOriginResourceSharingFilter();
+		result.setAllowOrigins(allowOrigins.stream().filter(StringUtils::isNotEmpty).collect(Collectors.toList()));
+		return result;
 	}
 
 	private JacksonJsonProvider createJacksonJsonProvider()
