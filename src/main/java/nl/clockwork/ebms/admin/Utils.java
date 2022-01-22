@@ -70,7 +70,7 @@ public class Utils
 
 	private static String hidePassword(String key, String property)
 	{
-		return key.matches(".*(password|pwd).*") ? property.replaceAll(".","*") : property;
+		return key.matches("(?i).*(password|pwd).*") ? property.replaceAll(".","*") : property;
 	}
 
 	public static <T> List<T> toList(List<T> list)
