@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeSet;
+import java.util.function.BiFunction;
 
 import lombok.val;
 
@@ -51,6 +52,7 @@ public class Utils
 	
 	public static void writeProperties(Properties properties, Writer writer)
 	{
+		properties.replaceAll((k,p) -> hidePassword((String)k,(String)p));
 		properties.list(new PrintWriter(writer,true));
 	}
 	
@@ -61,9 +63,14 @@ public class Utils
 		{
 			writer.write(key);
 			writer.write(" = ");
-			writer.write(key.matches(".*(password|pwd).*") ? properties.get(key).replaceAll(".","*") : properties.get(key));
+			writer.write(hidePassword(key,properties.get(key)));
 			writer.write("\n");
 		}
+	}
+
+	private static String hidePassword(String key, String property)
+	{
+		return key.matches(".*(password|pwd).*") ? property.replaceAll(".","*") : property;
 	}
 
 	public static <T> List<T> toList(List<T> list)
