@@ -24,10 +24,6 @@ import java.sql.Types;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import com.querydsl.sql.DB2Templates;
 import com.querydsl.sql.H2Templates;
 import com.querydsl.sql.HSQLDBTemplates;
@@ -40,6 +36,10 @@ import com.querydsl.sql.SQLTemplates;
 import com.querydsl.sql.spring.SpringConnectionProvider;
 import com.querydsl.sql.spring.SpringExceptionTranslator;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
@@ -50,7 +50,6 @@ import nl.clockwork.ebms.querydsl.DeliveryTaskStatusType;
 import nl.clockwork.ebms.querydsl.DocumentType;
 import nl.clockwork.ebms.querydsl.EbMSMessageEventTypeType;
 import nl.clockwork.ebms.querydsl.EbMSMessageStatusType;
-import nl.clockwork.ebms.querydsl.InstantType;
 import nl.clockwork.ebms.querydsl.X509CertificateType;
 
 @Configuration
@@ -73,7 +72,6 @@ public class QueryDSLConfig
 		val templates = sqlTemplates();
 		val result = new com.querydsl.sql.Configuration(templates);
 		result.setExceptionTranslator(new SpringExceptionTranslator());
-		result.register(new InstantType(Types.TIMESTAMP));
 		result.register("cpa","cpa",new CollaborationProtocolAgreementType(Types.CLOB));
 		result.register("certificate_mapping","source",new X509CertificateType(Types.BLOB));
 		result.register("certificate_mapping","destination",new X509CertificateType(Types.BLOB));
