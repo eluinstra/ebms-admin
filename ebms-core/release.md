@@ -4,6 +4,11 @@ sort: 7
 
 # Release Notes
 
+### [ebms-core-2.18.5.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.18.5/ebms-core-2.18.5.jar)
+
+- updated various dependencies
+- fix Azure keyvault integration config 
+
 ### [ebms-core-2.18.4.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.18.4/ebms-core-2.18.4.jar)
 
 - updated various dependencies [0918189](https://github.com/eluinstra/ebms-core/commit/09181894cc100cac83d6a621885dc2c6cc937eb5)

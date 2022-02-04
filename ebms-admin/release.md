@@ -12,6 +12,13 @@ Due to the CVE's found in log4j these versions 2.16.8.2, 2.17.10.2 and 2.18.4.2 
 ebms-admin-2.18.4.2, ebms-admin-2.17.10.2 and ebms-admin-2.16.8.2 are the latest versions.
 ```
 
+### [ebms-admin-2.18.5.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.5/ebms-admin-2.18.5.jar)
+
+- updated dependencies
+- added allow CORS all
+- fixed issue: not hiding password In about screen
+- upgrade to [ebms-core-2.18.5.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2185jar)
+
 ### [ebms-admin-2.18.4.2.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.4.2/ebms-admin-2.18.4.2.jar)
 
 - updated log4j dependency to 2.17.0
