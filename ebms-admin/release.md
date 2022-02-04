@@ -9,7 +9,7 @@ Due to the CVE's found in log4j these versions 2.16.8.2, 2.17.10.2 and 2.18.4.2 
 ```
 
 ```note
-ebms-admin-2.18.4.2, ebms-admin-2.17.10.2 and ebms-admin-2.16.8.2 are the latest versions.
+ebms-admin-2.18.5, ebms-admin-2.17.10.2 and ebms-admin-2.16.8.2 are the latest versions.
 ```
 
 ### [ebms-admin-2.18.5.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.5/ebms-admin-2.18.5.jar)
