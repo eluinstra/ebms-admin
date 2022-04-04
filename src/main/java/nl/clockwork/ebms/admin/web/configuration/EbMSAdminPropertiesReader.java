@@ -131,7 +131,7 @@ public class EbMSAdminPropertiesReader
 	private void read(Properties properties, ProxyPropertiesFormData proxyProperties) throws MalformedURLException
 	{
 		proxyProperties.setHost(StringUtils.defaultString(properties.getProperty("http.proxy.host")));
-		proxyProperties.setPort(Integer.getInteger(properties.getProperty("http.proxy.port")));
+		proxyProperties.setPort(Integer.parseInt(properties.getProperty("http.proxy.port")));
 		proxyProperties.setNonProxyHosts(StringUtils.defaultString(properties.getProperty("http.proxy.nonProxyHosts")));
 		proxyProperties.setUsername(properties.getProperty("http.proxy.username"));
 		proxyProperties.setPassword(properties.getProperty("http.proxy.password"));
