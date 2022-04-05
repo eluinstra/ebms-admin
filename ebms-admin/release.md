@@ -5,12 +5,14 @@ sort: 10
 # Release Notes
 
 ```note
-Due to the CVE's found in log4j these versions 2.16.8.2, 2.17.10.2 and 2.18.4.2 have been updated to include log4j 2.17.0.
+ebms-admin-2.18.6, ebms-admin-2.17.11 and ebms-admin-2.16.8.2 are the latest versions.
 ```
 
-```note
-ebms-admin-2.18.5, ebms-admin-2.17.10.2 and ebms-admin-2.16.8.2 are the latest versions.
-```
+### [ebms-admin-2.18.6.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.6/ebms-admin-2.18.6.jar)
+
+- updated dependencies for spring, log4j, postgresql, jackson
+- bugfix: forward proxy configuration issue from admin web-ui
+- upgrade to [ebms-core-2.18.6.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2186jar)
 
 ### [ebms-admin-2.18.5.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.5/ebms-admin-2.18.5.jar)
 
@@ -57,6 +59,12 @@ ebms-admin-2.18.5, ebms-admin-2.17.10.2 and ebms-admin-2.16.8.2 are the latest v
 ### [ebms-admin-2.18.0.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.18.0/ebms-admin-2.18.0.jar)
 
 - upgrade to [ebms-core-2.18.0.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2180jar)
+
+### [ebms-admin-2.17.11.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.17.11/ebms-admin-2.17.11.jar)
+
+- updated dependencies for log4j, spring, mysql, postgresql
+- bugfix: forward proxy configuration issue from admin web-ui
+- upgrade to [ebms-core-2.17.11.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-21711jar)
 
 ### [ebms-admin-2.17.10.2.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.17.10.2/ebms-admin-2.17.10.2.jar)
 

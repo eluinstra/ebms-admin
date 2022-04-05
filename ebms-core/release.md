@@ -4,6 +4,14 @@ sort: 7
 
 # Release Notes
 
+### [ebms-core-2.18.6.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.18.6/ebms-core-2.18.6.jar)
+
+- updated dependencies for spring, postgresql, jackson
+- bugfix: NullPointerException on delivery failure in best effort mode
+- bugfix: serverId not null if not (explicitly) overridden
+- bugfix: mysql/mssql deleteAttachments override to include correct db-column
+- improvement: rest responsetype for CPA service implementation
+
 ### [ebms-core-2.18.5.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.18.5/ebms-core-2.18.5.jar)
 
 - updated various dependencies
@@ -47,6 +55,12 @@ sort: 7
 - renamed table ebms_event to send_task
 - renamed table ebms_event_log to send_log
 - renamed table ebms_message_event to ebms_event
+
+### [ebms-core-2.17.11.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.17.10/ebms-core-2.17.10.jar)
+
+- updated dependencies for spring, mysql, postgresql, ignite, h2
+- bugfix: serverId not null if not (explicitly) overridden
+- bugfix: mysql/mssql deleteAttachments override to include correct db-column
 
 ### [ebms-core-2.17.10.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.17.10/ebms-core-2.17.10.jar)
 
