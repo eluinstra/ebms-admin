@@ -1,0 +1,48 @@
+<component>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>/lib</outputDirectory>
+            <includes>
+                <!-- querydsl -->
+                <include>com.querydsl:querydsl-core</include>
+                <include>com.querydsl:querydsl-sql-spring</include>
+                <include>com.querydsl:querydsl-sql</include>
+                <include>com.mysema.commons:mysema-commons-lang</include>
+                <include>io.github.classgraph:classgraph</include>
+
+                <!-- <include>com.querydsl:querydsl-codegen</include> -->
+                <!-- <include>com.querydsl:querydsl-sql-codegen</include> -->
+                <!-- <include>com.querydsl:codegen-utils</include> -->
+
+                <!-- wicket -->
+                <include>org.apache.wicket:wicket-core</include>
+                <include>org.apache.wicket:wicket-extensions</include>
+                <include>org.apache.wicket:wicket-ioc</include>
+                <include>org.apache.wicket:wicket-request</include>
+                <include>org.apache.wicket:wicket-spring</include>
+                <include>org.apache.wicket:wicket-util</include>
+                <include>org.wicketstuff:wicket-datetime</include>
+
+                <include>de.adesso.wicked-charts:chartjs-wrapper</include>
+                <include>de.adesso.wicked-charts:highcharts-wrapper</include>
+                <include>de.adesso.wicked-charts:wicked-charts-wicket8</include>
+                <include>cglib:cglib-nodep</include>
+                <include>org.ow2.asm:asm-analysis</include>
+                <include>org.ow2.asm:asm-tree</include>
+                <include>org.ow2.asm:asm-util</include>
+                <include>org.threeten:threetenbp</include>
+
+                <!-- swagger -->
+                <include>io.swagger.core.v3:swagger-annotations</include>
+                <include>io.swagger.core.v3:swagger-core</include>
+                <include>io.swagger.core.v3:swagger-integration</include>
+                <include>io.swagger.core.v3:swagger-jaxrs2</include>
+                <include>io.swagger.core.v3:swagger-models</include>
+                <include>org.webjars:swagger-ui</include>
+
+                <include>org.javassist:javassist</include>
+
+            </includes>
+        </dependencySet>
+    </dependencySets>
+</component>

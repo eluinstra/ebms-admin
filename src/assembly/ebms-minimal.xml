@@ -1,0 +1,269 @@
+<component>
+    <dependencySets>
+        <!-- database drivers -->
+        <dependencySet>
+            <outputDirectory>/lib</outputDirectory>
+            <includes>
+                <include>com.h2database:h2</include>
+                <include>com.ibm.db2.jcc:db2jcc</include>
+                <include>org.hsqldb:hsqldb</include>
+                <include>org.mariadb.jdbc:mariadb-java-client</include>
+                <include>com.microsoft.sqlserver:mssql-jdbc</include>
+
+                <include>org.postgresql:postgresql</include>
+                <include>org.checkerframework:checker-qual</include>
+
+                <include>mysql:mysql-connector-java</include>
+                <include>com.google.protobuf:protobuf-java</include>
+            </includes>
+        </dependencySet>
+
+        <!-- atomikos -->
+        <dependencySet>
+            <outputDirectory>/lib</outputDirectory>
+            <includes>
+                <include>com.atomikos:atomikos-util</include>
+                <include>com.atomikos:transactions-api</include>
+                <include>com.atomikos:transactions-jdbc</include>
+                <include>com.atomikos:transactions-jms</include>
+                <include>com.atomikos:transactions-jta</include>
+            </includes>
+        </dependencySet>
+
+        <!-- activemq -->
+        <dependencySet>
+            <outputDirectory>/lib</outputDirectory>
+            <includes>
+                <include>org.apache.activemq.protobuf:activemq-protobuf</include>
+                <include>org.apache.activemq:activemq-broker</include>
+                <include>org.apache.activemq:activemq-client</include>
+                <include>org.apache.activemq:activemq-jms-pool</include>
+                <include>org.apache.activemq:activemq-kahadb-store</include>
+                <include>org.apache.activemq:activemq-openwire-legacy</include>
+                <include>org.apache.activemq:activemq-pool</include>
+                <include>org.apache.activemq:activemq-spring</include>
+            </includes>
+        </dependencySet>
+
+        <!-- kafka -->
+        <dependencySet>
+            <outputDirectory>/lib</outputDirectory>
+            <includes>
+                <include>org.apache.kafka:kafka-clients</include>
+                <include>org.springframework.kafka:spring-kafka</include>
+                <include>org.springframework.retry:spring-retry</include>
+            </includes>
+        </dependencySet>
+        
+        <!-- spring -->
+        <dependencySet>
+            <outputDirectory>/lib</outputDirectory>
+            <includes>
+                <include>org.springframework:spring-aop</include>
+                <include>org.springframework:spring-beans</include>
+                <include>org.springframework:spring-context-support</include>
+                <include>org.springframework:spring-context</include>
+                <include>org.springframework:spring-core</include>
+                <include>org.springframework:spring-expression</include>
+                <include>org.springframework:spring-jcl</include>
+                <include>org.springframework:spring-jdbc</include>
+                <include>org.springframework:spring-jms</include>
+                <include>org.springframework:spring-messaging</include>
+                <include>org.springframework:spring-tx</include>
+                <include>org.springframework:spring-web</include>
+            </includes>
+        </dependencySet>
+
+        <!-- ignite -->
+        <dependencySet>
+            <outputDirectory>/lib</outputDirectory>
+            <includes>
+                <include>org.apache.ignite:ignite-core</include>
+                <include>org.apache.ignite:ignite-indexing</include>
+                <include>org.apache.ignite:ignite-slf4j</include>
+                <include>org.apache.ignite:ignite-spring-cache-ext</include>
+                <include>org.apache.ignite:ignite-spring-data-commons</include>
+                <include>org.apache.ignite:ignite-spring</include>
+                <include>org.apache.lucene:lucene-analyzers-common</include>
+                <include>org.apache.lucene:lucene-core</include>
+                <include>org.apache.lucene:lucene-queries</include>
+                <include>org.apache.lucene:lucene-queryparser</include>
+                <include>org.apache.lucene:lucene-sandbox</include>
+                <include>org.gridgain:ignite-shmem</include>
+                <include>javax.cache:cache-api</include>
+                <include>org.jetbrains:annotations</include>
+            </includes>
+        </dependencySet>
+
+        <!-- jetty -->
+        <dependencySet>
+            <outputDirectory>/lib</outputDirectory>
+            <includes>
+                <!-- <include>org.eclipse.jdt:ecj</include> -->
+                <include>org.eclipse.jetty:jetty-continuation</include>
+                <include>org.eclipse.jetty:jetty-http</include>
+                <include>org.eclipse.jetty:jetty-io</include>
+                <include>org.eclipse.jetty:jetty-jmx</include>
+                <include>org.eclipse.jetty:jetty-security</include>
+                <include>org.eclipse.jetty:jetty-server</include>
+                <include>org.eclipse.jetty:jetty-servlet</include>
+                <include>org.eclipse.jetty:jetty-util-ajax</include>
+                <include>org.eclipse.jetty:jetty-util</include>
+                <include>org.eclipse.jetty:jetty-webapp</include>
+                <include>org.eclipse.jetty:jetty-xml</include>
+                <include>javax.servlet:javax.servlet-api</include>
+            </includes>
+        </dependencySet>
+
+
+        <dependencySet>
+            <outputDirectory>/lib</outputDirectory>
+            <includes>
+                <include>nl.clockwork.ebms:ebms-core</include>
+
+                <!-- lombok -->
+                <include>org.projectlombok:lombok</include>
+                
+                <!-- commons -->
+                <include>org.apache.commons:commons-collections4</include>
+                <include>org.apache.commons:commons-csv</include>
+                <include>org.apache.commons:commons-lang3</include>
+                <include>org.apache.commons:commons-pool2</include>
+                <include>commons-cli:commons-cli</include>
+                <include>commons-codec:commons-codec</include>
+                <include>commons-fileupload:commons-fileupload</include>
+                <include>commons-io:commons-io</include>
+                <include>commons-logging:commons-logging</include>
+                <include>commons-net:commons-net</include>
+
+                <!-- ehcache -->
+                <include>net.sf.ehcache:ehcache</include>
+
+                <!-- vavr -->
+                <include>io.vavr:vavr-match</include>
+                <include>io.vavr:vavr</include>
+
+                <!-- cxf -->
+                <include>org.apache.cxf:cxf-core</include>
+                <include>org.apache.cxf:cxf-rt-bindings-soap</include>
+                <include>org.apache.cxf:cxf-rt-bindings-xml</include>
+                <include>org.apache.cxf:cxf-rt-databinding-jaxb</include>
+                <include>org.apache.cxf:cxf-rt-features-logging</include>
+                <include>org.apache.cxf:cxf-rt-frontend-jaxrs</include>
+                <include>org.apache.cxf:cxf-rt-frontend-jaxws</include>
+                <include>org.apache.cxf:cxf-rt-frontend-simple</include>
+                <include>org.apache.cxf:cxf-rt-rs-security-cors</include>
+                <include>org.apache.cxf:cxf-rt-rs-service-description-common-openapi</include>
+                <include>org.apache.cxf:cxf-rt-rs-service-description-openapi-v3</include>
+                <include>org.apache.cxf:cxf-rt-rs-service-description-swagger-ui</include>
+                <include>org.apache.cxf:cxf-rt-security</include>
+                <include>org.apache.cxf:cxf-rt-transports-http-jetty</include>
+                <include>org.apache.cxf:cxf-rt-transports-http</include>
+                <include>org.apache.cxf:cxf-rt-ws-addr</include>
+                <include>org.apache.cxf:cxf-rt-ws-policy</include>
+                <include>org.apache.cxf:cxf-rt-wsdl</include>
+                <include>wsdl4j:wsdl4j</include>
+                <include>xml-resolver:xml-resolver</include>
+                <include>org.ow2.asm:asm</include>
+
+                <!-- hikari -->
+                <include>com.zaxxer:HikariCP</include>
+
+                <!-- flyway -->
+                <include>org.flywaydb:flyway-core</include>
+
+                <!-- btm -->
+                <include>org.codehaus.btm:btm</include>
+                <include>javax.transaction:jta</include>
+
+                <!-- guava -->
+                <include>com.google.guava:guava</include>
+                <include>com.google.code.findbugs:jsr305</include>
+                <include>com.google.errorprone:error_prone_annotations</include>
+                <include>com.google.guava:failureaccess</include>
+                <include>com.google.guava:listenablefuture</include>
+                <include>com.google.j2objc:j2objc-annotations</include>
+
+                <!-- quartz -->
+                <include>org.quartz-scheduler:quartz</include>
+                <include>com.mchange:c3p0</include>
+                <include>com.mchange:mchange-commons-java</include>
+                <include>com.zaxxer:HikariCP-java7</include>
+
+                <!-- beryx -->
+                <include>org.beryx:text-io</include>
+                <include>jline:jline</include>
+                <include>org.beryx:awt-color-factory</include>
+
+                <!-- logging -->
+                <include>org.apache.logging.log4j:log4j-api</include>
+                <include>org.apache.logging.log4j:log4j-core</include>
+                <include>org.apache.logging.log4j:log4j-slf4j-impl</include>
+
+
+                <!-- TODO -->
+                <include>com.fasterxml.jackson.core:jackson-annotations</include>
+                <include>com.fasterxml.jackson.core:jackson-core</include>
+                <include>com.fasterxml.jackson.core:jackson-databind</include>
+                <include>com.fasterxml.jackson.dataformat:jackson-dataformat-yaml</include>
+                <include>com.fasterxml.jackson.datatype:jackson-datatype-jdk8</include>
+                <include>com.fasterxml.jackson.datatype:jackson-datatype-jsr310</include>
+                <include>com.fasterxml.jackson.jaxrs:jackson-jaxrs-base</include>
+                <include>com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider</include>
+                <include>com.fasterxml.jackson.module:jackson-module-jaxb-annotations</include>
+
+                <include>com.fasterxml.woodstox:woodstox-core</include>
+                <include>com.github.openjson:openjson</include>
+
+                <include>com.lmax:disruptor</include>
+
+                <include>com.sun.activation:jakarta.activation</include>
+                <include>com.sun.istack:istack-commons-runtime</include>
+                <include>com.sun.mail:javax.mail</include>
+                <include>com.sun.xml.bind:jaxb-core</include>
+                <include>com.sun.xml.bind:jaxb-impl</include>
+
+                <include>jakarta.activation:jakarta.activation-api</include>
+                <include>jakarta.annotation:jakarta.annotation-api</include>
+                <include>jakarta.jws:jakarta.jws-api</include>
+                <include>jakarta.validation:jakarta.validation-api</include>
+                <include>jakarta.ws.rs:jakarta.ws.rs-api</include>
+                <include>jakarta.xml.bind:jakarta.xml.bind-api</include>
+                <include>jakarta.xml.soap:jakarta.xml.soap-api</include>
+                <include>jakarta.xml.ws:jakarta.xml.ws-api</include>
+                <include>javax.activation:activation</include>
+                <include>javax.activation:javax.activation-api</include>
+                <include>javax.annotation:javax.annotation-api</include>
+                <include>javax.inject:javax.inject</include>
+                <include>javax.xml.bind:jaxb-api</include>
+                <include>joda-time:joda-time</include>
+
+                <include>org.apache.geronimo.specs:geronimo-j2ee-management_1.1_spec</include>
+                <include>org.apache.geronimo.specs:geronimo-jms_1.1_spec</include>
+                <include>org.apache.geronimo.specs:geronimo-jta_1.1_spec</include>
+                <include>org.apache.httpcomponents:httpclient</include>
+                <include>org.apache.httpcomponents:httpcore</include>
+                <include>org.apache.httpcomponents:httpmime</include>
+                <include>org.apache.james:apache-mime4j-core</include>
+
+                <include>org.apache.neethi:neethi</include>
+                <include>org.apache.santuario:xmlsec</include>
+
+                <include>org.apache.ws.xmlschema:xmlschema-core</include>
+                <include>org.apache.xbean:xbean-spring</include>
+
+                <include>org.codehaus.woodstox:stax2-api</include>
+                <include>org.danekja:jdk-serializable-functional</include>
+
+                <include>org.fusesource.hawtbuf:hawtbuf</include>
+                <include>org.glassfish.jaxb:jaxb-runtime</include>
+                <include>org.glassfish.jaxb:txw2</include>
+                <include>org.mapstruct:mapstruct</include>
+
+                <include>org.slf4j:slf4j-api</include>
+
+                <include>org.yaml:snakeyaml</include>
+            </includes>
+        </dependencySet>
+    </dependencySets>
+</component>

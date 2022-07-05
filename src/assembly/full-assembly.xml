@@ -1,0 +1,41 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.1.0 http://maven.apache.org/xsd/assembly-2.1.0.xsd">
+    <id>full</id>
+    <formats>
+        <format>zip</format>
+        <!-- <format>tar.gz</format> -->
+    </formats>
+    <fileSets>
+        <fileSet>
+          <directory>${project.basedir}</directory>
+          <outputDirectory>/</outputDirectory>
+          <includes>
+            <include>README*</include>
+            <include>LICENSE*</include>
+            <include>NOTICE*</include>
+          </includes>
+        </fileSet>
+        <fileSet>
+          <directory>${project.basedir}/src/main/resources</directory>
+          <outputDirectory>/</outputDirectory>
+          <includes>
+            <include>log4j2.xml</include>
+          </includes>
+        </fileSet>
+        <fileSet>
+          <directory>${project.build.directory}</directory>
+          <outputDirectory>/</outputDirectory>
+          <includes>
+            <include>*.jar</include>
+          </includes>
+        </fileSet>
+        <!-- <fileSet>
+          <directory>${project.build.directory}/site</directory>
+          <outputDirectory>docs</outputDirectory>
+        </fileSet> -->
+      </fileSets>
+    <componentDescriptors>
+        <componentDescriptor>src/assembly/azure.xml</componentDescriptor>
+        <componentDescriptor>src/assembly/ebms-minimal.xml</componentDescriptor>
+        <componentDescriptor>src/assembly/ebms-admin.xml</componentDescriptor>
+    </componentDescriptors>
+</assembly>

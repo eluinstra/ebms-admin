@@ -1,0 +1,13 @@
+<component>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>/lib</outputDirectory>
+            <includes>
+                <include>com.microsoft.azure:applicationinsights-core</include>
+                <include>com.microsoft.azure:applicationinsights-logging-log4j2</include>
+                <include>com.microsoft.azure:applicationinsights-web</include>
+                <include>com.azure:azure-security-keyvault-jca</include>
+            </includes>
+        </dependencySet>
+    </dependencySets>
+</component>

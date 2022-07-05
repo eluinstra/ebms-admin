@@ -360,12 +360,14 @@
 			<artifactId>ojdbc8</artifactId>
 			<version>18.3.0.0</version>
 			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>42.3.3</version>
 			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.microsoft.sqlserver</groupId>
@@ -479,6 +481,15 @@
 				<plugin>
 					<artifactId>maven-jar-plugin</artifactId>
 					<version>3.2.2</version>
+					<configuration>
+						<archive>
+							<manifest>
+								<mainClass>nl.clockwork.ebms.admin.StartEmbedded</mainClass>
+								<addClasspath>true</addClasspath>
+								<classpathPrefix>lib/</classpathPrefix>
+							</manifest>
+						</archive>
+					</configuration>
 				</plugin>
 				<plugin>
 					<artifactId>maven-resources-plugin</artifactId>
@@ -605,10 +616,37 @@
 					<showDeprecation>true</showDeprecation>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.4.0</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+						  <goal>single</goal>
+						</goals>
+						<configuration>
+							
+							<archive>
+								<manifest>
+								  <mainClass>nl.clockwork.ebms.admin.StartEmbedded</mainClass>
+								</manifest>
+							  </archive>
+							<descriptors>
+							  <!-- <descriptor>src/assembly/mysql-ehcache-assembly.xml</descriptor> -->
+							  <descriptor>src/assembly/full-assembly.xml</descriptor>
+							</descriptors>
+						  </configuration>
+					</execution>
+				</executions>
+			  </plugin>
+<!--
 			<plugin>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.2.4</version>
+				<version>3.3.0</version>
 				<configuration>
+					<minimizeJar>true</minimizeJar>
 					<transformers>
 						<transformer implementation="org.apache.maven.plugins.shade.resource.DontIncludeResourceTransformer">
 							<resources>
@@ -663,6 +701,7 @@
 					</execution>
 				</executions>
 			</plugin>
+		-->
 		</plugins>
 	</build>
 	<reporting>
@@ -670,7 +709,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.3.1</version>
+				<version>3.3.2</version>
 				<configuration>
 					<source>${jdk.version}</source>
 					<doclint>none</doclint>
