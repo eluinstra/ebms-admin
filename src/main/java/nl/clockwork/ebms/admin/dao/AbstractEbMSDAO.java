@@ -261,7 +261,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				.getSQL();
 		jdbcTemplate.query(
 				query.getSQL(),
-				query.getNullFriendlyBindings().toArray(),
 				(rs,rowNum) ->
 				{
 					try
@@ -286,7 +285,8 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 					{
 						throw new SQLException(e);
 					}
-				});
+				},
+				query.getNullFriendlyBindings().toArray());
 	}
 
 	@Override
@@ -299,7 +299,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				.getSQL();
 		jdbcTemplate.queryForObject(
 				query.getSQL(),
-				query.getNullFriendlyBindings().toArray(),
 				(rs,rowNum) ->
 				{
 					try
@@ -314,7 +313,8 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 					{
 						throw new SQLException(e);
 					}
-				});
+				},
+				query.getNullFriendlyBindings().toArray());
 		writeAttachmentsToZip(messageId,messageNr,zip);
 	}
 
@@ -327,7 +327,6 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				.getSQL();
 		jdbcTemplate.query(
 				query.getSQL(),
-				query.getNullFriendlyBindings().toArray(),
 				(rs,rowNum) ->
 				{
 					try
@@ -343,7 +342,8 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 					{
 						throw new SQLException(e);
 					}
-				});
+				},
+				query.getNullFriendlyBindings().toArray());
 	}
 	
 	protected BooleanBuilder getMessageFilter(QEbmsMessage table, EbMSMessageFilter messageFilter, BooleanBuilder builder)
@@ -353,11 +353,11 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 		{
 			if (messageFilter.getMessageNr() != null)
 				builder.and(table.messageNr.eq(messageFilter.getMessageNr()));
-			if (messageFilter.getStatuses().size() > 0)
+			if (!messageFilter.getStatuses().isEmpty())
 				builder.and(table.status.in(messageFilter.getStatuses()));
 			if (messageFilter.getServiceMessage() != null)
 			{
-				if (messageFilter.getServiceMessage())
+				if (Boolean.TRUE.equals(messageFilter.getServiceMessage()))
 					builder.and(table.service.eq(EbMSAction.EBMS_SERVICE_URI));
 				else
 					builder.and(table.service.ne(EbMSAction.EBMS_SERVICE_URI));
