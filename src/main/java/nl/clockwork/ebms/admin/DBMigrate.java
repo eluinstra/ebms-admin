@@ -32,7 +32,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.val;
-import lombok.var;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.datasource.DataSourceConfig.Location;
 
@@ -108,7 +107,7 @@ public class DBMigrate
 		var config = Flyway.configure()
 				.dataSource(jdbcUrl,username,password)
 				.locations(location)
-				.ignoreMissingMigrations(true)
+				.ignoreMigrationPatterns("*:missing")
 				.outOfOrder(true);
 		if (StringUtils.isNotEmpty(baselineVersion))
 			config = config
