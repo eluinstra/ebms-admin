@@ -36,20 +36,14 @@ import nl.clockwork.ebms.transaction.TransactionManagerConfig.TransactionManager
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public abstract class AdminDAOConfig
 {
-	@Value("${transactionManager.type}")
-	TransactionManagerType transactionManagerType;
 	@Autowired
 	@Qualifier("dataSourceTransactionManager")
 	PlatformTransactionManager dataSourceTransactionManager;
-	@Autowired
-	DataSource dataSource;
-	@Autowired
-	SQLQueryFactory queryFactory;
 
 	@Bean("ebMSAdminDAO")
-	public EbMSDAO ebMSDAO()
+	public EbMSDAO ebMSDAO(DataSource dataSource, SQLQueryFactory queryFactory)
 	{
 		val jdbcTemplate = new JdbcTemplate(dataSource);
-		return new EbMSDAOFactory(transactionManagerType,dataSource,jdbcTemplate,queryFactory).getObject();
+		return new EbMSDAOFactory(dataSource,jdbcTemplate,queryFactory).getObject();
 	}
 }

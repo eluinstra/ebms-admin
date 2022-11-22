@@ -15,22 +15,20 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.ServiceLoader.Provider;
+import java.util.stream.Collectors;
 
-import lombok.val;
 import nl.clockwork.ebms.admin.web.menu.MenuItem;
 
 public abstract class ExtensionProvider
 {
 	public static List<ExtensionProvider> get()
 	{
-		val providers = ServiceLoader.load(ExtensionProvider.class);
-		val result = new ArrayList<ExtensionProvider>();
-		for (val provider : providers)
-			result.add(provider);
-		return result;
+		return ServiceLoader.load(ExtensionProvider.class).stream()
+				.map(Provider::get)
+				.collect(Collectors.toList());
 	}
 
 	public abstract Class<?> getSpringConfigurationClass();

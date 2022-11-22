@@ -64,7 +64,7 @@ import nl.clockwork.ebms.querydsl.model.QEbmsMessage;
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @AllArgsConstructor
 @Transactional(transactionManager = "dataSourceTransactionManager")
-public abstract class AbstractEbMSDAO implements EbMSDAO
+public abstract class AbstractEbMSDAO implements EbMSDAO, WithMessageFilter
 {
 	@NonNull
 	JdbcTemplate jdbcTemplate;
@@ -297,7 +297,7 @@ public abstract class AbstractEbMSDAO implements EbMSDAO
 				.where(messageTable.messageId.eq(messageId)
 						.and(messageTable.messageNr.eq(messageNr)))
 				.getSQL();
-		jdbcTemplate.queryForObject(
+		jdbcTemplate.query(
 				query.getSQL(),
 				(rs,rowNum) ->
 				{

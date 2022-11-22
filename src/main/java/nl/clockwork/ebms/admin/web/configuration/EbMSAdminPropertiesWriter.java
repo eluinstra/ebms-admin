@@ -93,11 +93,10 @@ public class EbMSAdminPropertiesWriter
 	private void write(Properties properties, HttpPropertiesFormData httpProperties, boolean enableSslOverridePropeties)
   {
 		properties.setProperty("ebms.host",httpProperties.getHost());
-		properties.setProperty("ebms.port",httpProperties.getPort() == null ? "" : httpProperties.getPort().toString());
+		properties.setProperty("ebms.port",httpProperties.getPort().toString());
 		properties.setProperty("ebms.path",httpProperties.getPath());
 		properties.setProperty("ebms.ssl",Boolean.toString(httpProperties.isSsl()));
 		properties.setProperty("http.chunkedStreamingMode",Boolean.toString(httpProperties.isChunkedStreamingMode()));
-		properties.setProperty("http.base64Writer",Boolean.toString(httpProperties.isBase64Writer()));
 		if (httpProperties.isSsl())
 			write(properties,httpProperties.getSslProperties(),enableSslOverridePropeties);
 		if (httpProperties.isProxy())
@@ -128,7 +127,7 @@ public class EbMSAdminPropertiesWriter
 	private void write(Properties properties, ProxyPropertiesFormData proxyProperties)
   {
 		properties.setProperty("http.proxy.host",StringUtils.defaultString(proxyProperties.getHost()));
-		properties.setProperty("http.proxy.port",proxyProperties.getPort() == null ? "80" : proxyProperties.getPort().toString());
+		properties.setProperty("http.proxy.port",proxyProperties.getPort().toString());
 		properties.setProperty("http.proxy.nonProxyHosts",StringUtils.defaultString(proxyProperties.getNonProxyHosts()));
  		properties.setProperty("http.proxy.username",StringUtils.defaultString(proxyProperties.getUsername()));
  		properties.setProperty("http.proxy.password",StringUtils.defaultString(proxyProperties.getPassword()));

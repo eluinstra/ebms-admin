@@ -24,10 +24,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeSet;
-import java.util.function.BiFunction;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.val;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Utils
 {
 	public static String readVersion(String propertiesFile)
@@ -45,9 +47,9 @@ public class Utils
 	
 	public static Properties readProperties(InputStream inputStream) throws IOException
 	{
-		val properties = new Properties();
-		properties.load(inputStream);
-		return properties;
+		val result = new Properties();
+		result.load(inputStream);
+		return result;
 	}
 	
 	public static void writeProperties(Properties properties, Writer writer)
@@ -60,12 +62,15 @@ public class Utils
 	{
 		val keySet = new TreeSet<String>(properties.keySet());
 		for (val key : keySet)
-		{
-			writer.write(key);
-			writer.write(" = ");
-			writer.write(hidePassword(key,properties.get(key)));
-			writer.write("\n");
-		}
+			writeProperty(writer,key,hidePassword(key,properties.get(key)));
+	}
+
+	private static void writeProperty(Writer writer, String key, String value) throws IOException
+	{
+		writer.write(key);
+		writer.write(" = ");
+		writer.write(value);
+		writer.write("\n");
 	}
 
 	private static String hidePassword(String key, String property)

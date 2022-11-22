@@ -69,20 +69,20 @@ public class EbMSAdminPropertiesReader
 		return result;
 	}
 	
-	private void read(Properties properties, ConsolePropertiesFormData consoleProperties) throws MalformedURLException
+	private void read(Properties properties, ConsolePropertiesFormData consoleProperties)
 	{
 		consoleProperties.setMaxItemsPerPage(Integer.parseInt(properties.getProperty("maxItemsPerPage")));
 	}
 
-	private void read(Properties properties, ServicePropertiesFormData serviceProperties) throws MalformedURLException
+	private void read(Properties properties, ServicePropertiesFormData serviceProperties)
 	{
 		serviceProperties.setUrl(properties.getProperty("service.ebms.url"));
 	}
 
-	private void read(Properties properties, CorePropertiesFormData coreProperties) throws MalformedURLException
+	private void read(Properties properties, CorePropertiesFormData coreProperties)
 	{
-		coreProperties.setHttpClient(properties.getProperty("http.client") != null ? EbMSHttpClientType.valueOf(properties.getProperty("http.client")) : null);
-		coreProperties.setEventListener(properties.getProperty("eventListener.type") != null ? EventListenerType.valueOf(properties.getProperty("eventListener.type")) : null);
+		coreProperties.setHttpClient(EbMSHttpClientType.valueOf(properties.getProperty("http.client")));
+		coreProperties.setEventListener(EventListenerType.valueOf(properties.getProperty("eventListener.type")));
 		coreProperties.setJmsBrokerUrl(properties.getProperty("jms.brokerURL"));
 		coreProperties.setJmsVirtualTopics(Boolean.parseBoolean(properties.getProperty("jms.virtualTopics")));
 		coreProperties.setStartEmbeddedBroker(Boolean.parseBoolean(properties.getProperty("jms.broker.start")));
@@ -95,26 +95,25 @@ public class EbMSAdminPropertiesReader
 	private void read(Properties properties, HttpPropertiesFormData httpProperties) throws MalformedURLException
 	{
 		httpProperties.setHost(properties.getProperty("ebms.host"));
-		httpProperties.setPort(properties.getProperty("ebms.port") == null ? null : new Integer(properties.getProperty("ebms.port")));
+		httpProperties.setPort(Integer.parseInt(properties.getProperty("ebms.port")));
 		httpProperties.setPath(properties.getProperty("ebms.path"));
-		httpProperties.setSsl(new Boolean(properties.getProperty("ebms.ssl")));
+		httpProperties.setSsl(Boolean.parseBoolean(properties.getProperty("ebms.ssl")));
 		httpProperties.setProxy(!StringUtils.isEmpty(properties.getProperty("http.proxy.host")));
-		httpProperties.setChunkedStreamingMode(new Boolean(properties.getProperty("http.chunkedStreamingMode")));
-		httpProperties.setBase64Writer(new Boolean(properties.getProperty("http.base64Writer")));
+		httpProperties.setChunkedStreamingMode(Boolean.parseBoolean(properties.getProperty("http.chunkedStreamingMode")));
 		if (httpProperties.isSsl())
 			read(properties,httpProperties.getSslProperties());
 		if (httpProperties.isProxy())
 			read(properties,httpProperties.getProxyProperties());
 	}
 
-	private void read(Properties properties, SslPropertiesFormData sslProperties) throws MalformedURLException
+	private void read(Properties properties, SslPropertiesFormData sslProperties)
 	{
 		sslProperties.setOverrideDefaultProtocols(!StringUtils.isEmpty(properties.getProperty("https.protocols")));
 		sslProperties.setEnabledProtocols(Arrays.asList(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.protocols",""),','))));
 		sslProperties.setOverrideDefaultCipherSuites(!StringUtils.isEmpty(properties.getProperty("https.cipherSuites")));
 		sslProperties.setEnabledCipherSuites(Arrays.asList(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.cipherSuites",""),','))));
-		sslProperties.setRequireClientAuthentication(new Boolean(properties.getProperty("https.requireClientAuthentication")));
-		sslProperties.setVerifyHostnames(new Boolean(properties.getProperty("https.verifyHostnames")));
+		sslProperties.setRequireClientAuthentication(Boolean.parseBoolean(properties.getProperty("https.requireClientAuthentication")));
+		sslProperties.setVerifyHostnames(Boolean.parseBoolean(properties.getProperty("https.verifyHostnames")));
 		sslProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("keystore.type","PKCS12").toUpperCase()));
 		sslProperties.getKeystoreProperties().setUri(properties.getProperty("keystore.path"));
 		sslProperties.getKeystoreProperties().setPassword(properties.getProperty("keystore.password"));
@@ -128,7 +127,7 @@ public class EbMSAdminPropertiesReader
 		sslProperties.getTruststoreProperties().setPassword(properties.getProperty("truststore.password"));
 	}
 
-	private void read(Properties properties, ProxyPropertiesFormData proxyProperties) throws MalformedURLException
+	private void read(Properties properties, ProxyPropertiesFormData proxyProperties)
 	{
 		proxyProperties.setHost(StringUtils.defaultString(properties.getProperty("http.proxy.host")));
 		proxyProperties.setPort(Integer.parseInt(properties.getProperty("http.proxy.port")));
@@ -137,7 +136,7 @@ public class EbMSAdminPropertiesReader
 		proxyProperties.setPassword(properties.getProperty("http.proxy.password"));
 	}
 
-	private void read(Properties properties, SignaturePropertiesFormData signatureProperties) throws MalformedURLException
+	private void read(Properties properties, SignaturePropertiesFormData signatureProperties)
 	{
 		signatureProperties.setSigning(!StringUtils.isEmpty(properties.getProperty("signature.keystore.path")));
 		if (signatureProperties.isSigning())
@@ -148,7 +147,7 @@ public class EbMSAdminPropertiesReader
 		}
 	}
 
-	private void read(Properties properties, EncryptionPropertiesFormData encryptionProperties) throws MalformedURLException
+	private void read(Properties properties, EncryptionPropertiesFormData encryptionProperties)
 	{
 		encryptionProperties.setEncryption(!StringUtils.isEmpty(properties.getProperty("encryption.keystore.path")));
 		if (encryptionProperties.isEncryption())

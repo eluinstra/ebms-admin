@@ -38,6 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.message.CachedOutputResourceStream;
 import nl.clockwork.ebms.jaxb.JAXBParser;
+import nl.clockwork.ebms.service.model.DataSource;
 import nl.clockwork.ebms.service.model.Message;
 import nl.clockwork.ebms.service.model.MessageProperties;
 
@@ -80,14 +81,17 @@ public class DownloadEbMSMessageLink extends Link<Message>
 		zip.write(JAXBParser.getInstance(MessageProperties.class).handle(new JAXBElement<>(new QName("http://www.ordina.nl/ebms/2.18","messageProperties"),MessageProperties.class,message.getProperties())).getBytes());
 		zip.closeEntry();
 		for (val dataSource: message.getDataSources())
-		{
-			val e = new ZipEntry("datasources/" + (StringUtils.isEmpty(dataSource.getName()) ? UUID.randomUUID() + Utils.getFileExtension(dataSource.getContentType()) : dataSource.getName()));
-			entry.setComment("Content-Type: " + dataSource.getContentType());
-			zip.putNextEntry(e);
-			zip.write(dataSource.getContent());
-			zip.closeEntry();
-		}
+			zipDataSource(zip,entry,dataSource);
 		zip.finish();
+	}
+
+	private void zipDataSource(ZipOutputStream zip, final ZipEntry entry, final DataSource dataSource) throws IOException
+	{
+		val e = new ZipEntry("datasources/" + (StringUtils.isEmpty(dataSource.getName()) ? UUID.randomUUID() + Utils.getFileExtension(dataSource.getContentType()) : dataSource.getName()));
+		entry.setComment("Content-Type: " + dataSource.getContentType());
+		zip.putNextEntry(e);
+		zip.write(dataSource.getContent());
+		zip.closeEntry();
 	}
 
 	private ResourceStreamRequestHandler createRequestHandler(Message messageContent, IResourceStream resourceStream)

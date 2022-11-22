@@ -57,18 +57,19 @@ public abstract class AbstractDAOFactory<T> implements FactoryBean<T>
 				Case($(contains("postgresql")),o -> createPostgresDAO()),
 				Case($(contains("sqlserver")),o -> createMsSqlDAO()),
 				Case($(),o -> {
-					throw new RuntimeException("Jdbc url " + driverClassName + " not recognized!");
+					throw new IllegalStateException("Jdbc url " + driverClassName + " not recognized!");
 				}));
 	}
 
 	public static String getDriverClassName(DataSource dataSource)
 	{
-		return dataSource instanceof HikariDataSource ? ((HikariDataSource)dataSource).getDriverClassName() : 
-			dataSource  instanceof PoolingDataSource ? ((PoolingDataSource)dataSource).getClassName() : ((AtomikosDataSourceBean)dataSource).getXaDataSourceClassName();
+		if (dataSource instanceof HikariDataSource)
+			return ((HikariDataSource)dataSource).getDriverClassName();
+		else if (dataSource  instanceof PoolingDataSource)
+			return ((PoolingDataSource)dataSource).getClassName();
+		else
+			return ((AtomikosDataSourceBean)dataSource).getXaDataSourceClassName();
 	}
-
-	@Override
-	public abstract Class<T> getObjectType();
 
 	@Override
 	public boolean isSingleton()
@@ -90,7 +91,7 @@ public abstract class AbstractDAOFactory<T> implements FactoryBean<T>
 
 	public abstract static class DefaultDAOFactory<U> extends AbstractDAOFactory<U>
 	{
-		public DefaultDAOFactory(@NonNull DataSource dataSource)
+		protected DefaultDAOFactory(@NonNull DataSource dataSource)
 		{
 			super(dataSource);
 		}
@@ -98,37 +99,37 @@ public abstract class AbstractDAOFactory<T> implements FactoryBean<T>
 		@Override
 		public U createHSqlDbDAO()
 		{
-			throw new RuntimeException("HSQLDB not supported!");
+			throw new IllegalStateException("HSQLDB not supported!");
 		}
 
 		@Override
 		public U createMySqlDAO()
 		{
-			throw new RuntimeException("MySQL not supported!");
+			throw new IllegalStateException("MySQL not supported!");
 		}
 
 		@Override
 		public U createPostgresDAO()
 		{
-			throw new RuntimeException("Postgres not supported!");
+			throw new IllegalStateException("Postgres not supported!");
 		}
 
 		@Override
 		public U createOracleDAO()
 		{
-			throw new RuntimeException("Oracle not supported!");
+			throw new IllegalStateException("Oracle not supported!");
 		}
 
 		@Override
 		public U createMsSqlDAO()
 		{
-			throw new RuntimeException("MSSQL not supported!");
+			throw new IllegalStateException("MSSQL not supported!");
 		}
 
 		@Override
 		public U createDB2DAO()
 		{
-			throw new RuntimeException("DB2 not supported!");
+			throw new IllegalStateException("DB2 not supported!");
 		}
 
 	}

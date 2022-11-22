@@ -17,7 +17,6 @@ package nl.clockwork.ebms.admin;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
@@ -33,14 +32,10 @@ import java.util.stream.Collectors;
 import javax.management.remote.JMXServiceURL;
 import javax.servlet.DispatcherType;
 
-import com.microsoft.applicationinsights.web.internal.ApplicationInsightsServletContextListener;
-import com.microsoft.applicationinsights.web.internal.WebRequestTrackingFilter;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -71,6 +66,9 @@ import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+
+import com.microsoft.applicationinsights.web.internal.ApplicationInsightsServletContextListener;
+import com.microsoft.applicationinsights.web.internal.WebRequestTrackingFilter;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -152,7 +150,7 @@ public class Start implements SystemInterface
 		app.startService(args);
 	}
 
-	private void startService(String[] args) throws ParseException, Exception, MalformedURLException, IOException, InterruptedException
+	private void startService(String[] args) throws Exception
 	{
 		val options = createOptions();
 		val cmd = new DefaultParser().parse(options,args);
@@ -165,7 +163,7 @@ public class Start implements SystemInterface
 		try (val context = new AnnotationConfigWebApplicationContext())
 		{
 			context.register(AppConfig.class);
-			getConfigClasses().forEach(c -> context.register(c));
+			getConfigClasses().forEach(context::register);
 			val contextLoaderListener = new ContextLoaderListener(context);
 			if (cmd.hasOption(SOAP_OPTION) || !cmd.hasOption(HEADLESS_OPTION))
 			{
@@ -247,7 +245,7 @@ public class Start implements SystemInterface
 	{
 		return ExtensionProvider.get().stream()
 				.filter(p -> p.getSpringConfigurationClass() != null)
-				.map(p -> p.getSpringConfigurationClass())
+				.map(ExtensionProvider::getSpringConfigurationClass)
 				.collect(Collectors.toList());
 	}
 
@@ -281,7 +279,7 @@ public class Start implements SystemInterface
 		return result;
 	}
 
-	protected void initHealthServer(CommandLine cmd, Server server) throws MalformedURLException, IOException
+	protected void initHealthServer(CommandLine cmd, Server server)
 	{
 		val connector = createHealthConnector(cmd,server);
 		server.addConnector(connector);
@@ -318,7 +316,7 @@ public class Start implements SystemInterface
 		return result;
 	}
 
-	private void addKeyStore(CommandLine cmd, SslContextFactory.Server sslContextFactory, EbMSKeyStore ebMSKeyStore) throws MalformedURLException, IOException
+	private void addKeyStore(CommandLine cmd, SslContextFactory.Server sslContextFactory, EbMSKeyStore ebMSKeyStore)
 	{
 		val protocols = cmd.getOptionValue(PROTOCOLS_OPTION);
 		if (!StringUtils.isEmpty(protocols))
@@ -330,7 +328,7 @@ public class Start implements SystemInterface
 		sslContextFactory.setKeyStorePassword(ebMSKeyStore.getPassword());
 	}
 
-	private void addTrustStore(CommandLine cmd, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
+	private void addTrustStore(CommandLine cmd, SslContextFactory.Server sslContextFactory) throws IOException
 	{
 		val trustStoreType = cmd.getOptionValue(TRUST_STORE_TYPE_OPTION,DEFAULT_KEYSTORE_TYPE);
 		val trustStorePath = cmd.getOptionValue(TRUST_STORE_PATH_OPTION);
@@ -477,7 +475,7 @@ public class Start implements SystemInterface
 		return result;
 	}
 
-	private FilterHolder createClientCertificateAuthenticationFilterHolder(CommandLine cmd) throws MalformedURLException, IOException
+	private FilterHolder createClientCertificateAuthenticationFilterHolder(CommandLine cmd) throws IOException
 	{
 		println("Configuring Web Server client certificate authentication:");
 		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.ClientCertificateAuthenticationFilter.class); 
@@ -561,7 +559,7 @@ public class Start implements SystemInterface
 		}
 	}
 	
-	private String toMD5(String s) throws NoSuchAlgorithmException, UnsupportedEncodingException
+	private String toMD5(String s)
 	{
 		return "MD5:" + DigestUtils.md5Hex(s);
 	}

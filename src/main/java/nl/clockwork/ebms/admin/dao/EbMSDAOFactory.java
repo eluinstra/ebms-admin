@@ -36,7 +36,6 @@ public class EbMSDAOFactory extends DefaultDAOFactory<EbMSDAO>
 	SQLQueryFactory queryFactory;
 
 	public EbMSDAOFactory(
-			TransactionManagerType transactionManagerType,
 			DataSource dataSource,
 			@NonNull JdbcTemplate jdbcTemplate,
 			@NonNull SQLQueryFactory queryFactory)
