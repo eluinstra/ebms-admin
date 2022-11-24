@@ -76,9 +76,9 @@ public class EbMSDAOFactory extends DefaultDAOFactory<EbMSDAO>
 	}
 
 	@Override
-	public EbMSDAO createMySQLDAO()
+	public EbMSDAO createMariaDBDAO()
 	{
-		return new MySQLEbMSDAO(jdbcTemplate,queryFactory);
+		return new MariaDBEbMSDAO(jdbcTemplate,queryFactory);
 	}
 
 	@Override

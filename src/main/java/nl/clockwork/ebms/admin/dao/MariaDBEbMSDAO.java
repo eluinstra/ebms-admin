@@ -30,9 +30,9 @@ import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.querydsl.CachedOutputStreamType;
 
-public class MySQLEbMSDAO extends AbstractEbMSDAO
+public class MariaDBEbMSDAO extends AbstractEbMSDAO
 {
-	public MySQLEbMSDAO(JdbcTemplate jdbcTemplate, SQLQueryFactory queryFactory)
+	public MariaDBEbMSDAO(JdbcTemplate jdbcTemplate, SQLQueryFactory queryFactory)
 	{
 		super(jdbcTemplate,queryFactory);
 	}

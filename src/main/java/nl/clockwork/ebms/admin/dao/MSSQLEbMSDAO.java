@@ -19,7 +19,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.querydsl.sql.SQLQueryFactory;
 
-public class MSSQLEbMSDAO extends nl.clockwork.ebms.admin.dao.MySQLEbMSDAO
+public class MSSQLEbMSDAO extends nl.clockwork.ebms.admin.dao.MariaDBEbMSDAO
 {
 	public MSSQLEbMSDAO(JdbcTemplate jdbcTemplate, SQLQueryFactory queryFactory)
 	{

@@ -33,7 +33,6 @@ public enum JdbcDriver
 	HSQLDB("org.hsqldb.jdbcDriver","jdbc:hsqldb:hsql://%s/%s"),
 	MARIADB("org.mariadb.jdbc.Driver","jdbc:mariadb://%s/%s"),
 	MSSQL("com.microsoft.sqlserver.jdbc.SQLServerDriver","jdbc:sqlserver://%s;databaseName=%s;"),
-	MYSQL("com.mysql.jdbc.Driver","jdbc:mysql://%s/%s"),
 	ORACLE("oracle.jdbc.OracleDriver","jdbc:oracle:thin:@//%s/%s"),
 	ORACLE_("oracle.jdbc.OracleDriver","jdbc:oracle:thin:@%s:%s"),
 	POSTGRESQL("org.postgresql.Driver","jdbc:postgresql://%s/%s");

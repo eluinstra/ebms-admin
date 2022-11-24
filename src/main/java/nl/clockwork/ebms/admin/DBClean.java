@@ -262,8 +262,7 @@ public class DBClean implements SystemInterface {
 		} catch (SQLException e) {
 			printErr(e);
 		};
-		return vendor.equalsIgnoreCase("mysql") ||
-		       vendor.equalsIgnoreCase("microsoft sql server") ||
+		return vendor.equalsIgnoreCase("microsoft sql server") ||
                vendor.equalsIgnoreCase("mariadb") ||
                vendor.equalsIgnoreCase("h2");
 	}

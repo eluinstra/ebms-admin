@@ -19,7 +19,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.querydsl.sql.SQLQueryFactory;
 
-public class H2EbMSDAO extends MySQLEbMSDAO
+public class H2EbMSDAO extends MariaDBEbMSDAO
 {
 	public H2EbMSDAO(JdbcTemplate jdbcTemplate, SQLQueryFactory queryFactory)
 	{

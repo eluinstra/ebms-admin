@@ -96,7 +96,7 @@ public class QueryDSLConfig
 				Case($(contains("db2")),o -> DB2Templates.builder().build()),
 				Case($(contains("h2")),o -> H2Templates.builder().build()),
 				Case($(contains("hsqldb")),o -> HSQLDBTemplates.builder().build()),
-				Case($(contains("mariadb","mysql")),o -> MySQLTemplates.builder().build()),
+				Case($(contains("mariadb")),o -> MySQLTemplates.builder().build()),
 				Case($(contains("oracle")),o -> OracleTemplates.builder().build()),
 				Case($(contains("postgresql")),o -> PostgreSQLTemplates.builder().build()),
 				Case($(contains("sqlserver")),o -> SQLServer2012Templates.builder().build()),

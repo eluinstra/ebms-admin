@@ -333,9 +333,9 @@
 			<version>5.0.1</version>
 		</dependency>
 		<dependency>
-			<groupId>com.ibm.db2.jcc</groupId>
-			<artifactId>db2jcc</artifactId>
-			<version>db2jcc4</version>
+			<groupId>com.ibm.db2</groupId>
+			<artifactId>jcc</artifactId>
+			<version>11.5.8.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -347,12 +347,6 @@
 			<groupId>org.mariadb.jdbc</groupId>
 			<artifactId>mariadb-java-client</artifactId>
 			<version>3.0.9</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.31</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
