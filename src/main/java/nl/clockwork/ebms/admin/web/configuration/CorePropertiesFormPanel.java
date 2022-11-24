@@ -170,8 +170,6 @@ public class CorePropertiesFormPanel extends Panel
 		boolean startEmbeddedBroker;
 		String activeMQConfigFile;
 		boolean deleteMessageContentOnProcessed;
-		boolean storeDuplicateMessage;
-		boolean storeDuplicateMessageContent;
 
 		public List<EbMSHttpClientType> getHttpClients()
 		{

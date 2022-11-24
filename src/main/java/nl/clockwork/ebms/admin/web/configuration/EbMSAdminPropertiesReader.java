@@ -88,11 +88,9 @@ public class EbMSAdminPropertiesReader
 		coreProperties.setStartEmbeddedBroker(Boolean.parseBoolean(properties.getProperty("jms.broker.start")));
 		coreProperties.setActiveMQConfigFile(properties.getProperty("jms.broker.config"));
 		coreProperties.setDeleteMessageContentOnProcessed(Boolean.parseBoolean(properties.getProperty("ebmsMessage.deleteContentOnProcessed")));
-		coreProperties.setStoreDuplicateMessage(Boolean.parseBoolean(properties.getProperty("ebmsMessage.storeDuplicate")));
-		coreProperties.setStoreDuplicateMessageContent(Boolean.parseBoolean(properties.getProperty("ebmsMessage.storeDuplicateContent")));
 	}
 
-	private void read(Properties properties, HttpPropertiesFormData httpProperties) throws MalformedURLException
+	private void read(Properties properties, HttpPropertiesFormData httpProperties)
 	{
 		httpProperties.setHost(properties.getProperty("ebms.host"));
 		httpProperties.setPort(Integer.parseInt(properties.getProperty("ebms.port")));

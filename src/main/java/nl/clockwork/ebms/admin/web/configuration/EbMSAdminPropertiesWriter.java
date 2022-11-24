@@ -86,8 +86,6 @@ public class EbMSAdminPropertiesWriter
 		properties.setProperty("jms.broker.start", Boolean.toString(coreProperties.isStartEmbeddedBroker()));
 		properties.setProperty("jms.broker.config",coreProperties.getActiveMQConfigFile() == null ? "" : coreProperties.getActiveMQConfigFile());
 		properties.setProperty("ebmsMessage.deleteContentOnProcessed",Boolean.toString(coreProperties.isDeleteMessageContentOnProcessed()));
-		properties.setProperty("ebmsMessage.storeDuplicate",Boolean.toString(coreProperties.isStoreDuplicateMessage()));
-		properties.setProperty("ebmsMessage.storeDuplicateContent",Boolean.toString(coreProperties.isStoreDuplicateMessageContent()));
   }
 
 	private void write(Properties properties, HttpPropertiesFormData httpProperties, boolean enableSslOverridePropeties)
