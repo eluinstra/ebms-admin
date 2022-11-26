@@ -37,18 +37,17 @@ public interface EbMSDAO
 	List<CPA> selectCPAs(long first, long count);
 
 	EbMSMessage findMessage(String messageId);
-	EbMSMessage findMessage(String messageId, int messageNr);
 	boolean existsResponseMessage(String messageId);
 	EbMSMessage findResponseMessage(String messageId);
 	long countMessages(EbMSMessageFilter filter);
 	List<EbMSMessage> selectMessages(EbMSMessageFilter filter, long first, long count);
 
-	EbMSAttachment findAttachment(String messageId, int messageNr, String contentId);
+	EbMSAttachment findAttachment(String messageId, String contentId);
 	
 	List<String> selectMessageIds(String cpaId, String fromRole, String toRole, EbMSMessageStatus...status);
 
 	Map<Integer,Integer> selectMessageTraffic(LocalDateTime from, LocalDateTime to, TimeUnit timeUnit, EbMSMessageStatus...status);
 	
-	void writeMessageToZip(String messageId, int messageNr, ZipOutputStream stream);
+	void writeMessageToZip(String messageId, ZipOutputStream stream);
 	void printMessagesToCSV(CSVPrinter printer, EbMSMessageFilter filter);
 }

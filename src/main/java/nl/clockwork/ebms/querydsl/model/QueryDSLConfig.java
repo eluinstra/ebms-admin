@@ -24,6 +24,11 @@ import java.sql.Types;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import com.atomikos.jdbc.AtomikosDataSourceBean;
 import com.querydsl.sql.DB2Templates;
 import com.querydsl.sql.H2Templates;
 import com.querydsl.sql.HSQLDBTemplates;
@@ -35,15 +40,12 @@ import com.querydsl.sql.SQLServer2012Templates;
 import com.querydsl.sql.SQLTemplates;
 import com.querydsl.sql.spring.SpringConnectionProvider;
 import com.querydsl.sql.spring.SpringExceptionTranslator;
+import com.zaxxer.hikari.HikariDataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.dao.AbstractDAOFactory;
 import nl.clockwork.ebms.querydsl.CachedOutputStreamType;
 import nl.clockwork.ebms.querydsl.CollaborationProtocolAgreementType;
 import nl.clockwork.ebms.querydsl.DeliveryTaskStatusType;
@@ -91,7 +93,7 @@ public class QueryDSLConfig
 
 	private SQLTemplates createSQLTemplates(DataSource dataSource)
 	{
-		val driverClassName = AbstractDAOFactory.getDriverClassName(dataSource) == null ? "db2" : AbstractDAOFactory.getDriverClassName(dataSource);
+		val driverClassName = getDriverClassName(dataSource) == null ? "db2" : getDriverClassName(dataSource);
 		return Match(driverClassName).of(
 				Case($(contains("db2")),o -> DB2Templates.builder().build()),
 				Case($(contains("h2")),o -> H2Templates.builder().build()),
@@ -101,7 +103,17 @@ public class QueryDSLConfig
 				Case($(contains("postgresql")),o -> PostgreSQLTemplates.builder().build()),
 				Case($(contains("sqlserver")),o -> SQLServer2012Templates.builder().build()),
 				Case($(),o -> {
-					throw new RuntimeException("Driver class name " + driverClassName + " not recognized!");
+					throw new IllegalStateException("Driver class name " + driverClassName + " not recognized!");
 				}));
+	}
+
+	public String getDriverClassName(DataSource dataSource)
+	{
+		if (dataSource instanceof HikariDataSource)
+			return ((HikariDataSource)dataSource).getDriverClassName();
+		else if (dataSource  instanceof PoolingDataSource)
+			return ((PoolingDataSource)dataSource).getClassName();
+		else
+			return ((AtomikosDataSourceBean)dataSource).getXaDataSourceClassName();
 	}
 }

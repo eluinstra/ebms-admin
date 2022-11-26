@@ -71,7 +71,6 @@ public class MessagesPage extends BasePage
 		{
 			val o = item.getModelObject();
 			item.add(createViewLink("view",item.getModel()));
-			item.add(new Label("messageNr",o.getMessageNr()));
 			item.add(createFilterConversationIdLink("filterConversationId",item.getModel()));
 			item.add(createViewRefToMessageIdLink("viewRefToMessageId",item.getModel()));
 			item.add(InstantLabel.of("timestamp",Model.of(item.getModelObject().getTimestamp()),Constants.DATETIME_FORMAT));
@@ -91,7 +90,7 @@ public class MessagesPage extends BasePage
 		{
 			val result = Link.<Void>builder()
 					.id(id)
-					//.onClick(() -> setResponsePage(new MessagePage(ebMSDAO.getMessage(message.getMessageId(),message.getMessageNr()),MessagesPage.this)))
+					//.onClick(() -> setResponsePage(new MessagePage(ebMSDAO.getMessage(message.getMessageId()),MessagesPage.this)))
 					.onClick(() -> setResponsePage(new MessagePage(model,MessagesPage.this)))
 					.build();
 			result.add(new Label("messageId",model.getObject().getMessageId()));
@@ -165,7 +164,7 @@ public class MessagesPage extends BasePage
 
 	private MessageFilterPanel createMessageFilterPanel(String id, IModel<MessageFilterFormData> filter)
 	{
-		return new MessageFilterPanel(id,filter,f -> new MessagesPage(f));
+		return new MessageFilterPanel(id,filter,MessagesPage::new);
 	}
 
 }

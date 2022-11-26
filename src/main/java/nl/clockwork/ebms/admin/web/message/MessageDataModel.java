@@ -36,16 +36,15 @@ public class MessageDataModel extends LoadableDetachableModel<EbMSMessage>
 	transient EbMSDAO ebMSDAO;
 	@NonNull
 	String messageId;
-	int messageNr;
 
 	public static MessageDataModel of(EbMSDAO ebMSDAO, EbMSMessage message)
 	{
-		return new MessageDataModel(ebMSDAO,message.getMessageId(),message.getMessageNr());
+		return new MessageDataModel(ebMSDAO,message.getMessageId());
 	}
 
 	@Override
 	protected EbMSMessage load()
 	{
-		return ebMSDAO.findMessage(messageId,messageNr);
+		return ebMSDAO.findMessage(messageId);
 	}
 }

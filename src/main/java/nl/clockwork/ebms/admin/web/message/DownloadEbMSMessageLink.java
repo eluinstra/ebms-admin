@@ -53,7 +53,7 @@ public class DownloadEbMSMessageLink extends Link<EbMSMessage>
 		val o = getModelObject();
 		try (val out = new CachedOutputStream(); val zip = new ZipOutputStream(out))
 		{
-			ebMSDAO.writeMessageToZip(o.getMessageId(),o.getMessageNr(),zip);
+			ebMSDAO.writeMessageToZip(o.getMessageId(),zip);
 			val resourceStream = CachedOutputResourceStream.of(out,"application/zip");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 			zip.finish();
@@ -69,7 +69,7 @@ public class DownloadEbMSMessageLink extends Link<EbMSMessage>
 	{
 		val o = getModelObject();
 		return new ResourceStreamRequestHandler(resourceStream)
-				.setFileName("message." + o.getMessageId() + "." + o.getMessageNr() + ".zip")
+				.setFileName("message." + o.getMessageId() + ".zip")
 				.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 

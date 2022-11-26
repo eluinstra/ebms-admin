@@ -59,7 +59,7 @@ public class DownloadEbMSMessageLinkX extends Link<EbMSMessage>
 	private ResourceStreamRequestHandler createRequestHandler(EbMSMessage message, IResourceStream resourceStream)
 	{
 		return new ResourceStreamRequestHandler(resourceStream)
-				.setFileName("message." + message.getMessageId() + "." + message.getMessageNr() + ".zip")
+				.setFileName("message." + message.getMessageId() + ".zip")
 				.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 

@@ -98,7 +98,7 @@ public class TrafficPage extends BasePage
 		{
 			Action onClick = () ->
 			{
-				val filter = (MessageFilterFormData)SerializationUtils.clone(TrafficPage.this.filter.getObject());
+				val filter = SerializationUtils.clone(TrafficPage.this.filter.getObject());
 				filter.setConversationId(model.getObject().getConversationId());
 				setResponsePage(new TrafficPage(Model.of(filter),TrafficPage.this));
 			};
@@ -131,7 +131,6 @@ public class TrafficPage extends BasePage
 	{
 		this.maxItemsPerPage = WicketApplication.get().getMaxItemsPerPage();
 		this.filter = filter;
-		filter.getObject().setMessageNr(0);
 		filter.getObject().setServiceMessage(false);
 		add(createMessageFilterPanel("messageFilter",filter));
 		val container = new WebMarkupContainer("container");
@@ -147,7 +146,7 @@ public class TrafficPage extends BasePage
 
 	private MessageFilterPanel createMessageFilterPanel(String id, IModel<MessageFilterFormData> filter)
 	{
-		return new MessageFilterPanel(id,filter,f -> new TrafficPage(f));
+		return new MessageFilterPanel(id,filter,TrafficPage::new);
 	}
 
 	@Override

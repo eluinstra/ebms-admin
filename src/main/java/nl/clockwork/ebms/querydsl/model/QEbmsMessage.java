@@ -15,18 +15,20 @@
  */
 package nl.clockwork.ebms.querydsl.model;
 
-import static com.querydsl.core.types.PathMetadataFactory.*;
+import static com.querydsl.core.types.PathMetadataFactory.forVariable;
 
-import com.querydsl.core.types.dsl.*;
-
-import com.querydsl.core.types.PathMetadata;
-import javax.annotation.Generated;
-import com.querydsl.core.types.Path;
-
-import java.util.*;
-
-import com.querydsl.sql.ColumnMetadata;
 import java.sql.Types;
+
+import javax.annotation.Generated;
+
+import com.querydsl.core.types.Path;
+import com.querydsl.core.types.PathMetadata;
+import com.querydsl.core.types.dsl.DateTimePath;
+import com.querydsl.core.types.dsl.EnumPath;
+import com.querydsl.core.types.dsl.NumberPath;
+import com.querydsl.core.types.dsl.SimplePath;
+import com.querydsl.core.types.dsl.StringPath;
+import com.querydsl.sql.ColumnMetadata;
 
 
 
@@ -55,8 +57,6 @@ public class QEbmsMessage extends com.querydsl.sql.RelationalPathBase<QEbmsMessa
 
     public final StringPath messageId = createString("messageId");
 
-    public final NumberPath<Integer> messageNr = createNumber("messageNr", Integer.class);
-
     public final DateTimePath<java.time.Instant> persistTime = createDateTime("persistTime", java.time.Instant.class);
 
     public final StringPath refToMessageId = createString("refToMessageId");
@@ -79,9 +79,9 @@ public class QEbmsMessage extends com.querydsl.sql.RelationalPathBase<QEbmsMessa
 
     public final StringPath toRole = createString("toRole");
 
-    public final com.querydsl.sql.PrimaryKey<QEbmsMessage> sysPk10124 = createPrimaryKey(messageId, messageNr);
+    public final com.querydsl.sql.PrimaryKey<QEbmsMessage> sysPk10124 = createPrimaryKey(messageId);
 
-    public final com.querydsl.sql.ForeignKey<QEbmsAttachment> _sysFk10141 = createInvForeignKey(Arrays.asList(messageId, messageNr), Arrays.asList("MESSAGE_ID", "MESSAGE_NR"));
+    public final com.querydsl.sql.ForeignKey<QEbmsAttachment> _sysFk10141 = createInvForeignKey(messageId, "MESSAGE_ID");
 
     public QEbmsMessage(String variable) {
         super(QEbmsMessage.class, forVariable(variable), "PUBLIC", "ebms_message");
@@ -116,7 +116,6 @@ public class QEbmsMessage extends com.querydsl.sql.RelationalPathBase<QEbmsMessa
         addMetadata(fromPartyId, ColumnMetadata.named("from_party_id").withIndex(8).ofType(Types.VARCHAR).withSize(256).notNull());
         addMetadata(fromRole, ColumnMetadata.named("from_role").withIndex(9).ofType(Types.VARCHAR).withSize(256));
         addMetadata(messageId, ColumnMetadata.named("message_id").withIndex(4).ofType(Types.VARCHAR).withSize(256).notNull());
-        addMetadata(messageNr, ColumnMetadata.named("message_nr").withIndex(5).ofType(Types.SMALLINT).withSize(16).notNull());
         addMetadata(persistTime, ColumnMetadata.named("persist_time").withIndex(17).ofType(Types.TIMESTAMP).withSize(26));
         addMetadata(refToMessageId, ColumnMetadata.named("ref_to_message_id").withIndex(6).ofType(Types.VARCHAR).withSize(256));
         addMetadata(service, ColumnMetadata.named("service").withIndex(12).ofType(Types.VARCHAR).withSize(256).notNull());

@@ -115,7 +115,6 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 	{
 		setModel(new CompoundPropertyModel<>(model));
 		add(new Label("messageId"));
-		add(new Label("messageNr"));
 		add(new Label("conversationId"));
 		add(createRefToMessageIdLink("viewRefToMessageId"));
 		add(InstantLabel.of("timestamp",Constants.DATETIME_FORMAT));
