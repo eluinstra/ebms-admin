@@ -24,7 +24,7 @@
 	<groupId>nl.clockwork.ebms.admin</groupId>
 	<artifactId>ebms-admin</artifactId>
 	<packaging>jar</packaging>
-	<version>2.18.7-SNAPSHOT</version>
+	<version>2.18.7</version>
 	<name>EbMS Admin</name>
 	<description></description>
 	<url>https://sourceforge.net/projects/javaebmsadmin/</url>
@@ -133,6 +133,13 @@
 			<groupId>org.beryx</groupId>
 			<artifactId>text-io</artifactId>
 			<version>3.4.1</version>
+		</dependency>
+
+		<!-- client -->
+		<dependency>
+			<groupId>nl.clockwork.ebms</groupId>
+			<artifactId>ebms-core</artifactId>
+			<version>2.18.7</version>
 		</dependency>
 
 		<!-- querydsl -->
@@ -384,13 +391,6 @@
 			<groupId>com.microsoft.azure</groupId>
 			<artifactId>applicationinsights-logging-log4j2</artifactId>
 			<version>2.6.4</version>
-		</dependency>
-
-		<!-- client -->
-		<dependency>
-			<groupId>nl.clockwork.ebms</groupId>
-			<artifactId>ebms-core</artifactId>
-			<version>2.18.7-SNAPSHOT</version>
 		</dependency>
 
 		<!-- test -->
