@@ -95,7 +95,6 @@ public class EbMSAdminPropertiesReader
 		httpProperties.setPath(properties.getProperty("ebms.path"));
 		httpProperties.setSsl(Boolean.parseBoolean(properties.getProperty("ebms.ssl")));
 		httpProperties.setProxy(!StringUtils.isEmpty(properties.getProperty("http.proxy.host")));
-		httpProperties.setChunkedStreamingMode(Boolean.parseBoolean(properties.getProperty("http.chunkedStreamingMode")));
 		if (httpProperties.isSsl())
 			read(properties,httpProperties.getSslProperties());
 		if (httpProperties.isProxy())

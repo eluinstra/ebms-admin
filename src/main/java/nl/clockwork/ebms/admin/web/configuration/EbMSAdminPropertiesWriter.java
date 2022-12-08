@@ -93,7 +93,6 @@ public class EbMSAdminPropertiesWriter
 		properties.setProperty("ebms.port",httpProperties.getPort().toString());
 		properties.setProperty("ebms.path",httpProperties.getPath());
 		properties.setProperty("ebms.ssl",Boolean.toString(httpProperties.isSsl()));
-		properties.setProperty("http.chunkedStreamingMode",Boolean.toString(httpProperties.isChunkedStreamingMode()));
 		if (httpProperties.isSsl())
 			write(properties,httpProperties.getSslProperties(),enableSslOverridePropeties);
 		if (httpProperties.isProxy())
