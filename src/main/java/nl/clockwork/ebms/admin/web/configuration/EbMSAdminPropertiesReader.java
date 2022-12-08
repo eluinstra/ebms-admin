@@ -36,7 +36,6 @@ import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyP
 import nl.clockwork.ebms.admin.web.configuration.ServicePropertiesFormPanel.ServicePropertiesFormData;
 import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.SignaturePropertiesFormData;
 import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormData;
-import nl.clockwork.ebms.delivery.client.EbMSHttpClientFactory.EbMSHttpClientType;
 import nl.clockwork.ebms.event.MessageEventListenerConfig.EventListenerType;
 import nl.clockwork.ebms.security.KeyStoreType;
 
@@ -81,7 +80,6 @@ public class EbMSAdminPropertiesReader
 
 	private void read(Properties properties, CorePropertiesFormData coreProperties)
 	{
-		coreProperties.setHttpClient(EbMSHttpClientType.valueOf(properties.getProperty("http.client")));
 		coreProperties.setEventListener(EventListenerType.valueOf(properties.getProperty("eventListener.type")));
 		coreProperties.setJmsBrokerUrl(properties.getProperty("jms.brokerURL"));
 		coreProperties.setJmsVirtualTopics(Boolean.parseBoolean(properties.getProperty("jms.virtualTopics")));

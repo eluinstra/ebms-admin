@@ -79,7 +79,6 @@ public class EbMSAdminPropertiesWriter
 
   private void write(Properties properties, CorePropertiesFormData coreProperties)
   {
-		properties.setProperty("http.client",coreProperties.getHttpClient().name());
 		properties.setProperty("eventListener.type",coreProperties.getEventListener().name());
 		properties.setProperty("jms.brokerURL",coreProperties.getJmsBrokerUrl() == null ? "" : coreProperties.getJmsBrokerUrl());
 		properties.setProperty("jms.virtualTopics", Boolean.toString(coreProperties.isJmsVirtualTopics()));

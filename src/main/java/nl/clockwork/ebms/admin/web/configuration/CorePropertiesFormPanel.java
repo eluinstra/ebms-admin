@@ -40,7 +40,6 @@ import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.Supplier;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
-import nl.clockwork.ebms.delivery.client.EbMSHttpClientFactory.EbMSHttpClientType;
 import nl.clockwork.ebms.event.MessageEventListenerConfig.EventListenerType;
 
 public class CorePropertiesFormPanel extends Panel
@@ -75,10 +74,6 @@ public class CorePropertiesFormPanel extends Panel
 					enableConsoleProperties,
 					new CheckBox("storeDuplicateMessageContent")
 						.setLabel(new ResourceModel("lbl.storeDuplicateMessageContent"))));
-			add(createContainer(
-					"httpClientContainer",
-					enableConsoleProperties,
-					new BootstrapFormComponentFeedbackBorder("httpClientFeedback",createHttpClientChoice("httpClient"))));
 			add(createContainer(
 					"eventListenerContainer",
 					enableConsoleProperties,
@@ -134,17 +129,9 @@ public class CorePropertiesFormPanel extends Panel
 			return result;
 		}
 
-		private DropDownChoice<EbMSHttpClientType> createHttpClientChoice(String id)
-		{
-			val result = new DropDownChoice<EbMSHttpClientType>(id,new PropertyModel<List<EbMSHttpClientType>>(getModel(),"httpClients"));
-			result.setLabel(new ResourceModel("lbl.httpClient"));
-			result.setRequired(true);
-			return result;
-		}
-
 		private DropDownChoice<EventListenerType> createEventListenerChoice(String id)
 		{
-			val result = new DropDownChoice<EventListenerType>(id,new PropertyModel<List<EventListenerType>>(getModel(),"eventListeners"));
+			val result = new DropDownChoice<EventListenerType>(id,new PropertyModel<>(getModel(),"eventListeners"));
 			result.setLabel(new ResourceModel("lbl.eventListener"));
 			result.setRequired(true);
 			result.add(AjaxFormComponentUpdatingBehavior.builder()
@@ -162,8 +149,6 @@ public class CorePropertiesFormPanel extends Panel
 	{
 		private static final long serialVersionUID = 1L;
 		@NonNull
-		EbMSHttpClientType httpClient;
-		@NonNull
 		EventListenerType eventListener;
 		String jmsBrokerUrl;
 		boolean jmsVirtualTopics;
@@ -171,10 +156,6 @@ public class CorePropertiesFormPanel extends Panel
 		String activeMQConfigFile;
 		boolean deleteMessageContentOnProcessed;
 
-		public List<EbMSHttpClientType> getHttpClients()
-		{
-			return Arrays.asList(EbMSHttpClientType.values());
-		}
 		public List<EventListenerType> getEventListeners()
 		{
 			return Arrays.asList(EventListenerType.values());
