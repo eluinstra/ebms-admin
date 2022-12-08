@@ -42,7 +42,6 @@ import com.querydsl.sql.spring.SpringConnectionProvider;
 import com.querydsl.sql.spring.SpringExceptionTranslator;
 import com.zaxxer.hikari.HikariDataSource;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 import lombok.AccessLevel;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
@@ -111,8 +110,6 @@ public class QueryDSLConfig
 	{
 		if (dataSource instanceof HikariDataSource)
 			return ((HikariDataSource)dataSource).getDriverClassName();
-		else if (dataSource  instanceof PoolingDataSource)
-			return ((PoolingDataSource)dataSource).getClassName();
 		else
 			return ((AtomikosDataSourceBean)dataSource).getXaDataSourceClassName();
 	}
