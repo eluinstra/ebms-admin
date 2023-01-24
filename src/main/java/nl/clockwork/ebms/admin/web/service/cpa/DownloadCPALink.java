@@ -15,17 +15,17 @@
  */
 package nl.clockwork.ebms.admin.web.service.cpa;
 
+
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
+import nl.clockwork.ebms.cpa.CPAService;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.resource.IResourceStream;
-
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.cpa.CPAService;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DownloadCPALink extends Link<String>
@@ -36,7 +36,7 @@ public class DownloadCPALink extends Link<String>
 	@Builder
 	public DownloadCPALink(String id, CPAService cpaService, IModel<String> cpaId)
 	{
-		super(id,cpaId);
+		super(id, cpaId);
 		this.cpaService = cpaService;
 	}
 
@@ -45,14 +45,12 @@ public class DownloadCPALink extends Link<String>
 	{
 		val o = getModelObject();
 		val cpa = cpaService.getCPA(o);
-		val resourceStream = StringResourceStream.of(cpa,"text/xml");
-		getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(o,resourceStream));
+		val resourceStream = StringResourceStream.of(cpa, "text/xml");
+		getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(o, resourceStream));
 	}
 
 	private ResourceStreamRequestHandler createRequestHandler(String cpaId, IResourceStream resourceStream)
 	{
-		return new ResourceStreamRequestHandler(resourceStream)
-				.setFileName(cpaId + ".xml")
-				.setContentDisposition(ContentDisposition.ATTACHMENT);
+		return new ResourceStreamRequestHandler(resourceStream).setFileName(cpaId + ".xml").setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 }

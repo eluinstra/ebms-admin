@@ -15,8 +15,11 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-import java.io.IOException;
 
+import java.io.IOException;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import nl.clockwork.ebms.admin.model.EbMSMessage;
 import org.apache.cxf.io.CachedOutputStream;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
@@ -25,10 +28,6 @@ import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.resource.IResourceStream;
 
-import lombok.val;
-import lombok.extern.slf4j.Slf4j;
-import nl.clockwork.ebms.admin.model.EbMSMessage;
-
 @Slf4j
 public class DownloadEbMSMessageLinkX extends Link<EbMSMessage>
 {
@@ -36,7 +35,7 @@ public class DownloadEbMSMessageLinkX extends Link<EbMSMessage>
 
 	public DownloadEbMSMessageLinkX(String id, IModel<EbMSMessage> model)
 	{
-		super(id,Args.notNull(model,"message"));
+		super(id, Args.notNull(model, "message"));
 	}
 
 	@Override
@@ -45,21 +44,20 @@ public class DownloadEbMSMessageLinkX extends Link<EbMSMessage>
 		val o = getModelObject();
 		try (val out = new CachedOutputStream())
 		{
-			EbMSMessageZipper.of(o,out).zip();
-			val resourceStream = CachedOutputResourceStream.of(out,"application/gzip");
-			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(o,resourceStream));
+			EbMSMessageZipper.of(o, out).zip();
+			val resourceStream = CachedOutputResourceStream.of(out, "application/gzip");
+			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(o, resourceStream));
 		}
 		catch (IOException e)
 		{
-			log.error("",e);
+			log.error("", e);
 			error(e.getMessage());
 		}
 	}
 
 	private ResourceStreamRequestHandler createRequestHandler(EbMSMessage message, IResourceStream resourceStream)
 	{
-		return new ResourceStreamRequestHandler(resourceStream)
-				.setFileName("message." + message.getMessageId() + "." + message.getMessageNr() + ".zip")
+		return new ResourceStreamRequestHandler(resourceStream).setFileName("message." + message.getMessageId() + "." + message.getMessageNr() + ".zip")
 				.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 

@@ -15,17 +15,16 @@
  */
 package nl.clockwork.ebms.admin.web.cpa;
 
-import nl.clockwork.ebms.admin.dao.EbMSDAO;
-import nl.clockwork.ebms.admin.model.CPA;
-
-import org.apache.wicket.model.LoadableDetachableModel;
-
 import static io.vavr.API.*;
 import static io.vavr.Predicates.*;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.admin.dao.EbMSDAO;
+import nl.clockwork.ebms.admin.model.CPA;
+import org.apache.wicket.model.LoadableDetachableModel;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor(staticName = "of")
@@ -39,7 +38,7 @@ public class CPADataModel extends LoadableDetachableModel<CPA>
 
 	public static CPADataModel of(EbMSDAO ebMSDAO, CPA cpa)
 	{
-		return of(ebMSDAO,cpa.getCpaId());
+		return of(ebMSDAO, cpa.getCpaId());
 	}
 
 	@Override
@@ -57,10 +56,6 @@ public class CPADataModel extends LoadableDetachableModel<CPA>
 	@Override
 	public boolean equals(Object obj)
 	{
-		return Match(obj).of(
-				Case($(this),true),
-				Case($(null),false),
-				Case($(instanceOf(CPADataModel.class)),o -> cpaId.equals(o.cpaId)),
-				Case($(),false));
+		return Match(obj).of(Case($(this), true), Case($(null), false), Case($(instanceOf(CPADataModel.class)), o -> cpaId.equals(o.cpaId)), Case($(), false));
 	}
 }

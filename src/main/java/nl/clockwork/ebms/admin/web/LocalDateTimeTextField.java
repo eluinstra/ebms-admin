@@ -15,21 +15,20 @@
  */
 package nl.clockwork.ebms.admin.web;
 
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
 import org.apache.wicket.Session;
 import org.apache.wicket.markup.html.form.AbstractTextComponent.ITextFormatProvider;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.convert.IConverter;
-
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.NonNull;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class LocalDateTimeTextField extends TextField<LocalDateTime> implements ITextFormatProvider
@@ -45,7 +44,7 @@ public class LocalDateTimeTextField extends TextField<LocalDateTime> implements 
 	@Builder
 	public LocalDateTimeTextField(final String id, final IModel<LocalDateTime> model, final String datePattern, Supplier<Boolean> isRequired)
 	{
-		super(id,model,LocalDateTime.class);
+		super(id, model, LocalDateTime.class);
 		this.datePattern = datePattern == null ? defaultDatePattern() : datePattern;
 		this.isRequired = isRequired == null ? () -> super.isRequired() : isRequired;
 		converter = new LocalDateTimeConverter(datePattern);
@@ -86,6 +85,6 @@ public class LocalDateTimeTextField extends TextField<LocalDateTime> implements 
 	@Override
 	protected String[] getInputTypes()
 	{
-		return new String[] { "text", "date", "datetime", "datetime-local", "month", "time", "week" };
+		return new String[]{"text", "date", "datetime", "datetime-local", "month", "time", "week"};
 	}
 }

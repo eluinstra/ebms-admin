@@ -15,18 +15,15 @@
  */
 package nl.clockwork.ebms.querydsl;
 
+
+import com.querydsl.sql.types.AbstractType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-
 import javax.xml.bind.JAXBException;
-
-import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement;
-
-import com.querydsl.sql.types.AbstractType;
-
 import nl.clockwork.ebms.jaxb.JAXBParser;
+import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement;
 
 public class CollaborationProtocolAgreementType extends AbstractType<CollaborationProtocolAgreement>
 {
@@ -34,6 +31,7 @@ public class CollaborationProtocolAgreementType extends AbstractType<Collaborati
 	{
 		this(Types.BLOB);
 	}
+
 	public CollaborationProtocolAgreementType(int type)
 	{
 		super(type);
@@ -63,7 +61,7 @@ public class CollaborationProtocolAgreementType extends AbstractType<Collaborati
 	{
 		try
 		{
-			st.setString(startIndex,JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(value));
+			st.setString(startIndex, JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(value));
 		}
 		catch (JAXBException e)
 		{

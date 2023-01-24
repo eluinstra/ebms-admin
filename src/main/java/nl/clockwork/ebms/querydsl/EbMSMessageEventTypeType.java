@@ -15,12 +15,11 @@
  */
 package nl.clockwork.ebms.querydsl;
 
+
+import com.querydsl.sql.types.AbstractType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import com.querydsl.sql.types.AbstractType;
-
 import lombok.val;
 import nl.clockwork.ebms.event.MessageEventType;
 
@@ -40,13 +39,13 @@ public class EbMSMessageEventTypeType extends AbstractType<MessageEventType>
 	@Override
 	public MessageEventType getValue(ResultSet rs, int startIndex) throws SQLException
 	{
-		val id = rs.getObject(startIndex,Integer.class);
+		val id = rs.getObject(startIndex, Integer.class);
 		return id != null ? MessageEventType.get(id).orElseThrow(() -> new IllegalArgumentException("EbMSMessageEventType " + id + " is not valid!")) : null;
 	}
 
 	@Override
 	public void setValue(PreparedStatement st, int startIndex, MessageEventType value) throws SQLException
 	{
-		st.setInt(startIndex,value != null ? value.getId() : null);
+		st.setInt(startIndex, value != null ? value.getId() : null);
 	}
 }

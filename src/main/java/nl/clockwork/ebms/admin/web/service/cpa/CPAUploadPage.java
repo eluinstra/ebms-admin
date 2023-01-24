@@ -15,8 +15,21 @@
  */
 package nl.clockwork.ebms.admin.web.service.cpa;
 
-import java.util.List;
 
+import java.util.List;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import nl.clockwork.ebms.admin.web.Action;
+import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.Button;
+import nl.clockwork.ebms.admin.web.ResetButton;
+import nl.clockwork.ebms.cpa.CPAService;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
@@ -26,26 +39,12 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IClusterable;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
-import nl.clockwork.ebms.admin.web.Action;
-import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.Button;
-import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.cpa.CPAService;
-
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CPAUploadPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="cpaService")
+	@SpringBean(name = "cpaService")
 	CPAService cpaService;
 
 	public CPAUploadPage()
@@ -53,11 +52,11 @@ public class CPAUploadPage extends BasePage
 		add(new BootstrapFeedbackPanel("feedback"));
 		add(new EditUploadForm("form"));
 	}
-	
+
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("cpaUpload",this);
+		return getLocalizer().getString("cpaUpload", this);
 	}
 
 	public class EditUploadForm extends Form<EditUploadFormData>
@@ -66,13 +65,13 @@ public class CPAUploadPage extends BasePage
 
 		public EditUploadForm(String id)
 		{
-			super(id,new CompoundPropertyModel<>(new EditUploadFormData()));
+			super(id, new CompoundPropertyModel<>(new EditUploadFormData()));
 			setMultiPart(true);
-			add(new BootstrapFormComponentFeedbackBorder("cpaFeedback",createCPAFileField("cpaFile")));
+			add(new BootstrapFormComponentFeedbackBorder("cpaFeedback", createCPAFileField("cpaFile")));
 			add(new CheckBox("overwrite").setLabel(new ResourceModel("lbl.overwrite")));
 			add(createValidateButton("validate"));
 			add(createUploadButton("upload"));
-			add(new ResetButton("reset",new ResourceModel("cmd.reset"),CPAUploadPage.class));
+			add(new ResetButton("reset", new ResourceModel("cmd.reset"), CPAUploadPage.class));
 		}
 
 		private FileUploadField createCPAFileField(String id)
@@ -93,19 +92,19 @@ public class CPAUploadPage extends BasePage
 					if (files != null && files.size() == 1)
 					{
 						FileUpload file = files.get(0);
-						//String contentType = file.getContentType();
-						//FIXME char encoding
+						// String contentType = file.getContentType();
+						// FIXME char encoding
 						cpaService.validateCPA(new String(file.getBytes()));
 					}
 					info(getString("cpa.valid"));
 				}
 				catch (Exception e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			return new Button(id,new ResourceModel("cmd.validate"),onSubmit);
+			return new Button(id, new ResourceModel("cmd.validate"), onSubmit);
 		}
 
 		private Button createUploadButton(String id)
@@ -118,19 +117,19 @@ public class CPAUploadPage extends BasePage
 					if (files != null && files.size() == 1)
 					{
 						val file = files.get(0);
-						//val contentType = file.getContentType();
-						//FIXME char encoding
-						cpaService.insertCPA(new String(file.getBytes()),getModelObject().isOverwrite());
+						// val contentType = file.getContentType();
+						// FIXME char encoding
+						cpaService.insertCPA(new String(file.getBytes()), getModelObject().isOverwrite());
 					}
 					setResponsePage(new CPAsPage());
 				}
 				catch (Exception e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			val result = new Button(id,new ResourceModel("cmd.upload"),onSubmit);
+			val result = new Button(id, new ResourceModel("cmd.upload"), onSubmit);
 			setDefaultButton(result);
 			return result;
 		}

@@ -15,6 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
+
 import org.apache.wicket.model.IModel;
 
 public class TruststorePropertiesFormPanel extends JavaTrustStorePropertiesFormPanel
@@ -23,6 +24,6 @@ public class TruststorePropertiesFormPanel extends JavaTrustStorePropertiesFormP
 
 	public TruststorePropertiesFormPanel(String id, IModel<JavaTrustStorePropertiesFormData> model)
 	{
-		super(id,model);
+		super(id, model);
 	}
 }

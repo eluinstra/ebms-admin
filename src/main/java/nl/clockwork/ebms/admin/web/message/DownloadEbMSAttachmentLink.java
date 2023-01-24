@@ -15,10 +15,14 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
+
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.web.Utils;
-
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
@@ -26,11 +30,6 @@ import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.encoding.UrlEncoder;
 import org.apache.wicket.util.resource.IResourceStream;
-
-import lombok.AccessLevel;
-import lombok.NonNull;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DownloadEbMSAttachmentLink extends Link<EbMSAttachment>
@@ -41,25 +40,25 @@ public class DownloadEbMSAttachmentLink extends Link<EbMSAttachment>
 
 	public DownloadEbMSAttachmentLink(String id, EbMSDAO ebMSDAO, IModel<EbMSAttachment> model)
 	{
-		super(id,model);
+		super(id, model);
 		this.ebMSDAO = ebMSDAO;
 	}
-	
+
 	@Override
 	public void onClick()
 	{
 		val o = getModelObject();
-		val attachment = ebMSDAO.findAttachment(o.getMessage().getMessageId(),o.getMessage().getMessageNr(),o.getContentId());
-		val fileName = UrlEncoder.QUERY_INSTANCE.encode(StringUtils.isEmpty(attachment.getName()) ? attachment.getContentId() + Utils.getFileExtension(attachment.getContentType()) : attachment.getName(),getRequest().getCharset());
-		val resourceStream = AttachmentResourceStream.of(attachment); 
-		getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName,resourceStream));
+		val attachment = ebMSDAO.findAttachment(o.getMessage().getMessageId(), o.getMessage().getMessageNr(), o.getContentId());
+		val fileName = UrlEncoder.QUERY_INSTANCE.encode(
+				StringUtils.isEmpty(attachment.getName()) ? attachment.getContentId() + Utils.getFileExtension(attachment.getContentType()) : attachment.getName(),
+				getRequest().getCharset());
+		val resourceStream = AttachmentResourceStream.of(attachment);
+		getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName, resourceStream));
 	}
 
 	private ResourceStreamRequestHandler createRequestHandler(String fileName, IResourceStream resourceStream)
 	{
-		return new ResourceStreamRequestHandler(resourceStream)
-				.setFileName(fileName)
-				.setContentDisposition(ContentDisposition.ATTACHMENT);
+		return new ResourceStreamRequestHandler(resourceStream).setFileName(fileName).setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 
 }

@@ -15,20 +15,17 @@
  */
 package nl.clockwork.ebms.querydsl;
 
+
+import com.querydsl.sql.types.AbstractType;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-
+import nl.clockwork.ebms.util.DOMUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-
-import com.querydsl.sql.types.AbstractType;
-
-import nl.clockwork.ebms.util.DOMUtils;
 
 public class DocumentType extends AbstractType<Document>
 {
@@ -61,7 +58,7 @@ public class DocumentType extends AbstractType<Document>
 	{
 		try
 		{
-			st.setString(startIndex,DOMUtils.toString(value));
+			st.setString(startIndex, DOMUtils.toString(value));
 		}
 		catch (TransformerException e)
 		{

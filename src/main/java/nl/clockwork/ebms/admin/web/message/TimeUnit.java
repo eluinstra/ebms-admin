@@ -15,13 +15,13 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAmount;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,13 +33,15 @@ import nl.clockwork.ebms.admin.Constants;
 @Getter
 public enum TimeUnit
 {
-	HOUR("Minutes",Duration.ofMinutes(1),Duration.ofHours(1),DateTimeFormatter.ofPattern(Constants.DATETIME_HOUR_FORMAT),DateTimeFormatter.ofPattern("mm")),
-	DAY("Hours",Duration.ofHours(1),Duration.ofDays(1),DateTimeFormatter.ofPattern(Constants.DATE_FORMAT),DateTimeFormatter.ofPattern("HH")),
-	/*WEEK("Days",Period.ofDays(1),Period.ofWeeks(1),DateTimeFormatter.ofPattern(Constants.DATE_FORMAT),DateTimeFormatter.ofPattern("dd")),
-	MONTH("Weeks",Period.ofWeeks(1),Period.ofMonths(1),DateTimeFormatter.ofPattern(Constants.DATE_FORMAT),DateTimeFormatter.ofPattern("ww")),*/
-	MONTH("Days",Period.ofDays(1),Period.ofMonths(1),DateTimeFormatter.ofPattern(Constants.DATE_MONTH_FORMAT),DateTimeFormatter.ofPattern("dd")),
-	YEAR("Months",Period.ofMonths(1),Period.ofYears(1),DateTimeFormatter.ofPattern(Constants.DATE_YEAR_FORMAT),DateTimeFormatter.ofPattern("MM"));
-	
+	HOUR("Minutes", Duration.ofMinutes(1), Duration.ofHours(1), DateTimeFormatter.ofPattern(Constants.DATETIME_HOUR_FORMAT), DateTimeFormatter.ofPattern("mm")),
+	DAY("Hours", Duration.ofHours(1), Duration.ofDays(1), DateTimeFormatter.ofPattern(Constants.DATE_FORMAT), DateTimeFormatter.ofPattern("HH")),
+	/*
+	 * WEEK("Days",Period.ofDays(1),Period.ofWeeks(1),DateTimeFormatter.ofPattern(Constants.DATE_FORMAT),DateTimeFormatter.ofPattern("dd")),
+	 * MONTH("Weeks",Period.ofWeeks(1),Period.ofMonths(1),DateTimeFormatter.ofPattern(Constants.DATE_FORMAT),DateTimeFormatter.ofPattern("ww")),
+	 */
+	MONTH("Days", Period.ofDays(1), Period.ofMonths(1), DateTimeFormatter.ofPattern(Constants.DATE_MONTH_FORMAT), DateTimeFormatter.ofPattern("dd")),
+	YEAR("Months", Period.ofMonths(1), Period.ofYears(1), DateTimeFormatter.ofPattern(Constants.DATE_YEAR_FORMAT), DateTimeFormatter.ofPattern("MM"));
+
 	String units;
 	TemporalAmount timeUnit;
 	TemporalAmount period;
@@ -53,14 +55,14 @@ public enum TimeUnit
 
 	public LocalDateTime getFrom(LocalDateTime dateTime)
 	{
-		switch(this)
+		switch (this)
 		{
 			case HOUR:
 				return dateTime.truncatedTo(ChronoUnit.HOURS).plusHours(1).minus(period);
 			case DAY:
 				return dateTime.truncatedTo(ChronoUnit.DAYS).plusDays(1).minus(period);
-			//case WEEK:
-				//return dateTime.truncatedTo(ChronoUnit.DAYS).withDayOfWeek(1).plusWeeks(1).minus(period);
+			// case WEEK:
+			// return dateTime.truncatedTo(ChronoUnit.DAYS).withDayOfWeek(1).plusWeeks(1).minus(period);
 			case MONTH:
 				return dateTime.truncatedTo(ChronoUnit.DAYS).withDayOfMonth(1).plusMonths(1).minus(period);
 			case YEAR:

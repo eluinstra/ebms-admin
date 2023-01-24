@@ -15,12 +15,12 @@
  */
 package nl.clockwork.ebms.admin.web.menu;
 
-import org.apache.wicket.Page;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
+import org.apache.wicket.Page;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Getter
@@ -29,16 +29,16 @@ public class MenuLinkItem extends MenuItem
 	private static final long serialVersionUID = 1L;
 	@NonNull
 	Class<? extends Page> pageClass;
-	
+
 	public MenuLinkItem(String id, String name, Class<? extends Page> pageClass)
 	{
-		super(id,name);
+		super(id, name);
 		this.pageClass = pageClass;
 	}
 
 	public MenuLinkItem(MenuItem parent, String id, String name, Class<? extends Page> pageClass)
 	{
-		super(parent,id,name);
+		super(parent, id, name);
 		this.pageClass = pageClass;
 	}
 }

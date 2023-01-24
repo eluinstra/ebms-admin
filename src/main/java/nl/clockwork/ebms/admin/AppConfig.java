@@ -15,6 +15,13 @@
  */
 package nl.clockwork.ebms.admin;
 
+
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
+import nl.clockwork.ebms.admin.dao.AdminDAOConfig;
+import nl.clockwork.ebms.admin.dao.DataSourceConfig;
+import nl.clockwork.ebms.admin.web.WebConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
@@ -23,36 +30,23 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
-import lombok.AccessLevel;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.admin.dao.AdminDAOConfig;
-import nl.clockwork.ebms.admin.dao.DataSourceConfig;
-import nl.clockwork.ebms.admin.web.WebConfig;
-
 @Configuration
-@Import({
-		AdminDAOConfig.class,
-		DataSourceConfig.class,
-		WebConfig.class})
-@PropertySource(value = {
-		"classpath:nl/clockwork/ebms/admin/default.properties",
-		"file:${ebms.configDir}ebms-admin.embedded.advanced.properties",
-		"file:${ebms.configDir}ebms-admin.embedded.properties"},
+@Import({AdminDAOConfig.class, DataSourceConfig.class, WebConfig.class})
+@PropertySource(
+		value = {"classpath:nl/clockwork/ebms/admin/default.properties", "file:${ebms.configDir}ebms-admin.embedded.advanced.properties",
+				"file:${ebms.configDir}ebms-admin.embedded.properties"},
 		ignoreResourceNotFound = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AppConfig
 {
 	public static PropertySourcesPlaceholderConfigurer PROPERTY_SOURCE = propertySourcesPlaceholderConfigurer();
-	
+
 	private static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer()
 	{
 		val configDir = System.getProperty("ebms.configDir");
 		val result = new PropertySourcesPlaceholderConfigurer();
-		val resources = new Resource[]{
-				new ClassPathResource("nl/clockwork/ebms/admin/default.properties"),
-				new FileSystemResource(configDir + "ebms-admin.advanced.properties"),
-				new FileSystemResource(configDir + "ebms-admin.properties")};
+		val resources = new Resource[]{new ClassPathResource("nl/clockwork/ebms/admin/default.properties"),
+				new FileSystemResource(configDir + "ebms-admin.advanced.properties"), new FileSystemResource(configDir + "ebms-admin.properties")};
 		result.setLocations(resources);
 		result.setIgnoreResourceNotFound(true);
 		return result;

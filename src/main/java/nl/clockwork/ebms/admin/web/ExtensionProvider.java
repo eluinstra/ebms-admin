@@ -15,10 +15,10 @@
  */
 package nl.clockwork.ebms.admin.web;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
-
 import lombok.val;
 import nl.clockwork.ebms.admin.web.menu.MenuItem;
 
@@ -34,7 +34,10 @@ public abstract class ExtensionProvider
 	}
 
 	public abstract Class<?> getSpringConfigurationClass();
+
 	public abstract String getDbMigrationLocation();
+
 	public abstract String getName();
+
 	public abstract MenuItem createSubMenu(MenuItem parent, int index, String name);
 }

@@ -15,16 +15,15 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-import java.net.URISyntaxException;
 
+import java.net.URISyntaxException;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.encoding.UrlEncoder;
 import org.apache.wicket.util.resource.IResourceStream;
-
-import lombok.val;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class DownloadActiveMQFileLink extends Link<Void>
@@ -33,7 +32,7 @@ public class DownloadActiveMQFileLink extends Link<Void>
 
 	public DownloadActiveMQFileLink(String id)
 	{
-		super(id,null);
+		super(id, null);
 	}
 
 	@Override
@@ -41,21 +40,19 @@ public class DownloadActiveMQFileLink extends Link<Void>
 	{
 		try
 		{
-			val fileName = UrlEncoder.QUERY_INSTANCE.encode("activemq.xml",getRequest().getCharset());
-			val resourceStream = new ActiveMQFileResourceStream(); 
-			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName,resourceStream));
+			val fileName = UrlEncoder.QUERY_INSTANCE.encode("activemq.xml", getRequest().getCharset());
+			val resourceStream = new ActiveMQFileResourceStream();
+			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName, resourceStream));
 		}
 		catch (URISyntaxException e)
 		{
-			log.error("",e);
+			log.error("", e);
 			error(e);
 		}
 	}
 
 	private ResourceStreamRequestHandler createRequestHandler(String fileName, IResourceStream resourceStream)
 	{
-		return new ResourceStreamRequestHandler(resourceStream)
-				.setFileName(fileName)
-				.setContentDisposition(ContentDisposition.ATTACHMENT);
+		return new ResourceStreamRequestHandler(resourceStream).setFileName(fileName).setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 }

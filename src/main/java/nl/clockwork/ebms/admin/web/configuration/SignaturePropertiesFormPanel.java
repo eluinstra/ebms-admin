@@ -15,6 +15,15 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
+
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
+import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
+import nl.clockwork.ebms.admin.web.configuration.JavaKeyStorePropertiesFormPanel.JavaKeyStorePropertiesFormData;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -24,23 +33,14 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.util.io.IClusterable;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
-import nl.clockwork.ebms.admin.web.configuration.JavaKeyStorePropertiesFormPanel.JavaKeyStorePropertiesFormData;
-
 public class SignaturePropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
 
 	public SignaturePropertiesFormPanel(String id, final IModel<SignaturePropertiesFormData> model)
 	{
-		super(id,model);
-		add(new SignaturePropertiesForm("form",model));
+		super(id, model);
+		add(new SignaturePropertiesForm("form", model));
 	}
 
 	public class SignaturePropertiesForm extends Form<SignaturePropertiesFormData>
@@ -49,7 +49,7 @@ public class SignaturePropertiesFormPanel extends Panel
 
 		public SignaturePropertiesForm(String id, final IModel<SignaturePropertiesFormData> model)
 		{
-			super(id,new CompoundPropertyModel<>(model));
+			super(id, new CompoundPropertyModel<>(model));
 			add(createSigningCheckBox("signing"));
 			add(createKeystorePropertiesPanel("keystoreProperties"));
 		}
@@ -58,10 +58,7 @@ public class SignaturePropertiesFormPanel extends Panel
 		{
 			val result = new CheckBox(id);
 			result.setLabel(new ResourceModel("lbl.signing"));
-			result.add(AjaxFormComponentUpdatingBehavior.builder()
-					.event("change")
-					.onUpdate(t -> t.add(this))
-					.build());
+			result.add(AjaxFormComponentUpdatingBehavior.builder().event("change").onUpdate(t -> t.add(this)).build());
 			return result;
 		}
 
@@ -69,7 +66,7 @@ public class SignaturePropertiesFormPanel extends Panel
 		{
 			return JavaKeyStorePropertiesFormPanel.builder()
 					.id(id)
-					.model(new PropertyModel<>(getModel(),"keystoreProperties"))
+					.model(new PropertyModel<>(getModel(), "keystoreProperties"))
 					.required(false)
 					.showDefaultAlias(false)
 					.isVisible(() -> getModelObject().isSigning())

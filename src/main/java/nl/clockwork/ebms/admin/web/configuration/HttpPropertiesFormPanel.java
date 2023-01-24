@@ -15,8 +15,21 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-import java.util.Locale;
 
+import java.util.Locale;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
+import nl.clockwork.ebms.admin.Utils;
+import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.OnChangeAjaxBehavior;
+import nl.clockwork.ebms.admin.web.TextField;
+import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyPropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormData;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
@@ -29,28 +42,14 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.util.convert.converter.AbstractConverter;
 import org.apache.wicket.util.io.IClusterable;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.admin.Utils;
-import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
-import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.OnChangeAjaxBehavior;
-import nl.clockwork.ebms.admin.web.TextField;
-import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyPropertiesFormData;
-import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormData;
-
 public class HttpPropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
 
 	public HttpPropertiesFormPanel(String id, final IModel<HttpPropertiesFormData> model, boolean enableSslOverridePropeties)
 	{
-		super(id,model);
-		add(new HttpPropertiesForm("form",model,enableSslOverridePropeties));
+		super(id, model);
+		add(new HttpPropertiesForm("form", model, enableSslOverridePropeties));
 	}
 
 	public class HttpPropertiesForm extends Form<HttpPropertiesFormData>
@@ -59,15 +58,15 @@ public class HttpPropertiesFormPanel extends Panel
 
 		public HttpPropertiesForm(String id, final IModel<HttpPropertiesFormData> model, boolean enableSslOverridePropeties)
 		{
-			super(id,new CompoundPropertyModel<>(model));
-			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",createHostField("host")).add(new Label("protocol")));
-			add(new BootstrapFormComponentFeedbackBorder("portFeedback",createPortField("port")));
-			add(new BootstrapFormComponentFeedbackBorder("pathFeedback",createPathField("path")));
+			super(id, new CompoundPropertyModel<>(model));
+			add(new BootstrapFormComponentFeedbackBorder("hostFeedback", createHostField("host")).add(new Label("protocol")));
+			add(new BootstrapFormComponentFeedbackBorder("portFeedback", createPortField("port")));
+			add(new BootstrapFormComponentFeedbackBorder("pathFeedback", createPathField("path")));
 			add(new TextField<String>("url").setLabel(new ResourceModel("lbl.url")).setOutputMarkupId(true).setEnabled(false));
 			add(new CheckBox("chunkedStreamingMode").setLabel(new ResourceModel("lbl.chunkedStreamingMode")));
 			add(new CheckBox("base64Writer").setLabel(new ResourceModel("lbl.base64Writer")));
 			add(CreateSslCheckBox("ssl"));
-			add(createSslPropertiesPanel("sslProperties",enableSslOverridePropeties));
+			add(createSslPropertiesPanel("sslProperties", enableSslOverridePropeties));
 			add(createProxyCheckBox("proxy"));
 			add(createProxyPropertiesPanel("proxyProperties"));
 		}
@@ -76,9 +75,7 @@ public class HttpPropertiesFormPanel extends Panel
 		{
 			val result = new TextField<String>(id);
 			result.setLabel(new ResourceModel("lbl.host"));
-			result.add(OnChangeAjaxBehavior.builder()
-					.onUpdate(t -> t.add(get("url")))
-					.build());
+			result.add(OnChangeAjaxBehavior.builder().onUpdate(t -> t.add(get("url"))).build());
 			result.setRequired(true);
 			return result;
 		}
@@ -87,23 +84,16 @@ public class HttpPropertiesFormPanel extends Panel
 		{
 			val result = new TextField<Integer>(id);
 			result.setLabel(new ResourceModel("lbl.port"));
-			result.add(OnChangeAjaxBehavior.builder()
-					.onUpdate(t -> t.add(get("url")))
-					.build());
+			result.add(OnChangeAjaxBehavior.builder().onUpdate(t -> t.add(get("url"))).build());
 			return result;
 		}
 
 		private TextField<String> createPathField(String id)
 		{
-			val result = TextField.<String>builder()
-					.id(id)
-					.getConverter(t -> new PathConverter())
-					.build();
+			val result = TextField.<String>builder().id(id).getConverter(t -> new PathConverter()).build();
 			result.setLabel(new ResourceModel("lbl.path"));
 			result.setRequired(true);
-			result.add(OnChangeAjaxBehavior.builder()
-					.onUpdate(t -> t.add(get("url")))
-					.build());
+			result.add(OnChangeAjaxBehavior.builder().onUpdate(t -> t.add(get("url"))).build());
 			return result;
 		}
 
@@ -111,10 +101,7 @@ public class HttpPropertiesFormPanel extends Panel
 		{
 			val result = new CheckBox(id);
 			result.setLabel(new ResourceModel("lbl.ssl"));
-			result.add(AjaxFormComponentUpdatingBehavior.builder()
-					.event("change")
-					.onUpdate(t -> t.add(this))
-					.build());
+			result.add(AjaxFormComponentUpdatingBehavior.builder().event("change").onUpdate(t -> t.add(this)).build());
 			return result;
 		}
 
@@ -122,7 +109,7 @@ public class HttpPropertiesFormPanel extends Panel
 		{
 			val result = SslPropertiesFormPanel.builder()
 					.id(id)
-					.model(new PropertyModel<>(getModel(),"sslProperties"))
+					.model(new PropertyModel<>(getModel(), "sslProperties"))
 					.enableSslOverridePropeties(enableSslOverridePropeties)
 					.isVisible(() -> getModelObject().isSsl())
 					.build();
@@ -133,10 +120,7 @@ public class HttpPropertiesFormPanel extends Panel
 		{
 			val result = new CheckBox(id);
 			result.setLabel(new ResourceModel("lbl.proxy"));
-			result.add(AjaxFormComponentUpdatingBehavior.builder()
-					.event("change")
-					.onUpdate(t -> t.add(this))
-					.build());
+			result.add(AjaxFormComponentUpdatingBehavior.builder().event("change").onUpdate(t -> t.add(this)).build());
 			return result;
 		}
 
@@ -144,7 +128,7 @@ public class HttpPropertiesFormPanel extends Panel
 		{
 			val result = ProxyPropertiesFormPanel.builder()
 					.id(id)
-					.model(new PropertyModel<>(getModel(),"proxyProperties"))
+					.model(new PropertyModel<>(getModel(), "proxyProperties"))
 					.isVisible(() -> getModelObject().isProxy())
 					.build();
 			return result;
@@ -161,7 +145,7 @@ public class HttpPropertiesFormPanel extends Panel
 		String host;
 		@NonNull
 		Integer port;
-		//@NonNull
+		// @NonNull
 		String path;
 		boolean chunkedStreamingMode;
 		boolean base64Writer;
@@ -176,12 +160,13 @@ public class HttpPropertiesFormPanel extends Panel
 		{
 			return ssl ? "https://" : "http://";
 		}
+
 		public String getUrl()
 		{
 			return getProtocol() + Utils.getHost(host) + (port == null ? "" : ":" + port.toString()) + path;
 		}
 	}
-	
+
 	public class PathConverter extends AbstractConverter<String>
 	{
 		private static final long serialVersionUID = 1L;

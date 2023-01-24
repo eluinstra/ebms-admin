@@ -15,23 +15,22 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.cxf.common.util.StringUtils;
-import org.fusesource.hawtbuf.ByteArrayInputStream;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
+import lombok.val;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.Utils;
+import org.apache.commons.io.IOUtils;
+import org.apache.cxf.common.util.StringUtils;
+import org.fusesource.hawtbuf.ByteArrayInputStream;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor(staticName = "of")
@@ -42,16 +41,19 @@ public class EbMSMessageZipper
 
 	public void zip() throws IOException
 	{
-		writeMessageToZip(message,out);
+		writeMessageToZip(message, out);
 	}
 
 	private void writeMessageToZip(EbMSMessage message, OutputStream out) throws IOException
 	{
 		try (val zip = new ZipOutputStream(out))
 		{
-			addEntry(zip,"message.xml",new ByteArrayInputStream(message.getContent().getBytes()));
-	    for (EbMSAttachment a : message.getAttachments())
-				addEntry(zip,"attachments/" + (StringUtils.isEmpty(a.getName()) ? a.getContentId() + Utils.getFileExtension(a.getContentType()) : a.getName()),a.getContent().getInputStream());
+			addEntry(zip, "message.xml", new ByteArrayInputStream(message.getContent().getBytes()));
+			for (EbMSAttachment a : message.getAttachments())
+				addEntry(
+						zip,
+						"attachments/" + (StringUtils.isEmpty(a.getName()) ? a.getContentId() + Utils.getFileExtension(a.getContentType()) : a.getName()),
+						a.getContent().getInputStream());
 			zip.finish();
 		}
 	}
@@ -59,9 +61,9 @@ public class EbMSMessageZipper
 	private void addEntry(ZipOutputStream out, String name, InputStream content) throws IOException
 	{
 		val entry = new ZipEntry(name);
-		//entry.setSize(content.getSize());
+		// entry.setSize(content.getSize());
 		out.putNextEntry(entry);
-		IOUtils.copy(content,out);
+		IOUtils.copy(content, out);
 		out.closeEntry();
 	}
 }

@@ -15,16 +15,16 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import org.apache.wicket.Page;
-import org.apache.wicket.markup.html.form.Button;
-import org.apache.wicket.model.IModel;
 
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
+import org.apache.wicket.Page;
+import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.model.IModel;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class ResetButton extends Button //GoToButton
+public class ResetButton extends Button // GoToButton
 {
 	private static final long serialVersionUID = 1L;
 	@NonNull
@@ -32,7 +32,7 @@ public class ResetButton extends Button //GoToButton
 
 	public ResetButton(String id, IModel<String> model, Class<? extends Page> page)
 	{
-		super(id,model);
+		super(id, model);
 		this.page = page;
 		setDefaultFormProcessing(false);
 	}

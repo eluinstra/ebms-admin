@@ -15,14 +15,14 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import org.apache.wicket.MarkupContainer;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.model.IModel;
 
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
+import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.model.IModel;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AjaxLink<T> extends org.apache.wicket.ajax.markup.html.AjaxLink<T>
@@ -40,7 +40,7 @@ public class AjaxLink<T> extends org.apache.wicket.ajax.markup.html.AjaxLink<T>
 	@Builder
 	public AjaxLink(String id, IModel<T> model, @NonNull Consumer<AjaxRequestTarget> onClick)
 	{
-		super(id,model);
+		super(id, model);
 		this.onClick = onClick;
 	}
 

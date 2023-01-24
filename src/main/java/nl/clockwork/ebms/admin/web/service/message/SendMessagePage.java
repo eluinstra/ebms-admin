@@ -15,33 +15,17 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
+
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.bind.JAXBException;
-
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement;
-
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.Action;
@@ -60,15 +44,29 @@ import nl.clockwork.ebms.service.EbMSMessageService;
 import nl.clockwork.ebms.service.model.DataSource;
 import nl.clockwork.ebms.service.model.MessageRequest;
 import nl.clockwork.ebms.service.model.MessageRequestProperties;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SendMessagePage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="cpaService")
+	@SpringBean(name = "cpaService")
 	private CPAService cpaService;
-	@SpringBean(name="ebMSMessageService")
+	@SpringBean(name = "ebMSMessageService")
 	private EbMSMessageService ebMSMessageService;
 
 	public SendMessagePage()
@@ -76,11 +74,11 @@ public class SendMessagePage extends BasePage
 		add(new BootstrapFeedbackPanel("feedback").setOutputMarkupId(true));
 		add(new MessageForm("form"));
 	}
-	
+
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("messageSend",this);
+		return getLocalizer().getString("messageSend", this);
 	}
 
 	public class MessageForm extends Form<EbMSMessagePropertiesData>
@@ -89,26 +87,26 @@ public class SendMessagePage extends BasePage
 
 		public MessageForm(String id)
 		{
-			super(id,new CompoundPropertyModel<>(new EbMSMessagePropertiesData()));
+			super(id, new CompoundPropertyModel<>(new EbMSMessagePropertiesData()));
 			setMultiPart(true);
-			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",createCPAIdChoice("cpaId")));
-			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",createFromPartyIdChoice("fromPartyId")));
-			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback",createFromRoleChoice("fromRole")));
-			add(new BootstrapFormComponentFeedbackBorder("serviceFeedback",createServiceChoice("service")));
-			add(new BootstrapFormComponentFeedbackBorder("actionFeedback",createActionChoice("action")));
+			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback", createCPAIdChoice("cpaId")));
+			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback", createFromPartyIdChoice("fromPartyId")));
+			add(new BootstrapFormComponentFeedbackBorder("fromRoleFeedback", createFromRoleChoice("fromRole")));
+			add(new BootstrapFormComponentFeedbackBorder("serviceFeedback", createServiceChoice("service")));
+			add(new BootstrapFormComponentFeedbackBorder("actionFeedback", createActionChoice("action")));
 			add(new TextField<String>("conversationId").setLabel(new ResourceModel("lbl.conversationId")));
 			add(new TextField<String>("messageId").setLabel(new ResourceModel("lbl.messageId")));
 			add(new TextField<String>("refToMessageId").setLabel(new ResourceModel("lbl.refToMessageId")));
-			add(new DataSourcesForm("form",Model.ofList(getModelObject().getDataSources())));
+			add(new DataSourcesForm("form", Model.ofList(getModelObject().getDataSources())));
 			val send = createSendButton("send");
 			setDefaultButton(send);
 			add(send);
-			add(new ResetButton("reset",new ResourceModel("cmd.reset"),SendMessagePage.class));
+			add(new ResetButton("reset", new ResourceModel("cmd.reset"), SendMessagePage.class));
 		}
 
 		private DropDownChoice<String> createCPAIdChoice(String id)
 		{
-			val result = new DropDownChoice<String>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())));
+			val result = new DropDownChoice<String>(id, Model.ofList(Utils.toList(cpaService.getCPAIds())));
 			result.setLabel(new ResourceModel("lbl.cpaId"));
 			result.setRequired(true);
 			Consumer<AjaxRequestTarget> onUpdate = t ->
@@ -125,19 +123,19 @@ public class SendMessagePage extends BasePage
 				}
 				catch (JAXBException e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
+			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createFromPartyIdChoice(String id)
 		{
-			val result = new DropDownChoice<>(id,new PropertyModel<List<String>>(getModel(),"fromPartyIds"));
+			val result = new DropDownChoice<>(id, new PropertyModel<List<String>>(getModel(), "fromPartyIds"));
 			result.setLabel(new ResourceModel("lbl.fromPartyId"));
 			result.setRequired(false).setOutputMarkupId(true);
 			Consumer<AjaxRequestTarget> onUpdate = t ->
@@ -146,26 +144,26 @@ public class SendMessagePage extends BasePage
 				{
 					val o = getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
-					o.resetFromRoles(CPAUtils.getRoleNames(cpa,o.getFromPartyId()));
-					o.resetServices(CPAUtils.getServiceNames(cpa,o.getFromRole()));
+					o.resetFromRoles(CPAUtils.getRoleNames(cpa, o.getFromPartyId()));
+					o.resetServices(CPAUtils.getServiceNames(cpa, o.getFromRole()));
 					o.resetActions();
 					o.resetDataSources();
 				}
 				catch (JAXBException e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
+			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createFromRoleChoice(String id)
 		{
-			val result = new DropDownChoice<>(id,new PropertyModel<List<String>>(getModel(),"fromRoles"));
+			val result = new DropDownChoice<>(id, new PropertyModel<List<String>>(getModel(), "fromRoles"));
 			result.setLabel(new ResourceModel("lbl.fromRole"));
 			result.setRequired(true).setOutputMarkupId(true);
 			Consumer<AjaxRequestTarget> onUpdate = t ->
@@ -175,26 +173,26 @@ public class SendMessagePage extends BasePage
 					val o = getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
 					if (o.getFromPartyId() == null)
-						o.resetFromPartyIds(CPAUtils.getPartyIdsByRoleName(cpa,o.getFromRole()));
-					o.resetServices(CPAUtils.getServiceNames(cpa,o.getFromRole()));
+						o.resetFromPartyIds(CPAUtils.getPartyIdsByRoleName(cpa, o.getFromRole()));
+					o.resetServices(CPAUtils.getServiceNames(cpa, o.getFromRole()));
 					o.resetActions();
 					o.resetDataSources();
 				}
 				catch (JAXBException e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
+			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createServiceChoice(String id)
 		{
-			val result = new DropDownChoice<>(id,new PropertyModel<List<String>>(getModel(),"services"));
+			val result = new DropDownChoice<>(id, new PropertyModel<List<String>>(getModel(), "services"));
 			result.setLabel(new ResourceModel("lbl.service"));
 			result.setRequired(true);
 			result.setOutputMarkupId(true);
@@ -204,24 +202,24 @@ public class SendMessagePage extends BasePage
 				{
 					val o = getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
-					o.resetActions(CPAUtils.getFromActionNames(cpa,o.getFromRole(),o.getService()));
+					o.resetActions(CPAUtils.getFromActionNames(cpa, o.getFromRole(), o.getService()));
 					o.resetDataSources();
 				}
 				catch (JAXBException e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
+			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createActionChoice(String id)
 		{
-			val result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(getModel(),"actions"));
+			val result = new DropDownChoice<String>(id, new PropertyModel<List<String>>(getModel(), "actions"));
 			result.setLabel(new ResourceModel("lbl.action"));
 			result.setRequired(true);
 			result.setOutputMarkupId(true);
@@ -235,17 +233,17 @@ public class SendMessagePage extends BasePage
 				try
 				{
 					val o = getModelObject();
-					val message = new MessageRequest(o,o.getDataSources());
+					val message = new MessageRequest(o, o.getDataSources());
 					val messageId = ebMSMessageService.sendMessage(message);
-					info(new StringResourceModel("sendMessage.ok",Model.of(messageId)).getString());
+					info(new StringResourceModel("sendMessage.ok", Model.of(messageId)).getString());
 				}
 				catch (Exception e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			return new Button(id,new ResourceModel("cmd.send"),onSubmit);
+			return new Button(id, new ResourceModel("cmd.send"), onSubmit);
 		}
 	}
 
@@ -266,42 +264,50 @@ public class SendMessagePage extends BasePage
 			getFromRoles().clear();
 			setFromPartyId(null);
 		}
+
 		public void resetFromPartyIds(List<String> partyIds)
 		{
 			resetFromPartyIds();
 			getFromPartyIds().addAll(partyIds);
 		}
+
 		public void resetFromRoles()
 		{
 			getFromRoles().clear();
 			setFromRole(null);
 		}
+
 		public void resetFromRoles(List<String> roles)
 		{
 			resetFromRoles();
 			getFromRoles().addAll(roles);
 			setFromRole(getFromRoles().size() == 1 ? getFromRoles().get(0) : null);
 		}
+
 		public void resetServices()
 		{
 			getServices().clear();
 			setService(null);
 		}
+
 		public void resetServices(List<String> serviceNames)
 		{
 			resetServices();
 			getServices().addAll(serviceNames);
 		}
+
 		public void resetActions()
 		{
 			getActions().clear();
 			setAction(null);
 		}
+
 		public void resetActions(List<String> actionNames)
 		{
 			resetActions();
 			getActions().addAll(actionNames);
 		}
+
 		public void resetDataSources()
 		{
 			getDataSources().clear();
@@ -317,7 +323,7 @@ public class SendMessagePage extends BasePage
 
 		public EbMSDataSourceListView(String id, List<DataSource> dataSources, @NonNull DataSourcesForm dataSourcesForm)
 		{
-			super(id,dataSources);
+			super(id, dataSources);
 			this.dataSourcesForm = dataSourcesForm;
 		}
 
@@ -332,12 +338,7 @@ public class SendMessagePage extends BasePage
 				dataSourcesForm.getModelObject().remove(item.getModelObject());
 				t.add(dataSourcesForm);
 			};
-			item.add(AjaxButton.builder()
-					.id("remove")
-					.model(new ResourceModel("cmd.remove"))
-					.form(dataSourcesForm)
-					.onSubmit(onSubmit)
-					.build());
+			item.add(AjaxButton.builder().id("remove").model(new ResourceModel("cmd.remove")).form(dataSourcesForm).onSubmit(onSubmit).build());
 		}
 	}
 
@@ -347,16 +348,13 @@ public class SendMessagePage extends BasePage
 
 		public DataSourcesForm(String id, IModel<List<DataSource>> model)
 		{
-			super(id,model);
-			val dataSources_ = new EbMSDataSourceListView("dataSources",model.getObject(),this);
+			super(id, model);
+			val dataSources_ = new EbMSDataSourceListView("dataSources", model.getObject(), this);
 			dataSources_.setOutputMarkupId(true);
 			add(dataSources_);
-			val dataSourceModalWindow = new DataSourceModalWindow("dataSourceModelWindow",model.getObject(),this);
+			val dataSourceModalWindow = new DataSourceModalWindow("dataSourceModelWindow", model.getObject(), this);
 			add(dataSourceModalWindow);
-			val add = AjaxButton.builder()
-					.id("add")
-					.onSubmit(t -> dataSourceModalWindow.show(t))
-					.build();
+			val add = AjaxButton.builder().id("add").onSubmit(t -> dataSourceModalWindow.show(t)).build();
 			add(add);
 		}
 	}

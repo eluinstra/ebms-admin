@@ -15,8 +15,8 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-import java.net.URISyntaxException;
 
+import java.net.URISyntaxException;
 import org.apache.wicket.core.util.resource.PackageResourceStream;
 
 public class ActiveMQFileResourceStream extends PackageResourceStream
@@ -25,9 +25,9 @@ public class ActiveMQFileResourceStream extends PackageResourceStream
 
 	public ActiveMQFileResourceStream() throws URISyntaxException
 	{
-		super(ActiveMQFileResourceStream.class,"/nl/clockwork/ebms/activemq.xml");
+		super(ActiveMQFileResourceStream.class, "/nl/clockwork/ebms/activemq.xml");
 	}
-	
+
 	@Override
 	public String getContentType()
 	{

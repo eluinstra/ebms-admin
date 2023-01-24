@@ -15,8 +15,6 @@
  */
 package nl.clockwork.ebms.admin.model;
 
-import org.apache.cxf.io.CachedOutputStream;
-import org.apache.wicket.util.io.IClusterable;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -25,6 +23,8 @@ import lombok.Setter;
 import lombok.Value;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
+import org.apache.cxf.io.CachedOutputStream;
+import org.apache.wicket.util.io.IClusterable;
 
 @Value
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -44,11 +44,11 @@ public class EbMSAttachment implements IClusterable
 
 	public EbMSAttachment(String name, @NonNull String contentId, @NonNull String contentType)
 	{
-		this(null,name,contentId,contentType,null);
+		this(null, name, contentId, contentType, null);
 	}
 
 	public EbMSAttachment(String name, @NonNull String contentId, @NonNull String contentType, CachedOutputStream content)
 	{
-		this(null,name,contentId,contentType,content);
+		this(null, name, contentId, contentType, content);
 	}
 }

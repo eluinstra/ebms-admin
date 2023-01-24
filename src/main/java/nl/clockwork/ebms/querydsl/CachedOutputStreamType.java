@@ -15,17 +15,15 @@
  */
 package nl.clockwork.ebms.querydsl;
 
+
+import com.querydsl.sql.types.AbstractType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import org.apache.cxf.io.CachedOutputStream;
-
-import com.querydsl.sql.types.AbstractType;
-
 import lombok.val;
+import org.apache.cxf.io.CachedOutputStream;
 
 public class CachedOutputStreamType extends AbstractType<CachedOutputStream>
 {
@@ -58,7 +56,7 @@ public class CachedOutputStreamType extends AbstractType<CachedOutputStream>
 	{
 		try (val a = value)
 		{
-			st.setBinaryStream(startIndex,a.getInputStream());
+			st.setBinaryStream(startIndex, a.getInputStream());
 		}
 		catch (IOException e)
 		{
@@ -69,7 +67,7 @@ public class CachedOutputStreamType extends AbstractType<CachedOutputStream>
 	public static CachedOutputStream createCachedOutputStream(InputStream in) throws IOException
 	{
 		val result = new CachedOutputStream();
-		CachedOutputStream.copyStream(in,result,4096);
+		CachedOutputStream.copyStream(in, result, 4096);
 		result.lockOutputStream();
 		return result;
 	}

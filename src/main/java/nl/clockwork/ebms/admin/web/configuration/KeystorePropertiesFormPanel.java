@@ -15,6 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
+
 import org.apache.wicket.model.IModel;
 
 public class KeystorePropertiesFormPanel extends JavaKeyStorePropertiesFormPanel
@@ -23,6 +24,6 @@ public class KeystorePropertiesFormPanel extends JavaKeyStorePropertiesFormPanel
 
 	public KeystorePropertiesFormPanel(String id, final IModel<JavaKeyStorePropertiesFormData> model)
 	{
-		super(id,model);
+		super(id, model);
 	}
 }

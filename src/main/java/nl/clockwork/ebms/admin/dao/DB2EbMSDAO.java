@@ -15,14 +15,14 @@
  */
 package nl.clockwork.ebms.admin.dao;
 
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.querydsl.sql.SQLQueryFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 public class DB2EbMSDAO extends AbstractEbMSDAO
 {
 	public DB2EbMSDAO(JdbcTemplate jdbcTemplate, SQLQueryFactory queryFactory)
 	{
-		super(jdbcTemplate,queryFactory);
+		super(jdbcTemplate, queryFactory);
 	}
 }

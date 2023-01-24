@@ -15,14 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.xml.namespace.QName;
-import javax.xml.ws.Endpoint;
-import javax.xml.ws.soap.SOAPBinding;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +22,26 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.xml.namespace.QName;
+import javax.xml.ws.Endpoint;
+import javax.xml.ws.soap.SOAPBinding;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
+import nl.clockwork.ebms.cpa.CPAService;
+import nl.clockwork.ebms.cpa.CPAServiceImpl;
+import nl.clockwork.ebms.cpa.certificate.CertificateMappingService;
+import nl.clockwork.ebms.cpa.certificate.CertificateMappingServiceImpl;
+import nl.clockwork.ebms.cpa.url.URLMappingService;
+import nl.clockwork.ebms.cpa.url.URLMappingServiceImpl;
+import nl.clockwork.ebms.event.MessageEventListenerConfig.EventListenerType;
+import nl.clockwork.ebms.service.EbMSMessageService;
+import nl.clockwork.ebms.service.EbMSMessageServiceImpl;
+import nl.clockwork.ebms.service.EbMSMessageServiceMTOM;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.Bus;
 import org.apache.cxf.binding.BindingFactoryManager;
@@ -47,20 +58,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import lombok.AccessLevel;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.cpa.CPAService;
-import nl.clockwork.ebms.cpa.CPAServiceImpl;
-import nl.clockwork.ebms.cpa.certificate.CertificateMappingService;
-import nl.clockwork.ebms.cpa.certificate.CertificateMappingServiceImpl;
-import nl.clockwork.ebms.cpa.url.URLMappingService;
-import nl.clockwork.ebms.cpa.url.URLMappingServiceImpl;
-import nl.clockwork.ebms.event.MessageEventListenerConfig.EventListenerType;
-import nl.clockwork.ebms.service.EbMSMessageService;
-import nl.clockwork.ebms.service.EbMSMessageServiceImpl;
-import nl.clockwork.ebms.service.EbMSMessageServiceMTOM;
 
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -86,40 +83,45 @@ public class EmbeddedWebConfig
 	@Bean
 	public WicketApplication wicketApplication()
 	{
-		return new WicketApplication(maxItemsPerPage,eventListenerType);
+		return new WicketApplication(maxItemsPerPage, eventListenerType);
 	}
 
 	@Bean
 	public Endpoint cpaServiceEndpoint()
 	{
-		return publishEndpoint(cpaService,"/cpa","http://www.ordina.nl/cpa/2.18","CPAService","CPAPort");
+		return publishEndpoint(cpaService, "/cpa", "http://www.ordina.nl/cpa/2.18", "CPAService", "CPAPort");
 	}
 
 	@Bean
 	public Endpoint urlMappingServiceEndpoint()
 	{
-		return publishEndpoint(urlMappingService,"/urlMapping","http://www.ordina.nl/cpa/urlMapping/2.18","URLMappingService","URLMappingPort");
+		return publishEndpoint(urlMappingService, "/urlMapping", "http://www.ordina.nl/cpa/urlMapping/2.18", "URLMappingService", "URLMappingPort");
 	}
 
 	@Bean
 	public Endpoint certificateMappingServiceEndpoint()
 	{
-		return publishEndpoint(certificateMappingService,"/certificateMapping","http://www.ordina.nl/cpa/certificateMapping/2.18","CertificateMappingService","CertificateMappingPort");
+		return publishEndpoint(
+				certificateMappingService,
+				"/certificateMapping",
+				"http://www.ordina.nl/cpa/certificateMapping/2.18",
+				"CertificateMappingService",
+				"CertificateMappingPort");
 	}
 
 	@Bean
 	public Endpoint ebMSMessageServiceEndpoint()
 	{
-		return publishEndpoint(ebMSMessageService,"/ebms","http://www.ordina.nl/ebms/2.18","EbMSMessageService","EbMSMessagePort");
+		return publishEndpoint(ebMSMessageService, "/ebms", "http://www.ordina.nl/ebms/2.18", "EbMSMessageService", "EbMSMessagePort");
 	}
 
 	@Bean
 	public Endpoint ebMSMessageServiceMTOMEndpoint()
 	{
-		val result = new EndpointImpl(cxf(),ebMSMessageServiceMTOM);
+		val result = new EndpointImpl(cxf(), ebMSMessageServiceMTOM);
 		result.setAddress("/ebmsMTOM");
-		result.setServiceName(new QName("http://www.ordina.nl/ebms/2.18","EbMSMessageService"));
-		result.setEndpointName(new QName("http://www.ordina.nl/ebms/2.18","EbMSMessagePort"));
+		result.setServiceName(new QName("http://www.ordina.nl/ebms/2.18", "EbMSMessageService"));
+		result.setEndpointName(new QName("http://www.ordina.nl/ebms/2.18", "EbMSMessagePort"));
 		result.publish();
 		enableMTOM(result);
 		return result;
@@ -139,18 +141,19 @@ public class EmbeddedWebConfig
 		return result;
 	}
 
-	private org.apache.cxf.ext.logging.LoggingFeature createLoggingFeature() {
+	private org.apache.cxf.ext.logging.LoggingFeature createLoggingFeature()
+	{
 		val result = new LoggingFeature();
 		result.setPrettyLogging(true);
 		return result;
 	}
 
-	private Endpoint publishEndpoint(Object service,String address,String namespaceUri,String serviceName,String endpointName)
+	private Endpoint publishEndpoint(Object service, String address, String namespaceUri, String serviceName, String endpointName)
 	{
-		val result = new EndpointImpl(cxf(),service);
+		val result = new EndpointImpl(cxf(), service);
 		result.setAddress(address);
-		result.setServiceName(new QName(namespaceUri,serviceName));
-		result.setEndpointName(new QName(namespaceUri,endpointName));
+		result.setServiceName(new QName(namespaceUri, serviceName));
+		result.setEndpointName(new QName(namespaceUri, endpointName));
 		result.publish();
 		return result;
 	}
@@ -158,25 +161,25 @@ public class EmbeddedWebConfig
 	@Bean
 	public Server createCPARestServer()
 	{
-		return createRestServer(CPAServiceImpl.class,cpaService,"/cpas");
+		return createRestServer(CPAServiceImpl.class, cpaService, "/cpas");
 	}
 
 	@Bean
 	public Server createURLMappingCPARestServer()
 	{
-		return createRestServer(URLMappingServiceImpl.class,urlMappingService,"/urlMappings");
+		return createRestServer(URLMappingServiceImpl.class, urlMappingService, "/urlMappings");
 	}
 
 	@Bean
 	public Server createCertificateMappingRestServer()
 	{
-		return createRestServer(CertificateMappingServiceImpl.class,certificateMappingService,"/certificateMappings");
+		return createRestServer(CertificateMappingServiceImpl.class, certificateMappingService, "/certificateMappings");
 	}
 
 	@Bean
 	public Server createEbMSRestServer()
 	{
-		return createRestServer(EbMSMessageServiceImpl.class,ebMSMessageService,"/ebms");
+		return createRestServer(EbMSMessageServiceImpl.class, ebMSMessageService, "/ebms");
 	}
 
 	public Server createRestServer(Class<?> resourceClass, Object resourceObject, String path)
@@ -184,10 +187,10 @@ public class EmbeddedWebConfig
 		val sf = new JAXRSServerFactoryBean();
 		sf.setBus(cxf());
 		sf.setAddress("/rest/v18" + path);
-		sf.setProviders(Arrays.asList(createCrossOriginResourceSharingFilter(),createJacksonJsonProvider()));
+		sf.setProviders(Arrays.asList(createCrossOriginResourceSharingFilter(), createJacksonJsonProvider()));
 		sf.setFeatures(Arrays.asList(createOpenApiFeature()));
 		sf.setResourceClasses(resourceClass);
-		sf.setResourceProvider(resourceClass,new SingletonResourceProvider(resourceObject));
+		sf.setResourceProvider(resourceClass, new SingletonResourceProvider(resourceObject));
 		registerBindingFactory(sf.getBus());
 		return sf.create();
 	}
@@ -211,7 +214,7 @@ public class EmbeddedWebConfig
 		val result = new ObjectMapper();
 		result.registerModule(new Jdk8Module());
 		result.registerModule(new JavaTimeModule());
-		result.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS,false);
+		result.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 		result.setSerializationInclusion(Include.NON_NULL);
 		return result;
 	}
@@ -228,10 +231,11 @@ public class EmbeddedWebConfig
 	private void registerBindingFactory(final Bus bus)
 	{
 		val manager = bus.getExtension(BindingFactoryManager.class);
-		manager.registerBindingFactory(JAXRSBindingFactory.JAXRS_BINDING_ID,createBindingFactory(bus));
+		manager.registerBindingFactory(JAXRSBindingFactory.JAXRS_BINDING_ID, createBindingFactory(bus));
 	}
 
-	private JAXRSBindingFactory createBindingFactory(final Bus bus) {
+	private JAXRSBindingFactory createBindingFactory(final Bus bus)
+	{
 		val result = new JAXRSBindingFactory();
 		result.setBus(bus);
 		return result;

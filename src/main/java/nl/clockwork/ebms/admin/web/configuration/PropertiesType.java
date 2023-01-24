@@ -15,9 +15,9 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
+
 import java.util.Arrays;
 import java.util.Optional;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,7 +29,7 @@ import lombok.experimental.FieldDefaults;
 public enum PropertiesType
 {
 	EBMS_ADMIN("ebms-admin.properties"), EBMS_ADMIN_EMBEDDED("ebms-admin.embedded.properties");
-	
+
 	String propertiesFile;
 
 	public static Optional<PropertiesType> getPropertiesType(String propertiesFile)

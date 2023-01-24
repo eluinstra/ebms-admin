@@ -15,6 +15,10 @@
  */
 package nl.clockwork.ebms.admin.web.cpa;
 
+
+import nl.clockwork.ebms.admin.model.CPA;
+import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.PageLink;
 import org.apache.wicket.IGenericComponent;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
@@ -22,11 +26,7 @@ import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 
-import nl.clockwork.ebms.admin.model.CPA;
-import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.PageLink;
-
-public class CPAPage extends BasePage implements IGenericComponent<CPA,CPAPage>
+public class CPAPage extends BasePage implements IGenericComponent<CPA, CPAPage>
 {
 	private static final long serialVersionUID = 1L;
 
@@ -35,12 +35,12 @@ public class CPAPage extends BasePage implements IGenericComponent<CPA,CPAPage>
 		setModel(new CompoundPropertyModel<>(model));
 		add(new Label("cpaId"));
 		add(new TextArea<String>("cpa").setEnabled(false));
-		add(new PageLink("back",responsePage));
+		add(new PageLink("back", responsePage));
 	}
 
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("cpa",this);
+		return getLocalizer().getString("cpa", this);
 	}
 }

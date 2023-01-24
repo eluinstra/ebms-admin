@@ -15,17 +15,15 @@
  */
 package nl.clockwork.ebms.admin.web.cpa;
 
+
 import java.util.Iterator;
-
-import nl.clockwork.ebms.admin.dao.EbMSDAO;
-import nl.clockwork.ebms.admin.model.CPA;
-
-import org.apache.wicket.markup.repeater.data.IDataProvider;
-import org.apache.wicket.model.IModel;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.admin.dao.EbMSDAO;
+import nl.clockwork.ebms.admin.model.CPA;
+import org.apache.wicket.markup.repeater.data.IDataProvider;
+import org.apache.wicket.model.IModel;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor(staticName = "of")
@@ -37,13 +35,13 @@ public class CPADataProvider implements IDataProvider<CPA>
 	@Override
 	public Iterator<? extends CPA> iterator(long first, long count)
 	{
-		return ebMSDAO.selectCPAs(first,count).iterator();
+		return ebMSDAO.selectCPAs(first, count).iterator();
 	}
 
 	@Override
 	public IModel<CPA> model(CPA cpa)
 	{
-		return CPADataModel.of(ebMSDAO,cpa);
+		return CPADataModel.of(ebMSDAO, cpa);
 	}
 
 	@Override

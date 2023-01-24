@@ -15,25 +15,16 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
-
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.util.io.IClusterable;
-
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapPanelBorder;
@@ -47,6 +38,14 @@ import nl.clockwork.ebms.admin.web.configuration.HttpPropertiesFormPanel.HttpPro
 import nl.clockwork.ebms.admin.web.configuration.JdbcPropertiesFormPanel.JdbcPropertiesFormData;
 import nl.clockwork.ebms.admin.web.configuration.ServicePropertiesFormPanel.ServicePropertiesFormData;
 import nl.clockwork.ebms.admin.web.configuration.SignaturePropertiesFormPanel.SignaturePropertiesFormData;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.util.io.IClusterable;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -59,11 +58,14 @@ public class EbMSAdminPropertiesPage extends BasePage
 	{
 		this(null);
 	}
+
 	public EbMSAdminPropertiesPage(IModel<EbMSAdminPropertiesFormData> model) throws IllegalStateException
 	{
 		val propertySourcesPlaceholderConfigurer = WicketApplication.get().getPropertySourcesPlaceholderConfigurer();
-		val f = propertySourcesPlaceholderConfigurer .getOverridePropertiesFile().getFilename();
-		propertiesType = PropertiesType.getPropertiesType(f).orElseThrow(() -> new IllegalStateException("No PropertiesType found for " + propertySourcesPlaceholderConfigurer.getOverridePropertiesFile().getFilename()));
+		val f = propertySourcesPlaceholderConfigurer.getOverridePropertiesFile().getFilename();
+		propertiesType = PropertiesType.getPropertiesType(f)
+				.orElseThrow(
+						() -> new IllegalStateException("No PropertiesType found for " + propertySourcesPlaceholderConfigurer.getOverridePropertiesFile().getFilename()));
 		add(new BootstrapFeedbackPanel("feedback"));
 		if (model == null)
 		{
@@ -71,78 +73,82 @@ public class EbMSAdminPropertiesPage extends BasePage
 			{
 				val properties = WicketApplication.get().getPropertySourcesPlaceholderConfigurer().getProperties();
 				model = Model.of(new EbMSAdminPropertiesReader(properties).read(propertiesType));
-				this.info(new StringResourceModel("properties.loaded",this).getString());
+				this.info(new StringResourceModel("properties.loaded", this).getString());
 			}
 			catch (IOException e)
 			{
 				model = Model.of(new EbMSAdminPropertiesFormData());
-				log.warn("",e);
+				log.warn("", e);
 				warn(e.getMessage());
 			}
 		}
-		add(new EbMSAdminPropertiesForm("form",model));
+		add(new EbMSAdminPropertiesForm("form", model));
 	}
-	
+
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("ebMSAdminProperties",this);
+		return getLocalizer().getString("ebMSAdminProperties", this);
 	}
-	
+
 	public class EbMSAdminPropertiesForm extends Form<EbMSAdminPropertiesFormData>
 	{
 		private static final long serialVersionUID = 1L;
 
 		public EbMSAdminPropertiesForm(String id, IModel<EbMSAdminPropertiesFormData> model)
 		{
-			super(id,new CompoundPropertyModel<>(model));
-			
+			super(id, new CompoundPropertyModel<>(model));
+
 			val components = new ArrayList<BootstrapPanelBorder>();
-			components.add(new BootstrapPanelBorder(
-					"panelBorder",
-					EbMSAdminPropertiesPage.this.getString("consoleProperties"),
-					new ConsolePropertiesFormPanel("component",new PropertyModel<>(getModel(),"consoleProperties"))));
-			components.add(new BootstrapPanelBorder(
-					"panelBorder",
-					EbMSAdminPropertiesPage.this.getString("coreProperties"),
-					new CorePropertiesFormPanel("component",new PropertyModel<>(getModel(),"coreProperties"),PropertiesType.EBMS_ADMIN.equals(propertiesType))));
+			components.add(
+					new BootstrapPanelBorder(
+							"panelBorder",
+							EbMSAdminPropertiesPage.this.getString("consoleProperties"),
+							new ConsolePropertiesFormPanel("component", new PropertyModel<>(getModel(), "consoleProperties"))));
+			components.add(
+					new BootstrapPanelBorder(
+							"panelBorder",
+							EbMSAdminPropertiesPage.this.getString("coreProperties"),
+							new CorePropertiesFormPanel("component", new PropertyModel<>(getModel(), "coreProperties"), PropertiesType.EBMS_ADMIN.equals(propertiesType))));
 			if (PropertiesType.EBMS_ADMIN.equals(propertiesType))
-				components.add(new BootstrapPanelBorder(
-						"panelBorder",
-						EbMSAdminPropertiesPage.this.getString("serviceProperties"),
-						new ServicePropertiesFormPanel("component",new PropertyModel<>(getModel(),"serviceProperties"))));
+				components.add(
+						new BootstrapPanelBorder(
+								"panelBorder",
+								EbMSAdminPropertiesPage.this.getString("serviceProperties"),
+								new ServicePropertiesFormPanel("component", new PropertyModel<>(getModel(), "serviceProperties"))));
 			if (PropertiesType.EBMS_ADMIN_EMBEDDED.equals(propertiesType))
 			{
-				components.add(new BootstrapPanelBorder(
-						"panelBorder",
-						EbMSAdminPropertiesPage.this.getString("httpProperties"),
-						new HttpPropertiesFormPanel("component",new PropertyModel<>(getModel(),"httpProperties"),true)));
-				components.add(new BootstrapPanelBorder(
-						"panelBorder",
-						EbMSAdminPropertiesPage.this.getString("signatureProperties"),
-						new SignaturePropertiesFormPanel("component",new PropertyModel<>(getModel(),"signatureProperties"))));
-				components.add(new BootstrapPanelBorder(
-						"panelBorder",
-						EbMSAdminPropertiesPage.this.getString("encryptionProperties"),
-						new EncryptionPropertiesFormPanel("component",new PropertyModel<>(getModel(),"encryptionProperties"))));
+				components.add(
+						new BootstrapPanelBorder(
+								"panelBorder",
+								EbMSAdminPropertiesPage.this.getString("httpProperties"),
+								new HttpPropertiesFormPanel("component", new PropertyModel<>(getModel(), "httpProperties"), true)));
+				components.add(
+						new BootstrapPanelBorder(
+								"panelBorder",
+								EbMSAdminPropertiesPage.this.getString("signatureProperties"),
+								new SignaturePropertiesFormPanel("component", new PropertyModel<>(getModel(), "signatureProperties"))));
+				components.add(
+						new BootstrapPanelBorder(
+								"panelBorder",
+								EbMSAdminPropertiesPage.this.getString("encryptionProperties"),
+								new EncryptionPropertiesFormPanel("component", new PropertyModel<>(getModel(), "encryptionProperties"))));
 			}
-			components.add(new BootstrapPanelBorder(
-					"panelBorder",
-					EbMSAdminPropertiesPage.this.getString("jdbcProperties"),
-					new JdbcPropertiesFormPanel("component",new PropertyModel<>(getModel(),"jdbcProperties"))));
-			add(new ComponentsListView("components",components));
+			components.add(
+					new BootstrapPanelBorder(
+							"panelBorder",
+							EbMSAdminPropertiesPage.this.getString("jdbcProperties"),
+							new JdbcPropertiesFormPanel("component", new PropertyModel<>(getModel(), "jdbcProperties"))));
+			add(new ComponentsListView("components", components));
 			add(createValidateButton("validate"));
-			add(new DownloadEbMSAdminPropertiesButton("download",new ResourceModel("cmd.download"),getModel(),propertiesType));
-			add(new SaveEbMSAdminPropertiesButton("save",new ResourceModel("cmd.save"),getModel(),propertiesType));
-			add(new ResetButton("reset",new ResourceModel("cmd.reset"),EbMSAdminPropertiesPage.class));
+			add(new DownloadEbMSAdminPropertiesButton("download", new ResourceModel("cmd.download"), getModel(), propertiesType));
+			add(new SaveEbMSAdminPropertiesButton("save", new ResourceModel("cmd.save"), getModel(), propertiesType));
+			add(new ResetButton("reset", new ResourceModel("cmd.reset"), EbMSAdminPropertiesPage.class));
 		}
 
 		private Button createValidateButton(String id)
 		{
-			return Button.builder()
-					.id(id)
-					.onSubmit(() -> info(EbMSAdminPropertiesPage.this.getString("validate.ok")))
-					.build();
+			return Button.builder().id(id).onSubmit(() -> info(EbMSAdminPropertiesPage.this.getString("validate.ok"))).build();
 		}
 	}
 

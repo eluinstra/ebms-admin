@@ -15,13 +15,17 @@
  */
 package nl.clockwork.ebms.admin;
 
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
-
 import javax.sql.DataSource;
-
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -32,13 +36,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NonNull;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-
-
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @AllArgsConstructor
 public class DBExecute
@@ -46,10 +43,10 @@ public class DBExecute
 	public static void main(String[] args) throws Exception
 	{
 		val options = createOptions();
-		val cmd = new DefaultParser().parse(options,args);
+		val cmd = new DefaultParser().parse(options, args);
 		if (cmd.hasOption("h"))
 			printUsage(options);
-		
+
 		try (val context = new AnnotationConfigApplicationContext(DBConfig.class))
 		{
 			if (!StringUtils.isEmpty(context.getEnvironment().getProperty("ebms.jdbc.password")))
@@ -64,15 +61,15 @@ public class DBExecute
 	protected static Options createOptions()
 	{
 		val result = new Options();
-		result.addOption("h",false,"print this message");
-		result.addOption("file",true,"path to database script file");
+		result.addOption("h", false, "print this message");
+		result.addOption("file", true, "path to database script file");
 		return result;
 	}
 
 	private static void printUsage(Options options)
 	{
 		val formatter = new HelpFormatter();
-		formatter.printHelp("DBExecute",options,true);
+		formatter.printHelp("DBExecute", options, true);
 		System.exit(0);
 	}
 
@@ -92,7 +89,7 @@ public class DBExecute
 		if (!cmd.hasOption("file"))
 			return false;
 		val file = Paths.get(cmd.getOptionValue("file")).toFile();
-		jdbcTemplate.execute(FileUtils.readFileToString(file,Charset.defaultCharset()));
+		jdbcTemplate.execute(FileUtils.readFileToString(file, Charset.defaultCharset()));
 		return true;
 	}
 }

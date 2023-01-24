@@ -15,11 +15,10 @@
  */
 package nl.clockwork.ebms.admin.web;
 
+
 import java.util.List;
-
-import org.apache.wicket.model.IModel;
-
 import lombok.Builder;
+import org.apache.wicket.model.IModel;
 
 public class DropDownChoice<T> extends org.apache.wicket.markup.html.form.DropDownChoice<T>
 {
@@ -31,13 +30,20 @@ public class DropDownChoice<T> extends org.apache.wicket.markup.html.form.DropDo
 
 	public DropDownChoice(String id, IModel<? extends List<? extends T>> choices)
 	{
-		this(id,null,choices,null,null,null,null);
+		this(id, null, choices, null, null, null, null);
 	}
 
 	@Builder
-	public DropDownChoice(String id, IModel<T> model, IModel<? extends List<? extends T>> choices, Supplier<Boolean> isVisible, Supplier<Boolean> isEnabled, Supplier<Boolean> isRequired, Supplier<Boolean> localizeDisplayValues)
+	public DropDownChoice(
+			String id,
+			IModel<T> model,
+			IModel<? extends List<? extends T>> choices,
+			Supplier<Boolean> isVisible,
+			Supplier<Boolean> isEnabled,
+			Supplier<Boolean> isRequired,
+			Supplier<Boolean> localizeDisplayValues)
 	{
-		super(id,model,choices);
+		super(id, model, choices);
 		this.isVisible = isVisible == null ? () -> super.isVisible() : isVisible;
 		this.isEnabled = isEnabled == null ? () -> super.isEnabled() : isEnabled;
 		this.isRequired = isRequired == null ? () -> super.isRequired() : isRequired;

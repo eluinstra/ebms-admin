@@ -15,17 +15,15 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
+
 import java.util.Iterator;
-
-import nl.clockwork.ebms.admin.dao.EbMSDAO;
-import nl.clockwork.ebms.admin.model.EbMSMessage;
-
-import org.apache.wicket.markup.repeater.data.IDataProvider;
-import org.apache.wicket.model.IModel;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.admin.dao.EbMSDAO;
+import nl.clockwork.ebms.admin.model.EbMSMessage;
+import org.apache.wicket.markup.repeater.data.IDataProvider;
+import org.apache.wicket.model.IModel;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor(staticName = "of")
@@ -38,13 +36,13 @@ public class MessageDataProvider implements IDataProvider<EbMSMessage>
 	@Override
 	public Iterator<? extends EbMSMessage> iterator(long first, long count)
 	{
-		return ebMSDAO.selectMessages(filter,first,count).iterator();
+		return ebMSDAO.selectMessages(filter, first, count).iterator();
 	}
 
 	@Override
 	public IModel<EbMSMessage> model(EbMSMessage message)
 	{
-		return MessageDataModel.of(ebMSDAO,message);
+		return MessageDataModel.of(ebMSDAO, message);
 	}
 
 	@Override

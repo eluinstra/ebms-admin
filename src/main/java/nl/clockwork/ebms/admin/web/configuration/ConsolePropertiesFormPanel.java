@@ -15,6 +15,12 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
+
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -23,20 +29,14 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.util.io.IClusterable;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-
 public class ConsolePropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
 
 	public ConsolePropertiesFormPanel(String id, final IModel<ConsolePropertiesFormData> model)
 	{
-		super(id,model);
-		add(new ConsolePropertiesForm("form",model));
+		super(id, model);
+		add(new ConsolePropertiesForm("form", model));
 	}
 
 	public class ConsolePropertiesForm extends Form<ConsolePropertiesFormData>
@@ -45,12 +45,11 @@ public class ConsolePropertiesFormPanel extends Panel
 
 		public ConsolePropertiesForm(String id, final IModel<ConsolePropertiesFormData> model)
 		{
-			super(id,new CompoundPropertyModel<>(model));
-			add(new BootstrapFormComponentFeedbackBorder(
-					"maxItemsPerPageFeedback",
-					new TextField<Integer>("maxItemsPerPage")
-							.setLabel(new ResourceModel("lbl.maxItemsPerPage"))
-							.setRequired(true)));
+			super(id, new CompoundPropertyModel<>(model));
+			add(
+					new BootstrapFormComponentFeedbackBorder(
+							"maxItemsPerPageFeedback",
+							new TextField<Integer>("maxItemsPerPage").setLabel(new ResourceModel("lbl.maxItemsPerPage")).setRequired(true)));
 		}
 	}
 

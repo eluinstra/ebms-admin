@@ -15,8 +15,8 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import java.util.Arrays;
 
+import java.util.Arrays;
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.model.IModel;
@@ -27,11 +27,8 @@ public class MaxItemsPerPageChoice extends DropDownChoice<Integer>
 
 	public MaxItemsPerPageChoice(String id, IModel<Integer> model, final Component...components)
 	{
-		super(id,model,Arrays.asList(5,10,15,20,25,50,100));
-		add(AjaxFormComponentUpdatingBehavior.builder()
-				.event("change")
-				.onUpdate(t -> t.add(components))
-				.build());
+		super(id, model, Arrays.asList(5, 10, 15, 20, 25, 50, 100));
+		add(AjaxFormComponentUpdatingBehavior.builder().event("change").onUpdate(t -> t.add(components)).build());
 	}
 
 }

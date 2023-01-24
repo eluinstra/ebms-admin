@@ -15,19 +15,18 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import java.time.Instant;
 
+import java.time.Instant;
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
 import org.apache.wicket.IGenericComponent;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.convert.IConverter;
-
-import lombok.AccessLevel;
-import lombok.NonNull;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class InstantLabel extends Label implements IGenericComponent<Instant, InstantLabel>
@@ -38,17 +37,17 @@ public class InstantLabel extends Label implements IGenericComponent<Instant, In
 
 	public static InstantLabel of(String id, IModel<Instant> model, String pattern)
 	{
-		return new InstantLabel(id,model,new PatternInstantConverter(pattern));
+		return new InstantLabel(id, model, new PatternInstantConverter(pattern));
 	}
 
 	public static InstantLabel of(String id, String pattern)
 	{
-		return of(id,null,pattern);
+		return of(id, null, pattern);
 	}
 
 	public InstantLabel(String id, InstantConverter converter)
 	{
-		this(id,null,converter);
+		this(id, null, converter);
 	}
 
 	public InstantLabel(String id, IModel<Instant> model, @NonNull InstantConverter converter)
@@ -69,6 +68,6 @@ public class InstantLabel extends Label implements IGenericComponent<Instant, In
 	public void onComponentTagBody(MarkupStream markupStream, ComponentTag openTag)
 	{
 		val s = getDefaultModelObjectAsString();
-		replaceComponentTagBody(markupStream,openTag,s);
+		replaceComponentTagBody(markupStream, openTag, s);
 	}
 }

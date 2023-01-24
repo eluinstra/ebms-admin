@@ -15,23 +15,22 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
+
 import java.io.IOException;
 import java.util.zip.ZipOutputStream;
-
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import nl.clockwork.ebms.admin.dao.EbMSDAO;
+import nl.clockwork.ebms.admin.model.EbMSMessage;
 import org.apache.cxf.io.CachedOutputStream;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.resource.IResourceStream;
-
-import lombok.AccessLevel;
-import lombok.NonNull;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
-import nl.clockwork.ebms.admin.dao.EbMSDAO;
-import nl.clockwork.ebms.admin.model.EbMSMessage;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -43,7 +42,7 @@ public class DownloadEbMSMessageLink extends Link<EbMSMessage>
 
 	public DownloadEbMSMessageLink(String id, EbMSDAO ebMSDAO, IModel<EbMSMessage> model)
 	{
-		super(id,model);
+		super(id, model);
 		this.ebMSDAO = ebMSDAO;
 	}
 
@@ -53,14 +52,14 @@ public class DownloadEbMSMessageLink extends Link<EbMSMessage>
 		val o = getModelObject();
 		try (val out = new CachedOutputStream(); val zip = new ZipOutputStream(out))
 		{
-			ebMSDAO.writeMessageToZip(o.getMessageId(),o.getMessageNr(),zip);
-			val resourceStream = CachedOutputResourceStream.of(out,"application/zip");
+			ebMSDAO.writeMessageToZip(o.getMessageId(), o.getMessageNr(), zip);
+			val resourceStream = CachedOutputResourceStream.of(out, "application/zip");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 			zip.finish();
 		}
 		catch (IOException e)
 		{
-			log.error("",e);
+			log.error("", e);
 			error(e.getMessage());
 		}
 	}
@@ -68,8 +67,7 @@ public class DownloadEbMSMessageLink extends Link<EbMSMessage>
 	private ResourceStreamRequestHandler createRequestHandler(IResourceStream resourceStream)
 	{
 		val o = getModelObject();
-		return new ResourceStreamRequestHandler(resourceStream)
-				.setFileName("message." + o.getMessageId() + "." + o.getMessageNr() + ".zip")
+		return new ResourceStreamRequestHandler(resourceStream).setFileName("message." + o.getMessageId() + "." + o.getMessageNr() + ".zip")
 				.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 

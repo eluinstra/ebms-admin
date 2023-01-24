@@ -15,9 +15,17 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
+
 import java.util.ArrayList;
 import java.util.List;
-
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.Value;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
+import nl.clockwork.ebms.admin.web.AjaxButton;
+import nl.clockwork.ebms.admin.web.Consumer;
+import nl.clockwork.ebms.service.model.DataSource;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
@@ -27,15 +35,6 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.util.io.IClusterable;
-
-import lombok.AccessLevel;
-import lombok.NonNull;
-import lombok.Value;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.admin.web.AjaxButton;
-import nl.clockwork.ebms.admin.web.Consumer;
-import nl.clockwork.ebms.service.model.DataSource;
 
 public class DefaultDataSourcesPanel extends DataSourcesPanel
 {
@@ -64,12 +63,7 @@ public class DefaultDataSourcesPanel extends DataSourcesPanel
 				dataSourcesForm.getModelObject().getDataSources().remove(item.getModelObject());
 				t.add(dataSourcesForm);
 			};
-			item.add(AjaxButton.builder()
-					.id("remove")
-					.model(new ResourceModel("cmd.remove"))
-					.form(dataSourcesForm)
-					.onSubmit(onSubmit)
-					.build());
+			item.add(AjaxButton.builder().id("remove").model(new ResourceModel("cmd.remove")).form(dataSourcesForm).onSubmit(onSubmit).build());
 		}
 	}
 
@@ -80,29 +74,26 @@ public class DefaultDataSourcesPanel extends DataSourcesPanel
 		super(id);
 		add(new DataSourcesForm("form"));
 	}
-	
+
 	public class DataSourcesForm extends Form<DataSourcesModel>
 	{
 		private static final long serialVersionUID = 1L;
 
 		public DataSourcesForm(String id)
 		{
-			super(id,new CompoundPropertyModel<>(new DataSourcesModel()));
-			add(new EbMSDataSourceListView("dataSources",this));
-			val dataSourceModalWindow = new DataSourceModalWindow("dataSourceModelWindow",getModelObject().getDataSources(),this);
+			super(id, new CompoundPropertyModel<>(new DataSourcesModel()));
+			add(new EbMSDataSourceListView("dataSources", this));
+			val dataSourceModalWindow = new DataSourceModalWindow("dataSourceModelWindow", getModelObject().getDataSources(), this);
 			add(dataSourceModalWindow);
-			add(createAddButton("add",dataSourceModalWindow));
+			add(createAddButton("add", dataSourceModalWindow));
 		}
 
 		private AjaxButton createAddButton(String id, final ModalWindow dataSourceModalWindow)
 		{
-			return AjaxButton.builder()
-					.id(id)
-					.onSubmit(t -> dataSourceModalWindow.show(t))
-					.build();
+			return AjaxButton.builder().id(id).onSubmit(t -> dataSourceModalWindow.show(t)).build();
 		}
 	}
-	
+
 	@Override
 	public List<DataSource> getDataSources()
 	{

@@ -15,22 +15,21 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormData;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
-
-import lombok.AccessLevel;
-import lombok.NonNull;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
-import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormData;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -42,9 +41,13 @@ public class SaveEbMSAdminPropertiesButton extends Button
 	@NonNull
 	PropertiesType propertiesType;
 
-	public SaveEbMSAdminPropertiesButton(String id, ResourceModel resourceModel, @NonNull IModel<EbMSAdminPropertiesFormData> ebMSAdminPropertiesFormData, @NonNull PropertiesType propertiesType)
+	public SaveEbMSAdminPropertiesButton(
+			String id,
+			ResourceModel resourceModel,
+			@NonNull IModel<EbMSAdminPropertiesFormData> ebMSAdminPropertiesFormData,
+			@NonNull PropertiesType propertiesType)
 	{
-		super(id,resourceModel);
+		super(id, resourceModel);
 		this.ebMSAdminPropertiesFormData = ebMSAdminPropertiesFormData;
 		this.propertiesType = propertiesType;
 	}
@@ -56,13 +59,13 @@ public class SaveEbMSAdminPropertiesButton extends Button
 		{
 			val file = new File(propertiesType.getPropertiesFile());
 			val writer = new FileWriter(file);
-			new EbMSAdminPropertiesWriter(writer,true).write(ebMSAdminPropertiesFormData.getObject(),propertiesType);
-			info(new StringResourceModel("properties.saved",getPage(),Model.of(file)).getString());
-			error(new StringResourceModel("restart",getPage(),null).getString());
+			new EbMSAdminPropertiesWriter(writer, true).write(ebMSAdminPropertiesFormData.getObject(), propertiesType);
+			info(new StringResourceModel("properties.saved", getPage(), Model.of(file)).getString());
+			error(new StringResourceModel("restart", getPage(), null).getString());
 		}
 		catch (IOException e)
 		{
-			log.error("",e);
+			log.error("", e);
 			error(e.getMessage());
 		}
 	}

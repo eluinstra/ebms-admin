@@ -15,6 +15,8 @@
  */
 package nl.clockwork.ebms.querydsl;
 
+
+import com.querydsl.sql.types.AbstractType;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -24,14 +26,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import com.querydsl.sql.types.AbstractType;
-
 public class X509CertificateType extends AbstractType<X509Certificate>
 {
 	public X509CertificateType()
 	{
 		this(Types.BLOB);
 	}
+
 	public X509CertificateType(int type)
 	{
 		super(type);
@@ -62,7 +63,7 @@ public class X509CertificateType extends AbstractType<X509Certificate>
 	{
 		try
 		{
-			st.setBytes(startIndex,value.getEncoded());
+			st.setBytes(startIndex, value.getEncoded());
 		}
 		catch (CertificateEncodingException e)
 		{

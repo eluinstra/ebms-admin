@@ -15,15 +15,14 @@
  */
 package nl.clockwork.ebms.admin.web.menu;
 
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.wicket.util.io.IClusterable;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
+import org.apache.wicket.util.io.IClusterable;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Getter
@@ -39,7 +38,7 @@ public class MenuItem implements IClusterable
 
 	public MenuItem(String id, String name)
 	{
-		this(null,id,name);
+		this(null, id, name);
 	}
 
 	public MenuItem(MenuItem parent, String id, String name)

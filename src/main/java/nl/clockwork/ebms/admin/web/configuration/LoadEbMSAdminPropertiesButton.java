@@ -15,23 +15,22 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
+
 import java.io.File;
 import java.io.IOException;
-
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import nl.clockwork.ebms.admin.web.WicketApplication;
+import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormData;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
-
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.NonNull;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
-import lombok.extern.slf4j.Slf4j;
-import nl.clockwork.ebms.admin.web.WicketApplication;
-import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormData;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -45,14 +44,18 @@ public class LoadEbMSAdminPropertiesButton extends Button
 	PropertiesType propertiesType;
 
 	@Builder
-	public LoadEbMSAdminPropertiesButton(String id, ResourceModel resourceModel, @NonNull EbMSAdminPropertiesFormData ebMSAdminPropertiesFormData, @NonNull PropertiesType propertiesType)
+	public LoadEbMSAdminPropertiesButton(
+			String id,
+			ResourceModel resourceModel,
+			@NonNull EbMSAdminPropertiesFormData ebMSAdminPropertiesFormData,
+			@NonNull PropertiesType propertiesType)
 	{
-		super(id,resourceModel);
+		super(id, resourceModel);
 		this.ebMSAdminPropertiesFormData = ebMSAdminPropertiesFormData;
 		this.propertiesType = propertiesType;
 		setDefaultFormProcessing(false);
 	}
-	
+
 	@Override
 	public boolean isEnabled()
 	{
@@ -67,12 +70,12 @@ public class LoadEbMSAdminPropertiesButton extends Button
 			val properties = WicketApplication.get().getPropertySourcesPlaceholderConfigurer().getProperties();
 			ebMSAdminPropertiesFormData = new EbMSAdminPropertiesReader(properties).read(propertiesType);
 			val page = new EbMSAdminPropertiesPage(Model.of(ebMSAdminPropertiesFormData));
-			page.info(new StringResourceModel("properties.loaded",page).getString());
+			page.info(new StringResourceModel("properties.loaded", page).getString());
 			setResponsePage(page);
 		}
 		catch (IOException | IllegalStateException e)
 		{
-			log.error("",e);
+			log.error("", e);
 			error(e.getMessage());
 		}
 	}

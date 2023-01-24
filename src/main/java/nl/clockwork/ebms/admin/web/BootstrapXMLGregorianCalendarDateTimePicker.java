@@ -15,11 +15,17 @@
  */
 package nl.clockwork.ebms.admin.web;
 
+
 import java.time.Instant;
 import java.util.ArrayList;
-
 import javax.xml.datatype.XMLGregorianCalendar;
-
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
+import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
@@ -28,15 +34,6 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
-
-
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPanel<XMLGregorianCalendar>
 {
@@ -44,10 +41,12 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 	{
 		DATE_TIME, DATE, TIME;
 	}
+
 	public enum HourFormat
 	{
 		H12, H24;
 	}
+
 	private static final long serialVersionUID = 1L;
 	@NonNull
 	String format;
@@ -71,27 +70,27 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 
 	public BootstrapXMLGregorianCalendarDateTimePicker(final String id)
 	{
-		this(id,(IModel<XMLGregorianCalendar>)null);
+		this(id, (IModel<XMLGregorianCalendar>)null);
 	}
 
 	public BootstrapXMLGregorianCalendarDateTimePicker(final String id, String format)
 	{
-		this(id,null,format);
+		this(id, null, format);
 	}
-	
+
 	public BootstrapXMLGregorianCalendarDateTimePicker(final String id, IModel<XMLGregorianCalendar> model)
 	{
-		this(id,model,"dd-MM-yyyy HH:mm:ss");
+		this(id, model, "dd-MM-yyyy HH:mm:ss");
 	}
 
 	public BootstrapXMLGregorianCalendarDateTimePicker(final String id, IModel<XMLGregorianCalendar> model, String format)
 	{
-		super(id,model);
+		super(id, model);
 		this.format = format;
 		this.hourFormat = format.contains("H") ? HourFormat.H24 : HourFormat.H12;
-		this.formatJS = format.replaceAll("H","h");
+		this.formatJS = format.replaceAll("H", "h");
 		setType(XMLGregorianCalendar.class);
-		
+
 		val dateTimePicker = new WebMarkupContainer("dateTimePicker");
 		dateTimePicker.setMarkupId(getDateTimePickerId());
 		dateTimePicker.setOutputMarkupId(true);
@@ -99,31 +98,44 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 
 		dateTimeField = XMLGregorianCalendarTextField.builder()
 				.id("dateTime")
-				.model(new PropertyModel<>(this,"dateTime"))
+				.model(new PropertyModel<>(this, "dateTime"))
 				.datePattern(format)
 				.getLabel(() -> getLabel())
 				.isRequired(() -> isRequired())
 				.build();
 		dateTimePicker.add(dateTimeField);
 	}
-	
-	public static String getLinkBootstrapDateTimePickersJavaScript(BootstrapXMLGregorianCalendarDateTimePicker startDate, BootstrapXMLGregorianCalendarDateTimePicker endDate)
+
+	public static
+			String
+			getLinkBootstrapDateTimePickersJavaScript(BootstrapXMLGregorianCalendarDateTimePicker startDate, BootstrapXMLGregorianCalendarDateTimePicker endDate)
 	{
-		return
-			"$(function () {" +
-				"$('#" + startDate.getDateTimePickerId() + "').on('changeDate',function () {" +
-					"var d = $('#" + startDate.getDateTimePickerId() + "').data('datetimepicker').getDate();" +
-					"d.setDate(d.getDate() + 1);" +
-				  "$('#" + endDate.getDateTimePickerId() + "').data('datetimepicker').setStartDate(d);" +
-				"});" +
-				"$('#" + endDate.getDateTimePickerId() + "').on('changeDate',function (e) {" +
-					"var d = $('#" + endDate.getDateTimePickerId() + "').data('datetimepicker').getDate();" +
-					"d.setDate(d.getDate() - 1);" +
-				  "$('#" + startDate.getDateTimePickerId() + "').data('datetimepicker').setEndDate(d);" +
-				"});" +
-		"});";
+		return "$(function () {"
+				+ "$('#"
+				+ startDate.getDateTimePickerId()
+				+ "').on('changeDate',function () {"
+				+ "var d = $('#"
+				+ startDate.getDateTimePickerId()
+				+ "').data('datetimepicker').getDate();"
+				+ "d.setDate(d.getDate() + 1);"
+				+ "$('#"
+				+ endDate.getDateTimePickerId()
+				+ "').data('datetimepicker').setStartDate(d);"
+				+ "});"
+				+ "$('#"
+				+ endDate.getDateTimePickerId()
+				+ "').on('changeDate',function (e) {"
+				+ "var d = $('#"
+				+ endDate.getDateTimePickerId()
+				+ "').data('datetimepicker').getDate();"
+				+ "d.setDate(d.getDate() - 1);"
+				+ "$('#"
+				+ startDate.getDateTimePickerId()
+				+ "').data('datetimepicker').setEndDate(d);"
+				+ "});"
+				+ "});";
 	}
-	
+
 	@Override
 	public void renderHead(IHeaderResponse response)
 	{
@@ -142,29 +154,30 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 			options.add("startDate: new Date(" + startDate.toEpochMilli() + ")");
 		if (endDate != null)
 			options.add("endDate: new Date(" + endDate.toEpochMilli() + ")");
-		response.render(OnDomReadyHeaderItem.forScript("$(function () {$('#" + getDateTimePickerId() + "').datetimepicker({" + StringUtils.join(options,",") + "});});"));
+		response.render(
+				OnDomReadyHeaderItem.forScript("$(function () {$('#" + getDateTimePickerId() + "').datetimepicker({" + StringUtils.join(options, ",") + "});});"));
 		super.renderHead(response);
 	}
-	
+
 	@Override
 	public void convertInput()
 	{
 		dateTime = dateTimeField.getConvertedInput();
 		setConvertedInput(dateTime);
 	}
-	
+
 	@Override
 	protected void onBeforeRender()
 	{
 		dateTime = getModelObject();
 		super.onBeforeRender();
 	}
-	
+
 	public String getDateFormat()
 	{
 		return format;
 	}
-	
+
 	public JQueryLocale getJQueryLocale()
 	{
 		return JQueryLocale.EN;

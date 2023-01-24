@@ -15,8 +15,8 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import javax.servlet.http.HttpServletResponse;
 
+import javax.servlet.http.HttpServletResponse;
 import org.apache.wicket.request.http.WebResponse;
 
 public class PageNotFoundPage extends BasePage
@@ -34,7 +34,7 @@ public class PageNotFoundPage extends BasePage
 		super.configureResponse(response);
 		((HttpServletResponse)response.getContainerResponse()).setStatus(HttpServletResponse.SC_NOT_FOUND);
 	}
-	
+
 	@Override
 	public boolean isVersioned()
 	{
@@ -50,7 +50,7 @@ public class PageNotFoundPage extends BasePage
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("pageNotFound",this);
+		return getLocalizer().getString("pageNotFound", this);
 	}
 
 }

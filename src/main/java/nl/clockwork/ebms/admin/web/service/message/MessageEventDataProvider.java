@@ -15,23 +15,22 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
+
 import java.util.ArrayList;
 import java.util.Iterator;
-
-import org.apache.wicket.markup.repeater.data.IDataProvider;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
+import lombok.val;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.event.MessageEventType;
 import nl.clockwork.ebms.service.EbMSMessageService;
 import nl.clockwork.ebms.service.model.MessageEvent;
 import nl.clockwork.ebms.service.model.MessageFilter;
+import org.apache.wicket.markup.repeater.data.IDataProvider;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor(staticName = "of")
@@ -48,7 +47,7 @@ public class MessageEventDataProvider implements IDataProvider<MessageEvent>
 	@Override
 	public Iterator<? extends MessageEvent> iterator(long first, long count)
 	{
-		val messageEvents = Utils.toList(ebMSMessageService.getUnprocessedMessageEvents(filter,eventTypes,(int)(first+count)));
+		val messageEvents = Utils.toList(ebMSMessageService.getUnprocessedMessageEvents(filter, eventTypes, (int)(first + count)));
 		return messageEvents == null ? new ArrayList<MessageEvent>().iterator() : messageEvents.listIterator((int)first);
 	}
 
@@ -61,7 +60,7 @@ public class MessageEventDataProvider implements IDataProvider<MessageEvent>
 	@Override
 	public long size()
 	{
-		val messageEvents = Utils.toList(ebMSMessageService.getUnprocessedMessageEvents(filter,eventTypes,null));
+		val messageEvents = Utils.toList(ebMSMessageService.getUnprocessedMessageEvents(filter, eventTypes, null));
 		return messageEvents == null ? 0 : messageEvents.size();
 	}
 

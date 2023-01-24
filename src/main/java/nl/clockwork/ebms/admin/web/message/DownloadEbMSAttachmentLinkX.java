@@ -15,6 +15,10 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
+
+import lombok.val;
+import nl.clockwork.ebms.admin.model.EbMSAttachment;
+import nl.clockwork.ebms.admin.web.Utils;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
@@ -24,35 +28,28 @@ import org.apache.wicket.util.encoding.UrlEncoder;
 import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.resource.IResourceStream;
 
-import lombok.val;
-import nl.clockwork.ebms.admin.model.EbMSAttachment;
-import nl.clockwork.ebms.admin.web.Utils;
-
 public class DownloadEbMSAttachmentLinkX extends Link<EbMSAttachment>
 {
 	private static final long serialVersionUID = 1L;
 
 	public DownloadEbMSAttachmentLinkX(String id, IModel<EbMSAttachment> model)
 	{
-		super(id,Args.notNull(model,"attachment"));
+		super(id, Args.notNull(model, "attachment"));
 	}
 
 	@Override
 	public void onClick()
 	{
 		val o = getModelObject();
-		val fileName = UrlEncoder.QUERY_INSTANCE.encode(
-				StringUtils.isEmpty(o.getName()) ? o.getContentId() + Utils.getFileExtension(o.getContentType()) : o.getName(),
-				getRequest().getCharset());
+		val fileName = UrlEncoder.QUERY_INSTANCE
+				.encode(StringUtils.isEmpty(o.getName()) ? o.getContentId() + Utils.getFileExtension(o.getContentType()) : o.getName(), getRequest().getCharset());
 		val resourceStream = AttachmentResourceStream.of(o);
-		getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName,resourceStream));
+		getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName, resourceStream));
 	}
 
 	private ResourceStreamRequestHandler createRequestHandler(String fileName, IResourceStream resourceStream)
 	{
-		return new ResourceStreamRequestHandler(resourceStream)
-				.setFileName(fileName)
-				.setContentDisposition(ContentDisposition.ATTACHMENT);
+		return new ResourceStreamRequestHandler(resourceStream).setFileName(fileName).setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 
 }

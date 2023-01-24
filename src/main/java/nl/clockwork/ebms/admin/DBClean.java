@@ -17,6 +17,8 @@ package nl.clockwork.ebms.admin;
 
 import static nl.clockwork.ebms.admin.Constants.DATE_FORMAT_YMD;
 
+import com.querydsl.sql.SQLQuery;
+import com.querydsl.sql.SQLQueryFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -32,9 +34,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
-
 import javax.sql.DataSource;
-
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import nl.clockwork.ebms.querydsl.model.QCpa;
+import nl.clockwork.ebms.querydsl.model.QDeliveryLog;
+import nl.clockwork.ebms.querydsl.model.QDeliveryTask;
+import nl.clockwork.ebms.querydsl.model.QEbmsAttachment;
+import nl.clockwork.ebms.querydsl.model.QEbmsMessage;
+import nl.clockwork.ebms.querydsl.model.QMessageEvent;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -48,36 +60,20 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.querydsl.sql.SQLQuery;
-import com.querydsl.sql.SQLQueryFactory;
-
-import lombok.AccessLevel;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.val;
-import lombok.var;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
-import nl.clockwork.ebms.querydsl.model.QCpa;
-import nl.clockwork.ebms.querydsl.model.QDeliveryLog;
-import nl.clockwork.ebms.querydsl.model.QDeliveryTask;
-import nl.clockwork.ebms.querydsl.model.QEbmsAttachment;
-import nl.clockwork.ebms.querydsl.model.QEbmsMessage;
-import nl.clockwork.ebms.querydsl.model.QMessageEvent;
-
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @RequiredArgsConstructor
 @Slf4j
-public class DBClean implements SystemInterface {
+public class DBClean implements SystemInterface
+{
 
 	private static final String LOG4J_CONFIGURATION_FILE = "log4j.configurationFile";
-    private static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT_YMD);
+	private static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT_YMD);
 	TextIO textIO = TextIoFactory.getTextIO();
 
 	public static void main(String[] args) throws Exception
 	{
 		val options = createOptions();
-		val cmd = new DefaultParser().parse(options,args);
+		val cmd = new DefaultParser().parse(options, args);
 		if (cmd.hasOption("h"))
 			printUsage(options);
 		else
@@ -87,8 +83,10 @@ public class DBClean implements SystemInterface {
 			{
 				val dbClean = createDBClean(context);
 				dbClean.execute(cmd);
-			} catch (Throwable t) {
-			    printErr(t);
+			}
+			catch (Throwable t)
+			{
+				printErr(t);
 			}
 		}
 		System.exit(0);
@@ -97,33 +95,36 @@ public class DBClean implements SystemInterface {
 	private static Options createOptions()
 	{
 		val result = new Options();
-		result.addOption("h",false,"print this message");
-		result.addOption("cmd",true,"objects to clean [values: cpa|messages]");
-		result.addOption("cpaId",true,"the cpaId of the CPA to delete");
-		result.addOption("dateFrom",true,"the date from which objects will be deleted [format: YYYYMMDD][default: " + dateFormatter.format(LocalDate.now().minusDays(30)) + "]");
+		result.addOption("h", false, "print this message");
+		result.addOption("cmd", true, "objects to clean [values: cpa|messages]");
+		result.addOption("cpaId", true, "the cpaId of the CPA to delete");
+		result.addOption(
+				"dateFrom",
+				true,
+				"the date from which objects will be deleted [format: YYYYMMDD][default: " + dateFormatter.format(LocalDate.now().minusDays(30)) + "]");
 		result.addOption("retentionDays", true, "the number of days that will be retained during deletion, overrules occurrence of dateFrom option");
-		result.addOption("includeNoPersistDuration", false, "whether or not messages from CPAs without PersistDuration set will be deleted"); 
-		result.addOption("configDir",true,"set config directory (default=current dir)");
+		result.addOption("includeNoPersistDuration", false, "whether or not messages from CPAs without PersistDuration set will be deleted");
+		result.addOption("configDir", true, "set config directory (default=current dir)");
 		return result;
 	}
 
 	private static void printUsage(Options options)
 	{
 		val formatter = new HelpFormatter();
-		formatter.printHelp("DBClean",options,true);
+		formatter.printHelp("DBClean", options, true);
 	}
 
 	private static void init(CommandLine cmd)
 	{
-		val configDir = cmd.getOptionValue("configDir","");
-		System.setProperty("ebms.configDir",configDir);
+		val configDir = cmd.getOptionValue("configDir", "");
+		System.setProperty("ebms.configDir", configDir);
 		printStatic("Using config directory: " + configDir);
 	}
 
 	private static DBClean createDBClean(AnnotationConfigApplicationContext context)
 	{
 		val queryFactory = context.getBean(SQLQueryFactory.class);
-		val transactionManager = context.getBean("dataSourceTransactionManager",PlatformTransactionManager.class);
+		val transactionManager = context.getBean("dataSourceTransactionManager", PlatformTransactionManager.class);
 		val dataSource = context.getBean(DataSource.class);
 		val namedParameterjdbctemplate = new NamedParameterJdbcTemplate(dataSource);
 		return new DBClean(queryFactory, transactionManager, namedParameterjdbctemplate);
@@ -146,16 +147,16 @@ public class DBClean implements SystemInterface {
 
 	private void execute(final CommandLine cmd) throws Exception
 	{
-	    switch(cmd.getOptionValue("cmd",""))
+		switch (cmd.getOptionValue("cmd", ""))
 		{
-			case("cpa"):
+			case ("cpa"):
 				println("Running CPA deletion script...");
-			    validateCleanCPA(cmd);
+				validateCleanCPA(cmd);
 				executeCleanCPA(cmd);
 				break;
-			case("messages"):
+			case ("messages"):
 				println("Running Message deletion script...");
-			    executeCleanMessages(cmd);
+				executeCleanMessages(cmd);
 				break;
 			default:
 				printWarn(cmd.getOptionValue("cmd") + " not recognized");
@@ -194,24 +195,26 @@ public class DBClean implements SystemInterface {
 		catch (Exception e)
 		{
 			printErr(e);
-		    transactionManager.rollback(status);
+			transactionManager.rollback(status);
 		}
 	}
 
 	private void executeCleanMessages(CommandLine cmd) throws IOException
 	{
-	    boolean includeNoPersistDuration = cmd.hasOption("includeNoPersistDuration"); 
-	    
-	    val dateFrom = Objects.nonNull(cmd.getOptionValue("retentionDays")) ? createDateFromRetentionDays(cmd.getOptionValue("retentionDays"))
-		                                                                    : createDateFrom(cmd.getOptionValue("dateFrom"));
+		boolean includeNoPersistDuration = cmd.hasOption("includeNoPersistDuration");
+
+		val dateFrom = Objects.nonNull(cmd.getOptionValue("retentionDays"))
+				? createDateFromRetentionDays(cmd.getOptionValue("retentionDays"))
+				: createDateFrom(cmd.getOptionValue("dateFrom"));
 		if (dateFrom != null)
 		{
 			println("using fromDate " + dateFrom);
-			
-			if(includeNoPersistDuration) {
-			    println("Including messages from CPA's without PersistDuration set...");
+
+			if (includeNoPersistDuration)
+			{
+				println("Including messages from CPA's without PersistDuration set...");
 			}
-			
+
 			val status = transactionManager.getTransaction(null);
 			try
 			{
@@ -220,8 +223,8 @@ public class DBClean implements SystemInterface {
 			}
 			catch (Exception e)
 			{
-			    printErr(e);
-			    transactionManager.rollback(status);
+				printErr(e);
+				transactionManager.rollback(status);
 			}
 		}
 		else
@@ -231,22 +234,22 @@ public class DBClean implements SystemInterface {
 	}
 
 	private static Instant createDateFromRetentionDays(String retentionDaysString)
-    {
-        try
-        {
-            return StringUtils.isEmpty(retentionDaysString) ? null : Instant.now().minus(Period.ofDays(Integer.parseInt(retentionDaysString)));
-        }
-        catch (NumberFormatException e)
-        {
-            return null;
-        }
-    }
+	{
+		try
+		{
+			return StringUtils.isEmpty(retentionDaysString) ? null : Instant.now().minus(Period.ofDays(Integer.parseInt(retentionDaysString)));
+		}
+		catch (NumberFormatException e)
+		{
+			return null;
+		}
+	}
 
 	private static Instant createDateFrom(String s)
 	{
 		try
 		{
-			val date = StringUtils.isEmpty(s) ? LocalDate.now().minusDays(30) : LocalDate.parse(s,dateFormatter);
+			val date = StringUtils.isEmpty(s) ? LocalDate.now().minusDays(30) : LocalDate.parse(s, dateFormatter);
 			return date.atStartOfDay(ZoneId.systemDefault()).toInstant();
 		}
 		catch (DateTimeParseException e)
@@ -255,24 +258,28 @@ public class DBClean implements SystemInterface {
 		}
 	}
 
-	private boolean alternativeAttachmentImplementation() {
-		var vendor = "";
+	private boolean alternativeAttachmentImplementation()
+	{
+		String vendor = "";
 		try (Connection connection = namedParameterJdbcTemplate.getJdbcTemplate().getDataSource().getConnection())
 		{
 			vendor = connection.getMetaData().getDatabaseProductName();
-		} catch (SQLException e) {
+		}
+		catch (SQLException e)
+		{
 			printErr(e);
-		};
-		return vendor.equalsIgnoreCase("mysql") ||
-		       vendor.equalsIgnoreCase("microsoft sql server") ||
-               vendor.equalsIgnoreCase("mariadb") ||
-               vendor.equalsIgnoreCase("h2");
+		}
+		;
+		return vendor.equalsIgnoreCase("mysql")
+				|| vendor.equalsIgnoreCase("microsoft sql server")
+				|| vendor.equalsIgnoreCase("mariadb")
+				|| vendor.equalsIgnoreCase("h2");
 	}
 
 	private void cleanCPA(String cpaId)
 	{
 
-	    val ids = queryFactory.select(messageTable.messageId).from(messageTable).where(messageTable.cpaId.eq(cpaId)).fetch();
+		val ids = queryFactory.select(messageTable.messageId).from(messageTable).where(messageTable.cpaId.eq(cpaId)).fetch();
 
 		Function<List<String>, Long> query = idList -> queryFactory.delete(deliveryLogTable).where(deliveryLogTable.messageId.in(idList)).execute();
 		defensiveDelete(ids, "deliveryLogs", query);
@@ -283,55 +290,69 @@ public class DBClean implements SystemInterface {
 		query = idList -> queryFactory.delete(messageEventTable).where(messageEventTable.messageId.in(ids)).execute();
 		defensiveDelete(ids, "messageEvents", query);
 
-		if (alternativeAttachmentImplementation()) {
+		if (alternativeAttachmentImplementation())
+		{
 			MapSqlParameterSource parameterSource = new MapSqlParameterSource();
 			parameterSource.addValue("cpaId", cpaId);
-			List<Integer> idsInteger = namedParameterJdbcTemplate.getJdbcTemplate().queryForList("select id from ebms_message where cpa_id = ?", new Object[]{cpaId}, Integer.class);
+			List<Integer> idsInteger =
+					namedParameterJdbcTemplate.getJdbcTemplate().queryForList("select id from ebms_message where cpa_id = ?", new Object[]{cpaId}, Integer.class);
 
 			query = idList ->
 			{
 				SqlParameterSource parameters = new MapSqlParameterSource("idsInteger", idsInteger);
-				return (long) namedParameterJdbcTemplate.update("delete from ebms_attachment where ebms_message_id in (:idsInteger)", parameters);
+				return (long)namedParameterJdbcTemplate.update("delete from ebms_attachment where ebms_message_id in (:idsInteger)", parameters);
 			};
-		} else {
+		}
+		else
+		{
 			query = idList -> queryFactory.delete(attachmentTable).where(attachmentTable.messageId.in(idList)).execute();
 		}
 		defensiveDelete(ids, "attachments", query);
 
-		query = idList -> (long) queryFactory.delete(messageTable).where(messageTable.cpaId.eq(cpaId)).execute();
+		query = idList -> (long)queryFactory.delete(messageTable).where(messageTable.cpaId.eq(cpaId)).execute();
 		defensiveDelete(ids, "messages", query);
 
 		println("delete cpa " + cpaId + " in ebms-admin to delete it from the cache!!!");
 
 	}
 
-	private void cleanMessages(Instant dateFrom, boolean includeNoPersistDuration) {
-	    final SQLQuery<String> messageIdPersistTimeQuery = queryFactory.select(messageTable.messageId).from(messageTable).where(messageTable.persistTime.loe(dateFrom));
-        
-	    List<String> ids = null;
-	    do {
-	        println("Deleting bucket of 100000 entries (based on persistTime)....");
-	        ids = messageIdPersistTimeQuery.limit(100000L).fetch();
-	        deleteMessagesIdList(ids);
-	        ids = null;
-	    } while(messageIdPersistTimeQuery.fetchCount() > 0);
-		
-		if (includeNoPersistDuration) {
-		    final SQLQuery<String> messageIdTimeStampQuery = queryFactory.select(messageTable.messageId).from(messageTable).where(messageTable.persistTime.isNull().and(messageTable.timeStamp.loe(dateFrom)));
-		    List<String> idsWithoutPersistDuration = null;
-		    do {
-		        println("Deleting bucket of 100000 entries (includeNoPersistDuration=true)....");
-		        idsWithoutPersistDuration = messageIdTimeStampQuery.limit(100000L).fetch();
-		        deleteMessagesIdList(idsWithoutPersistDuration);
-		        idsWithoutPersistDuration = null;
-		    } while(messageIdTimeStampQuery.fetchCount() > 0);
+	private void cleanMessages(Instant dateFrom, boolean includeNoPersistDuration)
+	{
+		final SQLQuery<String> messageIdPersistTimeQuery =
+				queryFactory.select(messageTable.messageId).from(messageTable).where(messageTable.persistTime.loe(dateFrom));
+
+		List<String> ids = null;
+		do
+		{
+			println("Deleting bucket of 100000 entries (based on persistTime)....");
+			ids = messageIdPersistTimeQuery.limit(100000L).fetch();
+			deleteMessagesIdList(ids);
+			ids = null;
+		} while (messageIdPersistTimeQuery.fetchCount() > 0);
+
+		if (includeNoPersistDuration)
+		{
+			final SQLQuery<String> messageIdTimeStampQuery =
+					queryFactory.select(messageTable.messageId).from(messageTable).where(messageTable.persistTime.isNull().and(messageTable.timeStamp.loe(dateFrom)));
+			List<String> idsWithoutPersistDuration = null;
+			do
+			{
+				println("Deleting bucket of 100000 entries (includeNoPersistDuration=true)....");
+				idsWithoutPersistDuration = messageIdTimeStampQuery.limit(100000L).fetch();
+				deleteMessagesIdList(idsWithoutPersistDuration);
+				idsWithoutPersistDuration = null;
+			} while (messageIdTimeStampQuery.fetchCount() > 0);
 		}
 	}
 
-    private void deleteMessagesIdList(final java.util.List<java.lang.String> idsBucket) {
-        if (idsBucket.size() == 0) {
+	private void deleteMessagesIdList(final java.util.List<java.lang.String> idsBucket)
+	{
+		if (idsBucket.size() == 0)
+		{
 			println("\tno messages to delete");
-		} else {
+		}
+		else
+		{
 			Function<List<String>, Long> query = idList -> queryFactory.delete(deliveryLogTable).where(deliveryLogTable.messageId.in(idList)).execute();
 			defensiveDelete(idsBucket, "deliveryLogs", query);
 
@@ -341,90 +362,118 @@ public class DBClean implements SystemInterface {
 			query = idList -> queryFactory.delete(messageEventTable).where(messageEventTable.messageId.in(idList)).execute();
 			defensiveDelete(idsBucket, "messageEvents", query);
 
-			if (alternativeAttachmentImplementation()) {
-			    query = idList ->
-				    {
-				        SqlParameterSource parameterListMessageIds = new MapSqlParameterSource("messageIds", idList);
-		                List<String> ebmsMessageIds = namedParameterJdbcTemplate.queryForList("select id from ebms_message where message_id in (:messageIds)", parameterListMessageIds, String.class);
-				        SqlParameterSource parameterListEmbsMessageIds = new MapSqlParameterSource("embsMessageIds", ebmsMessageIds);
-					return (long) namedParameterJdbcTemplate.update("delete from ebms_attachment where ebms_message_id in (:embsMessageIds)", parameterListEmbsMessageIds);
+			if (alternativeAttachmentImplementation())
+			{
+				query = idList ->
+				{
+					SqlParameterSource parameterListMessageIds = new MapSqlParameterSource("messageIds", idList);
+					List<String> ebmsMessageIds =
+							namedParameterJdbcTemplate.queryForList("select id from ebms_message where message_id in (:messageIds)", parameterListMessageIds, String.class);
+					SqlParameterSource parameterListEmbsMessageIds = new MapSqlParameterSource("embsMessageIds", ebmsMessageIds);
+					return (long)namedParameterJdbcTemplate.update("delete from ebms_attachment where ebms_message_id in (:embsMessageIds)", parameterListEmbsMessageIds);
 				};
 				defensiveDelete(idsBucket, "attachments", query);
-			} else {
-				query = idList -> queryFactory.delete(attachmentTable).where(attachmentTable.messageId.in((List<String>) idList)).execute();
+			}
+			else
+			{
+				query = idList -> queryFactory.delete(attachmentTable).where(attachmentTable.messageId.in((List<String>)idList)).execute();
 				defensiveDelete(idsBucket, "attachments", query);
 			}
-			query = idList -> queryFactory.delete(messageTable).where(messageTable.messageId.in((List<String>) idList)).execute();
+			query = idList -> queryFactory.delete(messageTable).where(messageTable.messageId.in((List<String>)idList)).execute();
 			defensiveDelete(idsBucket, "messages", query);
 		}
-    }
+	}
 
-	private void defensiveDelete(List<String> ids, String tableString, Function<List<String>,Long> query){
-	    int deleteBlockSize = 4000;//TODO make this configurable?
+	private void defensiveDelete(List<String> ids, String tableString, Function<List<String>, Long> query)
+	{
+		int deleteBlockSize = 4000;// TODO make this configurable?
 		int nrOfRowsDeleted = 0;
-		println("Starting defensive delete of rows in "+tableString+ "....");
-	    List<String> localCopy = new ArrayList<>(ids);
-	    
-        if (ids.size() == 0) {
-            println("    no rows in "+tableString+" to delete");
-        } else {
-            List<String> idsBlock = null;
-            int stopIndex = Math.min(deleteBlockSize, ids.size());
-            do {
-                
-                idsBlock = localCopy.subList(0, stopIndex);
-                if (idsBlock.size() > 0) {
-                    long nrDeletedInBlockDefensive = query.apply(idsBlock);
-                    if(nrDeletedInBlockDefensive > 0) {
-                        println("    "+nrDeletedInBlockDefensive + " of rows in " + tableString + " deleted");
-                    }
-                    
-                    nrOfRowsDeleted += nrDeletedInBlockDefensive;
-                    
-                    // corresponding entries in ids list will be cleared
-                    idsBlock.clear();
-                    stopIndex = Math.min(deleteBlockSize, localCopy.size());
-                }
-            } while (localCopy.size() > 0);
-            println("A total number of "+ nrOfRowsDeleted +" "+tableString+ " rows deleted");
-        }
-	}
-	
-	@Override
-	public void println(String s) {
-	    if(hasLog4jConfig()) {
-	        log.info(s);
-	    } else {
-	        SystemInterface.super.println(s);
-	    }
-	}
-	
-	@Override
-	public void printWarn(String s) {
-	    if(hasLog4jConfig()) {
-            log.warn(s);
-        } else {
-            SystemInterface.super.printWarn(s);
-        }
+		println("Starting defensive delete of rows in " + tableString + "....");
+		List<String> localCopy = new ArrayList<>(ids);
+
+		if (ids.size() == 0)
+		{
+			println("    no rows in " + tableString + " to delete");
+		}
+		else
+		{
+			List<String> idsBlock = null;
+			int stopIndex = Math.min(deleteBlockSize, ids.size());
+			do
+			{
+
+				idsBlock = localCopy.subList(0, stopIndex);
+				if (idsBlock.size() > 0)
+				{
+					long nrDeletedInBlockDefensive = query.apply(idsBlock);
+					if (nrDeletedInBlockDefensive > 0)
+					{
+						println("    " + nrDeletedInBlockDefensive + " of rows in " + tableString + " deleted");
+					}
+
+					nrOfRowsDeleted += nrDeletedInBlockDefensive;
+
+					// corresponding entries in ids list will be cleared
+					idsBlock.clear();
+					stopIndex = Math.min(deleteBlockSize, localCopy.size());
+				}
+			} while (localCopy.size() > 0);
+			println("A total number of " + nrOfRowsDeleted + " " + tableString + " rows deleted");
+		}
 	}
 
-    private static boolean hasLog4jConfig() {
-        return StringUtils.isNotEmpty(System.getProperty(LOG4J_CONFIGURATION_FILE));
-    }
-	
-	private static void printErr(Throwable t) {
-	    if(hasLog4jConfig()) {
-	        log.error("ERROR", t);
-	    } else {
-	        t.printStackTrace();
-	    }
+	@Override
+	public void println(String s)
+	{
+		if (hasLog4jConfig())
+		{
+			log.info(s);
+		}
+		else
+		{
+			SystemInterface.super.println(s);
+		}
 	}
-	
-	private static void printStatic(String s) {
-	    if(hasLog4jConfig()) {
-            log.info(s);
-        } else {
-            System.out.println(s);
-        }
-	} 
+
+	@Override
+	public void printWarn(String s)
+	{
+		if (hasLog4jConfig())
+		{
+			log.warn(s);
+		}
+		else
+		{
+			SystemInterface.super.printWarn(s);
+		}
+	}
+
+	private static boolean hasLog4jConfig()
+	{
+		return StringUtils.isNotEmpty(System.getProperty(LOG4J_CONFIGURATION_FILE));
+	}
+
+	private static void printErr(Throwable t)
+	{
+		if (hasLog4jConfig())
+		{
+			log.error("ERROR", t);
+		}
+		else
+		{
+			t.printStackTrace();
+		}
+	}
+
+	private static void printStatic(String s)
+	{
+		if (hasLog4jConfig())
+		{
+			log.info(s);
+		}
+		else
+		{
+			System.out.println(s);
+		}
+	}
 }

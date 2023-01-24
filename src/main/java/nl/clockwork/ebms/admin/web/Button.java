@@ -15,9 +15,9 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import org.apache.wicket.model.IModel;
 
 import lombok.Builder;
+import org.apache.wicket.model.IModel;
 
 public class Button extends org.apache.wicket.markup.html.form.Button
 {
@@ -26,13 +26,13 @@ public class Button extends org.apache.wicket.markup.html.form.Button
 
 	public Button(String id)
 	{
-		this(id,null,null);
+		this(id, null, null);
 	}
 
 	@Builder
 	public Button(String id, IModel<String> model, Action onSubmit)
 	{
-		super(id,model);
+		super(id, model);
 		this.onSubmit = onSubmit == null ? () -> super.onSubmit() : onSubmit;
 	}
 

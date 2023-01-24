@@ -15,6 +15,20 @@
  */
 package nl.clockwork.ebms.admin.web.service.cpa;
 
+
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import nl.clockwork.ebms.admin.web.Action;
+import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.Button;
+import nl.clockwork.ebms.admin.web.Link;
+import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
+import nl.clockwork.ebms.admin.web.PageClassLink;
+import nl.clockwork.ebms.admin.web.WebMarkupContainer;
+import nl.clockwork.ebms.cpa.CPAService;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -26,20 +40,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import lombok.AccessLevel;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
-import nl.clockwork.ebms.admin.web.Action;
-import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.admin.web.Button;
-import nl.clockwork.ebms.admin.web.Link;
-import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
-import nl.clockwork.ebms.admin.web.PageClassLink;
-import nl.clockwork.ebms.admin.web.WebMarkupContainer;
-import nl.clockwork.ebms.cpa.CPAService;
-
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CPAsPage extends BasePage
@@ -50,7 +50,7 @@ public class CPAsPage extends BasePage
 
 		protected CPAIdsDataView(String id, IDataProvider<String> dataProvider)
 		{
-			super(id,dataProvider);
+			super(id, dataProvider);
 			setOutputMarkupId(true);
 		}
 
@@ -58,19 +58,16 @@ public class CPAsPage extends BasePage
 		protected void populateItem(final Item<String> item)
 		{
 			val o = item.getModelObject();
-			item.add(createViewLink("view",o));
-			item.add(new DownloadCPALink("downloadCPA",cpaService,item.getModel()));
-			item.add(createDeleteButton("delete",item.getModel()));
-			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
+			item.add(createViewLink("view", o));
+			item.add(new DownloadCPALink("downloadCPA", cpaService, item.getModel()));
+			item.add(createDeleteButton("delete", item.getModel()));
+			item.add(AttributeModifier.replace("class", OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 
 		private Link<Void> createViewLink(String id, final String cpaId)
 		{
-			val result = Link.<Void>builder()
-					.id(id)
-					.onClick(() -> setResponsePage(new CPAPage(Model.of(cpaService.getCPA(cpaId)),CPAsPage.this)))
-					.build();
-			result.add(new Label("cpaId",cpaId));
+			val result = Link.<Void>builder().id(id).onClick(() -> setResponsePage(new CPAPage(Model.of(cpaService.getCPA(cpaId)), CPAsPage.this))).build();
+			result.add(new Label("cpaId", cpaId));
 			return result;
 		}
 
@@ -85,19 +82,19 @@ public class CPAsPage extends BasePage
 				}
 				catch (Exception e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			val result = new Button(id,new ResourceModel("cmd.delete"),onSubmit);
-			result.add(AttributeModifier.replace("onclick","return confirm('" + getLocalizer().getString("confirm",this) + "');"));
+			val result = new Button(id, new ResourceModel("cmd.delete"), onSubmit);
+			result.add(AttributeModifier.replace("onclick", "return confirm('" + getLocalizer().getString("confirm", this) + "');"));
 			return result;
 		}
 
 	}
 
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="cpaService")
+	@SpringBean(name = "cpaService")
 	CPAService cpaService;
 
 	public CPAsPage()
@@ -115,14 +112,14 @@ public class CPAsPage extends BasePage
 			super(id);
 			val container = new WebMarkupContainer("container");
 			add(container);
-			container.add(new CPAIdsDataView("cpaIds",CPADataProvider.of(cpaService)));
-			add(new PageClassLink("new",CPAUploadPage.class));
+			container.add(new CPAIdsDataView("cpaIds", CPADataProvider.of(cpaService)));
+			add(new PageClassLink("new", CPAUploadPage.class));
 		}
 	}
-	
+
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("cpas",this);
+		return getLocalizer().getString("cpas", this);
 	}
 }

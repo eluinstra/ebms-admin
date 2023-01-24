@@ -18,25 +18,22 @@ package nl.clockwork.ebms.admin.web;
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.API.Match;
+import static nl.clockwork.ebms.Predicates.endsWith;
 
 import java.io.IOException;
-
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.wicket.util.io.IOUtils;
-
 import lombok.val;
-import static nl.clockwork.ebms.Predicates.endsWith;
+import org.apache.wicket.util.io.IOUtils;
 
 public class ResourceServlet extends GenericServlet
 {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Override
 	public void init() throws ServletException
 	{
@@ -53,20 +50,20 @@ public class ResourceServlet extends GenericServlet
 		{
 			((HttpServletResponse)response).setStatus(200);
 			((HttpServletResponse)response).setContentType(getContentType(((HttpServletRequest)request).getPathInfo()));
-			IOUtils.copy(input,response.getOutputStream());
+			IOUtils.copy(input, response.getOutputStream());
 		}
 	}
 
 	private String getContentType(String pathInfo)
 	{
 		return Match(pathInfo).of(
-				Case($(endsWith(".css")),"text/css"),
-				Case($(endsWith(".js")),"text/javascript"),
-				Case($(endsWith(".gif")),"image/gif"),
-				Case($(endsWith(".eot")),"application/vnd.ms-fontobject"),
-				Case($(endsWith(".svg")),"image/svg+xml"),
-				Case($(endsWith(".ttf")),"font/ttf"),
-				Case($(endsWith(".woff")),"application/font-woff"),
-				Case($(),(String)null));
+				Case($(endsWith(".css")), "text/css"),
+				Case($(endsWith(".js")), "text/javascript"),
+				Case($(endsWith(".gif")), "image/gif"),
+				Case($(endsWith(".eot")), "application/vnd.ms-fontobject"),
+				Case($(endsWith(".svg")), "image/svg+xml"),
+				Case($(endsWith(".ttf")), "font/ttf"),
+				Case($(endsWith(".woff")), "application/font-woff"),
+				Case($(), (String)null));
 	}
 }

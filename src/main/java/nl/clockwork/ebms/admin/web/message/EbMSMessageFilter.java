@@ -15,11 +15,11 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
@@ -45,12 +45,28 @@ public class EbMSMessageFilter extends MessageFilter
 	LocalDateTime to;
 
 	@Builder(builderMethodName = "ebMSMessageFilterBuilder")
-	public EbMSMessageFilter(@NonNull String cpaId, @NonNull Party fromParty, Party toParty, String service, String action, Instant timestamp, String conversationId, String messageId, String refToMessageId, EbMSMessageStatus messageStatus, Integer messageNr, Boolean serviceMessage, List<EbMSMessageStatus> statuses, LocalDateTime from, LocalDateTime to)
+	public EbMSMessageFilter(
+			@NonNull String cpaId,
+			@NonNull Party fromParty,
+			Party toParty,
+			String service,
+			String action,
+			Instant timestamp,
+			String conversationId,
+			String messageId,
+			String refToMessageId,
+			EbMSMessageStatus messageStatus,
+			Integer messageNr,
+			Boolean serviceMessage,
+			List<EbMSMessageStatus> statuses,
+			LocalDateTime from,
+			LocalDateTime to)
 	{
-		super(cpaId,fromParty,toParty,service,action,conversationId,messageId,refToMessageId);
+		super(cpaId, fromParty, toParty, service, action, conversationId, messageId, refToMessageId);
 		this.messageNr = messageNr;
 		this.serviceMessage = serviceMessage;
-		if (statuses != null) this.statuses = statuses;
+		if (statuses != null)
+			this.statuses = statuses;
 		this.from = from;
 		this.to = to;
 	}

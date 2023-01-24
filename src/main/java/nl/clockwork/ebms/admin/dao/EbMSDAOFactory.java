@@ -15,17 +15,15 @@
  */
 package nl.clockwork.ebms.admin.dao;
 
-import javax.sql.DataSource;
-
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.querydsl.sql.SQLQueryFactory;
-
+import javax.sql.DataSource;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.dao.AbstractDAOFactory.DefaultDAOFactory;
 import nl.clockwork.ebms.transaction.TransactionManagerConfig.TransactionManagerType;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EbMSDAOFactory extends DefaultDAOFactory<EbMSDAO>
@@ -55,42 +53,42 @@ public class EbMSDAOFactory extends DefaultDAOFactory<EbMSDAO>
 	@Override
 	public EbMSDAO createDB2DAO()
 	{
-		return new DB2EbMSDAO(jdbcTemplate,queryFactory);
+		return new DB2EbMSDAO(jdbcTemplate, queryFactory);
 	}
 
 	@Override
 	public EbMSDAO createH2DAO()
 	{
-		return new H2EbMSDAO(jdbcTemplate,queryFactory);
+		return new H2EbMSDAO(jdbcTemplate, queryFactory);
 	}
 
 	@Override
 	public EbMSDAO createHSQLDBDAO()
 	{
-		return new HSQLDBEbMSDAO(jdbcTemplate,queryFactory);
+		return new HSQLDBEbMSDAO(jdbcTemplate, queryFactory);
 	}
 
 	@Override
 	public EbMSDAO createMSSQLDAO()
 	{
-		return new MSSQLEbMSDAO(jdbcTemplate,queryFactory);
+		return new MSSQLEbMSDAO(jdbcTemplate, queryFactory);
 	}
 
 	@Override
 	public EbMSDAO createMySQLDAO()
 	{
-		return new MySQLEbMSDAO(jdbcTemplate,queryFactory);
+		return new MySQLEbMSDAO(jdbcTemplate, queryFactory);
 	}
 
 	@Override
 	public EbMSDAO createOracleDAO()
 	{
-		return new OracleEbMSDAO(jdbcTemplate,queryFactory);
+		return new OracleEbMSDAO(jdbcTemplate, queryFactory);
 	}
 
 	@Override
 	public EbMSDAO createPostgreSQLDAO()
 	{
-		return new PostgreSQLEbMSDAO(jdbcTemplate,queryFactory);
+		return new PostgreSQLEbMSDAO(jdbcTemplate, queryFactory);
 	}
 }

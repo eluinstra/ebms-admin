@@ -15,10 +15,17 @@
  */
 package nl.clockwork.ebms.admin;
 
+
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
+import nl.clockwork.ebms.datasource.DataSourceConfig.Location;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -26,15 +33,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
 import org.flywaydb.core.Flyway;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
-import lombok.val;
-import lombok.var;
-import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.datasource.DataSourceConfig.Location;
+import org.flywaydb.core.api.configuration.FluentConfiguration;
 
 public class DBMigrate
 {
@@ -44,32 +43,29 @@ public class DBMigrate
 	@ToString
 	enum BaselineVersion
 	{
-		VERSION_2_10("2.10","2.10.0"),
-		VERSION_2_11("2.11","2.11.0"),
-		VERSION_2_12("2.12","2.12.0"),
-		VERSION_2_13("2.13","2.13.0"),
-		VERSION_2_14("2.14","2.13.0"),
-		VERSION_2_15("2.15","2.15.0"),
-		VERSION_2_16("2.16","2.15.0"),
-		VERSION_2_17("2.17","2.17.0"),
-		VERSION_2_18("2.18","2.18.0");
-		
+		VERSION_2_10("2.10", "2.10.0"),
+		VERSION_2_11("2.11", "2.11.0"),
+		VERSION_2_12("2.12", "2.12.0"),
+		VERSION_2_13("2.13", "2.13.0"),
+		VERSION_2_14("2.14", "2.13.0"),
+		VERSION_2_15("2.15", "2.15.0"),
+		VERSION_2_16("2.16", "2.15.0"),
+		VERSION_2_17("2.17", "2.17.0"),
+		VERSION_2_18("2.18", "2.18.0");
+
 		String ebmsVersion;
 		String baselineVersion;
-		
+
 		public static Optional<String> getBaselineVersion(String ebmsVersion)
 		{
-			return Arrays.stream(values())
-					.filter(v -> ebmsVersion.startsWith(v.ebmsVersion))
-					.map(v -> v.baselineVersion)
-					.findFirst();
+			return Arrays.stream(values()).filter(v -> ebmsVersion.startsWith(v.ebmsVersion)).map(v -> v.baselineVersion).findFirst();
 		}
 	}
 
 	public static void main(String[] args) throws ParseException
 	{
 		val options = createOptions();
-		val cmd = new DefaultParser().parse(options,args);
+		val cmd = new DefaultParser().parse(options, args);
 		if (cmd.hasOption("h"))
 			printUsage(options);
 
@@ -79,19 +75,19 @@ public class DBMigrate
 	protected static Options createOptions()
 	{
 		val result = new Options();
-		result.addOption("h",false,"print this message");
-		result.addOption("jdbcUrl",true,"set jdbcUrl");
-		result.addOption("username",true,"set username");
-		result.addOption("password",true,"set password");
-		result.addOption("strict",false,"use strict db scripts (default: false)");
-		result.addOption("ebmsVersion",true,"set current ebmsVersion (default: none)");
+		result.addOption("h", false, "print this message");
+		result.addOption("jdbcUrl", true, "set jdbcUrl");
+		result.addOption("username", true, "set username");
+		result.addOption("password", true, "set password");
+		result.addOption("strict", false, "use strict db scripts (default: false)");
+		result.addOption("ebmsVersion", true, "set current ebmsVersion (default: none)");
 		return result;
 	}
-	
+
 	protected static void printUsage(Options options)
 	{
 		val formatter = new HelpFormatter();
-		formatter.printHelp("DBMigrate",options,true);
+		formatter.printHelp("DBMigrate", options, true);
 		val versions = Arrays.stream(BaselineVersion.values()).map(v -> v.ebmsVersion).collect(Collectors.joining("\n"));
 		System.out.println("\nValid ebmsVersions:\n" + versions);
 		System.exit(0);
@@ -103,17 +99,11 @@ public class DBMigrate
 		val username = cmd.getOptionValue("username");
 		val password = cmd.getOptionValue("password");
 		val isStrict = "true".equals(cmd.getOptionValue("strict"));
-		val location = parseLocation(jdbcUrl,isStrict);
+		val location = parseLocation(jdbcUrl, isStrict);
 		val baselineVersion = parseBaselineVersion(cmd.getOptionValue("ebmsVersion"));
-		var config = Flyway.configure()
-				.dataSource(jdbcUrl,username,password)
-				.locations(location)
-				.ignoreMissingMigrations(true)
-				.outOfOrder(true);
+		FluentConfiguration config = Flyway.configure().dataSource(jdbcUrl, username, password).locations(location).ignoreMissingMigrations(true).outOfOrder(true);
 		if (StringUtils.isNotEmpty(baselineVersion))
-			config = config
-					.baselineVersion(baselineVersion)
-					.baselineOnMigrate(true);
+			config = config.baselineVersion(baselineVersion).baselineOnMigrate(true);
 		System.out.println("Migration starting...");
 		config.load().migrate();
 		System.out.println("Migration finished");
@@ -121,12 +111,14 @@ public class DBMigrate
 
 	private static String parseLocation(String jdbcUrl, boolean isStrict) throws ParseException
 	{
-		return Location.getLocation(jdbcUrl,isStrict).orElseThrow(() -> new ParseException("No location found for jdbcUrl " + jdbcUrl));
+		return Location.getLocation(jdbcUrl, isStrict).orElseThrow(() -> new ParseException("No location found for jdbcUrl " + jdbcUrl));
 	}
 
 	private static String parseBaselineVersion(String ebmsVersion) throws ParseException
 	{
-		return StringUtils.isNotEmpty(ebmsVersion) ? BaselineVersion.getBaselineVersion(ebmsVersion).orElseThrow(() -> new ParseException("ebmsVersion " + ebmsVersion + " not found!")) : null;
+		return StringUtils.isNotEmpty(ebmsVersion)
+				? BaselineVersion.getBaselineVersion(ebmsVersion).orElseThrow(() -> new ParseException("ebmsVersion " + ebmsVersion + " not found!"))
+				: null;
 	}
 
 }

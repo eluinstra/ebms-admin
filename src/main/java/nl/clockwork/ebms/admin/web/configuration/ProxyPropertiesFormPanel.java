@@ -15,14 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.PasswordTextField;
-import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.util.io.IClusterable;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -32,6 +24,14 @@ import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.Supplier;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.PasswordTextField;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.util.io.IClusterable;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProxyPropertiesFormPanel extends Panel
@@ -42,9 +42,9 @@ public class ProxyPropertiesFormPanel extends Panel
 	@Builder
 	public ProxyPropertiesFormPanel(String id, final IModel<ProxyPropertiesFormData> model, Supplier<Boolean> isVisible)
 	{
-		super(id,model);
+		super(id, model);
 		this.isVisible = isVisible == null ? () -> super.isVisible() : isVisible;
-		add(new ProxyPropertiesForm("form",model));
+		add(new ProxyPropertiesForm("form", model));
 	}
 
 	@Override
@@ -59,9 +59,9 @@ public class ProxyPropertiesFormPanel extends Panel
 
 		public ProxyPropertiesForm(String id, final IModel<ProxyPropertiesFormData> model)
 		{
-			super(id,new CompoundPropertyModel<>(model));
-			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",new TextField<String>("host").setLabel(new ResourceModel("lbl.host")).setRequired(true)));
-			add(new BootstrapFormComponentFeedbackBorder("portFeedback",new TextField<Integer>("port").setLabel(new ResourceModel("lbl.port")).setRequired(true)));
+			super(id, new CompoundPropertyModel<>(model));
+			add(new BootstrapFormComponentFeedbackBorder("hostFeedback", new TextField<String>("host").setLabel(new ResourceModel("lbl.host")).setRequired(true)));
+			add(new BootstrapFormComponentFeedbackBorder("portFeedback", new TextField<Integer>("port").setLabel(new ResourceModel("lbl.port")).setRequired(true)));
 			add(new TextField<String>("nonProxyHosts").setLabel(new ResourceModel("lbl.nonProxyHosts")));
 			add(new TextField<String>("username").setLabel(new ResourceModel("lbl.username")));
 			add(new PasswordTextField("password").setResetPassword(false).setLabel(new ResourceModel("lbl.password")).setRequired(false));
