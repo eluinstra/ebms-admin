@@ -15,6 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web;
 
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -24,7 +25,7 @@ import lombok.experimental.FieldDefaults;
 public enum JQueryLocale
 {
 	EN("en");
-	
+
 	String s;
 
 	@Override

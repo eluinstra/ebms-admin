@@ -15,11 +15,11 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import org.apache.wicket.model.IModel;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.apache.wicket.model.IModel;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor(staticName = "of")

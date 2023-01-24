@@ -15,12 +15,11 @@
  */
 package nl.clockwork.ebms.querydsl;
 
+
+import com.querydsl.sql.types.AbstractType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import com.querydsl.sql.types.AbstractType;
-
 import lombok.val;
 import nl.clockwork.ebms.EbMSMessageStatus;
 

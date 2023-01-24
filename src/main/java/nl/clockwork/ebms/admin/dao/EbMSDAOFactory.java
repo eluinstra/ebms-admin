@@ -15,17 +15,15 @@
  */
 package nl.clockwork.ebms.admin.dao;
 
-import javax.sql.DataSource;
-
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.querydsl.sql.SQLQueryFactory;
-
+import javax.sql.DataSource;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.dao.AbstractDAOFactory.DefaultDAOFactory;
 import nl.clockwork.ebms.transaction.TransactionManagerConfig.TransactionManagerType;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EbMSDAOFactory extends DefaultDAOFactory<EbMSDAO>

@@ -15,22 +15,11 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-import org.apache.commons.lang3.SerializationUtils;
-import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.markup.repeater.data.DataView;
-import org.apache.wicket.markup.repeater.data.IDataProvider;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import lombok.AccessLevel;
 import lombok.NonNull;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
+import lombok.val;
 import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
@@ -45,6 +34,17 @@ import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.admin.web.WicketApplication;
 import nl.clockwork.ebms.admin.web.message.MessageFilterPanel.MessageFilterFormData;
+import org.apache.commons.lang3.SerializationUtils;
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.markup.repeater.data.IDataProvider;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TrafficPage extends BasePage
@@ -86,10 +86,7 @@ public class TrafficPage extends BasePage
 
 		private Link<Void> createViewLink(String id, final IModel<EbMSMessage> model)
 		{
-			val result = Link.<Void>builder()
-					.id(id)
-					.onClick(() -> setResponsePage(new MessagePageX(model,TrafficPage.this)))
-					.build();
+			val result = Link.<Void>builder().id(id).onClick(() -> setResponsePage(new MessagePageX(model,TrafficPage.this))).build();
 			result.add(new Label("messageId",model.getObject().getMessageId()));
 			return result;
 		}
@@ -110,7 +107,7 @@ public class TrafficPage extends BasePage
 	}
 
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="ebMSAdminDAO")
+	@SpringBean(name = "ebMSAdminDAO")
 	EbMSDAO ebMSDAO;
 	@NonNull
 	final Integer maxItemsPerPage;

@@ -15,22 +15,21 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
+
 import java.io.IOException;
 import java.io.StringWriter;
-
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormData;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.resource.IResourceStream;
-
-import lombok.AccessLevel;
-import lombok.NonNull;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
-import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormData;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -72,8 +71,7 @@ public class DownloadEbMSAdminPropertiesButton extends Button
 
 	private ResourceStreamRequestHandler createRequestHandler(IResourceStream resourceStream)
 	{
-		return new ResourceStreamRequestHandler(resourceStream)
-				.setFileName(propertiesType.getPropertiesFile())
+		return new ResourceStreamRequestHandler(resourceStream).setFileName(propertiesType.getPropertiesFile())
 				.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 }

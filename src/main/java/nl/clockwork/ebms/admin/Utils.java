@@ -15,6 +15,7 @@
  */
 package nl.clockwork.ebms.admin;
 
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -24,8 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeSet;
-import java.util.function.BiFunction;
-
 import lombok.val;
 
 public class Utils
@@ -42,20 +41,20 @@ public class Utils
 			return "unknown";
 		}
 	}
-	
+
 	public static Properties readProperties(InputStream inputStream) throws IOException
 	{
 		val properties = new Properties();
 		properties.load(inputStream);
 		return properties;
 	}
-	
+
 	public static void writeProperties(Properties properties, Writer writer)
 	{
-		properties.replaceAll((k,p) -> hidePassword((String)k,(String)p));
+		properties.replaceAll((k, p) -> hidePassword((String)k,(String)p));
 		properties.list(new PrintWriter(writer,true));
 	}
-	
+
 	public static void writeProperties(Map<String,String> properties, Writer writer) throws IOException
 	{
 		val keySet = new TreeSet<String>(properties.keySet());

@@ -15,17 +15,16 @@
  */
 package nl.clockwork.ebms.admin.web;
 
+
 import java.util.Arrays;
 import java.util.Optional;
-
-import org.apache.wicket.feedback.FeedbackMessage;
-import org.apache.wicket.feedback.IFeedbackMessageFilter;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
+import org.apache.wicket.feedback.FeedbackMessage;
+import org.apache.wicket.feedback.IFeedbackMessageFilter;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 
 public class BootstrapFeedbackPanel extends FeedbackPanel
 {
@@ -34,8 +33,14 @@ public class BootstrapFeedbackPanel extends FeedbackPanel
 	@Getter
 	private enum ErrorLevel
 	{
-		UNDEFINED(0,"text-primary"), DEBUG(100,"text-muted"), INFO(200,"text-info"), SUCCESS(250,"text-success"), WARNING(300,"text-warning"), ERROR(400,"text-danger"), FATAL(500,"text-danger");
-		
+		UNDEFINED(0,"text-primary"),
+		DEBUG(100,"text-muted"),
+		INFO(200,"text-info"),
+		SUCCESS(250,"text-success"),
+		WARNING(300,"text-warning"),
+		ERROR(400,"text-danger"),
+		FATAL(500,"text-danger");
+
 		int errorCode;
 		String cssClass;
 
@@ -62,5 +67,5 @@ public class BootstrapFeedbackPanel extends FeedbackPanel
 	{
 		return ErrorLevel.getErrorLevel(message.getLevel()).map(l -> l.cssClass).orElse(ErrorLevel.UNDEFINED.cssClass);
 	}
-	
+
 }

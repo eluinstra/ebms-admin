@@ -15,14 +15,14 @@
  */
 package nl.clockwork.ebms.admin.web.menu;
 
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.IModel;
 
 import lombok.val;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.Utils;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
 
 public class MenuLinkItemPanel extends Panel
 {
@@ -34,6 +34,6 @@ public class MenuLinkItemPanel extends Panel
 		val link = new BookmarkablePageLink<BasePage>("link",model.getObject().getPageClass());
 		link.add(new Label("name",Utils.getResourceString(this.getClass(),model.getObject().getName())));
 		add(link);
-		//add(AttributeModifier.replace("class",Model.of("active"));
+		// add(AttributeModifier.replace("class",Model.of("active"));
 	}
 }

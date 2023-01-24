@@ -15,12 +15,12 @@
  */
 package nl.clockwork.ebms.admin.web.service.cpa;
 
-import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.form.TextArea;
-import org.apache.wicket.model.IModel;
 
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.PageLink;
+import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.model.IModel;
 
 public class CPAPage extends BasePage
 {
@@ -31,7 +31,7 @@ public class CPAPage extends BasePage
 		add(new TextArea<String>("cpa",cpa).setEnabled(false));
 		add(new PageLink("back",responsePage));
 	}
-	
+
 	@Override
 	public String getPageTitle()
 	{

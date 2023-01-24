@@ -15,34 +15,23 @@
  */
 package nl.clockwork.ebms.admin;
 
-import nl.clockwork.ebms.kafka.KafkaConfig;
-import nl.clockwork.ebms.querydsl.model.QueryDSLConfig;
-
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.PropertySource;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.dao.DAOConfig;
 import nl.clockwork.ebms.datasource.DataSourceConfig;
 import nl.clockwork.ebms.jms.JMSConfig;
+import nl.clockwork.ebms.kafka.KafkaConfig;
+import nl.clockwork.ebms.querydsl.model.QueryDSLConfig;
 import nl.clockwork.ebms.transaction.TransactionManagerConfig;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@Import({
-		DAOConfig.class,
-		DataSourceConfig.class,
-		JMSConfig.class,
-		QueryDSLConfig.class,
-		KafkaConfig.class,
-		TransactionManagerConfig.class})
-@PropertySource(value = {
-		"classpath:nl/clockwork/ebms/default.properties",
-		"classpath:nl/clockwork/ebms/admin/default.properties",
-		"file:${ebms.configDir}ebms-admin.embedded.advanced.properties",
-		"file:${ebms.configDir}ebms-admin.embedded.properties"},
-		ignoreResourceNotFound = true)
+@Import({DAOConfig.class,DataSourceConfig.class,JMSConfig.class,QueryDSLConfig.class,KafkaConfig.class,TransactionManagerConfig.class})
+@PropertySource(value = {"classpath:nl/clockwork/ebms/default.properties","classpath:nl/clockwork/ebms/admin/default.properties",
+		"file:${ebms.configDir}ebms-admin.embedded.advanced.properties","file:${ebms.configDir}ebms-admin.embedded.properties"}, ignoreResourceNotFound = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DBConfig
 {

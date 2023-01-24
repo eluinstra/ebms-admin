@@ -15,33 +15,17 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
+
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.bind.JAXBException;
-
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement;
-
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.Action;
@@ -60,15 +44,29 @@ import nl.clockwork.ebms.service.EbMSMessageService;
 import nl.clockwork.ebms.service.model.DataSource;
 import nl.clockwork.ebms.service.model.MessageRequest;
 import nl.clockwork.ebms.service.model.MessageRequestProperties;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SendMessagePage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="cpaService")
+	@SpringBean(name = "cpaService")
 	private CPAService cpaService;
-	@SpringBean(name="ebMSMessageService")
+	@SpringBean(name = "ebMSMessageService")
 	private EbMSMessageService ebMSMessageService;
 
 	public SendMessagePage()
@@ -76,7 +74,7 @@ public class SendMessagePage extends BasePage
 		add(new BootstrapFeedbackPanel("feedback").setOutputMarkupId(true));
 		add(new MessageForm("form"));
 	}
-	
+
 	@Override
 	public String getPageTitle()
 	{
@@ -266,42 +264,50 @@ public class SendMessagePage extends BasePage
 			getFromRoles().clear();
 			setFromPartyId(null);
 		}
+
 		public void resetFromPartyIds(List<String> partyIds)
 		{
 			resetFromPartyIds();
 			getFromPartyIds().addAll(partyIds);
 		}
+
 		public void resetFromRoles()
 		{
 			getFromRoles().clear();
 			setFromRole(null);
 		}
+
 		public void resetFromRoles(List<String> roles)
 		{
 			resetFromRoles();
 			getFromRoles().addAll(roles);
 			setFromRole(getFromRoles().size() == 1 ? getFromRoles().get(0) : null);
 		}
+
 		public void resetServices()
 		{
 			getServices().clear();
 			setService(null);
 		}
+
 		public void resetServices(List<String> serviceNames)
 		{
 			resetServices();
 			getServices().addAll(serviceNames);
 		}
+
 		public void resetActions()
 		{
 			getActions().clear();
 			setAction(null);
 		}
+
 		public void resetActions(List<String> actionNames)
 		{
 			resetActions();
 			getActions().addAll(actionNames);
 		}
+
 		public void resetDataSources()
 		{
 			getDataSources().clear();
@@ -332,12 +338,7 @@ public class SendMessagePage extends BasePage
 				dataSourcesForm.getModelObject().remove(item.getModelObject());
 				t.add(dataSourcesForm);
 			};
-			item.add(AjaxButton.builder()
-					.id("remove")
-					.model(new ResourceModel("cmd.remove"))
-					.form(dataSourcesForm)
-					.onSubmit(onSubmit)
-					.build());
+			item.add(AjaxButton.builder().id("remove").model(new ResourceModel("cmd.remove")).form(dataSourcesForm).onSubmit(onSubmit).build());
 		}
 	}
 
@@ -353,10 +354,7 @@ public class SendMessagePage extends BasePage
 			add(dataSources_);
 			val dataSourceModalWindow = new DataSourceModalWindow("dataSourceModelWindow",model.getObject(),this);
 			add(dataSourceModalWindow);
-			val add = AjaxButton.builder()
-					.id("add")
-					.onSubmit(t -> dataSourceModalWindow.show(t))
-					.build();
+			val add = AjaxButton.builder().id("add").onSubmit(t -> dataSourceModalWindow.show(t)).build();
 			add(add);
 		}
 	}

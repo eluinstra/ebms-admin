@@ -15,18 +15,16 @@
  */
 package nl.clockwork.ebms.admin.dao;
 
-import javax.sql.DataSource;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-
+import javax.sql.DataSource;
 import lombok.AccessLevel;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
+import lombok.val;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -54,7 +52,7 @@ public class DataSourceConfig
 	int minPoolSize;
 	@Value("${ebms.pool.maxPoolSize}")
 	int maxPoolSize;
-	
+
 	@Bean(destroyMethod = "close")
 	public DataSource dataSource()
 	{

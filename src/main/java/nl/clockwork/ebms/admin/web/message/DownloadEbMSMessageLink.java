@@ -15,23 +15,22 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
+
 import java.io.IOException;
 import java.util.zip.ZipOutputStream;
-
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import nl.clockwork.ebms.admin.dao.EbMSDAO;
+import nl.clockwork.ebms.admin.model.EbMSMessage;
 import org.apache.cxf.io.CachedOutputStream;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.resource.IResourceStream;
-
-import lombok.AccessLevel;
-import lombok.NonNull;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
-import nl.clockwork.ebms.admin.dao.EbMSDAO;
-import nl.clockwork.ebms.admin.model.EbMSMessage;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -68,8 +67,7 @@ public class DownloadEbMSMessageLink extends Link<EbMSMessage>
 	private ResourceStreamRequestHandler createRequestHandler(IResourceStream resourceStream)
 	{
 		val o = getModelObject();
-		return new ResourceStreamRequestHandler(resourceStream)
-				.setFileName("message." + o.getMessageId() + "." + o.getMessageNr() + ".zip")
+		return new ResourceStreamRequestHandler(resourceStream).setFileName("message." + o.getMessageId() + "." + o.getMessageNr() + ".zip")
 				.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 

@@ -15,6 +15,8 @@
  */
 package nl.clockwork.ebms.admin;
 
+
+import com.microsoft.applicationinsights.web.internal.ApplicationInsightsServletContextListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -22,9 +24,14 @@ import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.util.EnumSet;
 import java.util.Properties;
-
 import javax.servlet.DispatcherType;
-
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
+import nl.clockwork.ebms.admin.web.configuration.JdbcURL;
+import nl.clockwork.ebms.security.KeyStoreType;
+import nl.clockwork.ebms.server.servlet.EbMSServlet;
+import nl.clockwork.ebms.util.LoggingUtils;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
@@ -42,16 +49,6 @@ import org.hsqldb.server.ServerAcl.AclFormatException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-
-import com.microsoft.applicationinsights.web.internal.ApplicationInsightsServletContextListener;
-
-import lombok.AccessLevel;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.admin.web.configuration.JdbcURL;
-import nl.clockwork.ebms.security.KeyStoreType;
-import nl.clockwork.ebms.server.servlet.EbMSServlet;
-import nl.clockwork.ebms.util.LoggingUtils;
 
 @FieldDefaults(level = AccessLevel.PROTECTED)
 public class StartEmbedded extends Start
@@ -105,7 +102,8 @@ public class StartEmbedded extends Start
 		app.startService(args);
 	}
 
-	private void startService(String[] args) throws ParseException, IOException, AclFormatException, URISyntaxException, Exception, MalformedURLException, NoSuchAlgorithmException, InterruptedException
+	private void startService(String[] args) throws ParseException, IOException, AclFormatException, URISyntaxException, Exception, MalformedURLException,
+			NoSuchAlgorithmException, InterruptedException
 	{
 		val options = createOptions();
 		val cmd = new DefaultParser().parse(options,args);
@@ -177,7 +175,7 @@ public class StartEmbedded extends Start
 		result.addOption(DISABLE_EBMS_CLIENT_OPTION,false,"disable ebms client");
 		return result;
 	}
-	
+
 	private Properties getProperties() throws IOException
 	{
 		return EmbeddedAppConfig.PROPERTY_SOURCE.getProperties();
@@ -213,10 +211,11 @@ public class StartEmbedded extends Start
 	public org.hsqldb.server.Server startHSQLDBServer(CommandLine cmd, JdbcURL jdbcURL) throws IOException, AclFormatException, URISyntaxException, ParseException
 	{
 		val server = new org.hsqldb.server.Server();
-		server.setDatabasePath(0, String.format("file:%s/%s", cmd.getOptionValue("hsqldbDir", "hsqldb"), jdbcURL.getDatabase()));
-		server.setDatabaseName(0,  jdbcURL.getDatabase());
-		if (jdbcURL.getPort() != null) {
-			server.setPort(jdbcURL.getPort());			
+		server.setDatabasePath(0,String.format("file:%s/%s",cmd.getOptionValue("hsqldbDir","hsqldb"),jdbcURL.getDatabase()));
+		server.setDatabaseName(0,jdbcURL.getDatabase());
+		if (jdbcURL.getPort() != null)
+		{
+			server.setPort(jdbcURL.getPort());
 		}
 		server.setSilent(true);
 		server.setNoSystemExit(true);
@@ -226,10 +225,9 @@ public class StartEmbedded extends Start
 
 	private void initEbMSServer(Properties properties, Server server) throws GeneralSecurityException, IOException
 	{
-		
-		val connector = TRUE.equals(properties.getProperty(EBMS_SSL_PROPERTY)) ? 
-				createEbMSHttpsConnector(properties,createEbMSSslContextFactory(properties)) : 
-					createEbMSHttpConnector(properties);
+
+		val connector = TRUE.equals(properties.getProperty(EBMS_SSL_PROPERTY)) ? createEbMSHttpsConnector(properties,createEbMSSslContextFactory(properties))
+				: createEbMSHttpConnector(properties);
 		server.addConnector(connector);
 		val connectionLimit = properties.getProperty(EBMS_CONNECTION_LIMIT_PROPERTY);
 		if (StringUtils.isNotEmpty(connectionLimit))
@@ -242,7 +240,8 @@ public class StartEmbedded extends Start
 		httpConfig.setSendServerVersion(false);
 		val result = new ServerConnector(server,new HttpConnectionFactory(httpConfig));
 		result.setHost(StringUtils.isEmpty(properties.getProperty(EBMS_HOST_PROPERTY)) ? DEFAULT_HOST : properties.getProperty(EBMS_HOST_PROPERTY));
-		result.setPort(Integer.parseInt(StringUtils.isEmpty(properties.getProperty(EBMS_PORT_PROPERTY))  ? DEFAULT_EBMS_PORT : properties.getProperty(EBMS_PORT_PROPERTY)));
+		result.setPort(
+				Integer.parseInt(StringUtils.isEmpty(properties.getProperty(EBMS_PORT_PROPERTY)) ? DEFAULT_EBMS_PORT : properties.getProperty(EBMS_PORT_PROPERTY)));
 		result.setName(EBMS_CONNECTOR_NAME);
 		println("EbMS Service configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + properties.getProperty(EBMS_PATH_PROPERTY));
 		return result;
@@ -252,14 +251,12 @@ public class StartEmbedded extends Start
 	{
 		val result = new SslContextFactory.Server();
 		EbMSKeyStore ebMSKeyStore = "AZURE".equals(properties.getProperty(KEYSTORES_TYPE_PROPERTY,""))
-				? EbMSKeyStore.of(
-						properties.getProperty(AZURE_VAULTURI_PROPERTY),
+				? EbMSKeyStore.of(properties.getProperty(AZURE_VAULTURI_PROPERTY),
 						properties.getProperty(AZURE_VAULTTENNANT_ID_PROPERTY),
 						properties.getProperty(AZURE_VAULTCLIENT_ID_PROPERTY),
 						properties.getProperty(AZURE_VAULTCLIENT_SECRET_PROPERTY),
 						properties.getProperty(KEYSTORE_DEFAULT_ALIAS_PROPERTY))
-				: EbMSKeyStore.of(
-						KeyStoreType.valueOf(properties.getProperty(KEYSTORE_TYPE_PROPERTY)),
+				: EbMSKeyStore.of(KeyStoreType.valueOf(properties.getProperty(KEYSTORE_TYPE_PROPERTY)),
 						properties.getProperty(KEYSTORE_PATH_PROPERTY),
 						properties.getProperty(KEYSTORE_PASSWORD_PROPERTY),
 						properties.getProperty(KEYSTORE_DEFAULT_ALIAS_PROPERTY));
@@ -270,7 +267,8 @@ public class StartEmbedded extends Start
 		return result;
 	}
 
-	private void addEbMSKeyStore(Properties properties, SslContextFactory.Server sslContextFactory, EbMSKeyStore ebMSKeyStore) throws GeneralSecurityException, IOException
+	private void addEbMSKeyStore(Properties properties, SslContextFactory.Server sslContextFactory, EbMSKeyStore ebMSKeyStore)
+			throws GeneralSecurityException, IOException
 	{
 		if (!StringUtils.isEmpty(properties.getProperty(HTTPS_PROTOCOLS_PROPERTY)))
 			sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(properties.getProperty(HTTPS_PROTOCOLS_PROPERTY),',')));
@@ -305,30 +303,36 @@ public class StartEmbedded extends Start
 		httpConfig.setSendServerVersion(false);
 		val result = new ServerConnector(server,sslContextFactory,new HttpConnectionFactory(httpConfig));
 		result.setHost(StringUtils.isEmpty(properties.getProperty(EBMS_HOST_PROPERTY)) ? DEFAULT_HOST : properties.getProperty(EBMS_HOST_PROPERTY));
-		result.setPort(Integer.parseInt(StringUtils.isEmpty(properties.getProperty(EBMS_PORT_PROPERTY))  ? DEFAULT_EBMS_PORT : properties.getProperty(EBMS_PORT_PROPERTY)));
+		result.setPort(
+				Integer.parseInt(StringUtils.isEmpty(properties.getProperty(EBMS_PORT_PROPERTY)) ? DEFAULT_EBMS_PORT : properties.getProperty(EBMS_PORT_PROPERTY)));
 		result.setName(EBMS_CONNECTOR_NAME);
 		println("EbMS Service configured on https://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + properties.getProperty(EBMS_PATH_PROPERTY));
 		return result;
 	}
 
-	protected ServletContextHandler createEbMSContextHandler(Properties properties, ContextLoaderListener contextLoaderListener) throws IOException, NoSuchAlgorithmException
+	protected ServletContextHandler createEbMSContextHandler(Properties properties, ContextLoaderListener contextLoaderListener)
+			throws IOException, NoSuchAlgorithmException
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		result.setVirtualHosts(new String[] {"@" + EBMS_CONNECTOR_NAME});
+		result.setVirtualHosts(new String[]{"@" + EBMS_CONNECTOR_NAME});
 		result.setContextPath("/");
 		if (TRUE.equals(properties.getProperty(AZURE_AZURE_INSIGHTS_PROPERTY)))
 		{
 			result.addFilter(createWebRequestTrackingFilterHolder(),"/*",EnumSet.allOf(DispatcherType.class));
 			result.addEventListener(new ApplicationInsightsServletContextListener());
 		}
-		if (LoggingUtils.Status.ENABLED.name().equals(properties.getProperty(LOGGING_MDC_PROPERTY)) && LoggingUtils.Status.ENABLED.name().equals(properties.getProperty(LOGGING_MDC_AUDIT_PROPERTY)))
+		if (LoggingUtils.Status.ENABLED.name().equals(properties.getProperty(LOGGING_MDC_PROPERTY))
+				&& LoggingUtils.Status.ENABLED.name().equals(properties.getProperty(LOGGING_MDC_AUDIT_PROPERTY)))
 			result.addFilter(createRemoteAddressMDCFilterHolder(),"/*",EnumSet.allOf(DispatcherType.class));
 		if (!StringUtils.isEmpty(properties.getProperty(EBMS_QUERIES_PER_SECOND_PROPERTY)))
 			result.addFilter(createRateLimiterFilterHolder(properties.getProperty(EBMS_QUERIES_PER_SECOND_PROPERTY)),"/*",EnumSet.allOf(DispatcherType.class));
 		if (!StringUtils.isEmpty(properties.getProperty(EBMS_USER_QUERIES_PER_SECOND_PROPERTY)))
-			result.addFilter(createUserRateLimiterFilterHolder(properties.getProperty(EBMS_USER_QUERIES_PER_SECOND_PROPERTY)),"/*",EnumSet.allOf(DispatcherType.class));
+			result
+					.addFilter(createUserRateLimiterFilterHolder(properties.getProperty(EBMS_USER_QUERIES_PER_SECOND_PROPERTY)),"/*",EnumSet.allOf(DispatcherType.class));
 		if (TRUE.equals(properties.getProperty(HTTPS_CLIENT_CERTIFICATE_AUTHENTICATION_PROPERTY).toLowerCase()))
-			result.addFilter(createClientCertificateManagerFilterHolder(properties.getProperty(HTTPS_CLIENT_CERTIFICATE_HEADER_PROPERTY)),"/*",EnumSet.allOf(DispatcherType.class));
+			result.addFilter(createClientCertificateManagerFilterHolder(properties.getProperty(HTTPS_CLIENT_CERTIFICATE_HEADER_PROPERTY)),
+					"/*",
+					EnumSet.allOf(DispatcherType.class));
 		result.addServlet(EbMSServlet.class,properties.getProperty(EBMS_PATH_PROPERTY));
 		result.addEventListener(contextLoaderListener);
 		return result;

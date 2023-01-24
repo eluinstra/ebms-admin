@@ -15,20 +15,20 @@
  */
 package nl.clockwork.ebms.admin;
 
-import org.apache.activemq.xbean.BrokerFactoryBean;
-import org.springframework.core.io.ClassPathResource;
 
 import lombok.val;
+import org.apache.activemq.xbean.BrokerFactoryBean;
+import org.springframework.core.io.ClassPathResource;
 
 public class JmsBroker
 {
 	public static void main(String[] args) throws Exception
 	{
-	 	//System.setProperty("activemq.base",System.getProperty("user.dir"));
+		// System.setProperty("activemq.base",System.getProperty("user.dir"));
 		val result = new BrokerFactoryBean(new ClassPathResource("nl/clockwork/ebms/activemq.xml"));
 		result.setStart(true);
 		result.afterPropertiesSet();
-	  System.out.println("Broker started");
-	  Thread.currentThread().join();
+		System.out.println("Broker started");
+		Thread.currentThread().join();
 	}
 }

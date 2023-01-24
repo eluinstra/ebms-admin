@@ -15,9 +15,16 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import nl.clockwork.ebms.admin.dao.EbMSDAO;
+import nl.clockwork.ebms.admin.web.message.MessageFilterPanel.MessageFilterFormData;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.cxf.io.CachedOutputStream;
@@ -26,14 +33,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.resource.IResourceStream;
-
-import lombok.AccessLevel;
-import lombok.NonNull;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
-import nl.clockwork.ebms.admin.dao.EbMSDAO;
-import nl.clockwork.ebms.admin.web.message.MessageFilterPanel.MessageFilterFormData;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -67,9 +66,7 @@ public class DownloadEbMSMessagesCSVLink extends Link<MessageFilterFormData>
 
 	private ResourceStreamRequestHandler createRequestHandler(IResourceStream resourceStream)
 	{
-		return new ResourceStreamRequestHandler(resourceStream)
-				.setFileName("messages.csv")
-				.setContentDisposition(ContentDisposition.ATTACHMENT);
+		return new ResourceStreamRequestHandler(resourceStream).setFileName("messages.csv").setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 
 }

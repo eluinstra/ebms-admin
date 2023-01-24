@@ -15,6 +15,15 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
+
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
+import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
+import nl.clockwork.ebms.admin.web.configuration.JavaKeyStorePropertiesFormPanel.JavaKeyStorePropertiesFormData;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -23,15 +32,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.util.io.IClusterable;
-
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
-import nl.clockwork.ebms.admin.web.configuration.JavaKeyStorePropertiesFormPanel.JavaKeyStorePropertiesFormData;
 
 public class EncryptionPropertiesFormPanel extends Panel
 {
@@ -58,10 +58,7 @@ public class EncryptionPropertiesFormPanel extends Panel
 		{
 			val result = new CheckBox(id);
 			result.setLabel(new ResourceModel("lbl.encryption"));
-			result.add(AjaxFormComponentUpdatingBehavior.builder()
-					.event("change")
-					.onUpdate(t -> t.add(this))
-					.build());
+			result.add(AjaxFormComponentUpdatingBehavior.builder().event("change").onUpdate(t -> t.add(this)).build());
 			return result;
 		}
 

@@ -15,8 +15,8 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-import java.net.URISyntaxException;
 
+import java.net.URISyntaxException;
 import org.apache.wicket.core.util.resource.PackageResourceStream;
 
 public class XMLFileResourceStream extends PackageResourceStream
@@ -27,7 +27,7 @@ public class XMLFileResourceStream extends PackageResourceStream
 	{
 		super(XMLFileResourceStream.class,location);
 	}
-	
+
 	@Override
 	public String getContentType()
 	{

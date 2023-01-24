@@ -15,9 +15,9 @@
  */
 package nl.clockwork.ebms.admin.dao;
 
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.querydsl.sql.SQLQueryFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 public class MSSQLEbMSDAO extends nl.clockwork.ebms.admin.dao.MySQLEbMSDAO
 {

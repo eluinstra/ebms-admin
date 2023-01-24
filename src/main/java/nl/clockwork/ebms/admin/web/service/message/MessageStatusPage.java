@@ -15,20 +15,13 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.io.IClusterable;
 
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
@@ -38,17 +31,24 @@ import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.TextField;
 import nl.clockwork.ebms.cpa.CPAService;
 import nl.clockwork.ebms.service.EbMSMessageService;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.io.IClusterable;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MessageStatusPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="ebMSAdminDAO")
+	@SpringBean(name = "ebMSAdminDAO")
 	EbMSDAO ebMSDAO;
-	@SpringBean(name="cpaService")
+	@SpringBean(name = "cpaService")
 	CPAService cpaService;
-	@SpringBean(name="ebMSMessageService")
+	@SpringBean(name = "ebMSMessageService")
 	EbMSMessageService ebMSMessageService;
 
 	public MessageStatusPage()
@@ -56,7 +56,7 @@ public class MessageStatusPage extends BasePage
 		add(new BootstrapFeedbackPanel("feedback").setOutputMarkupId(true));
 		add(new MessageStatusForm("form"));
 	}
-	
+
 	@Override
 	public String getPageTitle()
 	{
@@ -111,5 +111,5 @@ public class MessageStatusPage extends BasePage
 	{
 		private static final long serialVersionUID = 1L;
 		String messageId;
-	}		
+	}
 }

@@ -18,7 +18,7 @@ package nl.clockwork.ebms.admin.web.menu;
 public class MenuDivider extends MenuItem
 {
 	private static final long serialVersionUID = 1L;
-	
+
 	public MenuDivider(MenuItem parent, String id)
 	{
 		super(parent,id,"");

@@ -15,17 +15,15 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.Properties;
-
-import org.apache.commons.lang3.StringUtils;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
+import lombok.val;
 import nl.clockwork.ebms.admin.web.configuration.ConsolePropertiesFormPanel.ConsolePropertiesFormData;
 import nl.clockwork.ebms.admin.web.configuration.CorePropertiesFormPanel.CorePropertiesFormData;
 import nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.EbMSAdminPropertiesFormData;
@@ -39,6 +37,7 @@ import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPrope
 import nl.clockwork.ebms.delivery.client.EbMSHttpClientFactory.EbMSHttpClientType;
 import nl.clockwork.ebms.event.MessageEventListenerConfig.EventListenerType;
 import nl.clockwork.ebms.security.KeyStoreType;
+import org.apache.commons.lang3.StringUtils;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
@@ -68,7 +67,7 @@ public class EbMSAdminPropertiesReader
 		}
 		return result;
 	}
-	
+
 	private void read(Properties properties, ConsolePropertiesFormData consoleProperties) throws MalformedURLException
 	{
 		consoleProperties.setMaxItemsPerPage(Integer.parseInt(properties.getProperty("maxItemsPerPage")));
@@ -82,7 +81,8 @@ public class EbMSAdminPropertiesReader
 	private void read(Properties properties, CorePropertiesFormData coreProperties) throws MalformedURLException
 	{
 		coreProperties.setHttpClient(properties.getProperty("http.client") != null ? EbMSHttpClientType.valueOf(properties.getProperty("http.client")) : null);
-		coreProperties.setEventListener(properties.getProperty("eventListener.type") != null ? EventListenerType.valueOf(properties.getProperty("eventListener.type")) : null);
+		coreProperties.setEventListener(
+				properties.getProperty("eventListener.type") != null ? EventListenerType.valueOf(properties.getProperty("eventListener.type")) : null);
 		coreProperties.setJmsBrokerUrl(properties.getProperty("jms.brokerURL"));
 		coreProperties.setJmsVirtualTopics(Boolean.parseBoolean(properties.getProperty("jms.virtualTopics")));
 		coreProperties.setStartEmbeddedBroker(Boolean.parseBoolean(properties.getProperty("jms.broker.start")));
@@ -162,7 +162,7 @@ public class EbMSAdminPropertiesReader
 	private void read(Properties properties, JdbcPropertiesFormData jdbcProperties) throws MalformedURLException
 	{
 		jdbcProperties.setDriver(JdbcDriver.getJdbcDriver(properties.getProperty("ebms.jdbc.driverClassName")).orElse(null));
-		//jdbcProperties.setJdbcURL(properties.getProperty("ebms.jdbc.url"));
+		// jdbcProperties.setJdbcURL(properties.getProperty("ebms.jdbc.url"));
 		Utils.parseJdbcURL(properties.getProperty("ebms.jdbc.url"),jdbcProperties);
 		jdbcProperties.setUsername(properties.getProperty("ebms.jdbc.username"));
 		jdbcProperties.setPassword(properties.getProperty("ebms.jdbc.password"));

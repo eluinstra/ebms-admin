@@ -15,9 +15,9 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
+
 import java.util.Arrays;
 import java.util.Optional;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,7 +37,7 @@ public enum JdbcDriver
 	ORACLE("oracle.jdbc.OracleDriver","jdbc:oracle:thin:@//%s/%s"),
 	ORACLE_("oracle.jdbc.OracleDriver","jdbc:oracle:thin:@%s:%s"),
 	POSTGRESQL("org.postgresql.Driver","jdbc:postgresql://%s/%s");
-	
+
 	String driverClassName;
 	String urlExpr;
 
@@ -45,10 +45,12 @@ public enum JdbcDriver
 	{
 		return Arrays.stream(JdbcDriver.values()).filter(j -> j.driverClassName.equals(driverClassName)).findFirst();
 	}
+
 	public String createJdbcURL(String hostname, Integer port, String database)
 	{
 		return createJdbcURL(urlExpr,hostname,port,database);
 	}
+
 	public static String createJdbcURL(String urlExpr, String hostname, Integer port, String database)
 	{
 		return String.format(urlExpr,Utils.createURL(hostname,port),database);

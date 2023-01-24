@@ -15,11 +15,11 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import org.apache.wicket.util.convert.IConverter;
 
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.experimental.FieldDefaults;
+import org.apache.wicket.util.convert.IConverter;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class TextField<T> extends org.apache.wicket.markup.html.form.TextField<T>

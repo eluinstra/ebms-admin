@@ -15,6 +15,7 @@
  */
 package nl.clockwork.ebms.admin;
 
+
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.Key;
@@ -26,7 +27,6 @@ import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,7 +36,7 @@ import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.security.KeyStoreType;
 import nl.clockwork.ebms.security.KeyStoreUtils;
 
-@FieldDefaults(level=AccessLevel.PRIVATE, makeFinal=true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @ToString(onlyExplicitlyIncluded = true)
@@ -57,22 +57,27 @@ public class EbMSKeyStore
 		return of(type,path,password,null);
 	}
 
-	public static EbMSKeyStore of(@NonNull KeyStoreType type, @NonNull String path, @NonNull String password, String defaultAlias) throws GeneralSecurityException, IOException
+	public static EbMSKeyStore of(@NonNull KeyStoreType type, @NonNull String path, @NonNull String password, String defaultAlias)
+			throws GeneralSecurityException, IOException
 	{
 		if (!keyStores.containsKey(path))
 			keyStores.put(path,new EbMSKeyStore(path,KeyStoreUtils.loadKeyStore(type,path,password),password,defaultAlias));
 		return keyStores.get(path);
 	}
 
-	public static EbMSKeyStore of(@NonNull String keyvaultURI, @NonNull String tennantID, @NonNull String clientID, @NonNull String clientSecret) throws GeneralSecurityException, IOException
+	public static EbMSKeyStore of(@NonNull String keyvaultURI, @NonNull String tennantID, @NonNull String clientID, @NonNull String clientSecret)
+			throws GeneralSecurityException, IOException
 	{
 		return of(keyvaultURI,tennantID,clientID,clientSecret,null);
 	}
 
-	public static EbMSKeyStore of(@NonNull String keyvaultURI, @NonNull String tennantID, @NonNull String clientID, @NonNull String clientSecret, String defaultAlias) throws GeneralSecurityException, IOException
+	public static EbMSKeyStore
+			of(@NonNull String keyvaultURI, @NonNull String tennantID, @NonNull String clientID, @NonNull String clientSecret, String defaultAlias)
+					throws GeneralSecurityException, IOException
 	{
 		if (!keyStores.containsKey(keyvaultURI))
-			keyStores.put(keyvaultURI,new EbMSKeyStore("azure",nl.clockwork.ebms.security.azure.KeyStoreUtils.loadKeyStore(keyvaultURI, tennantID, clientID, clientSecret),"",defaultAlias));
+			keyStores.put(keyvaultURI,
+					new EbMSKeyStore("azure",nl.clockwork.ebms.security.azure.KeyStoreUtils.loadKeyStore(keyvaultURI,tennantID,clientID,clientSecret),"",defaultAlias));
 		return keyStores.get(keyvaultURI);
 	}
 

@@ -15,23 +15,13 @@
  */
 package nl.clockwork.ebms.admin.web.service.cpa;
 
+
 import java.security.cert.X509Certificate;
-
-import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.markup.repeater.data.DataView;
-import org.apache.wicket.markup.repeater.data.IDataProvider;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-
 import lombok.AccessLevel;
 import lombok.NonNull;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
@@ -41,6 +31,15 @@ import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.cpa.certificate.CertificateMapping;
 import nl.clockwork.ebms.cpa.certificate.CertificateMappingService;
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.markup.repeater.data.IDataProvider;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -113,7 +112,7 @@ public class CertificateMappingsPage extends BasePage
 	}
 
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="certificateMappingService")
+	@SpringBean(name = "certificateMappingService")
 	CertificateMappingService certificateMappingService;
 
 	public CertificateMappingsPage()
@@ -135,7 +134,7 @@ public class CertificateMappingsPage extends BasePage
 			add(new PageLink("new",new CertificateMappingPage()));
 		}
 	}
-	
+
 	@Override
 	public String getPageTitle()
 	{

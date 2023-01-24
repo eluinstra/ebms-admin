@@ -15,28 +15,18 @@
  */
 package nl.clockwork.ebms.admin.web.service.cpa;
 
+
 import java.io.IOException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.List;
-
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.upload.FileUpload;
-import org.apache.wicket.markup.html.form.upload.FileUploadField;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.io.IClusterable;
-
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
@@ -48,22 +38,31 @@ import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.cpa.CPAService;
 import nl.clockwork.ebms.cpa.certificate.CertificateMapping;
 import nl.clockwork.ebms.cpa.certificate.CertificateMappingService;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.markup.html.form.upload.FileUploadField;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.io.IClusterable;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CertificateMappingPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="cpaService")
+	@SpringBean(name = "cpaService")
 	CPAService cpaService;
-	@SpringBean(name="certificateMappingService")
+	@SpringBean(name = "certificateMappingService")
 	CertificateMappingService certificateMappingService;
 
 	public CertificateMappingPage()
 	{
 		this(Model.of(new CertificateMappingFormData()));
 	}
-	
+
 	public CertificateMappingPage(IModel<CertificateMappingFormData> model)
 	{
 		add(new BootstrapFeedbackPanel("feedback"));
@@ -84,8 +83,10 @@ public class CertificateMappingPage extends BasePage
 		{
 			super(id,new CompoundPropertyModel<>(model));
 			add(new BootstrapFormComponentFeedbackBorder("sourceFeedback",new FileUploadField("source").setRequired(true).setLabel(new ResourceModel("lbl.source"))));
-			add(new BootstrapFormComponentFeedbackBorder("destinationFeedback",new FileUploadField("destination").setRequired(true).setLabel(new ResourceModel("lbl.destination"))));
-			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",new DropDownChoice<String>("cpaId",Model.ofList(Utils.toList(cpaService.getCPAIds()))).setLabel(new ResourceModel("lbl.cpaId"))));
+			add(new BootstrapFormComponentFeedbackBorder("destinationFeedback",
+					new FileUploadField("destination").setRequired(true).setLabel(new ResourceModel("lbl.destination"))));
+			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",
+					new DropDownChoice<String>("cpaId",Model.ofList(Utils.toList(cpaService.getCPAIds()))).setLabel(new ResourceModel("lbl.cpaId"))));
 			add(createSetButton("set"));
 			add(new ResetButton("reset",new ResourceModel("cmd.reset"),CertificateMappingPage.class));
 		}
@@ -121,7 +122,8 @@ public class CertificateMappingPage extends BasePage
 
 		private X509Certificate getX509Certificate(List<FileUpload> files) throws CertificateException, IOException
 		{
-			return files != null && files.size() == 1 ? (X509Certificate)CertificateFactory.getInstance("X.509").generateCertificate(files.get(0).getInputStream()) : null;
+			return files != null && files.size() == 1 ? (X509Certificate)CertificateFactory.getInstance("X.509").generateCertificate(files.get(0).getInputStream())
+					: null;
 		}
 	}
 

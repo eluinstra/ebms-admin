@@ -15,15 +15,21 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
+
 import java.io.IOException;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
-
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import nl.clockwork.ebms.admin.web.Utils;
+import nl.clockwork.ebms.admin.web.message.CachedOutputResourceStream;
+import nl.clockwork.ebms.jaxb.JAXBParser;
+import nl.clockwork.ebms.service.model.Message;
+import nl.clockwork.ebms.service.model.MessageProperties;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.io.CachedOutputStream;
 import org.apache.wicket.markup.html.link.Link;
@@ -32,14 +38,6 @@ import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.resource.IResourceStream;
-
-import lombok.val;
-import lombok.extern.slf4j.Slf4j;
-import nl.clockwork.ebms.admin.web.Utils;
-import nl.clockwork.ebms.admin.web.message.CachedOutputResourceStream;
-import nl.clockwork.ebms.jaxb.JAXBParser;
-import nl.clockwork.ebms.service.model.Message;
-import nl.clockwork.ebms.service.model.MessageProperties;
 
 @Slf4j
 public class DownloadEbMSMessageLink extends Link<Message>
@@ -77,11 +75,14 @@ public class DownloadEbMSMessageLink extends Link<Message>
 	{
 		val entry = new ZipEntry("messageProperties.xml");
 		zip.putNextEntry(entry);
-		zip.write(JAXBParser.getInstance(MessageProperties.class).handle(new JAXBElement<>(new QName("http://www.ordina.nl/ebms/2.18","messageProperties"),MessageProperties.class,message.getProperties())).getBytes());
+		zip.write(JAXBParser.getInstance(MessageProperties.class)
+				.handle(new JAXBElement<>(new QName("http://www.ordina.nl/ebms/2.18","messageProperties"),MessageProperties.class,message.getProperties()))
+				.getBytes());
 		zip.closeEntry();
-		for (val dataSource: message.getDataSources())
+		for (val dataSource : message.getDataSources())
 		{
-			val e = new ZipEntry("datasources/" + (StringUtils.isEmpty(dataSource.getName()) ? UUID.randomUUID() + Utils.getFileExtension(dataSource.getContentType()) : dataSource.getName()));
+			val e = new ZipEntry("datasources/"
+					+ (StringUtils.isEmpty(dataSource.getName()) ? UUID.randomUUID() + Utils.getFileExtension(dataSource.getContentType()) : dataSource.getName()));
 			entry.setComment("Content-Type: " + dataSource.getContentType());
 			zip.putNextEntry(e);
 			zip.write(dataSource.getContent());
@@ -92,8 +93,7 @@ public class DownloadEbMSMessageLink extends Link<Message>
 
 	private ResourceStreamRequestHandler createRequestHandler(Message messageContent, IResourceStream resourceStream)
 	{
-		return new ResourceStreamRequestHandler(resourceStream)
-				.setFileName("message." + messageContent.getProperties().getMessageId() + ".zip")
+		return new ResourceStreamRequestHandler(resourceStream).setFileName("message." + messageContent.getProperties().getMessageId() + ".zip")
 				.setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 

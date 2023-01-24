@@ -15,16 +15,16 @@
  */
 package nl.clockwork.ebms.admin.web.cpa;
 
+
+import nl.clockwork.ebms.admin.model.CPA;
+import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.PageLink;
 import org.apache.wicket.IGenericComponent;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-
-import nl.clockwork.ebms.admin.model.CPA;
-import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.PageLink;
 
 public class CPAPage extends BasePage implements IGenericComponent<CPA,CPAPage>
 {

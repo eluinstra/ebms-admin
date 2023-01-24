@@ -15,20 +15,19 @@
  */
 package nl.clockwork.ebms.admin.web;
 
+
+import io.vavr.Function2;
 import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.EnumSet;
-
-import org.apache.commons.lang3.StringUtils;
-
-import io.vavr.Function2;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
+import lombok.val;
 import nl.clockwork.ebms.EbMSMessageStatus;
+import org.apache.commons.lang3.StringUtils;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Utils
@@ -40,31 +39,38 @@ public class Utils
 	{
 		SUCCESS(EnumSet.of(EbMSMessageStatus.PROCESSED,EbMSMessageStatus.FORWARDED,EbMSMessageStatus.DELIVERED),"success","text-success"),
 		WARNING(EnumSet.of(EbMSMessageStatus.RECEIVED,EbMSMessageStatus.CREATED),"warning","text-warning"),
-		DANGER(EnumSet.of(EbMSMessageStatus.UNAUTHORIZED,EbMSMessageStatus.NOT_RECOGNIZED,EbMSMessageStatus.FAILED,EbMSMessageStatus.DELIVERY_FAILED,EbMSMessageStatus.EXPIRED),"danger","text-danger");
-		
+		DANGER(
+				EnumSet.of(EbMSMessageStatus.UNAUTHORIZED,
+						EbMSMessageStatus.NOT_RECOGNIZED,
+						EbMSMessageStatus.FAILED,
+						EbMSMessageStatus.DELIVERY_FAILED,
+						EbMSMessageStatus.EXPIRED),
+				"danger",
+				"text-danger");
+
 		EnumSet<EbMSMessageStatus> statuses;
 		String rowClass;
 		String cellClass;
 
-		public static Function2<EbMSMessageStatus,Function<Status,String>,String> getCssClass = (status,getClass) ->
-				Arrays.stream(Status.values())
-					.filter(s -> s.statuses.contains(status))
-					.map(s -> getClass.apply(s))
-					.findFirst()
-					.orElse(null);
+		public static Function2<EbMSMessageStatus,Function<Status,String>,String> getCssClass =
+				(status, getClass) -> Arrays.stream(Status.values()).filter(s -> s.statuses.contains(status)).map(s -> getClass.apply(s)).findFirst().orElse(null);
 	}
 
 	public static String getResourceString(Class<?> clazz, String propertyName)
 	{
 		val loaders = WicketApplication.get().getResourceSettings().getStringResourceLoaders();
-		return loaders.stream().map(l -> l.loadStringResource(clazz,propertyName,null,null,null)).filter(s -> StringUtils.isNotBlank(s)).findFirst().orElse(propertyName);
+		return loaders.stream()
+				.map(l -> l.loadStringResource(clazz,propertyName,null,null,null))
+				.filter(s -> StringUtils.isNotBlank(s))
+				.findFirst()
+				.orElse(propertyName);
 	}
 
 	public static String getContentType(String pathInfo)
 	{
 		val result = URLConnection.guessContentTypeFromName(pathInfo);
-		//val result = new MimetypesFileTypeMap().getContentType(pathInfo);
-		//val result = URLConnection.getFileNameMap().getContentTypeFor(pathInfo);
+		// val result = new MimetypesFileTypeMap().getContentType(pathInfo);
+		// val result = URLConnection.getFileNameMap().getContentTypeFor(pathInfo);
 		return result == null ? "application/octet-stream" : result;
 	}
 

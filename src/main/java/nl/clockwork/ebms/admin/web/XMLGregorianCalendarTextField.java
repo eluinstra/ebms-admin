@@ -15,25 +15,23 @@
  */
 package nl.clockwork.ebms.admin.web;
 
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Locale;
-
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.convert.converter.AbstractConverter;
-
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.NonNull;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class XMLGregorianCalendarTextField extends TextField<XMLGregorianCalendar>
@@ -81,10 +79,15 @@ public class XMLGregorianCalendarTextField extends TextField<XMLGregorianCalenda
 	@NonNull
 	String datePattern;
 	Supplier<IModel<String>> getLabel;
-	Supplier <Boolean> isRequired;
+	Supplier<Boolean> isRequired;
 
 	@Builder
-	public XMLGregorianCalendarTextField(String id, IModel<XMLGregorianCalendar> model, @NonNull String datePattern, Supplier<IModel<String>> getLabel, Supplier <Boolean> isRequired)
+	public XMLGregorianCalendarTextField(
+			String id,
+			IModel<XMLGregorianCalendar> model,
+			@NonNull String datePattern,
+			Supplier<IModel<String>> getLabel,
+			Supplier<Boolean> isRequired)
 	{
 		super(id,model);
 		this.datePattern = datePattern;
@@ -101,7 +104,7 @@ public class XMLGregorianCalendarTextField extends TextField<XMLGregorianCalenda
 		else
 			return super.getConverter(type);
 	}
-	
+
 	@Override
 	public IModel<String> getLabel()
 	{

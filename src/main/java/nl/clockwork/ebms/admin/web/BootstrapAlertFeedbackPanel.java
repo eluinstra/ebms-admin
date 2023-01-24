@@ -15,21 +15,20 @@
  */
 package nl.clockwork.ebms.admin.web;
 
+
 import java.util.Arrays;
 import java.util.Optional;
-
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
 import org.apache.wicket.Component;
 import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.feedback.IFeedbackMessageFilter;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
 
 public class BootstrapAlertFeedbackPanel extends FeedbackPanel
 {
@@ -38,8 +37,14 @@ public class BootstrapAlertFeedbackPanel extends FeedbackPanel
 	@Getter
 	private enum ErrorLevel
 	{
-		UNDEFINED(0,"alert-info"), DEBUG(100,"alert-info"), INFO(200,"alert-info"), SUCCESS(250,"alert-success"), WARNING(300,"alert-warning"), ERROR(400,"alert-danger"), FATAL(500,"alert-danger");
-		
+		UNDEFINED(0,"alert-info"),
+		DEBUG(100,"alert-info"),
+		INFO(200,"alert-info"),
+		SUCCESS(250,"alert-success"),
+		WARNING(300,"alert-warning"),
+		ERROR(400,"alert-danger"),
+		FATAL(500,"alert-danger");
+
 		int errorCode;
 		String cssClass;
 
@@ -66,7 +71,7 @@ public class BootstrapAlertFeedbackPanel extends FeedbackPanel
 	{
 		return "alert " + ErrorLevel.getErrorLevel(message.getLevel()).map(l -> l.cssClass).orElse(ErrorLevel.UNDEFINED.cssClass) + " alert-dismissable";
 	}
-	
+
 	@Override
 	protected Component newMessageDisplayComponent(final String id, final FeedbackMessage message)
 	{

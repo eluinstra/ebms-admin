@@ -15,9 +15,23 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
+
 import java.util.Arrays;
 import java.util.List;
-
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import nl.clockwork.ebms.admin.web.Action;
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.Button;
+import nl.clockwork.ebms.admin.web.Consumer;
+import nl.clockwork.ebms.admin.web.OnChangeAjaxBehavior;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.feedback.ContainerFeedbackMessageFilter;
@@ -33,21 +47,6 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.io.IClusterable;
-
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
-import nl.clockwork.ebms.admin.web.Action;
-import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.Button;
-import nl.clockwork.ebms.admin.web.Consumer;
-import nl.clockwork.ebms.admin.web.OnChangeAjaxBehavior;
 
 @Slf4j
 public class JdbcPropertiesFormPanel extends Panel
@@ -75,17 +74,10 @@ public class JdbcPropertiesFormPanel extends Panel
 			add(new BootstrapFormComponentFeedbackBorder("databaseFeedback",createDatabaseField("database")));
 			add(new TextField<String>("url").setLabel(new ResourceModel("lbl.url")).setOutputMarkupId(true).setEnabled(false));
 			add(createTestButton("test"));
-			add(new BootstrapFormComponentFeedbackBorder(
-					"usernameFeedback",
-					new TextField<String>("username")
-							.setLabel(new ResourceModel("lbl.username"))
-							.setRequired(true)));
-			add(new BootstrapFormComponentFeedbackBorder(
-					"passwordFeedback",
-					new PasswordTextField("password")
-							.setResetPassword(false)
-							.setLabel(new ResourceModel("lbl.password"))
-							.setRequired(false)));
+			add(new BootstrapFormComponentFeedbackBorder("usernameFeedback",
+					new TextField<String>("username").setLabel(new ResourceModel("lbl.username")).setRequired(true)));
+			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",
+					new PasswordTextField("password").setResetPassword(false).setLabel(new ResourceModel("lbl.password")).setRequired(false)));
 		}
 
 		private DropDownChoice<JdbcDriver> createDriverChoice(String id)
@@ -101,9 +93,7 @@ public class JdbcPropertiesFormPanel extends Panel
 				t.add(JdbcPropertiesFormPanel.this.get("feedback"));
 				t.add(getURLComponent());
 			};
-			result.add(OnChangeAjaxBehavior.builder()
-					.onUpdate(action)
-					.build());
+			result.add(OnChangeAjaxBehavior.builder().onUpdate(action).build());
 			return result;
 		}
 
@@ -125,9 +115,7 @@ public class JdbcPropertiesFormPanel extends Panel
 			TextField<String> result = new TextField<>(id);
 			result.setLabel(new ResourceModel("lbl.host"));
 			result.setRequired(true);
-			result.add(OnChangeAjaxBehavior.builder()
-					.onUpdate(t -> t.add(getURLComponent()))
-					.build());
+			result.add(OnChangeAjaxBehavior.builder().onUpdate(t -> t.add(getURLComponent())).build());
 			return result;
 		}
 
@@ -135,9 +123,7 @@ public class JdbcPropertiesFormPanel extends Panel
 		{
 			TextField<Integer> result = new TextField<>(id);
 			result.setLabel(new ResourceModel("lbl.port"));
-			result.add(OnChangeAjaxBehavior.builder()
-					.onUpdate(t -> t.add(getURLComponent()))
-					.build());
+			result.add(OnChangeAjaxBehavior.builder().onUpdate(t -> t.add(getURLComponent())).build());
 			return result;
 		}
 
@@ -146,9 +132,7 @@ public class JdbcPropertiesFormPanel extends Panel
 			val result = new TextField<String>(id);
 			result.setLabel(new ResourceModel("lbl.database"));
 			result.setRequired(true);
-			result.add(OnChangeAjaxBehavior.builder()
-					.onUpdate(t -> t.add(getURLComponent()))
-					.build());
+			result.add(OnChangeAjaxBehavior.builder().onUpdate(t -> t.add(getURLComponent())).build());
 			return result;
 		}
 
@@ -193,9 +177,10 @@ public class JdbcPropertiesFormPanel extends Panel
 		{
 			return Arrays.asList(JdbcDriver.values());
 		}
+
 		public String getUrl()
 		{
-			//return driver.createJdbcURL(getHost(),getPort(),getDatabase());
+			// return driver.createJdbcURL(getHost(),getPort(),getDatabase());
 			return JdbcDriver.createJdbcURL(driver.getUrlExpr(),getHost(),getPort(),getDatabase());
 		}
 	}

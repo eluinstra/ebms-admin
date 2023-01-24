@@ -15,19 +15,11 @@
  */
 package nl.clockwork.ebms.admin.web.cpa;
 
-import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.markup.repeater.data.DataView;
-import org.apache.wicket.markup.repeater.data.IDataProvider;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import lombok.AccessLevel;
 import lombok.NonNull;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
+import lombok.val;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.model.CPA;
 import nl.clockwork.ebms.admin.web.BasePage;
@@ -37,6 +29,14 @@ import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
 import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.admin.web.WicketApplication;
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.markup.repeater.data.IDataProvider;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CPAsPage extends BasePage
@@ -66,17 +66,14 @@ public class CPAsPage extends BasePage
 
 		private Link<Void> createViewLink(String id, final IModel<CPA> model)
 		{
-			val result = Link.<Void>builder()
-					.id(id)
-					.onClick(() -> setResponsePage(new CPAPage(model,CPAsPage.this)))
-					.build();
+			val result = Link.<Void>builder().id(id).onClick(() -> setResponsePage(new CPAPage(model,CPAsPage.this))).build();
 			result.add(new Label("cpaId",model.getObject().getCpaId()));
 			return result;
 		}
 	}
 
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="ebMSAdminDAO")
+	@SpringBean(name = "ebMSAdminDAO")
 	EbMSDAO ebMSDAO;
 	@NonNull
 	final Integer maxItemsPerPage;

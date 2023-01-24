@@ -15,8 +15,19 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
-import java.util.List;
 
+import java.util.List;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
+import nl.clockwork.ebms.admin.web.AjaxButton;
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.Consumer;
+import nl.clockwork.ebms.admin.web.Utils;
+import nl.clockwork.ebms.service.model.DataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -30,18 +41,6 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
-
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.admin.web.AjaxButton;
-import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.Consumer;
-import nl.clockwork.ebms.admin.web.Utils;
-import nl.clockwork.ebms.service.model.DataSource;
 
 public class DataSourceModalWindow extends ModalWindow
 {
@@ -75,7 +74,7 @@ public class DataSourceModalWindow extends ModalWindow
 			this.components = components;
 			add(new DataSourceForm("form"));
 		}
-		
+
 		public void addDataSource(DataSource dataSource)
 		{
 			dataSources.add(dataSource);
@@ -85,6 +84,7 @@ public class DataSourceModalWindow extends ModalWindow
 		{
 			return components;
 		}
+
 		public ModalWindow getWindow()
 		{
 			return DataSourceModalWindow.this;
@@ -118,11 +118,11 @@ public class DataSourceModalWindow extends ModalWindow
 				Consumer<AjaxRequestTarget> onSubmit = t ->
 				{
 					val o = getModelObject();
-					o.getFile().forEach(f -> addDataSource(new DataSource(
-								StringUtils.isBlank(o.getName()) ? f.getClientFileName() : o.getName(),
-								null,
-								StringUtils.isBlank(o.getContentType()) ? Utils.getContentType(f.getClientFileName()) : o.getContentType(),
-								f.getBytes())));
+					o.getFile()
+							.forEach(f -> addDataSource(new DataSource(StringUtils.isBlank(o.getName()) ? f.getClientFileName() : o.getName(),
+									null,
+									StringUtils.isBlank(o.getContentType()) ? Utils.getContentType(f.getClientFileName()) : o.getContentType(),
+									f.getBytes())));
 					if (t != null)
 					{
 						t.add(getComponents());
@@ -136,22 +136,13 @@ public class DataSourceModalWindow extends ModalWindow
 						t.add(this);
 					}
 				};
-				val result = AjaxButton.builder()
-						.id(id)
-						.model(new ResourceModel("cmd.add"))
-						.onSubmit(onSubmit)
-						.onError(onError)
-						.build();
+				val result = AjaxButton.builder().id(id).model(new ResourceModel("cmd.add")).onSubmit(onSubmit).onError(onError).build();
 				return result;
 			}
 
 			private AjaxButton createCancelButton(String id)
 			{
-				val cancel = AjaxButton.builder()
-						.id(id)
-						.model(new ResourceModel("cmd.cancel"))
-						.onSubmit(t -> getWindow().close(t))
-						.build();
+				val cancel = AjaxButton.builder().id(id).model(new ResourceModel("cmd.cancel")).onSubmit(t -> getWindow().close(t)).build();
 				cancel.setDefaultFormProcessing(false);
 				return cancel;
 			}

@@ -15,6 +15,9 @@
  */
 package nl.clockwork.ebms.admin;
 
+
+import com.microsoft.applicationinsights.web.internal.ApplicationInsightsServletContextListener;
+import com.microsoft.applicationinsights.web.internal.WebRequestTrackingFilter;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -29,13 +32,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import javax.management.remote.JMXServiceURL;
 import javax.servlet.DispatcherType;
-
-import com.microsoft.applicationinsights.web.internal.ApplicationInsightsServletContextListener;
-import com.microsoft.applicationinsights.web.internal.WebRequestTrackingFilter;
-
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
+import nl.clockwork.ebms.admin.web.ExtensionProvider;
+import nl.clockwork.ebms.security.KeyStoreType;
+import nl.clockwork.ebms.server.servlet.HealthServlet;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -71,14 +76,6 @@ import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.admin.web.ExtensionProvider;
-import nl.clockwork.ebms.security.KeyStoreType;
-import nl.clockwork.ebms.server.servlet.HealthServlet;
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @RequiredArgsConstructor
@@ -140,7 +137,7 @@ public class Start implements SystemInterface
 	private static final String AZURE_VAULTCLIENT_ID_OPTION = "keyvaultClientId";
 	private static final String AZURE_VAULTCLIENT_SECRET_OPTION = "keyvaultClientSecret";
 	private static final String KEYSTORE_TYPE_AZURE = "AZURE";
-	
+
 	Server server = new Server();
 	ContextHandlerCollection handlerCollection = new ContextHandlerCollection();
 	TextIO textIO = TextIoFactory.getTextIO();
@@ -245,7 +242,8 @@ public class Start implements SystemInterface
 
 	protected List<Class<?>> getConfigClasses()
 	{
-		return ExtensionProvider.get().stream()
+		return ExtensionProvider.get()
+				.stream()
 				.filter(p -> p.getSpringConfigurationClass() != null)
 				.map(p -> p.getSpringConfigurationClass())
 				.collect(Collectors.toList());
@@ -260,7 +258,8 @@ public class Start implements SystemInterface
 
 	protected void initWebServer(CommandLine cmd, Server server) throws GeneralSecurityException, IOException
 	{
-		val connector = cmd.hasOption(SSL_OPTION) ? createHttpsConnector(cmd,createSslContextFactory(cmd,cmd.hasOption(CLIENT_AUTHENTICATION_OPTION))) : createHttpConnector(cmd);
+		val connector = cmd.hasOption(SSL_OPTION) ? createHttpsConnector(cmd,createSslContextFactory(cmd,cmd.hasOption(CLIENT_AUTHENTICATION_OPTION)))
+				: createHttpConnector(cmd);
 		server.addConnector(connector);
 		if (cmd.hasOption(CONNECTION_LIMIT_OPTION))
 			server.addBean(new ConnectionLimit(Integer.parseInt(cmd.getOptionValue(CONNECTION_LIMIT_OPTION)),connector));
@@ -300,15 +299,12 @@ public class Start implements SystemInterface
 	private SslContextFactory.Server createSslContextFactory(CommandLine cmd, boolean clientAuthentication) throws GeneralSecurityException, IOException
 	{
 		val result = new SslContextFactory.Server();
-		EbMSKeyStore ebMSKeyStore = KEYSTORE_TYPE_AZURE.equals(cmd.getOptionValue(KEY_STORES_TYPE_OPTION, ""))
-				? EbMSKeyStore.of(
-					cmd.getOptionValue(AZURE_VAULTURI_OPTION),
-					cmd.getOptionValue(AZURE_VAULTTENANT_ID_OPTION),
-					cmd.getOptionValue(AZURE_VAULTCLIENT_ID_OPTION),
-					cmd.getOptionValue(AZURE_VAULTCLIENT_SECRET_OPTION)
-				) : EbMSKeyStore.of(
-					KeyStoreType.valueOf(
-						cmd.getOptionValue(KEY_STORE_TYPE_OPTION, DEFAULT_KEYSTORE_TYPE)),
+		EbMSKeyStore ebMSKeyStore = KEYSTORE_TYPE_AZURE.equals(cmd.getOptionValue(KEY_STORES_TYPE_OPTION,""))
+				? EbMSKeyStore.of(cmd.getOptionValue(AZURE_VAULTURI_OPTION),
+						cmd.getOptionValue(AZURE_VAULTTENANT_ID_OPTION),
+						cmd.getOptionValue(AZURE_VAULTCLIENT_ID_OPTION),
+						cmd.getOptionValue(AZURE_VAULTCLIENT_SECRET_OPTION))
+				: EbMSKeyStore.of(KeyStoreType.valueOf(cmd.getOptionValue(KEY_STORE_TYPE_OPTION,DEFAULT_KEYSTORE_TYPE)),
 						cmd.getOptionValue(KEY_STORE_PATH_OPTION,DEFAULT_KEYSTORE_FILE),
 						cmd.getOptionValue(KEY_STORE_PASSWORD_OPTION,DEFAULT_KEYSTORE_PASSWORD));
 		addKeyStore(cmd,result,ebMSKeyStore);
@@ -378,15 +374,15 @@ public class Start implements SystemInterface
 		server.addBean(mBeanContainer);
 		server.addBean(Log.getLog());
 		val jmxURL = new JMXServiceURL("rmi",null,Integer.parseInt(cmd.getOptionValue(JMX_PORT_OPTION,DEFAULT_JMS_PORT)),"/jndi/rmi:///jmxrmi");
-		//val sslContextFactory = cmd.hasOption("ssl") ? createSslContextFactory(cmd,false) : null;
-		val jmxServer = new ConnectorServer(jmxURL,createEnv(cmd),"org.eclipse.jetty.jmx:name=rmiconnectorserver");//,sslContextFactory);
+		// val sslContextFactory = cmd.hasOption("ssl") ? createSslContextFactory(cmd,false) : null;
+		val jmxServer = new ConnectorServer(jmxURL,createEnv(cmd),"org.eclipse.jetty.jmx:name=rmiconnectorserver");// ,sslContextFactory);
 		server.addBean(jmxServer);
 		println("JMX Server configured on " + jmxURL);
 	}
 
 	private Map<String,Object> createEnv(CommandLine cmd)
 	{
-		val result = new HashMap<String, Object>();
+		val result = new HashMap<String,Object>();
 		if (cmd.hasOption(JMX_ACCESS_FILE_OPTION) && cmd.hasOption(JMX_PASSWORD_FILE_OPTION))
 		{
 			result.put("jmx.remote.x.access.file",cmd.hasOption(JMX_ACCESS_FILE_OPTION));
@@ -398,7 +394,7 @@ public class Start implements SystemInterface
 	protected ServletContextHandler createWebContextHandler(CommandLine cmd, ContextLoaderListener contextLoaderListener) throws Exception
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		result.setVirtualHosts(new String[] {"@" + WEB_CONNECTOR_NAME});
+		result.setVirtualHosts(new String[]{"@" + WEB_CONNECTOR_NAME});
 		result.setInitParameter("configuration","deployment");
 		result.setContextPath(getPath(cmd));
 		if (cmd.hasOption(AZURE_INSIGHTS_OPTION))
@@ -426,7 +422,9 @@ public class Start implements SystemInterface
 			}
 			else if (cmd.hasOption(SSL_OPTION) && cmd.hasOption(CLIENT_AUTHENTICATION_OPTION))
 			{
-				result.addFilter(createClientCertificateManagerFilterHolder(cmd.getOptionValue(CLIENT_CERTIFICATE_HEADER_OPTION)),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
+				result.addFilter(createClientCertificateManagerFilterHolder(cmd.getOptionValue(CLIENT_CERTIFICATE_HEADER_OPTION)),
+						"/*",
+						EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
 				result.addFilter(createClientCertificateAuthenticationFilterHolder(cmd),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
 			}
 		}
@@ -450,7 +448,7 @@ public class Start implements SystemInterface
 	{
 		return new FilterHolder(WebRequestTrackingFilter.class);
 	}
-	
+
 	protected FilterHolder createRemoteAddressMDCFilterHolder()
 	{
 		return new FilterHolder(nl.clockwork.ebms.server.servlet.RemoteAddressMDCFilter.class);
@@ -458,21 +456,21 @@ public class Start implements SystemInterface
 
 	protected FilterHolder createRateLimiterFilterHolder(String queriesPerSecond)
 	{
-		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.RateLimiterFilter.class); 
+		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.RateLimiterFilter.class);
 		result.setInitParameter(QUERIES_PER_SECOND_OPTION,queriesPerSecond);
 		return result;
 	}
 
 	protected FilterHolder createUserRateLimiterFilterHolder(String queriesPerSecond)
 	{
-		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.RateLimiterFilter.class); 
+		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.RateLimiterFilter.class);
 		result.setInitParameter(QUERIES_PER_SECOND_OPTION,queriesPerSecond);
 		return result;
 	}
 
 	protected FilterHolder createClientCertificateManagerFilterHolder(String clientCertificateHeader)
 	{
-		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.ClientCertificateManagerFilter.class); 
+		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.ClientCertificateManagerFilter.class);
 		result.setInitParameter("x509CertificateHeader",clientCertificateHeader);
 		return result;
 	}
@@ -480,7 +478,7 @@ public class Start implements SystemInterface
 	private FilterHolder createClientCertificateAuthenticationFilterHolder(CommandLine cmd) throws MalformedURLException, IOException
 	{
 		println("Configuring Web Server client certificate authentication:");
-		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.ClientCertificateAuthenticationFilter.class); 
+		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.ClientCertificateAuthenticationFilter.class);
 		val clientTrustStoreType = cmd.getOptionValue(CLIENT_TRUST_STORE_TYPE_OPTION,DEFAULT_KEYSTORE_TYPE);
 		val clientTrustStorePath = cmd.getOptionValue(CLIENT_TRUST_STORE_PATH_OPTION);
 		val clientTrustStorePassword = cmd.getOptionValue(CLIENT_TRUST_STORE_PASSWORD_OPTION);
@@ -503,7 +501,7 @@ public class Start implements SystemInterface
 
 	private FilterHolder createWicketFilterHolder()
 	{
-		val result = new FilterHolder(org.apache.wicket.protocol.http.WicketFilter.class); 
+		val result = new FilterHolder(org.apache.wicket.protocol.http.WicketFilter.class);
 		result.setInitParameter("applicationFactoryClassName","org.apache.wicket.spring.SpringWebApplicationFactory");
 		result.setInitParameter("applicationBean","wicketApplication");
 		result.setInitParameter("filterMappingUrlPattern","/*");
@@ -522,7 +520,7 @@ public class Start implements SystemInterface
 	protected ServletContextHandler createHealthContextHandler(CommandLine cmd, ContextLoaderListener contextLoaderListener) throws Exception
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		result.setVirtualHosts(new String[] {"@" + HEALTH_CONNECTOR_NAME});
+		result.setVirtualHosts(new String[]{"@" + HEALTH_CONNECTOR_NAME});
 		result.setInitParameter("configuration","deployment");
 		result.setContextPath(DEFAULT_PATH);
 		result.addServlet(HealthServlet.class,HEALTH_URL + "/*");
@@ -537,9 +535,7 @@ public class Start implements SystemInterface
 
 	protected void createRealmFile(File file) throws IOException, NoSuchAlgorithmException
 	{
-		val username = textIO.newStringInputReader()
-				.withDefaultValue("admin")
-				.read("enter username");
+		val username = textIO.newStringInputReader().withDefaultValue("admin").read("enter username");
 		val password = readPassword();
 		println("Writing to file: " + file.getAbsoluteFile());
 		FileUtils.writeStringToFile(file,username + ": " + password + ",user",Charset.defaultCharset(),false);
@@ -547,9 +543,7 @@ public class Start implements SystemInterface
 
 	private String readPassword() throws IOException, NoSuchAlgorithmException
 	{
-		val reader = textIO.newStringInputReader()
-				.withMinLength(8)
-				.withInputMasking(true);
+		val reader = textIO.newStringInputReader().withMinLength(8).withInputMasking(true);
 		while (true)
 		{
 			val result = toMD5(reader.read("enter password"));
@@ -560,7 +554,7 @@ public class Start implements SystemInterface
 				println("Passwords don't match! Try again.");
 		}
 	}
-	
+
 	private String toMD5(String s) throws NoSuchAlgorithmException, UnsupportedEncodingException
 	{
 		return "MD5:" + DigestUtils.md5Hex(s);

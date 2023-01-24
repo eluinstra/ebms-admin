@@ -15,22 +15,21 @@
  */
 package nl.clockwork.ebms.admin.web;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
-
-import org.apache.wicket.markup.html.panel.Panel;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
+import lombok.val;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.service.message.DataSourcesPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 
 public abstract class MessageProvider
 {
@@ -47,6 +46,7 @@ public abstract class MessageProvider
 	{
 		return createId(message.getService(),message.getAction());
 	}
+
 	public static String createId(String service, String action)
 	{
 		return service + ":" + action;
@@ -73,7 +73,7 @@ public abstract class MessageProvider
 		}
 	}
 
-	public static abstract class MessageViewPanel extends MessagePanel 
+	public static abstract class MessageViewPanel extends MessagePanel
 	{
 		public MessageViewPanel(String service, String action)
 		{
@@ -83,7 +83,7 @@ public abstract class MessageProvider
 		public abstract Panel getPanel(String id, List<EbMSAttachment> attachments) throws Exception;
 	}
 
-	public static abstract class MessageEditPanel extends MessagePanel 
+	public static abstract class MessageEditPanel extends MessagePanel
 	{
 		public MessageEditPanel(String service, String action)
 		{

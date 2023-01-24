@@ -20,18 +20,15 @@ import static io.vavr.API.Case;
 import static io.vavr.API.Match;
 import static nl.clockwork.ebms.Predicates.contains;
 
-import javax.sql.DataSource;
-
-import org.springframework.beans.factory.FactoryBean;
-
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 import com.atomikos.jdbc.AtomikosDataSourceBean;
 import com.zaxxer.hikari.HikariDataSource;
-
-import bitronix.tm.resource.jdbc.PoolingDataSource;
+import javax.sql.DataSource;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.FactoryBean;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
@@ -49,22 +46,23 @@ public abstract class AbstractDAOFactory<T> implements FactoryBean<T>
 	private T createDAO(DataSource dataSource)
 	{
 		String driverClassName = getDriverClassName(dataSource);
-		return Match(driverClassName).of(
-				Case($(contains("db2")),o -> createDB2DAO()),
+		return Match(driverClassName).of(Case($(contains("db2")),o -> createDB2DAO()),
 				Case($(contains("hsqldb")),o -> createHSqlDbDAO()),
 				Case($(contains("mysql","mariadb")),o -> createMySqlDAO()),
 				Case($(contains("oracle")),o -> createOracleDAO()),
 				Case($(contains("postgresql")),o -> createPostgresDAO()),
 				Case($(contains("sqlserver")),o -> createMsSqlDAO()),
-				Case($(),o -> {
+				Case($(),o ->
+				{
 					throw new RuntimeException("Jdbc url " + driverClassName + " not recognized!");
 				}));
 	}
 
 	public static String getDriverClassName(DataSource dataSource)
 	{
-		return dataSource instanceof HikariDataSource ? ((HikariDataSource)dataSource).getDriverClassName() : 
-			dataSource  instanceof PoolingDataSource ? ((PoolingDataSource)dataSource).getClassName() : ((AtomikosDataSourceBean)dataSource).getXaDataSourceClassName();
+		return dataSource instanceof HikariDataSource ? ((HikariDataSource)dataSource).getDriverClassName()
+				: dataSource instanceof PoolingDataSource ? ((PoolingDataSource)dataSource).getClassName()
+						: ((AtomikosDataSourceBean)dataSource).getXaDataSourceClassName();
 	}
 
 	@Override

@@ -15,20 +15,19 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-
-import org.apache.wicket.util.lang.Bytes;
-import org.apache.wicket.util.resource.AbstractResourceStream;
-import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
+import org.apache.wicket.util.lang.Bytes;
+import org.apache.wicket.util.resource.AbstractResourceStream;
+import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor(staticName = "of")
@@ -46,13 +45,13 @@ public class StringWriterResourceStream extends AbstractResourceStream
 	{
 		return Bytes.bytes(writer.getBuffer().length());
 	}
-	
+
 	@Override
 	public InputStream getInputStream() throws ResourceStreamNotFoundException
 	{
 		return new ByteArrayInputStream(writer.toString().getBytes());
 	}
-	
+
 	@Override
 	public void close() throws IOException
 	{
