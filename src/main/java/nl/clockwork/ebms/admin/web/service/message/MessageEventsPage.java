@@ -15,22 +15,11 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
-import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.Component;
-import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.markup.repeater.data.DataView;
-import org.apache.wicket.markup.repeater.data.IDataProvider;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import lombok.AccessLevel;
 import lombok.NonNull;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
+import lombok.val;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
@@ -44,6 +33,17 @@ import nl.clockwork.ebms.event.MessageEventType;
 import nl.clockwork.ebms.service.EbMSMessageService;
 import nl.clockwork.ebms.service.model.MessageEvent;
 import nl.clockwork.ebms.service.model.MessageFilter;
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
+import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.markup.repeater.data.IDataProvider;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MessageEventsPage extends BasePage
@@ -77,11 +77,9 @@ public class MessageEventsPage extends BasePage
 		{
 			Action onClick = () ->
 			{
-				setResponsePage(
-						new MessagePage(
-								Model.of(ebMSMessageService.getMessage(model.getObject().getMessageId(),null)),
-								MessageEventsPage.this,
-								messageId -> ebMSMessageService.processMessageEvent(messageId)));
+				setResponsePage(new MessagePage(Model.of(ebMSMessageService.getMessage(model.getObject().getMessageId(),null)),
+						MessageEventsPage.this,
+						messageId -> ebMSMessageService.processMessageEvent(messageId)));
 			};
 			val link = new Link<Void>(id,onClick);
 			link.add(components);
@@ -90,7 +88,7 @@ public class MessageEventsPage extends BasePage
 	}
 
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="ebMSMessageService")
+	@SpringBean(name = "ebMSMessageService")
 	EbMSMessageService ebMSMessageService;
 	@NonNull
 	final Integer maxItemsPerPage;

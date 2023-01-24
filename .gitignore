@@ -1,9 +1,16 @@
-# ignore hidden files/directories
 .classpath
+.factorypath
 .project
 .settings
+log4j2.xml
+*.properties
 target
-.idea/
+
+.vscode
+*.code-workspace
+
+.idea
+*.iml
 
 *.log
 activemq-data
@@ -11,9 +18,5 @@ data
 hsqldb
 ignite
 logs
-/dependency-reduced-pom.xml
-
-
-.idea
-*.iml
-/docker-compose.win32.yml
+dependency-reduced-pom.xml
+docker-compose.win32.yml

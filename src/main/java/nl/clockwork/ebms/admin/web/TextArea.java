@@ -15,11 +15,11 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import org.apache.wicket.model.IModel;
 
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.experimental.FieldDefaults;
+import org.apache.wicket.model.IModel;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class TextArea<T> extends org.apache.wicket.markup.html.form.TextArea<T>

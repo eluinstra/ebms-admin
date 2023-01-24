@@ -15,13 +15,17 @@
  */
 package nl.clockwork.ebms.admin;
 
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
-
 import javax.sql.DataSource;
-
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -31,13 +35,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NonNull;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @AllArgsConstructor
@@ -49,7 +46,7 @@ public class DBExecute
 		val cmd = new DefaultParser().parse(options,args);
 		if (cmd.hasOption("h"))
 			printUsage(options);
-		
+
 		try (val context = new AnnotationConfigApplicationContext(DBConfig.class))
 		{
 			if (!StringUtils.isEmpty(context.getEnvironment().getProperty("ebms.jdbc.password")))

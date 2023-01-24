@@ -15,8 +15,21 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-import java.util.Locale;
 
+import java.util.Locale;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
+import nl.clockwork.ebms.admin.Utils;
+import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.OnChangeAjaxBehavior;
+import nl.clockwork.ebms.admin.web.TextField;
+import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyPropertiesFormData;
+import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormData;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
@@ -28,20 +41,6 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.util.convert.converter.AbstractConverter;
 import org.apache.wicket.util.io.IClusterable;
-
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.admin.Utils;
-import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
-import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.OnChangeAjaxBehavior;
-import nl.clockwork.ebms.admin.web.TextField;
-import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyPropertiesFormData;
-import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormData;
 
 public class HttpPropertiesFormPanel extends Panel
 {
@@ -76,9 +75,7 @@ public class HttpPropertiesFormPanel extends Panel
 		{
 			val result = new TextField<String>(id);
 			result.setLabel(new ResourceModel("lbl.host"));
-			result.add(OnChangeAjaxBehavior.builder()
-					.onUpdate(t -> t.add(get("url")))
-					.build());
+			result.add(OnChangeAjaxBehavior.builder().onUpdate(t -> t.add(get("url"))).build());
 			result.setRequired(true);
 			return result;
 		}
@@ -87,23 +84,16 @@ public class HttpPropertiesFormPanel extends Panel
 		{
 			val result = new TextField<Integer>(id);
 			result.setLabel(new ResourceModel("lbl.port"));
-			result.add(OnChangeAjaxBehavior.builder()
-					.onUpdate(t -> t.add(get("url")))
-					.build());
+			result.add(OnChangeAjaxBehavior.builder().onUpdate(t -> t.add(get("url"))).build());
 			return result;
 		}
 
 		private TextField<String> createPathField(String id)
 		{
-			val result = TextField.<String>builder()
-					.id(id)
-					.getConverter(t -> new PathConverter())
-					.build();
+			val result = TextField.<String>builder().id(id).getConverter(t -> new PathConverter()).build();
 			result.setLabel(new ResourceModel("lbl.path"));
 			result.setRequired(true);
-			result.add(OnChangeAjaxBehavior.builder()
-					.onUpdate(t -> t.add(get("url")))
-					.build());
+			result.add(OnChangeAjaxBehavior.builder().onUpdate(t -> t.add(get("url"))).build());
 			return result;
 		}
 
@@ -111,10 +101,7 @@ public class HttpPropertiesFormPanel extends Panel
 		{
 			val result = new CheckBox(id);
 			result.setLabel(new ResourceModel("lbl.ssl"));
-			result.add(AjaxFormComponentUpdatingBehavior.builder()
-					.event("change")
-					.onUpdate(t -> t.add(this))
-					.build());
+			result.add(AjaxFormComponentUpdatingBehavior.builder().event("change").onUpdate(t -> t.add(this)).build());
 			return result;
 		}
 
@@ -133,10 +120,7 @@ public class HttpPropertiesFormPanel extends Panel
 		{
 			val result = new CheckBox(id);
 			result.setLabel(new ResourceModel("lbl.proxy"));
-			result.add(AjaxFormComponentUpdatingBehavior.builder()
-					.event("change")
-					.onUpdate(t -> t.add(this))
-					.build());
+			result.add(AjaxFormComponentUpdatingBehavior.builder().event("change").onUpdate(t -> t.add(this)).build());
 			return result;
 		}
 
@@ -161,7 +145,7 @@ public class HttpPropertiesFormPanel extends Panel
 		String host;
 		@NonNull
 		Integer port;
-		//@NonNull
+		// @NonNull
 		String path;
 		boolean chunkedStreamingMode;
 		boolean base64Writer;
@@ -176,12 +160,13 @@ public class HttpPropertiesFormPanel extends Panel
 		{
 			return ssl ? "https://" : "http://";
 		}
+
 		public String getUrl()
 		{
 			return getProtocol() + Utils.getHost(host) + (port == null ? "" : ":" + port.toString()) + path;
 		}
 	}
-	
+
 	public class PathConverter extends AbstractConverter<String>
 	{
 		private static final long serialVersionUID = 1L;

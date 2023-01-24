@@ -15,6 +15,20 @@
  */
 package nl.clockwork.ebms.admin.web.service.cpa;
 
+
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import nl.clockwork.ebms.admin.web.Action;
+import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.Button;
+import nl.clockwork.ebms.admin.web.Link;
+import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
+import nl.clockwork.ebms.admin.web.PageClassLink;
+import nl.clockwork.ebms.admin.web.WebMarkupContainer;
+import nl.clockwork.ebms.cpa.CPAService;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -25,20 +39,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-
-import lombok.AccessLevel;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
-import nl.clockwork.ebms.admin.web.Action;
-import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.admin.web.Button;
-import nl.clockwork.ebms.admin.web.Link;
-import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
-import nl.clockwork.ebms.admin.web.PageClassLink;
-import nl.clockwork.ebms.admin.web.WebMarkupContainer;
-import nl.clockwork.ebms.cpa.CPAService;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -66,10 +66,7 @@ public class CPAsPage extends BasePage
 
 		private Link<Void> createViewLink(String id, final String cpaId)
 		{
-			val result = Link.<Void>builder()
-					.id(id)
-					.onClick(() -> setResponsePage(new CPAPage(Model.of(cpaService.getCPA(cpaId)),CPAsPage.this)))
-					.build();
+			val result = Link.<Void>builder().id(id).onClick(() -> setResponsePage(new CPAPage(Model.of(cpaService.getCPA(cpaId)),CPAsPage.this))).build();
 			result.add(new Label("cpaId",cpaId));
 			return result;
 		}
@@ -97,7 +94,7 @@ public class CPAsPage extends BasePage
 	}
 
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="cpaService")
+	@SpringBean(name = "cpaService")
 	CPAService cpaService;
 
 	public CPAsPage()
@@ -119,7 +116,7 @@ public class CPAsPage extends BasePage
 			add(new PageClassLink("new",CPAUploadPage.class));
 		}
 	}
-	
+
 	@Override
 	public String getPageTitle()
 	{

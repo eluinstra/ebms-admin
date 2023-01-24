@@ -15,17 +15,16 @@
  */
 package nl.clockwork.ebms.admin.web.service.cpa;
 
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import org.apache.wicket.util.lang.Bytes;
-import org.apache.wicket.util.resource.AbstractResourceStream;
-import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.apache.wicket.util.lang.Bytes;
+import org.apache.wicket.util.resource.AbstractResourceStream;
+import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor(staticName = "of")
@@ -40,19 +39,19 @@ public class StringResourceStream extends AbstractResourceStream
 	{
 		return contentType;
 	}
-	
+
 	@Override
 	public Bytes length()
 	{
 		return Bytes.bytes(s.length());
 	}
-	
+
 	@Override
 	public InputStream getInputStream() throws ResourceStreamNotFoundException
 	{
 		return new ByteArrayInputStream(s.getBytes());
 	}
-	
+
 	@Override
 	public void close() throws IOException
 	{

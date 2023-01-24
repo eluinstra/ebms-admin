@@ -15,36 +15,20 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.xml.bind.JAXBException;
-
-import org.apache.wicket.Component;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.head.IHeaderResponse;
-import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement;
-
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.Utils;
@@ -60,15 +44,29 @@ import nl.clockwork.ebms.admin.web.Link;
 import nl.clockwork.ebms.cpa.CPAService;
 import nl.clockwork.ebms.jaxb.JAXBParser;
 import nl.clockwork.ebms.service.EbMSMessageService;
+import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MessageFilterPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="cpaService")
+	@SpringBean(name = "cpaService")
 	CPAService cpaService;
-	@SpringBean(name="ebMSMessageService")
+	@SpringBean(name = "ebMSMessageService")
 	EbMSMessageService ebMSMessageService;
 	@NonNull
 	final Function<IModel<MessageFilterFormData>,BasePage> getPage;
@@ -89,7 +87,7 @@ public class MessageFilterPanel extends Panel
 	{
 		return new Link<Void>(id,() -> setResponsePage(getPage().getClass()));
 	}
-	
+
 	@Override
 	public void renderHead(IHeaderResponse response)
 	{
@@ -114,7 +112,7 @@ public class MessageFilterPanel extends Panel
 			super(id,choices);
 			this.localizeDisplayValues = localizeDisplayValues;
 		}
-		
+
 		@Override
 		protected boolean localizeDisplayValues()
 		{
@@ -312,7 +310,8 @@ public class MessageFilterPanel extends Panel
 				{
 					val o = getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
-					o.resetActions(o.getFromParty() == null ? CPAUtils.getToActionNames(cpa,o.getToParty().getRole(),o.getService()) : CPAUtils.getFromActionNames(cpa,o.getFromParty().getRole(),o.getService()));
+					o.resetActions(o.getFromParty() == null ? CPAUtils.getToActionNames(cpa,o.getToParty().getRole(),o.getService())
+							: CPAUtils.getFromActionNames(cpa,o.getFromParty().getRole(),o.getService()));
 					t.add(getFeedbackComponent());
 					t.add(getForm());
 				}
@@ -357,25 +356,21 @@ public class MessageFilterPanel extends Panel
 
 		private Button createResetButton(String id)
 		{
-			return Button.builder()
-					.id(id)
-					.model(new ResourceModel("cmd.reset"))
-					.onSubmit(() -> setResponsePage(getPage().getClass()))
-					.build();
+			return Button.builder().id(id).model(new ResourceModel("cmd.reset")).onSubmit(() -> setResponsePage(getPage().getClass())).build();
 		}
 
 	}
-	
+
 	private Component getFeedbackComponent()
 	{
 		return this.get("feedback");
 	}
-	
+
 	private Component getForm()
 	{
 		return this.get("form");
 	}
-	
+
 	public static MessageFilterFormData createMessageFilter()
 	{
 		return new MessageFilterFormData();
@@ -394,64 +389,75 @@ public class MessageFilterPanel extends Panel
 		final List<String> toRoles = new ArrayList<>();
 		final List<String> services = new ArrayList<>();
 		final List<String> actions = new ArrayList<>();
-		
+
 		public void resetFromPartyIds()
 		{
 			getFromPartyIds().clear();
 			setFromParty(null);
 		}
+
 		public void resetFromPartyIds(List<String> partyIds)
 		{
 			resetFromPartyIds();
 			getFromPartyIds().addAll(partyIds);
 		}
+
 		public void resetFromRoles()
 		{
 			getFromRoles().clear();
 			if (getFromParty() != null)
 				getFromParty().setRole(null);
 		}
+
 		public void resetFromRoles(List<String> roleNames)
 		{
 			resetFromRoles();
 			getFromRoles().addAll(roleNames);
 		}
+
 		public void resetToPartyIds()
 		{
 			getToPartyIds().clear();
 			setToParty(null);
 		}
+
 		public void resetToPartyIds(List<String> partyIds)
 		{
 			resetToPartyIds();
 			getToPartyIds().addAll(partyIds);
 		}
+
 		public void resetToRoles()
 		{
 			getToRoles().clear();
 			if (getToParty() != null)
 				getToParty().setRole(null);
 		}
+
 		public void resetToRoles(List<String> roleNames)
 		{
 			resetToRoles();
 			getToRoles().addAll(roleNames);
 		}
+
 		public void resetServices()
 		{
 			getServices().clear();
 			setService(null);
 		}
+
 		public void resetServices(List<String> serviceNames)
 		{
 			resetServices();
 			getServices().addAll(serviceNames);
 		}
+
 		public void resetActions()
 		{
 			getActions().clear();
 			setAction(null);
 		}
+
 		public void resetActions(List<String> actionNames)
 		{
 			resetActions();

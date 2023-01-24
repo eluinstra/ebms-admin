@@ -15,8 +15,21 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-import java.util.Arrays;
 
+import java.util.Arrays;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import nl.clockwork.ebms.admin.web.Action;
+import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
+import nl.clockwork.ebms.admin.web.Button;
+import nl.clockwork.ebms.admin.web.Supplier;
+import nl.clockwork.ebms.security.KeyStoreType;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
@@ -28,20 +41,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.io.IClusterable;
-
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
-import nl.clockwork.ebms.admin.web.Action;
-import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.Button;
-import nl.clockwork.ebms.admin.web.Supplier;
-import nl.clockwork.ebms.security.KeyStoreType;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -58,7 +57,12 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 	}
 
 	@Builder
-	public JavaKeyStorePropertiesFormPanel(String id, IModel<JavaKeyStorePropertiesFormData> model, boolean required, boolean showDefaultAlias, Supplier<Boolean> isVisible)
+	public JavaKeyStorePropertiesFormPanel(
+			String id,
+			IModel<JavaKeyStorePropertiesFormData> model,
+			boolean required,
+			boolean showDefaultAlias,
+			Supplier<Boolean> isVisible)
 	{
 		super(id,model);
 		this.required = required;
@@ -80,10 +84,13 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 		public JavaKeyStorePropertiesForm(String id, IModel<JavaKeyStorePropertiesFormData> model)
 		{
 			super(id,new CompoundPropertyModel<>(model));
-			add(new BootstrapFormComponentFeedbackBorder("typeFeedback",new DropDownChoice<KeyStoreType>("type",Arrays.asList(KeyStoreType.values())).setLabel(new ResourceModel("lbl.type")).setRequired(required)));
+			add(new BootstrapFormComponentFeedbackBorder("typeFeedback",
+					new DropDownChoice<KeyStoreType>("type",Arrays.asList(KeyStoreType.values())).setLabel(new ResourceModel("lbl.type")).setRequired(required)));
 			add(new BootstrapFormComponentFeedbackBorder("uriFeedback",new TextField<String>("uri").setLabel(new ResourceModel("lbl.uri")).setRequired(required)));
-			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",new PasswordTextField("password").setResetPassword(false).setLabel(new ResourceModel("lbl.password")).setRequired(required)));
-			add(new BootstrapFormComponentFeedbackBorder("defaultAliasFeedback",new TextField<String>("defaultAlias").setLabel(new ResourceModel("lbl.defaultAlias"))).setVisible(showDefaultAlias));
+			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",
+					new PasswordTextField("password").setResetPassword(false).setLabel(new ResourceModel("lbl.password")).setRequired(required)));
+			add(new BootstrapFormComponentFeedbackBorder("defaultAliasFeedback",new TextField<String>("defaultAlias").setLabel(new ResourceModel("lbl.defaultAlias")))
+					.setVisible(showDefaultAlias));
 			add(createTestButton("test"));
 		}
 

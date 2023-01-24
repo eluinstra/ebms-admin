@@ -15,39 +15,46 @@
  */
 package nl.clockwork.ebms.admin.dao;
 
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipOutputStream;
-
-import org.apache.commons.csv.CSVPrinter;
-
 import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.model.CPA;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
 import nl.clockwork.ebms.admin.web.message.TimeUnit;
+import org.apache.commons.csv.CSVPrinter;
 
 public interface EbMSDAO
 {
 	CPA findCPA(String cpaId);
+
 	long countCPAs();
+
 	List<String> selectCPAIds();
+
 	List<CPA> selectCPAs(long first, long count);
 
 	EbMSMessage findMessage(String messageId);
+
 	boolean existsResponseMessage(String messageId);
+
 	EbMSMessage findResponseMessage(String messageId);
+
 	long countMessages(EbMSMessageFilter filter);
+
 	List<EbMSMessage> selectMessages(EbMSMessageFilter filter, long first, long count);
 
 	EbMSAttachment findAttachment(String messageId, String contentId);
-	
+
 	List<String> selectMessageIds(String cpaId, String fromRole, String toRole, EbMSMessageStatus...status);
 
 	Map<Integer,Integer> selectMessageTraffic(LocalDateTime from, LocalDateTime to, TimeUnit timeUnit, EbMSMessageStatus...status);
-	
+
 	void writeMessageToZip(String messageId, ZipOutputStream stream);
+
 	void printMessagesToCSV(CSVPrinter printer, EbMSMessageFilter filter);
 }

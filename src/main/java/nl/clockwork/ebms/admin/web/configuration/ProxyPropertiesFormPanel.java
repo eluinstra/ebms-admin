@@ -15,14 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.PasswordTextField;
-import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.util.io.IClusterable;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -32,6 +24,14 @@ import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.Supplier;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.PasswordTextField;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.util.io.IClusterable;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProxyPropertiesFormPanel extends Panel

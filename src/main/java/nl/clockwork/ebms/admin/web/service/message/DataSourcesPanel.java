@@ -15,11 +15,10 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
+
 import java.util.List;
-
-import org.apache.wicket.markup.html.panel.Panel;
-
 import nl.clockwork.ebms.service.model.DataSource;
+import org.apache.wicket.markup.html.panel.Panel;
 
 public abstract class DataSourcesPanel extends Panel implements DataSources
 {

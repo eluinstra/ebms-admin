@@ -15,16 +15,15 @@
  */
 package nl.clockwork.ebms.admin.model;
 
+
 import java.time.Instant;
-
-import org.apache.wicket.util.io.IClusterable;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
+import org.apache.wicket.util.io.IClusterable;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)

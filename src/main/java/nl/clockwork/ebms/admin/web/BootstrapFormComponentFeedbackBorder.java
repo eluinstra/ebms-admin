@@ -15,6 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web;
 
+
 import org.apache.wicket.feedback.ContainerFeedbackMessageFilter;
 import org.apache.wicket.feedback.FeedbackCollector;
 import org.apache.wicket.feedback.IFeedback;
@@ -43,10 +44,10 @@ public class BootstrapFormComponentFeedbackBorder extends Border implements IFee
 	protected void onComponentTag(ComponentTag tag)
 	{
 		if (new FeedbackCollector(getPage()).collect(getMessagesFilter()).size() > 0)
-			tag.put("class",(tag.getAttribute("class") == null ? "" :  tag.getAttribute("class") + " ") + "has-error");
+			tag.put("class",(tag.getAttribute("class") == null ? "" : tag.getAttribute("class") + " ") + "has-error");
 		super.onComponentTag(tag);
 	}
-	
+
 	protected IFeedbackMessageFilter getMessagesFilter()
 	{
 		return new ContainerFeedbackMessageFilter(this);

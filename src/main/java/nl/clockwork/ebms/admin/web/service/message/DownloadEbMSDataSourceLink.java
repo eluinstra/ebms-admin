@@ -15,6 +15,10 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
+
+import lombok.val;
+import nl.clockwork.ebms.admin.web.Utils;
+import nl.clockwork.ebms.service.model.DataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
@@ -24,10 +28,6 @@ import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.encoding.UrlEncoder;
 import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.resource.IResourceStream;
-
-import lombok.val;
-import nl.clockwork.ebms.admin.web.Utils;
-import nl.clockwork.ebms.service.model.DataSource;
 
 public class DownloadEbMSDataSourceLink extends Link<DataSource>
 {
@@ -43,15 +43,14 @@ public class DownloadEbMSDataSourceLink extends Link<DataSource>
 	public void onClick()
 	{
 		val o = getModelObject();
-		val fileName = UrlEncoder.QUERY_INSTANCE.encode(StringUtils.isEmpty(o.getName()) ? "ebMSDataSource" + Utils.getFileExtension(o.getContentType()) : o.getName(),getRequest().getCharset());
+		val fileName = UrlEncoder.QUERY_INSTANCE
+				.encode(StringUtils.isEmpty(o.getName()) ? "ebMSDataSource" + Utils.getFileExtension(o.getContentType()) : o.getName(),getRequest().getCharset());
 		val resourceStream = EbMSDataSourceResourceStream.of(o);
 		getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName,resourceStream));
 	}
 
 	private ResourceStreamRequestHandler createRequestHandler(String fileName, IResourceStream resourceStream)
 	{
-		return new ResourceStreamRequestHandler(resourceStream)
-				.setFileName(fileName)
-				.setContentDisposition(ContentDisposition.ATTACHMENT);
+		return new ResourceStreamRequestHandler(resourceStream).setFileName(fileName).setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 }

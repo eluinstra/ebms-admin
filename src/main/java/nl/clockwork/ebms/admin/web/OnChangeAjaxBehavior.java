@@ -15,12 +15,12 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import org.apache.wicket.ajax.AjaxRequestTarget;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.experimental.FieldDefaults;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)

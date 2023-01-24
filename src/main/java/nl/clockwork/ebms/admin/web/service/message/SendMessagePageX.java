@@ -15,30 +15,16 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
+
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.bind.JAXBException;
-
-import org.apache.commons.collections4.ListUtils;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement;
-
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.Action;
@@ -59,15 +45,27 @@ import nl.clockwork.ebms.jaxb.JAXBParser;
 import nl.clockwork.ebms.service.EbMSMessageService;
 import nl.clockwork.ebms.service.model.MessageRequest;
 import nl.clockwork.ebms.service.model.MessageRequestProperties;
+import org.apache.commons.collections4.ListUtils;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SendMessagePageX extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="cpaService")
+	@SpringBean(name = "cpaService")
 	CPAService cpaService;
-	@SpringBean(name="ebMSMessageService")
+	@SpringBean(name = "ebMSMessageService")
 	EbMSMessageService ebMSMessageService;
 
 	public SendMessagePageX()
@@ -75,7 +73,7 @@ public class SendMessagePageX extends BasePage
 		add(new BootstrapFeedbackPanel("feedback").setOutputMarkupId(true));
 		add(new MessageForm("form"));
 	}
-	
+
 	@Override
 	public String getPageTitle()
 	{
@@ -157,7 +155,8 @@ public class SendMessagePageX extends BasePage
 					o.resetFromRoles(CPAUtils.getRoleNames(cpa,o.getFromPartyId()));
 					o.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,o.getFromPartyId()));
 					o.resetToRoles(CPAUtils.getOtherRoleNamesByPartyId(cpa,o.getFromPartyId()));
-					o.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,o.getFromPartyId(),o.getFromRole()),CPAUtils.getServiceNamesCanReceive(cpa,o.getToPartyId(),o.getToRole())));
+					o.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,o.getFromPartyId(),o.getFromRole()),
+							CPAUtils.getServiceNamesCanReceive(cpa,o.getToPartyId(),o.getToRole())));
 					o.resetActions();
 					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 				}
@@ -184,7 +183,8 @@ public class SendMessagePageX extends BasePage
 				{
 					val o = getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
-					o.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,o.getFromPartyId(),o.getFromRole()),CPAUtils.getServiceNamesCanReceive(cpa,o.getToPartyId(),o.getToRole())));
+					o.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,o.getFromPartyId(),o.getFromRole()),
+							CPAUtils.getServiceNamesCanReceive(cpa,o.getToPartyId(),o.getToRole())));
 					o.resetActions();
 					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 				}
@@ -212,7 +212,8 @@ public class SendMessagePageX extends BasePage
 					val o = getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
 					o.resetToRoles(CPAUtils.getRoleNames(cpa,o.getToPartyId()));
-					o.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,o.getFromPartyId(),o.getFromRole()),CPAUtils.getServiceNamesCanReceive(cpa,o.getToPartyId(),o.getToRole())));
+					o.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,o.getFromPartyId(),o.getFromRole()),
+							CPAUtils.getServiceNamesCanReceive(cpa,o.getToPartyId(),o.getToRole())));
 					o.resetActions();
 					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 				}
@@ -239,7 +240,8 @@ public class SendMessagePageX extends BasePage
 				{
 					val o = getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
-					o.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,o.getFromPartyId(),o.getFromRole()),CPAUtils.getServiceNamesCanReceive(cpa,o.getToPartyId(),o.getToRole())));
+					o.resetServices(ListUtils.intersection(CPAUtils.getServiceNamesCanSend(cpa,o.getFromPartyId(),o.getFromRole()),
+							CPAUtils.getServiceNamesCanReceive(cpa,o.getToPartyId(),o.getToRole())));
 					o.resetActions();
 					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 				}
@@ -267,7 +269,8 @@ public class SendMessagePageX extends BasePage
 				{
 					val o = getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
-					o.resetActions(ListUtils.intersection(CPAUtils.getFromActionNamesCanSend(cpa,o.getFromPartyId(),o.getFromRole(),o.getService()),CPAUtils.getFromActionNamesCanReceive(cpa,o.getToPartyId(),o.getToRole(),o.getService())));
+					o.resetActions(ListUtils.intersection(CPAUtils.getFromActionNamesCanSend(cpa,o.getFromPartyId(),o.getFromRole(),o.getService()),
+							CPAUtils.getFromActionNamesCanReceive(cpa,o.getToPartyId(),o.getToRole(),o.getService())));
 					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 				}
 				catch (JAXBException e)
@@ -288,11 +291,12 @@ public class SendMessagePageX extends BasePage
 			actions.setLabel(new ResourceModel("lbl.action"));
 			actions.setRequired(true);
 			actions.setOutputMarkupId(true);
-			Consumer<AjaxRequestTarget> onUpdate = t->
+			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				val o = getModelObject();
 				if (WicketApplication.get().getMessageEditPanels().containsKey(MessageProvider.createId(o.getService(),o.getAction())))
-					dataSources.replaceWith(dataSources = WicketApplication.get().getMessageEditPanels().get(MessageProvider.createId(o.getService(),o.getAction())).getPanel(dataSources.getId()));
+					dataSources.replaceWith(dataSources =
+							WicketApplication.get().getMessageEditPanels().get(MessageProvider.createId(o.getService(),o.getAction())).getPanel(dataSources.getId()));
 				else
 					dataSources.replaceWith(dataSources = new DefaultDataSourcesPanel(dataSources.getId()));
 				o.setRawInput(false);
@@ -308,7 +312,8 @@ public class SendMessagePageX extends BasePage
 			Supplier<Boolean> isVisible = () ->
 			{
 				val o = getModelObject();
-				return o.getAction() != null && (WicketApplication.get().getMessageEditPanels().containsKey(MessageProvider.createId(o.getService(),o.getAction()))) || (dataSources != null && !(dataSources instanceof EmptyDataSourcesPanel || dataSources instanceof DefaultDataSourcesPanel));
+				return o.getAction() != null && (WicketApplication.get().getMessageEditPanels().containsKey(MessageProvider.createId(o.getService(),o.getAction())))
+						|| (dataSources != null && !(dataSources instanceof EmptyDataSourcesPanel || dataSources instanceof DefaultDataSourcesPanel));
 			};
 			return new WebMarkupContainer("rawInputContainer",isVisible);
 		}
@@ -323,7 +328,8 @@ public class SendMessagePageX extends BasePage
 				if (o.isRawInput())
 					dataSources.replaceWith(dataSources = new DefaultDataSourcesPanel(dataSources.getId()));
 				else
-					dataSources.replaceWith(dataSources = WicketApplication.get().getMessageEditPanels().get(MessageProvider.createId(o.getService(),o.getAction())).getPanel(dataSources.getId()));
+					dataSources.replaceWith(dataSources =
+							WicketApplication.get().getMessageEditPanels().get(MessageProvider.createId(o.getService(),o.getAction())).getPanel(dataSources.getId()));
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
@@ -371,59 +377,70 @@ public class SendMessagePageX extends BasePage
 			getFromPartyIds().clear();
 			setFromPartyId(null);
 		}
+
 		public void resetFromPartyIds(List<String> partyIds)
 		{
 			resetFromPartyIds();
 			getFromPartyIds().addAll(partyIds);
 		}
+
 		public void resetFromRoles()
 		{
 			getFromRoles().clear();
 			setFromRole(null);
 		}
+
 		public void resetFromRoles(List<String> roles)
 		{
 			resetFromRoles();
 			getFromRoles().addAll(roles);
 			setFromRole(getFromRoles().size() == 1 ? getFromRoles().get(0) : null);
 		}
+
 		public void resetToPartyIds()
 		{
 			getToPartyIds().clear();
 			setToPartyId(null);
 		}
+
 		public void resetToPartyIds(List<String> partyIds)
 		{
 			resetToPartyIds();
 			getToPartyIds().addAll(partyIds);
 			setToPartyId(getFromPartyId() != null && getToPartyIds().size() == 1 ? getToPartyIds().get(0) : null);
 		}
+
 		public void resetToRoles()
 		{
 			getToRoles().clear();
 			setToRole(null);
 		}
+
 		public void resetToRoles(List<String> roles)
 		{
 			resetToRoles();
 			getToRoles().addAll(roles);
 			setToRole(getToRoles().size() == 1 ? getToRoles().get(0) : null);
 		}
+
 		public void resetServices()
 		{
 			getServices().clear();
 			setService(null);
 		}
+
 		public void resetServices(List<String> serviceNames)
 		{
 			resetServices();
 			getServices().addAll(serviceNames);
 		}
+
 		public void resetActions()
 		{
 			getActions().clear();
 			setAction(null);
 		}
+
 		public void resetActions(List<String> actionNames)
 		{
 			resetActions();

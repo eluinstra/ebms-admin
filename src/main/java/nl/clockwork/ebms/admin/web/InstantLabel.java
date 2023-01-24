@@ -15,8 +15,12 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import java.time.Instant;
 
+import java.time.Instant;
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
 import org.apache.wicket.IGenericComponent;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
@@ -24,13 +28,8 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.convert.IConverter;
 
-import lombok.AccessLevel;
-import lombok.NonNull;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class InstantLabel extends Label implements IGenericComponent<Instant, InstantLabel>
+public class InstantLabel extends Label implements IGenericComponent<Instant,InstantLabel>
 {
 	private static final long serialVersionUID = 1L;
 	@NonNull
@@ -53,7 +52,7 @@ public class InstantLabel extends Label implements IGenericComponent<Instant, In
 
 	public InstantLabel(String id, IModel<Instant> model, @NonNull InstantConverter converter)
 	{
-		super(id, model);
+		super(id,model);
 		this.converter = converter;
 	}
 

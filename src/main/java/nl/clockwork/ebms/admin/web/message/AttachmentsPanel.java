@@ -15,20 +15,19 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-import java.util.List;
 
+import java.util.List;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
+import nl.clockwork.ebms.admin.dao.EbMSDAO;
+import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-
-import lombok.AccessLevel;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.admin.dao.EbMSDAO;
-import nl.clockwork.ebms.admin.model.EbMSAttachment;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AttachmentsPanel extends Panel
@@ -54,7 +53,7 @@ public class AttachmentsPanel extends Panel
 	}
 
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="ebMSAdminDAO")
+	@SpringBean(name = "ebMSAdminDAO")
 	EbMSDAO ebMSDAO;
 
 	public AttachmentsPanel(String id, IModel<List<EbMSAttachment>> attachments)

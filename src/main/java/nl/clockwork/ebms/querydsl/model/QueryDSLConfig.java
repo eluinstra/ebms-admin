@@ -20,14 +20,6 @@ import static io.vavr.API.Case;
 import static io.vavr.API.Match;
 import static nl.clockwork.ebms.Predicates.contains;
 
-import java.sql.Types;
-
-import javax.sql.DataSource;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import com.atomikos.jdbc.AtomikosDataSourceBean;
 import com.querydsl.sql.DB2Templates;
 import com.querydsl.sql.H2Templates;
@@ -41,10 +33,11 @@ import com.querydsl.sql.SQLTemplates;
 import com.querydsl.sql.spring.SpringConnectionProvider;
 import com.querydsl.sql.spring.SpringExceptionTranslator;
 import com.zaxxer.hikari.HikariDataSource;
-
+import java.sql.Types;
+import javax.sql.DataSource;
 import lombok.AccessLevel;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
+import lombok.val;
 import nl.clockwork.ebms.querydsl.CachedOutputStreamType;
 import nl.clockwork.ebms.querydsl.CollaborationProtocolAgreementType;
 import nl.clockwork.ebms.querydsl.DeliveryTaskStatusType;
@@ -52,6 +45,9 @@ import nl.clockwork.ebms.querydsl.DocumentType;
 import nl.clockwork.ebms.querydsl.EbMSMessageEventTypeType;
 import nl.clockwork.ebms.querydsl.EbMSMessageStatusType;
 import nl.clockwork.ebms.querydsl.X509CertificateType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -59,7 +55,7 @@ public class QueryDSLConfig
 {
 	@Autowired
 	DataSource dataSource;
-	
+
 	@Bean
 	public SQLQueryFactory queryFactory()
 	{
@@ -93,15 +89,15 @@ public class QueryDSLConfig
 	private SQLTemplates createSQLTemplates(DataSource dataSource)
 	{
 		val driverClassName = getDriverClassName(dataSource) == null ? "db2" : getDriverClassName(dataSource);
-		return Match(driverClassName).of(
-				Case($(contains("db2")),o -> DB2Templates.builder().build()),
+		return Match(driverClassName).of(Case($(contains("db2")),o -> DB2Templates.builder().build()),
 				Case($(contains("h2")),o -> H2Templates.builder().build()),
 				Case($(contains("hsqldb")),o -> HSQLDBTemplates.builder().build()),
 				Case($(contains("mariadb")),o -> MySQLTemplates.builder().build()),
 				Case($(contains("oracle")),o -> OracleTemplates.builder().build()),
 				Case($(contains("postgresql")),o -> PostgreSQLTemplates.builder().build()),
 				Case($(contains("sqlserver")),o -> SQLServer2012Templates.builder().build()),
-				Case($(),o -> {
+				Case($(),o ->
+				{
 					throw new IllegalStateException("Driver class name " + driverClassName + " not recognized!");
 				}));
 	}

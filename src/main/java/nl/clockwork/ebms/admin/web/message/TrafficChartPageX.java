@@ -15,22 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-import java.time.LocalDateTime;
-import java.time.temporal.TemporalAmount;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.io.IClusterable;
 
 import de.adesso.wickedcharts.highcharts.options.Axis;
 import de.adesso.wickedcharts.highcharts.options.ChartOptions;
@@ -43,13 +27,19 @@ import de.adesso.wickedcharts.highcharts.options.Title;
 import de.adesso.wickedcharts.highcharts.options.VerticalAlignment;
 import de.adesso.wickedcharts.highcharts.options.series.SimpleSeries;
 import de.adesso.wickedcharts.wicket8.highcharts.Chart;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAmount;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
+import lombok.val;
 import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
@@ -58,12 +48,21 @@ import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.Consumer;
 import nl.clockwork.ebms.admin.web.DropDownChoice;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.io.IClusterable;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TrafficChartPageX extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="ebMSAdminDAO")
+	@SpringBean(name = "ebMSAdminDAO")
 	EbMSDAO ebMSDAO;
 	Chart chart;
 
@@ -71,13 +70,13 @@ public class TrafficChartPageX extends BasePage
 	{
 		this(Model.of(getTrafficChartFormData(TimeUnit.DAY,EbMSMessageTrafficChartOption.ALL)));
 	}
-	
+
 	public TrafficChartPageX(IModel<TrafficChartFormData> model)
 	{
 		add(new BootstrapFeedbackPanel("feedback"));
-    add(new TrafficChartForm("form",model));
-  }
-	
+		add(new TrafficChartForm("form",model));
+	}
+
 	private static TrafficChartFormData getTrafficChartFormData(TimeUnit timeUnit, EbMSMessageTrafficChartOption ebMSMessageTrafficChartOption)
 	{
 		val from = timeUnit.getFrom();
@@ -89,18 +88,18 @@ public class TrafficChartPageX extends BasePage
 	{
 		return getLocalizer().getString("trafficChart",this);
 	}
-	
+
 	public class TrafficChartForm extends Form<TrafficChartFormData>
 	{
 		private static final long serialVersionUID = 1L;
-		
+
 		public TrafficChartForm(String id, IModel<TrafficChartFormData> model)
 		{
 			super(id,new CompoundPropertyModel<>(model));
 			add(createTimeUnitChoice("timeUnit"));
 			add(createMinusLink("minus"));
 			add(createPlusLink("plus"));
-	    chart = new Chart("chart",createOptions());
+			chart = new Chart("chart",createOptions());
 			add(chart);
 			add(createEbMSMessageTrafficChartOptions("ebMSMessageTrafficChartOptions"));
 		}
@@ -179,7 +178,12 @@ public class TrafficChartPageX extends BasePage
 			result.setTitle(new Title(o.getEbMSMessageTrafficChartOption().getTitle() + " " + o.timeUnit.getDateFormatter().format(o.getFrom())));
 			result.setxAxis(new Axis().setCategories(dateStrings));
 			result.setyAxis(new Axis().setTitle(new Title("Messages")));
-			result.setLegend(new Legend().setLayout(LegendLayout.VERTICAL).setAlign(HorizontalAlignment.RIGHT).setVerticalAlign(VerticalAlignment.TOP).setX(0).setY(1000).setBorderWidth(0));
+			result.setLegend(new Legend().setLayout(LegendLayout.VERTICAL)
+					.setAlign(HorizontalAlignment.RIGHT)
+					.setVerticalAlign(VerticalAlignment.TOP)
+					.setX(0)
+					.setY(1000)
+					.setBorderWidth(0));
 			result.setSeries(Arrays.stream(o.getEbMSMessageTrafficChartOption().getEbMSMessageTrafficChartSeries())
 					.map(s -> new SimpleSeries().setName(s.getName()).setColor(s.getColorX()).setData(getMessages(dateStrings,s.getEbMSMessageStatuses())))
 					.collect(Collectors.toList()));
@@ -190,11 +194,13 @@ public class TrafficChartPageX extends BasePage
 		{
 			val o = getModelObject();
 			val messageTraffic = ebMSDAO.selectMessageTraffic(o.from,o.getTo(),o.timeUnit,status);
-			return dates.stream().map(d -> messageTraffic.containsKey(Integer.parseInt(d)) ? messageTraffic.get(Integer.parseInt(d)) : 0).collect(Collectors.toList());
+			return dates.stream()
+					.map(d -> messageTraffic.containsKey(Integer.parseInt(d)) ? messageTraffic.get(Integer.parseInt(d)) : 0)
+					.collect(Collectors.toList());
 		}
 
 	}
-	
+
 	private List<LocalDateTime> calculateDates(TemporalAmount period, LocalDateTime from, LocalDateTime to)
 	{
 		val dates = new ArrayList<LocalDateTime>();
@@ -219,15 +225,17 @@ public class TrafficChartPageX extends BasePage
 		LocalDateTime from;
 		@NonNull
 		EbMSMessageTrafficChartOption ebMSMessageTrafficChartOption;
-		
+
 		public List<TimeUnit> getTimeUnits()
 		{
 			return Arrays.asList(TimeUnit.values());
 		}
+
 		public LocalDateTime getTo()
 		{
 			return from.plus(timeUnit.getPeriod());
 		}
+
 		public List<EbMSMessageTrafficChartOption> getEbMSMessageTrafficChartOptions()
 		{
 			return Arrays.asList(EbMSMessageTrafficChartOption.values());

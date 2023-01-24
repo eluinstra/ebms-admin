@@ -17,61 +17,62 @@ package nl.clockwork.ebms.querydsl.model;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
-import com.querydsl.core.types.dsl.*;
-
-import com.querydsl.core.types.PathMetadata;
-import javax.annotation.Generated;
 import com.querydsl.core.types.Path;
-
+import com.querydsl.core.types.PathMetadata;
+import com.querydsl.core.types.dsl.*;
 import com.querydsl.sql.ColumnMetadata;
 import java.sql.Types;
-
-
-
+import javax.annotation.Generated;
 
 /**
  * QUrlMapping is a Querydsl query type for QUrlMapping
  */
 @Generated("com.querydsl.sql.codegen.MetaDataSerializer")
-public class QUrlMapping extends com.querydsl.sql.RelationalPathBase<QUrlMapping> {
+public class QUrlMapping extends com.querydsl.sql.RelationalPathBase<QUrlMapping>
+{
 
-    private static final long serialVersionUID = -871877026;
+	private static final long serialVersionUID = -871877026;
 
-    public static final QUrlMapping urlMapping = new QUrlMapping("url_mapping");
+	public static final QUrlMapping urlMapping = new QUrlMapping("url_mapping");
 
-    public final StringPath destination = createString("destination");
+	public final StringPath destination = createString("destination");
 
-    public final StringPath source = createString("source");
+	public final StringPath source = createString("source");
 
-    public QUrlMapping(String variable) {
-        super(QUrlMapping.class, forVariable(variable), "PUBLIC", "url_mapping");
-        addMetadata();
-    }
+	public QUrlMapping(String variable)
+	{
+		super(QUrlMapping.class,forVariable(variable),"PUBLIC","url_mapping");
+		addMetadata();
+	}
 
-    public QUrlMapping(String variable, String schema, String table) {
-        super(QUrlMapping.class, forVariable(variable), schema, table);
-        addMetadata();
-    }
+	public QUrlMapping(String variable, String schema, String table)
+	{
+		super(QUrlMapping.class,forVariable(variable),schema,table);
+		addMetadata();
+	}
 
-    public QUrlMapping(String variable, String schema) {
-        super(QUrlMapping.class, forVariable(variable), schema, "url_mapping");
-        addMetadata();
-    }
+	public QUrlMapping(String variable, String schema)
+	{
+		super(QUrlMapping.class,forVariable(variable),schema,"url_mapping");
+		addMetadata();
+	}
 
-    public QUrlMapping(Path<? extends QUrlMapping> path) {
-        super(path.getType(), path.getMetadata(), "PUBLIC", "url_mapping");
-        addMetadata();
-    }
+	public QUrlMapping(Path<? extends QUrlMapping> path)
+	{
+		super(path.getType(),path.getMetadata(),"PUBLIC","url_mapping");
+		addMetadata();
+	}
 
-    public QUrlMapping(PathMetadata metadata) {
-        super(QUrlMapping.class, metadata, "PUBLIC", "url_mapping");
-        addMetadata();
-    }
+	public QUrlMapping(PathMetadata metadata)
+	{
+		super(QUrlMapping.class,metadata,"PUBLIC","url_mapping");
+		addMetadata();
+	}
 
-    public void addMetadata() {
-        addMetadata(destination, ColumnMetadata.named("destination").withIndex(2).ofType(Types.VARCHAR).withSize(256).notNull());
-        addMetadata(source, ColumnMetadata.named("source").withIndex(1).ofType(Types.VARCHAR).withSize(256).notNull());
-    }
+	public void addMetadata()
+	{
+		addMetadata(destination,ColumnMetadata.named("destination").withIndex(2).ofType(Types.VARCHAR).withSize(256).notNull());
+		addMetadata(source,ColumnMetadata.named("source").withIndex(1).ofType(Types.VARCHAR).withSize(256).notNull());
+	}
 
 }
-

@@ -15,19 +15,18 @@
  */
 package nl.clockwork.ebms.admin.web;
 
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
-
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
+import nl.clockwork.ebms.admin.Utils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-
-import lombok.AccessLevel;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.admin.Utils;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AboutPage extends BasePage
@@ -37,7 +36,8 @@ public class AboutPage extends BasePage
 	public AboutPage(final PageParameters parameters) throws FileNotFoundException, IOException
 	{
 		super(parameters);
-		add(new WebMarkupContainer("ebms-admin.version").add(new Label("version",Utils.readVersion("/META-INF/maven/nl.clockwork.ebms.admin/ebms-admin/pom.properties"))));
+		add(new WebMarkupContainer("ebms-admin.version")
+				.add(new Label("version",Utils.readVersion("/META-INF/maven/nl.clockwork.ebms.admin/ebms-admin/pom.properties"))));
 		add(new WebMarkupContainer("ebms-core.version").add(new Label("version",Utils.readVersion("/META-INF/maven/nl.clockwork.ebms/ebms-core/pom.properties"))));
 		val properties = WicketApplication.get().getPropertySourcesPlaceholderConfigurer().getProperties();
 		val writer = new StringWriter();

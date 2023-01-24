@@ -15,18 +15,11 @@
  */
 package nl.clockwork.ebms.admin.web.service.cpa;
 
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import lombok.AccessLevel;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
@@ -35,20 +28,27 @@ import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.cpa.url.URLMapping;
 import nl.clockwork.ebms.cpa.url.URLMappingService;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class URLMappingPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="urlMappingService")
+	@SpringBean(name = "urlMappingService")
 	URLMappingService urlMappingService;
 
 	public URLMappingPage()
 	{
 		this(Model.of(new URLMapping()));
 	}
-	
+
 	public URLMappingPage(IModel<URLMapping> model)
 	{
 		add(new BootstrapFeedbackPanel("feedback"));
@@ -68,8 +68,10 @@ public class URLMappingPage extends BasePage
 		public EditURLMappingForm(String id, IModel<URLMapping> model)
 		{
 			super(id,new CompoundPropertyModel<>(model));
-			add(new BootstrapFormComponentFeedbackBorder("sourceFeedback",new TextField<String>("source").setRequired(true).setLabel(new ResourceModel("lbl.source"))));
-			add(new BootstrapFormComponentFeedbackBorder("destinationFeedback",new TextField<String>("destination").setRequired(true).setLabel(new ResourceModel("lbl.destination"))));
+			add(new BootstrapFormComponentFeedbackBorder("sourceFeedback",
+					new TextField<String>("source").setRequired(true).setLabel(new ResourceModel("lbl.source"))));
+			add(new BootstrapFormComponentFeedbackBorder("destinationFeedback",
+					new TextField<String>("destination").setRequired(true).setLabel(new ResourceModel("lbl.destination"))));
 			add(createSetButton("set"));
 			add(new ResetButton("reset",new ResourceModel("cmd.reset"),URLMappingPage.class));
 		}

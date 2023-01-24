@@ -15,9 +15,23 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
+
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import nl.clockwork.ebms.admin.Constants;
+import nl.clockwork.ebms.admin.web.Action;
+import nl.clockwork.ebms.admin.web.BasePage;
+import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
+import nl.clockwork.ebms.admin.web.InstantLabel;
+import nl.clockwork.ebms.admin.web.Link;
+import nl.clockwork.ebms.admin.web.PageLink;
+import nl.clockwork.ebms.service.EbMSMessageService;
+import nl.clockwork.ebms.service.model.DataSource;
+import nl.clockwork.ebms.service.model.Message;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.IGenericComponent;
@@ -30,21 +44,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-
-import lombok.AccessLevel;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
-import nl.clockwork.ebms.admin.Constants;
-import nl.clockwork.ebms.admin.web.Action;
-import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.admin.web.InstantLabel;
-import nl.clockwork.ebms.admin.web.Link;
-import nl.clockwork.ebms.admin.web.PageLink;
-import nl.clockwork.ebms.service.EbMSMessageService;
-import nl.clockwork.ebms.service.model.DataSource;
-import nl.clockwork.ebms.service.model.Message;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -71,6 +70,7 @@ public class MessagePage extends BasePage implements IGenericComponent<Message,M
 			item.add(new Label("contentType"));
 		}
 	}
+
 	private class LoadableDetachableEbMSDataSourceModel extends LoadableDetachableModel<List<DataSource>>
 	{
 		private static final long serialVersionUID = 1L;
@@ -83,7 +83,7 @@ public class MessagePage extends BasePage implements IGenericComponent<Message,M
 	}
 
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="ebMSMessageService")
+	@SpringBean(name = "ebMSMessageService")
 	EbMSMessageService ebMSMessageService;
 
 	public MessagePage(IModel<Message> model, WebPage responsePage, MessageProcessor messageProcessor)
@@ -116,15 +116,12 @@ public class MessagePage extends BasePage implements IGenericComponent<Message,M
 	private Link<Void> createViewRefToMessageIdLink(String id, final MessageProcessor messageProcessor)
 	{
 		Action onClick = () -> setResponsePage(
-				new MessagePage(
-						Model.of(ebMSMessageService.getMessage(getModelObject().getProperties().getRefToMessageId(),null)),
-						this,
-						messageProcessor));
+				new MessagePage(Model.of(ebMSMessageService.getMessage(getModelObject().getProperties().getRefToMessageId(),null)),this,messageProcessor));
 		val result = new Link<Void>(id,onClick);
 		result.add(new Label("properties.refToMessageId"));
 		return result;
 	}
-	
+
 	private Link<Void> createProcessLink(String id, final MessageProcessor messageProcessor, final WebPage responsePage)
 	{
 		Action onClick = () ->

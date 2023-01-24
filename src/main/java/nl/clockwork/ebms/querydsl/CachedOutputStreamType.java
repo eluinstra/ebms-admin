@@ -15,17 +15,15 @@
  */
 package nl.clockwork.ebms.querydsl;
 
+
+import com.querydsl.sql.types.AbstractType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import org.apache.cxf.io.CachedOutputStream;
-
-import com.querydsl.sql.types.AbstractType;
-
 import lombok.val;
+import org.apache.cxf.io.CachedOutputStream;
 
 public class CachedOutputStreamType extends AbstractType<CachedOutputStream>
 {

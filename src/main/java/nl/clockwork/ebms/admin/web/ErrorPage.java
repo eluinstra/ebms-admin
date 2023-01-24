@@ -15,20 +15,19 @@
  */
 package nl.clockwork.ebms.admin.web;
 
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
-
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.authorization.UnauthorizedActionException;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.protocol.http.PageExpiredException;
-
-import lombok.AccessLevel;
-import lombok.NonNull;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -37,27 +36,30 @@ public class ErrorPage extends BasePage
 	private enum ErrorType
 	{
 		ERROR("error"), PAGE_EXPIRED("pageExpired"), UNAUTHORIZED_ACTION("unauthorizedAction");
-		
+
 		private String title;
 
 		private ErrorType(String title)
 		{
 			this.title = title;
 		}
+
 		public String getTitle()
 		{
 			return title;
 		}
+
 		public static ErrorType get(Exception exception)
 		{
 			if (exception instanceof PageExpiredException)
 				return PAGE_EXPIRED;
-			else if(exception instanceof UnauthorizedActionException)
+			else if (exception instanceof UnauthorizedActionException)
 				return UNAUTHORIZED_ACTION;
 			else
 				return ERROR;
 		}
 	}
+
 	private static final long serialVersionUID = 1L;
 	@NonNull
 	ErrorType errorType;

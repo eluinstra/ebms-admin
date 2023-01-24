@@ -15,9 +15,9 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import org.apache.wicket.model.IModel;
 
 import lombok.Builder;
+import org.apache.wicket.model.IModel;
 
 public class Button extends org.apache.wicket.markup.html.form.Button
 {

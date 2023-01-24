@@ -15,14 +15,15 @@
  */
 package nl.clockwork.ebms.admin.dao;
 
+
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.StringPath;
-
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
 import nl.clockwork.ebms.querydsl.model.QEbmsMessage;
 import nl.clockwork.ebms.service.model.Party;
 
-public interface WithMessageFilter {
+public interface WithMessageFilter
+{
 	default BooleanBuilder applyFilter(QEbmsMessage table, EbMSMessageFilter messageContext, BooleanBuilder builder)
 	{
 		if (messageContext != null)

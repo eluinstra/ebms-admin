@@ -15,20 +15,19 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
+
 import java.util.ArrayList;
 import java.util.Iterator;
-
-import org.apache.wicket.markup.repeater.data.IDataProvider;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
+import lombok.val;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.service.EbMSMessageService;
 import nl.clockwork.ebms.service.model.MessageFilter;
+import org.apache.wicket.markup.repeater.data.IDataProvider;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor(staticName = "of")
@@ -41,7 +40,7 @@ public class MessageDataProvider implements IDataProvider<String>
 	@Override
 	public Iterator<? extends String> iterator(long first, long count)
 	{
-		val messageIds = Utils.toList(ebMSMessageService.getUnprocessedMessageIds(filter,(int)(first+count)));
+		val messageIds = Utils.toList(ebMSMessageService.getUnprocessedMessageIds(filter,(int)(first + count)));
 		return messageIds == null ? new ArrayList<String>().iterator() : messageIds.listIterator((int)first);
 	}
 

@@ -15,10 +15,19 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
-
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import nl.clockwork.ebms.admin.Utils;
+import nl.clockwork.ebms.admin.web.message.CachedOutputResourceStream;
+import nl.clockwork.ebms.service.EbMSMessageService;
+import nl.clockwork.ebms.service.model.MessageFilter;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.cxf.io.CachedOutputStream;
@@ -27,16 +36,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.resource.IResourceStream;
-
-import lombok.AccessLevel;
-import lombok.NonNull;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
-import nl.clockwork.ebms.admin.Utils;
-import nl.clockwork.ebms.admin.web.message.CachedOutputResourceStream;
-import nl.clockwork.ebms.service.EbMSMessageService;
-import nl.clockwork.ebms.service.model.MessageFilter;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -74,15 +73,13 @@ public class DownloadEbMSMessageIdsCSVLink extends Link<Void>
 
 	private void printMessagesToCSV(CSVPrinter printer, List<String> messageIds) throws IOException
 	{
-		for (val id: messageIds)
+		for (val id : messageIds)
 			printer.printRecord(id);
 	}
 
 	private ResourceStreamRequestHandler createRequestHandler(IResourceStream resourceStream)
 	{
-		return new ResourceStreamRequestHandler(resourceStream)
-				.setFileName("messages.csv")
-				.setContentDisposition(ContentDisposition.ATTACHMENT);
+		return new ResourceStreamRequestHandler(resourceStream).setFileName("messages.csv").setContentDisposition(ContentDisposition.ATTACHMENT);
 	}
 
 }

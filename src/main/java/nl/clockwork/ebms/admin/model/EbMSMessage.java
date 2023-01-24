@@ -15,15 +15,11 @@
  */
 package nl.clockwork.ebms.admin.model;
 
+
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
-
 import javax.xml.transform.TransformerException;
-
-import org.apache.wicket.util.io.IClusterable;
-import org.w3c.dom.Document;
-
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,6 +27,8 @@ import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.util.DOMUtils;
+import org.apache.wicket.util.io.IClusterable;
+import org.w3c.dom.Document;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -67,7 +65,21 @@ public class EbMSMessage implements IClusterable
 	@NonNull
 	List<DeliveryLog> deliveryLogs = Collections.emptyList();
 
-	public EbMSMessage(@NonNull Instant timestamp, @NonNull String cpaId, @NonNull String conversationId, @NonNull String messageId, String refToMessageId, Instant timeToLive, @NonNull String fromPartyId, String fromRole, @NonNull String toPartyId, String toRole, @NonNull String service, @NonNull String action, EbMSMessageStatus status, Instant statusTime)
+	public EbMSMessage(
+			@NonNull Instant timestamp,
+			@NonNull String cpaId,
+			@NonNull String conversationId,
+			@NonNull String messageId,
+			String refToMessageId,
+			Instant timeToLive,
+			@NonNull String fromPartyId,
+			String fromRole,
+			@NonNull String toPartyId,
+			String toRole,
+			@NonNull String service,
+			@NonNull String action,
+			EbMSMessageStatus status,
+			Instant statusTime)
 	{
 		this.timestamp = timestamp;
 		this.cpaId = cpaId;
@@ -87,7 +99,22 @@ public class EbMSMessage implements IClusterable
 		this.deliveryLogs = Collections.emptyList();
 	}
 
-	public EbMSMessage(@NonNull Instant timestamp, @NonNull String cpaId, @NonNull String conversationId, @NonNull String messageId, String refToMessageId, Instant timeToLive, @NonNull String fromPartyId, String fromRole, @NonNull String toPartyId, String toRole, @NonNull String service, @NonNull String action, Document content, EbMSMessageStatus status, Instant statusTime) throws TransformerException
+	public EbMSMessage(
+			@NonNull Instant timestamp,
+			@NonNull String cpaId,
+			@NonNull String conversationId,
+			@NonNull String messageId,
+			String refToMessageId,
+			Instant timeToLive,
+			@NonNull String fromPartyId,
+			String fromRole,
+			@NonNull String toPartyId,
+			String toRole,
+			@NonNull String service,
+			@NonNull String action,
+			Document content,
+			EbMSMessageStatus status,
+			Instant statusTime) throws TransformerException
 	{
 		this.timestamp = timestamp;
 		this.cpaId = cpaId;

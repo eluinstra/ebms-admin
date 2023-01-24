@@ -15,13 +15,24 @@
  */
 package nl.clockwork.ebms.admin.web;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
+import nl.clockwork.ebms.admin.EmbeddedAppConfig;
+import nl.clockwork.ebms.admin.PropertySourcesPlaceholderConfigurer;
+import nl.clockwork.ebms.admin.web.menu.MenuDivider;
+import nl.clockwork.ebms.admin.web.menu.MenuItem;
+import nl.clockwork.ebms.admin.web.menu.MenuLinkItem;
+import nl.clockwork.ebms.event.MessageEventListenerConfig.EventListenerType;
 import org.apache.wicket.core.request.handler.PageProvider;
 import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
 import org.apache.wicket.markup.html.WebPage;
@@ -31,18 +42,6 @@ import org.apache.wicket.request.cycle.IRequestCycleListener;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.resource.JavaScriptResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.admin.EmbeddedAppConfig;
-import nl.clockwork.ebms.admin.PropertySourcesPlaceholderConfigurer;
-import nl.clockwork.ebms.admin.web.menu.MenuDivider;
-import nl.clockwork.ebms.admin.web.menu.MenuItem;
-import nl.clockwork.ebms.admin.web.menu.MenuLinkItem;
-import nl.clockwork.ebms.event.MessageEventListenerConfig.EventListenerType;
 
 /**
  * Application object for your web application. If you want to run this application without deploying, run the Start class.
@@ -61,7 +60,7 @@ public class WicketApplication extends WebApplication
 	Map<String,MessageProvider.MessageViewPanel> messageViewPanels = new HashMap<>();
 	Map<String,MessageProvider.MessageEditPanel> messageEditPanels = new HashMap<>();
 	PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = EmbeddedAppConfig.PROPERTY_SOURCE;
-	
+
 	public WicketApplication(@NonNull Integer maxItemsPerPage, @NonNull EventListenerType eventListenerType)
 	{
 		this.maxItemsPerPage = maxItemsPerPage;
@@ -77,7 +76,7 @@ public class WicketApplication extends WebApplication
 			menuItems.add(createExtensionsMenuItem("5",extensionProviders));
 
 		val messageProviders = MessageProvider.get();
-		messageProviders.forEach(p ->p.getMessageViewPanels().forEach(vp -> messageViewPanels.put(vp.getId(),vp)));
+		messageProviders.forEach(p -> p.getMessageViewPanels().forEach(vp -> messageViewPanels.put(vp.getId(),vp)));
 		messageProviders.forEach(p -> p.getMessageEditPanels().forEach(ep -> messageEditPanels.put(ep.getId(),ep)));
 
 		menuItems.add(createAboutMEnuItem("6"));
@@ -108,7 +107,7 @@ public class WicketApplication extends WebApplication
 		if (EventListenerType.DAO == eventListenerType)
 			new MenuLinkItem(result,"4","messageEvents",nl.clockwork.ebms.admin.web.service.message.MessageEventsPage.class);
 		new MenuDivider(result,"5");
-		//new MenuLinkItem(message,"6","messageSend",nl.clockwork.ebms.admin.web.service.message.SendMessagePage.class);
+		// new MenuLinkItem(message,"6","messageSend",nl.clockwork.ebms.admin.web.service.message.SendMessagePage.class);
 		new MenuLinkItem(result,"6","messageSend",nl.clockwork.ebms.admin.web.service.message.SendMessagePageX.class);
 		new MenuLinkItem(result,"7","messageResend",nl.clockwork.ebms.admin.web.service.message.ResendMessagePage.class);
 		new MenuDivider(result,"8");
@@ -138,9 +137,7 @@ public class WicketApplication extends WebApplication
 	{
 		val result = new MenuItem(id,"extensions");
 		val i = new AtomicInteger(1);
-		extensionProviders.stream()
-				.map(p -> p.createSubMenu(result,i.getAndIncrement(),p.getName()))
-				.collect(Collectors.toList());
+		extensionProviders.stream().map(p -> p.createSubMenu(result,i.getAndIncrement(),p.getName())).collect(Collectors.toList());
 		return result;
 	}
 
@@ -148,7 +145,7 @@ public class WicketApplication extends WebApplication
 	{
 		return new MenuLinkItem(id,"about",nl.clockwork.ebms.admin.web.AboutPage.class);
 	}
-	
+
 	@Override
 	public Class<? extends WebPage> getHomePage()
 	{
@@ -170,9 +167,9 @@ public class WicketApplication extends WebApplication
 				return new RenderPageRequestHandler(new PageProvider(new ErrorPage(e)));
 			}
 		});
-		mountPage("/404",PageNotFoundPage.class); 
+		mountPage("/404",PageNotFoundPage.class);
 	}
-	
+
 	public static WicketApplication get()
 	{
 		return (WicketApplication)WebApplication.get();

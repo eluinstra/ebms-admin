@@ -15,22 +15,11 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-import org.apache.commons.lang3.SerializationUtils;
-import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.markup.repeater.data.DataView;
-import org.apache.wicket.markup.repeater.data.IDataProvider;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import lombok.AccessLevel;
 import lombok.NonNull;
-import lombok.val;
 import lombok.experimental.FieldDefaults;
+import lombok.val;
 import nl.clockwork.ebms.admin.Constants;
 import nl.clockwork.ebms.admin.dao.EbMSDAO;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
@@ -46,6 +35,17 @@ import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.admin.web.WicketApplication;
 import nl.clockwork.ebms.admin.web.message.MessageFilterPanel.MessageFilterFormData;
+import org.apache.commons.lang3.SerializationUtils;
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.markup.repeater.data.IDataProvider;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MessagesPage extends BasePage
@@ -65,7 +65,7 @@ public class MessagesPage extends BasePage
 		{
 			return maxItemsPerPage;
 		}
-		
+
 		@Override
 		protected void populateItem(final Item<EbMSMessage> item)
 		{
@@ -90,7 +90,7 @@ public class MessagesPage extends BasePage
 		{
 			val result = Link.<Void>builder()
 					.id(id)
-					//.onClick(() -> setResponsePage(new MessagePage(ebMSDAO.getMessage(message.getMessageId()),MessagesPage.this)))
+					// .onClick(() -> setResponsePage(new MessagePage(ebMSDAO.getMessage(message.getMessageId()),MessagesPage.this)))
 					.onClick(() -> setResponsePage(new MessagePage(model,MessagesPage.this)))
 					.build();
 			result.add(new Label("messageId",model.getObject().getMessageId()));
@@ -115,7 +115,8 @@ public class MessagesPage extends BasePage
 		{
 			val result = Link.<Void>builder()
 					.id(id)
-					.onClick(() -> setResponsePage(new MessagePage(MessageDataModel.of(ebMSDAO,ebMSDAO.findMessage(model.getObject().getRefToMessageId())),MessagesPage.this)))
+					.onClick(
+							() -> setResponsePage(new MessagePage(MessageDataModel.of(ebMSDAO,ebMSDAO.findMessage(model.getObject().getRefToMessageId())),MessagesPage.this)))
 					.build();
 			result.add(new Label("refToMessageId",model.getObject().getRefToMessageId()));
 			return result;
@@ -123,7 +124,7 @@ public class MessagesPage extends BasePage
 	}
 
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name="ebMSAdminDAO")
+	@SpringBean(name = "ebMSAdminDAO")
 	EbMSDAO ebMSDAO;
 	@NonNull
 	final Integer maxItemsPerPage;

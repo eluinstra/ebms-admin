@@ -15,10 +15,17 @@
  */
 package nl.clockwork.ebms.admin.web;
 
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
+import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.markup.head.IHeaderResponse;
@@ -28,14 +35,6 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
-
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BootstrapDateTimePicker extends FormComponentPanel<LocalDateTime>
 {
@@ -43,10 +42,12 @@ public class BootstrapDateTimePicker extends FormComponentPanel<LocalDateTime>
 	{
 		DATE_TIME, DATE, TIME;
 	}
+
 	public enum HourFormat
 	{
 		H12, H24;
 	}
+
 	private static final long serialVersionUID = 1L;
 	@NonNull
 	String format;
@@ -73,11 +74,12 @@ public class BootstrapDateTimePicker extends FormComponentPanel<LocalDateTime>
 	{
 		this(id,(IModel<LocalDateTime>)null);
 	}
+
 	public BootstrapDateTimePicker(final String id, String format, Type type)
 	{
 		this(id,null,format,type);
 	}
-	
+
 	public BootstrapDateTimePicker(final String id, IModel<LocalDateTime> model)
 	{
 		this(id,model,"dd-MM-yyyy HH:mm:ss",Type.DATE_TIME);
@@ -90,38 +92,44 @@ public class BootstrapDateTimePicker extends FormComponentPanel<LocalDateTime>
 		this.hourFormat = format.contains("H") ? HourFormat.H24 : HourFormat.H12;
 		this.formatJS = format.replaceAll("H","h");
 		this.type = type;
-		
+
 		MarkupContainer dateTimePicker = new WebMarkupContainer("dateTimePicker");
 		dateTimePicker.setMarkupId(getDateTimePickerId());
 		dateTimePicker.setOutputMarkupId(true);
 		add(dateTimePicker);
 
-		dateTimeField = LocalDateTimeTextField.builder()
-				.id("dateTime")
-				.model(new PropertyModel<>(this,"dateTime"))
-				.datePattern(format)
-				.isRequired(() -> isRequired())
-				.build();
+		dateTimeField =
+				LocalDateTimeTextField.builder().id("dateTime").model(new PropertyModel<>(this,"dateTime")).datePattern(format).isRequired(() -> isRequired()).build();
 		dateTimePicker.add(dateTimeField);
 	}
-	
+
 	public static String getLinkBootstrapDateTimePickersJavaScript(BootstrapDateTimePicker startDate, BootstrapDateTimePicker endDate)
 	{
-		return
-			"$(function () {" +
-				"$('#" + startDate.getDateTimePickerId() + "').on('changeDate',function () {" +
-					"var d = $('#" + startDate.getDateTimePickerId() + "').data('datetimepicker').getDate();" +
-					"d.setDate(d.getDate() + 1);" +
-				  "$('#" + endDate.getDateTimePickerId() + "').data('datetimepicker').setStartDate(d);" +
-				"});" +
-				"$('#" + endDate.getDateTimePickerId() + "').on('changeDate',function (e) {" +
-					"var d = $('#" + endDate.getDateTimePickerId() + "').data('datetimepicker').getDate();" +
-					"d.setDate(d.getDate() - 1);" +
-				  "$('#" + startDate.getDateTimePickerId() + "').data('datetimepicker').setEndDate(d);" +
-				"});" +
-		"});";
+		return "$(function () {" + "$('#"
+				+ startDate.getDateTimePickerId()
+				+ "').on('changeDate',function () {"
+				+ "var d = $('#"
+				+ startDate.getDateTimePickerId()
+				+ "').data('datetimepicker').getDate();"
+				+ "d.setDate(d.getDate() + 1);"
+				+ "$('#"
+				+ endDate.getDateTimePickerId()
+				+ "').data('datetimepicker').setStartDate(d);"
+				+ "});"
+				+ "$('#"
+				+ endDate.getDateTimePickerId()
+				+ "').on('changeDate',function (e) {"
+				+ "var d = $('#"
+				+ endDate.getDateTimePickerId()
+				+ "').data('datetimepicker').getDate();"
+				+ "d.setDate(d.getDate() - 1);"
+				+ "$('#"
+				+ startDate.getDateTimePickerId()
+				+ "').data('datetimepicker').setEndDate(d);"
+				+ "});"
+				+ "});";
 	}
-	
+
 	@Override
 	public void renderHead(IHeaderResponse response)
 	{
@@ -140,29 +148,30 @@ public class BootstrapDateTimePicker extends FormComponentPanel<LocalDateTime>
 			options.add("startDate: new Date(" + startDate.toEpochMilli() + ")");
 		if (endDate != null)
 			options.add("endDate: new Date(" + endDate.toEpochMilli() + ")");
-		response.render(OnDomReadyHeaderItem.forScript("$(function () {$('#" + getDateTimePickerId() + "').datetimepicker({" + StringUtils.join(options,",") + "});});"));
+		response.render(
+				OnDomReadyHeaderItem.forScript("$(function () {$('#" + getDateTimePickerId() + "').datetimepicker({" + StringUtils.join(options,",") + "});});"));
 		super.renderHead(response);
 	}
-	
+
 	@Override
 	public void convertInput()
 	{
 		dateTime = dateTimeField.getConvertedInput();
 		setConvertedInput(dateTime);
 	}
-	
+
 	@Override
 	protected void onBeforeRender()
 	{
 		dateTime = getModelObject();
 		super.onBeforeRender();
 	}
-	
+
 	public String getDateFormat()
 	{
 		return format;
 	}
-	
+
 	public JQueryLocale getJQueryLocale()
 	{
 		return JQueryLocale.EN;

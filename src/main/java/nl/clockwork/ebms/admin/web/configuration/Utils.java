@@ -15,6 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
+
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -29,26 +30,23 @@ import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.Scanner;
-
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nl.clockwork.ebms.security.KeyStoreType;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Utils
 {
 	private static SSLEngine sslEngine;
 
-	static 
+	static
 	{
 		try
 		{
@@ -73,14 +71,14 @@ public class Utils
 
 	public static String createURL(String hostname, int port)
 	{
-		return hostname + (port == -1 ? "" : ":" + port); 
+		return hostname + (port == -1 ? "" : ":" + port);
 	}
-	
+
 	public static String createURL(String hostname, Integer port)
 	{
-		return hostname + (port == null ? "" : ":" + port); 
+		return hostname + (port == null ? "" : ":" + port);
 	}
-	
+
 	public static JdbcURL parseJdbcURL(String jdbcURL, JdbcURL model) throws MalformedURLException
 	{
 		try (val scanner = new Scanner(jdbcURL))
@@ -103,10 +101,10 @@ public class Utils
 		}
 	}
 
-  public static void testEbMSUrl(String uri) throws IOException
+	public static void testEbMSUrl(String uri) throws IOException
 	{
 		val url = new URL(uri + "/cpa?wsdl");
-		//val url = new URL(uri + "/message?wsdl");
+		// val url = new URL(uri + "/message?wsdl");
 		val connection = url.openConnection();
 		if (connection instanceof HttpURLConnection)
 		{
@@ -119,19 +117,21 @@ public class Utils
 		else
 			throw new IllegalArgumentException("Unknown protocol: " + uri);
 	}
-	
+
 	public static Resource getResource(String path) throws MalformedURLException, IOException
 	{
 		val result = new FileSystemResource(path);
 		return result.exists() ? result : new ClassPathResource(path);
 	}
-  
-	public static void testTrustStore(KeyStoreType type, String path, String password) throws MalformedURLException, IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException
+
+	public static void testTrustStore(KeyStoreType type, String path, String password)
+			throws MalformedURLException, IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException
 	{
 		testKeyStore(type,path,password,null,false);
 	}
 
-	public static void testKeyStore(KeyStoreType type, String path, String password, String defaultAlias, boolean validateKeyPassword) throws MalformedURLException, IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException
+	public static void testKeyStore(KeyStoreType type, String path, String password, String defaultAlias, boolean validateKeyPassword)
+			throws MalformedURLException, IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException
 	{
 		val resource = getResource(path);
 		val keyStore = KeyStore.getInstance(type.name());
@@ -165,20 +165,21 @@ public class Utils
 		}
 	}
 
-	public static void testJdbcConnection(String driverClassName, String jdbcUrl, String username, String password) throws PropertyVetoException, SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException
+	public static void testJdbcConnection(String driverClassName, String jdbcUrl, String username, String password)
+			throws PropertyVetoException, SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException
 	{
-    val loader = Utils.class.getClassLoader();
-    val driverClass = loader.loadClass(driverClassName);
-    val driver = (Driver)driverClass.newInstance();
-    if (!driver.acceptsURL(jdbcUrl))
-    	throw new IllegalArgumentException("Jdbc Url '" + jdbcUrl + "' not valid!");
-    val info = new Properties();
-    info.setProperty("user",username);
-    if (password != null)
-    	info.setProperty("password",password);
-    try (val connection = driver.connect(jdbcUrl,info))
-    {
-    }
+		val loader = Utils.class.getClassLoader();
+		val driverClass = loader.loadClass(driverClassName);
+		val driver = (Driver)driverClass.newInstance();
+		if (!driver.acceptsURL(jdbcUrl))
+			throw new IllegalArgumentException("Jdbc Url '" + jdbcUrl + "' not valid!");
+		val info = new Properties();
+		info.setProperty("user",username);
+		if (password != null)
+			info.setProperty("password",password);
+		try (val connection = driver.connect(jdbcUrl,info))
+		{
+		}
 	}
 
 }

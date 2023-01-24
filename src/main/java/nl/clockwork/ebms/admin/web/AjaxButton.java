@@ -15,12 +15,12 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.model.IModel;
 
 import lombok.Builder;
 import lombok.NonNull;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.model.IModel;
 
 public class AjaxButton extends org.apache.wicket.ajax.markup.html.form.AjaxButton
 {
@@ -34,7 +34,9 @@ public class AjaxButton extends org.apache.wicket.ajax.markup.html.form.AjaxButt
 	{
 		super(id,model,form);
 		this.onSubmit = onSubmit;
-		this.onError = onError == null ? t -> {} : onError;
+		this.onError = onError == null ? t ->
+		{
+		} : onError;
 	}
 
 	@Override
