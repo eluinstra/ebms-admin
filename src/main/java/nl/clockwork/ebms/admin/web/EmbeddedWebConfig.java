@@ -32,15 +32,15 @@ import javax.xml.ws.soap.SOAPBinding;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
+import nl.clockwork.ebms.cpa.CPARestService;
 import nl.clockwork.ebms.cpa.CPAService;
-import nl.clockwork.ebms.cpa.CPAServiceImpl;
+import nl.clockwork.ebms.cpa.certificate.CertificateMappingRestService;
 import nl.clockwork.ebms.cpa.certificate.CertificateMappingService;
-import nl.clockwork.ebms.cpa.certificate.CertificateMappingServiceImpl;
+import nl.clockwork.ebms.cpa.url.URLMappingRestService;
 import nl.clockwork.ebms.cpa.url.URLMappingService;
-import nl.clockwork.ebms.cpa.url.URLMappingServiceImpl;
 import nl.clockwork.ebms.event.MessageEventListenerConfig.EventListenerType;
+import nl.clockwork.ebms.service.EbMSMessageRestService;
 import nl.clockwork.ebms.service.EbMSMessageService;
-import nl.clockwork.ebms.service.EbMSMessageServiceImpl;
 import nl.clockwork.ebms.service.EbMSMessageServiceMTOM;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.Bus;
@@ -160,25 +160,25 @@ public class EmbeddedWebConfig
 	@Bean
 	public Server createCPARestServer()
 	{
-		return createRestServer(CPAServiceImpl.class,cpaService,"/cpas");
+		return createRestServer(CPARestService.class,cpaService,"/cpas");
 	}
 
 	@Bean
 	public Server createURLMappingCPARestServer()
 	{
-		return createRestServer(URLMappingServiceImpl.class,urlMappingService,"/urlMappings");
+		return createRestServer(URLMappingRestService.class,urlMappingService,"/urlMappings");
 	}
 
 	@Bean
 	public Server createCertificateMappingRestServer()
 	{
-		return createRestServer(CertificateMappingServiceImpl.class,certificateMappingService,"/certificateMappings");
+		return createRestServer(CertificateMappingRestService.class,certificateMappingService,"/certificateMappings");
 	}
 
 	@Bean
 	public Server createEbMSRestServer()
 	{
-		return createRestServer(EbMSMessageServiceImpl.class,ebMSMessageService,"/ebms");
+		return createRestServer(EbMSMessageRestService.class,ebMSMessageService,"/ebms");
 	}
 
 	public Server createRestServer(Class<?> resourceClass, Object resourceObject, String path)
