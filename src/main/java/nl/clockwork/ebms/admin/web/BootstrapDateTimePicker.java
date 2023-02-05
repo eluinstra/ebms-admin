@@ -72,25 +72,25 @@ public class BootstrapDateTimePicker extends FormComponentPanel<LocalDateTime>
 
 	public BootstrapDateTimePicker(final String id)
 	{
-		this(id,(IModel<LocalDateTime>)null);
+		this(id, (IModel<LocalDateTime>)null);
 	}
 
 	public BootstrapDateTimePicker(final String id, String format, Type type)
 	{
-		this(id,null,format,type);
+		this(id, null, format, type);
 	}
 
 	public BootstrapDateTimePicker(final String id, IModel<LocalDateTime> model)
 	{
-		this(id,model,"dd-MM-yyyy HH:mm:ss",Type.DATE_TIME);
+		this(id, model, "dd-MM-yyyy HH:mm:ss", Type.DATE_TIME);
 	}
 
 	public BootstrapDateTimePicker(final String id, IModel<LocalDateTime> model, String format, Type type)
 	{
-		super(id,model);
+		super(id, model);
 		this.format = format;
 		this.hourFormat = format.contains("H") ? HourFormat.H24 : HourFormat.H12;
-		this.formatJS = format.replaceAll("H","h");
+		this.formatJS = format.replaceAll("H", "h");
 		this.type = type;
 
 		MarkupContainer dateTimePicker = new WebMarkupContainer("dateTimePicker");
@@ -99,13 +99,14 @@ public class BootstrapDateTimePicker extends FormComponentPanel<LocalDateTime>
 		add(dateTimePicker);
 
 		dateTimeField =
-				LocalDateTimeTextField.builder().id("dateTime").model(new PropertyModel<>(this,"dateTime")).datePattern(format).isRequired(() -> isRequired()).build();
+				LocalDateTimeTextField.builder().id("dateTime").model(new PropertyModel<>(this, "dateTime")).datePattern(format).isRequired(() -> isRequired()).build();
 		dateTimePicker.add(dateTimeField);
 	}
 
 	public static String getLinkBootstrapDateTimePickersJavaScript(BootstrapDateTimePicker startDate, BootstrapDateTimePicker endDate)
 	{
-		return "$(function () {" + "$('#"
+		return "$(function () {"
+				+ "$('#"
 				+ startDate.getDateTimePickerId()
 				+ "').on('changeDate',function () {"
 				+ "var d = $('#"
@@ -149,7 +150,7 @@ public class BootstrapDateTimePicker extends FormComponentPanel<LocalDateTime>
 		if (endDate != null)
 			options.add("endDate: new Date(" + endDate.toEpochMilli() + ")");
 		response.render(
-				OnDomReadyHeaderItem.forScript("$(function () {$('#" + getDateTimePickerId() + "').datetimepicker({" + StringUtils.join(options,",") + "});});"));
+				OnDomReadyHeaderItem.forScript("$(function () {$('#" + getDateTimePickerId() + "').datetimepicker({" + StringUtils.join(options, ",") + "});});"));
 		super.renderHead(response);
 	}
 

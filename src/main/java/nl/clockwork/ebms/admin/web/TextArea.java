@@ -29,13 +29,13 @@ public class TextArea<T> extends org.apache.wicket.markup.html.form.TextArea<T>
 
 	public TextArea(String id, IModel<T> model)
 	{
-		this(id,model,null);
+		this(id, model, null);
 	}
 
 	@Builder
 	public TextArea(String id, IModel<T> model, Supplier<Boolean> isVisible)
 	{
-		super(id,model);
+		super(id, model);
 		this.isVisible = isVisible == null ? () -> super.isVisible() : isVisible;
 	}
 

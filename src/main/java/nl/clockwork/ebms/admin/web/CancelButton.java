@@ -32,7 +32,7 @@ public class CancelButton extends Button // GoToButton
 
 	public CancelButton(String id, IModel<String> model, Class<? extends Page> responsePage)
 	{
-		super(id,model);
+		super(id, model);
 		this.responsePage = responsePage;
 		setDefaultFormProcessing(false);
 	}

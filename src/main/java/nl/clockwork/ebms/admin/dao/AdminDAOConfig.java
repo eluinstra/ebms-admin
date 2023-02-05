@@ -40,6 +40,6 @@ public abstract class AdminDAOConfig
 	public EbMSDAO ebMSDAO(DataSource dataSource, SQLQueryFactory queryFactory)
 	{
 		val jdbcTemplate = new JdbcTemplate(dataSource);
-		return new EbMSDAOImpl(jdbcTemplate,queryFactory);
+		return new EbMSDAOImpl(jdbcTemplate, queryFactory);
 	}
 }

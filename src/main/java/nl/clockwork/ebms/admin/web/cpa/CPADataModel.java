@@ -38,7 +38,7 @@ public class CPADataModel extends LoadableDetachableModel<CPA>
 
 	public static CPADataModel of(EbMSDAO ebMSDAO, CPA cpa)
 	{
-		return of(ebMSDAO,cpa.getCpaId());
+		return of(ebMSDAO, cpa.getCpaId());
 	}
 
 	@Override
@@ -56,6 +56,6 @@ public class CPADataModel extends LoadableDetachableModel<CPA>
 	@Override
 	public boolean equals(Object obj)
 	{
-		return Match(obj).of(Case($(this),true),Case($(null),false),Case($(instanceOf(CPADataModel.class)),o -> cpaId.equals(o.cpaId)),Case($(),false));
+		return Match(obj).of(Case($(this), true), Case($(null), false), Case($(instanceOf(CPADataModel.class)), o -> cpaId.equals(o.cpaId)), Case($(), false));
 	}
 }

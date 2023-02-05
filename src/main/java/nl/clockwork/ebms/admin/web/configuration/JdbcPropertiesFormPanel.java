@@ -55,9 +55,9 @@ public class JdbcPropertiesFormPanel extends Panel
 
 	public JdbcPropertiesFormPanel(String id, final IModel<JdbcPropertiesFormData> model)
 	{
-		super(id,model);
-		val jdbcPropertiesForm = new JdbcPropertiesForm("form",model);
-		add(new BootstrapFeedbackPanel("feedback",new ContainerFeedbackMessageFilter(jdbcPropertiesForm)).setOutputMarkupId(true));
+		super(id, model);
+		val jdbcPropertiesForm = new JdbcPropertiesForm("form", model);
+		add(new BootstrapFeedbackPanel("feedback", new ContainerFeedbackMessageFilter(jdbcPropertiesForm)).setOutputMarkupId(true));
 		add(jdbcPropertiesForm);
 	}
 
@@ -67,29 +67,33 @@ public class JdbcPropertiesFormPanel extends Panel
 
 		public JdbcPropertiesForm(String id, final IModel<JdbcPropertiesFormData> model)
 		{
-			super(id,new CompoundPropertyModel<>(model));
-			add(new BootstrapFormComponentFeedbackBorder("driverFeedback",createDriverChoice("driver")));
-			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",createHostsField("host")));
-			add(new BootstrapFormComponentFeedbackBorder("portFeedback",createPortField("port")));
-			add(new BootstrapFormComponentFeedbackBorder("databaseFeedback",createDatabaseField("database")));
+			super(id, new CompoundPropertyModel<>(model));
+			add(new BootstrapFormComponentFeedbackBorder("driverFeedback", createDriverChoice("driver")));
+			add(new BootstrapFormComponentFeedbackBorder("hostFeedback", createHostsField("host")));
+			add(new BootstrapFormComponentFeedbackBorder("portFeedback", createPortField("port")));
+			add(new BootstrapFormComponentFeedbackBorder("databaseFeedback", createDatabaseField("database")));
 			add(new TextField<String>("url").setLabel(new ResourceModel("lbl.url")).setOutputMarkupId(true).setEnabled(false));
 			add(createTestButton("test"));
-			add(new BootstrapFormComponentFeedbackBorder("usernameFeedback",
-					new TextField<String>("username").setLabel(new ResourceModel("lbl.username")).setRequired(true)));
-			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",
-					new PasswordTextField("password").setResetPassword(false).setLabel(new ResourceModel("lbl.password")).setRequired(false)));
+			add(
+					new BootstrapFormComponentFeedbackBorder(
+							"usernameFeedback",
+							new TextField<String>("username").setLabel(new ResourceModel("lbl.username")).setRequired(true)));
+			add(
+					new BootstrapFormComponentFeedbackBorder(
+							"passwordFeedback",
+							new PasswordTextField("password").setResetPassword(false).setLabel(new ResourceModel("lbl.password")).setRequired(false)));
 		}
 
 		private DropDownChoice<JdbcDriver> createDriverChoice(String id)
 		{
 			val o = getModelObject();
-			val result = new DropDownChoice<JdbcDriver>(id,new PropertyModel<List<JdbcDriver>>(o,"drivers"));
+			val result = new DropDownChoice<JdbcDriver>(id, new PropertyModel<List<JdbcDriver>>(o, "drivers"));
 			result.setLabel(new ResourceModel("lbl.driver"));
 			result.setRequired(true);
 			Consumer<AjaxRequestTarget> action = t ->
 			{
 				if (!o.getDriver().getDriverClassName().equals(JdbcDriver.HSQLDB.getDriverClassName()) && !classExists(o.getDriver().getDriverClassName()))
-					error(getString("driver.jdbc.missing",getModel()));
+					error(getString("driver.jdbc.missing", getModel()));
 				t.add(JdbcPropertiesFormPanel.this.get("feedback"));
 				t.add(getURLComponent());
 			};
@@ -143,16 +147,16 @@ public class JdbcPropertiesFormPanel extends Panel
 				try
 				{
 					val o = getModelObject();
-					Utils.testJdbcConnection(o.getDriver().getDriverClassName(),o.getUrl(),o.getUsername(),o.getPassword());
+					Utils.testJdbcConnection(o.getDriver().getDriverClassName(), o.getUrl(), o.getUsername(), o.getPassword());
 					info(getString("test.ok"));
 				}
 				catch (Exception e)
 				{
-					log.error("",e);
-					error(new StringResourceModel("test.nok",this,Model.of(e)).getString());
+					log.error("", e);
+					error(new StringResourceModel("test.nok", this, Model.of(e)).getString());
 				}
 			};
-			return new Button(id,new ResourceModel("cmd.test"),onSubmit);
+			return new Button(id, new ResourceModel("cmd.test"), onSubmit);
 		}
 
 		private Component getURLComponent()
@@ -181,7 +185,7 @@ public class JdbcPropertiesFormPanel extends Panel
 		public String getUrl()
 		{
 			// return driver.createJdbcURL(getHost(),getPort(),getDatabase());
-			return JdbcDriver.createJdbcURL(driver.getUrlExpr(),getHost(),getPort(),getDatabase());
+			return JdbcDriver.createJdbcURL(driver.getUrlExpr(), getHost(), getPort(), getDatabase());
 		}
 	}
 }

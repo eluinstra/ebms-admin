@@ -44,22 +44,22 @@ public class DownloadEbMSMessagesCSVLink extends Link<MessageFilterFormData>
 
 	public DownloadEbMSMessagesCSVLink(String id, EbMSDAO ebMSDAO, IModel<MessageFilterFormData> model)
 	{
-		super(id,model);
+		super(id, model);
 		this.ebMSDAO = ebMSDAO;
 	}
 
 	@Override
 	public void onClick()
 	{
-		try (val output = new CachedOutputStream(); val printer = new CSVPrinter(new OutputStreamWriter(output),CSVFormat.DEFAULT))
+		try (val output = new CachedOutputStream(); val printer = new CSVPrinter(new OutputStreamWriter(output), CSVFormat.DEFAULT))
 		{
-			ebMSDAO.printMessagesToCSV(printer,getModelObject());
-			val resourceStream = CachedOutputResourceStream.of(output,"text/csv");
+			ebMSDAO.printMessagesToCSV(printer, getModelObject());
+			val resourceStream = CachedOutputResourceStream.of(output, "text/csv");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}
 		catch (IOException e)
 		{
-			log.error("",e);
+			log.error("", e);
 			error(e.getMessage());
 		}
 	}

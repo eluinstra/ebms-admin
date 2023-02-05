@@ -42,7 +42,7 @@ import nl.clockwork.ebms.security.KeyStoreUtils;
 @ToString(onlyExplicitlyIncluded = true)
 public class EbMSKeyStore
 {
-	private static Map<String,EbMSKeyStore> keyStores = new ConcurrentHashMap<>();
+	private static Map<String, EbMSKeyStore> keyStores = new ConcurrentHashMap<>();
 	@NonNull
 	@ToString.Include
 	String path;
@@ -54,30 +54,36 @@ public class EbMSKeyStore
 
 	public static EbMSKeyStore of(@NonNull KeyStoreType type, @NonNull String path, @NonNull String password) throws GeneralSecurityException, IOException
 	{
-		return of(type,path,password,null);
+		return of(type, path, password, null);
 	}
 
 	public static EbMSKeyStore of(@NonNull KeyStoreType type, @NonNull String path, @NonNull String password, String defaultAlias)
 			throws GeneralSecurityException, IOException
 	{
 		if (!keyStores.containsKey(path))
-			keyStores.put(path,new EbMSKeyStore(path,KeyStoreUtils.loadKeyStore(type,path,password),password,defaultAlias));
+			keyStores.put(path, new EbMSKeyStore(path, KeyStoreUtils.loadKeyStore(type, path, password), password, defaultAlias));
 		return keyStores.get(path);
 	}
 
 	public static EbMSKeyStore of(@NonNull String keyvaultURI, @NonNull String tennantID, @NonNull String clientID, @NonNull String clientSecret)
 			throws GeneralSecurityException, IOException
 	{
-		return of(keyvaultURI,tennantID,clientID,clientSecret,null);
+		return of(keyvaultURI, tennantID, clientID, clientSecret, null);
 	}
 
-	public static EbMSKeyStore
+	public static
+			EbMSKeyStore
 			of(@NonNull String keyvaultURI, @NonNull String tennantID, @NonNull String clientID, @NonNull String clientSecret, String defaultAlias)
 					throws GeneralSecurityException, IOException
 	{
 		if (!keyStores.containsKey(keyvaultURI))
-			keyStores.put(keyvaultURI,
-					new EbMSKeyStore("azure",nl.clockwork.ebms.security.azure.KeyStoreUtils.loadKeyStore(keyvaultURI,tennantID,clientID,clientSecret),"",defaultAlias));
+			keyStores.put(
+					keyvaultURI,
+					new EbMSKeyStore(
+							"azure",
+							nl.clockwork.ebms.security.azure.KeyStoreUtils.loadKeyStore(keyvaultURI, tennantID, clientID, clientSecret),
+							"",
+							defaultAlias));
 		return keyStores.get(keyvaultURI);
 	}
 
@@ -98,6 +104,6 @@ public class EbMSKeyStore
 
 	public Key getKey(String alias, char[] password) throws UnrecoverableKeyException, KeyStoreException, NoSuchAlgorithmException
 	{
-		return keyStore.getKey(alias,password);
+		return keyStore.getKey(alias, password);
 	}
 }

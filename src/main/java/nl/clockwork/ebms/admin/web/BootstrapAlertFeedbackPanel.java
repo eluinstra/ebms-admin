@@ -37,13 +37,13 @@ public class BootstrapAlertFeedbackPanel extends FeedbackPanel
 	@Getter
 	private enum ErrorLevel
 	{
-		UNDEFINED(0,"alert-info"),
-		DEBUG(100,"alert-info"),
-		INFO(200,"alert-info"),
-		SUCCESS(250,"alert-success"),
-		WARNING(300,"alert-warning"),
-		ERROR(400,"alert-danger"),
-		FATAL(500,"alert-danger");
+		UNDEFINED(0, "alert-info"),
+		DEBUG(100, "alert-info"),
+		INFO(200, "alert-info"),
+		SUCCESS(250, "alert-success"),
+		WARNING(300, "alert-warning"),
+		ERROR(400, "alert-danger"),
+		FATAL(500, "alert-danger");
 
 		int errorCode;
 		String cssClass;
@@ -63,7 +63,7 @@ public class BootstrapAlertFeedbackPanel extends FeedbackPanel
 
 	public BootstrapAlertFeedbackPanel(final String id, final IFeedbackMessageFilter filter)
 	{
-		super(id,filter);
+		super(id, filter);
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class BootstrapAlertFeedbackPanel extends FeedbackPanel
 		val container = new WebMarkupContainer(id);
 		container.add(new Button("close"));
 		val serializable = message.getMessage();
-		val label = new Label("content",serializable == null ? "" : serializable.toString());
+		val label = new Label("content", serializable == null ? "" : serializable.toString());
 		label.setEscapeModelStrings(getEscapeModelStrings());
 		container.add(label);
 		return container;

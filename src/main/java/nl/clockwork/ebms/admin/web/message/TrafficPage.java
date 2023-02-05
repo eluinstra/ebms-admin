@@ -55,7 +55,7 @@ public class TrafficPage extends BasePage
 
 		protected EbMSMessageDataView(String id, IDataProvider<EbMSMessage> dataProvider)
 		{
-			super(id,dataProvider);
+			super(id, dataProvider);
 			setOutputMarkupId(true);
 		}
 
@@ -69,25 +69,25 @@ public class TrafficPage extends BasePage
 		protected void populateItem(final Item<EbMSMessage> item)
 		{
 			val o = item.getModelObject();
-			item.add(createViewLink("view",item.getModel()));
-			item.add(createFilterConversationIdLink("filterConversationId",item.getModel()));
-			item.add(InstantLabel.of("timestamp",new Model<>(o.getTimestamp()),Constants.DATETIME_FORMAT));
-			item.add(new Label("cpaId",o.getCpaId()));
-			item.add(new Label("fromPartyId",o.getFromPartyId()));
-			item.add(new Label("fromRole",o.getFromRole()));
-			item.add(new Label("toPartyId",o.getToPartyId()));
-			item.add(new Label("toRole",o.getToRole()));
-			item.add(new Label("service",o.getService()));
-			item.add(new Label("action",o.getAction()));
-			item.add(new Label("status",o.getStatus()).add(AttributeModifier.replace("class",Model.of(Utils.getTableCellCssClass(o.getStatus())))));
-			item.add(InstantLabel.of("statusTime",new Model<>(o.getStatusTime()),Constants.DATETIME_FORMAT));
-			item.add(AttributeModifier.replace("class",Model.of(Utils.getTableRowCssClass(o.getStatus()))));
+			item.add(createViewLink("view", item.getModel()));
+			item.add(createFilterConversationIdLink("filterConversationId", item.getModel()));
+			item.add(InstantLabel.of("timestamp", new Model<>(o.getTimestamp()), Constants.DATETIME_FORMAT));
+			item.add(new Label("cpaId", o.getCpaId()));
+			item.add(new Label("fromPartyId", o.getFromPartyId()));
+			item.add(new Label("fromRole", o.getFromRole()));
+			item.add(new Label("toPartyId", o.getToPartyId()));
+			item.add(new Label("toRole", o.getToRole()));
+			item.add(new Label("service", o.getService()));
+			item.add(new Label("action", o.getAction()));
+			item.add(new Label("status", o.getStatus()).add(AttributeModifier.replace("class", Model.of(Utils.getTableCellCssClass(o.getStatus())))));
+			item.add(InstantLabel.of("statusTime", new Model<>(o.getStatusTime()), Constants.DATETIME_FORMAT));
+			item.add(AttributeModifier.replace("class", Model.of(Utils.getTableRowCssClass(o.getStatus()))));
 		}
 
 		private Link<Void> createViewLink(String id, final IModel<EbMSMessage> model)
 		{
-			val result = Link.<Void>builder().id(id).onClick(() -> setResponsePage(new MessagePageX(model,TrafficPage.this))).build();
-			result.add(new Label("messageId",model.getObject().getMessageId()));
+			val result = Link.<Void>builder().id(id).onClick(() -> setResponsePage(new MessagePageX(model, TrafficPage.this))).build();
+			result.add(new Label("messageId", model.getObject().getMessageId()));
 			return result;
 		}
 
@@ -97,10 +97,10 @@ public class TrafficPage extends BasePage
 			{
 				val filter = SerializationUtils.clone(TrafficPage.this.filter.getObject());
 				filter.setConversationId(model.getObject().getConversationId());
-				setResponsePage(new TrafficPage(Model.of(filter),TrafficPage.this));
+				setResponsePage(new TrafficPage(Model.of(filter), TrafficPage.this));
 			};
-			val result = new Link<Void>(id,onClick);
-			result.add(new Label("conversationId",model.getObject().getConversationId()));
+			val result = new Link<Void>(id, onClick);
+			result.add(new Label("conversationId", model.getObject().getConversationId()));
 			result.setEnabled(TrafficPage.this.filter.getObject().getConversationId() == null);
 			return result;
 		}
@@ -121,7 +121,7 @@ public class TrafficPage extends BasePage
 
 	public TrafficPage(IModel<MessageFilterFormData> filter)
 	{
-		this(filter,null);
+		this(filter, null);
 	}
 
 	public TrafficPage(IModel<MessageFilterFormData> filter, final WebPage responsePage)
@@ -129,26 +129,26 @@ public class TrafficPage extends BasePage
 		this.maxItemsPerPage = WicketApplication.get().getMaxItemsPerPage();
 		this.filter = filter;
 		filter.getObject().setServiceMessage(false);
-		add(createMessageFilterPanel("messageFilter",filter));
+		add(createMessageFilterPanel("messageFilter", filter));
 		val container = new WebMarkupContainer("container");
 		add(container);
-		val messages = new EbMSMessageDataView("messages",MessageDataProvider.of(ebMSDAO,filter.getObject()));
+		val messages = new EbMSMessageDataView("messages", MessageDataProvider.of(ebMSDAO, filter.getObject()));
 		container.add(messages);
-		val navigator = new BootstrapPagingNavigator("navigator",messages);
+		val navigator = new BootstrapPagingNavigator("navigator", messages);
 		add(navigator);
-		add(new MaxItemsPerPageChoice("maxItemsPerPage",new PropertyModel<>(this,"maxItemsPerPage"),navigator,container));
-		add(new PageLink("back",responsePage).setVisible(responsePage != null));
-		add(new DownloadEbMSMessagesCSVLink("download",ebMSDAO,filter));
+		add(new MaxItemsPerPageChoice("maxItemsPerPage", new PropertyModel<>(this, "maxItemsPerPage"), navigator, container));
+		add(new PageLink("back", responsePage).setVisible(responsePage != null));
+		add(new DownloadEbMSMessagesCSVLink("download", ebMSDAO, filter));
 	}
 
 	private MessageFilterPanel createMessageFilterPanel(String id, IModel<MessageFilterFormData> filter)
 	{
-		return new MessageFilterPanel(id,filter,TrafficPage::new);
+		return new MessageFilterPanel(id, filter, TrafficPage::new);
 	}
 
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("messages",this);
+		return getLocalizer().getString("messages", this);
 	}
 }

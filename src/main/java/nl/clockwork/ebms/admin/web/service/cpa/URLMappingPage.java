@@ -52,13 +52,13 @@ public class URLMappingPage extends BasePage
 	public URLMappingPage(IModel<URLMapping> model)
 	{
 		add(new BootstrapFeedbackPanel("feedback"));
-		add(new EditURLMappingForm("form",model));
+		add(new EditURLMappingForm("form", model));
 	}
 
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("urlMapping",this);
+		return getLocalizer().getString("urlMapping", this);
 	}
 
 	public class EditURLMappingForm extends Form<URLMapping>
@@ -67,13 +67,17 @@ public class URLMappingPage extends BasePage
 
 		public EditURLMappingForm(String id, IModel<URLMapping> model)
 		{
-			super(id,new CompoundPropertyModel<>(model));
-			add(new BootstrapFormComponentFeedbackBorder("sourceFeedback",
-					new TextField<String>("source").setRequired(true).setLabel(new ResourceModel("lbl.source"))));
-			add(new BootstrapFormComponentFeedbackBorder("destinationFeedback",
-					new TextField<String>("destination").setRequired(true).setLabel(new ResourceModel("lbl.destination"))));
+			super(id, new CompoundPropertyModel<>(model));
+			add(
+					new BootstrapFormComponentFeedbackBorder(
+							"sourceFeedback",
+							new TextField<String>("source").setRequired(true).setLabel(new ResourceModel("lbl.source"))));
+			add(
+					new BootstrapFormComponentFeedbackBorder(
+							"destinationFeedback",
+							new TextField<String>("destination").setRequired(true).setLabel(new ResourceModel("lbl.destination"))));
 			add(createSetButton("set"));
-			add(new ResetButton("reset",new ResourceModel("cmd.reset"),URLMappingPage.class));
+			add(new ResetButton("reset", new ResourceModel("cmd.reset"), URLMappingPage.class));
 		}
 
 		private Button createSetButton(String id)
@@ -88,11 +92,11 @@ public class URLMappingPage extends BasePage
 				}
 				catch (Exception e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			val result = new Button(id,new ResourceModel("cmd.upload"),onSubmit);
+			val result = new Button(id, new ResourceModel("cmd.upload"), onSubmit);
 			setDefaultButton(result);
 			return result;
 		}

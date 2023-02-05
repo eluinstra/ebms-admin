@@ -44,7 +44,7 @@ public class BootstrapFormComponentFeedbackBorder extends Border implements IFee
 	protected void onComponentTag(ComponentTag tag)
 	{
 		if (new FeedbackCollector(getPage()).collect(getMessagesFilter()).size() > 0)
-			tag.put("class",(tag.getAttribute("class") == null ? "" : tag.getAttribute("class") + " ") + "has-error");
+			tag.put("class", (tag.getAttribute("class") == null ? "" : tag.getAttribute("class") + " ") + "has-error");
 		super.onComponentTag(tag);
 	}
 

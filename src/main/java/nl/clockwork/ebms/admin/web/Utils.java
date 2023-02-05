@@ -37,10 +37,11 @@ public class Utils
 	@Getter
 	private enum Status
 	{
-		SUCCESS(EnumSet.of(EbMSMessageStatus.PROCESSED,EbMSMessageStatus.FORWARDED,EbMSMessageStatus.DELIVERED),"success","text-success"),
-		WARNING(EnumSet.of(EbMSMessageStatus.RECEIVED,EbMSMessageStatus.CREATED),"warning","text-warning"),
+		SUCCESS(EnumSet.of(EbMSMessageStatus.PROCESSED, EbMSMessageStatus.FORWARDED, EbMSMessageStatus.DELIVERED), "success", "text-success"),
+		WARNING(EnumSet.of(EbMSMessageStatus.RECEIVED, EbMSMessageStatus.CREATED), "warning", "text-warning"),
 		DANGER(
-				EnumSet.of(EbMSMessageStatus.UNAUTHORIZED,
+				EnumSet.of(
+						EbMSMessageStatus.UNAUTHORIZED,
 						EbMSMessageStatus.NOT_RECOGNIZED,
 						EbMSMessageStatus.FAILED,
 						EbMSMessageStatus.DELIVERY_FAILED,
@@ -52,7 +53,7 @@ public class Utils
 		String rowClass;
 		String cellClass;
 
-		public static Function2<EbMSMessageStatus,Function<Status,String>,String> getCssClass =
+		public static Function2<EbMSMessageStatus, Function<Status, String>, String> getCssClass =
 				(status, getClass) -> Arrays.stream(Status.values()).filter(s -> s.statuses.contains(status)).map(s -> getClass.apply(s)).findFirst().orElse(null);
 	}
 
@@ -60,7 +61,7 @@ public class Utils
 	{
 		val loaders = WicketApplication.get().getResourceSettings().getStringResourceLoaders();
 		return loaders.stream()
-				.map(l -> l.loadStringResource(clazz,propertyName,null,null,null))
+				.map(l -> l.loadStringResource(clazz, propertyName, null, null, null))
 				.filter(s -> StringUtils.isNotBlank(s))
 				.findFirst()
 				.orElse(propertyName);
@@ -81,16 +82,16 @@ public class Utils
 
 	public static String getTableCellCssClass(EbMSMessageStatus ebMSMessageStatus)
 	{
-		return Status.getCssClass.apply(ebMSMessageStatus,Status::getCellClass);
+		return Status.getCssClass.apply(ebMSMessageStatus, Status::getCellClass);
 	}
 
 	public static String getTableRowCssClass(EbMSMessageStatus ebMSMessageStatus)
 	{
-		return Status.getCssClass.apply(ebMSMessageStatus,Status::getRowClass);
+		return Status.getCssClass.apply(ebMSMessageStatus, Status::getRowClass);
 	}
 
 	public static String getErrorList(String content)
 	{
-		return content.replaceFirst("(?ms)^.*(<[^<>]*:?ErrorList.*ErrorList>).*$","$1");
+		return content.replaceFirst("(?ms)^.*(<[^<>]*:?ErrorList.*ErrorList>).*$", "$1");
 	}
 }

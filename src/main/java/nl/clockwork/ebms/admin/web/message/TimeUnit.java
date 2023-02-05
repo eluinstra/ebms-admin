@@ -33,14 +33,14 @@ import nl.clockwork.ebms.admin.Constants;
 @Getter
 public enum TimeUnit
 {
-	HOUR("Minutes",Duration.ofMinutes(1),Duration.ofHours(1),DateTimeFormatter.ofPattern(Constants.DATETIME_HOUR_FORMAT),DateTimeFormatter.ofPattern("mm")),
-	DAY("Hours",Duration.ofHours(1),Duration.ofDays(1),DateTimeFormatter.ofPattern(Constants.DATE_FORMAT),DateTimeFormatter.ofPattern("HH")),
+	HOUR("Minutes", Duration.ofMinutes(1), Duration.ofHours(1), DateTimeFormatter.ofPattern(Constants.DATETIME_HOUR_FORMAT), DateTimeFormatter.ofPattern("mm")),
+	DAY("Hours", Duration.ofHours(1), Duration.ofDays(1), DateTimeFormatter.ofPattern(Constants.DATE_FORMAT), DateTimeFormatter.ofPattern("HH")),
 	/*
 	 * WEEK("Days",Period.ofDays(1),Period.ofWeeks(1),DateTimeFormatter.ofPattern(Constants.DATE_FORMAT),DateTimeFormatter.ofPattern("dd")),
 	 * MONTH("Weeks",Period.ofWeeks(1),Period.ofMonths(1),DateTimeFormatter.ofPattern(Constants.DATE_FORMAT),DateTimeFormatter.ofPattern("ww")),
 	 */
-	MONTH("Days",Period.ofDays(1),Period.ofMonths(1),DateTimeFormatter.ofPattern(Constants.DATE_MONTH_FORMAT),DateTimeFormatter.ofPattern("dd")),
-	YEAR("Months",Period.ofMonths(1),Period.ofYears(1),DateTimeFormatter.ofPattern(Constants.DATE_YEAR_FORMAT),DateTimeFormatter.ofPattern("MM"));
+	MONTH("Days", Period.ofDays(1), Period.ofMonths(1), DateTimeFormatter.ofPattern(Constants.DATE_MONTH_FORMAT), DateTimeFormatter.ofPattern("dd")),
+	YEAR("Months", Period.ofMonths(1), Period.ofYears(1), DateTimeFormatter.ofPattern(Constants.DATE_YEAR_FORMAT), DateTimeFormatter.ofPattern("MM"));
 
 	String units;
 	TemporalAmount timeUnit;

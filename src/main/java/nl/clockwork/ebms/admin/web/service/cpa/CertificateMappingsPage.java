@@ -49,7 +49,7 @@ public class CertificateMappingsPage extends BasePage
 	{
 		protected CertificateMappingsDataView(String id, IDataProvider<CertificateMapping> dataProvider)
 		{
-			super(id,dataProvider);
+			super(id, dataProvider);
 			setOutputMarkupId(true);
 		}
 
@@ -59,12 +59,12 @@ public class CertificateMappingsPage extends BasePage
 		protected void populateItem(final Item<CertificateMapping> item)
 		{
 			val o = item.getModelObject();
-			item.add(new Label("source",createLabel(o.getSource())));
-			item.add(new Label("destination",createLabel(o.getDestination())));
-			item.add(new Label("cpaId",o.getCpaId()));
-			item.add(createEditButton("editCertificate",item.getModel()));
-			item.add(createDeleteButton("delete",o));
-			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
+			item.add(new Label("source", createLabel(o.getSource())));
+			item.add(new Label("destination", createLabel(o.getDestination())));
+			item.add(new Label("cpaId", o.getCpaId()));
+			item.add(createEditButton("editCertificate", item.getModel()));
+			item.add(createDeleteButton("delete", o));
+			item.add(AttributeModifier.replace("class", OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 
 		private String createLabel(@NonNull X509Certificate certificate)
@@ -82,11 +82,11 @@ public class CertificateMappingsPage extends BasePage
 				}
 				catch (Exception e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			return new Button(id,new ResourceModel("cmd.edit"),onSubmit);
+			return new Button(id, new ResourceModel("cmd.edit"), onSubmit);
 		}
 
 		private Button createDeleteButton(String id, final CertificateMapping certificateMapping)
@@ -95,17 +95,17 @@ public class CertificateMappingsPage extends BasePage
 			{
 				try
 				{
-					certificateMappingService.deleteCertificateMapping(certificateMapping.getSource(),certificateMapping.getCpaId());
+					certificateMappingService.deleteCertificateMapping(certificateMapping.getSource(), certificateMapping.getCpaId());
 					setResponsePage(new CertificateMappingsPage());
 				}
 				catch (Exception e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			val result = new Button(id,new ResourceModel("cmd.delete"),onSubmit);
-			result.add(AttributeModifier.replace("onclick","return confirm('" + getLocalizer().getString("confirm",this) + "');"));
+			val result = new Button(id, new ResourceModel("cmd.delete"), onSubmit);
+			result.add(AttributeModifier.replace("onclick", "return confirm('" + getLocalizer().getString("confirm", this) + "');"));
 			return result;
 		}
 
@@ -130,14 +130,14 @@ public class CertificateMappingsPage extends BasePage
 			super(id);
 			val container = new WebMarkupContainer("container");
 			add(container);
-			container.add(new CertificateMappingsDataView("certificateMappings",CertificateMappingDataProvider.of(certificateMappingService)));
-			add(new PageLink("new",new CertificateMappingPage()));
+			container.add(new CertificateMappingsDataView("certificateMappings", CertificateMappingDataProvider.of(certificateMappingService)));
+			add(new PageLink("new", new CertificateMappingPage()));
 		}
 	}
 
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("certificateMappings",this);
+		return getLocalizer().getString("certificateMappings", this);
 	}
 }

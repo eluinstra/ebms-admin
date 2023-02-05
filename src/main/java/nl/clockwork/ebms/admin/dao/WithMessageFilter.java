@@ -30,8 +30,8 @@ public interface WithMessageFilter
 		{
 			if (messageContext.getCpaId() != null)
 				builder.and(table.cpaId.eq(messageContext.getCpaId()));
-			applyPathFilter(table.fromPartyId,table.fromRole,messageContext.getFromParty(),builder);
-			applyPathFilter(table.toPartyId,table.toRole,messageContext.getToParty(),builder);
+			applyPathFilter(table.fromPartyId, table.fromRole, messageContext.getFromParty(), builder);
+			applyPathFilter(table.toPartyId, table.toRole, messageContext.getToParty(), builder);
 			if (messageContext.getService() != null)
 				builder.and(table.service.eq(messageContext.getService()));
 			if (messageContext.getAction() != null)

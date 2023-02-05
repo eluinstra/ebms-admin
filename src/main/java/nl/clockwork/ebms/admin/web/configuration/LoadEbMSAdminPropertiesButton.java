@@ -50,7 +50,7 @@ public class LoadEbMSAdminPropertiesButton extends Button
 			@NonNull EbMSAdminPropertiesFormData ebMSAdminPropertiesFormData,
 			@NonNull PropertiesType propertiesType)
 	{
-		super(id,resourceModel);
+		super(id, resourceModel);
 		this.ebMSAdminPropertiesFormData = ebMSAdminPropertiesFormData;
 		this.propertiesType = propertiesType;
 		setDefaultFormProcessing(false);
@@ -70,12 +70,12 @@ public class LoadEbMSAdminPropertiesButton extends Button
 			val properties = WicketApplication.get().getPropertySourcesPlaceholderConfigurer().getProperties();
 			ebMSAdminPropertiesFormData = new EbMSAdminPropertiesReader(properties).read(propertiesType);
 			val page = new EbMSAdminPropertiesPage(Model.of(ebMSAdminPropertiesFormData));
-			page.info(new StringResourceModel("properties.loaded",page).getString());
+			page.info(new StringResourceModel("properties.loaded", page).getString());
 			setResponsePage(page);
 		}
 		catch (IOException | IllegalStateException e)
 		{
-			log.error("",e);
+			log.error("", e);
 			error(e.getMessage());
 		}
 	}

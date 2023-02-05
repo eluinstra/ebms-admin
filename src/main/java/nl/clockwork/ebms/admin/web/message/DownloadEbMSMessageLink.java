@@ -42,7 +42,7 @@ public class DownloadEbMSMessageLink extends Link<EbMSMessage>
 
 	public DownloadEbMSMessageLink(String id, EbMSDAO ebMSDAO, IModel<EbMSMessage> model)
 	{
-		super(id,model);
+		super(id, model);
 		this.ebMSDAO = ebMSDAO;
 	}
 
@@ -52,14 +52,14 @@ public class DownloadEbMSMessageLink extends Link<EbMSMessage>
 		val o = getModelObject();
 		try (val out = new CachedOutputStream(); val zip = new ZipOutputStream(out))
 		{
-			ebMSDAO.writeMessageToZip(o.getMessageId(),zip);
-			val resourceStream = CachedOutputResourceStream.of(out,"application/zip");
+			ebMSDAO.writeMessageToZip(o.getMessageId(), zip);
+			val resourceStream = CachedOutputResourceStream.of(out, "application/zip");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 			zip.finish();
 		}
 		catch (IOException e)
 		{
-			log.error("",e);
+			log.error("", e);
 			error(e.getMessage());
 		}
 	}

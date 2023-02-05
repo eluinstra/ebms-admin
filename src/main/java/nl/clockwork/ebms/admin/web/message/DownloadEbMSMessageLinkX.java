@@ -35,7 +35,7 @@ public class DownloadEbMSMessageLinkX extends Link<EbMSMessage>
 
 	public DownloadEbMSMessageLinkX(String id, IModel<EbMSMessage> model)
 	{
-		super(id,Args.notNull(model,"message"));
+		super(id, Args.notNull(model, "message"));
 	}
 
 	@Override
@@ -44,13 +44,13 @@ public class DownloadEbMSMessageLinkX extends Link<EbMSMessage>
 		val o = getModelObject();
 		try (val out = new CachedOutputStream())
 		{
-			EbMSMessageZipper.of(o,out).zip();
-			val resourceStream = CachedOutputResourceStream.of(out,"application/gzip");
-			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(o,resourceStream));
+			EbMSMessageZipper.of(o, out).zip();
+			val resourceStream = CachedOutputResourceStream.of(out, "application/gzip");
+			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(o, resourceStream));
 		}
 		catch (IOException e)
 		{
-			log.error("",e);
+			log.error("", e);
 			error(e.getMessage());
 		}
 	}

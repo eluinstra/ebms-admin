@@ -32,13 +32,13 @@ public class MenuLinkItem extends MenuItem
 
 	public MenuLinkItem(String id, String name, Class<? extends Page> pageClass)
 	{
-		super(id,name);
+		super(id, name);
 		this.pageClass = pageClass;
 	}
 
 	public MenuLinkItem(MenuItem parent, String id, String name, Class<? extends Page> pageClass)
 	{
-		super(parent,id,name);
+		super(parent, id, name);
 		this.pageClass = pageClass;
 	}
 }

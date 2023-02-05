@@ -32,7 +32,7 @@ public class AjaxButton extends org.apache.wicket.ajax.markup.html.form.AjaxButt
 	@Builder
 	public AjaxButton(String id, IModel<String> model, Form<?> form, @NonNull Consumer<AjaxRequestTarget> onSubmit, Consumer<AjaxRequestTarget> onError)
 	{
-		super(id,model,form);
+		super(id, model, form);
 		this.onSubmit = onSubmit;
 		this.onError = onError == null ? t ->
 		{

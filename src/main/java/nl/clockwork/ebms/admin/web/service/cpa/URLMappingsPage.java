@@ -47,7 +47,7 @@ public class URLMappingsPage extends BasePage
 	{
 		protected URLMappingsDataView(String id, IDataProvider<URLMapping> dataProvider)
 		{
-			super(id,dataProvider);
+			super(id, dataProvider);
 			setOutputMarkupId(true);
 		}
 
@@ -57,11 +57,11 @@ public class URLMappingsPage extends BasePage
 		protected void populateItem(final Item<URLMapping> item)
 		{
 			val o = item.getModelObject();
-			item.add(new Label("source",o.getSource()));
-			item.add(new Label("destination",o.getDestination()));
-			item.add(createEditButton("editUrl",item.getModel()));
-			item.add(createDeleteButton("delete",item.getModel()));
-			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
+			item.add(new Label("source", o.getSource()));
+			item.add(new Label("destination", o.getDestination()));
+			item.add(createEditButton("editUrl", item.getModel()));
+			item.add(createDeleteButton("delete", item.getModel()));
+			item.add(AttributeModifier.replace("class", OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 
 		private Button createEditButton(String id, final IModel<URLMapping> model)
@@ -74,11 +74,11 @@ public class URLMappingsPage extends BasePage
 				}
 				catch (Exception e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			return new Button(id,new ResourceModel("cmd.edit"),onSubmit);
+			return new Button(id, new ResourceModel("cmd.edit"), onSubmit);
 		}
 
 		private Button createDeleteButton(String id, final IModel<URLMapping> model)
@@ -92,12 +92,12 @@ public class URLMappingsPage extends BasePage
 				}
 				catch (Exception e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			val result = new Button(id,new ResourceModel("cmd.delete"),onSubmit);
-			result.add(AttributeModifier.replace("onclick","return confirm('" + getLocalizer().getString("confirm",this) + "');"));
+			val result = new Button(id, new ResourceModel("cmd.delete"), onSubmit);
+			result.add(AttributeModifier.replace("onclick", "return confirm('" + getLocalizer().getString("confirm", this) + "');"));
 			return result;
 		}
 
@@ -122,14 +122,14 @@ public class URLMappingsPage extends BasePage
 			super(id);
 			val container = new WebMarkupContainer("container");
 			add(container);
-			container.add(new URLMappingsDataView("urlMappings",URLMappingDataProvider.of(urlMappingService)));
-			add(new PageLink("new",new URLMappingPage()));
+			container.add(new URLMappingsDataView("urlMappings", URLMappingDataProvider.of(urlMappingService)));
+			add(new PageLink("new", new URLMappingPage()));
 		}
 	}
 
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("urlMappings",this);
+		return getLocalizer().getString("urlMappings", this);
 	}
 }

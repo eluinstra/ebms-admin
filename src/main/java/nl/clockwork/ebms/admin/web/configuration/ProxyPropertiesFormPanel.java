@@ -42,9 +42,9 @@ public class ProxyPropertiesFormPanel extends Panel
 	@Builder
 	public ProxyPropertiesFormPanel(String id, final IModel<ProxyPropertiesFormData> model, Supplier<Boolean> isVisible)
 	{
-		super(id,model);
+		super(id, model);
 		this.isVisible = isVisible == null ? () -> super.isVisible() : isVisible;
-		add(new ProxyPropertiesForm("form",model));
+		add(new ProxyPropertiesForm("form", model));
 	}
 
 	@Override
@@ -59,9 +59,9 @@ public class ProxyPropertiesFormPanel extends Panel
 
 		public ProxyPropertiesForm(String id, final IModel<ProxyPropertiesFormData> model)
 		{
-			super(id,new CompoundPropertyModel<>(model));
-			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",new TextField<String>("host").setLabel(new ResourceModel("lbl.host")).setRequired(true)));
-			add(new BootstrapFormComponentFeedbackBorder("portFeedback",new TextField<Integer>("port").setLabel(new ResourceModel("lbl.port")).setRequired(true)));
+			super(id, new CompoundPropertyModel<>(model));
+			add(new BootstrapFormComponentFeedbackBorder("hostFeedback", new TextField<String>("host").setLabel(new ResourceModel("lbl.host")).setRequired(true)));
+			add(new BootstrapFormComponentFeedbackBorder("portFeedback", new TextField<Integer>("port").setLabel(new ResourceModel("lbl.port")).setRequired(true)));
 			add(new TextField<String>("nonProxyHosts").setLabel(new ResourceModel("lbl.nonProxyHosts")));
 			add(new TextField<String>("username").setLabel(new ResourceModel("lbl.username")));
 			add(new PasswordTextField("password").setResetPassword(false).setLabel(new ResourceModel("lbl.password")).setRequired(false));

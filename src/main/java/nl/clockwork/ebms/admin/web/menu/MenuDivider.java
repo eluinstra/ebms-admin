@@ -21,6 +21,6 @@ public class MenuDivider extends MenuItem
 
 	public MenuDivider(MenuItem parent, String id)
 	{
-		super(parent,id,"");
+		super(parent, id, "");
 	}
 }

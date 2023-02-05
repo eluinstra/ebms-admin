@@ -57,8 +57,8 @@ public class WicketApplication extends WebApplication
 	@NonNull
 	EventListenerType eventListenerType;
 	List<MenuItem> menuItems = new ArrayList<>();
-	Map<String,MessageProvider.MessageViewPanel> messageViewPanels = new HashMap<>();
-	Map<String,MessageProvider.MessageEditPanel> messageEditPanels = new HashMap<>();
+	Map<String, MessageProvider.MessageViewPanel> messageViewPanels = new HashMap<>();
+	Map<String, MessageProvider.MessageEditPanel> messageEditPanels = new HashMap<>();
 	PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = EmbeddedAppConfig.PROPERTY_SOURCE;
 
 	public WicketApplication(@NonNull Integer maxItemsPerPage, @NonNull EventListenerType eventListenerType)
@@ -73,77 +73,77 @@ public class WicketApplication extends WebApplication
 
 		val extensionProviders = ExtensionProvider.get();
 		if (extensionProviders.size() > 0)
-			menuItems.add(createExtensionsMenuItem("5",extensionProviders));
+			menuItems.add(createExtensionsMenuItem("5", extensionProviders));
 
 		val messageProviders = MessageProvider.get();
-		messageProviders.forEach(p -> p.getMessageViewPanels().forEach(vp -> messageViewPanels.put(vp.getId(),vp)));
-		messageProviders.forEach(p -> p.getMessageEditPanels().forEach(ep -> messageEditPanels.put(ep.getId(),ep)));
+		messageProviders.forEach(p -> p.getMessageViewPanels().forEach(vp -> messageViewPanels.put(vp.getId(), vp)));
+		messageProviders.forEach(p -> p.getMessageEditPanels().forEach(ep -> messageEditPanels.put(ep.getId(), ep)));
 
 		menuItems.add(createAboutMEnuItem("6"));
 	}
 
 	private MenuItem createHomeMenuItem(String id)
 	{
-		return new MenuLinkItem(id,"home",getHomePage());
+		return new MenuLinkItem(id, "home", getHomePage());
 	}
 
 	private MenuItem createCPAServiceMenuItem(String id)
 	{
-		val result = new MenuItem(id,"cpaService");
-		new MenuLinkItem(result,"1","cpas",nl.clockwork.ebms.admin.web.service.cpa.CPAsPage.class);
-		new MenuDivider(result,"2");
-		new MenuLinkItem(result,"3","urlMappings",nl.clockwork.ebms.admin.web.service.cpa.URLMappingsPage.class);
-		new MenuDivider(result,"4");
-		new MenuLinkItem(result,"5","certificateMappings",nl.clockwork.ebms.admin.web.service.cpa.CertificateMappingsPage.class);
+		val result = new MenuItem(id, "cpaService");
+		new MenuLinkItem(result, "1", "cpas", nl.clockwork.ebms.admin.web.service.cpa.CPAsPage.class);
+		new MenuDivider(result, "2");
+		new MenuLinkItem(result, "3", "urlMappings", nl.clockwork.ebms.admin.web.service.cpa.URLMappingsPage.class);
+		new MenuDivider(result, "4");
+		new MenuLinkItem(result, "5", "certificateMappings", nl.clockwork.ebms.admin.web.service.cpa.CertificateMappingsPage.class);
 		return result;
 	}
 
 	private MenuItem createMEssageServiceMenuItem(String id)
 	{
-		val result = new MenuItem(id,"messageService");
-		new MenuLinkItem(result,"1","ping",nl.clockwork.ebms.admin.web.service.message.PingPage.class);
-		new MenuDivider(result,"2");
-		new MenuLinkItem(result,"3","unprocessedMessages",nl.clockwork.ebms.admin.web.service.message.MessagesPage.class);
+		val result = new MenuItem(id, "messageService");
+		new MenuLinkItem(result, "1", "ping", nl.clockwork.ebms.admin.web.service.message.PingPage.class);
+		new MenuDivider(result, "2");
+		new MenuLinkItem(result, "3", "unprocessedMessages", nl.clockwork.ebms.admin.web.service.message.MessagesPage.class);
 		if (EventListenerType.DAO == eventListenerType)
-			new MenuLinkItem(result,"4","messageEvents",nl.clockwork.ebms.admin.web.service.message.MessageEventsPage.class);
-		new MenuDivider(result,"5");
+			new MenuLinkItem(result, "4", "messageEvents", nl.clockwork.ebms.admin.web.service.message.MessageEventsPage.class);
+		new MenuDivider(result, "5");
 		// new MenuLinkItem(message,"6","messageSend",nl.clockwork.ebms.admin.web.service.message.SendMessagePage.class);
-		new MenuLinkItem(result,"6","messageSend",nl.clockwork.ebms.admin.web.service.message.SendMessagePageX.class);
-		new MenuLinkItem(result,"7","messageResend",nl.clockwork.ebms.admin.web.service.message.ResendMessagePage.class);
-		new MenuDivider(result,"8");
-		new MenuLinkItem(result,"9","messageStatus",nl.clockwork.ebms.admin.web.service.message.MessageStatusPage.class);
+		new MenuLinkItem(result, "6", "messageSend", nl.clockwork.ebms.admin.web.service.message.SendMessagePageX.class);
+		new MenuLinkItem(result, "7", "messageResend", nl.clockwork.ebms.admin.web.service.message.ResendMessagePage.class);
+		new MenuDivider(result, "8");
+		new MenuLinkItem(result, "9", "messageStatus", nl.clockwork.ebms.admin.web.service.message.MessageStatusPage.class);
 		return result;
 	}
 
 	private MenuItem createAdvancedMenuItem(String id)
 	{
-		val result = new MenuItem(id,"advanced");
-		new MenuLinkItem(result,"1","traffic",nl.clockwork.ebms.admin.web.message.TrafficPage.class);
-		new MenuLinkItem(result,"2","trafficChart",nl.clockwork.ebms.admin.web.message.TrafficChartPage.class);
-		new MenuDivider(result,"3");
-		new MenuLinkItem(result,"4","cpas",nl.clockwork.ebms.admin.web.cpa.CPAsPage.class);
-		new MenuLinkItem(result,"5","messages",nl.clockwork.ebms.admin.web.message.MessagesPage.class);
+		val result = new MenuItem(id, "advanced");
+		new MenuLinkItem(result, "1", "traffic", nl.clockwork.ebms.admin.web.message.TrafficPage.class);
+		new MenuLinkItem(result, "2", "trafficChart", nl.clockwork.ebms.admin.web.message.TrafficChartPage.class);
+		new MenuDivider(result, "3");
+		new MenuLinkItem(result, "4", "cpas", nl.clockwork.ebms.admin.web.cpa.CPAsPage.class);
+		new MenuLinkItem(result, "5", "messages", nl.clockwork.ebms.admin.web.message.MessagesPage.class);
 		return result;
 	}
 
 	private MenuItem createConfigurationMenuItem(String id)
 	{
-		val result = new MenuItem(id,"configuration");
-		new MenuLinkItem(result,"1","ebMSAdminProperties",nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.class);
+		val result = new MenuItem(id, "configuration");
+		new MenuLinkItem(result, "1", "ebMSAdminProperties", nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage.class);
 		return result;
 	}
 
 	private MenuItem createExtensionsMenuItem(String id, List<ExtensionProvider> extensionProviders)
 	{
-		val result = new MenuItem(id,"extensions");
+		val result = new MenuItem(id, "extensions");
 		val i = new AtomicInteger(1);
-		extensionProviders.stream().map(p -> p.createSubMenu(result,i.getAndIncrement(),p.getName())).collect(Collectors.toList());
+		extensionProviders.stream().map(p -> p.createSubMenu(result, i.getAndIncrement(), p.getName())).collect(Collectors.toList());
 		return result;
 	}
 
 	private MenuItem createAboutMEnuItem(String id)
 	{
-		return new MenuLinkItem(id,"about",nl.clockwork.ebms.admin.web.AboutPage.class);
+		return new MenuLinkItem(id, "about", nl.clockwork.ebms.admin.web.AboutPage.class);
 	}
 
 	@Override
@@ -158,7 +158,7 @@ public class WicketApplication extends WebApplication
 		super.init();
 		getDebugSettings().setDevelopmentUtilitiesEnabled(true);
 		getComponentInstantiationListeners().add(new SpringComponentInjector(this));
-		getJavaScriptLibrarySettings().setJQueryReference(new JavaScriptResourceReference(HomePage.class,"../../../../../js/jquery-min.js"));
+		getJavaScriptLibrarySettings().setJQueryReference(new JavaScriptResourceReference(HomePage.class, "../../../../../js/jquery-min.js"));
 		getRequestCycleListeners().add(new IRequestCycleListener()
 		{
 			@Override
@@ -167,7 +167,7 @@ public class WicketApplication extends WebApplication
 				return new RenderPageRequestHandler(new PageProvider(new ErrorPage(e)));
 			}
 		});
-		mountPage("/404",PageNotFoundPage.class);
+		mountPage("/404", PageNotFoundPage.class);
 	}
 
 	public static WicketApplication get()

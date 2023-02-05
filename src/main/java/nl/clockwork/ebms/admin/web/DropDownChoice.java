@@ -30,7 +30,7 @@ public class DropDownChoice<T> extends org.apache.wicket.markup.html.form.DropDo
 
 	public DropDownChoice(String id, IModel<? extends List<? extends T>> choices)
 	{
-		this(id,null,choices,null,null,null,null);
+		this(id, null, choices, null, null, null, null);
 	}
 
 	@Builder
@@ -43,7 +43,7 @@ public class DropDownChoice<T> extends org.apache.wicket.markup.html.form.DropDo
 			Supplier<Boolean> isRequired,
 			Supplier<Boolean> localizeDisplayValues)
 	{
-		super(id,model,choices);
+		super(id, model, choices);
 		this.isVisible = isVisible == null ? () -> super.isVisible() : isVisible;
 		this.isEnabled = isEnabled == null ? () -> super.isEnabled() : isEnabled;
 		this.isRequired = isRequired == null ? () -> super.isRequired() : isRequired;

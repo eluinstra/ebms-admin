@@ -50,7 +50,7 @@ public class CPAsPage extends BasePage
 
 		protected CPAIdsDataView(String id, IDataProvider<String> dataProvider)
 		{
-			super(id,dataProvider);
+			super(id, dataProvider);
 			setOutputMarkupId(true);
 		}
 
@@ -58,16 +58,16 @@ public class CPAsPage extends BasePage
 		protected void populateItem(final Item<String> item)
 		{
 			val o = item.getModelObject();
-			item.add(createViewLink("view",o));
-			item.add(new DownloadCPALink("downloadCPA",cpaService,item.getModel()));
-			item.add(createDeleteButton("delete",item.getModel()));
-			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
+			item.add(createViewLink("view", o));
+			item.add(new DownloadCPALink("downloadCPA", cpaService, item.getModel()));
+			item.add(createDeleteButton("delete", item.getModel()));
+			item.add(AttributeModifier.replace("class", OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 
 		private Link<Void> createViewLink(String id, final String cpaId)
 		{
-			val result = Link.<Void>builder().id(id).onClick(() -> setResponsePage(new CPAPage(Model.of(cpaService.getCPA(cpaId)),CPAsPage.this))).build();
-			result.add(new Label("cpaId",cpaId));
+			val result = Link.<Void>builder().id(id).onClick(() -> setResponsePage(new CPAPage(Model.of(cpaService.getCPA(cpaId)), CPAsPage.this))).build();
+			result.add(new Label("cpaId", cpaId));
 			return result;
 		}
 
@@ -82,12 +82,12 @@ public class CPAsPage extends BasePage
 				}
 				catch (Exception e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			val result = new Button(id,new ResourceModel("cmd.delete"),onSubmit);
-			result.add(AttributeModifier.replace("onclick","return confirm('" + getLocalizer().getString("confirm",this) + "');"));
+			val result = new Button(id, new ResourceModel("cmd.delete"), onSubmit);
+			result.add(AttributeModifier.replace("onclick", "return confirm('" + getLocalizer().getString("confirm", this) + "');"));
 			return result;
 		}
 
@@ -112,14 +112,14 @@ public class CPAsPage extends BasePage
 			super(id);
 			val container = new WebMarkupContainer("container");
 			add(container);
-			container.add(new CPAIdsDataView("cpaIds",CPADataProvider.of(cpaService)));
-			add(new PageClassLink("new",CPAUploadPage.class));
+			container.add(new CPAIdsDataView("cpaIds", CPADataProvider.of(cpaService)));
+			add(new PageClassLink("new", CPAUploadPage.class));
 		}
 	}
 
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("cpas",this);
+		return getLocalizer().getString("cpas", this);
 	}
 }

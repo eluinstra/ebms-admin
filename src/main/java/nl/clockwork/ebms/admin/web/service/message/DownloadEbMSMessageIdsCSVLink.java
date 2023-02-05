@@ -56,17 +56,17 @@ public class DownloadEbMSMessageIdsCSVLink extends Link<Void>
 	@Override
 	public void onClick()
 	{
-		try (val output = new CachedOutputStream(); val printer = new CSVPrinter(new OutputStreamWriter(output),CSVFormat.DEFAULT))
+		try (val output = new CachedOutputStream(); val printer = new CSVPrinter(new OutputStreamWriter(output), CSVFormat.DEFAULT))
 		{
-			val messageIds = Utils.toList(ebMSMessageService.getUnprocessedMessageIds(filter.getObject(),null));
+			val messageIds = Utils.toList(ebMSMessageService.getUnprocessedMessageIds(filter.getObject(), null));
 			if (messageIds != null)
-				printMessagesToCSV(printer,messageIds);
-			val resourceStream = CachedOutputResourceStream.of(output,"text/csv");
+				printMessagesToCSV(printer, messageIds);
+			val resourceStream = CachedOutputResourceStream.of(output, "text/csv");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}
 		catch (IOException e)
 		{
-			log.error("",e);
+			log.error("", e);
 			error(e.getMessage());
 		}
 	}

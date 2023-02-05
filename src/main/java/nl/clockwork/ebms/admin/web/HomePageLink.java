@@ -24,6 +24,6 @@ public class HomePageLink extends BookmarkablePageLink<Void>
 
 	public HomePageLink(String id)
 	{
-		super(id,WicketApplication.get().getHomePage());
+		super(id, WicketApplication.get().getHomePage());
 	}
 }

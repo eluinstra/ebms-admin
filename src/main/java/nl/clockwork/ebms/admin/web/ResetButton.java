@@ -32,7 +32,7 @@ public class ResetButton extends Button // GoToButton
 
 	public ResetButton(String id, IModel<String> model, Class<? extends Page> page)
 	{
-		super(id,model);
+		super(id, model);
 		this.page = page;
 		setDefaultFormProcessing(false);
 	}

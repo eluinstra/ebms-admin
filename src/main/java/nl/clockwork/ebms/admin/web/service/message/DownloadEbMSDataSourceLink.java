@@ -35,7 +35,7 @@ public class DownloadEbMSDataSourceLink extends Link<DataSource>
 
 	public DownloadEbMSDataSourceLink(String id, IModel<DataSource> model)
 	{
-		super(id,Args.notNull(model,"ebMSDataSource"));
+		super(id, Args.notNull(model, "ebMSDataSource"));
 		add(new Label("name"));
 	}
 
@@ -44,9 +44,9 @@ public class DownloadEbMSDataSourceLink extends Link<DataSource>
 	{
 		val o = getModelObject();
 		val fileName = UrlEncoder.QUERY_INSTANCE
-				.encode(StringUtils.isEmpty(o.getName()) ? "ebMSDataSource" + Utils.getFileExtension(o.getContentType()) : o.getName(),getRequest().getCharset());
+				.encode(StringUtils.isEmpty(o.getName()) ? "ebMSDataSource" + Utils.getFileExtension(o.getContentType()) : o.getName(), getRequest().getCharset());
 		val resourceStream = EbMSDataSourceResourceStream.of(o);
-		getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName,resourceStream));
+		getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName, resourceStream));
 	}
 
 	private ResourceStreamRequestHandler createRequestHandler(String fileName, IResourceStream resourceStream)

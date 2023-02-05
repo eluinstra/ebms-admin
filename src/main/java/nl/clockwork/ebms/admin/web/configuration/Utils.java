@@ -51,7 +51,7 @@ public class Utils
 		try
 		{
 			val sslContext = SSLContext.getInstance("TLS");
-			sslContext.init(null,null,null);
+			sslContext.init(null, null, null);
 			sslEngine = sslContext.createSSLEngine();
 		}
 		catch (Exception e)
@@ -127,7 +127,7 @@ public class Utils
 	public static void testTrustStore(KeyStoreType type, String path, String password)
 			throws MalformedURLException, IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException
 	{
-		testKeyStore(type,path,password,null,false);
+		testKeyStore(type, path, password, null, false);
 	}
 
 	public static void testKeyStore(KeyStoreType type, String path, String password, String defaultAlias, boolean validateKeyPassword)
@@ -135,7 +135,7 @@ public class Utils
 	{
 		val resource = getResource(path);
 		val keyStore = KeyStore.getInstance(type.name());
-		keyStore.load(resource.getInputStream(),password.toCharArray());
+		keyStore.load(resource.getInputStream(), password.toCharArray());
 		val aliases = keyStore.aliases();
 		if (!aliases.hasMoreElements())
 			throw new IllegalStateException("No keys found in keystore " + path);
@@ -143,7 +143,7 @@ public class Utils
 		{
 			val alias = aliases.nextElement();
 			if (validateKeyPassword)
-				keyStore.getKey(alias,password.toCharArray());
+				keyStore.getKey(alias, password.toCharArray());
 		}
 		else
 		{
@@ -155,7 +155,7 @@ public class Utils
 					if (alias.equals(defaultAlias))
 					{
 						if (validateKeyPassword)
-							keyStore.getKey(alias,password.toCharArray());
+							keyStore.getKey(alias, password.toCharArray());
 						break;
 					}
 				}
@@ -174,10 +174,10 @@ public class Utils
 		if (!driver.acceptsURL(jdbcUrl))
 			throw new IllegalArgumentException("Jdbc Url '" + jdbcUrl + "' not valid!");
 		val info = new Properties();
-		info.setProperty("user",username);
+		info.setProperty("user", username);
 		if (password != null)
-			info.setProperty("password",password);
-		try (val connection = driver.connect(jdbcUrl,info))
+			info.setProperty("password", password);
+		try (val connection = driver.connect(jdbcUrl, info))
 		{
 		}
 	}

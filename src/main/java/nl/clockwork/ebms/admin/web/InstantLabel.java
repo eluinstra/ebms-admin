@@ -29,7 +29,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.convert.IConverter;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class InstantLabel extends Label implements IGenericComponent<Instant,InstantLabel>
+public class InstantLabel extends Label implements IGenericComponent<Instant, InstantLabel>
 {
 	private static final long serialVersionUID = 1L;
 	@NonNull
@@ -37,22 +37,22 @@ public class InstantLabel extends Label implements IGenericComponent<Instant,Ins
 
 	public static InstantLabel of(String id, IModel<Instant> model, String pattern)
 	{
-		return new InstantLabel(id,model,new PatternInstantConverter(pattern));
+		return new InstantLabel(id, model, new PatternInstantConverter(pattern));
 	}
 
 	public static InstantLabel of(String id, String pattern)
 	{
-		return of(id,null,pattern);
+		return of(id, null, pattern);
 	}
 
 	public InstantLabel(String id, InstantConverter converter)
 	{
-		this(id,null,converter);
+		this(id, null, converter);
 	}
 
 	public InstantLabel(String id, IModel<Instant> model, @NonNull InstantConverter converter)
 	{
-		super(id,model);
+		super(id, model);
 		this.converter = converter;
 	}
 
@@ -68,6 +68,6 @@ public class InstantLabel extends Label implements IGenericComponent<Instant,Ins
 	public void onComponentTagBody(MarkupStream markupStream, ComponentTag openTag)
 	{
 		val s = getDefaultModelObjectAsString();
-		replaceComponentTagBody(markupStream,openTag,s);
+		replaceComponentTagBody(markupStream, openTag, s);
 	}
 }

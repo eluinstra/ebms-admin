@@ -28,14 +28,14 @@ import lombok.experimental.FieldDefaults;
 @Getter
 public enum JdbcDriver
 {
-	DB2("com.ibm.db2.jcc.DB2Driver","jdbc:db2://%s/%s"),
-	H2("org.h2.Driver","jdbc:h2:tcp://%s/%s"),
-	HSQLDB("org.hsqldb.jdbcDriver","jdbc:hsqldb:hsql://%s/%s"),
-	MARIADB("org.mariadb.jdbc.Driver","jdbc:mariadb://%s/%s"),
-	MSSQL("com.microsoft.sqlserver.jdbc.SQLServerDriver","jdbc:sqlserver://%s;databaseName=%s;"),
-	ORACLE("oracle.jdbc.OracleDriver","jdbc:oracle:thin:@//%s/%s"),
-	ORACLE_("oracle.jdbc.OracleDriver","jdbc:oracle:thin:@%s:%s"),
-	POSTGRESQL("org.postgresql.Driver","jdbc:postgresql://%s/%s");
+	DB2("com.ibm.db2.jcc.DB2Driver", "jdbc:db2://%s/%s"),
+	H2("org.h2.Driver", "jdbc:h2:tcp://%s/%s"),
+	HSQLDB("org.hsqldb.jdbcDriver", "jdbc:hsqldb:hsql://%s/%s"),
+	MARIADB("org.mariadb.jdbc.Driver", "jdbc:mariadb://%s/%s"),
+	MSSQL("com.microsoft.sqlserver.jdbc.SQLServerDriver", "jdbc:sqlserver://%s;databaseName=%s;"),
+	ORACLE("oracle.jdbc.OracleDriver", "jdbc:oracle:thin:@//%s/%s"),
+	ORACLE_("oracle.jdbc.OracleDriver", "jdbc:oracle:thin:@%s:%s"),
+	POSTGRESQL("org.postgresql.Driver", "jdbc:postgresql://%s/%s");
 
 	String driverClassName;
 	String urlExpr;
@@ -47,11 +47,11 @@ public enum JdbcDriver
 
 	public String createJdbcURL(String hostname, Integer port, String database)
 	{
-		return createJdbcURL(urlExpr,hostname,port,database);
+		return createJdbcURL(urlExpr, hostname, port, database);
 	}
 
 	public static String createJdbcURL(String urlExpr, String hostname, Integer port, String database)
 	{
-		return String.format(urlExpr,Utils.createURL(hostname,port),database);
+		return String.format(urlExpr, Utils.createURL(hostname, port), database);
 	}
 }

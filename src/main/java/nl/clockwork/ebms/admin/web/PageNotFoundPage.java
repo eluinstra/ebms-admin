@@ -50,7 +50,7 @@ public class PageNotFoundPage extends BasePage
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("pageNotFound",this);
+		return getLocalizer().getString("pageNotFound", this);
 	}
 
 }

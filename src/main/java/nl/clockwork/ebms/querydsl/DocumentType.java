@@ -58,7 +58,7 @@ public class DocumentType extends AbstractType<Document>
 	{
 		try
 		{
-			st.setString(startIndex,DOMUtils.toString(value));
+			st.setString(startIndex, DOMUtils.toString(value));
 		}
 		catch (TransformerException e)
 		{

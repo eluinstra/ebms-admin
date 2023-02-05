@@ -54,15 +54,15 @@ public class Utils
 
 	public static void writeProperties(Properties properties, Writer writer)
 	{
-		properties.replaceAll((k, p) -> hidePassword((String)k,(String)p));
-		properties.list(new PrintWriter(writer,true));
+		properties.replaceAll((k, p) -> hidePassword((String)k, (String)p));
+		properties.list(new PrintWriter(writer, true));
 	}
 
-	public static void writeProperties(Map<String,String> properties, Writer writer) throws IOException
+	public static void writeProperties(Map<String, String> properties, Writer writer) throws IOException
 	{
 		val keySet = new TreeSet<String>(properties.keySet());
 		for (val key : keySet)
-			writeProperty(writer,key,hidePassword(key,properties.get(key)));
+			writeProperty(writer, key, hidePassword(key, properties.get(key)));
 	}
 
 	private static void writeProperty(Writer writer, String key, String value) throws IOException
@@ -75,7 +75,7 @@ public class Utils
 
 	private static String hidePassword(String key, String property)
 	{
-		return key.matches("(?i).*(password|pwd).*") ? property.replaceAll(".","*") : property;
+		return key.matches("(?i).*(password|pwd).*") ? property.replaceAll(".", "*") : property;
 	}
 
 	public static <T> List<T> toList(List<T> list)

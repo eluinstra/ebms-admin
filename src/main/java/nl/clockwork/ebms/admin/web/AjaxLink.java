@@ -40,7 +40,7 @@ public class AjaxLink<T> extends org.apache.wicket.ajax.markup.html.AjaxLink<T>
 	@Builder
 	public AjaxLink(String id, IModel<T> model, @NonNull Consumer<AjaxRequestTarget> onClick)
 	{
-		super(id,model);
+		super(id, model);
 		this.onClick = onClick;
 	}
 

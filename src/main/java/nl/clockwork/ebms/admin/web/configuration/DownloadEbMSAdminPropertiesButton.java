@@ -47,7 +47,7 @@ public class DownloadEbMSAdminPropertiesButton extends Button
 			@NonNull IModel<EbMSAdminPropertiesFormData> ebMSAdminPropertiesFormData,
 			@NonNull PropertiesType propertiesType)
 	{
-		super(id,resourceModel);
+		super(id, resourceModel);
 		this.ebMSAdminPropertiesFormData = ebMSAdminPropertiesFormData;
 		this.propertiesType = propertiesType;
 	}
@@ -58,13 +58,13 @@ public class DownloadEbMSAdminPropertiesButton extends Button
 		try
 		{
 			val writer = new StringWriter();
-			new EbMSAdminPropertiesWriter(writer,true).write(ebMSAdminPropertiesFormData.getObject(),propertiesType);
-			val resourceStream = StringWriterResourceStream.of(writer,"plain/text");
+			new EbMSAdminPropertiesWriter(writer, true).write(ebMSAdminPropertiesFormData.getObject(), propertiesType);
+			val resourceStream = StringWriterResourceStream.of(writer, "plain/text");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}
 		catch (IOException e)
 		{
-			log.error("",e);
+			log.error("", e);
 			error(e.getMessage());
 		}
 	}

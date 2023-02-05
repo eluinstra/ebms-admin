@@ -39,8 +39,8 @@ public class EncryptionPropertiesFormPanel extends Panel
 
 	public EncryptionPropertiesFormPanel(String id, final IModel<EncryptionPropertiesFormData> model)
 	{
-		super(id,model);
-		add(new EncryptionPropertiesForm("form",model));
+		super(id, model);
+		add(new EncryptionPropertiesForm("form", model));
 	}
 
 	public class EncryptionPropertiesForm extends Form<EncryptionPropertiesFormData>
@@ -49,7 +49,7 @@ public class EncryptionPropertiesFormPanel extends Panel
 
 		public EncryptionPropertiesForm(String id, final IModel<EncryptionPropertiesFormData> model)
 		{
-			super(id,new CompoundPropertyModel<>(model));
+			super(id, new CompoundPropertyModel<>(model));
 			add(createEncryptionCheckBox("encryption"));
 			add(createKeystorePropertiesPanel("keystoreProperties"));
 		}
@@ -66,7 +66,7 @@ public class EncryptionPropertiesFormPanel extends Panel
 		{
 			return JavaKeyStorePropertiesFormPanel.builder()
 					.id(id)
-					.model(new PropertyModel<>(getModel(),"keystoreProperties"))
+					.model(new PropertyModel<>(getModel(), "keystoreProperties"))
 					.required(false)
 					.showDefaultAlias(false)
 					.isVisible(() -> getModelObject().isEncryption())

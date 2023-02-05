@@ -42,15 +42,15 @@ public class DBMigrate
 	@ToString
 	enum BaselineVersion
 	{
-		VERSION_2_10("2.10","2.10.0"),
-		VERSION_2_11("2.11","2.11.0"),
-		VERSION_2_12("2.12","2.12.0"),
-		VERSION_2_13("2.13","2.13.0"),
-		VERSION_2_14("2.14","2.13.0"),
-		VERSION_2_15("2.15","2.15.0"),
-		VERSION_2_16("2.16","2.15.0"),
-		VERSION_2_17("2.17","2.17.0"),
-		VERSION_2_18("2.18","2.18.0");
+		VERSION_2_10("2.10", "2.10.0"),
+		VERSION_2_11("2.11", "2.11.0"),
+		VERSION_2_12("2.12", "2.12.0"),
+		VERSION_2_13("2.13", "2.13.0"),
+		VERSION_2_14("2.14", "2.13.0"),
+		VERSION_2_15("2.15", "2.15.0"),
+		VERSION_2_16("2.16", "2.15.0"),
+		VERSION_2_17("2.17", "2.17.0"),
+		VERSION_2_18("2.18", "2.18.0");
 
 		String ebmsVersion;
 		String baselineVersion;
@@ -64,7 +64,7 @@ public class DBMigrate
 	public static void main(String[] args) throws ParseException
 	{
 		val options = createOptions();
-		val cmd = new DefaultParser().parse(options,args);
+		val cmd = new DefaultParser().parse(options, args);
 		if (cmd.hasOption("h"))
 			printUsage(options);
 
@@ -74,19 +74,19 @@ public class DBMigrate
 	protected static Options createOptions()
 	{
 		val result = new Options();
-		result.addOption("h",false,"print this message");
-		result.addOption("jdbcUrl",true,"set jdbcUrl");
-		result.addOption("username",true,"set username");
-		result.addOption("password",true,"set password");
-		result.addOption("strict",false,"use strict db scripts (default: false)");
-		result.addOption("ebmsVersion",true,"set current ebmsVersion (default: none)");
+		result.addOption("h", false, "print this message");
+		result.addOption("jdbcUrl", true, "set jdbcUrl");
+		result.addOption("username", true, "set username");
+		result.addOption("password", true, "set password");
+		result.addOption("strict", false, "use strict db scripts (default: false)");
+		result.addOption("ebmsVersion", true, "set current ebmsVersion (default: none)");
 		return result;
 	}
 
 	protected static void printUsage(Options options)
 	{
 		val formatter = new HelpFormatter();
-		formatter.printHelp("DBMigrate",options,true);
+		formatter.printHelp("DBMigrate", options, true);
 		val versions = Arrays.stream(BaselineVersion.values()).map(v -> v.ebmsVersion).collect(Collectors.joining("\n"));
 		System.out.println("\nValid ebmsVersions:\n" + versions);
 		System.exit(0);
@@ -98,9 +98,9 @@ public class DBMigrate
 		val username = cmd.getOptionValue("username");
 		val password = cmd.getOptionValue("password");
 		val isStrict = "true".equals(cmd.getOptionValue("strict"));
-		val location = parseLocation(jdbcUrl,isStrict);
+		val location = parseLocation(jdbcUrl, isStrict);
 		val baselineVersion = parseBaselineVersion(cmd.getOptionValue("ebmsVersion"));
-		var config = Flyway.configure().dataSource(jdbcUrl,username,password).locations(location).ignoreMigrationPatterns("*:missing").outOfOrder(true);
+		var config = Flyway.configure().dataSource(jdbcUrl, username, password).locations(location).ignoreMigrationPatterns("*:missing").outOfOrder(true);
 		if (StringUtils.isNotEmpty(baselineVersion))
 			config = config.baselineVersion(baselineVersion).baselineOnMigrate(true);
 		System.out.println("Migration starting...");
@@ -110,7 +110,7 @@ public class DBMigrate
 
 	private static String parseLocation(String jdbcUrl, boolean isStrict) throws ParseException
 	{
-		return Location.getLocation(jdbcUrl,isStrict).orElseThrow(() -> new ParseException("No location found for jdbcUrl " + jdbcUrl));
+		return Location.getLocation(jdbcUrl, isStrict).orElseThrow(() -> new ParseException("No location found for jdbcUrl " + jdbcUrl));
 	}
 
 	private static String parseBaselineVersion(String ebmsVersion) throws ParseException

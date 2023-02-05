@@ -47,7 +47,7 @@ public class DownloadEbMSMessageLink extends Link<Message>
 
 	public DownloadEbMSMessageLink(String id, IModel<Message> model)
 	{
-		super(id,Args.notNull(model,"message"));
+		super(id, Args.notNull(model, "message"));
 	}
 
 	@Override
@@ -56,18 +56,18 @@ public class DownloadEbMSMessageLink extends Link<Message>
 		val o = getModelObject();
 		try (val output = new CachedOutputStream(); val zip = new ZipOutputStream(output))
 		{
-			writeMessageToZip(o,zip);
-			val resourceStream = CachedOutputResourceStream.of(output,"application/zip");
-			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(o,resourceStream));
+			writeMessageToZip(o, zip);
+			val resourceStream = CachedOutputResourceStream.of(output, "application/zip");
+			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(o, resourceStream));
 		}
 		catch (IOException e)
 		{
-			log.error("",e);
+			log.error("", e);
 			error(e.getMessage());
 		}
 		catch (JAXBException e)
 		{
-			log.error("",e);
+			log.error("", e);
 			error(e.getMessage());
 		}
 	}
@@ -76,19 +76,21 @@ public class DownloadEbMSMessageLink extends Link<Message>
 	{
 		val entry = new ZipEntry("messageProperties.xml");
 		zip.putNextEntry(entry);
-		zip.write(JAXBParser.getInstance(MessageProperties.class)
-				.handle(new JAXBElement<>(new QName("http://www.ordina.nl/ebms/2.18","messageProperties"),MessageProperties.class,message.getProperties()))
-				.getBytes());
+		zip.write(
+				JAXBParser.getInstance(MessageProperties.class)
+						.handle(new JAXBElement<>(new QName("http://www.ordina.nl/ebms/2.18", "messageProperties"), MessageProperties.class, message.getProperties()))
+						.getBytes());
 		zip.closeEntry();
 		for (val dataSource : message.getDataSources())
-			zipDataSource(zip,entry,dataSource);
+			zipDataSource(zip, entry, dataSource);
 		zip.finish();
 	}
 
 	private void zipDataSource(ZipOutputStream zip, final ZipEntry entry, final DataSource dataSource) throws IOException
 	{
-		val e = new ZipEntry("datasources/"
-				+ (StringUtils.isEmpty(dataSource.getName()) ? UUID.randomUUID() + Utils.getFileExtension(dataSource.getContentType()) : dataSource.getName()));
+		val e = new ZipEntry(
+				"datasources/"
+						+ (StringUtils.isEmpty(dataSource.getName()) ? UUID.randomUUID() + Utils.getFileExtension(dataSource.getContentType()) : dataSource.getName()));
 		entry.setComment("Content-Type: " + dataSource.getContentType());
 		zip.putNextEntry(e);
 		zip.write(dataSource.getContent());

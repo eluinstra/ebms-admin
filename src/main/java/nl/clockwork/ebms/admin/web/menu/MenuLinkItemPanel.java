@@ -30,9 +30,9 @@ public class MenuLinkItemPanel extends Panel
 
 	public MenuLinkItemPanel(String id, IModel<MenuLinkItem> model)
 	{
-		super(id,model);
-		val link = new BookmarkablePageLink<BasePage>("link",model.getObject().getPageClass());
-		link.add(new Label("name",Utils.getResourceString(this.getClass(),model.getObject().getName())));
+		super(id, model);
+		val link = new BookmarkablePageLink<BasePage>("link", model.getObject().getPageClass());
+		link.add(new Label("name", Utils.getResourceString(this.getClass(), model.getObject().getName())));
 		add(link);
 		// add(AttributeModifier.replace("class",Model.of("active"));
 	}

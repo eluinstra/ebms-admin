@@ -24,6 +24,6 @@ public class TruststorePropertiesFormPanel extends JavaTrustStorePropertiesFormP
 
 	public TruststorePropertiesFormPanel(String id, IModel<JavaTrustStorePropertiesFormData> model)
 	{
-		super(id,model);
+		super(id, model);
 	}
 }

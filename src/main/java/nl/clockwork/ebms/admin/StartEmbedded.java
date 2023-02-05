@@ -106,19 +106,19 @@ public class StartEmbedded extends Start
 			NoSuchAlgorithmException, InterruptedException
 	{
 		val options = createOptions();
-		val cmd = new DefaultParser().parse(options,args);
+		val cmd = new DefaultParser().parse(options, args);
 		if (cmd.hasOption(HELP_OPTION))
 			printUsage(options);
-		setProperty("org.apache.activemq.SERIALIZABLE_PACKAGES","*");
+		setProperty("org.apache.activemq.SERIALIZABLE_PACKAGES", "*");
 		if (cmd.hasOption(DISABLE_EBMS_CLIENT_OPTION))
-			setProperty(DELIVERY_TASK_HANDLER_START_PROPERTY,FALSE);
+			setProperty(DELIVERY_TASK_HANDLER_START_PROPERTY, FALSE);
 		init(cmd);
 		server.setHandler(handlerCollection);
 		server.addBean(new CustomErrorHandler());
 		val properties = getProperties();
-		startHSQLDB(cmd,properties);
+		startHSQLDB(cmd, properties);
 		if (cmd.hasOption(JMX_OPTION))
-			initJMX(cmd,server);
+			initJMX(cmd, server);
 		if (cmd.hasOption(SOAP_OPTION) || cmd.hasOption(HEALTH_OPTION) || !cmd.hasOption(HEADLESS_OPTION) || !cmd.hasOption(DISABLE_EBMS_SERVER_OPTION))
 			try (val context = new AnnotationConfigWebApplicationContext())
 			{
@@ -127,18 +127,18 @@ public class StartEmbedded extends Start
 				val contextLoaderListener = new ContextLoaderListener(context);
 				if (cmd.hasOption(SOAP_OPTION) || !cmd.hasOption(HEADLESS_OPTION))
 				{
-					initWebServer(cmd,server);
-					handlerCollection.addHandler(createWebContextHandler(cmd,contextLoaderListener));
+					initWebServer(cmd, server);
+					handlerCollection.addHandler(createWebContextHandler(cmd, contextLoaderListener));
 				}
 				if (cmd.hasOption(HEALTH_OPTION))
 				{
-					initHealthServer(cmd,server);
-					handlerCollection.addHandler(createHealthContextHandler(cmd,contextLoaderListener));
+					initHealthServer(cmd, server);
+					handlerCollection.addHandler(createHealthContextHandler(cmd, contextLoaderListener));
 				}
 				if (!cmd.hasOption(DISABLE_EBMS_SERVER_OPTION))
 				{
-					initEbMSServer(properties,server);
-					handlerCollection.addHandler(createEbMSContextHandler(properties,contextLoaderListener));
+					initEbMSServer(properties, server);
+					handlerCollection.addHandler(createEbMSContextHandler(properties, contextLoaderListener));
 				}
 				println("Starting Server...");
 				try
@@ -169,10 +169,10 @@ public class StartEmbedded extends Start
 	protected Options createOptions()
 	{
 		val result = super.createOptions();
-		result.addOption(HSQLDB_OPTION,false,"start hsqldb server");
-		result.addOption(HSQLDB_DIR_OPTION,true,"set hsqldb location [default: " + DEFAULT_HSQLDB_DIR + "]");
-		result.addOption(DISABLE_EBMS_SERVER_OPTION,false,"disable ebms server");
-		result.addOption(DISABLE_EBMS_CLIENT_OPTION,false,"disable ebms client");
+		result.addOption(HSQLDB_OPTION, false, "start hsqldb server");
+		result.addOption(HSQLDB_DIR_OPTION, true, "set hsqldb location [default: " + DEFAULT_HSQLDB_DIR + "]");
+		result.addOption(DISABLE_EBMS_SERVER_OPTION, false, "disable ebms server");
+		result.addOption(DISABLE_EBMS_CLIENT_OPTION, false, "disable ebms client");
 		return result;
 	}
 
@@ -183,12 +183,12 @@ public class StartEmbedded extends Start
 
 	private void startHSQLDB(CommandLine cmd, Properties properties) throws IOException, AclFormatException, URISyntaxException, ParseException
 	{
-		val jdbcURL = getHsqlDbJdbcUrl(cmd,properties);
+		val jdbcURL = getHsqlDbJdbcUrl(cmd, properties);
 		if (jdbcURL != null)
 		{
-			setProperty(EBMS_JDBC_UPDATE_PROPERTY,TRUE);
+			setProperty(EBMS_JDBC_UPDATE_PROPERTY, TRUE);
 			println("Starting HSQLDB Server...");
-			startHSQLDBServer(cmd,jdbcURL);
+			startHSQLDBServer(cmd, jdbcURL);
 		}
 	}
 
@@ -197,7 +197,7 @@ public class StartEmbedded extends Start
 		JdbcURL result = null;
 		if (properties.getProperty(EBMS_JDBC_DRIVER_CLASS_NAME_PROPERTY).startsWith("org.hsqldb.jdbc") && cmd.hasOption(HSQLDB_OPTION))
 		{
-			result = nl.clockwork.ebms.admin.web.configuration.Utils.parseJdbcURL(properties.getProperty(EBMS_JDBC_URL_PROPERTY),new JdbcURL());
+			result = nl.clockwork.ebms.admin.web.configuration.Utils.parseJdbcURL(properties.getProperty(EBMS_JDBC_URL_PROPERTY), new JdbcURL());
 			val allowedHosts = "localhost|127.0.0.1";
 			if (!result.getHost().matches("^(" + allowedHosts + ")$"))
 			{
@@ -211,8 +211,8 @@ public class StartEmbedded extends Start
 	public org.hsqldb.server.Server startHSQLDBServer(CommandLine cmd, JdbcURL jdbcURL) throws IOException, AclFormatException, URISyntaxException, ParseException
 	{
 		val server = new org.hsqldb.server.Server();
-		server.setDatabasePath(0,String.format("file:%s/%s",cmd.getOptionValue("hsqldbDir","hsqldb"),jdbcURL.getDatabase()));
-		server.setDatabaseName(0,jdbcURL.getDatabase());
+		server.setDatabasePath(0, String.format("file:%s/%s", cmd.getOptionValue("hsqldbDir", "hsqldb"), jdbcURL.getDatabase()));
+		server.setDatabaseName(0, jdbcURL.getDatabase());
 		if (jdbcURL.getPort() != null)
 		{
 			server.setPort(jdbcURL.getPort());
@@ -226,19 +226,20 @@ public class StartEmbedded extends Start
 	private void initEbMSServer(Properties properties, Server server) throws GeneralSecurityException, IOException
 	{
 
-		val connector = TRUE.equals(properties.getProperty(EBMS_SSL_PROPERTY)) ? createEbMSHttpsConnector(properties,createEbMSSslContextFactory(properties))
+		val connector = TRUE.equals(properties.getProperty(EBMS_SSL_PROPERTY))
+				? createEbMSHttpsConnector(properties, createEbMSSslContextFactory(properties))
 				: createEbMSHttpConnector(properties);
 		server.addConnector(connector);
 		val connectionLimit = properties.getProperty(EBMS_CONNECTION_LIMIT_PROPERTY);
 		if (StringUtils.isNotEmpty(connectionLimit))
-			server.addBean(new ConnectionLimit(Integer.parseInt(connectionLimit),connector));
+			server.addBean(new ConnectionLimit(Integer.parseInt(connectionLimit), connector));
 	}
 
 	private ServerConnector createEbMSHttpConnector(Properties properties)
 	{
 		val httpConfig = new HttpConfiguration();
 		httpConfig.setSendServerVersion(false);
-		val result = new ServerConnector(server,new HttpConnectionFactory(httpConfig));
+		val result = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
 		result.setHost(StringUtils.isEmpty(properties.getProperty(EBMS_HOST_PROPERTY)) ? DEFAULT_HOST : properties.getProperty(EBMS_HOST_PROPERTY));
 		result.setPort(
 				Integer.parseInt(StringUtils.isEmpty(properties.getProperty(EBMS_PORT_PROPERTY)) ? DEFAULT_EBMS_PORT : properties.getProperty(EBMS_PORT_PROPERTY)));
@@ -250,19 +251,21 @@ public class StartEmbedded extends Start
 	private SslContextFactory.Server createEbMSSslContextFactory(Properties properties) throws GeneralSecurityException, IOException
 	{
 		val result = new SslContextFactory.Server();
-		EbMSKeyStore ebMSKeyStore = "AZURE".equals(properties.getProperty(KEYSTORES_TYPE_PROPERTY,""))
-				? EbMSKeyStore.of(properties.getProperty(AZURE_VAULTURI_PROPERTY),
+		EbMSKeyStore ebMSKeyStore = "AZURE".equals(properties.getProperty(KEYSTORES_TYPE_PROPERTY, ""))
+				? EbMSKeyStore.of(
+						properties.getProperty(AZURE_VAULTURI_PROPERTY),
 						properties.getProperty(AZURE_VAULTTENNANT_ID_PROPERTY),
 						properties.getProperty(AZURE_VAULTCLIENT_ID_PROPERTY),
 						properties.getProperty(AZURE_VAULTCLIENT_SECRET_PROPERTY),
 						properties.getProperty(KEYSTORE_DEFAULT_ALIAS_PROPERTY))
-				: EbMSKeyStore.of(KeyStoreType.valueOf(properties.getProperty(KEYSTORE_TYPE_PROPERTY)),
+				: EbMSKeyStore.of(
+						KeyStoreType.valueOf(properties.getProperty(KEYSTORE_TYPE_PROPERTY)),
 						properties.getProperty(KEYSTORE_PATH_PROPERTY),
 						properties.getProperty(KEYSTORE_PASSWORD_PROPERTY),
 						properties.getProperty(KEYSTORE_DEFAULT_ALIAS_PROPERTY));
-		addEbMSKeyStore(properties,result,ebMSKeyStore);
+		addEbMSKeyStore(properties, result, ebMSKeyStore);
 		if (TRUE.equals(properties.getProperty(HTTPS_REQUIRE_CLIENT_AUTHENTICATION_PROPERTY)))
-			addEbMSTrustStore(properties,result);
+			addEbMSTrustStore(properties, result);
 		result.setExcludeCipherSuites();
 		return result;
 	}
@@ -271,9 +274,9 @@ public class StartEmbedded extends Start
 			throws GeneralSecurityException, IOException
 	{
 		if (!StringUtils.isEmpty(properties.getProperty(HTTPS_PROTOCOLS_PROPERTY)))
-			sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(properties.getProperty(HTTPS_PROTOCOLS_PROPERTY),',')));
+			sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(properties.getProperty(HTTPS_PROTOCOLS_PROPERTY), ',')));
 		if (!StringUtils.isEmpty(properties.getProperty(HTTPS_CIPHER_SUITES_PROPERTY)))
-			sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(properties.getProperty(HTTPS_CIPHER_SUITES_PROPERTY),',')));
+			sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(properties.getProperty(HTTPS_CIPHER_SUITES_PROPERTY), ',')));
 		sslContextFactory.setKeyStore(ebMSKeyStore.getKeyStore());
 		sslContextFactory.setKeyStorePassword(ebMSKeyStore.getPassword());
 		if (StringUtils.isNotEmpty(ebMSKeyStore.getDefaultAlias()))
@@ -301,7 +304,7 @@ public class StartEmbedded extends Start
 	{
 		val httpConfig = new HttpConfiguration();
 		httpConfig.setSendServerVersion(false);
-		val result = new ServerConnector(server,sslContextFactory,new HttpConnectionFactory(httpConfig));
+		val result = new ServerConnector(server, sslContextFactory, new HttpConnectionFactory(httpConfig));
 		result.setHost(StringUtils.isEmpty(properties.getProperty(EBMS_HOST_PROPERTY)) ? DEFAULT_HOST : properties.getProperty(EBMS_HOST_PROPERTY));
 		result.setPort(
 				Integer.parseInt(StringUtils.isEmpty(properties.getProperty(EBMS_PORT_PROPERTY)) ? DEFAULT_EBMS_PORT : properties.getProperty(EBMS_PORT_PROPERTY)));
@@ -318,22 +321,25 @@ public class StartEmbedded extends Start
 		result.setContextPath("/");
 		if (TRUE.equals(properties.getProperty(AZURE_AZURE_INSIGHTS_PROPERTY)))
 		{
-			result.addFilter(createWebRequestTrackingFilterHolder(),"/*",EnumSet.allOf(DispatcherType.class));
+			result.addFilter(createWebRequestTrackingFilterHolder(), "/*", EnumSet.allOf(DispatcherType.class));
 			result.addEventListener(new ApplicationInsightsServletContextListener());
 		}
 		if (LoggingUtils.Status.ENABLED.name().equals(properties.getProperty(LOGGING_MDC_PROPERTY))
 				&& LoggingUtils.Status.ENABLED.name().equals(properties.getProperty(LOGGING_MDC_AUDIT_PROPERTY)))
-			result.addFilter(createRemoteAddressMDCFilterHolder(),"/*",EnumSet.allOf(DispatcherType.class));
+			result.addFilter(createRemoteAddressMDCFilterHolder(), "/*", EnumSet.allOf(DispatcherType.class));
 		if (!StringUtils.isEmpty(properties.getProperty(EBMS_QUERIES_PER_SECOND_PROPERTY)))
-			result.addFilter(createRateLimiterFilterHolder(properties.getProperty(EBMS_QUERIES_PER_SECOND_PROPERTY)),"/*",EnumSet.allOf(DispatcherType.class));
+			result.addFilter(createRateLimiterFilterHolder(properties.getProperty(EBMS_QUERIES_PER_SECOND_PROPERTY)), "/*", EnumSet.allOf(DispatcherType.class));
 		if (!StringUtils.isEmpty(properties.getProperty(EBMS_USER_QUERIES_PER_SECOND_PROPERTY)))
-			result
-					.addFilter(createUserRateLimiterFilterHolder(properties.getProperty(EBMS_USER_QUERIES_PER_SECOND_PROPERTY)),"/*",EnumSet.allOf(DispatcherType.class));
-		if (TRUE.equals(properties.getProperty(HTTPS_CLIENT_CERTIFICATE_AUTHENTICATION_PROPERTY).toLowerCase()))
-			result.addFilter(createClientCertificateManagerFilterHolder(properties.getProperty(HTTPS_CLIENT_CERTIFICATE_HEADER_PROPERTY)),
+			result.addFilter(
+					createUserRateLimiterFilterHolder(properties.getProperty(EBMS_USER_QUERIES_PER_SECOND_PROPERTY)),
 					"/*",
 					EnumSet.allOf(DispatcherType.class));
-		result.addServlet(EbMSServlet.class,properties.getProperty(EBMS_PATH_PROPERTY));
+		if (TRUE.equals(properties.getProperty(HTTPS_CLIENT_CERTIFICATE_AUTHENTICATION_PROPERTY).toLowerCase()))
+			result.addFilter(
+					createClientCertificateManagerFilterHolder(properties.getProperty(HTTPS_CLIENT_CERTIFICATE_HEADER_PROPERTY)),
+					"/*",
+					EnumSet.allOf(DispatcherType.class));
+		result.addServlet(EbMSServlet.class, properties.getProperty(EBMS_PATH_PROPERTY));
 		result.addEventListener(contextLoaderListener);
 		return result;
 	}

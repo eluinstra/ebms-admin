@@ -52,16 +52,16 @@ public class JavaTrustStorePropertiesFormPanel extends Panel
 
 	public JavaTrustStorePropertiesFormPanel(String id, IModel<JavaTrustStorePropertiesFormData> model)
 	{
-		this(id,model,true,null);
+		this(id, model, true, null);
 	}
 
 	@Builder
 	public JavaTrustStorePropertiesFormPanel(String id, IModel<JavaTrustStorePropertiesFormData> model, boolean required, Supplier<Boolean> isVisible)
 	{
-		super(id,model);
+		super(id, model);
 		this.required = required;
 		this.isVisible = isVisible == null ? () -> super.isVisible() : isVisible;
-		add(new JavaTrustStorePropertiesForm("form",model));
+		add(new JavaTrustStorePropertiesForm("form", model));
 	}
 
 	@Override
@@ -76,12 +76,16 @@ public class JavaTrustStorePropertiesFormPanel extends Panel
 
 		public JavaTrustStorePropertiesForm(String id, IModel<JavaTrustStorePropertiesFormData> model)
 		{
-			super(id,new CompoundPropertyModel<>(model));
-			add(new BootstrapFormComponentFeedbackBorder("typeFeedback",
-					new DropDownChoice<KeyStoreType>("type",Arrays.asList(KeyStoreType.values())).setLabel(new ResourceModel("lbl.type")).setRequired(required)));
-			add(new BootstrapFormComponentFeedbackBorder("uriFeedback",new TextField<String>("uri").setLabel(new ResourceModel("lbl.uri")).setRequired(required)));
-			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",
-					new PasswordTextField("password").setResetPassword(false).setLabel(new ResourceModel("lbl.password")).setRequired(required)));
+			super(id, new CompoundPropertyModel<>(model));
+			add(
+					new BootstrapFormComponentFeedbackBorder(
+							"typeFeedback",
+							new DropDownChoice<KeyStoreType>("type", Arrays.asList(KeyStoreType.values())).setLabel(new ResourceModel("lbl.type")).setRequired(required)));
+			add(new BootstrapFormComponentFeedbackBorder("uriFeedback", new TextField<String>("uri").setLabel(new ResourceModel("lbl.uri")).setRequired(required)));
+			add(
+					new BootstrapFormComponentFeedbackBorder(
+							"passwordFeedback",
+							new PasswordTextField("password").setResetPassword(false).setLabel(new ResourceModel("lbl.password")).setRequired(required)));
 			add(createTestButton("test"));
 		}
 
@@ -92,16 +96,16 @@ public class JavaTrustStorePropertiesFormPanel extends Panel
 				try
 				{
 					val o = getModelObject();
-					Utils.testTrustStore(o.getType(),o.getUri(),o.getPassword());
+					Utils.testTrustStore(o.getType(), o.getUri(), o.getPassword());
 					info(getString("test.ok"));
 				}
 				catch (Exception e)
 				{
-					log.error("",e);
-					error(new StringResourceModel("test.nok",this,Model.of(e)).getString());
+					log.error("", e);
+					error(new StringResourceModel("test.nok", this, Model.of(e)).getString());
 				}
 			};
-			return new Button(id,new ResourceModel("cmd.test"),action);
+			return new Button(id, new ResourceModel("cmd.test"), action);
 		}
 	}
 

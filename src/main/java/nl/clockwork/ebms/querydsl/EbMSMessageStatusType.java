@@ -39,13 +39,13 @@ public class EbMSMessageStatusType extends AbstractType<EbMSMessageStatus>
 	@Override
 	public EbMSMessageStatus getValue(ResultSet rs, int startIndex) throws SQLException
 	{
-		val id = rs.getObject(startIndex,Integer.class);
+		val id = rs.getObject(startIndex, Integer.class);
 		return id != null ? EbMSMessageStatus.get(id).orElseThrow(() -> new IllegalArgumentException("EbMSMessageStatus " + id + " is not valid!")) : null;
 	}
 
 	@Override
 	public void setValue(PreparedStatement st, int startIndex, EbMSMessageStatus value) throws SQLException
 	{
-		st.setInt(startIndex,value != null ? value.getId() : null);
+		st.setInt(startIndex, value != null ? value.getId() : null);
 	}
 }

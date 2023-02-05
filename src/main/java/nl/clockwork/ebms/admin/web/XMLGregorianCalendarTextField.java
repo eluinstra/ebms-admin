@@ -89,7 +89,7 @@ public class XMLGregorianCalendarTextField extends TextField<XMLGregorianCalenda
 			Supplier<IModel<String>> getLabel,
 			Supplier<Boolean> isRequired)
 	{
-		super(id,model);
+		super(id, model);
 		this.datePattern = datePattern;
 		this.getLabel = getLabel;
 		this.isRequired = isRequired;

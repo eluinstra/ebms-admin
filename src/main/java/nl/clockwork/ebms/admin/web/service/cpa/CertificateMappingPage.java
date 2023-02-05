@@ -66,13 +66,13 @@ public class CertificateMappingPage extends BasePage
 	public CertificateMappingPage(IModel<CertificateMappingFormData> model)
 	{
 		add(new BootstrapFeedbackPanel("feedback"));
-		add(new EditCertificateMappingForm("form",model));
+		add(new EditCertificateMappingForm("form", model));
 	}
 
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("certificateMapping",this);
+		return getLocalizer().getString("certificateMapping", this);
 	}
 
 	public class EditCertificateMappingForm extends Form<CertificateMappingFormData>
@@ -81,14 +81,21 @@ public class CertificateMappingPage extends BasePage
 
 		public EditCertificateMappingForm(String id, IModel<CertificateMappingFormData> model)
 		{
-			super(id,new CompoundPropertyModel<>(model));
-			add(new BootstrapFormComponentFeedbackBorder("sourceFeedback",new FileUploadField("source").setRequired(true).setLabel(new ResourceModel("lbl.source"))));
-			add(new BootstrapFormComponentFeedbackBorder("destinationFeedback",
-					new FileUploadField("destination").setRequired(true).setLabel(new ResourceModel("lbl.destination"))));
-			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",
-					new DropDownChoice<String>("cpaId",Model.ofList(Utils.toList(cpaService.getCPAIds()))).setLabel(new ResourceModel("lbl.cpaId"))));
+			super(id, new CompoundPropertyModel<>(model));
+			add(
+					new BootstrapFormComponentFeedbackBorder(
+							"sourceFeedback",
+							new FileUploadField("source").setRequired(true).setLabel(new ResourceModel("lbl.source"))));
+			add(
+					new BootstrapFormComponentFeedbackBorder(
+							"destinationFeedback",
+							new FileUploadField("destination").setRequired(true).setLabel(new ResourceModel("lbl.destination"))));
+			add(
+					new BootstrapFormComponentFeedbackBorder(
+							"cpaIdFeedback",
+							new DropDownChoice<String>("cpaId", Model.ofList(Utils.toList(cpaService.getCPAIds()))).setLabel(new ResourceModel("lbl.cpaId"))));
 			add(createSetButton("set"));
-			add(new ResetButton("reset",new ResourceModel("cmd.reset"),CertificateMappingPage.class));
+			add(new ResetButton("reset", new ResourceModel("cmd.reset"), CertificateMappingPage.class));
 		}
 
 		private Button createSetButton(String id)
@@ -103,11 +110,11 @@ public class CertificateMappingPage extends BasePage
 				}
 				catch (Exception e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			val result = new Button(id,new ResourceModel("cmd.upload"),onSubmit);
+			val result = new Button(id, new ResourceModel("cmd.upload"), onSubmit);
 			setDefaultButton(result);
 			return result;
 		}
@@ -117,12 +124,13 @@ public class CertificateMappingPage extends BasePage
 			X509Certificate source = getX509Certificate(o.source);
 			X509Certificate destination = getX509Certificate(o.destination);
 			String cpaId = o.cpaId;
-			return new CertificateMapping(source,destination,cpaId);
+			return new CertificateMapping(source, destination, cpaId);
 		}
 
 		private X509Certificate getX509Certificate(List<FileUpload> files) throws CertificateException, IOException
 		{
-			return files != null && files.size() == 1 ? (X509Certificate)CertificateFactory.getInstance("X.509").generateCertificate(files.get(0).getInputStream())
+			return files != null && files.size() == 1
+					? (X509Certificate)CertificateFactory.getInstance("X.509").generateCertificate(files.get(0).getInputStream())
 					: null;
 		}
 	}

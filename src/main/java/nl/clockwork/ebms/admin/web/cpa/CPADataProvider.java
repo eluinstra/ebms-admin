@@ -35,13 +35,13 @@ public class CPADataProvider implements IDataProvider<CPA>
 	@Override
 	public Iterator<? extends CPA> iterator(long first, long count)
 	{
-		return ebMSDAO.selectCPAs(first,count).iterator();
+		return ebMSDAO.selectCPAs(first, count).iterator();
 	}
 
 	@Override
 	public IModel<CPA> model(CPA cpa)
 	{
-		return CPADataModel.of(ebMSDAO,cpa);
+		return CPADataModel.of(ebMSDAO, cpa);
 	}
 
 	@Override

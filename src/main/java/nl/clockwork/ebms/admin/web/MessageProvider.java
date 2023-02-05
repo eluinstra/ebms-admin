@@ -44,7 +44,7 @@ public abstract class MessageProvider
 
 	public static Object createId(EbMSMessage message)
 	{
-		return createId(message.getService(),message.getAction());
+		return createId(message.getService(), message.getAction());
 	}
 
 	public static String createId(String service, String action)
@@ -69,7 +69,7 @@ public abstract class MessageProvider
 
 		public String getId()
 		{
-			return createId(service,action);
+			return createId(service, action);
 		}
 	}
 
@@ -77,7 +77,7 @@ public abstract class MessageProvider
 	{
 		public MessageViewPanel(String service, String action)
 		{
-			super(service,action);
+			super(service, action);
 		}
 
 		public abstract Panel getPanel(String id, List<EbMSAttachment> attachments) throws Exception;
@@ -87,7 +87,7 @@ public abstract class MessageProvider
 	{
 		public MessageEditPanel(String service, String action)
 		{
-			super(service,action);
+			super(service, action);
 		}
 
 		public abstract DataSourcesPanel getPanel(String id);

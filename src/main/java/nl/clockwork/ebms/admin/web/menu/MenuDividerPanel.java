@@ -24,6 +24,6 @@ public class MenuDividerPanel extends Panel
 
 	public MenuDividerPanel(String id)
 	{
-		super(id,null);
+		super(id, null);
 	}
 }

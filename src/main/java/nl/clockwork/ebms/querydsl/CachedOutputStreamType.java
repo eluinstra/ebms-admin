@@ -56,7 +56,7 @@ public class CachedOutputStreamType extends AbstractType<CachedOutputStream>
 	{
 		try (val a = value)
 		{
-			st.setBinaryStream(startIndex,a.getInputStream());
+			st.setBinaryStream(startIndex, a.getInputStream());
 		}
 		catch (IOException e)
 		{
@@ -67,7 +67,7 @@ public class CachedOutputStreamType extends AbstractType<CachedOutputStream>
 	public static CachedOutputStream createCachedOutputStream(InputStream in) throws IOException
 	{
 		val result = new CachedOutputStream();
-		CachedOutputStream.copyStream(in,result,4096);
+		CachedOutputStream.copyStream(in, result, 4096);
 		result.lockOutputStream();
 		return result;
 	}

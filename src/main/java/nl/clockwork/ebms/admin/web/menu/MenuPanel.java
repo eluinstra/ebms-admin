@@ -37,7 +37,7 @@ public class MenuPanel extends Panel
 
 		public MenuItems(String id, List<MenuItem> list, int level)
 		{
-			super(id,list);
+			super(id, list);
 			this.level = level;
 			setRenderBodyOnly(true);
 		}
@@ -47,9 +47,9 @@ public class MenuPanel extends Panel
 		{
 			val o = item.getModelObject();
 			Match(o).of(
-					Case($(instanceOf(MenuLinkItem.class)),i -> item.add(new MenuLinkItemPanel("menuItem",Model.of((MenuLinkItem)o))/* .setRenderBodyOnly(true) */)),
-					Case($(instanceOf(MenuDivider.class)),i -> item.add(new MenuDividerPanel("menuItem"))),
-					Case($(),i -> item.add(new MenuItemPanel("menuItem",item.getModel(),level)/* .setRenderBodyOnly(true) */)));
+					Case($(instanceOf(MenuLinkItem.class)), i -> item.add(new MenuLinkItemPanel("menuItem", Model.of((MenuLinkItem)o))/* .setRenderBodyOnly(true) */)),
+					Case($(instanceOf(MenuDivider.class)), i -> item.add(new MenuDividerPanel("menuItem"))),
+					Case($(), i -> item.add(new MenuItemPanel("menuItem", item.getModel(), level)/* .setRenderBodyOnly(true) */)));
 			// item.setRenderBodyOnly(true);
 		}
 	}
@@ -58,8 +58,8 @@ public class MenuPanel extends Panel
 
 	public MenuPanel(String id, List<MenuItem> menuItems)
 	{
-		super(id,Model.of(menuItems));
-		add(new MenuItems("menuItems",menuItems,0));
+		super(id, Model.of(menuItems));
+		add(new MenuItems("menuItems", menuItems, 0));
 	}
 
 }

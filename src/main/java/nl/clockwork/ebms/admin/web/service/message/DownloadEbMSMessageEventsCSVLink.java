@@ -68,17 +68,17 @@ public class DownloadEbMSMessageEventsCSVLink extends Link<Void>
 	@Override
 	public void onClick()
 	{
-		try (val output = new CachedOutputStream(); val printer = new CSVPrinter(new OutputStreamWriter(output),CSVFormat.DEFAULT))
+		try (val output = new CachedOutputStream(); val printer = new CSVPrinter(new OutputStreamWriter(output), CSVFormat.DEFAULT))
 		{
-			val messageEvents = Utils.toList(ebMSMessageService.getUnprocessedMessageEvents(filter.getObject(),eventTypes,null));
+			val messageEvents = Utils.toList(ebMSMessageService.getUnprocessedMessageEvents(filter.getObject(), eventTypes, null));
 			if (messageEvents != null)
-				printMessagesToCSV(printer,messageEvents);
-			val resourceStream = CachedOutputResourceStream.of(output,"text/csv");
+				printMessagesToCSV(printer, messageEvents);
+			val resourceStream = CachedOutputResourceStream.of(output, "text/csv");
 			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(resourceStream));
 		}
 		catch (IOException e)
 		{
-			log.error("",e);
+			log.error("", e);
 			error(e.getMessage());
 		}
 	}
@@ -86,7 +86,7 @@ public class DownloadEbMSMessageEventsCSVLink extends Link<Void>
 	private void printMessagesToCSV(CSVPrinter printer, List<MessageEvent> messageEvents) throws IOException
 	{
 		for (val event : messageEvents)
-			printer.printRecord(event.getMessageId(),event.getType().name());
+			printer.printRecord(event.getMessageId(), event.getType().name());
 	}
 
 	private ResourceStreamRequestHandler createRequestHandler(IResourceStream resourceStream)

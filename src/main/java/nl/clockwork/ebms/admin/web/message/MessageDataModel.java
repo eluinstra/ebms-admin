@@ -38,7 +38,7 @@ public class MessageDataModel extends LoadableDetachableModel<EbMSMessage>
 
 	public static MessageDataModel of(EbMSDAO ebMSDAO, EbMSMessage message)
 	{
-		return new MessageDataModel(ebMSDAO,message.getMessageId());
+		return new MessageDataModel(ebMSDAO, message.getMessageId());
 	}
 
 	@Override

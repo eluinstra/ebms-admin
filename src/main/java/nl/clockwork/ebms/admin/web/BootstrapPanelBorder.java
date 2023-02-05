@@ -27,7 +27,7 @@ public class BootstrapPanelBorder extends Border
 	public BootstrapPanelBorder(String id, String title, Component...components)
 	{
 		super(id);
-		addToBorder(new Label("title",title));
+		addToBorder(new Label("title", title));
 		add(components);
 	}
 

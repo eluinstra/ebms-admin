@@ -54,7 +54,7 @@ public class MessageEventsPage extends BasePage
 
 		protected MessageEventDataView(String id, IDataProvider<MessageEvent> dataProvider)
 		{
-			super(id,dataProvider);
+			super(id, dataProvider);
 			setOutputMarkupId(true);
 		}
 
@@ -68,20 +68,22 @@ public class MessageEventsPage extends BasePage
 		protected void populateItem(final Item<MessageEvent> item)
 		{
 			val o = item.getModelObject();
-			item.add(createViewLink("view",item.getModel(),new Label("messageId",o.getMessageId())));
-			item.add(new Label("type",o.getType()));
-			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
+			item.add(createViewLink("view", item.getModel(), new Label("messageId", o.getMessageId())));
+			item.add(new Label("type", o.getType()));
+			item.add(AttributeModifier.replace("class", OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 
 		private Link<Void> createViewLink(String id, final IModel<MessageEvent> model, Component...components)
 		{
 			Action onClick = () ->
 			{
-				setResponsePage(new MessagePage(Model.of(ebMSMessageService.getMessage(model.getObject().getMessageId(),null)),
-						MessageEventsPage.this,
-						messageId -> ebMSMessageService.processMessageEvent(messageId)));
+				setResponsePage(
+						new MessagePage(
+								Model.of(ebMSMessageService.getMessage(model.getObject().getMessageId(), null)),
+								MessageEventsPage.this,
+								messageId -> ebMSMessageService.processMessageEvent(messageId)));
 			};
-			val link = new Link<Void>(id,onClick);
+			val link = new Link<Void>(id, onClick);
 			link.add(components);
 			return link;
 		}
@@ -95,12 +97,12 @@ public class MessageEventsPage extends BasePage
 
 	public MessageEventsPage()
 	{
-		this(Model.of(new MessageFilter()),MessageEventType.values());
+		this(Model.of(new MessageFilter()), MessageEventType.values());
 	}
 
 	public MessageEventsPage(IModel<MessageFilter> filterModel, MessageEventType[] eventTypes)
 	{
-		this(filterModel,eventTypes,null);
+		this(filterModel, eventTypes, null);
 	}
 
 	public MessageEventsPage(IModel<MessageFilter> filter, MessageEventType[] eventTypes, final WebPage responsePage)
@@ -108,18 +110,18 @@ public class MessageEventsPage extends BasePage
 		this.maxItemsPerPage = WicketApplication.get().getMaxItemsPerPage();
 		val container = new WebMarkupContainer("container");
 		add(container);
-		val messageEvents = new MessageEventDataView("messageEvents",MessageEventDataProvider.of(ebMSMessageService,filter.getObject(),eventTypes));
+		val messageEvents = new MessageEventDataView("messageEvents", MessageEventDataProvider.of(ebMSMessageService, filter.getObject(), eventTypes));
 		container.add(messageEvents);
-		val navigator = new BootstrapPagingNavigator("navigator",messageEvents);
+		val navigator = new BootstrapPagingNavigator("navigator", messageEvents);
 		add(navigator);
-		add(new MaxItemsPerPageChoice("maxItemsPerPage",new PropertyModel<>(this,"maxItemsPerPage"),navigator,container));
-		add(new PageLink("back",responsePage).setVisible(responsePage != null));
-		add(new DownloadEbMSMessageEventsCSVLink("download",ebMSMessageService,filter,MessageEventType.values()));
+		add(new MaxItemsPerPageChoice("maxItemsPerPage", new PropertyModel<>(this, "maxItemsPerPage"), navigator, container));
+		add(new PageLink("back", responsePage).setVisible(responsePage != null));
+		add(new DownloadEbMSMessageEventsCSVLink("download", ebMSMessageService, filter, MessageEventType.values()));
 	}
 
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("messageEvents",this);
+		return getLocalizer().getString("messageEvents", this);
 	}
 }

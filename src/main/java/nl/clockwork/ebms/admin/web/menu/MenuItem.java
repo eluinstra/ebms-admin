@@ -38,7 +38,7 @@ public class MenuItem implements IClusterable
 
 	public MenuItem(String id, String name)
 	{
-		this(null,id,name);
+		this(null, id, name);
 	}
 
 	public MenuItem(MenuItem parent, String id, String name)

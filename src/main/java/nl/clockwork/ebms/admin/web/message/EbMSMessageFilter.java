@@ -60,7 +60,7 @@ public class EbMSMessageFilter extends MessageFilter
 			LocalDateTime from,
 			LocalDateTime to)
 	{
-		super(cpaId,fromParty,toParty,service,action,conversationId,messageId,refToMessageId);
+		super(cpaId, fromParty, toParty, service, action, conversationId, messageId, refToMessageId);
 		this.serviceMessage = serviceMessage;
 		if (statuses != null)
 			this.statuses = statuses;

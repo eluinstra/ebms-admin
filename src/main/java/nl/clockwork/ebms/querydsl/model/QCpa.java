@@ -36,44 +36,44 @@ public class QCpa extends com.querydsl.sql.RelationalPathBase<QCpa>
 	public static final QCpa cpa1 = new QCpa("cpa");
 
 	public final SimplePath<org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement> cpa =
-			createSimple("cpa",org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement.class);
+			createSimple("cpa", org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement.class);
 
 	public final StringPath cpaId = createString("cpaId");
 
 	public QCpa(String variable)
 	{
-		super(QCpa.class,forVariable(variable),"PUBLIC","cpa");
+		super(QCpa.class, forVariable(variable), "PUBLIC", "cpa");
 		addMetadata();
 	}
 
 	public QCpa(String variable, String schema, String table)
 	{
-		super(QCpa.class,forVariable(variable),schema,table);
+		super(QCpa.class, forVariable(variable), schema, table);
 		addMetadata();
 	}
 
 	public QCpa(String variable, String schema)
 	{
-		super(QCpa.class,forVariable(variable),schema,"cpa");
+		super(QCpa.class, forVariable(variable), schema, "cpa");
 		addMetadata();
 	}
 
 	public QCpa(Path<? extends QCpa> path)
 	{
-		super(path.getType(),path.getMetadata(),"PUBLIC","cpa");
+		super(path.getType(), path.getMetadata(), "PUBLIC", "cpa");
 		addMetadata();
 	}
 
 	public QCpa(PathMetadata metadata)
 	{
-		super(QCpa.class,metadata,"PUBLIC","cpa");
+		super(QCpa.class, metadata, "PUBLIC", "cpa");
 		addMetadata();
 	}
 
 	public void addMetadata()
 	{
-		addMetadata(cpa,ColumnMetadata.named("cpa").withIndex(2).ofType(Types.CLOB).withSize(1073741824).notNull());
-		addMetadata(cpaId,ColumnMetadata.named("cpa_id").withIndex(1).ofType(Types.VARCHAR).withSize(256).notNull());
+		addMetadata(cpa, ColumnMetadata.named("cpa").withIndex(2).ofType(Types.CLOB).withSize(1073741824).notNull());
+		addMetadata(cpaId, ColumnMetadata.named("cpa_id").withIndex(1).ofType(Types.VARCHAR).withSize(256).notNull());
 	}
 
 }

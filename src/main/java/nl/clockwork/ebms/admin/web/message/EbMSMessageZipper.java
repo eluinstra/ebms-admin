@@ -41,16 +41,17 @@ public class EbMSMessageZipper
 
 	public void zip() throws IOException
 	{
-		writeMessageToZip(message,out);
+		writeMessageToZip(message, out);
 	}
 
 	private void writeMessageToZip(EbMSMessage message, OutputStream out) throws IOException
 	{
 		try (val zip = new ZipOutputStream(out))
 		{
-			addEntry(zip,"message.xml",new ByteArrayInputStream(message.getContent().getBytes()));
+			addEntry(zip, "message.xml", new ByteArrayInputStream(message.getContent().getBytes()));
 			for (EbMSAttachment a : message.getAttachments())
-				addEntry(zip,
+				addEntry(
+						zip,
 						"attachments/" + (StringUtils.isEmpty(a.getName()) ? a.getContentId() + Utils.getFileExtension(a.getContentType()) : a.getName()),
 						a.getContent().getInputStream());
 			zip.finish();
@@ -62,7 +63,7 @@ public class EbMSMessageZipper
 		val entry = new ZipEntry(name);
 		// entry.setSize(content.getSize());
 		out.putNextEntry(entry);
-		IOUtils.copy(content,out);
+		IOUtils.copy(content, out);
 		out.closeEntry();
 	}
 }

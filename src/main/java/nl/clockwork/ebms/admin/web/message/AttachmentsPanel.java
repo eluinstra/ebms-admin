@@ -38,14 +38,14 @@ public class AttachmentsPanel extends Panel
 
 		public EbMSAttachmentPropertyListView(String id, IModel<List<EbMSAttachment>> list)
 		{
-			super(id,list);
+			super(id, list);
 		}
 
 		@Override
 		protected void populateItem(ListItem<EbMSAttachment> item)
 		{
 			item.add(new Label("name"));
-			val link = new DownloadEbMSAttachmentLink("downloadAttachment",ebMSDAO,item.getModel());
+			val link = new DownloadEbMSAttachmentLink("downloadAttachment", ebMSDAO, item.getModel());
 			link.add(new Label("contentId"));
 			item.add(link);
 			item.add(new Label("contentType"));
@@ -59,7 +59,7 @@ public class AttachmentsPanel extends Panel
 	public AttachmentsPanel(String id, IModel<List<EbMSAttachment>> attachments)
 	{
 		super(id);
-		add(new EbMSAttachmentPropertyListView("attachments",attachments));
+		add(new EbMSAttachmentPropertyListView("attachments", attachments));
 	}
 
 }

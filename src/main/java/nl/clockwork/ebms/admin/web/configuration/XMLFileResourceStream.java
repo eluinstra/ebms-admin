@@ -25,7 +25,7 @@ public class XMLFileResourceStream extends PackageResourceStream
 
 	public XMLFileResourceStream(String location) throws URISyntaxException
 	{
-		super(XMLFileResourceStream.class,location);
+		super(XMLFileResourceStream.class, location);
 	}
 
 	@Override

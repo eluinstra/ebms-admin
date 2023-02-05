@@ -26,15 +26,15 @@ public class TextField<T> extends org.apache.wicket.markup.html.form.TextField<T
 {
 	private static final long serialVersionUID = 1L;
 	Supplier<Boolean> isVisible;
-	Function<Class<?>,IConverter<?>> getConverter;
+	Function<Class<?>, IConverter<?>> getConverter;
 
 	public TextField(String id)
 	{
-		this(id,null,null);
+		this(id, null, null);
 	}
 
 	@Builder
-	public TextField(String id, Supplier<Boolean> isVisible, Function<Class<?>,IConverter<?>> getConverter)
+	public TextField(String id, Supplier<Boolean> isVisible, Function<Class<?>, IConverter<?>> getConverter)
 	{
 		super(id);
 		this.isVisible = isVisible == null ? () -> super.isVisible() : isVisible;

@@ -43,10 +43,11 @@ public class CPAUtils
 	{
 		return cpa.getPartyInfo()
 				.stream()
-				.flatMap(p -> p.getCollaborationRole()
-						.stream()
-						.filter(r -> roleName == null || roleName.equals(r.getRole().getName()))
-						.map(r -> toString(p.getPartyId().get(0))))
+				.flatMap(
+						p -> p.getCollaborationRole()
+								.stream()
+								.filter(r -> roleName == null || roleName.equals(r.getRole().getName()))
+								.map(r -> toString(p.getPartyId().get(0))))
 				.distinct()
 				.collect(Collectors.toList());
 	}
@@ -101,10 +102,11 @@ public class CPAUtils
 		// return findRoles(cpa,roleName).map(r -> getServiceName(r.getServiceBinding().getService())).collect(Collectors.toList());
 		return cpa.getPartyInfo()
 				.stream()
-				.flatMap(p -> p.getCollaborationRole()
-						.stream()
-						.filter(r -> r.getRole().getName().equals(roleName))
-						.map(r -> getServiceName(r.getServiceBinding().getService())))
+				.flatMap(
+						p -> p.getCollaborationRole()
+								.stream()
+								.filter(r -> r.getRole().getName().equals(roleName))
+								.map(r -> getServiceName(r.getServiceBinding().getService())))
 				.collect(Collectors.toList());
 	}
 
@@ -114,10 +116,11 @@ public class CPAUtils
 		// getServiceName(r.getServiceBinding().getService()).collect(Collectors.toList());
 		return cpa.getPartyInfo()
 				.stream()
-				.flatMap(p -> p.getCollaborationRole()
-						.stream()
-						.filter(r -> r.getRole().getName().equals(roleName) && r.getServiceBinding().getCanSend().size() > 0)
-						.map(r -> getServiceName(r.getServiceBinding().getService())))
+				.flatMap(
+						p -> p.getCollaborationRole()
+								.stream()
+								.filter(r -> r.getRole().getName().equals(roleName) && r.getServiceBinding().getCanSend().size() > 0)
+								.map(r -> getServiceName(r.getServiceBinding().getService())))
 				.collect(Collectors.toList());
 	}
 
@@ -128,10 +131,11 @@ public class CPAUtils
 		return cpa.getPartyInfo()
 				.stream()
 				.filter(p -> partyId == null || partyId.equals(toString(p.getPartyId().get(0))))
-				.flatMap(p -> p.getCollaborationRole()
-						.stream()
-						.filter(r -> r.getRole().getName().equals(roleName) && r.getServiceBinding().getCanReceive().size() > 0)
-						.map(r -> getServiceName(r.getServiceBinding().getService())))
+				.flatMap(
+						p -> p.getCollaborationRole()
+								.stream()
+								.filter(r -> r.getRole().getName().equals(roleName) && r.getServiceBinding().getCanReceive().size() > 0)
+								.map(r -> getServiceName(r.getServiceBinding().getService())))
 				.collect(Collectors.toList());
 	}
 
@@ -142,10 +146,11 @@ public class CPAUtils
 		return cpa.getPartyInfo()
 				.stream()
 				.filter(p -> partyId == null || partyId.equals(toString(p.getPartyId().get(0))))
-				.flatMap(p -> p.getCollaborationRole()
-						.stream()
-						.filter(r -> r.getRole().getName().equals(roleName) && getServiceName(r.getServiceBinding().getService()).equals(serviceName))
-						.flatMap(r -> r.getServiceBinding().getCanSend().stream().map(cs -> cs.getThisPartyActionBinding().getAction())))
+				.flatMap(
+						p -> p.getCollaborationRole()
+								.stream()
+								.filter(r -> r.getRole().getName().equals(roleName) && getServiceName(r.getServiceBinding().getService()).equals(serviceName))
+								.flatMap(r -> r.getServiceBinding().getCanSend().stream().map(cs -> cs.getThisPartyActionBinding().getAction())))
 				.collect(Collectors.toList());
 	}
 
@@ -156,10 +161,11 @@ public class CPAUtils
 		return cpa.getPartyInfo()
 				.stream()
 				.filter(p -> partyId == null || partyId.equals(toString(p.getPartyId().get(0))))
-				.flatMap(p -> p.getCollaborationRole()
-						.stream()
-						.filter(r -> r.getRole().getName().equals(roleName) && getServiceName(r.getServiceBinding().getService()).equals(serviceName))
-						.flatMap(r -> r.getServiceBinding().getCanReceive().stream().map(cr -> cr.getThisPartyActionBinding().getAction())))
+				.flatMap(
+						p -> p.getCollaborationRole()
+								.stream()
+								.filter(r -> r.getRole().getName().equals(roleName) && getServiceName(r.getServiceBinding().getService()).equals(serviceName))
+								.flatMap(r -> r.getServiceBinding().getCanReceive().stream().map(cr -> cr.getThisPartyActionBinding().getAction())))
 				.collect(Collectors.toList());
 	}
 
@@ -169,11 +175,12 @@ public class CPAUtils
 		// ->cs.getThisPartyActionBinding().getAction())).collect(Collectors.toList())
 		return cpa.getPartyInfo()
 				.stream()
-				.flatMap(p -> p.getCollaborationRole()
-						.stream()
-						.filter(r -> r.getRole().getName().equals(roleName))
-						.filter(r -> getServiceName(r.getServiceBinding().getService()).equals(serviceName))
-						.flatMap(r -> r.getServiceBinding().getCanSend().stream().map(cs -> cs.getThisPartyActionBinding().getAction())))
+				.flatMap(
+						p -> p.getCollaborationRole()
+								.stream()
+								.filter(r -> r.getRole().getName().equals(roleName))
+								.filter(r -> getServiceName(r.getServiceBinding().getService()).equals(serviceName))
+								.flatMap(r -> r.getServiceBinding().getCanSend().stream().map(cs -> cs.getThisPartyActionBinding().getAction())))
 				.collect(Collectors.toList());
 	}
 
@@ -183,11 +190,12 @@ public class CPAUtils
 		// cr.getThisPartyActionBinding().getAction())).collect(Collectors.toList());
 		return cpa.getPartyInfo()
 				.stream()
-				.flatMap(p -> p.getCollaborationRole()
-						.stream()
-						.filter(r -> r.getRole().getName().equals(roleName))
-						.filter(r -> getServiceName(r.getServiceBinding().getService()).equals(serviceName))
-						.flatMap(r -> r.getServiceBinding().getCanReceive().stream().map(cr -> cr.getThisPartyActionBinding().getAction())))
+				.flatMap(
+						p -> p.getCollaborationRole()
+								.stream()
+								.filter(r -> r.getRole().getName().equals(roleName))
+								.filter(r -> getServiceName(r.getServiceBinding().getService()).equals(serviceName))
+								.flatMap(r -> r.getServiceBinding().getCanReceive().stream().map(cr -> cr.getThisPartyActionBinding().getAction())))
 				.collect(Collectors.toList());
 	}
 
@@ -224,9 +232,10 @@ public class CPAUtils
 		return cpa.getPartyInfo()
 				.stream()
 				.filter(p -> partyId == null || partyId.equals(toString(p.getPartyId().get(0))))
-				.flatMap(p -> p.getCollaborationRole()
-						.stream()
-						.filter(r -> r.getRole().getName().equals(roleName) && getServiceName(r.getServiceBinding().getService()).equals(serviceName)));
+				.flatMap(
+						p -> p.getCollaborationRole()
+								.stream()
+								.filter(r -> r.getRole().getName().equals(roleName) && getServiceName(r.getServiceBinding().getService()).equals(serviceName)));
 	}
 
 	@SuppressWarnings("unused")
@@ -235,10 +244,11 @@ public class CPAUtils
 		// return findRoles(cpa,roleName).filter(r -> getServiceName(r.getServiceBinding().getService()).equals(serviceName));
 		return cpa.getPartyInfo()
 				.stream()
-				.flatMap(p -> p.getCollaborationRole()
-						.stream()
-						.filter(r -> r.getRole().getName().equals(roleName))
-						.filter(r -> getServiceName(r.getServiceBinding().getService()).equals(serviceName)));
+				.flatMap(
+						p -> p.getCollaborationRole()
+								.stream()
+								.filter(r -> r.getRole().getName().equals(roleName))
+								.filter(r -> getServiceName(r.getServiceBinding().getService()).equals(serviceName)));
 	}
 
 }

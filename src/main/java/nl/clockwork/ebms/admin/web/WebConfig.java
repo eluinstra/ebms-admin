@@ -50,26 +50,27 @@ public class WebConfig
 	@Bean
 	public WicketApplication wicketApplication()
 	{
-		return new WicketApplication(maxItemsPerPage,eventListenerType);
+		return new WicketApplication(maxItemsPerPage, eventListenerType);
 	}
 
 	@Bean(name = "cpaService")
 	public Object cpaClientProxy()
 	{
-		return proxyFactoryBean(CPAService.class,serviceUrl + "/cpa","http://www.ordina.nl/cpa/2.18","CPAService","CPAPort").create();
+		return proxyFactoryBean(CPAService.class, serviceUrl + "/cpa", "http://www.ordina.nl/cpa/2.18", "CPAService", "CPAPort").create();
 	}
 
 	@Bean(name = "urlMappingService")
 	public Object urlMappingClientProxy()
 	{
-		return proxyFactoryBean(CPAService.class,serviceUrl + "/urlMapping","http://www.ordina.nl/cpa/urlMapping/2.18","URLMappingService","URLMappingPort")
+		return proxyFactoryBean(CPAService.class, serviceUrl + "/urlMapping", "http://www.ordina.nl/cpa/urlMapping/2.18", "URLMappingService", "URLMappingPort")
 				.create();
 	}
 
 	@Bean(name = "certificateMappingService")
 	public Object certificateMappingClientProxy()
 	{
-		return proxyFactoryBean(CPAService.class,
+		return proxyFactoryBean(
+				CPAService.class,
 				serviceUrl + "/certificateMapping",
 				"http://www.ordina.nl/cpa/certificateMapping/2.18",
 				"CertificateMappingService",
@@ -79,7 +80,7 @@ public class WebConfig
 	@Bean(name = "ebMSMessageService")
 	public Object ebMSMessageClientProxy()
 	{
-		return proxyFactoryBean(CPAService.class,serviceUrl + "/ebms","http://www.ordina.nl/ebms/2.18","EbMSMessageService","EbMSMessagePort").create();
+		return proxyFactoryBean(CPAService.class, serviceUrl + "/ebms", "http://www.ordina.nl/ebms/2.18", "EbMSMessageService", "EbMSMessagePort").create();
 	}
 
 	@Bean(name = "ebMSMessageServiceMTOM")
@@ -89,8 +90,8 @@ public class WebConfig
 		setMTOM(proxyFactory);
 		proxyFactory.setServiceClass(EbMSMessageServiceMTOM.class);
 		proxyFactory.setAddress(serviceUrl + "/ebmsMTOM");
-		proxyFactory.setServiceName(new QName("http://www.ordina.nl/ebms/2.18","EbMSMessageService"));
-		proxyFactory.setEndpointName(new QName("http://www.ordina.nl/ebms/2.18","EbMSMessagePort"));
+		proxyFactory.setServiceName(new QName("http://www.ordina.nl/ebms/2.18", "EbMSMessageService"));
+		proxyFactory.setEndpointName(new QName("http://www.ordina.nl/ebms/2.18", "EbMSMessagePort"));
 		return proxyFactory.create();
 	}
 
@@ -108,7 +109,7 @@ public class WebConfig
 				c.setClient(httpClientPolicy);
 			}
 		};
-		cxf().setExtension(httpConduitConfigurer,HTTPConduitConfigurer.class);
+		cxf().setExtension(httpConduitConfigurer, HTTPConduitConfigurer.class);
 	}
 
 	@Bean
@@ -123,8 +124,8 @@ public class WebConfig
 
 	private void setMTOM(final org.apache.cxf.jaxws.JaxWsProxyFactoryBean proxyFactory)
 	{
-		val props = new HashMap<String,Object>();
-		props.put("mtom-enabled",true);
+		val props = new HashMap<String, Object>();
+		props.put("mtom-enabled", true);
 		proxyFactory.setProperties(props);
 	}
 
@@ -133,8 +134,8 @@ public class WebConfig
 		val result = new JaxWsProxyFactoryBean();
 		result.setServiceClass(clazz);
 		result.setAddress(serviceUrl + url);
-		result.setServiceName(new QName(namespaceUri,serviceName));
-		result.setEndpointName(new QName(namespaceUri,endpointName));
+		result.setServiceName(new QName(namespaceUri, serviceName));
+		result.setEndpointName(new QName(namespaceUri, endpointName));
 		return result;
 	}
 }

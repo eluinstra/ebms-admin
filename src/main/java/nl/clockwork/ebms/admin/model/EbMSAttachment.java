@@ -44,11 +44,11 @@ public class EbMSAttachment implements IClusterable
 
 	public EbMSAttachment(String name, @NonNull String contentId, @NonNull String contentType)
 	{
-		this(null,name,contentId,contentType,null);
+		this(null, name, contentId, contentType, null);
 	}
 
 	public EbMSAttachment(String name, @NonNull String contentId, @NonNull String contentType, CachedOutputStream content)
 	{
-		this(null,name,contentId,contentType,content);
+		this(null, name, contentId, contentType, content);
 	}
 }

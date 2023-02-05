@@ -28,9 +28,9 @@ public class ErrorMessagePanel extends Panel
 
 	public ErrorMessagePanel(final ModalWindow window, IModel<String> model)
 	{
-		super(window.getContentId(),model);
-		add(new MultiLineLabel("errorMessage",model));
-		add(createClose("close",window));
+		super(window.getContentId(), model);
+		add(new MultiLineLabel("errorMessage", model));
+		add(createClose("close", window));
 	}
 
 	private AjaxLink<Void> createClose(String id, final ModalWindow window)

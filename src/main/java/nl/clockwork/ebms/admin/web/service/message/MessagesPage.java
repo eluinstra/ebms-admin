@@ -52,7 +52,7 @@ public class MessagesPage extends BasePage
 
 		protected MessageDataView(String id, IDataProvider<String> dataProvider)
 		{
-			super(id,dataProvider);
+			super(id, dataProvider);
 			setOutputMarkupId(true);
 		}
 
@@ -66,19 +66,21 @@ public class MessagesPage extends BasePage
 		protected void populateItem(final Item<String> item)
 		{
 			val o = item.getModelObject();
-			item.add(createViewLink("view",o,new Label("messageId",o)));
-			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
+			item.add(createViewLink("view", o, new Label("messageId", o)));
+			item.add(AttributeModifier.replace("class", OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 
 		private Link<Void> createViewLink(String id, final String messageId, Component...components)
 		{
 			Action onClick = () ->
 			{
-				setResponsePage(new MessagePage(Model.of(ebMSMessageService.getMessage(messageId,null)),
-						MessagesPage.this,
-						messageId_ -> ebMSMessageService.processMessage(messageId_)));
+				setResponsePage(
+						new MessagePage(
+								Model.of(ebMSMessageService.getMessage(messageId, null)),
+								MessagesPage.this,
+								messageId_ -> ebMSMessageService.processMessage(messageId_)));
 			};
-			val link = new Link<Void>(id,onClick);
+			val link = new Link<Void>(id, onClick);
 			link.add(components);
 			return link;
 		}
@@ -97,7 +99,7 @@ public class MessagesPage extends BasePage
 
 	public MessagesPage(IModel<MessageFilter> filter)
 	{
-		this(filter,null);
+		this(filter, null);
 	}
 
 	public MessagesPage(IModel<MessageFilter> filter, final WebPage responsePage)
@@ -105,18 +107,18 @@ public class MessagesPage extends BasePage
 		this.maxItemsPerPage = WicketApplication.get().getMaxItemsPerPage();
 		val container = new WebMarkupContainer("container");
 		add(container);
-		val messages = new MessageDataView("messages",MessageDataProvider.of(ebMSMessageService,filter.getObject()));
+		val messages = new MessageDataView("messages", MessageDataProvider.of(ebMSMessageService, filter.getObject()));
 		container.add(messages);
-		val navigator = new BootstrapPagingNavigator("navigator",messages);
+		val navigator = new BootstrapPagingNavigator("navigator", messages);
 		add(navigator);
-		add(new MaxItemsPerPageChoice("maxItemsPerPage",new PropertyModel<>(this,"maxItemsPerPage"),navigator,container));
-		add(new PageLink("back",responsePage).setVisible(responsePage != null));
-		add(new DownloadEbMSMessageIdsCSVLink("download",ebMSMessageService,filter));
+		add(new MaxItemsPerPageChoice("maxItemsPerPage", new PropertyModel<>(this, "maxItemsPerPage"), navigator, container));
+		add(new PageLink("back", responsePage).setVisible(responsePage != null));
+		add(new DownloadEbMSMessageIdsCSVLink("download", ebMSMessageService, filter));
 	}
 
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("unprocessedMessages",this);
+		return getLocalizer().getString("unprocessedMessages", this);
 	}
 }

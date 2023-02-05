@@ -56,7 +56,7 @@ public class CPAUploadPage extends BasePage
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("cpaUpload",this);
+		return getLocalizer().getString("cpaUpload", this);
 	}
 
 	public class EditUploadForm extends Form<EditUploadFormData>
@@ -65,13 +65,13 @@ public class CPAUploadPage extends BasePage
 
 		public EditUploadForm(String id)
 		{
-			super(id,new CompoundPropertyModel<>(new EditUploadFormData()));
+			super(id, new CompoundPropertyModel<>(new EditUploadFormData()));
 			setMultiPart(true);
-			add(new BootstrapFormComponentFeedbackBorder("cpaFeedback",createCPAFileField("cpaFile")));
+			add(new BootstrapFormComponentFeedbackBorder("cpaFeedback", createCPAFileField("cpaFile")));
 			add(new CheckBox("overwrite").setLabel(new ResourceModel("lbl.overwrite")));
 			add(createValidateButton("validate"));
 			add(createUploadButton("upload"));
-			add(new ResetButton("reset",new ResourceModel("cmd.reset"),CPAUploadPage.class));
+			add(new ResetButton("reset", new ResourceModel("cmd.reset"), CPAUploadPage.class));
 		}
 
 		private FileUploadField createCPAFileField(String id)
@@ -100,11 +100,11 @@ public class CPAUploadPage extends BasePage
 				}
 				catch (Exception e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			return new Button(id,new ResourceModel("cmd.validate"),onSubmit);
+			return new Button(id, new ResourceModel("cmd.validate"), onSubmit);
 		}
 
 		private Button createUploadButton(String id)
@@ -119,17 +119,17 @@ public class CPAUploadPage extends BasePage
 						val file = files.get(0);
 						// val contentType = file.getContentType();
 						// FIXME char encoding
-						cpaService.insertCPA(new String(file.getBytes()),getModelObject().isOverwrite());
+						cpaService.insertCPA(new String(file.getBytes()), getModelObject().isOverwrite());
 					}
 					setResponsePage(new CPAsPage());
 				}
 				catch (Exception e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			val result = new Button(id,new ResourceModel("cmd.upload"),onSubmit);
+			val result = new Button(id, new ResourceModel("cmd.upload"), onSubmit);
 			setDefaultButton(result);
 			return result;
 		}

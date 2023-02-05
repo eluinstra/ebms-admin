@@ -83,25 +83,26 @@ public class EmbeddedWebConfig
 	@Bean
 	public WicketApplication wicketApplication()
 	{
-		return new WicketApplication(maxItemsPerPage,eventListenerType);
+		return new WicketApplication(maxItemsPerPage, eventListenerType);
 	}
 
 	@Bean
 	public Endpoint cpaServiceEndpoint()
 	{
-		return publishEndpoint(cpaService,"/cpa","http://www.ordina.nl/cpa/2.18","CPAService","CPAPort");
+		return publishEndpoint(cpaService, "/cpa", "http://www.ordina.nl/cpa/2.18", "CPAService", "CPAPort");
 	}
 
 	@Bean
 	public Endpoint urlMappingServiceEndpoint()
 	{
-		return publishEndpoint(urlMappingService,"/urlMapping","http://www.ordina.nl/cpa/urlMapping/2.18","URLMappingService","URLMappingPort");
+		return publishEndpoint(urlMappingService, "/urlMapping", "http://www.ordina.nl/cpa/urlMapping/2.18", "URLMappingService", "URLMappingPort");
 	}
 
 	@Bean
 	public Endpoint certificateMappingServiceEndpoint()
 	{
-		return publishEndpoint(certificateMappingService,
+		return publishEndpoint(
+				certificateMappingService,
 				"/certificateMapping",
 				"http://www.ordina.nl/cpa/certificateMapping/2.18",
 				"CertificateMappingService",
@@ -111,16 +112,16 @@ public class EmbeddedWebConfig
 	@Bean
 	public Endpoint ebMSMessageServiceEndpoint()
 	{
-		return publishEndpoint(ebMSMessageService,"/ebms","http://www.ordina.nl/ebms/2.18","EbMSMessageService","EbMSMessagePort");
+		return publishEndpoint(ebMSMessageService, "/ebms", "http://www.ordina.nl/ebms/2.18", "EbMSMessageService", "EbMSMessagePort");
 	}
 
 	@Bean
 	public Endpoint ebMSMessageServiceMTOMEndpoint()
 	{
-		val result = new EndpointImpl(cxf(),ebMSMessageServiceMTOM);
+		val result = new EndpointImpl(cxf(), ebMSMessageServiceMTOM);
 		result.setAddress("/ebmsMTOM");
-		result.setServiceName(new QName("http://www.ordina.nl/ebms/2.18","EbMSMessageService"));
-		result.setEndpointName(new QName("http://www.ordina.nl/ebms/2.18","EbMSMessagePort"));
+		result.setServiceName(new QName("http://www.ordina.nl/ebms/2.18", "EbMSMessageService"));
+		result.setEndpointName(new QName("http://www.ordina.nl/ebms/2.18", "EbMSMessagePort"));
 		result.publish();
 		enableMTOM(result);
 		return result;
@@ -149,10 +150,10 @@ public class EmbeddedWebConfig
 
 	private Endpoint publishEndpoint(Object service, String address, String namespaceUri, String serviceName, String endpointName)
 	{
-		val result = new EndpointImpl(cxf(),service);
+		val result = new EndpointImpl(cxf(), service);
 		result.setAddress(address);
-		result.setServiceName(new QName(namespaceUri,serviceName));
-		result.setEndpointName(new QName(namespaceUri,endpointName));
+		result.setServiceName(new QName(namespaceUri, serviceName));
+		result.setEndpointName(new QName(namespaceUri, endpointName));
 		result.publish();
 		return result;
 	}
@@ -160,25 +161,25 @@ public class EmbeddedWebConfig
 	@Bean
 	public Server createCPARestServer()
 	{
-		return createRestServer(CPARestService.class,cpaService,"/cpas");
+		return createRestServer(CPARestService.class, cpaService, "/cpas");
 	}
 
 	@Bean
 	public Server createURLMappingCPARestServer()
 	{
-		return createRestServer(URLMappingRestService.class,urlMappingService,"/urlMappings");
+		return createRestServer(URLMappingRestService.class, urlMappingService, "/urlMappings");
 	}
 
 	@Bean
 	public Server createCertificateMappingRestServer()
 	{
-		return createRestServer(CertificateMappingRestService.class,certificateMappingService,"/certificateMappings");
+		return createRestServer(CertificateMappingRestService.class, certificateMappingService, "/certificateMappings");
 	}
 
 	@Bean
 	public Server createEbMSRestServer()
 	{
-		return createRestServer(EbMSMessageRestService.class,ebMSMessageService,"/ebms");
+		return createRestServer(EbMSMessageRestService.class, ebMSMessageService, "/ebms");
 	}
 
 	public Server createRestServer(Class<?> resourceClass, Object resourceObject, String path)
@@ -186,10 +187,10 @@ public class EmbeddedWebConfig
 		val sf = new JAXRSServerFactoryBean();
 		sf.setBus(cxf());
 		sf.setAddress("/rest/v19" + path);
-		sf.setProviders(Arrays.asList(createCrossOriginResourceSharingFilter(),createJacksonJsonProvider()));
+		sf.setProviders(Arrays.asList(createCrossOriginResourceSharingFilter(), createJacksonJsonProvider()));
 		sf.setFeatures(Arrays.asList(createOpenApiFeature()));
 		sf.setResourceClasses(resourceClass);
-		sf.setResourceProvider(resourceClass,new SingletonResourceProvider(resourceObject));
+		sf.setResourceProvider(resourceClass, new SingletonResourceProvider(resourceObject));
 		registerBindingFactory(sf.getBus());
 		return sf.create();
 	}
@@ -213,7 +214,7 @@ public class EmbeddedWebConfig
 		val result = new ObjectMapper();
 		result.registerModule(new Jdk8Module());
 		result.registerModule(new JavaTimeModule());
-		result.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS,false);
+		result.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 		result.setSerializationInclusion(Include.NON_NULL);
 		return result;
 	}
@@ -230,7 +231,7 @@ public class EmbeddedWebConfig
 	private void registerBindingFactory(final Bus bus)
 	{
 		val manager = bus.getExtension(BindingFactoryManager.class);
-		manager.registerBindingFactory(JAXRSBindingFactory.JAXRS_BINDING_ID,createBindingFactory(bus));
+		manager.registerBindingFactory(JAXRSBindingFactory.JAXRS_BINDING_ID, createBindingFactory(bus));
 	}
 
 	private JAXRSBindingFactory createBindingFactory(final Bus bus)

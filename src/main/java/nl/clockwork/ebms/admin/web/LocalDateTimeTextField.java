@@ -44,7 +44,7 @@ public class LocalDateTimeTextField extends TextField<LocalDateTime> implements 
 	@Builder
 	public LocalDateTimeTextField(final String id, final IModel<LocalDateTime> model, final String datePattern, Supplier<Boolean> isRequired)
 	{
-		super(id,model,LocalDateTime.class);
+		super(id, model, LocalDateTime.class);
 		this.datePattern = datePattern == null ? defaultDatePattern() : datePattern;
 		this.isRequired = isRequired == null ? () -> super.isRequired() : isRequired;
 		converter = new LocalDateTimeConverter(datePattern);
@@ -75,7 +75,7 @@ public class LocalDateTimeTextField extends TextField<LocalDateTime> implements 
 		val locale = Session.get().getLocale();
 		if (locale != null)
 		{
-			val format = DateFormat.getDateInstance(DateFormat.SHORT,locale);
+			val format = DateFormat.getDateInstance(DateFormat.SHORT, locale);
 			if (format instanceof SimpleDateFormat)
 				return ((SimpleDateFormat)format).toPattern();
 		}
@@ -85,6 +85,6 @@ public class LocalDateTimeTextField extends TextField<LocalDateTime> implements 
 	@Override
 	protected String[] getInputTypes()
 	{
-		return new String[]{"text","date","datetime","datetime-local","month","time","week"};
+		return new String[]{"text", "date", "datetime", "datetime-local", "month", "time", "week"};
 	}
 }

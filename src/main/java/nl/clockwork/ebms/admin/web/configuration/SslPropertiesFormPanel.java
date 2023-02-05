@@ -51,9 +51,9 @@ public class SslPropertiesFormPanel extends Panel
 	@Builder
 	public SslPropertiesFormPanel(String id, final IModel<SslPropertiesFormData> model, boolean enableSslOverridePropeties, Supplier<Boolean> isVisible)
 	{
-		super(id,model);
+		super(id, model);
 		this.isVisible = isVisible == null ? () -> super.isVisible() : isVisible;
-		add(new SslPropertiesForm("form",model,enableSslOverridePropeties));
+		add(new SslPropertiesForm("form", model, enableSslOverridePropeties));
 	}
 
 	@Override
@@ -68,15 +68,15 @@ public class SslPropertiesFormPanel extends Panel
 
 		public SslPropertiesForm(String id, final IModel<SslPropertiesFormData> model, boolean enableSslOverridePropeties)
 		{
-			super(id,new CompoundPropertyModel<>(model));
-			add(createOverrideDefaultProtocolsContainer("overrideDefaultProtocolsContainer",enableSslOverridePropeties));
-			add(createEnabledProtocolsContainer("enabledProtocolsContainer",enableSslOverridePropeties));
-			add(createOverrideDefaultCipherSuitesContainer("overrideDefaultCipherSuitesContainer",enableSslOverridePropeties));
-			add(createEnabledCipherSuitesContainer("enabledCipherSuitesContainer",enableSslOverridePropeties));
+			super(id, new CompoundPropertyModel<>(model));
+			add(createOverrideDefaultProtocolsContainer("overrideDefaultProtocolsContainer", enableSslOverridePropeties));
+			add(createEnabledProtocolsContainer("enabledProtocolsContainer", enableSslOverridePropeties));
+			add(createOverrideDefaultCipherSuitesContainer("overrideDefaultCipherSuitesContainer", enableSslOverridePropeties));
+			add(createEnabledCipherSuitesContainer("enabledCipherSuitesContainer", enableSslOverridePropeties));
 			add(createClientAuthenticationRequiredCheckBox("requireClientAuthentication"));
-			add(new KeystorePropertiesFormPanel("keystoreProperties",new PropertyModel<>(getModel(),"keystoreProperties")));
-			add(new ClientKeystorePropertiesFormPanel("clientKeystoreProperties",new PropertyModel<>(getModel(),"clientKeystoreProperties")));
-			add(new TruststorePropertiesFormPanel("truststoreProperties",new PropertyModel<>(getModel(),"truststoreProperties")));
+			add(new KeystorePropertiesFormPanel("keystoreProperties", new PropertyModel<>(getModel(), "keystoreProperties")));
+			add(new ClientKeystorePropertiesFormPanel("clientKeystoreProperties", new PropertyModel<>(getModel(), "clientKeystoreProperties")));
+			add(new TruststorePropertiesFormPanel("truststoreProperties", new PropertyModel<>(getModel(), "truststoreProperties")));
 			add(new CheckBox("verifyHostnames").setLabel(new ResourceModel("lbl.verifyHostnames")));
 		}
 
@@ -94,8 +94,8 @@ public class SslPropertiesFormPanel extends Panel
 		private WebMarkupContainer createEnabledProtocolsContainer(String id, final boolean enableSslOverridePropeties)
 		{
 			val result = WebMarkupContainer.builder().id(id).isVisible(() -> enableSslOverridePropeties && getModelObject().isOverrideDefaultProtocols()).build();
-			result
-					.add(new ListMultipleChoice<String>("enabledProtocols",getModelObject().getSupportedProtocols()).setLabel(new ResourceModel("lbl.enabledProtocols")));
+			result.add(
+					new ListMultipleChoice<String>("enabledProtocols", getModelObject().getSupportedProtocols()).setLabel(new ResourceModel("lbl.enabledProtocols")));
 			return result;
 		}
 
@@ -113,8 +113,9 @@ public class SslPropertiesFormPanel extends Panel
 		private WebMarkupContainer createEnabledCipherSuitesContainer(String id, final boolean enableSslOverridePropeties)
 		{
 			val result = WebMarkupContainer.builder().id(id).isVisible(() -> enableSslOverridePropeties && getModelObject().isOverrideDefaultCipherSuites()).build();
-			result.add(new ListMultipleChoice<String>("enabledCipherSuites",getModelObject().getSupportedCipherSuites())
-					.setLabel(new ResourceModel("lbl.enabledCipherSuites")));
+			result.add(
+					new ListMultipleChoice<String>("enabledCipherSuites", getModelObject().getSupportedCipherSuites())
+							.setLabel(new ResourceModel("lbl.enabledCipherSuites")));
 			return result;
 		}
 

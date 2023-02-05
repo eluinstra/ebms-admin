@@ -39,8 +39,8 @@ public class SignaturePropertiesFormPanel extends Panel
 
 	public SignaturePropertiesFormPanel(String id, final IModel<SignaturePropertiesFormData> model)
 	{
-		super(id,model);
-		add(new SignaturePropertiesForm("form",model));
+		super(id, model);
+		add(new SignaturePropertiesForm("form", model));
 	}
 
 	public class SignaturePropertiesForm extends Form<SignaturePropertiesFormData>
@@ -49,7 +49,7 @@ public class SignaturePropertiesFormPanel extends Panel
 
 		public SignaturePropertiesForm(String id, final IModel<SignaturePropertiesFormData> model)
 		{
-			super(id,new CompoundPropertyModel<>(model));
+			super(id, new CompoundPropertyModel<>(model));
 			add(createSigningCheckBox("signing"));
 			add(createKeystorePropertiesPanel("keystoreProperties"));
 		}
@@ -66,7 +66,7 @@ public class SignaturePropertiesFormPanel extends Panel
 		{
 			return JavaKeyStorePropertiesFormPanel.builder()
 					.id(id)
-					.model(new PropertyModel<>(getModel(),"keystoreProperties"))
+					.model(new PropertyModel<>(getModel(), "keystoreProperties"))
 					.required(false)
 					.showDefaultAlias(false)
 					.isVisible(() -> getModelObject().isSigning())

@@ -47,7 +47,7 @@ public class SaveEbMSAdminPropertiesButton extends Button
 			@NonNull IModel<EbMSAdminPropertiesFormData> ebMSAdminPropertiesFormData,
 			@NonNull PropertiesType propertiesType)
 	{
-		super(id,resourceModel);
+		super(id, resourceModel);
 		this.ebMSAdminPropertiesFormData = ebMSAdminPropertiesFormData;
 		this.propertiesType = propertiesType;
 	}
@@ -59,13 +59,13 @@ public class SaveEbMSAdminPropertiesButton extends Button
 		{
 			val file = new File(propertiesType.getPropertiesFile());
 			val writer = new FileWriter(file);
-			new EbMSAdminPropertiesWriter(writer,true).write(ebMSAdminPropertiesFormData.getObject(),propertiesType);
-			info(new StringResourceModel("properties.saved",getPage(),Model.of(file)).getString());
-			error(new StringResourceModel("restart",getPage(),null).getString());
+			new EbMSAdminPropertiesWriter(writer, true).write(ebMSAdminPropertiesFormData.getObject(), propertiesType);
+			info(new StringResourceModel("properties.saved", getPage(), Model.of(file)).getString());
+			error(new StringResourceModel("restart", getPage(), null).getString());
 		}
 		catch (IOException e)
 		{
-			log.error("",e);
+			log.error("", e);
 			error(e.getMessage());
 		}
 	}

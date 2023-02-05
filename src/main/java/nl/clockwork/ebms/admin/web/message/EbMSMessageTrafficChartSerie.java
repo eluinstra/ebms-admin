@@ -29,28 +29,28 @@ import nl.clockwork.ebms.EbMSMessageStatus;
 @Getter
 public enum EbMSMessageTrafficChartSerie
 {
-	TOTAL_STATUS("Total",SimpleColor.YELLOW,Color.YELLOW,EbMSMessageStatus.values()),
-	RECEIVE_STATUS_OK("Ok",SimpleColor.GREEN,Color.GREEN,new EbMSMessageStatus[]{EbMSMessageStatus.PROCESSED,EbMSMessageStatus.FORWARDED}),
-	RECEIVE_STATUS_WARN("Warn",SimpleColor.ORANGE,Color.ORANGE,new EbMSMessageStatus[]{EbMSMessageStatus.RECEIVED}),
+	TOTAL_STATUS("Total", SimpleColor.YELLOW, Color.YELLOW, EbMSMessageStatus.values()),
+	RECEIVE_STATUS_OK("Ok", SimpleColor.GREEN, Color.GREEN, new EbMSMessageStatus[]{EbMSMessageStatus.PROCESSED, EbMSMessageStatus.FORWARDED}),
+	RECEIVE_STATUS_WARN("Warn", SimpleColor.ORANGE, Color.ORANGE, new EbMSMessageStatus[]{EbMSMessageStatus.RECEIVED}),
 	RECEIVE_STATUS_NOK(
 			"Failed",
 			SimpleColor.RED,
 			Color.RED,
-			new EbMSMessageStatus[]{EbMSMessageStatus.UNAUTHORIZED,EbMSMessageStatus.NOT_RECOGNIZED,EbMSMessageStatus.FAILED}),
+			new EbMSMessageStatus[]{EbMSMessageStatus.UNAUTHORIZED, EbMSMessageStatus.NOT_RECOGNIZED, EbMSMessageStatus.FAILED}),
 	RECEIVE_STATUS(
 			"Received",
 			SimpleColor.GREY,
 			Color.BLACK,
-			new EbMSMessageStatus[]{EbMSMessageStatus.UNAUTHORIZED,EbMSMessageStatus.NOT_RECOGNIZED,EbMSMessageStatus.RECEIVED,EbMSMessageStatus.PROCESSED,
-					EbMSMessageStatus.FORWARDED,EbMSMessageStatus.FAILED}),
-	SEND_STATUS_OK("Ok",SimpleColor.GREEN,Color.GREEN,new EbMSMessageStatus[]{EbMSMessageStatus.DELIVERED}),
-	SEND_STATUS_WARN("Warn",SimpleColor.ORANGE,Color.ORANGE,new EbMSMessageStatus[]{EbMSMessageStatus.CREATED}),
-	SEND_STATUS_NOK("Failed",SimpleColor.RED,Color.RED,new EbMSMessageStatus[]{EbMSMessageStatus.DELIVERY_FAILED,EbMSMessageStatus.EXPIRED}),
+			new EbMSMessageStatus[]{EbMSMessageStatus.UNAUTHORIZED, EbMSMessageStatus.NOT_RECOGNIZED, EbMSMessageStatus.RECEIVED, EbMSMessageStatus.PROCESSED,
+					EbMSMessageStatus.FORWARDED, EbMSMessageStatus.FAILED}),
+	SEND_STATUS_OK("Ok", SimpleColor.GREEN, Color.GREEN, new EbMSMessageStatus[]{EbMSMessageStatus.DELIVERED}),
+	SEND_STATUS_WARN("Warn", SimpleColor.ORANGE, Color.ORANGE, new EbMSMessageStatus[]{EbMSMessageStatus.CREATED}),
+	SEND_STATUS_NOK("Failed", SimpleColor.RED, Color.RED, new EbMSMessageStatus[]{EbMSMessageStatus.DELIVERY_FAILED, EbMSMessageStatus.EXPIRED}),
 	SEND_STATUS(
 			"Sending",
 			SimpleColor.BLUE,
 			Color.BLUE,
-			new EbMSMessageStatus[]{EbMSMessageStatus.CREATED,EbMSMessageStatus.DELIVERED,EbMSMessageStatus.DELIVERY_FAILED,EbMSMessageStatus.EXPIRED});
+			new EbMSMessageStatus[]{EbMSMessageStatus.CREATED, EbMSMessageStatus.DELIVERED, EbMSMessageStatus.DELIVERY_FAILED, EbMSMessageStatus.EXPIRED});
 
 	String name;
 	de.adesso.wickedcharts.chartjs.chartoptions.colors.Color color;

@@ -47,7 +47,7 @@ public class CPAsPage extends BasePage
 
 		protected CPADataView(String id, IDataProvider<CPA> dataProvider)
 		{
-			super(id,dataProvider);
+			super(id, dataProvider);
 			setOutputMarkupId(true);
 		}
 
@@ -60,14 +60,14 @@ public class CPAsPage extends BasePage
 		@Override
 		protected void populateItem(final Item<CPA> item)
 		{
-			item.add(createViewLink("view",item.getModel()));
-			item.add(AttributeModifier.replace("class",OddOrEvenIndexStringModel.of(item.getIndex())));
+			item.add(createViewLink("view", item.getModel()));
+			item.add(AttributeModifier.replace("class", OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 
 		private Link<Void> createViewLink(String id, final IModel<CPA> model)
 		{
-			val result = Link.<Void>builder().id(id).onClick(() -> setResponsePage(new CPAPage(model,CPAsPage.this))).build();
-			result.add(new Label("cpaId",model.getObject().getCpaId()));
+			val result = Link.<Void>builder().id(id).onClick(() -> setResponsePage(new CPAPage(model, CPAsPage.this))).build();
+			result.add(new Label("cpaId", model.getObject().getCpaId()));
 			return result;
 		}
 	}
@@ -83,17 +83,17 @@ public class CPAsPage extends BasePage
 		this.maxItemsPerPage = WicketApplication.get().getMaxItemsPerPage();
 		val container = new WebMarkupContainer("container");
 		add(container);
-		val cpas = new CPADataView("cpas",CPADataProvider.of(ebMSDAO));
+		val cpas = new CPADataView("cpas", CPADataProvider.of(ebMSDAO));
 		container.add(cpas);
-		val navigator = new BootstrapPagingNavigator("navigator",cpas);
+		val navigator = new BootstrapPagingNavigator("navigator", cpas);
 		add(navigator);
-		add(new MaxItemsPerPageChoice("maxItemsPerPage",new PropertyModel<>(this,"maxItemsPerPage"),container,navigator));
+		add(new MaxItemsPerPageChoice("maxItemsPerPage", new PropertyModel<>(this, "maxItemsPerPage"), container, navigator));
 	}
 
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("cpas",this);
+		return getLocalizer().getString("cpas", this);
 	}
 
 }

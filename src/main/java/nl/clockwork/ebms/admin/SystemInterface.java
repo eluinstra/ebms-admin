@@ -19,7 +19,7 @@ public interface SystemInterface
 {
 	default void setProperty(String key, String value)
 	{
-		System.setProperty(key,value);
+		System.setProperty(key, value);
 	}
 
 	default void println(String s)

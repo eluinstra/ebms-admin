@@ -70,25 +70,25 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 
 	public BootstrapXMLGregorianCalendarDateTimePicker(final String id)
 	{
-		this(id,(IModel<XMLGregorianCalendar>)null);
+		this(id, (IModel<XMLGregorianCalendar>)null);
 	}
 
 	public BootstrapXMLGregorianCalendarDateTimePicker(final String id, String format)
 	{
-		this(id,null,format);
+		this(id, null, format);
 	}
 
 	public BootstrapXMLGregorianCalendarDateTimePicker(final String id, IModel<XMLGregorianCalendar> model)
 	{
-		this(id,model,"dd-MM-yyyy HH:mm:ss");
+		this(id, model, "dd-MM-yyyy HH:mm:ss");
 	}
 
 	public BootstrapXMLGregorianCalendarDateTimePicker(final String id, IModel<XMLGregorianCalendar> model, String format)
 	{
-		super(id,model);
+		super(id, model);
 		this.format = format;
 		this.hourFormat = format.contains("H") ? HourFormat.H24 : HourFormat.H12;
-		this.formatJS = format.replaceAll("H","h");
+		this.formatJS = format.replaceAll("H", "h");
 		setType(XMLGregorianCalendar.class);
 
 		val dateTimePicker = new WebMarkupContainer("dateTimePicker");
@@ -98,7 +98,7 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 
 		dateTimeField = XMLGregorianCalendarTextField.builder()
 				.id("dateTime")
-				.model(new PropertyModel<>(this,"dateTime"))
+				.model(new PropertyModel<>(this, "dateTime"))
 				.datePattern(format)
 				.getLabel(() -> getLabel())
 				.isRequired(() -> isRequired())
@@ -106,10 +106,12 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 		dateTimePicker.add(dateTimeField);
 	}
 
-	public static String
+	public static
+			String
 			getLinkBootstrapDateTimePickersJavaScript(BootstrapXMLGregorianCalendarDateTimePicker startDate, BootstrapXMLGregorianCalendarDateTimePicker endDate)
 	{
-		return "$(function () {" + "$('#"
+		return "$(function () {"
+				+ "$('#"
 				+ startDate.getDateTimePickerId()
 				+ "').on('changeDate',function () {"
 				+ "var d = $('#"
@@ -153,7 +155,7 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 		if (endDate != null)
 			options.add("endDate: new Date(" + endDate.toEpochMilli() + ")");
 		response.render(
-				OnDomReadyHeaderItem.forScript("$(function () {$('#" + getDateTimePickerId() + "').datetimepicker({" + StringUtils.join(options,",") + "});});"));
+				OnDomReadyHeaderItem.forScript("$(function () {$('#" + getDateTimePickerId() + "').datetimepicker({" + StringUtils.join(options, ",") + "});});"));
 		super.renderHead(response);
 	}
 

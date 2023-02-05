@@ -150,13 +150,13 @@ public class Start implements SystemInterface
 	private void startService(String[] args) throws Exception
 	{
 		val options = createOptions();
-		val cmd = new DefaultParser().parse(options,args);
+		val cmd = new DefaultParser().parse(options, args);
 		if (cmd.hasOption(HELP_OPTION))
 			printUsage(options);
 		init(cmd);
 		server.setHandler(handlerCollection);
 		if (cmd.hasOption(JMX_OPTION))
-			initJMX(cmd,server);
+			initJMX(cmd, server);
 		try (val context = new AnnotationConfigWebApplicationContext())
 		{
 			context.register(AppConfig.class);
@@ -164,13 +164,13 @@ public class Start implements SystemInterface
 			val contextLoaderListener = new ContextLoaderListener(context);
 			if (cmd.hasOption(SOAP_OPTION) || !cmd.hasOption(HEADLESS_OPTION))
 			{
-				initWebServer(cmd,server);
-				handlerCollection.addHandler(createWebContextHandler(cmd,contextLoaderListener));
+				initWebServer(cmd, server);
+				handlerCollection.addHandler(createWebContextHandler(cmd, contextLoaderListener));
 			}
 			if (cmd.hasOption(HEALTH_OPTION))
 			{
-				initHealthServer(cmd,server);
-				handlerCollection.addHandler(createHealthContextHandler(cmd,contextLoaderListener));
+				initHealthServer(cmd, server);
+				handlerCollection.addHandler(createHealthContextHandler(cmd, contextLoaderListener));
 			}
 			println("Starting Server...");
 			try
@@ -190,51 +190,51 @@ public class Start implements SystemInterface
 	protected Options createOptions()
 	{
 		val result = new Options();
-		result.addOption(HELP_OPTION,false,"print this message");
-		result.addOption(HOST_OPTION,true,"set host [default: " + DEFAULT_HOST + "]");
-		result.addOption(PORT_OPTION,true,"set port [default: <" + DEFAULT_PORT + "|" + DEFAULT_SSL_PORT + ">]");
-		result.addOption(PATH_OPTION,true,"set path [default: " + DEFAULT_PATH + "]");
-		result.addOption(SOAP_OPTION,false,"start SOAP service");
-		result.addOption(HEADLESS_OPTION,false,"start without web interface");
-		result.addOption(HEALTH_OPTION,false,"start health service");
-		result.addOption(HEALTH_PORT_OPTION,true,"set health service port [default: " + DEFAULT_HEALTH_PORT + "]");
-		result.addOption(CONNECTION_LIMIT_OPTION,true,"set connection limit [default: " + NONE + "]");
-		result.addOption(QUERIES_PER_SECOND_OPTION,true,"set max requests per second [default: " + NONE + "]");
-		result.addOption(USER_QUERIES_PER_SECOND_OPTION,true,"set max requests per user per second [default: " + NONE + "]");
-		result.addOption(AUDIT_LOGGING_OPTION,false,"enable audit logging");
-		result.addOption(AZURE_INSIGHTS_OPTION,false,"enable applicationInsights");
-		result.addOption(SSL_OPTION,false,"enable SSL");
-		result.addOption(PROTOCOLS_OPTION,true,"set SSL Protocols [default: " + NONE + "]");
-		result.addOption(CIPHER_SUITES_OPTION,true,"set SSL CipherSuites [default: " + NONE + "]");
-		result.addOption(KEY_STORES_TYPE_OPTION,true,"set keystores type [default: <none>]");
-		result.addOption(KEY_STORE_TYPE_OPTION,true,"set keystore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
-		result.addOption(KEY_STORE_PATH_OPTION,true,"set keystore path [default: " + DEFAULT_KEYSTORE_FILE + "]");
-		result.addOption(KEY_STORE_PASSWORD_OPTION,true,"set keystore password [default: " + DEFAULT_KEYSTORE_PASSWORD + "]");
-		result.addOption(AZURE_VAULTURI_OPTION,true,"set keystore uri [default: <none>]");
-		result.addOption(AZURE_VAULTTENANT_ID_OPTION,true,"set keystore tenant identity [default: <none>]");
-		result.addOption(AZURE_VAULTCLIENT_ID_OPTION,true,"set keyvault client id [default: <none>]");
-		result.addOption(AZURE_VAULTCLIENT_SECRET_OPTION,true,"set keyvault client secret [default: <none>]");
-		result.addOption(CLIENT_AUTHENTICATION_OPTION,false,"enable SSL client authentication");
-		result.addOption(CLIENT_CERTIFICATE_HEADER_OPTION,true,"set client certificate header [default: " + NONE + "]");
-		result.addOption(TRUST_STORE_TYPE_OPTION,true,"set truststore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
-		result.addOption(TRUST_STORE_PATH_OPTION,true,"set truststore path [default: " + NONE + "]");
-		result.addOption(TRUST_STORE_PASSWORD_OPTION,true,"set truststore password [default: " + NONE + "]");
-		result.addOption(AUTHENTICATION_OPTION,false,"enable basic | client certificate authentication");
-		result.addOption(CLIENT_TRUST_STORE_TYPE_OPTION,true,"set client truststore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
-		result.addOption(CLIENT_TRUST_STORE_PATH_OPTION,true,"set client truststore path [default: " + NONE + "]");
-		result.addOption(CLIENT_TRUST_STORE_PASSWORD_OPTION,true,"set client truststore password [default: " + NONE + "]");
-		result.addOption(CONFIG_DIR_OPTION,true,"set config directory [default: <startup_directory>]");
-		result.addOption(JMX_OPTION,false,"start JMX server");
-		result.addOption(JMX_PORT_OPTION,true,"set JMX port [default: " + DEFAULT_JMS_PORT + "]");
-		result.addOption(JMX_ACCESS_FILE_OPTION,true,"set JMX access file [default: " + NONE + "]");
-		result.addOption(JMX_PASSWORD_FILE_OPTION,true,"set JMX password file [default: " + NONE + "]");
+		result.addOption(HELP_OPTION, false, "print this message");
+		result.addOption(HOST_OPTION, true, "set host [default: " + DEFAULT_HOST + "]");
+		result.addOption(PORT_OPTION, true, "set port [default: <" + DEFAULT_PORT + "|" + DEFAULT_SSL_PORT + ">]");
+		result.addOption(PATH_OPTION, true, "set path [default: " + DEFAULT_PATH + "]");
+		result.addOption(SOAP_OPTION, false, "start SOAP service");
+		result.addOption(HEADLESS_OPTION, false, "start without web interface");
+		result.addOption(HEALTH_OPTION, false, "start health service");
+		result.addOption(HEALTH_PORT_OPTION, true, "set health service port [default: " + DEFAULT_HEALTH_PORT + "]");
+		result.addOption(CONNECTION_LIMIT_OPTION, true, "set connection limit [default: " + NONE + "]");
+		result.addOption(QUERIES_PER_SECOND_OPTION, true, "set max requests per second [default: " + NONE + "]");
+		result.addOption(USER_QUERIES_PER_SECOND_OPTION, true, "set max requests per user per second [default: " + NONE + "]");
+		result.addOption(AUDIT_LOGGING_OPTION, false, "enable audit logging");
+		result.addOption(AZURE_INSIGHTS_OPTION, false, "enable applicationInsights");
+		result.addOption(SSL_OPTION, false, "enable SSL");
+		result.addOption(PROTOCOLS_OPTION, true, "set SSL Protocols [default: " + NONE + "]");
+		result.addOption(CIPHER_SUITES_OPTION, true, "set SSL CipherSuites [default: " + NONE + "]");
+		result.addOption(KEY_STORES_TYPE_OPTION, true, "set keystores type [default: <none>]");
+		result.addOption(KEY_STORE_TYPE_OPTION, true, "set keystore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
+		result.addOption(KEY_STORE_PATH_OPTION, true, "set keystore path [default: " + DEFAULT_KEYSTORE_FILE + "]");
+		result.addOption(KEY_STORE_PASSWORD_OPTION, true, "set keystore password [default: " + DEFAULT_KEYSTORE_PASSWORD + "]");
+		result.addOption(AZURE_VAULTURI_OPTION, true, "set keystore uri [default: <none>]");
+		result.addOption(AZURE_VAULTTENANT_ID_OPTION, true, "set keystore tenant identity [default: <none>]");
+		result.addOption(AZURE_VAULTCLIENT_ID_OPTION, true, "set keyvault client id [default: <none>]");
+		result.addOption(AZURE_VAULTCLIENT_SECRET_OPTION, true, "set keyvault client secret [default: <none>]");
+		result.addOption(CLIENT_AUTHENTICATION_OPTION, false, "enable SSL client authentication");
+		result.addOption(CLIENT_CERTIFICATE_HEADER_OPTION, true, "set client certificate header [default: " + NONE + "]");
+		result.addOption(TRUST_STORE_TYPE_OPTION, true, "set truststore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
+		result.addOption(TRUST_STORE_PATH_OPTION, true, "set truststore path [default: " + NONE + "]");
+		result.addOption(TRUST_STORE_PASSWORD_OPTION, true, "set truststore password [default: " + NONE + "]");
+		result.addOption(AUTHENTICATION_OPTION, false, "enable basic | client certificate authentication");
+		result.addOption(CLIENT_TRUST_STORE_TYPE_OPTION, true, "set client truststore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
+		result.addOption(CLIENT_TRUST_STORE_PATH_OPTION, true, "set client truststore path [default: " + NONE + "]");
+		result.addOption(CLIENT_TRUST_STORE_PASSWORD_OPTION, true, "set client truststore password [default: " + NONE + "]");
+		result.addOption(CONFIG_DIR_OPTION, true, "set config directory [default: <startup_directory>]");
+		result.addOption(JMX_OPTION, false, "start JMX server");
+		result.addOption(JMX_PORT_OPTION, true, "set JMX port [default: " + DEFAULT_JMS_PORT + "]");
+		result.addOption(JMX_ACCESS_FILE_OPTION, true, "set JMX access file [default: " + NONE + "]");
+		result.addOption(JMX_PASSWORD_FILE_OPTION, true, "set JMX password file [default: " + NONE + "]");
 		return result;
 	}
 
 	protected void printUsage(Options options)
 	{
 		val formatter = new HelpFormatter();
-		formatter.printHelp(getClass().getSimpleName(),options,true);
+		formatter.printHelp(getClass().getSimpleName(), options, true);
 		exit(0);
 	}
 
@@ -249,27 +249,28 @@ public class Start implements SystemInterface
 
 	protected void init(CommandLine cmd)
 	{
-		val configDir = cmd.getOptionValue(CONFIG_DIR_OPTION,DEFAULT_CONFIG_DIR);
-		setProperty("ebms.configDir",configDir);
+		val configDir = cmd.getOptionValue(CONFIG_DIR_OPTION, DEFAULT_CONFIG_DIR);
+		setProperty("ebms.configDir", configDir);
 		println("Using config directory: " + configDir);
 	}
 
 	protected void initWebServer(CommandLine cmd, Server server) throws GeneralSecurityException, IOException
 	{
-		val connector = cmd.hasOption(SSL_OPTION) ? createHttpsConnector(cmd,createSslContextFactory(cmd,cmd.hasOption(CLIENT_AUTHENTICATION_OPTION)))
+		val connector = cmd.hasOption(SSL_OPTION)
+				? createHttpsConnector(cmd, createSslContextFactory(cmd, cmd.hasOption(CLIENT_AUTHENTICATION_OPTION)))
 				: createHttpConnector(cmd);
 		server.addConnector(connector);
 		if (cmd.hasOption(CONNECTION_LIMIT_OPTION))
-			server.addBean(new ConnectionLimit(Integer.parseInt(cmd.getOptionValue(CONNECTION_LIMIT_OPTION)),connector));
+			server.addBean(new ConnectionLimit(Integer.parseInt(cmd.getOptionValue(CONNECTION_LIMIT_OPTION)), connector));
 	}
 
 	private ServerConnector createHttpConnector(CommandLine cmd)
 	{
 		val httpConfig = new HttpConfiguration();
 		httpConfig.setSendServerVersion(false);
-		val result = new ServerConnector(server,new HttpConnectionFactory(httpConfig));
-		result.setHost(cmd.getOptionValue(HOST_OPTION,DEFAULT_HOST));
-		result.setPort(Integer.parseInt(cmd.getOptionValue(PORT_OPTION,DEFAULT_PORT)));
+		val result = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
+		result.setHost(cmd.getOptionValue(HOST_OPTION, DEFAULT_HOST));
+		result.setPort(Integer.parseInt(cmd.getOptionValue(PORT_OPTION, DEFAULT_PORT)));
 		result.setName(WEB_CONNECTOR_NAME);
 		if (!cmd.hasOption(HEADLESS_OPTION))
 			println("Web Server configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + getPath(cmd));
@@ -280,15 +281,15 @@ public class Start implements SystemInterface
 
 	protected void initHealthServer(CommandLine cmd, Server server)
 	{
-		val connector = createHealthConnector(cmd,server);
+		val connector = createHealthConnector(cmd, server);
 		server.addConnector(connector);
 	}
 
 	private ServerConnector createHealthConnector(CommandLine cmd, Server server)
 	{
 		val result = new ServerConnector(server);
-		result.setHost(cmd.getOptionValue(HOST_OPTION,DEFAULT_HOST));
-		result.setPort(Integer.parseInt(cmd.getOptionValue(HEALTH_PORT_OPTION,DEFAULT_HEALTH_PORT)));
+		result.setHost(cmd.getOptionValue(HOST_OPTION, DEFAULT_HOST));
+		result.setPort(Integer.parseInt(cmd.getOptionValue(HEALTH_PORT_OPTION, DEFAULT_HEALTH_PORT)));
 		result.setName(HEALTH_CONNECTOR_NAME);
 		println("Health Service configured on http://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + HEALTH_URL);
 		return result;
@@ -297,17 +298,19 @@ public class Start implements SystemInterface
 	private SslContextFactory.Server createSslContextFactory(CommandLine cmd, boolean clientAuthentication) throws GeneralSecurityException, IOException
 	{
 		val result = new SslContextFactory.Server();
-		EbMSKeyStore ebMSKeyStore = KEYSTORE_TYPE_AZURE.equals(cmd.getOptionValue(KEY_STORES_TYPE_OPTION,""))
-				? EbMSKeyStore.of(cmd.getOptionValue(AZURE_VAULTURI_OPTION),
+		EbMSKeyStore ebMSKeyStore = KEYSTORE_TYPE_AZURE.equals(cmd.getOptionValue(KEY_STORES_TYPE_OPTION, ""))
+				? EbMSKeyStore.of(
+						cmd.getOptionValue(AZURE_VAULTURI_OPTION),
 						cmd.getOptionValue(AZURE_VAULTTENANT_ID_OPTION),
 						cmd.getOptionValue(AZURE_VAULTCLIENT_ID_OPTION),
 						cmd.getOptionValue(AZURE_VAULTCLIENT_SECRET_OPTION))
-				: EbMSKeyStore.of(KeyStoreType.valueOf(cmd.getOptionValue(KEY_STORE_TYPE_OPTION,DEFAULT_KEYSTORE_TYPE)),
-						cmd.getOptionValue(KEY_STORE_PATH_OPTION,DEFAULT_KEYSTORE_FILE),
-						cmd.getOptionValue(KEY_STORE_PASSWORD_OPTION,DEFAULT_KEYSTORE_PASSWORD));
-		addKeyStore(cmd,result,ebMSKeyStore);
+				: EbMSKeyStore.of(
+						KeyStoreType.valueOf(cmd.getOptionValue(KEY_STORE_TYPE_OPTION, DEFAULT_KEYSTORE_TYPE)),
+						cmd.getOptionValue(KEY_STORE_PATH_OPTION, DEFAULT_KEYSTORE_FILE),
+						cmd.getOptionValue(KEY_STORE_PASSWORD_OPTION, DEFAULT_KEYSTORE_PASSWORD));
+		addKeyStore(cmd, result, ebMSKeyStore);
 		if (clientAuthentication)
-			addTrustStore(cmd,result);
+			addTrustStore(cmd, result);
 		result.setExcludeCipherSuites();
 		return result;
 	}
@@ -316,17 +319,17 @@ public class Start implements SystemInterface
 	{
 		val protocols = cmd.getOptionValue(PROTOCOLS_OPTION);
 		if (!StringUtils.isEmpty(protocols))
-			sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(protocols,',')));
+			sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(protocols, ',')));
 		val cipherSuites = cmd.getOptionValue(CIPHER_SUITES_OPTION);
 		if (!StringUtils.isEmpty(cipherSuites))
-			sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(cipherSuites,',')));
+			sslContextFactory.setIncludeCipherSuites(StringUtils.stripAll(StringUtils.split(cipherSuites, ',')));
 		sslContextFactory.setKeyStore(ebMSKeyStore.getKeyStore());
 		sslContextFactory.setKeyStorePassword(ebMSKeyStore.getPassword());
 	}
 
 	private void addTrustStore(CommandLine cmd, SslContextFactory.Server sslContextFactory) throws IOException
 	{
-		val trustStoreType = cmd.getOptionValue(TRUST_STORE_TYPE_OPTION,DEFAULT_KEYSTORE_TYPE);
+		val trustStoreType = cmd.getOptionValue(TRUST_STORE_TYPE_OPTION, DEFAULT_KEYSTORE_TYPE);
 		val trustStorePath = cmd.getOptionValue(TRUST_STORE_PATH_OPTION);
 		val trustStorePassword = cmd.getOptionValue(TRUST_STORE_PASSWORD_OPTION);
 		val trustStore = getResource(trustStorePath);
@@ -349,9 +352,9 @@ public class Start implements SystemInterface
 	{
 		val httpConfig = new HttpConfiguration();
 		httpConfig.setSendServerVersion(false);
-		val result = new ServerConnector(server,sslContextFactory,new HttpConnectionFactory(httpConfig));
-		result.setHost(cmd.getOptionValue(HOST_OPTION,DEFAULT_HOST));
-		result.setPort(Integer.parseInt(cmd.getOptionValue(PORT_OPTION,DEFAULT_SSL_PORT)));
+		val result = new ServerConnector(server, sslContextFactory, new HttpConnectionFactory(httpConfig));
+		result.setHost(cmd.getOptionValue(HOST_OPTION, DEFAULT_HOST));
+		result.setPort(Integer.parseInt(cmd.getOptionValue(PORT_OPTION, DEFAULT_SSL_PORT)));
 		result.setName(WEB_CONNECTOR_NAME);
 		if (!cmd.hasOption(HEADLESS_OPTION))
 			println("Web Server configured on https://" + Utils.getHost(result.getHost()) + ":" + result.getPort() + getPath(cmd));
@@ -362,7 +365,7 @@ public class Start implements SystemInterface
 
 	protected String getPath(CommandLine cmd)
 	{
-		return cmd.getOptionValue(PATH_OPTION,DEFAULT_PATH);
+		return cmd.getOptionValue(PATH_OPTION, DEFAULT_PATH);
 	}
 
 	protected void initJMX(CommandLine cmd, Server server) throws Exception
@@ -371,20 +374,20 @@ public class Start implements SystemInterface
 		val mBeanContainer = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
 		server.addBean(mBeanContainer);
 		server.addBean(Log.getLog());
-		val jmxURL = new JMXServiceURL("rmi",null,Integer.parseInt(cmd.getOptionValue(JMX_PORT_OPTION,DEFAULT_JMS_PORT)),"/jndi/rmi:///jmxrmi");
+		val jmxURL = new JMXServiceURL("rmi", null, Integer.parseInt(cmd.getOptionValue(JMX_PORT_OPTION, DEFAULT_JMS_PORT)), "/jndi/rmi:///jmxrmi");
 		// val sslContextFactory = cmd.hasOption("ssl") ? createSslContextFactory(cmd,false) : null;
-		val jmxServer = new ConnectorServer(jmxURL,createEnv(cmd),"org.eclipse.jetty.jmx:name=rmiconnectorserver");// ,sslContextFactory);
+		val jmxServer = new ConnectorServer(jmxURL, createEnv(cmd), "org.eclipse.jetty.jmx:name=rmiconnectorserver");// ,sslContextFactory);
 		server.addBean(jmxServer);
 		println("JMX Server configured on " + jmxURL);
 	}
 
-	private Map<String,Object> createEnv(CommandLine cmd)
+	private Map<String, Object> createEnv(CommandLine cmd)
 	{
-		val result = new HashMap<String,Object>();
+		val result = new HashMap<String, Object>();
 		if (cmd.hasOption(JMX_ACCESS_FILE_OPTION) && cmd.hasOption(JMX_PASSWORD_FILE_OPTION))
 		{
-			result.put("jmx.remote.x.access.file",cmd.hasOption(JMX_ACCESS_FILE_OPTION));
-			result.put("jmx.remote.x.password.file",cmd.hasOption(JMX_PASSWORD_FILE_OPTION));
+			result.put("jmx.remote.x.access.file", cmd.hasOption(JMX_ACCESS_FILE_OPTION));
+			result.put("jmx.remote.x.password.file", cmd.hasOption(JMX_PASSWORD_FILE_OPTION));
 		}
 		return result;
 	}
@@ -393,19 +396,19 @@ public class Start implements SystemInterface
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		result.setVirtualHosts(new String[]{"@" + WEB_CONNECTOR_NAME});
-		result.setInitParameter("configuration","deployment");
+		result.setInitParameter("configuration", "deployment");
 		result.setContextPath(getPath(cmd));
 		if (cmd.hasOption(AZURE_INSIGHTS_OPTION))
 		{
-			result.addFilter(createWebRequestTrackingFilterHolder(),"/*",EnumSet.allOf(DispatcherType.class));
+			result.addFilter(createWebRequestTrackingFilterHolder(), "/*", EnumSet.allOf(DispatcherType.class));
 			result.addEventListener(new ApplicationInsightsServletContextListener());
 		}
 		if (cmd.hasOption(AUDIT_LOGGING_OPTION))
-			result.addFilter(createRemoteAddressMDCFilterHolder(),"/*",EnumSet.allOf(DispatcherType.class));
+			result.addFilter(createRemoteAddressMDCFilterHolder(), "/*", EnumSet.allOf(DispatcherType.class));
 		if (!StringUtils.isEmpty(cmd.getOptionValue(QUERIES_PER_SECOND_OPTION)))
-			result.addFilter(createRateLimiterFilterHolder(cmd.getOptionValue(QUERIES_PER_SECOND_OPTION)),"/*",EnumSet.allOf(DispatcherType.class));
+			result.addFilter(createRateLimiterFilterHolder(cmd.getOptionValue(QUERIES_PER_SECOND_OPTION)), "/*", EnumSet.allOf(DispatcherType.class));
 		if (!StringUtils.isEmpty(cmd.getOptionValue(USER_QUERIES_PER_SECOND_OPTION)))
-			result.addFilter(createUserRateLimiterFilterHolder(cmd.getOptionValue(USER_QUERIES_PER_SECOND_OPTION)),"/*",EnumSet.allOf(DispatcherType.class));
+			result.addFilter(createUserRateLimiterFilterHolder(cmd.getOptionValue(USER_QUERIES_PER_SECOND_OPTION)), "/*", EnumSet.allOf(DispatcherType.class));
 		if (cmd.hasOption(AUTHENTICATION_OPTION))
 		{
 			if (!cmd.hasOption(CLIENT_AUTHENTICATION_OPTION))
@@ -420,22 +423,23 @@ public class Start implements SystemInterface
 			}
 			else if (cmd.hasOption(SSL_OPTION) && cmd.hasOption(CLIENT_AUTHENTICATION_OPTION))
 			{
-				result.addFilter(createClientCertificateManagerFilterHolder(cmd.getOptionValue(CLIENT_CERTIFICATE_HEADER_OPTION)),
+				result.addFilter(
+						createClientCertificateManagerFilterHolder(cmd.getOptionValue(CLIENT_CERTIFICATE_HEADER_OPTION)),
 						"/*",
-						EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
-				result.addFilter(createClientCertificateAuthenticationFilterHolder(cmd),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
+						EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
+				result.addFilter(createClientCertificateAuthenticationFilterHolder(cmd), "/*", EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
 			}
 		}
 		if (cmd.hasOption(SOAP_OPTION))
-			result.addServlet(CXFServlet.class,SOAP_URL + "/*");
+			result.addServlet(CXFServlet.class, SOAP_URL + "/*");
 		if (!cmd.hasOption(HEADLESS_OPTION))
 		{
 			val servletHolder = new ServletHolder(nl.clockwork.ebms.admin.web.ResourceServlet.class);
-			result.addServlet(servletHolder,"/css/*");
-			result.addServlet(servletHolder,"/fonts/*");
-			result.addServlet(servletHolder,"/images/*");
-			result.addServlet(servletHolder,"/js/*");
-			result.addFilter(createWicketFilterHolder(),"/*",EnumSet.of(DispatcherType.REQUEST,DispatcherType.ERROR));
+			result.addServlet(servletHolder, "/css/*");
+			result.addServlet(servletHolder, "/fonts/*");
+			result.addServlet(servletHolder, "/images/*");
+			result.addServlet(servletHolder, "/js/*");
+			result.addFilter(createWicketFilterHolder(), "/*", EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
 		}
 		result.setErrorHandler(createErrorHandler());
 		result.addEventListener(contextLoaderListener);
@@ -455,21 +459,21 @@ public class Start implements SystemInterface
 	protected FilterHolder createRateLimiterFilterHolder(String queriesPerSecond)
 	{
 		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.RateLimiterFilter.class);
-		result.setInitParameter(QUERIES_PER_SECOND_OPTION,queriesPerSecond);
+		result.setInitParameter(QUERIES_PER_SECOND_OPTION, queriesPerSecond);
 		return result;
 	}
 
 	protected FilterHolder createUserRateLimiterFilterHolder(String queriesPerSecond)
 	{
 		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.RateLimiterFilter.class);
-		result.setInitParameter(QUERIES_PER_SECOND_OPTION,queriesPerSecond);
+		result.setInitParameter(QUERIES_PER_SECOND_OPTION, queriesPerSecond);
 		return result;
 	}
 
 	protected FilterHolder createClientCertificateManagerFilterHolder(String clientCertificateHeader)
 	{
 		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.ClientCertificateManagerFilter.class);
-		result.setInitParameter("x509CertificateHeader",clientCertificateHeader);
+		result.setInitParameter("x509CertificateHeader", clientCertificateHeader);
 		return result;
 	}
 
@@ -477,16 +481,16 @@ public class Start implements SystemInterface
 	{
 		println("Configuring Web Server client certificate authentication:");
 		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.ClientCertificateAuthenticationFilter.class);
-		val clientTrustStoreType = cmd.getOptionValue(CLIENT_TRUST_STORE_TYPE_OPTION,DEFAULT_KEYSTORE_TYPE);
+		val clientTrustStoreType = cmd.getOptionValue(CLIENT_TRUST_STORE_TYPE_OPTION, DEFAULT_KEYSTORE_TYPE);
 		val clientTrustStorePath = cmd.getOptionValue(CLIENT_TRUST_STORE_PATH_OPTION);
 		val clientTrustStorePassword = cmd.getOptionValue(CLIENT_TRUST_STORE_PASSWORD_OPTION);
 		val trustStore = getResource(clientTrustStorePath);
 		if (trustStore != null && trustStore.exists())
 		{
 			println("Using clientTrustStore " + trustStore.getURI());
-			result.setInitParameter(TRUST_STORE_TYPE_OPTION,clientTrustStoreType);
-			result.setInitParameter(TRUST_STORE_PATH_OPTION,clientTrustStorePath);
-			result.setInitParameter(TRUST_STORE_PASSWORD_OPTION,clientTrustStorePassword);
+			result.setInitParameter(TRUST_STORE_TYPE_OPTION, clientTrustStoreType);
+			result.setInitParameter(TRUST_STORE_PATH_OPTION, clientTrustStorePath);
+			result.setInitParameter(TRUST_STORE_PASSWORD_OPTION, clientTrustStorePassword);
 			return result;
 		}
 		else
@@ -500,17 +504,17 @@ public class Start implements SystemInterface
 	private FilterHolder createWicketFilterHolder()
 	{
 		val result = new FilterHolder(org.apache.wicket.protocol.http.WicketFilter.class);
-		result.setInitParameter("applicationFactoryClassName","org.apache.wicket.spring.SpringWebApplicationFactory");
-		result.setInitParameter("applicationBean","wicketApplication");
-		result.setInitParameter("filterMappingUrlPattern","/*");
+		result.setInitParameter("applicationFactoryClassName", "org.apache.wicket.spring.SpringWebApplicationFactory");
+		result.setInitParameter("applicationBean", "wicketApplication");
+		result.setInitParameter("filterMappingUrlPattern", "/*");
 		return result;
 	}
 
 	private ErrorPageErrorHandler createErrorHandler()
 	{
 		val result = new ErrorPageErrorHandler();
-		val errorPages = new HashMap<String,String>();
-		errorPages.put("404","/404");
+		val errorPages = new HashMap<String, String>();
+		errorPages.put("404", "/404");
 		result.setErrorPages(errorPages);
 		return result;
 	}
@@ -519,9 +523,9 @@ public class Start implements SystemInterface
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		result.setVirtualHosts(new String[]{"@" + HEALTH_CONNECTOR_NAME});
-		result.setInitParameter("configuration","deployment");
+		result.setInitParameter("configuration", "deployment");
 		result.setContextPath(DEFAULT_PATH);
-		result.addServlet(HealthServlet.class,HEALTH_URL + "/*");
+		result.addServlet(HealthServlet.class, HEALTH_URL + "/*");
 		return result;
 	}
 
@@ -536,7 +540,7 @@ public class Start implements SystemInterface
 		val username = textIO.newStringInputReader().withDefaultValue("admin").read("enter username");
 		val password = readPassword();
 		println("Writing to file: " + file.getAbsoluteFile());
-		FileUtils.writeStringToFile(file,username + ": " + password + ",user",Charset.defaultCharset(),false);
+		FileUtils.writeStringToFile(file, username + ": " + password + ",user", Charset.defaultCharset(), false);
 	}
 
 	private String readPassword() throws IOException, NoSuchAlgorithmException
@@ -564,7 +568,7 @@ public class Start implements SystemInterface
 		val constraintMappings = Collections.singletonList(createConstraintMapping(createAuthenticationConstraint()));
 		result.setConstraintMappings(constraintMappings);
 		result.setAuthenticator(new BasicAuthenticator());
-		result.setLoginService(new HashLoginService(REALM,REALM_FILE));
+		result.setLoginService(new HashLoginService(REALM, REALM_FILE));
 		return result;
 	}
 
@@ -581,7 +585,7 @@ public class Start implements SystemInterface
 		val constraint = new Constraint();
 		constraint.setName("auth");
 		constraint.setAuthenticate(true);
-		constraint.setRoles(new String[]{"user","admin"});
+		constraint.setRoles(new String[]{"user", "admin"});
 		return constraint;
 	}
 }

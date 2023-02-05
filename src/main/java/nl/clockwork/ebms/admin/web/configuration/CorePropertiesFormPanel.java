@@ -47,8 +47,8 @@ public class CorePropertiesFormPanel extends Panel
 
 	public CorePropertiesFormPanel(String id, final IModel<CorePropertiesFormData> model, boolean enableConsoleProperties)
 	{
-		super(id,model);
-		add(new CorePropertiesForm("form",model,enableConsoleProperties));
+		super(id, model);
+		add(new CorePropertiesForm("form", model, enableConsoleProperties));
 	}
 
 	public class CorePropertiesForm extends Form<CorePropertiesFormData>
@@ -57,20 +57,28 @@ public class CorePropertiesFormPanel extends Panel
 
 		public CorePropertiesForm(String id, final IModel<CorePropertiesFormData> model, boolean enableConsoleProperties)
 		{
-			super(id,new CompoundPropertyModel<>(model));
-			add(createContainer("deleteMessageContentOnProcessedContainer",
-					enableConsoleProperties,
-					new CheckBox("deleteMessageContentOnProcessed").setLabel(new ResourceModel("lbl.deleteMessageContentOnProcessed"))));
-			add(createContainer("storeDuplicateMessageContainer",
-					enableConsoleProperties,
-					new CheckBox("storeDuplicateMessage").setLabel(new ResourceModel("lbl.storeDuplicateMessage"))));
-			add(createContainer("storeDuplicateMessageContentContainer",
-					enableConsoleProperties,
-					new CheckBox("storeDuplicateMessageContent").setLabel(new ResourceModel("lbl.storeDuplicateMessageContent"))));
-			add(createContainer("eventListenerContainer",
-					enableConsoleProperties,
-					new BootstrapFormComponentFeedbackBorder("eventListenerFeedback",createEventListenerChoice("eventListener"))));
-			add(createJmsContainer("jmsContainer",enableConsoleProperties));
+			super(id, new CompoundPropertyModel<>(model));
+			add(
+					createContainer(
+							"deleteMessageContentOnProcessedContainer",
+							enableConsoleProperties,
+							new CheckBox("deleteMessageContentOnProcessed").setLabel(new ResourceModel("lbl.deleteMessageContentOnProcessed"))));
+			add(
+					createContainer(
+							"storeDuplicateMessageContainer",
+							enableConsoleProperties,
+							new CheckBox("storeDuplicateMessage").setLabel(new ResourceModel("lbl.storeDuplicateMessage"))));
+			add(
+					createContainer(
+							"storeDuplicateMessageContentContainer",
+							enableConsoleProperties,
+							new CheckBox("storeDuplicateMessageContent").setLabel(new ResourceModel("lbl.storeDuplicateMessageContent"))));
+			add(
+					createContainer(
+							"eventListenerContainer",
+							enableConsoleProperties,
+							new BootstrapFormComponentFeedbackBorder("eventListenerFeedback", createEventListenerChoice("eventListener"))));
+			add(createJmsContainer("jmsContainer", enableConsoleProperties));
 		}
 
 		private WebMarkupContainer createContainer(String id, boolean enableConsoleProperties, Component...components)
@@ -84,32 +92,37 @@ public class CorePropertiesFormPanel extends Panel
 		private WebMarkupContainer createJmsContainer(String id, final boolean enableConsoleProperties)
 		{
 			Supplier<Boolean> isVisible = () -> !enableConsoleProperties
-					&& (EventListenerType.SIMPLE_JMS.equals(getModelObject().eventListener) || EventListenerType.JMS.equals(getModelObject().eventListener)
+					&& (EventListenerType.SIMPLE_JMS.equals(getModelObject().eventListener)
+							|| EventListenerType.JMS.equals(getModelObject().eventListener)
 							|| EventListenerType.JMS_TEXT.equals(getModelObject().eventListener));
 			val result = WebMarkupContainer.builder().id(id).isVisible(isVisible).build();
-			result.add(new BootstrapFormComponentFeedbackBorder("jmsBrokerUrlFeedback",
-					new TextField<String>("jmsBrokerUrl").setLabel(new ResourceModel("lbl.jmsBrokerUrl"))));
+			result.add(
+					new BootstrapFormComponentFeedbackBorder(
+							"jmsBrokerUrlFeedback",
+							new TextField<String>("jmsBrokerUrl").setLabel(new ResourceModel("lbl.jmsBrokerUrl"))));
 			result.add(new CheckBox("jmsVirtualTopics").setLabel(new ResourceModel("lbl.jmsVirtualTopics")));
 			val checkBox = new CheckBox("startEmbeddedBroker");
 			checkBox.setLabel(new ResourceModel("lbl.startEmbeddedBroker"));
 			checkBox.add(AjaxFormComponentUpdatingBehavior.builder().event("change").onUpdate(t -> t.add(this)).build());
 			result.add(checkBox);
-			result.add(createActiveMQConfigFileContainer("activeMQConfigFileContainer",enableConsoleProperties));
+			result.add(createActiveMQConfigFileContainer("activeMQConfigFileContainer", enableConsoleProperties));
 			return result;
 		}
 
 		private WebMarkupContainer createActiveMQConfigFileContainer(String id, final boolean enableConsoleProperties)
 		{
 			val result = WebMarkupContainer.builder().id(id).isVisible(() -> !enableConsoleProperties && getModelObject().startEmbeddedBroker).build();
-			result.add(new BootstrapFormComponentFeedbackBorder("activeMQConfigFileFeedback",
-					new TextField<String>("activeMQConfigFile").setLabel(new ResourceModel("lbl.activeMQConfigFile"))));
+			result.add(
+					new BootstrapFormComponentFeedbackBorder(
+							"activeMQConfigFileFeedback",
+							new TextField<String>("activeMQConfigFile").setLabel(new ResourceModel("lbl.activeMQConfigFile"))));
 			result.add(new DownloadActiveMQFileLink("downloadActiveMQFile"));
 			return result;
 		}
 
 		private DropDownChoice<EventListenerType> createEventListenerChoice(String id)
 		{
-			val result = new DropDownChoice<EventListenerType>(id,new PropertyModel<>(getModel(),"eventListeners"));
+			val result = new DropDownChoice<EventListenerType>(id, new PropertyModel<>(getModel(), "eventListeners"));
 			result.setLabel(new ResourceModel("lbl.eventListener"));
 			result.setRequired(true);
 			result.add(AjaxFormComponentUpdatingBehavior.builder().event("change").onUpdate(t -> t.add(this)).build());

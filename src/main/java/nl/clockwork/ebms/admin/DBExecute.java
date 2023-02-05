@@ -43,7 +43,7 @@ public class DBExecute
 	public static void main(String[] args) throws Exception
 	{
 		val options = createOptions();
-		val cmd = new DefaultParser().parse(options,args);
+		val cmd = new DefaultParser().parse(options, args);
 		if (cmd.hasOption("h"))
 			printUsage(options);
 
@@ -61,15 +61,15 @@ public class DBExecute
 	protected static Options createOptions()
 	{
 		val result = new Options();
-		result.addOption("h",false,"print this message");
-		result.addOption("file",true,"path to database script file");
+		result.addOption("h", false, "print this message");
+		result.addOption("file", true, "path to database script file");
 		return result;
 	}
 
 	private static void printUsage(Options options)
 	{
 		val formatter = new HelpFormatter();
-		formatter.printHelp("DBExecute",options,true);
+		formatter.printHelp("DBExecute", options, true);
 		System.exit(0);
 	}
 
@@ -89,7 +89,7 @@ public class DBExecute
 		if (!cmd.hasOption("file"))
 			return false;
 		val file = Paths.get(cmd.getOptionValue("file")).toFile();
-		jdbcTemplate.execute(FileUtils.readFileToString(file,Charset.defaultCharset()));
+		jdbcTemplate.execute(FileUtils.readFileToString(file, Charset.defaultCharset()));
 		return true;
 	}
 }

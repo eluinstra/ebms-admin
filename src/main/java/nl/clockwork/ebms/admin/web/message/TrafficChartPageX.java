@@ -68,25 +68,25 @@ public class TrafficChartPageX extends BasePage
 
 	public TrafficChartPageX()
 	{
-		this(Model.of(getTrafficChartFormData(TimeUnit.DAY,EbMSMessageTrafficChartOption.ALL)));
+		this(Model.of(getTrafficChartFormData(TimeUnit.DAY, EbMSMessageTrafficChartOption.ALL)));
 	}
 
 	public TrafficChartPageX(IModel<TrafficChartFormData> model)
 	{
 		add(new BootstrapFeedbackPanel("feedback"));
-		add(new TrafficChartForm("form",model));
+		add(new TrafficChartForm("form", model));
 	}
 
 	private static TrafficChartFormData getTrafficChartFormData(TimeUnit timeUnit, EbMSMessageTrafficChartOption ebMSMessageTrafficChartOption)
 	{
 		val from = timeUnit.getFrom();
-		return TrafficChartFormData.of(timeUnit,from,ebMSMessageTrafficChartOption);
+		return TrafficChartFormData.of(timeUnit, from, ebMSMessageTrafficChartOption);
 	}
 
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("trafficChart",this);
+		return getLocalizer().getString("trafficChart", this);
 	}
 
 	public class TrafficChartForm extends Form<TrafficChartFormData>
@@ -95,11 +95,11 @@ public class TrafficChartPageX extends BasePage
 
 		public TrafficChartForm(String id, IModel<TrafficChartFormData> model)
 		{
-			super(id,new CompoundPropertyModel<>(model));
+			super(id, new CompoundPropertyModel<>(model));
 			add(createTimeUnitChoice("timeUnit"));
 			add(createMinusLink("minus"));
 			add(createPlusLink("plus"));
-			chart = new Chart("chart",createOptions());
+			chart = new Chart("chart", createOptions());
 			add(chart);
 			add(createEbMSMessageTrafficChartOptions("ebMSMessageTrafficChartOptions"));
 		}
@@ -108,7 +108,7 @@ public class TrafficChartPageX extends BasePage
 		{
 			val result = DropDownChoice.<TimeUnit>builder()
 					.id(id)
-					.choices(new PropertyModel<List<TimeUnit>>(getModel(),"timeUnits"))
+					.choices(new PropertyModel<List<TimeUnit>>(getModel(), "timeUnits"))
 					.localizeDisplayValues(() -> true)
 					.build();
 			result.setLabel(new ResourceModel("lbl.timeUnit"));
@@ -120,7 +120,7 @@ public class TrafficChartPageX extends BasePage
 				chart.setOptions(createOptions());
 				t.add(chart);
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
+			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
@@ -133,7 +133,7 @@ public class TrafficChartPageX extends BasePage
 				chart.setOptions(createOptions());
 				t.add(chart);
 			};
-			return new AjaxLink<Void>(id,onClick);
+			return new AjaxLink<Void>(id, onClick);
 		}
 
 		private AjaxLink<Void> createPlusLink(String id)
@@ -145,7 +145,7 @@ public class TrafficChartPageX extends BasePage
 				chart.setOptions(createOptions());
 				t.add(chart);
 			};
-			return new AjaxLink<Void>(id,onClick);
+			return new AjaxLink<Void>(id, onClick);
 		}
 
 		private DropDownChoice<EbMSMessageTrafficChartOption> createEbMSMessageTrafficChartOptions(String id)
@@ -153,8 +153,8 @@ public class TrafficChartPageX extends BasePage
 			val o = getModelObject();
 			val ebMSMessageTrafficChartOptions = DropDownChoice.<EbMSMessageTrafficChartOption>builder()
 					.id(id)
-					.model(new PropertyModel<EbMSMessageTrafficChartOption>(o,"ebMSMessageTrafficChartOption"))
-					.choices(new PropertyModel<List<EbMSMessageTrafficChartOption>>(o,"ebMSMessageTrafficChartOptions"))
+					.model(new PropertyModel<EbMSMessageTrafficChartOption>(o, "ebMSMessageTrafficChartOption"))
+					.choices(new PropertyModel<List<EbMSMessageTrafficChartOption>>(o, "ebMSMessageTrafficChartOptions"))
 					.localizeDisplayValues(() -> true)
 					.build();
 			ebMSMessageTrafficChartOptions.setLabel(new ResourceModel("lbl.ebMSMessageTrafficChartOption"));
@@ -164,36 +164,38 @@ public class TrafficChartPageX extends BasePage
 				chart.setOptions(createOptions());
 				t.add(chart);
 			};
-			ebMSMessageTrafficChartOptions.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
+			ebMSMessageTrafficChartOptions.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return ebMSMessageTrafficChartOptions;
 		}
 
 		private Options createOptions()
 		{
 			val o = getModelObject();
-			val dates = calculateDates(o.timeUnit.getTimeUnit(),o.from,o.getTo());
+			val dates = calculateDates(o.timeUnit.getTimeUnit(), o.from, o.getTo());
 			val dateStrings = dates.stream().map(d -> o.timeUnit.getTimeUnitDateFormat().format(d)).collect(Collectors.toList());
 			val result = new Options();
 			result.setChartOptions(new ChartOptions().setType(SeriesType.LINE));
 			result.setTitle(new Title(o.getEbMSMessageTrafficChartOption().getTitle() + " " + o.timeUnit.getDateFormatter().format(o.getFrom())));
 			result.setxAxis(new Axis().setCategories(dateStrings));
 			result.setyAxis(new Axis().setTitle(new Title("Messages")));
-			result.setLegend(new Legend().setLayout(LegendLayout.VERTICAL)
-					.setAlign(HorizontalAlignment.RIGHT)
-					.setVerticalAlign(VerticalAlignment.TOP)
-					.setX(0)
-					.setY(1000)
-					.setBorderWidth(0));
-			result.setSeries(Arrays.stream(o.getEbMSMessageTrafficChartOption().getEbMSMessageTrafficChartSeries())
-					.map(s -> new SimpleSeries().setName(s.getName()).setColor(s.getColorX()).setData(getMessages(dateStrings,s.getEbMSMessageStatuses())))
-					.collect(Collectors.toList()));
+			result.setLegend(
+					new Legend().setLayout(LegendLayout.VERTICAL)
+							.setAlign(HorizontalAlignment.RIGHT)
+							.setVerticalAlign(VerticalAlignment.TOP)
+							.setX(0)
+							.setY(1000)
+							.setBorderWidth(0));
+			result.setSeries(
+					Arrays.stream(o.getEbMSMessageTrafficChartOption().getEbMSMessageTrafficChartSeries())
+							.map(s -> new SimpleSeries().setName(s.getName()).setColor(s.getColorX()).setData(getMessages(dateStrings, s.getEbMSMessageStatuses())))
+							.collect(Collectors.toList()));
 			return result;
 		}
 
 		private List<Number> getMessages(List<String> dates, EbMSMessageStatus...status)
 		{
 			val o = getModelObject();
-			val messageTraffic = ebMSDAO.selectMessageTraffic(o.from,o.getTo(),o.timeUnit,status);
+			val messageTraffic = ebMSDAO.selectMessageTraffic(o.from, o.getTo(), o.timeUnit, status);
 			return dates.stream()
 					.map(d -> messageTraffic.containsKey(Integer.parseInt(d)) ? messageTraffic.get(Integer.parseInt(d)) : 0)
 					.collect(Collectors.toList());

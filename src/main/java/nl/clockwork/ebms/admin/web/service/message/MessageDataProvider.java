@@ -40,7 +40,7 @@ public class MessageDataProvider implements IDataProvider<String>
 	@Override
 	public Iterator<? extends String> iterator(long first, long count)
 	{
-		val messageIds = Utils.toList(ebMSMessageService.getUnprocessedMessageIds(filter,(int)(first + count)));
+		val messageIds = Utils.toList(ebMSMessageService.getUnprocessedMessageIds(filter, (int)(first + count)));
 		return messageIds == null ? new ArrayList<String>().iterator() : messageIds.listIterator((int)first);
 	}
 
@@ -53,7 +53,7 @@ public class MessageDataProvider implements IDataProvider<String>
 	@Override
 	public long size()
 	{
-		val messageIds = Utils.toList(ebMSMessageService.getUnprocessedMessageIds(filter,null));
+		val messageIds = Utils.toList(ebMSMessageService.getUnprocessedMessageIds(filter, null));
 		return messageIds == null ? 0 : messageIds.size();
 	}
 

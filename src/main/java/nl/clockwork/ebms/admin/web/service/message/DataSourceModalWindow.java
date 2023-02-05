@@ -50,7 +50,7 @@ public class DataSourceModalWindow extends ModalWindow
 	{
 		super(id);
 		setCssClassName(ModalWindow.CSS_CLASS_GRAY);
-		setContent(new DataSourcePanel(getContentId(),dataSources,components));
+		setContent(new DataSourcePanel(getContentId(), dataSources, components));
 		setCookieName("dataSource");
 		setCloseButtonCallback(new nl.clockwork.ebms.admin.web.CloseButtonCallback());
 	}
@@ -58,7 +58,7 @@ public class DataSourceModalWindow extends ModalWindow
 	@Override
 	public IModel<String> getTitle()
 	{
-		return Model.of(getLocalizer().getString("dataSource",this));
+		return Model.of(getLocalizer().getString("dataSource", this));
 	}
 
 	public class DataSourcePanel extends Panel
@@ -96,9 +96,9 @@ public class DataSourceModalWindow extends ModalWindow
 
 			public DataSourceForm(String id)
 			{
-				super(id,new CompoundPropertyModel<>(new DataSourceModel()));
+				super(id, new CompoundPropertyModel<>(new DataSourceModel()));
 				add(new BootstrapFeedbackPanel("feedback"));
-				add(new BootstrapFormComponentFeedbackBorder("fileFeedback",createFileField("file")));
+				add(new BootstrapFormComponentFeedbackBorder("fileFeedback", createFileField("file")));
 				add(new TextField<String>("name").setLabel(new ResourceModel("lbl.name")));
 				add(new TextField<String>("contentType").setLabel(new ResourceModel("lbl.contentType")));
 				add(createAddButton("add"));
@@ -119,10 +119,13 @@ public class DataSourceModalWindow extends ModalWindow
 				{
 					val o = getModelObject();
 					o.getFile()
-							.forEach(f -> addDataSource(new DataSource(StringUtils.isBlank(o.getName()) ? f.getClientFileName() : o.getName(),
-									null,
-									StringUtils.isBlank(o.getContentType()) ? Utils.getContentType(f.getClientFileName()) : o.getContentType(),
-									f.getBytes())));
+							.forEach(
+									f -> addDataSource(
+											new DataSource(
+													StringUtils.isBlank(o.getName()) ? f.getClientFileName() : o.getName(),
+													null,
+													StringUtils.isBlank(o.getContentType()) ? Utils.getContentType(f.getClientFileName()) : o.getContentType(),
+													f.getBytes())));
 					if (t != null)
 					{
 						t.add(getComponents());

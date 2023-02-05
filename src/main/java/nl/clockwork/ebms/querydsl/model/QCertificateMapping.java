@@ -37,48 +37,48 @@ public class QCertificateMapping extends com.querydsl.sql.RelationalPathBase<QCe
 
 	public final StringPath cpaId = createString("cpaId");
 
-	public final SimplePath<java.security.cert.X509Certificate> destination = createSimple("destination",java.security.cert.X509Certificate.class);
+	public final SimplePath<java.security.cert.X509Certificate> destination = createSimple("destination", java.security.cert.X509Certificate.class);
 
 	public final StringPath id = createString("id");
 
-	public final SimplePath<java.security.cert.X509Certificate> source = createSimple("source",java.security.cert.X509Certificate.class);
+	public final SimplePath<java.security.cert.X509Certificate> source = createSimple("source", java.security.cert.X509Certificate.class);
 
 	public QCertificateMapping(String variable)
 	{
-		super(QCertificateMapping.class,forVariable(variable),"PUBLIC","certificate_mapping");
+		super(QCertificateMapping.class, forVariable(variable), "PUBLIC", "certificate_mapping");
 		addMetadata();
 	}
 
 	public QCertificateMapping(String variable, String schema, String table)
 	{
-		super(QCertificateMapping.class,forVariable(variable),schema,table);
+		super(QCertificateMapping.class, forVariable(variable), schema, table);
 		addMetadata();
 	}
 
 	public QCertificateMapping(String variable, String schema)
 	{
-		super(QCertificateMapping.class,forVariable(variable),schema,"certificate_mapping");
+		super(QCertificateMapping.class, forVariable(variable), schema, "certificate_mapping");
 		addMetadata();
 	}
 
 	public QCertificateMapping(Path<? extends QCertificateMapping> path)
 	{
-		super(path.getType(),path.getMetadata(),"PUBLIC","certificate_mapping");
+		super(path.getType(), path.getMetadata(), "PUBLIC", "certificate_mapping");
 		addMetadata();
 	}
 
 	public QCertificateMapping(PathMetadata metadata)
 	{
-		super(QCertificateMapping.class,metadata,"PUBLIC","certificate_mapping");
+		super(QCertificateMapping.class, metadata, "PUBLIC", "certificate_mapping");
 		addMetadata();
 	}
 
 	public void addMetadata()
 	{
-		addMetadata(cpaId,ColumnMetadata.named("cpa_id").withIndex(4).ofType(Types.VARCHAR).withSize(256));
-		addMetadata(destination,ColumnMetadata.named("destination").withIndex(3).ofType(Types.BLOB).withSize(1073741824).notNull());
-		addMetadata(id,ColumnMetadata.named("id").withIndex(1).ofType(Types.VARCHAR).withSize(256).notNull());
-		addMetadata(source,ColumnMetadata.named("source").withIndex(2).ofType(Types.BLOB).withSize(1073741824).notNull());
+		addMetadata(cpaId, ColumnMetadata.named("cpa_id").withIndex(4).ofType(Types.VARCHAR).withSize(256));
+		addMetadata(destination, ColumnMetadata.named("destination").withIndex(3).ofType(Types.BLOB).withSize(1073741824).notNull());
+		addMetadata(id, ColumnMetadata.named("id").withIndex(1).ofType(Types.VARCHAR).withSize(256).notNull());
+		addMetadata(source, ColumnMetadata.named("source").withIndex(2).ofType(Types.BLOB).withSize(1073741824).notNull());
 	}
 
 }

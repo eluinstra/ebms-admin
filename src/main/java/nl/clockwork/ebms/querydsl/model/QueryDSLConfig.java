@@ -60,7 +60,7 @@ public class QueryDSLConfig
 	public SQLQueryFactory queryFactory()
 	{
 		val provider = new SpringConnectionProvider(dataSource);
-		return new SQLQueryFactory(querydslConfiguration(),provider);
+		return new SQLQueryFactory(querydslConfiguration(), provider);
 	}
 
 	@Bean
@@ -69,14 +69,14 @@ public class QueryDSLConfig
 		val templates = sqlTemplates();
 		val result = new com.querydsl.sql.Configuration(templates);
 		result.setExceptionTranslator(new SpringExceptionTranslator());
-		result.register("cpa","cpa",new CollaborationProtocolAgreementType(Types.CLOB));
-		result.register("certificate_mapping","source",new X509CertificateType(Types.BLOB));
-		result.register("certificate_mapping","destination",new X509CertificateType(Types.BLOB));
-		result.register("delivery_log","status",new DeliveryTaskStatusType(Types.SMALLINT));
-		result.register("ebms_message_event","event_type",new EbMSMessageEventTypeType(Types.SMALLINT));
-		result.register("ebms_message","content",new DocumentType(Types.CLOB));
-		result.register("ebms_message","status",new EbMSMessageStatusType(Types.SMALLINT));
-		result.register("ebms_attachment","content",new CachedOutputStreamType(Types.BLOB));
+		result.register("cpa", "cpa", new CollaborationProtocolAgreementType(Types.CLOB));
+		result.register("certificate_mapping", "source", new X509CertificateType(Types.BLOB));
+		result.register("certificate_mapping", "destination", new X509CertificateType(Types.BLOB));
+		result.register("delivery_log", "status", new DeliveryTaskStatusType(Types.SMALLINT));
+		result.register("ebms_message_event", "event_type", new EbMSMessageEventTypeType(Types.SMALLINT));
+		result.register("ebms_message", "content", new DocumentType(Types.CLOB));
+		result.register("ebms_message", "status", new EbMSMessageStatusType(Types.SMALLINT));
+		result.register("ebms_attachment", "content", new CachedOutputStreamType(Types.BLOB));
 		return result;
 	}
 
@@ -89,14 +89,15 @@ public class QueryDSLConfig
 	private SQLTemplates createSQLTemplates(DataSource dataSource)
 	{
 		val driverClassName = getDriverClassName(dataSource) == null ? "db2" : getDriverClassName(dataSource);
-		return Match(driverClassName).of(Case($(contains("db2")),o -> DB2Templates.builder().build()),
-				Case($(contains("h2")),o -> H2Templates.builder().build()),
-				Case($(contains("hsqldb")),o -> HSQLDBTemplates.builder().build()),
-				Case($(contains("mariadb")),o -> MySQLTemplates.builder().build()),
-				Case($(contains("oracle")),o -> OracleTemplates.builder().build()),
-				Case($(contains("postgresql")),o -> PostgreSQLTemplates.builder().build()),
-				Case($(contains("sqlserver")),o -> SQLServer2012Templates.builder().build()),
-				Case($(),o ->
+		return Match(driverClassName).of(
+				Case($(contains("db2")), o -> DB2Templates.builder().build()),
+				Case($(contains("h2")), o -> H2Templates.builder().build()),
+				Case($(contains("hsqldb")), o -> HSQLDBTemplates.builder().build()),
+				Case($(contains("mariadb")), o -> MySQLTemplates.builder().build()),
+				Case($(contains("oracle")), o -> OracleTemplates.builder().build()),
+				Case($(contains("postgresql")), o -> PostgreSQLTemplates.builder().build()),
+				Case($(contains("sqlserver")), o -> SQLServer2012Templates.builder().build()),
+				Case($(), o ->
 				{
 					throw new IllegalStateException("Driver class name " + driverClassName + " not recognized!");
 				}));

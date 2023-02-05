@@ -27,7 +27,7 @@ public class MaxItemsPerPageChoice extends DropDownChoice<Integer>
 
 	public MaxItemsPerPageChoice(String id, IModel<Integer> model, final Component...components)
 	{
-		super(id,model,Arrays.asList(5,10,15,20,25,50,100));
+		super(id, model, Arrays.asList(5, 10, 15, 20, 25, 50, 100));
 		add(AjaxFormComponentUpdatingBehavior.builder().event("change").onUpdate(t -> t.add(components)).build());
 	}
 

@@ -40,7 +40,7 @@ public class DownloadEbMSAttachmentLink extends Link<EbMSAttachment>
 
 	public DownloadEbMSAttachmentLink(String id, EbMSDAO ebMSDAO, IModel<EbMSAttachment> model)
 	{
-		super(id,model);
+		super(id, model);
 		this.ebMSDAO = ebMSDAO;
 	}
 
@@ -48,12 +48,12 @@ public class DownloadEbMSAttachmentLink extends Link<EbMSAttachment>
 	public void onClick()
 	{
 		val o = getModelObject();
-		val attachment = ebMSDAO.findAttachment(o.getMessage().getMessageId(),o.getContentId());
+		val attachment = ebMSDAO.findAttachment(o.getMessage().getMessageId(), o.getContentId());
 		val fileName = UrlEncoder.QUERY_INSTANCE.encode(
 				StringUtils.isEmpty(attachment.getName()) ? attachment.getContentId() + Utils.getFileExtension(attachment.getContentType()) : attachment.getName(),
 				getRequest().getCharset());
 		val resourceStream = AttachmentResourceStream.of(attachment);
-		getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName,resourceStream));
+		getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName, resourceStream));
 	}
 
 	private ResourceStreamRequestHandler createRequestHandler(String fileName, IResourceStream resourceStream)

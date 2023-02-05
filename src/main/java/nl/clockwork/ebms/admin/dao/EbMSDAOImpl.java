@@ -73,23 +73,23 @@ public class EbMSDAOImpl implements EbMSDAO, WithMessageFilter
 	QEbmsAttachment attachmentTable = QEbmsAttachment.ebmsAttachment;
 	QDeliveryTask deliveryTaskTable = QDeliveryTask.deliveryTask;
 	QDeliveryLog deliveryLogTable = QDeliveryLog.deliveryLog;
-	Expression<?>[] ebMSMessageColumns = {messageTable.timeStamp,messageTable.cpaId,messageTable.conversationId,messageTable.messageId,
-			messageTable.refToMessageId,messageTable.timeToLive,messageTable.fromPartyId,messageTable.fromRole,messageTable.toPartyId,messageTable.toRole,
-			messageTable.service,messageTable.action,messageTable.content,messageTable.status,messageTable.statusTime};
-	Expression<?>[] ebMSMessagePropertyColumns = {messageTable.timeStamp,messageTable.cpaId,messageTable.conversationId,messageTable.messageId,
-			messageTable.refToMessageId,messageTable.timeToLive,messageTable.fromPartyId,messageTable.fromRole,messageTable.toPartyId,messageTable.toRole,
-			messageTable.service,messageTable.action,messageTable.status,messageTable.statusTime};
-	ConstructorExpression<CPA> cpaProjection = Projections.constructor(CPA.class,cpaTable.cpaId,cpaTable.cpa);
-	ConstructorExpression<EbMSMessage> ebMSMessageProjection = Projections.constructor(EbMSMessage.class,ebMSMessageColumns);
-	ConstructorExpression<EbMSMessage> ebMSMessagePropertyProjection = Projections.constructor(EbMSMessage.class,ebMSMessagePropertyColumns);
+	Expression<?>[] ebMSMessageColumns = {messageTable.timeStamp, messageTable.cpaId, messageTable.conversationId, messageTable.messageId,
+			messageTable.refToMessageId, messageTable.timeToLive, messageTable.fromPartyId, messageTable.fromRole, messageTable.toPartyId, messageTable.toRole,
+			messageTable.service, messageTable.action, messageTable.content, messageTable.status, messageTable.statusTime};
+	Expression<?>[] ebMSMessagePropertyColumns = {messageTable.timeStamp, messageTable.cpaId, messageTable.conversationId, messageTable.messageId,
+			messageTable.refToMessageId, messageTable.timeToLive, messageTable.fromPartyId, messageTable.fromRole, messageTable.toPartyId, messageTable.toRole,
+			messageTable.service, messageTable.action, messageTable.status, messageTable.statusTime};
+	ConstructorExpression<CPA> cpaProjection = Projections.constructor(CPA.class, cpaTable.cpaId, cpaTable.cpa);
+	ConstructorExpression<EbMSMessage> ebMSMessageProjection = Projections.constructor(EbMSMessage.class, ebMSMessageColumns);
+	ConstructorExpression<EbMSMessage> ebMSMessagePropertyProjection = Projections.constructor(EbMSMessage.class, ebMSMessagePropertyColumns);
 	ConstructorExpression<EbMSAttachment> ebMSAttachmentProjection =
-			Projections.constructor(EbMSAttachment.class,attachmentTable.name,attachmentTable.contentId,attachmentTable.contentType,attachmentTable.content);
+			Projections.constructor(EbMSAttachment.class, attachmentTable.name, attachmentTable.contentId, attachmentTable.contentType, attachmentTable.content);
 	ConstructorExpression<EbMSAttachment> ebMSAttachmentPropertiesProjection =
-			Projections.constructor(EbMSAttachment.class,attachmentTable.name,attachmentTable.contentId,attachmentTable.contentType);
+			Projections.constructor(EbMSAttachment.class, attachmentTable.name, attachmentTable.contentId, attachmentTable.contentType);
 	ConstructorExpression<DeliveryTask> deliveryTaskProjection =
-			Projections.constructor(DeliveryTask.class,deliveryTaskTable.timeToLive,deliveryTaskTable.timeStamp,deliveryTaskTable.retries);
+			Projections.constructor(DeliveryTask.class, deliveryTaskTable.timeToLive, deliveryTaskTable.timeStamp, deliveryTaskTable.retries);
 	ConstructorExpression<DeliveryLog> deliveryLogProjection =
-			Projections.constructor(DeliveryLog.class,deliveryLogTable.timeStamp,deliveryLogTable.uri,deliveryLogTable.status,deliveryLogTable.errorMessage);
+			Projections.constructor(DeliveryLog.class, deliveryLogTable.timeStamp, deliveryLogTable.uri, deliveryLogTable.status, deliveryLogTable.errorMessage);
 
 	@Override
 	public CPA findCPA(String cpaId)
@@ -132,7 +132,8 @@ public class EbMSDAOImpl implements EbMSDAO, WithMessageFilter
 		return queryFactory.select(messageTable.messageId.count())
 				.from(messageTable)
 				.where(messageTable.refToMessageId.eq(messageId).and(messageTable.service.eq(EbMSAction.EBMS_SERVICE_URI)))
-				.fetchOne() > 0;
+				.fetchOne()
+				> 0;
 	}
 
 	@Override
@@ -149,7 +150,10 @@ public class EbMSDAOImpl implements EbMSDAO, WithMessageFilter
 	@Override
 	public long countMessages(EbMSMessageFilter filter)
 	{
-		return queryFactory.select(messageTable.messageId.count()).from(messageTable).where(getMessageFilter(messageTable,filter,new BooleanBuilder())).fetchOne();
+		return queryFactory.select(messageTable.messageId.count())
+				.from(messageTable)
+				.where(getMessageFilter(messageTable, filter, new BooleanBuilder()))
+				.fetchOne();
 	}
 
 	@Override
@@ -157,7 +161,7 @@ public class EbMSDAOImpl implements EbMSDAO, WithMessageFilter
 	{
 		return queryFactory.select(ebMSMessagePropertyProjection)
 				.from(messageTable)
-				.where(getMessageFilter(messageTable,filter,new BooleanBuilder()))
+				.where(getMessageFilter(messageTable, filter, new BooleanBuilder()))
 				.orderBy(messageTable.timeStamp.desc())
 				.limit(count)
 				.offset(first)
@@ -200,16 +204,17 @@ public class EbMSDAOImpl implements EbMSDAO, WithMessageFilter
 	}
 
 	@Override
-	public Map<Integer,Integer> selectMessageTraffic(LocalDateTime from, LocalDateTime to, TimeUnit timeUnit, EbMSMessageStatus...statuses)
+	public Map<Integer, Integer> selectMessageTraffic(LocalDateTime from, LocalDateTime to, TimeUnit timeUnit, EbMSMessageStatus...statuses)
 	{
-		val result = queryFactory.select(getTimestamp(messageTable.timeStamp,timeUnit).as("time"),messageTable.messageId.count().as("nr"))
+		val result = queryFactory.select(getTimestamp(messageTable.timeStamp, timeUnit).as("time"), messageTable.messageId.count().as("nr"))
 				.from(messageTable)
-				.where(messageTable.timeStamp.goe(from.atZone(ZoneId.systemDefault()).toInstant())
-						.and(messageTable.timeStamp.lt(to.atZone(ZoneId.systemDefault()).toInstant()))
-						.and(statuses.length == 0 ? messageTable.status.isNotNull() : messageTable.status.in(statuses)))
-				.groupBy(getTimestamp(messageTable.timeStamp,timeUnit))
+				.where(
+						messageTable.timeStamp.goe(from.atZone(ZoneId.systemDefault()).toInstant())
+								.and(messageTable.timeStamp.lt(to.atZone(ZoneId.systemDefault()).toInstant()))
+								.and(statuses.length == 0 ? messageTable.status.isNotNull() : messageTable.status.in(statuses)))
+				.groupBy(getTimestamp(messageTable.timeStamp, timeUnit))
 				.fetch();
-		return result.stream().collect(Collectors.toMap(t -> t.get(0,Integer.class),t -> t.get(1,Long.class).intValue()));
+		return result.stream().collect(Collectors.toMap(t -> t.get(0, Integer.class), t -> t.get(1, Long.class).intValue()));
 	}
 
 	@Override
@@ -217,10 +222,10 @@ public class EbMSDAOImpl implements EbMSDAO, WithMessageFilter
 	{
 		val query = queryFactory.select(ebMSMessagePropertyColumns)
 				.from(messageTable)
-				.where(getMessageFilter(messageTable,filter,new BooleanBuilder()))
+				.where(getMessageFilter(messageTable, filter, new BooleanBuilder()))
 				.orderBy(messageTable.timeStamp.desc())
 				.getSQL();
-		jdbcTemplate.query(query.getSQL(),(rs, rowNum) ->
+		jdbcTemplate.query(query.getSQL(), (rs, rowNum) ->
 		{
 			try
 			{
@@ -243,14 +248,14 @@ public class EbMSDAOImpl implements EbMSDAO, WithMessageFilter
 			{
 				throw new SQLException(e);
 			}
-		},query.getNullFriendlyBindings().toArray());
+		}, query.getNullFriendlyBindings().toArray());
 	}
 
 	@Override
 	public void writeMessageToZip(String messageId, final ZipOutputStream zip)
 	{
 		val query = queryFactory.select(messageTable.content).from(messageTable).where(messageTable.messageId.eq(messageId)).getSQL();
-		jdbcTemplate.query(query.getSQL(),(rs, rowNum) ->
+		jdbcTemplate.query(query.getSQL(), (rs, rowNum) ->
 		{
 			try
 			{
@@ -264,26 +269,28 @@ public class EbMSDAOImpl implements EbMSDAO, WithMessageFilter
 			{
 				throw new SQLException(e);
 			}
-		},query.getNullFriendlyBindings().toArray());
-		writeAttachmentsToZip(messageId,zip);
+		}, query.getNullFriendlyBindings().toArray());
+		writeAttachmentsToZip(messageId, zip);
 	}
 
 	protected void writeAttachmentsToZip(String messageId, final ZipOutputStream zip)
 	{
-		val query = queryFactory.select(attachmentTable.name,attachmentTable.contentId,attachmentTable.contentType,attachmentTable.content)
+		val query = queryFactory.select(attachmentTable.name, attachmentTable.contentId, attachmentTable.contentType, attachmentTable.content)
 				.from(attachmentTable)
 				.where(attachmentTable.messageId.eq(messageId))
 				.getSQL();
-		jdbcTemplate.query(query.getSQL(),(rs, rowNum) ->
+		jdbcTemplate.query(query.getSQL(), (rs, rowNum) ->
 		{
 			try
 			{
 				val entry = new ZipEntry(
-						"attachments/" + (StringUtils.isEmpty(rs.getString("name")) ? rs.getString("content_id") + Utils.getFileExtension(rs.getString("content_type"))
-								: rs.getString("name")));
+						"attachments/"
+								+ (StringUtils.isEmpty(rs.getString("name"))
+										? rs.getString("content_id") + Utils.getFileExtension(rs.getString("content_type"))
+										: rs.getString("name")));
 				entry.setComment("Content-Type: " + rs.getString("content_type"));
 				zip.putNextEntry(entry);
-				IOUtils.copy(rs.getBinaryStream("content"),zip);
+				IOUtils.copy(rs.getBinaryStream("content"), zip);
 				zip.closeEntry();
 				return null;
 			}
@@ -291,12 +298,12 @@ public class EbMSDAOImpl implements EbMSDAO, WithMessageFilter
 			{
 				throw new SQLException(e);
 			}
-		},query.getNullFriendlyBindings().toArray());
+		}, query.getNullFriendlyBindings().toArray());
 	}
 
 	protected BooleanBuilder getMessageFilter(QEbmsMessage table, EbMSMessageFilter messageFilter, BooleanBuilder builder)
 	{
-		builder = applyFilter(table,messageFilter,builder);
+		builder = applyFilter(table, messageFilter, builder);
 		if (messageFilter != null)
 		{
 			if (!messageFilter.getStatuses().isEmpty())

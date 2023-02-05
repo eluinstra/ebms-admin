@@ -25,7 +25,7 @@ public class ActiveMQFileResourceStream extends PackageResourceStream
 
 	public ActiveMQFileResourceStream() throws URISyntaxException
 	{
-		super(ActiveMQFileResourceStream.class,"/nl/clockwork/ebms/activemq.xml");
+		super(ActiveMQFileResourceStream.class, "/nl/clockwork/ebms/activemq.xml");
 	}
 
 	@Override

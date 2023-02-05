@@ -24,6 +24,6 @@ public class ClientKeystorePropertiesFormPanel extends JavaKeyStorePropertiesFor
 
 	public ClientKeystorePropertiesFormPanel(String id, final IModel<JavaKeyStorePropertiesFormData> model)
 	{
-		super(id,model);
+		super(id, model);
 	}
 }

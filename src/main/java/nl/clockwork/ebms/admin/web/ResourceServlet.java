@@ -50,19 +50,20 @@ public class ResourceServlet extends GenericServlet
 		{
 			((HttpServletResponse)response).setStatus(200);
 			((HttpServletResponse)response).setContentType(getContentType(((HttpServletRequest)request).getPathInfo()));
-			IOUtils.copy(input,response.getOutputStream());
+			IOUtils.copy(input, response.getOutputStream());
 		}
 	}
 
 	private String getContentType(String pathInfo)
 	{
-		return Match(pathInfo).of(Case($(endsWith(".css")),"text/css"),
-				Case($(endsWith(".js")),"text/javascript"),
-				Case($(endsWith(".gif")),"image/gif"),
-				Case($(endsWith(".eot")),"application/vnd.ms-fontobject"),
-				Case($(endsWith(".svg")),"image/svg+xml"),
-				Case($(endsWith(".ttf")),"font/ttf"),
-				Case($(endsWith(".woff")),"application/font-woff"),
-				Case($(),(String)null));
+		return Match(pathInfo).of(
+				Case($(endsWith(".css")), "text/css"),
+				Case($(endsWith(".js")), "text/javascript"),
+				Case($(endsWith(".gif")), "image/gif"),
+				Case($(endsWith(".eot")), "application/vnd.ms-fontobject"),
+				Case($(endsWith(".svg")), "image/svg+xml"),
+				Case($(endsWith(".ttf")), "font/ttf"),
+				Case($(endsWith(".woff")), "application/font-woff"),
+				Case($(), (String)null));
 	}
 }

@@ -32,7 +32,7 @@ public class DownloadActiveMQFileLink extends Link<Void>
 
 	public DownloadActiveMQFileLink(String id)
 	{
-		super(id,null);
+		super(id, null);
 	}
 
 	@Override
@@ -40,13 +40,13 @@ public class DownloadActiveMQFileLink extends Link<Void>
 	{
 		try
 		{
-			val fileName = UrlEncoder.QUERY_INSTANCE.encode("activemq.xml",getRequest().getCharset());
+			val fileName = UrlEncoder.QUERY_INSTANCE.encode("activemq.xml", getRequest().getCharset());
 			val resourceStream = new ActiveMQFileResourceStream();
-			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName,resourceStream));
+			getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(fileName, resourceStream));
 		}
 		catch (URISyntaxException e)
 		{
-			log.error("",e);
+			log.error("", e);
 			error(e);
 		}
 	}

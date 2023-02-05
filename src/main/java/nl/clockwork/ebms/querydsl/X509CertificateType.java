@@ -63,7 +63,7 @@ public class X509CertificateType extends AbstractType<X509Certificate>
 	{
 		try
 		{
-			st.setBytes(startIndex,value.getEncoded());
+			st.setBytes(startIndex, value.getEncoded());
 		}
 		catch (CertificateEncodingException e)
 		{

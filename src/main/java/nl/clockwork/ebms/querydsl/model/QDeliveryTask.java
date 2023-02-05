@@ -46,57 +46,57 @@ public class QDeliveryTask extends com.querydsl.sql.RelationalPathBase<QDelivery
 
 	public final StringPath receiveChannelId = createString("receiveChannelId");
 
-	public final NumberPath<Integer> retries = createNumber("retries",Integer.class);
+	public final NumberPath<Integer> retries = createNumber("retries", Integer.class);
 
 	public final StringPath sendChannelId = createString("sendChannelId");
 
 	public final StringPath serverId = createString("serverId");
 
-	public final DateTimePath<java.time.Instant> timeStamp = createDateTime("timeStamp",java.time.Instant.class);
+	public final DateTimePath<java.time.Instant> timeStamp = createDateTime("timeStamp", java.time.Instant.class);
 
-	public final DateTimePath<java.time.Instant> timeToLive = createDateTime("timeToLive",java.time.Instant.class);
+	public final DateTimePath<java.time.Instant> timeToLive = createDateTime("timeToLive", java.time.Instant.class);
 
 	public QDeliveryTask(String variable)
 	{
-		super(QDeliveryTask.class,forVariable(variable),"PUBLIC","delivery_task");
+		super(QDeliveryTask.class, forVariable(variable), "PUBLIC", "delivery_task");
 		addMetadata();
 	}
 
 	public QDeliveryTask(String variable, String schema, String table)
 	{
-		super(QDeliveryTask.class,forVariable(variable),schema,table);
+		super(QDeliveryTask.class, forVariable(variable), schema, table);
 		addMetadata();
 	}
 
 	public QDeliveryTask(String variable, String schema)
 	{
-		super(QDeliveryTask.class,forVariable(variable),schema,"delivery_task");
+		super(QDeliveryTask.class, forVariable(variable), schema, "delivery_task");
 		addMetadata();
 	}
 
 	public QDeliveryTask(Path<? extends QDeliveryTask> path)
 	{
-		super(path.getType(),path.getMetadata(),"PUBLIC","delivery_task");
+		super(path.getType(), path.getMetadata(), "PUBLIC", "delivery_task");
 		addMetadata();
 	}
 
 	public QDeliveryTask(PathMetadata metadata)
 	{
-		super(QDeliveryTask.class,metadata,"PUBLIC","delivery_task");
+		super(QDeliveryTask.class, metadata, "PUBLIC", "delivery_task");
 		addMetadata();
 	}
 
 	public void addMetadata()
 	{
-		addMetadata(cpaId,ColumnMetadata.named("cpa_id").withIndex(1).ofType(Types.VARCHAR).withSize(256).notNull());
-		addMetadata(isConfidential,ColumnMetadata.named("is_confidential").withIndex(7).ofType(Types.BOOLEAN).withSize(0).notNull());
-		addMetadata(messageId,ColumnMetadata.named("message_id").withIndex(3).ofType(Types.VARCHAR).withSize(256).notNull());
-		addMetadata(receiveChannelId,ColumnMetadata.named("receive_channel_id").withIndex(2).ofType(Types.VARCHAR).withSize(256).notNull());
-		addMetadata(retries,ColumnMetadata.named("retries").withIndex(6).ofType(Types.SMALLINT).withSize(16).notNull());
-		addMetadata(sendChannelId,ColumnMetadata.named("send_channel_id").withIndex(9).ofType(Types.VARCHAR).withSize(256));
-		addMetadata(serverId,ColumnMetadata.named("server_id").withIndex(8).ofType(Types.VARCHAR).withSize(256));
-		addMetadata(timeStamp,ColumnMetadata.named("time_stamp").withIndex(5).ofType(Types.TIMESTAMP).withSize(26).notNull());
-		addMetadata(timeToLive,ColumnMetadata.named("time_to_live").withIndex(4).ofType(Types.TIMESTAMP).withSize(26));
+		addMetadata(cpaId, ColumnMetadata.named("cpa_id").withIndex(1).ofType(Types.VARCHAR).withSize(256).notNull());
+		addMetadata(isConfidential, ColumnMetadata.named("is_confidential").withIndex(7).ofType(Types.BOOLEAN).withSize(0).notNull());
+		addMetadata(messageId, ColumnMetadata.named("message_id").withIndex(3).ofType(Types.VARCHAR).withSize(256).notNull());
+		addMetadata(receiveChannelId, ColumnMetadata.named("receive_channel_id").withIndex(2).ofType(Types.VARCHAR).withSize(256).notNull());
+		addMetadata(retries, ColumnMetadata.named("retries").withIndex(6).ofType(Types.SMALLINT).withSize(16).notNull());
+		addMetadata(sendChannelId, ColumnMetadata.named("send_channel_id").withIndex(9).ofType(Types.VARCHAR).withSize(256));
+		addMetadata(serverId, ColumnMetadata.named("server_id").withIndex(8).ofType(Types.VARCHAR).withSize(256));
+		addMetadata(timeStamp, ColumnMetadata.named("time_stamp").withIndex(5).ofType(Types.TIMESTAMP).withSize(26).notNull());
+		addMetadata(timeToLive, ColumnMetadata.named("time_to_live").withIndex(4).ofType(Types.TIMESTAMP).withSize(26));
 	}
 
 }

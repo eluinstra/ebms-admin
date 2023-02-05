@@ -68,7 +68,7 @@ public class PingPage extends BasePage
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("ping",this);
+		return getLocalizer().getString("ping", this);
 	}
 
 	public class PingForm extends Form<PingFormData>
@@ -77,19 +77,19 @@ public class PingPage extends BasePage
 
 		public PingForm(String id)
 		{
-			super(id,new CompoundPropertyModel<>(new PingFormData()));
-			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback",createCPAIdChoice("cpaId")));
-			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback",createFromPartyIdChoice("fromPartyId")));
-			add(new BootstrapFormComponentFeedbackBorder("toPartyIdFeedback",createToPartyIdChoice("toPartyId")));
+			super(id, new CompoundPropertyModel<>(new PingFormData()));
+			add(new BootstrapFormComponentFeedbackBorder("cpaIdFeedback", createCPAIdChoice("cpaId")));
+			add(new BootstrapFormComponentFeedbackBorder("fromPartyIdFeedback", createFromPartyIdChoice("fromPartyId")));
+			add(new BootstrapFormComponentFeedbackBorder("toPartyIdFeedback", createToPartyIdChoice("toPartyId")));
 			val ping = createPingButton("ping");
 			setDefaultButton(ping);
 			add(ping);
-			add(new ResetButton("reset",new ResourceModel("cmd.reset"),PingPage.class));
+			add(new ResetButton("reset", new ResourceModel("cmd.reset"), PingPage.class));
 		}
 
 		private DropDownChoice<String> createCPAIdChoice(String id)
 		{
-			val result = new DropDownChoice<>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())));
+			val result = new DropDownChoice<>(id, Model.ofList(Utils.toList(cpaService.getCPAIds())));
 			result.setLabel(new ResourceModel("lbl.cpaId"));
 			result.setRequired(true);
 			Consumer<AjaxRequestTarget> onUpdate = t ->
@@ -103,19 +103,19 @@ public class PingPage extends BasePage
 				}
 				catch (JAXBException e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
+			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createFromPartyIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<>(id,new PropertyModel<List<String>>(getModel(),"fromPartyIds"));
+			DropDownChoice<String> result = new DropDownChoice<>(id, new PropertyModel<List<String>>(getModel(), "fromPartyIds"));
 			result.setLabel(new ResourceModel("lbl.fromPartyId"));
 			result.setRequired(true).setOutputMarkupId(true);
 			Consumer<AjaxRequestTarget> onUpdate = t ->
@@ -124,23 +124,23 @@ public class PingPage extends BasePage
 				{
 					val o = getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
-					o.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa,o.getFromPartyId()));
+					o.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa, o.getFromPartyId()));
 				}
 				catch (JAXBException e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
+			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createToPartyIdChoice(String id)
 		{
-			val result = new DropDownChoice<>(id,new PropertyModel<List<String>>(getModel(),"toPartyIds"));
+			val result = new DropDownChoice<>(id, new PropertyModel<List<String>>(getModel(), "toPartyIds"));
 			result.setLabel(new ResourceModel("lbl.toPartyId"));
 			result.setRequired(true).setOutputMarkupId(true);
 			Consumer<AjaxRequestTarget> onUpdate = t ->
@@ -148,7 +148,7 @@ public class PingPage extends BasePage
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
+			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
@@ -159,16 +159,16 @@ public class PingPage extends BasePage
 				try
 				{
 					val o = getModelObject();
-					ebMSMessageService.ping(o.getCpaId(),o.getFromPartyId(),o.getToPartyId());
+					ebMSMessageService.ping(o.getCpaId(), o.getFromPartyId(), o.getToPartyId());
 					info(PingPage.this.getString("ping.ok"));
 				}
 				catch (Exception e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			return new Button(id,new ResourceModel("cmd.ping"),onSubmit);
+			return new Button(id, new ResourceModel("cmd.ping"), onSubmit);
 		}
 	}
 

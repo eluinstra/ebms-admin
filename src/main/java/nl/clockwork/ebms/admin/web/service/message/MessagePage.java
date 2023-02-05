@@ -47,7 +47,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class MessagePage extends BasePage implements IGenericComponent<Message,MessagePage>
+public class MessagePage extends BasePage implements IGenericComponent<Message, MessagePage>
 {
 	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 	private class EbMSDataSourcePropertyListView extends PropertyListView<DataSource>
@@ -57,7 +57,7 @@ public class MessagePage extends BasePage implements IGenericComponent<Message,M
 
 		public EbMSDataSourcePropertyListView(String id, IModel<List<DataSource>> list)
 		{
-			super(id,list);
+			super(id, list);
 		}
 
 		@Override
@@ -66,7 +66,7 @@ public class MessagePage extends BasePage implements IGenericComponent<Message,M
 			val o = item.getModelObject();
 			if (StringUtils.isEmpty(o.getName()))
 				o.setName("dataSource." + i.getAndIncrement());
-			item.add(new DownloadEbMSDataSourceLink("downloadDataSource",item.getModel()));
+			item.add(new DownloadEbMSDataSourceLink("downloadDataSource", item.getModel()));
 			item.add(new Label("contentType"));
 		}
 	}
@@ -92,8 +92,8 @@ public class MessagePage extends BasePage implements IGenericComponent<Message,M
 		add(new BootstrapFeedbackPanel("feedback"));
 		add(new Label("properties.messageId"));
 		add(new Label("properties.conversationId"));
-		add(createViewRefToMessageIdLink("viewRefToMessageId",messageProcessor));
-		add(InstantLabel.of("properties.timestamp",Constants.DATETIME_FORMAT));
+		add(createViewRefToMessageIdLink("viewRefToMessageId", messageProcessor));
+		add(InstantLabel.of("properties.timestamp", Constants.DATETIME_FORMAT));
 		add(new Label("properties.cpaId"));
 		add(new Label("properties.fromParty.partyId"));
 		add(new Label("properties.fromParty.role"));
@@ -101,23 +101,23 @@ public class MessagePage extends BasePage implements IGenericComponent<Message,M
 		add(new Label("properties.toParty.role"));
 		add(new Label("properties.service"));
 		add(new Label("properties.action"));
-		add(new EbMSDataSourcePropertyListView("dataSources",new LoadableDetachableEbMSDataSourceModel()));
-		add(new PageLink("back",responsePage));
-		add(new DownloadEbMSMessageLink("download",model));
-		add(createProcessLink("process",messageProcessor,responsePage));
+		add(new EbMSDataSourcePropertyListView("dataSources", new LoadableDetachableEbMSDataSourceModel()));
+		add(new PageLink("back", responsePage));
+		add(new DownloadEbMSMessageLink("download", model));
+		add(createProcessLink("process", messageProcessor, responsePage));
 	}
 
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("message",this);
+		return getLocalizer().getString("message", this);
 	}
 
 	private Link<Void> createViewRefToMessageIdLink(String id, final MessageProcessor messageProcessor)
 	{
 		Action onClick = () -> setResponsePage(
-				new MessagePage(Model.of(ebMSMessageService.getMessage(getModelObject().getProperties().getRefToMessageId(),null)),this,messageProcessor));
-		val result = new Link<Void>(id,onClick);
+				new MessagePage(Model.of(ebMSMessageService.getMessage(getModelObject().getProperties().getRefToMessageId(), null)), this, messageProcessor));
+		val result = new Link<Void>(id, onClick);
 		result.add(new Label("properties.refToMessageId"));
 		return result;
 	}
@@ -133,12 +133,12 @@ public class MessagePage extends BasePage implements IGenericComponent<Message,M
 			}
 			catch (Exception e)
 			{
-				log.error("",e);
+				log.error("", e);
 				error(e.getMessage());
 			}
 		};
-		val result = new Link<Void>(id,onClick);
-		result.add(AttributeModifier.replace("onclick","return confirm('" + getLocalizer().getString("confirm",this) + "');"));
+		val result = new Link<Void>(id, onClick);
+		result.add(AttributeModifier.replace("onclick", "return confirm('" + getLocalizer().getString("confirm", this) + "');"));
 		return result;
 	}
 

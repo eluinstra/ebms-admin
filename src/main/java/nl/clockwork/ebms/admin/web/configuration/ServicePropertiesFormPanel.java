@@ -43,8 +43,8 @@ public class ServicePropertiesFormPanel extends Panel
 
 	public ServicePropertiesFormPanel(String id, final IModel<ServicePropertiesFormData> model)
 	{
-		super(id,model);
-		add(new ServicePropertiesForm("form",model));
+		super(id, model);
+		add(new ServicePropertiesForm("form", model));
 	}
 
 	public class ServicePropertiesForm extends Form<ServicePropertiesFormData>
@@ -53,8 +53,8 @@ public class ServicePropertiesFormPanel extends Panel
 
 		public ServicePropertiesForm(String id, final IModel<ServicePropertiesFormData> model)
 		{
-			super(id,new CompoundPropertyModel<>(model));
-			add(new BootstrapFormComponentFeedbackBorder("urlFeedback",new TextField<String>("url").setLabel(new ResourceModel("lbl.url")).setRequired(true)));
+			super(id, new CompoundPropertyModel<>(model));
+			add(new BootstrapFormComponentFeedbackBorder("urlFeedback", new TextField<String>("url").setLabel(new ResourceModel("lbl.url")).setRequired(true)));
 			add(createTestButton("test"));
 		}
 
@@ -70,11 +70,11 @@ public class ServicePropertiesFormPanel extends Panel
 				}
 				catch (Exception e)
 				{
-					log.error("",e);
-					error(new StringResourceModel("test.nok",this,Model.of(e)).getString());
+					log.error("", e);
+					error(new StringResourceModel("test.nok", this, Model.of(e)).getString());
 				}
 			};
-			return new Button(id,new ResourceModel("cmd.test"),action);
+			return new Button(id, new ResourceModel("cmd.test"), action);
 		}
 	}
 

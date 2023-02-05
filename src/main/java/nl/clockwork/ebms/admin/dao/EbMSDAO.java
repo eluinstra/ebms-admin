@@ -52,7 +52,7 @@ public interface EbMSDAO
 
 	List<String> selectMessageIds(String cpaId, String fromRole, String toRole, EbMSMessageStatus...status);
 
-	Map<Integer,Integer> selectMessageTraffic(LocalDateTime from, LocalDateTime to, TimeUnit timeUnit, EbMSMessageStatus...status);
+	Map<Integer, Integer> selectMessageTraffic(LocalDateTime from, LocalDateTime to, TimeUnit timeUnit, EbMSMessageStatus...status);
 
 	void writeMessageToZip(String messageId, ZipOutputStream stream);
 

@@ -53,7 +53,7 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 
 	public JavaKeyStorePropertiesFormPanel(String id, IModel<JavaKeyStorePropertiesFormData> model)
 	{
-		this(id,model,true,true,null);
+		this(id, model, true, true, null);
 	}
 
 	@Builder
@@ -64,11 +64,11 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 			boolean showDefaultAlias,
 			Supplier<Boolean> isVisible)
 	{
-		super(id,model);
+		super(id, model);
 		this.required = required;
 		this.showDefaultAlias = showDefaultAlias;
 		this.isVisible = isVisible == null ? () -> super.isVisible() : isVisible;
-		add(new JavaKeyStorePropertiesForm("form",model));
+		add(new JavaKeyStorePropertiesForm("form", model));
 	}
 
 	@Override
@@ -83,14 +83,20 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 
 		public JavaKeyStorePropertiesForm(String id, IModel<JavaKeyStorePropertiesFormData> model)
 		{
-			super(id,new CompoundPropertyModel<>(model));
-			add(new BootstrapFormComponentFeedbackBorder("typeFeedback",
-					new DropDownChoice<KeyStoreType>("type",Arrays.asList(KeyStoreType.values())).setLabel(new ResourceModel("lbl.type")).setRequired(required)));
-			add(new BootstrapFormComponentFeedbackBorder("uriFeedback",new TextField<String>("uri").setLabel(new ResourceModel("lbl.uri")).setRequired(required)));
-			add(new BootstrapFormComponentFeedbackBorder("passwordFeedback",
-					new PasswordTextField("password").setResetPassword(false).setLabel(new ResourceModel("lbl.password")).setRequired(required)));
-			add(new BootstrapFormComponentFeedbackBorder("defaultAliasFeedback",new TextField<String>("defaultAlias").setLabel(new ResourceModel("lbl.defaultAlias")))
-					.setVisible(showDefaultAlias));
+			super(id, new CompoundPropertyModel<>(model));
+			add(
+					new BootstrapFormComponentFeedbackBorder(
+							"typeFeedback",
+							new DropDownChoice<KeyStoreType>("type", Arrays.asList(KeyStoreType.values())).setLabel(new ResourceModel("lbl.type")).setRequired(required)));
+			add(new BootstrapFormComponentFeedbackBorder("uriFeedback", new TextField<String>("uri").setLabel(new ResourceModel("lbl.uri")).setRequired(required)));
+			add(
+					new BootstrapFormComponentFeedbackBorder(
+							"passwordFeedback",
+							new PasswordTextField("password").setResetPassword(false).setLabel(new ResourceModel("lbl.password")).setRequired(required)));
+			add(
+					new BootstrapFormComponentFeedbackBorder(
+							"defaultAliasFeedback",
+							new TextField<String>("defaultAlias").setLabel(new ResourceModel("lbl.defaultAlias"))).setVisible(showDefaultAlias));
 			add(createTestButton("test"));
 		}
 
@@ -101,16 +107,16 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 				try
 				{
 					val o = getModelObject();
-					Utils.testKeyStore(o.getType(),o.getUri(),o.getPassword(),o.getDefaultAlias(),showDefaultAlias);
+					Utils.testKeyStore(o.getType(), o.getUri(), o.getPassword(), o.getDefaultAlias(), showDefaultAlias);
 					info(getString("test.ok"));
 				}
 				catch (Exception e)
 				{
-					log.error("",e);
-					error(new StringResourceModel("test.nok",this,Model.of(e)).getString());
+					log.error("", e);
+					error(new StringResourceModel("test.nok", this, Model.of(e)).getString());
 				}
 			};
-			return new Button(id,new ResourceModel("cmd.test"),action);
+			return new Button(id, new ResourceModel("cmd.test"), action);
 		}
 	}
 

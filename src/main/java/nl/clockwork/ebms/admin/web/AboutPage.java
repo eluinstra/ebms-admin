@@ -36,19 +36,20 @@ public class AboutPage extends BasePage
 	public AboutPage(final PageParameters parameters) throws FileNotFoundException, IOException
 	{
 		super(parameters);
-		add(new WebMarkupContainer("ebms-admin.version")
-				.add(new Label("version",Utils.readVersion("/META-INF/maven/nl.clockwork.ebms.admin/ebms-admin/pom.properties"))));
-		add(new WebMarkupContainer("ebms-core.version").add(new Label("version",Utils.readVersion("/META-INF/maven/nl.clockwork.ebms/ebms-core/pom.properties"))));
+		add(
+				new WebMarkupContainer("ebms-admin.version")
+						.add(new Label("version", Utils.readVersion("/META-INF/maven/nl.clockwork.ebms.admin/ebms-admin/pom.properties"))));
+		add(new WebMarkupContainer("ebms-core.version").add(new Label("version", Utils.readVersion("/META-INF/maven/nl.clockwork.ebms/ebms-core/pom.properties"))));
 		val properties = WicketApplication.get().getPropertySourcesPlaceholderConfigurer().getProperties();
 		val writer = new StringWriter();
-		Utils.writeProperties(properties,writer);
-		add(new MultiLineLabel("properties",writer.toString()));
+		Utils.writeProperties(properties, writer);
+		add(new MultiLineLabel("properties", writer.toString()));
 	}
 
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("about",this);
+		return getLocalizer().getString("about", this);
 	}
 
 }

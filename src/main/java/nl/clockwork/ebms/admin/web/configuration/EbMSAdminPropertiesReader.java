@@ -50,18 +50,18 @@ public class EbMSAdminPropertiesReader
 		switch (propertiesType)
 		{
 			case EBMS_ADMIN:
-				read(properties,result.getConsoleProperties());
-				read(properties,result.getCoreProperties());
-				read(properties,result.getServiceProperties());
-				read(properties,result.getJdbcProperties());
+				read(properties, result.getConsoleProperties());
+				read(properties, result.getCoreProperties());
+				read(properties, result.getServiceProperties());
+				read(properties, result.getJdbcProperties());
 				break;
 			case EBMS_ADMIN_EMBEDDED:
-				read(properties,result.getConsoleProperties());
-				read(properties,result.getCoreProperties());
-				read(properties,result.getHttpProperties());
-				read(properties,result.getSignatureProperties());
-				read(properties,result.getEncryptionProperties());
-				read(properties,result.getJdbcProperties());
+				read(properties, result.getConsoleProperties());
+				read(properties, result.getCoreProperties());
+				read(properties, result.getHttpProperties());
+				read(properties, result.getSignatureProperties());
+				read(properties, result.getEncryptionProperties());
+				read(properties, result.getJdbcProperties());
 				break;
 		}
 		return result;
@@ -95,28 +95,28 @@ public class EbMSAdminPropertiesReader
 		httpProperties.setSsl(Boolean.parseBoolean(properties.getProperty("ebms.ssl")));
 		httpProperties.setProxy(!StringUtils.isEmpty(properties.getProperty("http.proxy.host")));
 		if (httpProperties.isSsl())
-			read(properties,httpProperties.getSslProperties());
+			read(properties, httpProperties.getSslProperties());
 		if (httpProperties.isProxy())
-			read(properties,httpProperties.getProxyProperties());
+			read(properties, httpProperties.getProxyProperties());
 	}
 
 	private void read(Properties properties, SslPropertiesFormData sslProperties)
 	{
 		sslProperties.setOverrideDefaultProtocols(!StringUtils.isEmpty(properties.getProperty("https.protocols")));
-		sslProperties.setEnabledProtocols(Arrays.asList(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.protocols",""),','))));
+		sslProperties.setEnabledProtocols(Arrays.asList(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.protocols", ""), ','))));
 		sslProperties.setOverrideDefaultCipherSuites(!StringUtils.isEmpty(properties.getProperty("https.cipherSuites")));
-		sslProperties.setEnabledCipherSuites(Arrays.asList(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.cipherSuites",""),','))));
+		sslProperties.setEnabledCipherSuites(Arrays.asList(StringUtils.stripAll(StringUtils.split(properties.getProperty("https.cipherSuites", ""), ','))));
 		sslProperties.setRequireClientAuthentication(Boolean.parseBoolean(properties.getProperty("https.requireClientAuthentication")));
 		sslProperties.setVerifyHostnames(Boolean.parseBoolean(properties.getProperty("https.verifyHostnames")));
-		sslProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("keystore.type","PKCS12").toUpperCase()));
+		sslProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("keystore.type", "PKCS12").toUpperCase()));
 		sslProperties.getKeystoreProperties().setUri(properties.getProperty("keystore.path"));
 		sslProperties.getKeystoreProperties().setPassword(properties.getProperty("keystore.password"));
 		sslProperties.getKeystoreProperties().setDefaultAlias(properties.getProperty("keystore.defaultAlias"));
-		sslProperties.getClientKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("client.keystore.type","PKCS12").toUpperCase()));
+		sslProperties.getClientKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("client.keystore.type", "PKCS12").toUpperCase()));
 		sslProperties.getClientKeystoreProperties().setUri(properties.getProperty("client.keystore.path"));
 		sslProperties.getClientKeystoreProperties().setPassword(properties.getProperty("client.keystore.password"));
 		sslProperties.getClientKeystoreProperties().setDefaultAlias(properties.getProperty("client.keystore.defaultAlias"));
-		sslProperties.getTruststoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("truststore.type","PKCS12").toUpperCase()));
+		sslProperties.getTruststoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("truststore.type", "PKCS12").toUpperCase()));
 		sslProperties.getTruststoreProperties().setUri(properties.getProperty("truststore.path"));
 		sslProperties.getTruststoreProperties().setPassword(properties.getProperty("truststore.password"));
 	}
@@ -135,7 +135,7 @@ public class EbMSAdminPropertiesReader
 		signatureProperties.setSigning(!StringUtils.isEmpty(properties.getProperty("signature.keystore.path")));
 		if (signatureProperties.isSigning())
 		{
-			signatureProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("signature.keystore.type","PKCS12").toUpperCase()));
+			signatureProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("signature.keystore.type", "PKCS12").toUpperCase()));
 			signatureProperties.getKeystoreProperties().setUri(properties.getProperty("signature.keystore.path"));
 			signatureProperties.getKeystoreProperties().setPassword(properties.getProperty("signature.keystore.password"));
 		}
@@ -146,7 +146,7 @@ public class EbMSAdminPropertiesReader
 		encryptionProperties.setEncryption(!StringUtils.isEmpty(properties.getProperty("encryption.keystore.path")));
 		if (encryptionProperties.isEncryption())
 		{
-			encryptionProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("encryption.keystore.type","PKCS12").toUpperCase()));
+			encryptionProperties.getKeystoreProperties().setType(KeyStoreType.valueOf(properties.getProperty("encryption.keystore.type", "PKCS12").toUpperCase()));
 			encryptionProperties.getKeystoreProperties().setUri(properties.getProperty("encryption.keystore.path"));
 			encryptionProperties.getKeystoreProperties().setPassword(properties.getProperty("encryption.keystore.password"));
 		}
@@ -156,7 +156,7 @@ public class EbMSAdminPropertiesReader
 	{
 		jdbcProperties.setDriver(JdbcDriver.getJdbcDriver(properties.getProperty("ebms.jdbc.driverClassName")).orElse(null));
 		// jdbcProperties.setJdbcURL(properties.getProperty("ebms.jdbc.url"));
-		Utils.parseJdbcURL(properties.getProperty("ebms.jdbc.url"),jdbcProperties);
+		Utils.parseJdbcURL(properties.getProperty("ebms.jdbc.url"), jdbcProperties);
 		jdbcProperties.setUsername(properties.getProperty("ebms.jdbc.username"));
 		jdbcProperties.setPassword(properties.getProperty("ebms.jdbc.password"));
 	}

@@ -35,14 +35,16 @@ public class HomePage extends BasePage
 	{
 		super(parameters);
 		val file = WicketApplication.get().getPropertySourcesPlaceholderConfigurer().getOverridePropertiesFile();
-		add(new WebMarkupContainer("configurationFile.found").add(new Label("configurationFile",file.getFile().getAbsolutePath())).setVisible(file.exists()));
-		add(new WebMarkupContainer("configurationFile.notFound").add(new Label("configurationFile",file.getFile().getAbsolutePath()),
-				new BookmarkablePageLink<Void>("configurationPageLink",EbMSAdminPropertiesPage.class)).setVisible(!file.exists()));
+		add(new WebMarkupContainer("configurationFile.found").add(new Label("configurationFile", file.getFile().getAbsolutePath())).setVisible(file.exists()));
+		add(
+				new WebMarkupContainer("configurationFile.notFound").add(
+						new Label("configurationFile", file.getFile().getAbsolutePath()),
+						new BookmarkablePageLink<Void>("configurationPageLink", EbMSAdminPropertiesPage.class)).setVisible(!file.exists()));
 	}
 
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("home",this);
+		return getLocalizer().getString("home", this);
 	}
 }

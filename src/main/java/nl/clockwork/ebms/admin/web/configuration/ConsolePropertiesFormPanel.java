@@ -35,8 +35,8 @@ public class ConsolePropertiesFormPanel extends Panel
 
 	public ConsolePropertiesFormPanel(String id, final IModel<ConsolePropertiesFormData> model)
 	{
-		super(id,model);
-		add(new ConsolePropertiesForm("form",model));
+		super(id, model);
+		add(new ConsolePropertiesForm("form", model));
 	}
 
 	public class ConsolePropertiesForm extends Form<ConsolePropertiesFormData>
@@ -45,9 +45,11 @@ public class ConsolePropertiesFormPanel extends Panel
 
 		public ConsolePropertiesForm(String id, final IModel<ConsolePropertiesFormData> model)
 		{
-			super(id,new CompoundPropertyModel<>(model));
-			add(new BootstrapFormComponentFeedbackBorder("maxItemsPerPageFeedback",
-					new TextField<Integer>("maxItemsPerPage").setLabel(new ResourceModel("lbl.maxItemsPerPage")).setRequired(true)));
+			super(id, new CompoundPropertyModel<>(model));
+			add(
+					new BootstrapFormComponentFeedbackBorder(
+							"maxItemsPerPageFeedback",
+							new TextField<Integer>("maxItemsPerPage").setLabel(new ResourceModel("lbl.maxItemsPerPage")).setRequired(true)));
 		}
 	}
 

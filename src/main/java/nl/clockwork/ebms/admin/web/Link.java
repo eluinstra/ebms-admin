@@ -38,7 +38,7 @@ public class Link<T> extends org.apache.wicket.markup.html.link.Link<T>
 	@Builder
 	public Link(String id, IModel<T> model, @NonNull Action onClick)
 	{
-		super(id,model);
+		super(id, model);
 		this.onClick = onClick;
 	}
 

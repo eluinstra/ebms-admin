@@ -26,7 +26,7 @@ import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 
-public class CPAPage extends BasePage implements IGenericComponent<CPA,CPAPage>
+public class CPAPage extends BasePage implements IGenericComponent<CPA, CPAPage>
 {
 	private static final long serialVersionUID = 1L;
 
@@ -35,12 +35,12 @@ public class CPAPage extends BasePage implements IGenericComponent<CPA,CPAPage>
 		setModel(new CompoundPropertyModel<>(model));
 		add(new Label("cpaId"));
 		add(new TextArea<String>("cpa").setEnabled(false));
-		add(new PageLink("back",responsePage));
+		add(new PageLink("back", responsePage));
 	}
 
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("cpa",this);
+		return getLocalizer().getString("cpa", this);
 	}
 }

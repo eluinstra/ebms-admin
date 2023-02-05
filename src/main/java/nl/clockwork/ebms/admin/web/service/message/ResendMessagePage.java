@@ -61,7 +61,7 @@ public class ResendMessagePage extends BasePage
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("messageStatus",this);
+		return getLocalizer().getString("messageStatus", this);
 	}
 
 	public class MessageStatusForm extends Form<ResendMessageFormData>
@@ -70,12 +70,12 @@ public class ResendMessagePage extends BasePage
 
 		public MessageStatusForm(String id)
 		{
-			super(id,new CompoundPropertyModel<>(new ResendMessageFormData()));
-			add(new BootstrapFormComponentFeedbackBorder("messageIdFeedback",createMessageIdField("messageId")));
+			super(id, new CompoundPropertyModel<>(new ResendMessageFormData()));
+			add(new BootstrapFormComponentFeedbackBorder("messageIdFeedback", createMessageIdField("messageId")));
 			val resend = createResendButton("resend");
 			setDefaultButton(resend);
 			add(resend);
-			add(new ResetButton("reset",new ResourceModel("cmd.reset"),ResendMessagePage.class));
+			add(new ResetButton("reset", new ResourceModel("cmd.reset"), ResendMessagePage.class));
 		}
 
 		private TextField<String> createMessageIdField(String id)
@@ -94,15 +94,15 @@ public class ResendMessagePage extends BasePage
 				{
 					val o = getModelObject();
 					val messageId = ebMSMessageService.resendMessage(o.getMessageId());
-					info(new StringResourceModel("resendMessage.ok",Model.of(messageId)).getString());
+					info(new StringResourceModel("resendMessage.ok", Model.of(messageId)).getString());
 				}
 				catch (Exception e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			return new Button(id,new ResourceModel("cmd.check"),onSubmit);
+			return new Button(id, new ResourceModel("cmd.check"), onSubmit);
 		}
 	}
 

@@ -33,13 +33,13 @@ public class BootstrapFeedbackPanel extends FeedbackPanel
 	@Getter
 	private enum ErrorLevel
 	{
-		UNDEFINED(0,"text-primary"),
-		DEBUG(100,"text-muted"),
-		INFO(200,"text-info"),
-		SUCCESS(250,"text-success"),
-		WARNING(300,"text-warning"),
-		ERROR(400,"text-danger"),
-		FATAL(500,"text-danger");
+		UNDEFINED(0, "text-primary"),
+		DEBUG(100, "text-muted"),
+		INFO(200, "text-info"),
+		SUCCESS(250, "text-success"),
+		WARNING(300, "text-warning"),
+		ERROR(400, "text-danger"),
+		FATAL(500, "text-danger");
 
 		int errorCode;
 		String cssClass;
@@ -59,7 +59,7 @@ public class BootstrapFeedbackPanel extends FeedbackPanel
 
 	public BootstrapFeedbackPanel(final String id, final IFeedbackMessageFilter filter)
 	{
-		super(id,filter);
+		super(id, filter);
 	}
 
 	@Override

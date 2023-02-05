@@ -69,29 +69,29 @@ public class MessageFilterPanel extends Panel
 	@SpringBean(name = "ebMSMessageService")
 	EbMSMessageService ebMSMessageService;
 	@NonNull
-	final Function<IModel<MessageFilterFormData>,BasePage> getPage;
+	final Function<IModel<MessageFilterFormData>, BasePage> getPage;
 	BootstrapDateTimePicker from;
 	BootstrapDateTimePicker to;
 
 	@Builder
-	public MessageFilterPanel(String id, IModel<MessageFilterFormData> model, @NonNull Function<IModel<MessageFilterFormData>,BasePage> getPage)
+	public MessageFilterPanel(String id, IModel<MessageFilterFormData> model, @NonNull Function<IModel<MessageFilterFormData>, BasePage> getPage)
 	{
-		super(id,model);
+		super(id, model);
 		this.getPage = getPage;
 		add(new BootstrapFeedbackPanel("feedback").setOutputMarkupId(true));
-		add(new MessageFilterForm("form",model));
+		add(new MessageFilterForm("form", model));
 		add(createClearLink("clear"));
 	}
 
 	private Link<Void> createClearLink(String id)
 	{
-		return new Link<Void>(id,() -> setResponsePage(getPage().getClass()));
+		return new Link<Void>(id, () -> setResponsePage(getPage().getClass()));
 	}
 
 	@Override
 	public void renderHead(IHeaderResponse response)
 	{
-		response.render(OnDomReadyHeaderItem.forScript(BootstrapDateTimePicker.getLinkBootstrapDateTimePickersJavaScript(from,to)));
+		response.render(OnDomReadyHeaderItem.forScript(BootstrapDateTimePicker.getLinkBootstrapDateTimePickersJavaScript(from, to)));
 		super.renderHead(response);
 	}
 
@@ -109,7 +109,7 @@ public class MessageFilterPanel extends Panel
 		@Builder
 		public ListMultipleChoice(String id, IModel<? extends List<? extends T>> choices, boolean localizeDisplayValues)
 		{
-			super(id,choices);
+			super(id, choices);
 			this.localizeDisplayValues = localizeDisplayValues;
 		}
 
@@ -126,7 +126,7 @@ public class MessageFilterPanel extends Panel
 
 		public MessageFilterForm(String id, IModel<MessageFilterFormData> model)
 		{
-			super(id,new CompoundPropertyModel<>(model));
+			super(id, new CompoundPropertyModel<>(model));
 			add(createCPAIdChoice("cpaId"));
 			add(createFromPartyIdChoice("fromParty.partyId"));
 			add(createFromRoleChoice("fromParty.role"));
@@ -138,10 +138,10 @@ public class MessageFilterPanel extends Panel
 			add(new TextField<String>("messageId").setLabel(new ResourceModel("lbl.messageId")));
 			add(new TextField<String>("refToMessageId").setLabel(new ResourceModel("lbl.refToMessageId")));
 			add(createStatusesChoice("statuses"));
-			from = new BootstrapDateTimePicker("from","dd-MM-yyyy",BootstrapDateTimePicker.Type.DATE);
+			from = new BootstrapDateTimePicker("from", "dd-MM-yyyy", BootstrapDateTimePicker.Type.DATE);
 			from.setLabel(new ResourceModel("lbl.from"));
 			add(from);
-			to = new BootstrapDateTimePicker("to","dd-MM-yyyy",BootstrapDateTimePicker.Type.DATE);
+			to = new BootstrapDateTimePicker("to", "dd-MM-yyyy", BootstrapDateTimePicker.Type.DATE);
 			to.setLabel(new ResourceModel("lbl.to"));
 			add(to);
 			add(createSearchButton("search"));
@@ -150,7 +150,7 @@ public class MessageFilterPanel extends Panel
 
 		private DropDownChoice<String> createCPAIdChoice(String id)
 		{
-			val result = new DropDownChoice<String>(id,Model.ofList(Utils.toList(cpaService.getCPAIds())));
+			val result = new DropDownChoice<String>(id, Model.ofList(Utils.toList(cpaService.getCPAIds())));
 			result.setLabel(new ResourceModel("lbl.cpaId"));
 			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
@@ -169,11 +169,11 @@ public class MessageFilterPanel extends Panel
 				}
 				catch (JAXBException e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
+			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
@@ -181,7 +181,7 @@ public class MessageFilterPanel extends Panel
 		{
 			val result = DropDownChoice.<String>builder()
 					.id(id)
-					.choices(new PropertyModel<List<String>>(getModel(),"fromPartyIds"))
+					.choices(new PropertyModel<List<String>>(getModel(), "fromPartyIds"))
 					.isEnabled(() -> getModelObject().getToParty() == null)
 					.build();
 			result.setLabel(new ResourceModel("lbl.fromPartyId"));
@@ -192,7 +192,7 @@ public class MessageFilterPanel extends Panel
 				{
 					val o = getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
-					o.resetFromRoles(CPAUtils.getRoleNames(cpa,o.getFromParty().getPartyId()));
+					o.resetFromRoles(CPAUtils.getRoleNames(cpa, o.getFromParty().getPartyId()));
 					o.resetServices();
 					o.resetActions();
 					t.add(getFeedbackComponent());
@@ -200,11 +200,11 @@ public class MessageFilterPanel extends Panel
 				}
 				catch (JAXBException e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
+			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
@@ -212,7 +212,7 @@ public class MessageFilterPanel extends Panel
 		{
 			val result = DropDownChoice.<String>builder()
 					.id(id)
-					.choices(new PropertyModel<List<String>>(getModel(),"fromRoles"))
+					.choices(new PropertyModel<List<String>>(getModel(), "fromRoles"))
 					.isEnabled(() -> getModelObject().getToParty() == null)
 					.build();
 			result.setLabel(new ResourceModel("lbl.fromRole"));
@@ -223,18 +223,18 @@ public class MessageFilterPanel extends Panel
 				{
 					val o = getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
-					o.resetServices(CPAUtils.getServiceNames(cpa,o.getFromParty().getRole()));
+					o.resetServices(CPAUtils.getServiceNames(cpa, o.getFromParty().getRole()));
 					o.resetActions();
 					t.add(getFeedbackComponent());
 					t.add(getForm());
 				}
 				catch (JAXBException e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
+			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
@@ -242,7 +242,7 @@ public class MessageFilterPanel extends Panel
 		{
 			val result = DropDownChoice.<String>builder()
 					.id(id)
-					.choices(new PropertyModel<List<String>>(getModel(),"toPartyIds"))
+					.choices(new PropertyModel<List<String>>(getModel(), "toPartyIds"))
 					.isEnabled(() -> getModelObject().getFromParty() == null)
 					.build();
 			result.setLabel(new ResourceModel("lbl.toPartyId"));
@@ -253,7 +253,7 @@ public class MessageFilterPanel extends Panel
 				{
 					val o = getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
-					o.resetToRoles(CPAUtils.getRoleNames(cpa,o.getToParty().getPartyId()));
+					o.resetToRoles(CPAUtils.getRoleNames(cpa, o.getToParty().getPartyId()));
 					o.resetServices();
 					o.resetActions();
 					t.add(getFeedbackComponent());
@@ -261,11 +261,11 @@ public class MessageFilterPanel extends Panel
 				}
 				catch (JAXBException e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
+			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
@@ -273,7 +273,7 @@ public class MessageFilterPanel extends Panel
 		{
 			val result = DropDownChoice.<String>builder()
 					.id(id)
-					.choices(new PropertyModel<List<String>>(getModel(),"toRoles"))
+					.choices(new PropertyModel<List<String>>(getModel(), "toRoles"))
 					.isEnabled(() -> getModelObject().getFromParty() == null)
 					.build();
 			result.setLabel(new ResourceModel("lbl.toRole"));
@@ -284,24 +284,24 @@ public class MessageFilterPanel extends Panel
 				{
 					val o = getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
-					o.resetServices(CPAUtils.getServiceNames(cpa,o.getToParty().getRole()));
+					o.resetServices(CPAUtils.getServiceNames(cpa, o.getToParty().getRole()));
 					o.resetActions();
 					t.add(getFeedbackComponent());
 					t.add(getForm());
 				}
 				catch (JAXBException e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
+			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createServiceChoice(String id)
 		{
-			val result = new DropDownChoice<>(id,new PropertyModel<List<String>>(getModel(),"services"));
+			val result = new DropDownChoice<>(id, new PropertyModel<List<String>>(getModel(), "services"));
 			result.setLabel(new ResourceModel("lbl.service"));
 			result.setOutputMarkupId(true);
 			Consumer<AjaxRequestTarget> onUpdate = t ->
@@ -310,24 +310,26 @@ public class MessageFilterPanel extends Panel
 				{
 					val o = getModelObject();
 					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
-					o.resetActions(o.getFromParty() == null ? CPAUtils.getToActionNames(cpa,o.getToParty().getRole(),o.getService())
-							: CPAUtils.getFromActionNames(cpa,o.getFromParty().getRole(),o.getService()));
+					o.resetActions(
+							o.getFromParty() == null
+									? CPAUtils.getToActionNames(cpa, o.getToParty().getRole(), o.getService())
+									: CPAUtils.getFromActionNames(cpa, o.getFromParty().getRole(), o.getService()));
 					t.add(getFeedbackComponent());
 					t.add(getForm());
 				}
 				catch (JAXBException e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change",onUpdate));
+			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createActionChoice(String id)
 		{
-			val result = new DropDownChoice<String>(id,new PropertyModel<List<String>>(getModel(),"actions"));
+			val result = new DropDownChoice<String>(id, new PropertyModel<List<String>>(getModel(), "actions"));
 			result.setLabel(new ResourceModel("lbl.action"));
 			result.setOutputMarkupId(true);
 			return result;

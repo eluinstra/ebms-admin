@@ -48,8 +48,8 @@ public class HttpPropertiesFormPanel extends Panel
 
 	public HttpPropertiesFormPanel(String id, final IModel<HttpPropertiesFormData> model, boolean enableSslOverridePropeties)
 	{
-		super(id,model);
-		add(new HttpPropertiesForm("form",model,enableSslOverridePropeties));
+		super(id, model);
+		add(new HttpPropertiesForm("form", model, enableSslOverridePropeties));
 	}
 
 	public class HttpPropertiesForm extends Form<HttpPropertiesFormData>
@@ -58,15 +58,15 @@ public class HttpPropertiesFormPanel extends Panel
 
 		public HttpPropertiesForm(String id, final IModel<HttpPropertiesFormData> model, boolean enableSslOverridePropeties)
 		{
-			super(id,new CompoundPropertyModel<>(model));
-			add(new BootstrapFormComponentFeedbackBorder("hostFeedback",createHostField("host")).add(new Label("protocol")));
-			add(new BootstrapFormComponentFeedbackBorder("portFeedback",createPortField("port")));
-			add(new BootstrapFormComponentFeedbackBorder("pathFeedback",createPathField("path")));
+			super(id, new CompoundPropertyModel<>(model));
+			add(new BootstrapFormComponentFeedbackBorder("hostFeedback", createHostField("host")).add(new Label("protocol")));
+			add(new BootstrapFormComponentFeedbackBorder("portFeedback", createPortField("port")));
+			add(new BootstrapFormComponentFeedbackBorder("pathFeedback", createPathField("path")));
 			add(new TextField<String>("url").setLabel(new ResourceModel("lbl.url")).setOutputMarkupId(true).setEnabled(false));
 			add(new CheckBox("chunkedStreamingMode").setLabel(new ResourceModel("lbl.chunkedStreamingMode")));
 			add(new CheckBox("base64Writer").setLabel(new ResourceModel("lbl.base64Writer")));
 			add(CreateSslCheckBox("ssl"));
-			add(createSslPropertiesPanel("sslProperties",enableSslOverridePropeties));
+			add(createSslPropertiesPanel("sslProperties", enableSslOverridePropeties));
 			add(createProxyCheckBox("proxy"));
 			add(createProxyPropertiesPanel("proxyProperties"));
 		}
@@ -109,7 +109,7 @@ public class HttpPropertiesFormPanel extends Panel
 		{
 			val result = SslPropertiesFormPanel.builder()
 					.id(id)
-					.model(new PropertyModel<>(getModel(),"sslProperties"))
+					.model(new PropertyModel<>(getModel(), "sslProperties"))
 					.enableSslOverridePropeties(enableSslOverridePropeties)
 					.isVisible(() -> getModelObject().isSsl())
 					.build();
@@ -128,7 +128,7 @@ public class HttpPropertiesFormPanel extends Panel
 		{
 			val result = ProxyPropertiesFormPanel.builder()
 					.id(id)
-					.model(new PropertyModel<>(getModel(),"proxyProperties"))
+					.model(new PropertyModel<>(getModel(), "proxyProperties"))
 					.isVisible(() -> getModelObject().isProxy())
 					.build();
 			return result;

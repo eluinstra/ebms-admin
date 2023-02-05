@@ -60,7 +60,7 @@ public class MessageStatusPage extends BasePage
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("messageStatus",this);
+		return getLocalizer().getString("messageStatus", this);
 	}
 
 	public class MessageStatusForm extends Form<MessageStatusFormData>
@@ -69,8 +69,8 @@ public class MessageStatusPage extends BasePage
 
 		public MessageStatusForm(String id)
 		{
-			super(id,new CompoundPropertyModel<>(new MessageStatusFormData()));
-			add(new BootstrapFormComponentFeedbackBorder("messageIdFeedback",createMessageIdField("messageId")));
+			super(id, new CompoundPropertyModel<>(new MessageStatusFormData()));
+			add(new BootstrapFormComponentFeedbackBorder("messageIdFeedback", createMessageIdField("messageId")));
 			val check = createCheckButton("check");
 			setDefaultButton(check);
 			add(check);
@@ -92,15 +92,15 @@ public class MessageStatusPage extends BasePage
 				{
 					val o = getModelObject();
 					val messageStatus = ebMSMessageService.getMessageStatus(o.getMessageId());
-					info(new StringResourceModel("getMessageStatus.ok",Model.of(messageStatus.getStatus())).getString());
+					info(new StringResourceModel("getMessageStatus.ok", Model.of(messageStatus.getStatus())).getString());
 				}
 				catch (Exception e)
 				{
-					log.error("",e);
+					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			return new Button(id,new ResourceModel("cmd.check"),onSubmit);
+			return new Button(id, new ResourceModel("cmd.check"), onSubmit);
 		}
 	}
 

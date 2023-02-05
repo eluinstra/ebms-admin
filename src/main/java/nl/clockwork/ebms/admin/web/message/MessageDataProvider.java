@@ -36,13 +36,13 @@ public class MessageDataProvider implements IDataProvider<EbMSMessage>
 	@Override
 	public Iterator<? extends EbMSMessage> iterator(long first, long count)
 	{
-		return ebMSDAO.selectMessages(filter,first,count).iterator();
+		return ebMSDAO.selectMessages(filter, first, count).iterator();
 	}
 
 	@Override
 	public IModel<EbMSMessage> model(EbMSMessage message)
 	{
-		return MessageDataModel.of(ebMSDAO,message);
+		return MessageDataModel.of(ebMSDAO, message);
 	}
 
 	@Override

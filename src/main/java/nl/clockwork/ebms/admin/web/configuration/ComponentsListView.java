@@ -27,7 +27,7 @@ public class ComponentsListView extends ListView<BootstrapPanelBorder>
 
 	public ComponentsListView(String id, List<BootstrapPanelBorder> list)
 	{
-		super(id,list);
+		super(id, list);
 		setReuseItems(true);
 	}
 

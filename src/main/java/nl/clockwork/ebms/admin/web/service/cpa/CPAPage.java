@@ -28,13 +28,13 @@ public class CPAPage extends BasePage
 
 	public CPAPage(final IModel<String> cpa, final WebPage responsePage)
 	{
-		add(new TextArea<String>("cpa",cpa).setEnabled(false));
-		add(new PageLink("back",responsePage));
+		add(new TextArea<String>("cpa", cpa).setEnabled(false));
+		add(new PageLink("back", responsePage));
 	}
 
 	@Override
 	public String getPageTitle()
 	{
-		return getLocalizer().getString("cpa",this);
+		return getLocalizer().getString("cpa", this);
 	}
 }
