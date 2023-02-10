@@ -16,7 +16,7 @@
 package nl.clockwork.ebms.admin.web;
 
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.wicket.request.http.WebResponse;
 
 public class PageNotFoundPage extends BasePage

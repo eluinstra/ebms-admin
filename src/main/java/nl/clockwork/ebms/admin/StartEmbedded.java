@@ -24,7 +24,7 @@ import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.util.EnumSet;
 import java.util.Properties;
-import javax.servlet.DispatcherType;
+import jakarta.servlet.DispatcherType;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
