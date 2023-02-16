@@ -4,6 +4,23 @@ sort: 7
 
 # Release Notes
 
+### [ebms-core-2.19.0.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.19.0/ebms-core-2.19.0.jar)
+
+- upgrade to Java 11
+- updated dependecies
+- removed storing duplicate messages
+- cleanup database (complying to SQL 2008 specifications)
+- removed MySQL support
+- removed Bitronix
+- removed Apache HttpClient
+- replaced URLConnection by Java 11 HttpClient
+- updated REST API
+
+### [ebms-core-2.18.7.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.18.7/ebms-core-2.18.7.jar)
+
+- updated dependencies
+- added deleteCache methods for CPA, URL and Certificate services
+
 ### [ebms-core-2.18.6.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.18.6/ebms-core-2.18.6.jar)
 
 - updated dependencies for spring, postgresql, jackson

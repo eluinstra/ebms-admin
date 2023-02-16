@@ -5,8 +5,13 @@ sort: 10
 # Release Notes
 
 ```note
-{{ site.ebms.core.version }} and ebms-admin-2.18.7 and ebms-admin-2.17.11 are the latest versions.
+{{ site.ebms.core.version }}, ebms-admin-2.18.7 and ebms-admin-2.17.11 are the latest versions.
 ```
+
+### [ebms-admin-2.19.0.1.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.19.0.1/ebms-admin-2.19.0.1.jar)
+
+- fixed logging
+- fixed properties page
 
 ### [ebms-admin-2.19.0.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.19.0/ebms-admin-2.19.0.jar)
 
