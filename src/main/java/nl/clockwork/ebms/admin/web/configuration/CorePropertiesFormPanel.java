@@ -65,16 +65,6 @@ public class CorePropertiesFormPanel extends Panel
 							new CheckBox("deleteMessageContentOnProcessed").setLabel(new ResourceModel("lbl.deleteMessageContentOnProcessed"))));
 			add(
 					createContainer(
-							"storeDuplicateMessageContainer",
-							enableConsoleProperties,
-							new CheckBox("storeDuplicateMessage").setLabel(new ResourceModel("lbl.storeDuplicateMessage"))));
-			add(
-					createContainer(
-							"storeDuplicateMessageContentContainer",
-							enableConsoleProperties,
-							new CheckBox("storeDuplicateMessageContent").setLabel(new ResourceModel("lbl.storeDuplicateMessageContent"))));
-			add(
-					createContainer(
 							"eventListenerContainer",
 							enableConsoleProperties,
 							new BootstrapFormComponentFeedbackBorder("eventListenerFeedback", createEventListenerChoice("eventListener"))));

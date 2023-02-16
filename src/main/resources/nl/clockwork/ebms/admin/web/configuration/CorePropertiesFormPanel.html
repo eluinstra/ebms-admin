@@ -3,14 +3,6 @@
 <body>
 <wicket:panel>
 	<form wicket:id="form">
-		<div wicket:id="httpClientContainer">
-			<div class="form-group" wicket:id="httpClientFeedback">
-				<label wicket:for="httpClient" class="col-lg-2 control-label"><wicket:label/></label>
-				<div class="col-lg-10">
-					<select class="form-control" wicket:id="httpClient"/>
-				</div>
-			</div>
-		</div>
 		<div wicket:id="eventListenerContainer">
 			<div class="form-group" wicket:id="eventListenerFeedback">
 				<label wicket:for="eventListener" class="col-lg-2 control-label"><wicket:label/></label>
@@ -58,22 +50,6 @@
 				<label wicket:for="deleteMessageContentOnProcessed" class="col-lg-2 control-label"><wicket:label/></label>
 				<div class="col-lg-10">
 					<input type="checkbox" wicket:id="deleteMessageContentOnProcessed"/>
-				</div>
-			</div>
-		</div>
-		<div wicket:id="storeDuplicateMessageContainer">
-			<div class="form-group">
-				<label wicket:for="storeDuplicateMessage" class="col-lg-2 control-label"><wicket:label/></label>
-				<div class="col-lg-10">
-					<input type="checkbox" wicket:id="storeDuplicateMessage"/>
-				</div>
-			</div>
-		</div>
-		<div wicket:id="storeDuplicateMessageContentContainer">
-			<div class="form-group">
-				<label wicket:for="storeDuplicateMessageContent" class="col-lg-2 control-label"><wicket:label/></label>
-				<div class="col-lg-10">
-					<input type="checkbox" wicket:id="storeDuplicateMessageContent"/>
 				</div>
 			</div>
 		</div>
