@@ -11,7 +11,6 @@ The EbMS Adapter supports the following databases
 - [HSQLDB](#hsqldb)
 - [MariaDB](#mariadb)
 - [MS SQL Server](#ms-sql-server)
-- [MySQL](#mysql)
 - [Oracle](#oracle)
 - [PostgreSQL](#postgresql)
 
@@ -127,28 +126,6 @@ When [`deliveryTaskHandler.type`]({{ site.baseurl }}/ebms-core/properties.html#d
 
 ```properties
 deliveryTaskHandler.quartz.jdbc.selectWithLockSQL=SELECT * FROM {0}LOCKS UPDLOCK WHERE LOCK_NAME = ?
-```
-
-### MySQL
-
-```properties
-# JDBC driver
-ebms.jdbc.driverClassName=com.mysql.cj.jdbc.Driver
-# or XA driver
-ebms.jdbc.driverClassName=com.mysql.cj.jdbc.MysqlXADataSource
-ebms.jdbc.url=jdbc:mysql://<host>:<port>/<dbname>
-```
-
-Tested with MySQL 8.0.21
-
-Download drivers [here](https://dev.mysql.com/downloads/connector/j/)
-
-#### XA Driver
-
-When using the XA driver add line the following line to `my.ini` or `my.cnf`
-
-```properties
-default-time-zone='+02:00'
 ```
 
 ### Oracle

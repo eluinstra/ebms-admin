@@ -65,39 +65,25 @@ mvn clean package
 
 ### Testing
 
-The ebms-core project contains a couple of tests for signing, encryption and the `DAOFactory`. You can test the EbMS functionality through a using ebms-admin as follows
-
-- download and install Java 8
-- download and install SoapUI 5.x.x
-- download [ebms-admin-{{ site.ebms.core.version }}.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-{{ site.ebms.core.version }}/ebms-admin-{{ site.ebms.core.version }}.jar)
-- download the override properties file [ebms-admin.embedded.properties](https://github.com/eluinstra/ebms-core/blob/ebms-core-2.17.x/resources/test/ebms-admin.embedded.properties)
-- download the SoapUI project [EbMS-soapui-project.xml](https://github.com/eluinstra/ebms-core/blob/ebms-core-2.17.x/resources/test/EbMS-soapui-project.xml)
-- create directory `test` and copy `ebms-admin-{{ site.ebms.core.version }}.jar` and `ebms-admin.embedded.properties` to `test`
-- move to directory `test`
-- start ebms-admin
 ```sh
-java -Djavax.net.ssl.trustStore= -Debms.jdbc.update=true -cp ebms-admin-2.17.3.jar nl.clockwork.ebms.admin.StartEmbedded -hsqldb -soap
+mvn clean verify
 ```
-- open SoapUI and load `EbMS-soapui-project.xml`
-- run the testsuite
 
 ### Generate reports
 
 ```sh
 mvn site
 # or to generate individual reports:
-mvn surefire:test
-mvn jxr:jxr
-mvn jxr:test-jxr
-mvn checkstyle:checkstyle
-mvn com.github.spotbugs:spotbugs-maven-plugin:gui
-mvn pmd:pmd
-mvn jdepend:generate
+mvn jacoco:report
 mvn cobertura:cobertura
 mvn org.owasp:dependency-check-maven:check
+mvn checkstyle:checkstyle
+mvn jdepend:generate
+mvn jxr:jxr
+mvn jxr:test-jxr
+mvn pmd:pmd
+mvn surefire:test
+mvn com.github.spotbugs:spotbugs-maven-plugin:check
+mvn com.github.spotbugs:spotbugs-maven-plugin:spotbugs
+mvn taglist:taglist
 ```
-
-## Eclipse
-
-- install https://marketplace.eclipse.org/content/m2e-apt
-- install lombok (since [v2.17.0]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2170jar))

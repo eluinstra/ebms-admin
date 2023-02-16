@@ -152,18 +152,9 @@ http.proxy.password=
 
 ### HTTPClient
 
-Setting `http.client` to `APACHE` is not tested lately, so leave it to `DEFAULT`.  
-
-```note
-The `http.base64Writer` property is disabled for now because of problems sending Base64 content.
-```
-
 ```properties
-# EbMSHttpClientType: DEFAULT | APACHE
-http.client=DEFAULT
 http.connectTimeout=30000
-http.chunkedStreamingMode=true
-http.base64Writer=false
+http.readTimeout=30000
 ```
 
 ### HTTP Errors

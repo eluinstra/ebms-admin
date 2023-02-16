@@ -5,8 +5,28 @@ sort: 10
 # Release Notes
 
 ```note
-ebms-admin-2.18.6, ebms-admin-2.17.11 and ebms-admin-2.16.8.2 are the latest versions.
+{{ site.ebms.core.version }} and ebms-admin-2.18.7 and ebms-admin-2.17.11 are the latest versions.
 ```
+
+### [ebms-admin-2.19.0.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.19.0/ebms-admin-2.19.0.jar)
+
+- upgrade to Java 11
+- updated dependecies
+- removed storing duplicate messages
+- cleanup database (complying to SQL 2008 specifications)
+- removed MySQL support
+- removed Bitronix
+- removed Apache HttpClient
+- replaced URLConnection by Java 11 HttpClient
+- updated REST API
+
+NB: this release contains some major database changes (especially for MSSQL and MariaDB)
+
+### [ebms-admin-2.18.7.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.7/ebms-admin-2.18.7.jar)
+
+- updated dependencies
+- added deleteCache methods for CPA, URL and Certificate services
+- fixed issue with URLEncoded PEM when using a custom clientCertificateHeader
 
 ### [ebms-admin-2.18.6.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.6/ebms-admin-2.18.6.jar)
 
