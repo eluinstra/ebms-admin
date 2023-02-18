@@ -54,7 +54,6 @@ import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
 import org.apache.cxf.jaxrs.openapi.OpenApiFeature;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.apache.cxf.rs.security.cors.CrossOriginResourceSharingFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -69,16 +68,6 @@ public class EmbeddedWebConfig
 	EventListenerType eventListenerType;
 	@Value("#{'${ebms.cors.allowOrigins}'.split(',')}")
 	List<String> allowOrigins;
-	@Autowired
-	CPAService cpaService;
-	@Autowired
-	URLMappingService urlMappingService;
-	@Autowired
-	CertificateMappingService certificateMappingService;
-	@Autowired
-	EbMSMessageService ebMSMessageService;
-	@Autowired
-	EbMSMessageServiceMTOM ebMSMessageServiceMTOM;
 
 	@Bean
 	public WicketApplication wicketApplication()
@@ -87,19 +76,19 @@ public class EmbeddedWebConfig
 	}
 
 	@Bean
-	public Endpoint cpaServiceEndpoint()
+	public Endpoint cpaServiceEndpoint(CPAService cpaService)
 	{
 		return publishEndpoint(cpaService, "/cpa", "http://www.ordina.nl/cpa/2.18", "CPAService", "CPAPort");
 	}
 
 	@Bean
-	public Endpoint urlMappingServiceEndpoint()
+	public Endpoint urlMappingServiceEndpoint(URLMappingService urlMappingService)
 	{
 		return publishEndpoint(urlMappingService, "/urlMapping", "http://www.ordina.nl/cpa/urlMapping/2.18", "URLMappingService", "URLMappingPort");
 	}
 
 	@Bean
-	public Endpoint certificateMappingServiceEndpoint()
+	public Endpoint certificateMappingServiceEndpoint(CertificateMappingService certificateMappingService)
 	{
 		return publishEndpoint(
 				certificateMappingService,
@@ -110,13 +99,13 @@ public class EmbeddedWebConfig
 	}
 
 	@Bean
-	public Endpoint ebMSMessageServiceEndpoint()
+	public Endpoint ebMSMessageServiceEndpoint(EbMSMessageService ebMSMessageService)
 	{
 		return publishEndpoint(ebMSMessageService, "/ebms", "http://www.ordina.nl/ebms/2.18", "EbMSMessageService", "EbMSMessagePort");
 	}
 
 	@Bean
-	public Endpoint ebMSMessageServiceMTOMEndpoint()
+	public Endpoint ebMSMessageServiceMTOMEndpoint(EbMSMessageServiceMTOM ebMSMessageServiceMTOM)
 	{
 		val result = new EndpointImpl(cxf(), ebMSMessageServiceMTOM);
 		result.setAddress("/ebmsMTOM");
@@ -159,32 +148,32 @@ public class EmbeddedWebConfig
 	}
 
 	@Bean
-	public Server createCPARestServer()
+	public Server createCPARestServer(CPARestService cpaRestService)
 	{
-		return createRestServer(CPARestService.class, cpaService, "/cpas");
+		return createRestServer(CPARestService.class, cpaRestService, "/cpas");
 	}
 
 	@Bean
-	public Server createURLMappingCPARestServer()
+	public Server createURLMappingCPARestServer(URLMappingRestService urlMappingRestService)
 	{
-		return createRestServer(URLMappingRestService.class, urlMappingService, "/urlMappings");
+		return createRestServer(URLMappingRestService.class, urlMappingRestService, "/urlMappings");
 	}
 
 	@Bean
-	public Server createCertificateMappingRestServer()
+	public Server createCertificateMappingRestServer(CertificateMappingRestService certificateMappingRestService)
 	{
-		return createRestServer(CertificateMappingRestService.class, certificateMappingService, "/certificateMappings");
+		return createRestServer(CertificateMappingRestService.class, certificateMappingRestService, "/certificateMappings");
 	}
 
 	@Bean
-	public Server createEbMSRestServer()
+	public Server createEbMSRestServer(EbMSMessageRestService ebMSMessageRestService)
 	{
-		return createRestServer(EbMSMessageRestService.class, ebMSMessageService, "/ebms");
+		return createRestServer(EbMSMessageRestService.class, ebMSMessageRestService, "/ebms");
 	}
 
 	public Server createRestServer(Class<?> resourceClass, Object resourceObject, String path)
 	{
-		val sf = new JAXRSServerFactoryBean();
+		var sf = new JAXRSServerFactoryBean();
 		sf.setBus(cxf());
 		sf.setAddress("/rest/v19" + path);
 		sf.setProviders(Arrays.asList(createCrossOriginResourceSharingFilter(), createJacksonJsonProvider()));
