@@ -54,11 +54,12 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 @Configuration
-@Import({AdminDAOConfig.class, CertificateMappingServiceConfig.class, CacheConfig.class, CommonConfig.class, CPAManagerConfig.class, CPAServiceConfig.class,
-		DAOConfig.class, DataSourceConfig.class, DeliveryManagerConfig.class, DeliveryTaskManagerConfig.class, DeliveryTaskHandlerConfig.class,
-		EbMSClientConfig.class, EbMSMessageServiceConfig.class, EbMSProcessorConfig.class, EbMSServerConfig.class, EmbeddedWebConfig.class, EncryptionConfig.class,
-		JMSConfig.class, KafkaConfig.class, KeyStoreConfig.class, nl.clockwork.ebms.security.azure.KeyStoreConfig.class, MessageEventListenerConfig.class,
-		QueryDSLConfig.class, SchedulerConfig.class, SigningConfig.class, TransactionManagerConfig.class, URLMappingServiceConfig.class, ValidationConfig.class})
+@Import({AdminDAOConfig.class, CertificateMappingServiceConfig.class, CacheConfig.class, nl.clockwork.ebms.cache.ehcache.CacheConfig.class,
+		nl.clockwork.ebms.cache.ignite.CacheConfig.class, CommonConfig.class, CPAManagerConfig.class, CPAServiceConfig.class, DAOConfig.class,
+		DataSourceConfig.class, DeliveryManagerConfig.class, DeliveryTaskManagerConfig.class, DeliveryTaskHandlerConfig.class, EbMSClientConfig.class,
+		EbMSMessageServiceConfig.class, EbMSProcessorConfig.class, EbMSServerConfig.class, EmbeddedWebConfig.class, EncryptionConfig.class, JMSConfig.class,
+		KafkaConfig.class, KeyStoreConfig.class, nl.clockwork.ebms.security.azure.KeyStoreConfig.class, MessageEventListenerConfig.class, QueryDSLConfig.class,
+		SchedulerConfig.class, SigningConfig.class, TransactionManagerConfig.class, URLMappingServiceConfig.class, ValidationConfig.class})
 @PropertySource(
 		value = {"classpath:nl/clockwork/ebms/default.properties", "classpath:nl/clockwork/ebms/admin/default.properties",
 				"file:${ebms.configDir}ebms-admin.embedded.advanced.properties", "file:${ebms.configDir}ebms-admin.embedded.properties"},
