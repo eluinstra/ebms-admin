@@ -20,7 +20,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>nl.clockwork.ebms.admin</groupId>
   <artifactId>ebms-admin</artifactId>
-  <version>2.19.1-SNAPSHOT</version>
+  <version>2.19.1</version>
   <packaging>jar</packaging>
   <name>EbMS Admin</name>
   <description/>
@@ -208,7 +208,7 @@
     <dependency>
       <groupId>nl.clockwork.ebms</groupId>
       <artifactId>ebms-core</artifactId>
-      <version>2.19.1-SNAPSHOT</version>
+      <version>2.19.1</version>
       <exclusions>
         <exclusion>
           <groupId>org.slf4j</groupId>
