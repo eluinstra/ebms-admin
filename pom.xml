@@ -20,7 +20,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>nl.clockwork.ebms.admin</groupId>
   <artifactId>ebms-admin</artifactId>
-  <version>2.18.8-SNAPSHOT</version>
+  <version>2.18.8</version>
   <packaging>jar</packaging>
   <name>EbMS Admin</name>
   <description/>
@@ -215,25 +215,13 @@
     <dependency>
       <groupId>nl.clockwork.ebms</groupId>
       <artifactId>ebms-core</artifactId>
-      <version>2.18.8-SNAPSHOT</version>
+      <version>2.18.8</version>
     </dependency>
     <dependency>
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-core</artifactId>
       <version>8.5.13</version>
     </dependency>
-		<dependency>
-      <groupId>org.flywaydb</groupId>
-      <artifactId>flyway-mysql</artifactId>
-      <version>8.5.13</version>
-      <scope>provided</scope>
-		</dependency>
-		<dependency>
-      <groupId>org.flywaydb</groupId>
-      <artifactId>flyway-sqlserver</artifactId>
-      <version>8.5.13</version>
-      <scope>provided</scope>
-		</dependency>
     <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
@@ -386,6 +374,18 @@
       <groupId>com.ibm.db2.jcc</groupId>
       <artifactId>db2jcc</artifactId>
       <version>db2jcc4</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-mysql</artifactId>
+      <version>8.5.13</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-sqlserver</artifactId>
+      <version>8.5.13</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
