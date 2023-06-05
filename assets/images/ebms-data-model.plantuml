@@ -1,0 +1,127 @@
+@startuml
+title EbMS Data Model
+
+cpa ||-o{ ebms_message
+' cpa }o--o{ url_mapping
+cpa }o--o{ certificate_mapping
+ebms_message ||--o{ ebms_attachment
+ebms_message ||--o{ ebms_message : refered by
+' ebms_message::message_id ||-o{ ebms_message::ref_to_message_id : refered by
+delivery_task }o--|| cpa : uses
+delivery_task |o--|| ebms_message
+ebms_message::status - MessageStatus
+ebms_message ||--o{ delivery_log
+delivery_log::status -- DeliveryStatus
+ebms_message ||--o{ message_event
+message_event::event_type -- EventType
+
+class cpa {
+	* cpa_id : String
+	--
+	* cpa : CPA
+}
+
+class url_mapping {
+	* source : URL
+	--
+	* destination : URL
+}
+
+class certificate_mapping {
+	* id : String
+	--
+	* source : X509Certificate
+	* destination : X509Certificate
+	cpa_id : String
+}
+
+class ebms_message {
+	* message_id : String
+	--
+  * time_stamp : DateTime
+	* cpa_id : String
+	* conversation_id : String
+	ref_to_message_id : String
+	time_to_live : DateTime
+	persist_time : DateTime
+	* from_party_id : String
+	from_role : String
+	* to_party_id : String
+	to_role : String
+	* service : String
+	* action : String
+	content : MessageHeader
+	status : MessageStatus
+	status_time : DateTime
+}
+
+class ebms_attachment {
+	* message_id : String
+	--
+	* order_nr : Number
+	name : String
+	* content_id : String
+	* content_type : String
+	* content : Binary
+}
+
+class delivery_task {
+	* message_id : String
+	--
+	* cpa_id : String
+	send_channel_id : String
+	* receive_channel_id : String
+	time_to_live : DateTime
+	* time_stamp : DateTime
+	* is_confidential : Boolean
+	* retries : Number
+	server_id : String
+}
+
+class delivery_log {
+	--
+	* message_id : String
+	* time_stamp : DateTime
+	uri : URL
+	* status : DeliveryStatus
+	error_message : Text
+}
+
+class message_event {
+	* message_id : String
+	--
+	* event_type : EventType
+	* time_stamp : DateTime
+	* processed : Boolean
+}
+
+enum MessageStatus {
+	RECEIVED[2]
+	PROCESSED[3]
+	FAILED[5]
+	CREATED[10]
+	DELIVERY_FAILED[11]
+	DELIVERED[12]
+	DELIVERY_EXPIRED[13]
+}
+
+enum DeliveryStatus {
+  SUCCEEDED[1]
+  FAILED[2]
+  EXPIRED[3]
+}
+
+enum EventType {
+  RECEIVED[0]
+  DELIVERED[1]
+  DELIVERY_FAILED[2]
+  DELIVERY_EXPIRED[3]
+}
+
+note top of ebms_message
+  * message_id and message_nr form the primary key
+  * message_nr=0 is the original message
+  * message_nr>0 are the duplicate messages
+end note 
+
+@enduml

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="287px" preserveAspectRatio="none" style="width:845px;height:287px;background:#FFFFFF;" version="1.1" viewBox="0 0 845 287" width="845px" zoomAndPan="magnify"><defs/><g><rect fill="none" height="26.2969" id="_title" style="stroke:none;stroke-width:1.0;" width="182" x="321.25" y="5"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="172" x="326.25" y="22.9951">EbMS Message Status</text><path d="M19.5,44.2969 L517.5,44.2969 A12.5,12.5 0 0 1 530,56.7969 L530,70.5938 L7,70.5938 L7,56.7969 A12.5,12.5 0 0 1 19.5,44.2969 " fill="#F1F1F1" style="stroke:#F1F1F1;stroke-width:1.0;"/><rect fill="none" height="237.2969" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="523" x="7" y="44.2969"/><line style="stroke:#181818;stroke-width:0.5;" x1="7" x2="530" y1="70.5938" y2="70.5938"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="57" x="240" y="62.292">Sending</text><rect fill="#F1F1F1" height="40" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="93" x="183.5" y="138.5938"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="83" x="188.5" y="163.4404">Created(10)</text><rect fill="#F1F1F1" height="40" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="132" x="19" y="231.5938"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="122" x="24" y="256.4404">DeliveryFailed(11)</text><rect fill="#F1F1F1" height="40" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="103" x="178.5" y="231.5938"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="93" x="183.5" y="256.4404">Delivered(12)</text><rect fill="#F1F1F1" height="40" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="89" x="353.5" y="231.5938"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="79" x="358.5" y="256.4404">Expired(13)</text><ellipse cx="230" cy="91.5938" fill="#222222" rx="10" ry="10" style="stroke:none;stroke-width:1.0;"/><!--MD5=[44c884ab06ca92d65576d6bca26c3005]
+link *start*Sending to Created--><g id="link_*start*Sending_Created"><path d="M230,101.6337 C230,109.7838 230,122.1538 230,133.1938 " fill="none" id="*start*Sending-to-Created" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="230,138.4838,234,129.4838,230,133.4838,226,129.4838,230,138.4838" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[92ed667ce7b37bfd0ee54073d8fec84d]
+link Created to DeliveryFailed--><g id="link_Created_DeliveryFailed"><path d="M183.49,162.9338 C157.16,167.1137 125.34,176.3538 104,196.5938 C95.76,204.4138 91.09,216.0138 88.44,226.4638 " fill="none" id="Created-to-DeliveryFailed" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="87.3,231.4738,93.2061,223.5923,88.4149,226.5996,85.4075,221.8084,87.3,231.4738" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="120" x="105" y="209.6606">onMessageFailed()</text></g><!--MD5=[aa0ad6f9e9e858b4a1574f893db53992]
+link Created to Delivered--><g id="link_Created_Delivered"><path d="M230,178.8938 C230,192.6438 230,211.2438 230,226.0538 " fill="none" id="Created-to-Delivered" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="230,231.3238,234,222.3238,230,226.3238,226,222.3238,230,231.3238" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="143" x="231" y="209.6606">onMessageDelivered()</text></g><!--MD5=[9671585e5555cc24c66578011ffd87bb]
+link Created to Expired--><g id="link_Created_Expired"><path d="M276.77,160.7938 C308.19,163.9438 348.68,172.8238 376,196.5938 C384.79,204.2438 390.13,215.9438 393.34,226.4938 " fill="none" id="Created-to-Expired" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="394.75,231.5538,396.1848,221.81,393.4066,226.7376,388.479,223.9594,394.75,231.5538" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="130" x="390" y="209.6606">onMessageExpired()</text></g><path d="M577.5,44.2969 L819,44.2969 A12.5,12.5 0 0 1 831.5,56.7969 L831.5,70.5938 L565,70.5938 L565,56.7969 A12.5,12.5 0 0 1 577.5,44.2969 " fill="#F1F1F1" style="stroke:#F1F1F1;stroke-width:1.0;"/><rect fill="none" height="237.2969" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="266.5" x="565" y="44.2969"/><line style="stroke:#181818;stroke-width:0.5;" x1="565" x2="831.5" y1="70.5938" y2="70.5938"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="67" x="664.75" y="62.292">Receiving</text><rect fill="#F1F1F1" height="40" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="93" x="634" y="154.5938"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="83" x="639" y="179.4404">Received(2)</text><rect fill="#F1F1F1" height="40" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="103" x="577" y="231.5938"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="93" x="582" y="256.4404">Processed(3)</text><rect fill="#F1F1F1" height="40" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="69" x="698" y="231.5938"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="59" x="703" y="256.4404">Failed(5)</text><ellipse cx="680.5" cy="91.5938" fill="#222222" rx="10" ry="10" style="stroke:none;stroke-width:1.0;"/><!--MD5=[e5122575ce004e62f071f9cb47919509]
+link *start*Receiving to Received--><g id="link_*start*Receiving_Received"><path d="M680.5,101.8837 C680.5,113.3138 680.5,133.1438 680.5,149.0537 " fill="none" id="*start*Receiving-to-Received" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="680.5,154.2838,684.5,145.2838,680.5,149.2838,676.5,145.2838,680.5,154.2838" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="140" x="681.5" y="132.6606">onMessageReceived()</text></g><!--MD5=[dfbb427c4cc4adec5f9e6a108487bba8]
+link Received to Processed--><g id="link_Received_Processed"><path d="M667.11,194.9038 C660.32,204.7038 652.01,216.6938 644.84,227.0238 " fill="none" id="Received-to-Processed" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="641.85,231.3438,650.2774,226.2467,644.7087,227.2416,643.7139,221.6729,641.85,231.3438" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[6442bb37611b07820fb003a3b7b2eb97]
+link Received to Failed--><g id="link_Received_Failed"><path d="M693.89,194.9038 C700.68,204.7038 708.99,216.6938 716.16,227.0238 " fill="none" id="Received-to-Failed" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="719.15,231.3438,717.2861,221.6729,716.2913,227.2416,710.7226,226.2467,719.15,231.3438" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[8a7691cacde106263a2f1535ae2b6f9d]
+@startuml
+
+hide empty description
+
+title EbMS Message Status
+
+state Sending {
+  state "Created(10)" as Created
+  state "DeliveryFailed(11)" as DeliveryFailed
+  state "Delivered(12)" as Delivered
+  state "Expired(13)" as Expired 
+  [*] - -> Created
+  Created - -> DeliveryFailed : onMessageFailed()
+  Created - -> Delivered : onMessageDelivered()
+  Created - -> Expired : onMessageExpired()
+}
+
+state Receiving {
+  state "Received(2)" as Received
+  state "Processed(3)" as Processed
+  state "Failed(5)" as Failed
+  [*] - -> Received : onMessageReceived()
+  Received - -> Processed
+  Received - -> Failed
+}
+
+@enduml
+
+PlantUML version 1.2022.7(Mon Aug 22 19:01:30 CEST 2022)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>

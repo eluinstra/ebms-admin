@@ -8,7 +8,7 @@ If you want to use ebms-core in your own application you have to add the [JAR](#
 
 ## Java
 
-ebms-core is compiled and tested with OpenJDK 8
+ebms-core is compiled and tested with OpenJDK 11
 
 ## Maven
 
@@ -21,37 +21,6 @@ ebms-core is released in the [Central Maven repository](https://mvnrepository.co
   <version>{{ site.ebms.core.version }}</version>
 </dependency>
 ```
-
-### Configure
-
-ebms-core includes Oracle ojdbc8 driver. If you don't use an Oracle database then you can exclude the driver. Otherwise add the following `<server>` element to the `<servers>` section of the Maven ~/.m2/settings.xml to add the Oracle maven repository:
-
-```xml
- <server>
-    <id>maven.oracle.com</id>
-    <username>username</username>
-    <password>password</password>
-    <configuration>
-      <basicAuthScope>
-        <host>ANY</host>
-        <port>ANY</port>
-        <realm>OAM 11g</realm>
-      </basicAuthScope>
-      <httpConfiguration>
-        <all>
-          <params>
-            <property>
-              <name>http.protocol.allow-circular-redirects</name>
-              <value>%b,true</value>
-            </property>
-          </params>
-        </all>
-      </httpConfiguration>
-    </configuration>
-  </server>
-```
-
-Replace the `<username>` and `<password>` entries with your OTN username and password.
 
 ### Sources
 

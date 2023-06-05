@@ -28,3 +28,8 @@ You can track sent and received messages if you configure the [EventListener]({{
 ### Scaling
 
 To support [scaling with serverId]({{ site.baseurl }}/ebms-admin/deployment.html#scaling-serverid) and [advanced scaling]({{ site.baseurl }}/ebms-admin/deployment.html#scaling) the different components have to use the same [database]({{ site.baseurl }}{% link ebms-core/database.md %}). Also the internal [cache]({{ site.baseurl }}/ebms-core/properties.html#cache) has to be synchronized between the components. Furthermore you have to configure the [DeliveryManager]({{ site.baseurl }}/ebms-core/properties.html#deliverymanager). When using [advanced scaling]({{ site.baseurl }}/ebms-admin/deployment.html#scaling) you also have to configure the [DeliveryTaskHandler]({{ site.baseurl }}/ebms-core/properties.html#deliverytaskhandler).
+
+
+## Data Model
+
+![EbMS Data Model]({{ site.baseurl }}/assets/images/ebms-data-model.svg)

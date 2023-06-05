@@ -25,14 +25,20 @@ ebms-core is a Java implementation of the [EbMS 2.0 specification](http://www.eb
 -	Core Functionality
 	-	Packaging
 -	Additional Features
-	-	Message Order Module (see [roadmap]({{ site.baseurl }}/ebms-core/roadmap.html#release-218x))
+	-	Message Order Module
 	-	Multi-Hop Module
 
 ### Remarks
 
--	Duplicate messages will always be eliminated
+-	Duplicate messages will always be eliminated and will not be stored
 -	Only standalone MSH level messages are supported
 -	Only acts as ToPartyMSH, not as nextMSH
 -	Only 1 (=allPurpose) Channel per Action is supported
 -	Manifest can only refer to payload data included as part of the message
 -	Extendible to support other communication protocols
+
+### Message Statuses
+
+EbMS messages can have the following statuses
+
+![EbMS Message Statuses]({{ site.baseurl }}/assets/images/ebms-message-states.svg)

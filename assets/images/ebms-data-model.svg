@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="1020px" preserveAspectRatio="none" style="width:965px;height:1020px;background:#FFFFFF;" version="1.1" viewBox="0 0 965 1020" width="965px" zoomAndPan="magnify"><defs/><g><rect fill="none" height="26.2969" id="_title" style="stroke:none;stroke-width:1.0;" width="144" x="403.8" y="5"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="134" x="408.8" y="22.9951">EbMS Data Model</text><!--MD5=[c6c0f9d7b123a2ea2e2f2069caa61263]
+class cpa--><g id="elem_cpa"><rect codeLine="17" fill="#F1F1F1" height="80.5938" id="cpa" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="123" x="122" y="433.7969"/><ellipse cx="166.75" cy="449.7969" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M169.7188,455.4375 Q169.1406,455.7344 168.5,455.875 Q167.8594,456.0313 167.1563,456.0313 Q164.6563,456.0313 163.3281,454.3906 Q162.0156,452.7344 162.0156,449.6094 Q162.0156,446.4844 163.3281,444.8281 Q164.6563,443.1719 167.1563,443.1719 Q167.8594,443.1719 168.5,443.3281 Q169.1563,443.4844 169.7188,443.7813 L169.7188,446.5 Q169.0938,445.9219 168.5,445.6563 Q167.9063,445.375 167.2813,445.375 Q165.9375,445.375 165.25,446.4531 Q164.5625,447.5156 164.5625,449.6094 Q164.5625,451.7031 165.25,452.7813 Q165.9375,453.8438 167.2813,453.8438 Q167.9063,453.8438 168.5,453.5781 Q169.0938,453.2969 169.7188,452.7188 L169.7188,455.4375 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="25" x="187.25" y="454.6436">cpa</text><line style="stroke:#181818;stroke-width:0.5;" x1="123" x2="244" y1="465.7969" y2="465.7969"/><ellipse cx="133" cy="479.4453" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="97" x="142" y="482.792">cpa_id : String</text><line style="stroke:#181818;stroke-width:1.0;" x1="123" x2="244" y1="490.0938" y2="490.0938"/><ellipse cx="133" cy="503.7422" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="66" x="142" y="507.0889">cpa : CPA</text></g><!--MD5=[ce60105cccb9c08c832d653194cf7fa4]
+class ebms_message--><g id="elem_ebms_message"><rect codeLine="37" fill="#F1F1F1" height="308.75" id="ebms_message" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="208" x="343.5" y="320.2969"/><ellipse cx="388.25" cy="336.2969" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M391.2188,341.9375 Q390.6406,342.2344 390,342.375 Q389.3594,342.5313 388.6563,342.5313 Q386.1563,342.5313 384.8281,340.8906 Q383.5156,339.2344 383.5156,336.1094 Q383.5156,332.9844 384.8281,331.3281 Q386.1563,329.6719 388.6563,329.6719 Q389.3594,329.6719 390,329.8281 Q390.6563,329.9844 391.2188,330.2813 L391.2188,333 Q390.5938,332.4219 390,332.1563 Q389.4063,331.875 388.7813,331.875 Q387.4375,331.875 386.75,332.9531 Q386.0625,334.0156 386.0625,336.1094 Q386.0625,338.2031 386.75,339.2813 Q387.4375,340.3438 388.7813,340.3438 Q389.4063,340.3438 390,340.0781 Q390.5938,339.7969 391.2188,339.2188 L391.2188,341.9375 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="110" x="408.75" y="341.1436">ebms_message</text><line style="stroke:#181818;stroke-width:0.5;" x1="344.5" x2="550.5" y1="352.2969" y2="352.2969"/><ellipse cx="354.5" cy="365.9453" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="136" x="363.5" y="369.292">message_id : String</text><line style="stroke:#181818;stroke-width:1.0;" x1="344.5" x2="550.5" y1="376.5938" y2="376.5938"/><ellipse cx="354.5" cy="390.2422" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="160" x="363.5" y="393.5889">time_stamp : DateTime</text><ellipse cx="354.5" cy="406.5391" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="97" x="363.5" y="409.8857">cpa_id : String</text><ellipse cx="354.5" cy="422.8359" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="161" x="363.5" y="426.1826">conversation_id : String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="182" x="363.5" y="442.4795">ref_to_message_id : String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="160" x="363.5" y="458.7764">time_to_live : DateTime</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="164" x="363.5" y="475.0732">persist_time : DateTime</text><ellipse cx="354.5" cy="488.0234" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="144" x="363.5" y="491.3701">from_party_id : String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="117" x="363.5" y="507.667">from_role : String</text><ellipse cx="354.5" cy="520.6172" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="127" x="363.5" y="523.9639">to_party_id : String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="100" x="363.5" y="540.2607">to_role : String</text><ellipse cx="354.5" cy="553.2109" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="102" x="363.5" y="556.5576">service : String</text><ellipse cx="354.5" cy="569.5078" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="95" x="363.5" y="572.8545">action : String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="180" x="363.5" y="589.1514">content : MessageHeader</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="163" x="363.5" y="605.4482">status : MessageStatus</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="160" x="363.5" y="621.7451">status_time : DateTime</text></g><!--MD5=[5ddc1daa3a99df9ad7830fb41e3c4713]
+class certificate_mapping--><g id="elem_certificate_mapping"><rect codeLine="29" fill="#F1F1F1" height="113.1875" id="certificate_mapping" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="221" x="7" y="709.7969"/><ellipse cx="46.75" cy="725.7969" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M49.7188,731.4375 Q49.1406,731.7344 48.5,731.875 Q47.8594,732.0313 47.1563,732.0313 Q44.6563,732.0313 43.3281,730.3906 Q42.0156,728.7344 42.0156,725.6094 Q42.0156,722.4844 43.3281,720.8281 Q44.6563,719.1719 47.1563,719.1719 Q47.8594,719.1719 48.5,719.3281 Q49.1563,719.4844 49.7188,719.7813 L49.7188,722.5 Q49.0938,721.9219 48.5,721.6563 Q47.9063,721.375 47.2813,721.375 Q45.9375,721.375 45.25,722.4531 Q44.5625,723.5156 44.5625,725.6094 Q44.5625,727.7031 45.25,728.7813 Q45.9375,729.8438 47.2813,729.8438 Q47.9063,729.8438 48.5,729.5781 Q49.0938,729.2969 49.7188,728.7188 L49.7188,731.4375 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="134" x="66.25" y="730.6436">certificate_mapping</text><line style="stroke:#181818;stroke-width:0.5;" x1="8" x2="227" y1="741.7969" y2="741.7969"/><ellipse cx="18" cy="755.4453" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="65" x="27" y="758.792">id : String</text><line style="stroke:#181818;stroke-width:1.0;" x1="8" x2="227" y1="766.0938" y2="766.0938"/><ellipse cx="18" cy="779.7422" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="166" x="27" y="783.0889">source : X509Certificate</text><ellipse cx="18" cy="796.0391" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="195" x="27" y="799.3857">destination : X509Certificate</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="97" x="27" y="815.6826">cpa_id : String</text></g><!--MD5=[1211ced0ecdce66accc4ddd553aff4da]
+class ebms_attachment--><g id="elem_ebms_attachment"><rect codeLine="57" fill="#F1F1F1" height="145.7813" id="ebms_attachment" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="170" x="263.5" y="693.2969"/><ellipse cx="284.35" cy="709.2969" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M287.3188,714.9375 Q286.7406,715.2344 286.1,715.375 Q285.4594,715.5313 284.7563,715.5313 Q282.2563,715.5313 280.9281,713.8906 Q279.6156,712.2344 279.6156,709.1094 Q279.6156,705.9844 280.9281,704.3281 Q282.2563,702.6719 284.7563,702.6719 Q285.4594,702.6719 286.1,702.8281 Q286.7563,702.9844 287.3188,703.2813 L287.3188,706 Q286.6938,705.4219 286.1,705.1563 Q285.5063,704.875 284.8813,704.875 Q283.5375,704.875 282.85,705.9531 Q282.1625,707.0156 282.1625,709.1094 Q282.1625,711.2031 282.85,712.2813 Q283.5375,713.3438 284.8813,713.3438 Q285.5063,713.3438 286.1,713.0781 Q286.6938,712.7969 287.3188,712.2188 L287.3188,714.9375 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="125" x="299.65" y="714.1436">ebms_attachment</text><line style="stroke:#181818;stroke-width:0.5;" x1="264.5" x2="432.5" y1="725.2969" y2="725.2969"/><ellipse cx="274.5" cy="738.9453" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="136" x="283.5" y="742.292">message_id : String</text><line style="stroke:#181818;stroke-width:1.0;" x1="264.5" x2="432.5" y1="749.5938" y2="749.5938"/><ellipse cx="274.5" cy="763.2422" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="126" x="283.5" y="766.5889">order_nr : Number</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="92" x="283.5" y="782.8857">name : String</text><ellipse cx="274.5" cy="795.8359" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="126" x="283.5" y="799.1826">content_id : String</text><ellipse cx="274.5" cy="812.1328" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="144" x="283.5" y="815.4795">content_type : String</text><ellipse cx="274.5" cy="828.4297" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="109" x="283.5" y="831.7764">content : Binary</text></g><!--MD5=[dbd2b40642b6580447ea4773a7c7d59f]
+class delivery_task--><g id="elem_delivery_task"><rect codeLine="67" fill="#F1F1F1" height="194.6719" id="delivery_task" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="210" x="78.5" y="44.2969"/><ellipse cx="135.25" cy="60.2969" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M138.2188,65.9375 Q137.6406,66.2344 137,66.375 Q136.3594,66.5313 135.6563,66.5313 Q133.1563,66.5313 131.8281,64.8906 Q130.5156,63.2344 130.5156,60.1094 Q130.5156,56.9844 131.8281,55.3281 Q133.1563,53.6719 135.6563,53.6719 Q136.3594,53.6719 137,53.8281 Q137.6563,53.9844 138.2188,54.2813 L138.2188,57 Q137.5938,56.4219 137,56.1563 Q136.4063,55.875 135.7813,55.875 Q134.4375,55.875 133.75,56.9531 Q133.0625,58.0156 133.0625,60.1094 Q133.0625,62.2031 133.75,63.2813 Q134.4375,64.3438 135.7813,64.3438 Q136.4063,64.3438 137,64.0781 Q137.5938,63.7969 138.2188,63.2188 L138.2188,65.9375 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="88" x="155.75" y="65.1436">delivery_task</text><line style="stroke:#181818;stroke-width:0.5;" x1="79.5" x2="287.5" y1="76.2969" y2="76.2969"/><ellipse cx="89.5" cy="89.9453" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="136" x="98.5" y="93.292">message_id : String</text><line style="stroke:#181818;stroke-width:1.0;" x1="79.5" x2="287.5" y1="100.5938" y2="100.5938"/><ellipse cx="89.5" cy="114.2422" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="97" x="98.5" y="117.5889">cpa_id : String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="169" x="98.5" y="133.8857">send_channel_id : String</text><ellipse cx="89.5" cy="146.8359" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="184" x="98.5" y="150.1826">receive_channel_id : String</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="160" x="98.5" y="166.4795">time_to_live : DateTime</text><ellipse cx="89.5" cy="179.4297" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="160" x="98.5" y="182.7764">time_stamp : DateTime</text><ellipse cx="89.5" cy="195.7266" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="167" x="98.5" y="199.0732">is_confidential : Boolean</text><ellipse cx="89.5" cy="212.0234" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="112" x="98.5" y="215.3701">retries : Number</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="115" x="98.5" y="231.667">server_id : String</text></g><!--MD5=[79fa2f20e76e84e26f1223f73403095d]
+class MessageStatus--><g id="elem_MessageStatus"><rect codeLine="97" fill="#F1F1F1" height="162.0781" id="MessageStatus" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="174" x="689.5" y="393.2969"/><ellipse cx="720.25" cy="409.2969" fill="#EB937F" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M724.3594,415.2969 L716.6406,415.2969 L716.6406,402.9063 L724.3594,402.9063 L724.3594,405.0625 L719.0938,405.0625 L719.0938,407.7344 L723.8594,407.7344 L723.8594,409.8906 L719.0938,409.8906 L719.0938,413.1406 L724.3594,413.1406 L724.3594,415.2969 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="107" x="737.75" y="414.1436">MessageStatus</text><line style="stroke:#181818;stroke-width:0.5;" x1="690.5" x2="862.5" y1="425.2969" y2="425.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="89" x="695.5" y="442.292">RECEIVED[2]</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="106" x="695.5" y="458.5889">PROCESSED[3]</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="66" x="695.5" y="474.8857">FAILED[5]</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="95" x="695.5" y="491.1826">CREATED[10]</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="149" x="695.5" y="507.4795">DELIVERY_FAILED[11]</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="106" x="695.5" y="523.7764">DELIVERED[12]</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="162" x="695.5" y="540.0732">DELIVERY_EXPIRED[13]</text><line style="stroke:#181818;stroke-width:0.5;" x1="690.5" x2="862.5" y1="547.375" y2="547.375"/></g><!--MD5=[3866c18243d6f24d8f8506c28d47598e]
+class delivery_log--><g id="elem_delivery_log"><rect codeLine="80" fill="#F1F1F1" height="129.4844" id="delivery_log" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="186" x="476.5" y="702.2969"/><ellipse cx="525.25" cy="718.2969" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M528.2188,723.9375 Q527.6406,724.2344 527,724.375 Q526.3594,724.5313 525.6563,724.5313 Q523.1563,724.5313 521.8281,722.8906 Q520.5156,721.2344 520.5156,718.1094 Q520.5156,714.9844 521.8281,713.3281 Q523.1563,711.6719 525.6563,711.6719 Q526.3594,711.6719 527,711.8281 Q527.6563,711.9844 528.2188,712.2813 L528.2188,715 Q527.5938,714.4219 527,714.1563 Q526.4063,713.875 525.7813,713.875 Q524.4375,713.875 523.75,714.9531 Q523.0625,716.0156 523.0625,718.1094 Q523.0625,720.2031 523.75,721.2813 Q524.4375,722.3438 525.7813,722.3438 Q526.4063,722.3438 527,722.0781 Q527.5938,721.7969 528.2188,721.2188 L528.2188,723.9375 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="80" x="545.75" y="723.1436">delivery_log</text><line style="stroke:#181818;stroke-width:0.5;" x1="477.5" x2="661.5" y1="734.2969" y2="734.2969"/><line style="stroke:#181818;stroke-width:1.0;" x1="477.5" x2="661.5" y1="742.2969" y2="742.2969"/><ellipse cx="487.5" cy="755.9453" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="136" x="496.5" y="759.292">message_id : String</text><ellipse cx="487.5" cy="772.2422" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="160" x="496.5" y="775.5889">time_stamp : DateTime</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="57" x="496.5" y="791.8857">uri : URL</text><ellipse cx="487.5" cy="804.8359" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="154" x="496.5" y="808.1826">status : DeliveryStatus</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="147" x="496.5" y="824.4795">error_message : Text</text></g><!--MD5=[f160ba300d47c98b270c2929f680544d]
+class DeliveryStatus--><g id="elem_DeliveryStatus"><rect codeLine="107" fill="#F1F1F1" height="96.8906" id="DeliveryStatus" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="130" x="504.5" y="908.2969"/><ellipse cx="519.5" cy="924.2969" fill="#EB937F" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M523.6094,930.2969 L515.8906,930.2969 L515.8906,917.9063 L523.6094,917.9063 L523.6094,920.0625 L518.3438,920.0625 L518.3438,922.7344 L523.1094,922.7344 L523.1094,924.8906 L518.3438,924.8906 L518.3438,928.1406 L523.6094,928.1406 L523.6094,930.2969 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="98" x="533.5" y="929.1436">DeliveryStatus</text><line style="stroke:#181818;stroke-width:0.5;" x1="505.5" x2="633.5" y1="940.2969" y2="940.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="107" x="510.5" y="957.292">SUCCEEDED[1]</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="66" x="510.5" y="973.5889">FAILED[2]</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="79" x="510.5" y="989.8857">EXPIRED[3]</text><line style="stroke:#181818;stroke-width:0.5;" x1="505.5" x2="633.5" y1="997.1875" y2="997.1875"/></g><!--MD5=[d1b19d0a81293f2be55ea210e08771d0]
+class message_event--><g id="elem_message_event"><rect codeLine="89" fill="#F1F1F1" height="113.1875" id="message_event" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="188" x="713.5" y="710.2969"/><ellipse cx="749.2" cy="726.2969" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M752.1688,731.9375 Q751.5906,732.2344 750.95,732.375 Q750.3094,732.5313 749.6063,732.5313 Q747.1063,732.5313 745.7781,730.8906 Q744.4656,729.2344 744.4656,726.1094 Q744.4656,722.9844 745.7781,721.3281 Q747.1063,719.6719 749.6063,719.6719 Q750.3094,719.6719 750.95,719.8281 Q751.6063,719.9844 752.1688,720.2813 L752.1688,723 Q751.5438,722.4219 750.95,722.1563 Q750.3563,721.875 749.7313,721.875 Q748.3875,721.875 747.7,722.9531 Q747.0125,724.0156 747.0125,726.1094 Q747.0125,728.2031 747.7,729.2813 Q748.3875,730.3438 749.7313,730.3438 Q750.3563,730.3438 750.95,730.0781 Q751.5438,729.7969 752.1688,729.2188 L752.1688,731.9375 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="110" x="767.8" y="731.1436">message_event</text><line style="stroke:#181818;stroke-width:0.5;" x1="714.5" x2="900.5" y1="742.2969" y2="742.2969"/><ellipse cx="724.5" cy="755.9453" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="136" x="733.5" y="759.292">message_id : String</text><line style="stroke:#181818;stroke-width:1.0;" x1="714.5" x2="900.5" y1="766.5938" y2="766.5938"/><ellipse cx="724.5" cy="780.2422" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="162" x="733.5" y="783.5889">event_type : EventType</text><ellipse cx="724.5" cy="796.5391" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="160" x="733.5" y="799.8857">time_stamp : DateTime</text><ellipse cx="724.5" cy="812.8359" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="144" x="733.5" y="816.1826">processed : Boolean</text></g><!--MD5=[51255159981deef4d2967e1585ccf960]
+class EventType--><g id="elem_EventType"><rect codeLine="113" fill="#F1F1F1" height="113.1875" id="EventType" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="165" x="725" y="900.2969"/><ellipse cx="767" cy="916.2969" fill="#EB937F" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M771.1094,922.2969 L763.3906,922.2969 L763.3906,909.9063 L771.1094,909.9063 L771.1094,912.0625 L765.8438,912.0625 L765.8438,914.7344 L770.6094,914.7344 L770.6094,916.8906 L765.8438,916.8906 L765.8438,920.1406 L771.1094,920.1406 L771.1094,922.2969 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="73" x="787" y="921.1436">EventType</text><line style="stroke:#181818;stroke-width:0.5;" x1="726" x2="889" y1="932.2969" y2="932.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="89" x="731" y="949.292">RECEIVED[0]</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="97" x="731" y="965.5889">DELIVERED[1]</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="140" x="731" y="981.8857">DELIVERY_FAILED[2]</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="153" x="731" y="998.1826">DELIVERY_EXPIRED[3]</text><line style="stroke:#181818;stroke-width:0.5;" x1="726" x2="889" y1="1005.4844" y2="1005.4844"/></g><!--MD5=[4f2db702fe575b6dc1b966a7dab535a9]
+class url_mapping--><g id="elem_url_mapping"><rect codeLine="23" fill="#F1F1F1" height="80.5938" id="url_mapping" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="143" x="717" y="101.2969"/><ellipse cx="744.15" cy="117.2969" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M747.1188,122.9375 Q746.5406,123.2344 745.9,123.375 Q745.2594,123.5313 744.5563,123.5313 Q742.0563,123.5313 740.7281,121.8906 Q739.4156,120.2344 739.4156,117.1094 Q739.4156,113.9844 740.7281,112.3281 Q742.0563,110.6719 744.5563,110.6719 Q745.2594,110.6719 745.9,110.8281 Q746.5563,110.9844 747.1188,111.2813 L747.1188,114 Q746.4938,113.4219 745.9,113.1563 Q745.3063,112.875 744.6813,112.875 Q743.3375,112.875 742.65,113.9531 Q741.9625,115.0156 741.9625,117.1094 Q741.9625,119.2031 742.65,120.2813 Q743.3375,121.3438 744.6813,121.3438 Q745.3063,121.3438 745.9,121.0781 Q746.4938,120.7969 747.1188,120.2188 L747.1188,122.9375 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="84" x="760.85" y="122.1436">url_mapping</text><line style="stroke:#181818;stroke-width:0.5;" x1="718" x2="859" y1="133.2969" y2="133.2969"/><ellipse cx="728" cy="146.9453" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="88" x="737" y="150.292">source : URL</text><line style="stroke:#181818;stroke-width:1.0;" x1="718" x2="859" y1="157.5938" y2="157.5938"/><ellipse cx="728" cy="171.2422" fill="#000000" rx="3" ry="3" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="117" x="737" y="174.5889">destination : URL</text></g><g id="elem_GMN24"><path d="M323.5,114.2969 L323.5,169.6953 A0,0 0 0 0 323.5,169.6953 L494.05,169.6953 L473.64,316.2169 L502.05,169.6953 L681.5,169.6953 A0,0 0 0 0 681.5,169.6953 L681.5,124.2969 L671.5,114.2969 L323.5,114.2969 A0,0 0 0 0 323.5,114.2969 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M671.5,114.2969 L671.5,124.2969 L681.5,124.2969 L671.5,114.2969 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><ellipse cx="335" cy="126.9297" fill="#000000" rx="2.5" ry="2.5" style="stroke:#000000;stroke-width:0.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="326" x="340.5" y="131.3638">message_id and message_nr form the primary key</text><ellipse cx="335" cy="142.0625" fill="#000000" rx="2.5" ry="2.5" style="stroke:#000000;stroke-width:0.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="250" x="340.5" y="146.4966">message_nr=0 is the original message</text><ellipse cx="335" cy="157.1953" fill="#000000" rx="2.5" ry="2.5" style="stroke:#000000;stroke-width:0.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="280" x="340.5" y="161.6294">message_nr&gt;0 are the duplicate messages</text></g><!--MD5=[b1b9a92d534e60b8fecb33e92d56ba5e]
+link cpa to ebms_message--><g id="link_cpa_ebms_message"><path codeLine="3" d="M253.21,474.2969 C277.89,474.2969 302.56,474.2969 327.23,474.2969 " fill="none" id="cpa-ebms_message" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="327.24" x2="335.24" y1="474.2969" y2="468.2969"/><line style="stroke:#181818;stroke-width:1.0;" x1="327.24" x2="335.24" y1="474.2969" y2="480.2969"/><line style="stroke:#181818;stroke-width:1.0;" x1="327.24" x2="335.24" y1="474.2969" y2="474.2969"/><ellipse cx="321.24" cy="474.2969" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="249.12" x2="249.12" y1="478.2969" y2="470.2969"/><line style="stroke:#181818;stroke-width:1.0;" x1="252.12" x2="252.12" y1="478.2969" y2="470.2969"/><line style="stroke:#181818;stroke-width:1.0;" x1="253.12" x2="245.12" y1="474.2969" y2="474.2969"/></g><!--MD5=[8c1033603c9476bc38eb1da48d9dd33d]
+link cpa to certificate_mapping--><g id="link_cpa_certificate_mapping"><path codeLine="5" d="M172.65,522.9669 C161.56,571.7069 144.26,647.7069 132,701.5869 " fill="none" id="cpa-certificate_mapping" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="131.9217" x2="136.001" y1="701.8955" y2="711.0257"/><line style="stroke:#181818;stroke-width:1.0;" x1="131.9217" x2="124.299" y1="701.8955" y2="708.3681"/><line style="stroke:#181818;stroke-width:1.0;" x1="131.9217" x2="130.15" y1="701.8955" y2="709.6969"/><ellipse cx="133.2505" cy="696.0445" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="172.6747" x2="168.6113" y1="522.8151" y2="513.6779"/><line style="stroke:#181818;stroke-width:1.0;" x1="172.6747" x2="180.3087" y1="522.8151" y2="516.3559"/><line style="stroke:#181818;stroke-width:1.0;" x1="172.6747" x2="174.46" y1="522.8151" y2="515.0169"/><ellipse cx="171.3357" cy="528.6638" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[a425217e71a8cca7d1b0a520a89eed74]
+link ebms_message to ebms_attachment--><g id="link_ebms_message_ebms_attachment"><path codeLine="6" d="M391.1,640.5269 C385.79,656.0669 380.59,671.2969 375.75,685.4769 " fill="none" id="ebms_message-ebms_attachment" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="375.6855" x2="378.778" y1="685.6662" y2="695.176"/><line style="stroke:#181818;stroke-width:1.0;" x1="375.6855" x2="367.422" y1="685.6662" y2="691.2978"/><line style="stroke:#181818;stroke-width:1.0;" x1="375.6855" x2="373.1" y1="685.6662" y2="693.2369"/><ellipse cx="377.6246" cy="679.9882" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="388.7219" x2="396.2926" y1="635.0995" y2="637.685"/><line style="stroke:#181818;stroke-width:1.0;" x1="387.7524" x2="395.3231" y1="637.9385" y2="640.524"/><line style="stroke:#181818;stroke-width:1.0;" x1="391.2145" x2="393.8" y1="640.1776" y2="632.6069"/></g><!--MD5=[4761847deddb1349336985e215619a95]
+link ebms_message to ebms_message--><g id="link_ebms_message_ebms_message"><path codeLine="7" d="M567.48,443.0269 C583.7,448.2669 594.5,458.6969 594.5,474.2969 C594.5,489.8969 583.7,500.3269 567.48,505.5669 " fill="none" id="ebms_message-ebms_message" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="567.3988" x2="561.1806" y1="505.5794" y2="513.411"/><line style="stroke:#181818;stroke-width:1.0;" x1="567.3988" x2="558.1394" y1="505.5794" y2="501.8028"/><line style="stroke:#181818;stroke-width:1.0;" x1="567.3988" x2="559.66" y1="505.5794" y2="507.6069"/><ellipse cx="573.2029" cy="504.0587" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="562.5156" x2="564.5432" y1="445.87" y2="438.1312"/><line style="stroke:#181818;stroke-width:1.0;" x1="565.4177" x2="567.4452" y1="446.6304" y2="438.8915"/><line style="stroke:#181818;stroke-width:1.0;" x1="567.3988" x2="559.66" y1="443.0144" y2="440.9869"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="65" x="600.5" y="478.8638">refered by</text></g><!--MD5=[719ca0486369d8b886edf4aff890b95a]
+link delivery_task to cpa--><g id="link_delivery_task_cpa"><path codeLine="9" d="M183.5,247.7469 C183.5,307.3369 183.5,379.0569 183.5,425.3769 " fill="none" id="delivery_task-cpa" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="187.5" x2="179.5" y1="429.4369" y2="429.4369"/><line style="stroke:#181818;stroke-width:1.0;" x1="187.5" x2="179.5" y1="426.4369" y2="426.4369"/><line style="stroke:#181818;stroke-width:1.0;" x1="183.5" x2="183.5" y1="425.4369" y2="433.4369"/><line style="stroke:#181818;stroke-width:1.0;" x1="183.5" x2="177.5" y1="247.7269" y2="239.7269"/><line style="stroke:#181818;stroke-width:1.0;" x1="183.5" x2="189.5" y1="247.7269" y2="239.7269"/><line style="stroke:#181818;stroke-width:1.0;" x1="183.5" x2="183.5" y1="247.7269" y2="239.7269"/><ellipse cx="183.5" cy="253.7269" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="30" x="184.5" y="282.3638">uses</text></g><!--MD5=[66b8b091ffc907ecaa67cc010dd36025]
+link delivery_task to ebms_message--><g id="link_delivery_task_ebms_message"><path codeLine="10" d="M266.15,246.2669 C286.44,271.6569 308.53,299.3269 330.11,326.3369 " fill="none" id="delivery_task-ebms_message" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="335.9157" x2="329.659" y1="327.1958" y2="332.1812"/><line style="stroke:#181818;stroke-width:1.0;" x1="334.0462" x2="327.7895" y1="324.8496" y2="329.8349"/><line style="stroke:#181818;stroke-width:1.0;" x1="330.2946" x2="335.28" y1="326.5602" y2="332.8169"/><line style="stroke:#181818;stroke-width:1.0;" x1="267.7869" x2="260.92" y1="248.3203" y2="239.7269"/><ellipse cx="267.7869" cy="248.3203" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="260.2922" x2="266.5419" y1="245.3488" y2="240.3547"/></g><!--MD5=[8ac9199fd42da023040ade7ffefaf5f6]
+link ebms_message to MessageStatus--><g id="link_ebms_message_MessageStatus"><path codeLine="11" d="M552.5,600.2969 C606.19,608.3169 658.85,584.5169 699.5,555.3569 " fill="none" id="ebms_message-MessageStatus" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[76f53e8f69f25cfc9692922d9764a373]
+link ebms_message to delivery_log--><g id="link_ebms_message_delivery_log"><path codeLine="12" d="M516.85,640.1469 C524.23,657.6869 531.44,674.8269 538.04,690.5269 " fill="none" id="ebms_message-delivery_log" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="538.1287" x2="546.7608" y1="690.7324" y2="695.7809"/><line style="stroke:#181818;stroke-width:1.0;" x1="538.1287" x2="535.6992" y1="690.7324" y2="700.4328"/><line style="stroke:#181818;stroke-width:1.0;" x1="538.1287" x2="541.23" y1="690.7324" y2="698.1069"/><ellipse cx="535.8028" cy="685.2016" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="511.552" x2="518.9214" y1="637.8482" y2="634.7348"/><line style="stroke:#181818;stroke-width:1.0;" x1="512.7196" x2="520.0889" y1="640.6117" y2="637.4983"/><line style="stroke:#181818;stroke-width:1.0;" x1="516.7934" x2="513.68" y1="639.9762" y2="632.6069"/></g><!--MD5=[e767eec54a98de3617bbea62aab50f3f]
+link delivery_log to DeliveryStatus--><g id="link_delivery_log_DeliveryStatus"><path codeLine="13" d="M663.5,802.2969 C713.81,802.2969 663.66,863.0069 619.51,908.0669 " fill="none" id="delivery_log-DeliveryStatus" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[0bf7a0b58e47e58c04d906c85c067ad6]
+link ebms_message to message_event--><g id="link_ebms_message_message_event"><path codeLine="14" d="M566.3,570.9969 C619.36,613.7369 680.47,662.9669 727.91,701.1769 " fill="none" id="ebms_message-message_event" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="727.9854" x2="737.979" y1="701.2315" y2="701.5884"/><line style="stroke:#181818;stroke-width:1.0;" x1="727.9854" x2="730.441" y1="701.2315" y2="710.9253"/><line style="stroke:#181818;stroke-width:1.0;" x1="727.9854" x2="734.21" y1="701.2315" y2="706.2569"/><ellipse cx="723.3169" cy="697.4625" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="560.5374" x2="565.5541" y1="571.481" y2="565.2494"/><line style="stroke:#181818;stroke-width:1.0;" x1="562.8743" x2="567.891" y1="573.3623" y2="567.1307"/><line style="stroke:#181818;stroke-width:1.0;" x1="566.1616" x2="559.93" y1="570.8736" y2="565.8569"/></g><!--MD5=[eb631a28f812e1913fc329c1642daabf]
+link message_event to EventType--><g id="link_message_event_EventType"><path codeLine="15" d="M902.5,778.2969 C958.6,778.2969 907.01,848.0669 860.72,900.1169 " fill="none" id="message_event-EventType" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[fd034abf5691d756bd2b11a389ee7ea3]
+@startuml
+title EbMS Data Model
+
+cpa ||-o{ ebms_message
+' cpa }o- -o{ url_mapping
+cpa }o- -o{ certificate_mapping
+ebms_message ||- -o{ ebms_attachment
+ebms_message ||- -o{ ebms_message : refered by
+' ebms_message::message_id ||-o{ ebms_message::ref_to_message_id : refered by
+delivery_task }o- -|| cpa : uses
+delivery_task |o- -|| ebms_message
+ebms_message::status - MessageStatus
+ebms_message ||- -o{ delivery_log
+delivery_log::status - - DeliveryStatus
+ebms_message ||- -o{ message_event
+message_event::event_type - - EventType
+
+class cpa {
+	* cpa_id : String
+	- -
+	* cpa : CPA
+}
+
+class url_mapping {
+	* source : URL
+	- -
+	* destination : URL
+}
+
+class certificate_mapping {
+	* id : String
+	- -
+	* source : X509Certificate
+	* destination : X509Certificate
+	cpa_id : String
+}
+
+class ebms_message {
+	* message_id : String
+	- -
+  * time_stamp : DateTime
+	* cpa_id : String
+	* conversation_id : String
+	ref_to_message_id : String
+	time_to_live : DateTime
+	persist_time : DateTime
+	* from_party_id : String
+	from_role : String
+	* to_party_id : String
+	to_role : String
+	* service : String
+	* action : String
+	content : MessageHeader
+	status : MessageStatus
+	status_time : DateTime
+}
+
+class ebms_attachment {
+	* message_id : String
+	- -
+	* order_nr : Number
+	name : String
+	* content_id : String
+	* content_type : String
+	* content : Binary
+}
+
+class delivery_task {
+	* message_id : String
+	- -
+	* cpa_id : String
+	send_channel_id : String
+	* receive_channel_id : String
+	time_to_live : DateTime
+	* time_stamp : DateTime
+	* is_confidential : Boolean
+	* retries : Number
+	server_id : String
+}
+
+class delivery_log {
+	- -
+	* message_id : String
+	* time_stamp : DateTime
+	uri : URL
+	* status : DeliveryStatus
+	error_message : Text
+}
+
+class message_event {
+	* message_id : String
+	- -
+	* event_type : EventType
+	* time_stamp : DateTime
+	* processed : Boolean
+}
+
+enum MessageStatus {
+	RECEIVED[2]
+	PROCESSED[3]
+	FAILED[5]
+	CREATED[10]
+	DELIVERY_FAILED[11]
+	DELIVERED[12]
+	DELIVERY_EXPIRED[13]
+}
+
+enum DeliveryStatus {
+  SUCCEEDED[1]
+  FAILED[2]
+  EXPIRED[3]
+}
+
+enum EventType {
+  RECEIVED[0]
+  DELIVERED[1]
+  DELIVERY_FAILED[2]
+  DELIVERY_EXPIRED[3]
+}
+
+note top of ebms_message
+  * message_id and message_nr form the primary key
+  * message_nr=0 is the original message
+  * message_nr>0 are the duplicate messages
+end note 
+
+@enduml
+
+@startuml
+title EbMS Data Model
+
+cpa ||-o{ ebms_message
+cpa }o- -o{ certificate_mapping
+ebms_message ||- -o{ ebms_attachment
+ebms_message ||- -o{ ebms_message : refered by
+delivery_task }o- -|| cpa : uses
+delivery_task |o- -|| ebms_message
+ebms_message::status - MessageStatus
+ebms_message ||- -o{ delivery_log
+delivery_log::status - - DeliveryStatus
+ebms_message ||- -o{ message_event
+message_event::event_type - - EventType
+
+class cpa {
+	* cpa_id : String
+	- -
+	* cpa : CPA
+}
+
+class url_mapping {
+	* source : URL
+	- -
+	* destination : URL
+}
+
+class certificate_mapping {
+	* id : String
+	- -
+	* source : X509Certificate
+	* destination : X509Certificate
+	cpa_id : String
+}
+
+class ebms_message {
+	* message_id : String
+	- -
+  * time_stamp : DateTime
+	* cpa_id : String
+	* conversation_id : String
+	ref_to_message_id : String
+	time_to_live : DateTime
+	persist_time : DateTime
+	* from_party_id : String
+	from_role : String
+	* to_party_id : String
+	to_role : String
+	* service : String
+	* action : String
+	content : MessageHeader
+	status : MessageStatus
+	status_time : DateTime
+}
+
+class ebms_attachment {
+	* message_id : String
+	- -
+	* order_nr : Number
+	name : String
+	* content_id : String
+	* content_type : String
+	* content : Binary
+}
+
+class delivery_task {
+	* message_id : String
+	- -
+	* cpa_id : String
+	send_channel_id : String
+	* receive_channel_id : String
+	time_to_live : DateTime
+	* time_stamp : DateTime
+	* is_confidential : Boolean
+	* retries : Number
+	server_id : String
+}
+
+class delivery_log {
+	- -
+	* message_id : String
+	* time_stamp : DateTime
+	uri : URL
+	* status : DeliveryStatus
+	error_message : Text
+}
+
+class message_event {
+	* message_id : String
+	- -
+	* event_type : EventType
+	* time_stamp : DateTime
+	* processed : Boolean
+}
+
+enum MessageStatus {
+	RECEIVED[2]
+	PROCESSED[3]
+	FAILED[5]
+	CREATED[10]
+	DELIVERY_FAILED[11]
+	DELIVERED[12]
+	DELIVERY_EXPIRED[13]
+}
+
+enum DeliveryStatus {
+  SUCCEEDED[1]
+  FAILED[2]
+  EXPIRED[3]
+}
+
+enum EventType {
+  RECEIVED[0]
+  DELIVERED[1]
+  DELIVERY_FAILED[2]
+  DELIVERY_EXPIRED[3]
+}
+
+note top of ebms_message
+  * message_id and message_nr form the primary key
+  * message_nr=0 is the original message
+  * message_nr>0 are the duplicate messages
+end note 
+
+@enduml
+
+PlantUML version 1.2022.7(Mon Aug 22 19:01:30 CEST 2022)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>
