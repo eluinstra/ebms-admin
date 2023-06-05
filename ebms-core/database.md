@@ -98,7 +98,7 @@ Tested with MariaDB 10.3.22
 
 Download drivers [here](https://downloads.mariadb.org/connector-java/)
 
-Download the right flyway-mysql driver [here]{https://mvnrepository.com/artifact/org.flywaydb/flyway-mysql} and add it to the classpath next to the database driver
+Download the right flyway-mysql driver [here](https://mvnrepository.com/artifact/org.flywaydb/flyway-mysql) and add it to the classpath next to the database driver
 Check the pom.xml of ebms-admin for the right version of the flyway-mysql library
 
 ### MS SQL Server
@@ -115,7 +115,7 @@ Tested with MS SQL Server 2019
 
 Download drivers [here](https://docs.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server)
 
-Download the right flyway-sqlserver driver [here]{https://mvnrepository.com/artifact/org.flywaydb/flyway-sqlserver} and add it to the classpath next to the database driver
+Download the right flyway-sqlserver driver [here](https://mvnrepository.com/artifact/org.flywaydb/flyway-sqlserver) and add it to the classpath next to the database driver
 Check the pom.xml of ebms-admin for the right version of the flyway-sqlserver library
 
 #### XA Driver
