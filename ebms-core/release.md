@@ -4,6 +4,10 @@ sort: 7
 
 # Release Notes
 
+### [ebms-core-2.19.1.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.19.1/ebms-core-2.19.1.jar)
+
+- updated dependecies
+
 ### [ebms-core-2.19.0.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.19.0/ebms-core-2.19.0.jar)
 
 - upgrade to Java 11
@@ -15,6 +19,10 @@ sort: 7
 - removed Apache HttpClient
 - replaced URLConnection by Java 11 HttpClient
 - updated REST API
+
+### [ebms-core-2.18.8.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.18.8/ebms-core-2.18.8.jar)
+
+- updated dependencies
 
 ### [ebms-core-2.18.7.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.18.7/ebms-core-2.18.7.jar)
 

@@ -257,7 +257,7 @@ client.keystore.defaultAlias=
 When [`deliveryTaskHandler.type`](#deliverytaskhandler) is set to `DEFAULT` or `QUARTZ` then set `transactionManager.type=DEFAULT`. When [`deliveryTaskHandler.type`](#deliverytaskhandler) is set to `JMS` or `QUARTZ_JMS` then set `transactionManager.type=ATOMIKOS` and select an XA driver for your [database]({{ site.baseurl }}{% link ebms-core/database.md %}).
 
 ```properties
-# TransactionManagerType: DEFAULT | BITRONIX | ATOMIKOS
+# TransactionManagerType: DEFAULT | ATOMIKOS
 transactionManager.type=DEFAULT
 # IsolationLevel: <EMPTY> | TRANSACTION_NONE | TRANSACTION_READ_UNCOMMITTED | TRANSACTION_READ_COMMITTED | TRANSACTION_REPEATABLE_READ | TRANSACTION_SERIALIZABLE | TRANSACTION_SQL_SERVER_SNAPSHOT_ISOLATION_LEVEL
 transactionManager.isolationLevel=

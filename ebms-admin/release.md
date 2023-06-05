@@ -5,15 +5,28 @@ sort: 10
 # Release Notes
 
 ```note
-{{ site.ebms.core.version }}, ebms-admin-2.18.7 and ebms-admin-2.17.11 are the latest versions.
+{{ site.ebms.core.version }} and ebms-admin-2.18.8 are the latest versions.
 ```
 
-### [ebms-admin-2.19.0.1.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.19.0.1/ebms-admin-2.19.0.1.jar)
+### [ebms-admin-2.19.1.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.19.1/ebms-admin-2.19.1.jar)
+
+- updated dependecies
+
+### [ebms-admin-2.19.0.3.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.19.0.3/ebms-admin-2.19.0.3.jar)
+
+- fixed cache configuration
+- added missing Flyway dependencies (only in the pom)
+
+### [ebms-admin-2.19.0.2.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.19.0.2/ebms-admin-2.19.0.2.jar)
+
+- fixed rest api configuration
+
+### [ebms-admin-2.19.0.1.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.19.0.1/ebms-admin-2.19.0.1.jar)
 
 - fixed logging
 - fixed properties page
 
-### [ebms-admin-2.19.0.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.19.0/ebms-admin-2.19.0.jar)
+### [ebms-admin-2.19.0.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.19.0/ebms-admin-2.19.0.jar)
 
 - upgrade to Java 11
 - updated dependecies
@@ -27,55 +40,59 @@ sort: 10
 
 NB: this release contains some major database changes (especially for MSSQL and MariaDB)
 
-### [ebms-admin-2.18.7.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.7/ebms-admin-2.18.7.jar)
+### [ebms-admin-2.18.8.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.18.8/ebms-admin-2.18.8.jar)
+
+- updated dependencies
+
+### [ebms-admin-2.18.7.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.18.7/ebms-admin-2.18.7.jar)
 
 - updated dependencies
 - added deleteCache methods for CPA, URL and Certificate services
 - fixed issue with URLEncoded PEM when using a custom clientCertificateHeader
 
-### [ebms-admin-2.18.6.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.6/ebms-admin-2.18.6.jar)
+### [ebms-admin-2.18.6.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.18.6/ebms-admin-2.18.6.jar)
 
 - updated dependencies for spring, log4j, postgresql, jackson
 - bugfix: forward proxy configuration issue from admin web-ui
 - upgrade to [ebms-core-2.18.6.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2186jar)
 
-### [ebms-admin-2.18.5.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.5/ebms-admin-2.18.5.jar)
+### [ebms-admin-2.18.5.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.18.5/ebms-admin-2.18.5.jar)
 
 - updated dependencies
 - added allow CORS all
 - fixed issue: not hiding password In about screen
 - upgrade to [ebms-core-2.18.5.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2185jar)
 
-### [ebms-admin-2.18.4.2.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.4.2/ebms-admin-2.18.4.2.jar)
+### [ebms-admin-2.18.4.2.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.18.4.2/ebms-admin-2.18.4.2.jar)
 
 - updated log4j dependency to 2.17.0
 - updated spring, cxf dependencies
 
-### [ebms-admin-2.18.4.1.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.4.1/ebms-admin-2.18.4.1.jar)
+### [ebms-admin-2.18.4.1.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.18.4.1/ebms-admin-2.18.4.1.jar)
 
 - updated log4j dependency to 2.16.0
 - modified default log4j2.xml to format the message as %m{nolookups}
 
-### [ebms-admin-2.18.4.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.4/ebms-admin-2.18.4.jar)
+### [ebms-admin-2.18.4.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.18.4/ebms-admin-2.18.4.jar)
 
 - DBClean implementation changed based on pull request by Lost Lemon
 - updated various dependencies [83d30c9](https://github.com/eluinstra/ebms-admin/commit/83d30c9116f6608d77c0ee1f60606712807615fb) 
 - upgrade to [ebms-core-2.18.4.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2184jar)
 
-### [ebms-admin-2.18.3.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.3/ebms-admin-2.18.3.jar)
+### [ebms-admin-2.18.3.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.18.3/ebms-admin-2.18.3.jar)
 
 - DBClean implementation changed based on pull request by Lost Lemon
 - REST service implementation added, more information [here]({{ site.baseurl }}/ebms-admin/rest.html)
 - upgrade to [ebms-core-2.18.3.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2183jar)
 
-### [ebms-admin-2.18.2.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.2/ebms-admin-2.18.2.jar)
+### [ebms-admin-2.18.2.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.18.2/ebms-admin-2.18.2.jar)
 
 - fixed DBClean for MSSQL and MySQL, deleting attachments
 - added Apache Kafka integration for delivery events
 - added Microsoft Azure Application Insights and Microsoft Azure Key Vault integration
 - upgrade to [ebms-core-2.18.2.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2182jar)
 
-### [ebms-admin-2.18.1.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.18.1/ebms-admin-2.18.1.jar)
+### [ebms-admin-2.18.1.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.18.1/ebms-admin-2.18.1.jar)
 
 - dependency and plugin version upgrades
 - various improvements and bugfixes
@@ -85,34 +102,34 @@ NB: this release contains some major database changes (especially for MSSQL and 
 
 - upgrade to [ebms-core-2.18.0.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2180jar)
 
-### [ebms-admin-2.17.11.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.17.11/ebms-admin-2.17.11.jar)
+### [ebms-admin-2.17.11.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.17.11/ebms-admin-2.17.11.jar)
 
 - updated dependencies for log4j, spring, mysql, postgresql
 - bugfix: forward proxy configuration issue from admin web-ui
 - upgrade to [ebms-core-2.17.11.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-21711jar)
 
-### [ebms-admin-2.17.10.2.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.17.10.2/ebms-admin-2.17.10.2.jar)
+### [ebms-admin-2.17.10.2.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.17.10.2/ebms-admin-2.17.10.2.jar)
 
 - updated log4j dependency to 2.17.0
 - updated spring, cxf dependencies
 
-### [ebms-admin-2.17.10.1.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.17.10.1/ebms-admin-2.17.10.1.jar)
+### [ebms-admin-2.17.10.1.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.17.10.1/ebms-admin-2.17.10.1.jar)
 
 - updated log4j dependency to 2.16.0
 - modified default log4j2.xml to format the message as %m{nolookups}
 
-### [ebms-admin-2.17.10.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.17.10/ebms-admin-2.17.10.jar)
+### [ebms-admin-2.17.10.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.17.10/ebms-admin-2.17.10.jar)
 
 - updated log4j dependency to 2.15.0
 - updated various dependencies
 - upgrade to [ebms-core-2.17.10.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-21710jar)
 
-### [ebms-admin-2.17.9.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.17.9/ebms-admin-2.17.9.jar)
+### [ebms-admin-2.17.9.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.17.9/ebms-admin-2.17.9.jar)
 
 - removed @NonNull for name in EbMSDataSource service model
 - upgrade to [ebms-core-2.17.9.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2179jar)
 
-### [ebms-admin-2.17.8.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin.2.17.8/ebms-admin-2.17.8.jar)
+### [ebms-admin-2.17.8.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.17.8/ebms-admin-2.17.8.jar)
 
 - fixed DBClean for MSSQL and MySQL, deleting attachments
 - upgrade to [ebms-core-2.17.8.jar]({{ site.baseurl }}/ebms-core/release.html#ebms-core-2178jar)

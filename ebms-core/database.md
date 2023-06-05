@@ -11,6 +11,7 @@ The EbMS Adapter supports the following databases
 - [HSQLDB](#hsqldb)
 - [MariaDB](#mariadb)
 - [MS SQL Server](#ms-sql-server)
+- [MySQL](#mysql)
 - [Oracle](#oracle)
 - [PostgreSQL](#postgresql)
 
@@ -97,6 +98,9 @@ Tested with MariaDB 10.3.22
 
 Download drivers [here](https://downloads.mariadb.org/connector-java/)
 
+Download the right flyway-mysql driver [here]{https://mvnrepository.com/artifact/org.flywaydb/flyway-mysql} and add it to the classpath next to the database driver
+Check the pom.xml of ebms-admin for the right version of the flyway-mysql library
+
 ### MS SQL Server
 
 ```properties
@@ -110,6 +114,9 @@ ebms.jdbc.url=jdbc:sqlserver://<host>:<port>;[instanceName=<instanceName>;]datab
 Tested with MS SQL Server 2019
 
 Download drivers [here](https://docs.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server)
+
+Download the right flyway-sqlserver driver [here]{https://mvnrepository.com/artifact/org.flywaydb/flyway-sqlserver} and add it to the classpath next to the database driver
+Check the pom.xml of ebms-admin for the right version of the flyway-sqlserver library
 
 #### XA Driver
 
@@ -126,6 +133,32 @@ When [`deliveryTaskHandler.type`]({{ site.baseurl }}/ebms-core/properties.html#d
 
 ```properties
 deliveryTaskHandler.quartz.jdbc.selectWithLockSQL=SELECT * FROM {0}LOCKS UPDLOCK WHERE LOCK_NAME = ?
+```
+
+### MySQL
+
+```note
+MySQL support is removed in version 2.19.0
+```
+
+```properties
+# JDBC driver
+ebms.jdbc.driverClassName=com.mysql.cj.jdbc.Driver
+# or XA driver
+ebms.jdbc.driverClassName=com.mysql.cj.jdbc.MysqlXADataSource
+ebms.jdbc.url=jdbc:mysql://<host>:<port>/<dbname>
+```
+
+Tested with MySQL 8.0.21
+
+Download drivers [here](https://dev.mysql.com/downloads/connector/j/)
+
+#### XA Driver
+
+When using the XA driver add line the following line to `my.ini` or `my.cnf`
+
+```properties
+default-time-zone='+02:00'
 ```
 
 ### Oracle

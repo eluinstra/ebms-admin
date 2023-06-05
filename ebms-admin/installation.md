@@ -4,9 +4,9 @@ sort: 3
 
 # Installation and Configuration
 
-## Requisites
+## Prerequisites
 
-- download and install Java 8 (or later)
+- download and install Java 11 (or later)
 - provide a [supported database]({{ site.baseurl }}{% link ebms-core/database.md %}) and download the appropriate JDBC driver
 - download [ebms-admin-{{ site.ebms.core.version }}.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-{{ site.ebms.core.version }}/ebms-admin-{{ site.ebms.core.version }}.jar)
 
