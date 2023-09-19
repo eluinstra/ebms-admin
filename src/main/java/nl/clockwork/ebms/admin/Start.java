@@ -21,7 +21,6 @@ import com.microsoft.applicationinsights.web.internal.WebRequestTrackingFilter;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
-import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
@@ -147,7 +146,7 @@ public class Start implements SystemInterface
 		app.startService(args);
 	}
 
-	private void startService(String[] args) throws Exception
+	public void startService(String[] args) throws Exception
 	{
 		val options = createOptions();
 		val cmd = new DefaultParser().parse(options, args);
@@ -170,7 +169,7 @@ public class Start implements SystemInterface
 			if (cmd.hasOption(HEALTH_OPTION))
 			{
 				initHealthServer(cmd, server);
-				handlerCollection.addHandler(createHealthContextHandler(cmd, contextLoaderListener));
+				handlerCollection.addHandler(createHealthContextHandler());
 			}
 			println("Starting Server...");
 			try
@@ -466,7 +465,7 @@ public class Start implements SystemInterface
 	protected FilterHolder createUserRateLimiterFilterHolder(String queriesPerSecond)
 	{
 		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.RateLimiterFilter.class);
-		result.setInitParameter(QUERIES_PER_SECOND_OPTION, queriesPerSecond);
+		result.setInitParameter(USER_QUERIES_PER_SECOND_OPTION, queriesPerSecond);
 		return result;
 	}
 
@@ -519,7 +518,7 @@ public class Start implements SystemInterface
 		return result;
 	}
 
-	protected ServletContextHandler createHealthContextHandler(CommandLine cmd, ContextLoaderListener contextLoaderListener) throws Exception
+	protected ServletContextHandler createHealthContextHandler() throws Exception
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		result.setVirtualHosts(new String[]{"@" + HEALTH_CONNECTOR_NAME});
@@ -529,7 +528,7 @@ public class Start implements SystemInterface
 		return result;
 	}
 
-	protected Resource getResource(String path) throws MalformedURLException, IOException
+	protected Resource getResource(String path) throws IOException
 	{
 		val result = Resource.newResource(path);
 		return result.exists() ? result : Resource.newClassPathResource(path);

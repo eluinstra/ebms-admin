@@ -39,7 +39,7 @@ import org.springframework.core.io.Resource;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AppConfig
 {
-	public static PropertySourcesPlaceholderConfigurer PROPERTY_SOURCE = propertySourcesPlaceholderConfigurer();
+	public static final PropertySourcesPlaceholderConfigurer PROPERTY_SOURCE = propertySourcesPlaceholderConfigurer();
 
 	private static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer()
 	{

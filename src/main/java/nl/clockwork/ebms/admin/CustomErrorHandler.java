@@ -23,8 +23,9 @@ import org.eclipse.jetty.server.handler.ErrorHandler;
 
 public class CustomErrorHandler extends ErrorHandler
 {
+	@Override
 	protected void writeErrorPage(HttpServletRequest request, Writer writer, int code, String message, boolean showStacks) throws IOException
 	{
-
+		// Do nothing
 	}
 }

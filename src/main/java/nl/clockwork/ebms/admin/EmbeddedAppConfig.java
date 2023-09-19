@@ -67,7 +67,11 @@ import org.springframework.core.io.Resource;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EmbeddedAppConfig
 {
-	public static PropertySourcesPlaceholderConfigurer PROPERTY_SOURCE = propertySourcesPlaceholderConfigurer();
+	public static final PropertySourcesPlaceholderConfigurer PROPERTY_SOURCE = propertySourcesPlaceholderConfigurer();
+
+	private EmbeddedAppConfig()
+	{
+	}
 
 	private static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer()
 	{

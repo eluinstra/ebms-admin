@@ -17,7 +17,6 @@ package nl.clockwork.ebms.admin;
 
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import javax.sql.DataSource;
@@ -46,7 +45,6 @@ public class DBExecute
 		val cmd = new DefaultParser().parse(options, args);
 		if (cmd.hasOption("h"))
 			printUsage(options);
-
 		try (val context = new AnnotationConfigApplicationContext(DBConfig.class))
 		{
 			if (!StringUtils.isEmpty(context.getEnvironment().getProperty("ebms.jdbc.password")))
@@ -77,14 +75,13 @@ public class DBExecute
 	{
 		val dataSource = context.getBean(DataSource.class);
 		val jdbcTemplate = new JdbcTemplate(dataSource);
-		val dbClean = new DBExecute(jdbcTemplate);
-		return dbClean;
+		return new DBExecute(jdbcTemplate);
 	}
 
 	@NonNull
 	JdbcTemplate jdbcTemplate;
 
-	private boolean execute(CommandLine cmd) throws URISyntaxException, DataAccessException, IOException
+	private boolean execute(CommandLine cmd) throws DataAccessException, IOException
 	{
 		if (!cmd.hasOption("file"))
 			return false;

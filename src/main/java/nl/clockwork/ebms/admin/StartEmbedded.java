@@ -18,7 +18,6 @@ package nl.clockwork.ebms.admin;
 
 import com.microsoft.applicationinsights.web.internal.ApplicationInsightsServletContextListener;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
@@ -102,8 +101,8 @@ public class StartEmbedded extends Start
 		app.startService(args);
 	}
 
-	private void startService(String[] args) throws ParseException, IOException, AclFormatException, URISyntaxException, Exception, MalformedURLException,
-			NoSuchAlgorithmException, InterruptedException
+	@Override
+	public void startService(String[] args) throws Exception
 	{
 		val options = createOptions();
 		val cmd = new DefaultParser().parse(options, args);
@@ -133,7 +132,7 @@ public class StartEmbedded extends Start
 				if (cmd.hasOption(HEALTH_OPTION))
 				{
 					initHealthServer(cmd, server);
-					handlerCollection.addHandler(createHealthContextHandler(cmd, contextLoaderListener));
+					handlerCollection.addHandler(createHealthContextHandler());
 				}
 				if (!cmd.hasOption(DISABLE_EBMS_SERVER_OPTION))
 				{
@@ -166,6 +165,7 @@ public class StartEmbedded extends Start
 			}
 	}
 
+	@Override
 	protected Options createOptions()
 	{
 		val result = super.createOptions();
@@ -192,7 +192,7 @@ public class StartEmbedded extends Start
 		}
 	}
 
-	private JdbcURL getHsqlDbJdbcUrl(CommandLine cmd, Properties properties) throws IOException, AclFormatException, URISyntaxException, ParseException
+	private JdbcURL getHsqlDbJdbcUrl(CommandLine cmd, Properties properties) throws IOException
 	{
 		JdbcURL result = null;
 		if (properties.getProperty(EBMS_JDBC_DRIVER_CLASS_NAME_PROPERTY).startsWith("org.hsqldb.jdbc") && cmd.hasOption(HSQLDB_OPTION))
@@ -271,7 +271,6 @@ public class StartEmbedded extends Start
 	}
 
 	private void addEbMSKeyStore(Properties properties, SslContextFactory.Server sslContextFactory, EbMSKeyStore ebMSKeyStore)
-			throws GeneralSecurityException, IOException
 	{
 		if (!StringUtils.isEmpty(properties.getProperty(HTTPS_PROTOCOLS_PROPERTY)))
 			sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(properties.getProperty(HTTPS_PROTOCOLS_PROPERTY), ',')));
@@ -283,7 +282,7 @@ public class StartEmbedded extends Start
 			sslContextFactory.setCertAlias(ebMSKeyStore.getDefaultAlias());
 	}
 
-	private void addEbMSTrustStore(Properties properties, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
+	private void addEbMSTrustStore(Properties properties, SslContextFactory.Server sslContextFactory) throws IOException
 	{
 		val trustStore = getResource(properties.getProperty(TRUSTSTORE_PATH_PROPERTY));
 		if (trustStore != null && trustStore.exists())
@@ -334,7 +333,7 @@ public class StartEmbedded extends Start
 					createUserRateLimiterFilterHolder(properties.getProperty(EBMS_USER_QUERIES_PER_SECOND_PROPERTY)),
 					"/*",
 					EnumSet.allOf(DispatcherType.class));
-		if (TRUE.equals(properties.getProperty(HTTPS_CLIENT_CERTIFICATE_AUTHENTICATION_PROPERTY).toLowerCase()))
+		if (TRUE.equalsIgnoreCase(properties.getProperty(HTTPS_CLIENT_CERTIFICATE_AUTHENTICATION_PROPERTY)))
 			result.addFilter(
 					createClientCertificateManagerFilterHolder(properties.getProperty(HTTPS_CLIENT_CERTIFICATE_HEADER_PROPERTY)),
 					"/*",
