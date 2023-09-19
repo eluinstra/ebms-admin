@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-
 import javax.servlet.http.HttpServletResponse;
 import org.apache.wicket.request.http.WebResponse;
 

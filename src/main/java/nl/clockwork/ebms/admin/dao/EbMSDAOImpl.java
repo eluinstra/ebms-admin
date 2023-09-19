@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.dao;
 
-
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.Expression;

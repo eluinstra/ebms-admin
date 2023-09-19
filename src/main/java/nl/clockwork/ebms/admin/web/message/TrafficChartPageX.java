@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-
 import de.adesso.wickedcharts.highcharts.options.Axis;
 import de.adesso.wickedcharts.highcharts.options.ChartOptions;
 import de.adesso.wickedcharts.highcharts.options.HorizontalAlignment;

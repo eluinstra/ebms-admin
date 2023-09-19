@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.model;
 
-
 import javax.xml.bind.JAXBException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

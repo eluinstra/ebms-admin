@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin;
 
-
 import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.Properties;

@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

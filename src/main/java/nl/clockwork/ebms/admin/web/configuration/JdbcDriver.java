@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-
 import java.util.Arrays;
 import java.util.Optional;
 import lombok.AccessLevel;

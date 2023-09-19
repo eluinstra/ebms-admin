@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin;
 
-
 import java.io.IOException;
 import java.io.Writer;
 import javax.servlet.http.HttpServletRequest;

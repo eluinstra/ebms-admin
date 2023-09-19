@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.dao;
 
-
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;

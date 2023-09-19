@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.cpa;
 
-
 import java.util.Iterator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

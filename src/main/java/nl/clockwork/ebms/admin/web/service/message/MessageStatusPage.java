@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
-
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;

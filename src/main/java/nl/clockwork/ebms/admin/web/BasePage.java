@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-
 import java.util.Locale;
 import nl.clockwork.ebms.admin.web.menu.MenuPanel;
 import org.apache.wicket.markup.html.WebPage;

@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.dao;
 
-
 import com.querydsl.sql.SQLQueryFactory;
 import javax.sql.DataSource;
 import lombok.AccessLevel;

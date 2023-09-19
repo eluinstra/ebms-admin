@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.dao;
 
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;

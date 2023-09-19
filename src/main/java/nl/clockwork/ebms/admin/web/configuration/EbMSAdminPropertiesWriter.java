@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Properties;

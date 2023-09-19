@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.service.cpa;
 
-
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.experimental.FieldDefaults;

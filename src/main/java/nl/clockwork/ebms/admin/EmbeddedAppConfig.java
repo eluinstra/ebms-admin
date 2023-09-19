@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin;
 
-
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
@@ -69,8 +68,9 @@ public class EmbeddedAppConfig
 {
 	public static final PropertySourcesPlaceholderConfigurer PROPERTY_SOURCE = propertySourcesPlaceholderConfigurer();
 
-	private EmbeddedAppConfig()
+	public EmbeddedAppConfig()
 	{
+		//do nothing
 	}
 
 	private static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer()

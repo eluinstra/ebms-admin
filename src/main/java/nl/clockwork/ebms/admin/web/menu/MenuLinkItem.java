@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.menu;
 
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
