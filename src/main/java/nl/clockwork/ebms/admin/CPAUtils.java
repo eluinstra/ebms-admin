@@ -119,7 +119,7 @@ public class CPAUtils
 				.flatMap(
 						p -> p.getCollaborationRole()
 								.stream()
-								.filter(r -> r.getRole().getName().equals(roleName) && r.getServiceBinding().getCanSend().size() > 0)
+								.filter(r -> r.getRole().getName().equals(roleName) && !r.getServiceBinding().getCanSend().isEmpty())
 								.map(r -> getServiceName(r.getServiceBinding().getService())))
 				.collect(Collectors.toList());
 	}
@@ -134,7 +134,7 @@ public class CPAUtils
 				.flatMap(
 						p -> p.getCollaborationRole()
 								.stream()
-								.filter(r -> r.getRole().getName().equals(roleName) && r.getServiceBinding().getCanReceive().size() > 0)
+								.filter(r -> r.getRole().getName().equals(roleName) && !r.getServiceBinding().getCanReceive().isEmpty())
 								.map(r -> getServiceName(r.getServiceBinding().getService())))
 				.collect(Collectors.toList());
 	}

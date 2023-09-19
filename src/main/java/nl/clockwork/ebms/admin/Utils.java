@@ -29,6 +29,10 @@ import lombok.val;
 
 public class Utils
 {
+	private Utils()
+	{
+	}
+
 	public static String readVersion(String propertiesFile)
 	{
 		try

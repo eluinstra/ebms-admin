@@ -20,9 +20,7 @@ import com.microsoft.applicationinsights.web.internal.ApplicationInsightsServlet
 import com.microsoft.applicationinsights.web.internal.WebRequestTrackingFilter;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
-import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
@@ -45,7 +43,6 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -149,7 +146,7 @@ public class Start implements SystemInterface
 		app.startService(args);
 	}
 
-	private void startService(String[] args) throws ParseException, Exception, MalformedURLException, IOException, InterruptedException
+	public void startService(String[] args) throws Exception
 	{
 		val options = createOptions();
 		val cmd = new DefaultParser().parse(options, args);
@@ -172,7 +169,7 @@ public class Start implements SystemInterface
 			if (cmd.hasOption(HEALTH_OPTION))
 			{
 				initHealthServer(cmd, server);
-				handlerCollection.addHandler(createHealthContextHandler(cmd, contextLoaderListener));
+				handlerCollection.addHandler(createHealthContextHandler());
 			}
 			println("Starting Server...");
 			try
@@ -281,7 +278,7 @@ public class Start implements SystemInterface
 		return result;
 	}
 
-	protected void initHealthServer(CommandLine cmd, Server server) throws MalformedURLException, IOException
+	protected void initHealthServer(CommandLine cmd, Server server)
 	{
 		val connector = createHealthConnector(cmd, server);
 		server.addConnector(connector);
@@ -317,7 +314,7 @@ public class Start implements SystemInterface
 		return result;
 	}
 
-	private void addKeyStore(CommandLine cmd, SslContextFactory.Server sslContextFactory, EbMSKeyStore ebMSKeyStore) throws MalformedURLException, IOException
+	private void addKeyStore(CommandLine cmd, SslContextFactory.Server sslContextFactory, EbMSKeyStore ebMSKeyStore)
 	{
 		val protocols = cmd.getOptionValue(PROTOCOLS_OPTION);
 		if (!StringUtils.isEmpty(protocols))
@@ -329,7 +326,7 @@ public class Start implements SystemInterface
 		sslContextFactory.setKeyStorePassword(ebMSKeyStore.getPassword());
 	}
 
-	private void addTrustStore(CommandLine cmd, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
+	private void addTrustStore(CommandLine cmd, SslContextFactory.Server sslContextFactory) throws IOException
 	{
 		val trustStoreType = cmd.getOptionValue(TRUST_STORE_TYPE_OPTION, DEFAULT_KEYSTORE_TYPE);
 		val trustStorePath = cmd.getOptionValue(TRUST_STORE_PATH_OPTION);
@@ -468,7 +465,7 @@ public class Start implements SystemInterface
 	protected FilterHolder createUserRateLimiterFilterHolder(String queriesPerSecond)
 	{
 		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.RateLimiterFilter.class);
-		result.setInitParameter(QUERIES_PER_SECOND_OPTION, queriesPerSecond);
+		result.setInitParameter(USER_QUERIES_PER_SECOND_OPTION, queriesPerSecond);
 		return result;
 	}
 
@@ -479,7 +476,7 @@ public class Start implements SystemInterface
 		return result;
 	}
 
-	private FilterHolder createClientCertificateAuthenticationFilterHolder(CommandLine cmd) throws MalformedURLException, IOException
+	private FilterHolder createClientCertificateAuthenticationFilterHolder(CommandLine cmd) throws IOException
 	{
 		println("Configuring Web Server client certificate authentication:");
 		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.ClientCertificateAuthenticationFilter.class);
@@ -521,7 +518,7 @@ public class Start implements SystemInterface
 		return result;
 	}
 
-	protected ServletContextHandler createHealthContextHandler(CommandLine cmd, ContextLoaderListener contextLoaderListener) throws Exception
+	protected ServletContextHandler createHealthContextHandler() throws Exception
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		result.setVirtualHosts(new String[]{"@" + HEALTH_CONNECTOR_NAME});
@@ -531,7 +528,7 @@ public class Start implements SystemInterface
 		return result;
 	}
 
-	protected Resource getResource(String path) throws MalformedURLException, IOException
+	protected Resource getResource(String path) throws IOException
 	{
 		val result = Resource.newResource(path);
 		return result.exists() ? result : Resource.newClassPathResource(path);
@@ -559,7 +556,7 @@ public class Start implements SystemInterface
 		}
 	}
 
-	private String toMD5(String s) throws NoSuchAlgorithmException, UnsupportedEncodingException
+	private String toMD5(String s)
 	{
 		return "MD5:" + DigestUtils.md5Hex(s);
 	}
