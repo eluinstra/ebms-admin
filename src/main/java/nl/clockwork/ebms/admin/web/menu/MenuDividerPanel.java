@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.menu;
 
-
 import org.apache.wicket.markup.html.panel.Panel;
 
 public class MenuDividerPanel extends Panel

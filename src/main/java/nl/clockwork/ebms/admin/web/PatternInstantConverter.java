@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import lombok.AccessLevel;

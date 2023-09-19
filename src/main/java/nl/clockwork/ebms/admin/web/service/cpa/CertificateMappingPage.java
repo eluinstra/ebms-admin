@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.service.cpa;
 
-
 import java.io.IOException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;

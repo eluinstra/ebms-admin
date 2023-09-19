@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-
 import java.util.EnumSet;
 import java.util.List;
 import lombok.AccessLevel;

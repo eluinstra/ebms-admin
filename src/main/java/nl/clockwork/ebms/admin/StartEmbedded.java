@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin;
 
-
 import com.microsoft.applicationinsights.web.internal.ApplicationInsightsServletContextListener;
 import java.io.IOException;
 import java.net.URISyntaxException;

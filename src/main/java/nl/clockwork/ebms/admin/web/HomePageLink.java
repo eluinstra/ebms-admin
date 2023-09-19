@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 
 public class HomePageLink extends BookmarkablePageLink<Void>

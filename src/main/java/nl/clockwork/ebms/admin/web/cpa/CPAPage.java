@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.cpa;
 
-
 import nl.clockwork.ebms.admin.model.CPA;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.PageLink;

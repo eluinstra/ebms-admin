@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-
 import java.net.URISyntaxException;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;

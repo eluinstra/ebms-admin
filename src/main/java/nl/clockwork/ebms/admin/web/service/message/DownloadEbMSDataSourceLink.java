@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
-
 import lombok.val;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.service.model.DataSource;

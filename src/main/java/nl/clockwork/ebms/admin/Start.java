@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin;
 
-
 import com.microsoft.applicationinsights.web.internal.ApplicationInsightsServletContextListener;
 import com.microsoft.applicationinsights.web.internal.WebRequestTrackingFilter;
 import java.io.File;

@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin;
 
-
 import lombok.val;
 import org.apache.activemq.xbean.BrokerFactoryBean;
 import org.springframework.core.io.ClassPathResource;

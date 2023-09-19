@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.service.cpa;
 
-
 import java.security.cert.X509Certificate;
 import lombok.AccessLevel;
 import lombok.NonNull;

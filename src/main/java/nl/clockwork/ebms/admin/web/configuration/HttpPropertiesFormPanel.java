@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-
 import java.util.Locale;
 import lombok.AccessLevel;
 import lombok.Data;

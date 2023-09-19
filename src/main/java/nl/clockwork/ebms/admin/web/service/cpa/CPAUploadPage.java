@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.service.cpa;
 
-
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Data;

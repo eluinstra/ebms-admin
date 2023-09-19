@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-
 import java.util.Arrays;
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.form.DropDownChoice;

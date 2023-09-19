@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-
 import java.util.List;
 import nl.clockwork.ebms.admin.web.BootstrapPanelBorder;
 import org.apache.wicket.markup.html.list.ListItem;

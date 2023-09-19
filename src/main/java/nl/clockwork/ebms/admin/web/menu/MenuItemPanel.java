@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.menu;
 
-
 import lombok.val;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;

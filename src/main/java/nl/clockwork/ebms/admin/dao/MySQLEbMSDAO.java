@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.dao;
 
-
 import com.querydsl.sql.SQLQueryFactory;
 import java.io.IOException;
 import java.sql.SQLException;

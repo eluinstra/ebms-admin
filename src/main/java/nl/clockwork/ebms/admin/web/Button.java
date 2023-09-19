@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-
 import lombok.Builder;
 import org.apache.wicket.model.IModel;
 

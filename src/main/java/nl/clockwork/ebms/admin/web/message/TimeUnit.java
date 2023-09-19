@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Period;

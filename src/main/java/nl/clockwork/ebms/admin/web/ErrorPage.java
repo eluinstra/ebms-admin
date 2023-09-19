@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import lombok.AccessLevel;
