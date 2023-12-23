@@ -21,8 +21,8 @@ import com.querydsl.core.types.Path;
 import com.querydsl.core.types.PathMetadata;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.sql.ColumnMetadata;
+import jakarta.annotation.Generated;
 import java.sql.Types;
-import javax.annotation.Generated;
 
 /**
  * QUrlMapping is a Querydsl query type for QUrlMapping

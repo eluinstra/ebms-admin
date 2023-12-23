@@ -15,10 +15,9 @@
  */
 package nl.clockwork.ebms.admin;
 
-
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Writer;
-import jakarta.servlet.http.HttpServletRequest;
 import org.eclipse.jetty.server.handler.ErrorHandler;
 
 public class CustomErrorHandler extends ErrorHandler

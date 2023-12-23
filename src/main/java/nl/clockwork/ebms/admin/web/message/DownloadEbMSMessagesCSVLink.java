@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import lombok.AccessLevel;

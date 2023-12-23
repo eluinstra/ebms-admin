@@ -25,8 +25,8 @@ import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.SimplePath;
 import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.sql.ColumnMetadata;
+import jakarta.annotation.Generated;
 import java.sql.Types;
-import javax.annotation.Generated;
 
 /**
  * QEbmsMessage is a Querydsl query type for QEbmsMessage

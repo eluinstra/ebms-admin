@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin;
 
-
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.val;

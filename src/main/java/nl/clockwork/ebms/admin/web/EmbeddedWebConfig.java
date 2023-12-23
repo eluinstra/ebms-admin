@@ -15,20 +15,19 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import com.fasterxml.jackson.jakarta.rs.json.JacksonJsonProvider;
+import jakarta.xml.ws.Endpoint;
+import jakarta.xml.ws.soap.SOAPBinding;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
-import jakarta.xml.ws.Endpoint;
-import jakarta.xml.ws.soap.SOAPBinding;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
@@ -69,11 +68,11 @@ public class EmbeddedWebConfig
 	@Value("#{'${ebms.cors.allowOrigins}'.split(',')}")
 	List<String> allowOrigins;
 
-	@Bean
-	public WicketApplication wicketApplication()
-	{
-		return new WicketApplication(maxItemsPerPage, eventListenerType);
-	}
+	// FIXME @Bean
+	// public WicketApplication wicketApplication()
+	// {
+	// 	return new WicketApplication(maxItemsPerPage, eventListenerType);
+	// }
 
 	@Bean
 	public Endpoint cpaServiceEndpoint(CPAService cpaService)

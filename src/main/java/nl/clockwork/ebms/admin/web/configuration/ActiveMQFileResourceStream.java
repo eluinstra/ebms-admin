@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-
 import java.net.URISyntaxException;
 import org.apache.wicket.core.util.resource.PackageResourceStream;
 

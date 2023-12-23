@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.model;
 
-
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;

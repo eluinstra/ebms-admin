@@ -15,9 +15,7 @@
  */
 package nl.clockwork.ebms.admin;
 
-
-import com.microsoft.applicationinsights.web.internal.ApplicationInsightsServletContextListener;
-import com.microsoft.applicationinsights.web.internal.WebRequestTrackingFilter;
+import jakarta.servlet.DispatcherType;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -27,12 +25,12 @@ import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.EventListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.management.remote.JMXServiceURL;
-import jakarta.servlet.DispatcherType;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -165,7 +163,7 @@ public class Start implements SystemInterface
 			if (cmd.hasOption(SOAP_OPTION) || !cmd.hasOption(HEADLESS_OPTION))
 			{
 				initWebServer(cmd, server);
-				handlerCollection.addHandler(createWebContextHandler(cmd, contextLoaderListener));
+				// handlerCollection.addHandler(createWebContextHandler(cmd, (EventListener)contextLoaderListener));
 			}
 			if (cmd.hasOption(HEALTH_OPTION))
 			{
@@ -392,7 +390,7 @@ public class Start implements SystemInterface
 		return result;
 	}
 
-	protected ServletContextHandler createWebContextHandler(CommandLine cmd, ContextLoaderListener contextLoaderListener) throws Exception
+	protected ServletContextHandler createWebContextHandler(CommandLine cmd, EventListener contextLoaderListener) throws Exception
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		result.setVirtualHosts(new String[]{"@" + WEB_CONNECTOR_NAME});
@@ -400,8 +398,8 @@ public class Start implements SystemInterface
 		result.setContextPath(getPath(cmd));
 		if (cmd.hasOption(AZURE_INSIGHTS_OPTION))
 		{
-			result.addFilter(createWebRequestTrackingFilterHolder(), "/*", EnumSet.allOf(DispatcherType.class));
-			result.addEventListener(new ApplicationInsightsServletContextListener());
+			// FIXME result.addFilter(createWebRequestTrackingFilterHolder(), "/*", EnumSet.allOf(DispatcherType.class));
+			// FIXME result.addEventListener(new ApplicationInsightsServletContextListener());
 		}
 		if (cmd.hasOption(AUDIT_LOGGING_OPTION))
 			result.addFilter(createRemoteAddressMDCFilterHolder(), "/*", EnumSet.allOf(DispatcherType.class));
@@ -439,17 +437,17 @@ public class Start implements SystemInterface
 			result.addServlet(servletHolder, "/fonts/*");
 			result.addServlet(servletHolder, "/images/*");
 			result.addServlet(servletHolder, "/js/*");
-			result.addFilter(createWicketFilterHolder(), "/*", EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
+			// FIXME result.addFilter(createWicketFilterHolder(), "/*", EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
 		}
 		result.setErrorHandler(createErrorHandler());
 		result.addEventListener(contextLoaderListener);
 		return result;
 	}
 
-	protected FilterHolder createWebRequestTrackingFilterHolder()
-	{
-		return new FilterHolder(WebRequestTrackingFilter.class);
-	}
+	// protected FilterHolder createWebRequestTrackingFilterHolder()
+	// {
+	// return new FilterHolder(WebRequestTrackingFilter.class);
+	// }
 
 	protected FilterHolder createRemoteAddressMDCFilterHolder()
 	{
@@ -501,14 +499,14 @@ public class Start implements SystemInterface
 		}
 	}
 
-	private FilterHolder createWicketFilterHolder()
-	{
-		val result = new FilterHolder(org.apache.wicket.protocol.http.WicketFilter.class);
-		result.setInitParameter("applicationFactoryClassName", "org.apache.wicket.spring.SpringWebApplicationFactory");
-		result.setInitParameter("applicationBean", "wicketApplication");
-		result.setInitParameter("filterMappingUrlPattern", "/*");
-		return result;
-	}
+	// private FilterHolder createWicketFilterHolder()
+	// {
+	// val result = new FilterHolder(org.apache.wicket.protocol.http.WicketFilter.class);
+	// result.setInitParameter("applicationFactoryClassName", "org.apache.wicket.spring.SpringWebApplicationFactory");
+	// result.setInitParameter("applicationBean", "wicketApplication");
+	// result.setInitParameter("filterMappingUrlPattern", "/*");
+	// return result;
+	// }
 
 	private ErrorPageErrorHandler createErrorHandler()
 	{

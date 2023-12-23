@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;

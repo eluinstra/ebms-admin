@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.menu;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;

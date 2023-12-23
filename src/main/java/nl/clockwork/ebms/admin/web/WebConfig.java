@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-
 import java.util.Collections;
 import java.util.HashMap;
 import javax.xml.namespace.QName;

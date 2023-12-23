@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
-
 import org.apache.wicket.model.IModel;
 
 public class ClientKeystorePropertiesFormPanel extends JavaKeyStorePropertiesFormPanel

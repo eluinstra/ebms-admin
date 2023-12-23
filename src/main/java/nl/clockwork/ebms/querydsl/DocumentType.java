@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.querydsl;
 
-
 import com.querydsl.sql.types.AbstractType;
 import java.io.IOException;
 import java.sql.PreparedStatement;

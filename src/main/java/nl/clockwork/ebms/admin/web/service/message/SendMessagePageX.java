@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.JAXBException;

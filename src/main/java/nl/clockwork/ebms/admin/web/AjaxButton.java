@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-
 import lombok.Builder;
 import lombok.NonNull;
 import org.apache.wicket.ajax.AjaxRequestTarget;

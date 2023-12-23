@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.service.cpa;
 
-
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.PageLink;
 import org.apache.wicket.markup.html.WebPage;

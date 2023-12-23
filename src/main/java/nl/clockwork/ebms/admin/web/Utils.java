@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-
 import io.vavr.Function2;
 import java.net.URLConnection;
 import java.util.Arrays;

@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
-
 import de.adesso.wickedcharts.chartjs.chartoptions.colors.SimpleColor;
 import java.awt.Color;
 import lombok.AccessLevel;

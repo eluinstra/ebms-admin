@@ -15,8 +15,7 @@
  */
 package nl.clockwork.ebms.admin;
 
-
-import com.microsoft.applicationinsights.web.internal.ApplicationInsightsServletContextListener;
+import jakarta.servlet.DispatcherType;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -24,7 +23,6 @@ import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.util.EnumSet;
 import java.util.Properties;
-import jakarta.servlet.DispatcherType;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
@@ -321,8 +319,8 @@ public class StartEmbedded extends Start
 		result.setContextPath("/");
 		if (TRUE.equals(properties.getProperty(AZURE_AZURE_INSIGHTS_PROPERTY)))
 		{
-			result.addFilter(createWebRequestTrackingFilterHolder(), "/*", EnumSet.allOf(DispatcherType.class));
-			result.addEventListener(new ApplicationInsightsServletContextListener());
+			// FIXME result.addFilter(createWebRequestTrackingFilterHolder(), "/*", EnumSet.allOf(DispatcherType.class));
+			// FIXME result.addEventListener(new ApplicationInsightsServletContextListener());
 		}
 		if (LoggingUtils.Status.ENABLED.name().equals(properties.getProperty(LOGGING_MDC_PROPERTY))
 				&& LoggingUtils.Status.ENABLED.name().equals(properties.getProperty(LOGGING_MDC_AUDIT_PROPERTY)))

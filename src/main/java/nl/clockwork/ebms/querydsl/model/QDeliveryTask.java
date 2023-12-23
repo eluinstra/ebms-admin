@@ -24,8 +24,8 @@ import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.sql.ColumnMetadata;
+import jakarta.annotation.Generated;
 import java.sql.Types;
-import javax.annotation.Generated;
 
 /**
  * QDeliveryTask is a Querydsl query type for QDeliveryTask
