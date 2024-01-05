@@ -26,7 +26,7 @@ import nl.clockwork.ebms.admin.web.AjaxButton;
 import nl.clockwork.ebms.admin.web.Consumer;
 import nl.clockwork.ebms.service.model.DataSource;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalDialog;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -87,9 +87,9 @@ public class DefaultDataSourcesPanel extends DataSourcesPanel
 			add(createAddButton("add", dataSourceModalWindow));
 		}
 
-		private AjaxButton createAddButton(String id, final ModalWindow dataSourceModalWindow)
+		private AjaxButton createAddButton(String id, final ModalDialog dataSourceModalWindow)
 		{
-			return AjaxButton.builder().id(id).onSubmit(t -> dataSourceModalWindow.show(t)).build();
+			return AjaxButton.builder().id(id).onSubmit(t -> dataSourceModalWindow.open(t)).build();
 		}
 	}
 

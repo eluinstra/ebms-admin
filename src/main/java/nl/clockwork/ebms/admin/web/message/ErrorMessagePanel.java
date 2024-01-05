@@ -16,7 +16,8 @@
 package nl.clockwork.ebms.admin.web.message;
 
 import nl.clockwork.ebms.admin.web.AjaxLink;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalDialog;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
@@ -25,16 +26,16 @@ public class ErrorMessagePanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
 
-	public ErrorMessagePanel(final ModalWindow window, IModel<String> model)
+	public ErrorMessagePanel(final ModalDialog window, IModel<String> model)
 	{
-		super(window.getContentId(), model);
+		super(window.getId(), model);
 		add(new MultiLineLabel("errorMessage", model));
 		add(createClose("close", window));
 	}
 
-	private AjaxLink<Void> createClose(String id, final ModalWindow window)
+	private AjaxLink<Void> createClose(String id, final ModalDialog window)
 	{
-		return AjaxLink.<Void>builder().id(id).onClick(t -> window.close(t)).build();
+		return AjaxLink.<Void>builder().id(id).onClick(window::close).build();
 	}
 
 }

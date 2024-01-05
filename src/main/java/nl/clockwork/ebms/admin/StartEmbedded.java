@@ -82,7 +82,6 @@ public class StartEmbedded extends Start
 	private static final String EBMS_JDBC_URL_PROPERTY = "ebms.jdbc.url";
 	private static final String LOGGING_MDC_PROPERTY = "logging.mdc";
 	private static final String LOGGING_MDC_AUDIT_PROPERTY = "logging.mdc.audit";
-	private static final String AZURE_AZURE_INSIGHTS_PROPERTY = "ebms.applicationInsights";
 	private static final String AZURE_VAULTURI_PROPERTY = "azure.keyvault.uri";
 	private static final String AZURE_VAULTTENNANT_ID_PROPERTY = "azure.keyvault.tennantid";
 	private static final String AZURE_VAULTCLIENT_ID_PROPERTY = "azure.keyvault.clientid";
@@ -317,11 +316,6 @@ public class StartEmbedded extends Start
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		result.setVirtualHosts(new String[]{"@" + EBMS_CONNECTOR_NAME});
 		result.setContextPath("/");
-		if (TRUE.equals(properties.getProperty(AZURE_AZURE_INSIGHTS_PROPERTY)))
-		{
-			// FIXME result.addFilter(createWebRequestTrackingFilterHolder(), "/*", EnumSet.allOf(DispatcherType.class));
-			// FIXME result.addEventListener(new ApplicationInsightsServletContextListener());
-		}
 		if (LoggingUtils.Status.ENABLED.name().equals(properties.getProperty(LOGGING_MDC_PROPERTY))
 				&& LoggingUtils.Status.ENABLED.name().equals(properties.getProperty(LOGGING_MDC_AUDIT_PROPERTY)))
 			result.addFilter(createRemoteAddressMDCFilterHolder(), "/*", EnumSet.allOf(DispatcherType.class));
@@ -332,7 +326,7 @@ public class StartEmbedded extends Start
 					createUserRateLimiterFilterHolder(properties.getProperty(EBMS_USER_QUERIES_PER_SECOND_PROPERTY)),
 					"/*",
 					EnumSet.allOf(DispatcherType.class));
-		if (TRUE.equals(properties.getProperty(HTTPS_CLIENT_CERTIFICATE_AUTHENTICATION_PROPERTY).toLowerCase()))
+		if (TRUE.equalsIgnoreCase(properties.getProperty(HTTPS_CLIENT_CERTIFICATE_AUTHENTICATION_PROPERTY)))
 			result.addFilter(
 					createClientCertificateManagerFilterHolder(properties.getProperty(HTTPS_CLIENT_CERTIFICATE_HEADER_PROPERTY)),
 					"/*",

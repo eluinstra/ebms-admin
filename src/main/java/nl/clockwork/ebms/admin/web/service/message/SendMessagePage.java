@@ -353,7 +353,7 @@ public class SendMessagePage extends BasePage
 			add(dataSources_);
 			val dataSourceModalWindow = new DataSourceModalWindow("dataSourceModelWindow", model.getObject(), this);
 			add(dataSourceModalWindow);
-			val add = AjaxButton.builder().id("add").onSubmit(t -> dataSourceModalWindow.show(t)).build();
+			val add = AjaxButton.builder().id("add").onSubmit(t -> dataSourceModalWindow.open(t)).build();
 			add(add);
 		}
 	}

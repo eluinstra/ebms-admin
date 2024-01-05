@@ -30,7 +30,7 @@ import nl.clockwork.ebms.service.model.DataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalDialog;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
@@ -41,24 +41,24 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 
-public class DataSourceModalWindow extends ModalWindow
+public class DataSourceModalWindow extends ModalDialog
 {
 	private static final long serialVersionUID = 1L;
 
 	public DataSourceModalWindow(String id, final List<DataSource> dataSources, final Component...components)
 	{
 		super(id);
-		setCssClassName(ModalWindow.CSS_CLASS_GRAY);
-		setContent(new DataSourcePanel(getContentId(), dataSources, components));
-		setCookieName("dataSource");
-		setCloseButtonCallback(new nl.clockwork.ebms.admin.web.CloseButtonCallback());
+		// setCssClassName(ModalWindow.CSS_CLASS_GRAY);
+		setContent(new DataSourcePanel(getId(), dataSources, components));
+		// setCookieName("dataSource");
+		// setCloseButtonCallback(new nl.clockwork.ebms.admin.web.CloseButtonCallback());
 	}
 
-	@Override
-	public IModel<String> getTitle()
-	{
-		return Model.of(getLocalizer().getString("dataSource", this));
-	}
+	// @Override
+	// public IModel<String> getTitle()
+	// {
+	// 	return Model.of(getLocalizer().getString("dataSource", this));
+	// }
 
 	public class DataSourcePanel extends Panel
 	{
@@ -84,7 +84,7 @@ public class DataSourceModalWindow extends ModalWindow
 			return components;
 		}
 
-		public ModalWindow getWindow()
+		public ModalDialog getWindow()
 		{
 			return DataSourceModalWindow.this;
 		}

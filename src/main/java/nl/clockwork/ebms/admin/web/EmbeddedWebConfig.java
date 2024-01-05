@@ -68,11 +68,11 @@ public class EmbeddedWebConfig
 	@Value("#{'${ebms.cors.allowOrigins}'.split(',')}")
 	List<String> allowOrigins;
 
-	// FIXME @Bean
-	// public WicketApplication wicketApplication()
-	// {
-	// 	return new WicketApplication(maxItemsPerPage, eventListenerType);
-	// }
+	@Bean
+	public WicketApplication wicketApplication()
+	{
+		return new WicketApplication(maxItemsPerPage, eventListenerType);
+	}
 
 	@Bean
 	public Endpoint cpaServiceEndpoint(CPAService cpaService)

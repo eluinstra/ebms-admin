@@ -17,10 +17,27 @@ package nl.clockwork.ebms.admin.web.message;
 
 import java.util.EnumSet;
 import java.util.List;
+
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
+import org.apache.wicket.IGenericComponent;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalDialog;
+import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.PropertyListView;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+
 import lombok.AccessLevel;
 import lombok.NonNull;
-import lombok.experimental.FieldDefaults;
 import lombok.val;
+import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.EbMSAction;
 import nl.clockwork.ebms.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.Constants;
@@ -39,21 +56,6 @@ import nl.clockwork.ebms.admin.web.TextArea;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.delivery.task.DeliveryTaskStatus;
-import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.Component;
-import org.apache.wicket.IGenericComponent;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.PropertyListView;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MessagePage extends BasePage implements IGenericComponent<EbMSMessage, MessagePage>
@@ -74,7 +76,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 			item.add(InstantLabel.of("timestamp", Constants.DATETIME_FORMAT));
 			item.add(new Label("uri"));
 			item.add(errorMessageModalWindow);
-			val link = AjaxLink.<Void>builder().id("showErrorMessageWindow").onClick(t -> errorMessageModalWindow.show(t)).build();
+			val link = AjaxLink.<Void>builder().id("showErrorMessageWindow").onClick(t -> errorMessageModalWindow.open(t)).build();
 			link.setEnabled(DeliveryTaskStatus.FAILED.equals(item.getModelObject().getStatus()));
 			link.add(new Label("status"));
 			item.add(link);
@@ -146,7 +148,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 	}
 
 	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-	public class ErrorMessageModalWindow extends ModalWindow
+	public class ErrorMessageModalWindow extends ModalDialog
 	{
 		private static final long serialVersionUID = 1L;
 		@NonNull
@@ -156,17 +158,17 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		{
 			super(id);
 			this.title = title;
-			setCssClassName(ModalWindow.CSS_CLASS_GRAY);
+			// setCssClassName(ModalDialog.CSS_CLASS_GRAY);
 			setContent(new ErrorMessagePanel(this, Model.of(errorMessage)));
-			setCookieName("sendError");
-			setCloseButtonCallback(new nl.clockwork.ebms.admin.web.CloseButtonCallback());
+			// setCookieName("sendError");
+			// setCloseButtonCallback(new nl.clockwork.ebms.admin.web.CloseButtonCallback());
 		}
 
-		@Override
-		public IModel<String> getTitle()
-		{
-			return new Model<>(getLocalizer().getString(title, this));
-		}
+		// @Override
+		// public IModel<String> getTitle()
+		// {
+		// 	return new Model<>(getLocalizer().getString(title, this));
+		// }
 	}
 
 	private Link<Void> createRefToMessageIdLink(String id)
@@ -182,7 +184,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 	private Component[] createActionField(String id)
 	{
 		val messageErrorModalWindow = new ErrorMessageModalWindow("messageErrorWindow", "messageError", Utils.getErrorList(getModelObject().getContent()));
-		val link = AjaxLink.<Void>builder().id("showMessageErrorWindow").onClick(t -> messageErrorModalWindow.show(t)).build();
+		val link = AjaxLink.<Void>builder().id("showMessageErrorWindow").onClick(t -> messageErrorModalWindow.open(t)).build();
 		link.setEnabled(EbMSAction.EBMS_SERVICE_URI.equals(getModelObject().getService()) && "MessageError".equals(getModelObject().getAction()));
 		link.add(new Label(id));
 		return new Component[]{link, messageErrorModalWindow};

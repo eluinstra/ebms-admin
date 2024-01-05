@@ -46,7 +46,7 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.IGenericComponent;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalDialog;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -81,7 +81,7 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 			item.add(InstantLabel.of("timestamp", Constants.DATETIME_FORMAT));
 			item.add(new Label("uri"));
 			item.add(errorMessageModalWindow);
-			val link = AjaxLink.<Void>builder().id("showErrorMessageWindow").onClick(t -> errorMessageModalWindow.show(t)).build();
+			val link = AjaxLink.<Void>builder().id("showErrorMessageWindow").onClick(t -> errorMessageModalWindow.open(t)).build();
 			link.setEnabled(DeliveryTaskStatus.FAILED.equals(item.getModelObject().getStatus()));
 			link.add(new Label("status"));
 			item.add(link);
@@ -168,7 +168,7 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 	}
 
 	@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-	public class ErrorMessageModalWindow extends ModalWindow
+	public class ErrorMessageModalWindow extends ModalDialog
 	{
 		private static final long serialVersionUID = 1L;
 		String title;
@@ -177,17 +177,17 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 		{
 			super(id);
 			this.title = title;
-			setCssClassName(ModalWindow.CSS_CLASS_GRAY);
+			// setCssClassName(ModalWindow.CSS_CLASS_GRAY);
 			setContent(new ErrorMessagePanel(this, Model.of(errorMessage)));
-			setCookieName("sendError");
-			setCloseButtonCallback(new nl.clockwork.ebms.admin.web.CloseButtonCallback());
+			// setCookieName("sendError");
+			// setCloseButtonCallback(new nl.clockwork.ebms.admin.web.CloseButtonCallback());
 		}
 
-		@Override
-		public IModel<String> getTitle()
-		{
-			return new Model<>(getLocalizer().getString(title, this));
-		}
+		// @Override
+		// public IModel<String> getTitle()
+		// {
+		// 	return new Model<>(getLocalizer().getString(title, this));
+		// }
 	}
 
 	private Link<Void> createViewRefToMessageIdLink(String id)
@@ -205,7 +205,7 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 	{
 		// TODO improve: do not generate messageErrorModalWindow and link if message is not of type MessageError
 		val messageErrorModalWindow = new ErrorMessageModalWindow("messageErrorWindow", "messageError", Utils.getErrorList(getModelObject().getContent()));
-		val link = AjaxLink.<Void>builder().id("showMessageErrorWindow").onClick(t -> messageErrorModalWindow.show(t)).build();
+		val link = AjaxLink.<Void>builder().id("showMessageErrorWindow").onClick(t -> messageErrorModalWindow.open(t)).build();
 		link.setEnabled(EbMSAction.EBMS_SERVICE_URI.equals(getModelObject().getService()) && "MessageError".equals(getModelObject().getAction()));
 		link.add(new Label(id));
 		return new Component[]{link, messageErrorModalWindow};
