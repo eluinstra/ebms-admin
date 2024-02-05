@@ -2,4 +2,4 @@ EbMS adapter for Java. Supports [EbMS 2.0 specification]({{ site.baseurl }}{% li
 
 See [here]({{ site.baseurl }}{% link ebms-admin/introduction.md %}) for more information
 
-Donate [here](https://paypal.me/EdwinLuinstra).
+Please consider a donation to help maintaining this project [here](https://paypal.me/EdwinLuinstra) or [here](https://www.patreon.com/eluinstra).

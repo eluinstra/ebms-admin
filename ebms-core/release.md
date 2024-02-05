@@ -4,6 +4,18 @@ sort: 7
 
 # Release Notes
 
+### [ebms-core-2.19.3.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.19.3/ebms-core-2.19.3.jar)
+
+- updated dependecies
+- fixed mssql upgrade scripts
+- fixed timezone issue in EbMS Header
+- fixed MSSQL duplicate query
+- fixed duration issue in CPA
+
+### [ebms-core-2.19.2.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.19.2/ebms-core-2.19.2.jar)
+
+- fixed Acknowledgment response MessageHeader
+
 ### [ebms-core-2.19.1.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.19.1/ebms-core-2.19.1.jar)
 
 - updated dependecies
@@ -19,6 +31,17 @@ sort: 7
 - removed Apache HttpClient
 - replaced URLConnection by Java 11 HttpClient
 - updated REST API
+
+### [ebms-core-2.18.10.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.18.10/ebms-core-2.18.10.jar)
+
+- updated dependecies
+- fixed timezone issue in EbMS Header
+- fixed MSSQL duplicate query
+- fixed duration issue in CPA
+
+### [ebms-core-2.18.9.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.18.9/ebms-core-2.18.9.jar)
+
+- fixed Acknowledgment response MessageHeader
 
 ### [ebms-core-2.18.8.jar](https://repo1.maven.org/maven2/nl/clockwork/ebms/ebms-core/2.18.8/ebms-core-2.18.8.jar)
 

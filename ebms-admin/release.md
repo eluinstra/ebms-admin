@@ -5,8 +5,21 @@ sort: 10
 # Release Notes
 
 ```note
-{{ site.ebms.core.version }} and ebms-admin-2.18.8 are the latest versions.
+{{ site.ebms.core.version }} and ebms-admin-2.18.10 are the latest versions.
 ```
+
+### [ebms-admin-2.19.3.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.19.3/ebms-admin-2.19.3.jar)
+
+- updated dependecies
+- fixed mssql upgrade scripts
+- fixed mysql/log4j issue
+- fixed timezone issue in EbMS Header
+- fixed MSSQL duplicate query
+- fixed duration issue in CPA
+
+### [ebms-admin-2.19.2.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.19.2/ebms-admin-2.19.2.jar)
+
+- fixed Acknowledgment response MessageHeader
 
 ### [ebms-admin-2.19.1.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.19.1/ebms-admin-2.19.1.jar)
 
@@ -39,6 +52,18 @@ sort: 10
 - updated REST API
 
 NB: this release contains some major database changes (especially for MSSQL and MariaDB)
+
+### [ebms-admin-2.18.10.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.18.10/ebms-admin-2.18.10.jar)
+
+- updated dependecies
+- fixed mysql/log4j issue
+- fixed timezone issue in EbMS Header
+- fixed MSSQL duplicate query
+- fixed duration issue in CPA
+
+### [ebms-admin-2.18.9.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.18.9/ebms-admin-2.18.9.jar)
+
+- fixed Acknowledgment response MessageHeader
 
 ### [ebms-admin-2.18.8.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.18.8/ebms-admin-2.18.8.jar)
 
