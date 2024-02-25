@@ -231,22 +231,6 @@
       <artifactId>hsqldb</artifactId>
       <version>2.7.2</version>
     </dependency>
-    <!-- <dependency>
-      <groupId>org.apache.ignite</groupId>
-      <artifactId>ignite-slf4j</artifactId>
-      <version>2.16.0</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-context</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.ignite</groupId>
-      <artifactId>ignite-spring-cache-ext</artifactId>
-      <version>1.0.0</version>
-    </dependency> -->
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jdk8</artifactId>
@@ -603,13 +587,6 @@
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
         <version>3.5.2</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-transform-maven-shade-plugin-extensions</artifactId>
-            <version>0.1.0</version>
-          </dependency>
-        </dependencies>
         <configuration>
           <createDependencyReducedPom>false</createDependencyReducedPom>
           <transformers>
@@ -668,6 +645,13 @@
             </filter>
           </filters>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-transform-maven-shade-plugin-extensions</artifactId>
+            <version>0.1.0</version>
+          </dependency>
+        </dependencies>
         <executions>
           <execution>
             <goals>

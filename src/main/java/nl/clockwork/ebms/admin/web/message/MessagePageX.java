@@ -186,7 +186,7 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 		// @Override
 		// public IModel<String> getTitle()
 		// {
-		// 	return new Model<>(getLocalizer().getString(title, this));
+		// return new Model<>(getLocalizer().getString(title, this));
 		// }
 	}
 

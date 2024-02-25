@@ -37,8 +37,6 @@ import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 
 public class DataSourceModalWindow extends ModalDialog
@@ -48,17 +46,8 @@ public class DataSourceModalWindow extends ModalDialog
 	public DataSourceModalWindow(String id, final List<DataSource> dataSources, final Component...components)
 	{
 		super(id);
-		// setCssClassName(ModalWindow.CSS_CLASS_GRAY);
-		setContent(new DataSourcePanel(getId(), dataSources, components));
-		// setCookieName("dataSource");
-		// setCloseButtonCallback(new nl.clockwork.ebms.admin.web.CloseButtonCallback());
+		setContent(new DataSourcePanel("content", dataSources, components));
 	}
-
-	// @Override
-	// public IModel<String> getTitle()
-	// {
-	// 	return Model.of(getLocalizer().getString("dataSource", this));
-	// }
 
 	public class DataSourcePanel extends Panel
 	{

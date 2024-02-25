@@ -16,7 +16,6 @@
 package nl.clockwork.ebms.admin.web.message;
 
 import nl.clockwork.ebms.admin.web.AjaxLink;
-
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalDialog;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.panel.Panel;

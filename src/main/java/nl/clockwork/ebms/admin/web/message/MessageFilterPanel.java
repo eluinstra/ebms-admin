@@ -15,10 +15,10 @@
  */
 package nl.clockwork.ebms.admin.web.message;
 
+import jakarta.xml.bind.JAXBException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.xml.bind.JAXBException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;

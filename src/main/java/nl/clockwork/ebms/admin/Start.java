@@ -15,6 +15,7 @@
  */
 package nl.clockwork.ebms.admin;
 
+import jakarta.servlet.DispatcherType;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -29,9 +30,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import javax.management.remote.JMXServiceURL;
-
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
+import nl.clockwork.ebms.admin.web.ExtensionProvider;
+import nl.clockwork.ebms.security.KeyStoreType;
+import nl.clockwork.ebms.server.servlet.HealthServlet;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -66,15 +72,6 @@ import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-
-import jakarta.servlet.DispatcherType;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.admin.web.ExtensionProvider;
-import nl.clockwork.ebms.security.KeyStoreType;
-import nl.clockwork.ebms.server.servlet.HealthServlet;
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @RequiredArgsConstructor
@@ -376,7 +373,7 @@ public class Start implements SystemInterface
 		server.addBean(mBeanContainer);
 		server.addBean(Log.getLog());
 		val jmxURL = new JMXServiceURL("rmi", null, Integer.parseInt(cmd.getOptionValue(JMX_PORT_OPTION, DEFAULT_JMS_PORT)), "/jndi/rmi:///jmxrmi");
-		val sslContextFactory = cmd.hasOption("ssl") ? createSslContextFactory(cmd,false) : null;
+		val sslContextFactory = cmd.hasOption("ssl") ? createSslContextFactory(cmd, false) : null;
 		val jmxServer = new ConnectorServer(jmxURL, createEnv(cmd), "org.eclipse.jetty.jmx:name=rmiconnectorserver", sslContextFactory);
 		server.addBean(jmxServer);
 		println("JMX Server configured on " + jmxURL);

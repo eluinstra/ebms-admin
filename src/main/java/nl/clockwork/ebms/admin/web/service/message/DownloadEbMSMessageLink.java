@@ -15,12 +15,12 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;

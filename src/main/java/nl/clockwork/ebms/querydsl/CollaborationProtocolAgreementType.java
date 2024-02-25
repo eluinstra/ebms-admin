@@ -16,11 +16,11 @@
 package nl.clockwork.ebms.querydsl;
 
 import com.querydsl.sql.types.AbstractType;
+import jakarta.xml.bind.JAXBException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import javax.xml.bind.JAXBException;
 import nl.clockwork.ebms.jaxb.JAXBParser;
 import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement;
 
