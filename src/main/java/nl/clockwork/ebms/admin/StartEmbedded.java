@@ -119,7 +119,7 @@ public class StartEmbedded extends Start
 		if (cmd.hasOption(SOAP_OPTION) || cmd.hasOption(HEALTH_OPTION) || !cmd.hasOption(HEADLESS_OPTION) || !cmd.hasOption(DISABLE_EBMS_SERVER_OPTION))
 			try (val context = new AnnotationConfigWebApplicationContext())
 			{
-				context.register(EmbeddedAppConfig.class);
+				context.scan("nl.clockwork.ebms");
 				getConfigClasses().forEach(c -> context.register(c));
 				val contextLoaderListener = new ContextLoaderListener(context);
 				if (cmd.hasOption(SOAP_OPTION) || !cmd.hasOption(HEADLESS_OPTION))
