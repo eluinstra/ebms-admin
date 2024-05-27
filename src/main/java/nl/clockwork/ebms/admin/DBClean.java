@@ -157,7 +157,7 @@ public class DBClean implements SystemInterface
 				executeCleanMessages(cmd);
 				break;
 			default:
-				printWarn(cmd.getOptionValue("cmd") + " not recognized");
+				printWarn("Cmd " + cmd.getOptionValue("cmd") + " not recognized");
 		}
 	}
 
@@ -374,10 +374,11 @@ public class DBClean implements SystemInterface
 	@Override
 	public void printWarn(String s)
 	{
+		val help = "\nFor help run nl.clockwork.ebms.admin.DBClean -h";
 		if (hasLog4jConfig())
-			log.warn(s);
+			log.warn(s + help);
 		else
-			SystemInterface.super.printWarn(s);
+			SystemInterface.super.printWarn(s + help);
 	}
 
 	private static boolean hasLog4jConfig()
