@@ -29,12 +29,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public abstract class AdminDAOConfig
+public class AdminDAOConfig
 {
-	@Autowired
-	@Qualifier("dataSourceTransactionManager")
-	PlatformTransactionManager dataSourceTransactionManager;
-
 	@Bean("ebMSAdminDAO")
 	public EbMSDAO ebMSDAO(DataSource dataSource, SQLQueryFactory queryFactory)
 	{

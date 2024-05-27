@@ -162,6 +162,7 @@ public class Start implements SystemInterface
 		{
 			context.scan("nl.clockwork.ebms");
 			getConfigClasses().forEach(context::register);
+			context.refresh();
 			val contextLoaderListener = new ContextLoaderListener(context);
 			if (cmd.hasOption(SOAP_OPTION) || !cmd.hasOption(HEADLESS_OPTION))
 			{
