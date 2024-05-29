@@ -70,7 +70,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		@Override
 		protected void populateItem(ListItem<DeliveryLog> item)
 		{
-			val errorMessageModalWindow = new ErrorMessageModalWindow("errorMessageWindow", "sendError", item.getModelObject().getErrorMessage());
+			val errorMessageModalWindow = new ErrorMessageModalWindow(ModalDialog.CONTENT_ID, "sendError", item.getModelObject().getErrorMessage());
 			item.add(InstantLabel.of("timestamp", Constants.DATETIME_FORMAT));
 			item.add(new Label("uri"));
 			item.add(errorMessageModalWindow);
@@ -129,9 +129,9 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		add(createDeliveryLogContainer("deliveryLog"));
 		add(new PageLink("back", responsePage));
 		add(new DownloadEbMSMessageLink("download", ebMSDAO, model));
-		val content = createContentField("content");
+		val content = createTextField("payload");
 		add(content);
-		add(createToggleContentLink("toggleContent", content));
+		add(createToggleComponentLink("togglePayload", content));
 	}
 
 	@Override
@@ -181,7 +181,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 
 	private Component[] createActionField(String id)
 	{
-		val messageErrorModalWindow = new ErrorMessageModalWindow("messageErrorWindow", "messageError", Utils.getErrorList(getModelObject().getContent()));
+		val messageErrorModalWindow = new ErrorMessageModalWindow(ModalDialog.CONTENT_ID, "messageError", Utils.getErrorList(getModelObject().getContent()));
 		val link = AjaxLink.<Void>builder().id("showMessageErrorWindow").onClick(t -> messageErrorModalWindow.open(t)).build();
 		link.setEnabled(EbMSAction.EBMS_SERVICE_URI.equals(getModelObject().getService()) && "MessageError".equals(getModelObject().getAction()));
 		link.add(new Label(id));
@@ -229,7 +229,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		return result;
 	}
 
-	private TextArea<String> createContentField(String id)
+	private TextArea<String> createTextField(String id)
 	{
 		val result = TextArea.<String>builder().id(id).model(PropertyModel.of(getModel(), "content")).isVisible(() -> showContent).build();
 		result.setOutputMarkupPlaceholderTag(true);
@@ -237,7 +237,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		return result;
 	}
 
-	private AjaxLink<String> createToggleContentLink(String id, final Component content)
+	private AjaxLink<String> createToggleComponentLink(String id, final Component content)
 	{
 		Consumer<AjaxRequestTarget> onClick = t ->
 		{
