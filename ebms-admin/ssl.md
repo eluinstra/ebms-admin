@@ -4,13 +4,13 @@ sort: 11
 
 # SSL Configuration
 
-To configure SSL for the EbMS interface you have to create and configure a [keystore](#keystore) and a [truststore](#truststore).
+To configure SSL for the EbMS interface you have to create and configure a [keystore](#keystore) and a [truststore](#truststore). You can and should also configure SSL for the Web/SOAP/REST interface.
 
 ## Keystore
 
-You can configure 2 SSL keystores in the EbMS adapter
+You can configure 2 SSL keystores for the EbMS interface (and 2 for the Web/SOAP/REST interface):
 
-1. A SSL Server keystore
+1. A SSL Server keystore to configure TLS
 2. A SSL Client keystore to configure mTLS
 
 In many cases the SSL server certificates are the same as the SSL client certificates. If so you can use the same keystore for both. If not create and configure 2 separate keystores.
@@ -43,19 +43,28 @@ openssl pkcs12 -export -out keystore.p12 -name "localhost" -inkey localhost.key 
 
 This results in the SSL keystore `keystore.p12`.
 
-### Configure the server keystore
+### Configure the EbMS SSL server keystore
 
 See [here]({{ site.baseurl }}/ebms-admin/properties.html#ssl-server-keystore) to configure the EbMS server keystore, where `keystore.path` points to the SSL server keystore.
 
-### Configure the client keystore
+### Configure the EbMS SSL client keystore
 
 See [here]({{ site.baseurl }}/ebms-core/properties.html#ssl-client-keystore) to configure the EbMS client keystore, where `client.keystore.path` points to the SSL client keystore. 
+
+### Configure the Web/SOAP/REST SSL server keystore
+
+See [here]({{ site.baseurl }}/ebms-admin/command.html#start-with-https) to configure the Web/SOAP/REST server keystore, where `-keystorePath` points to the SSL server keystore. 
+
+### Configure the Web/SOAP/REST SSL client keystore
+
+See [here]({{ site.baseurl }}/ebms-admin/command.html#start-with-https-and-client-authentication) to configure the Web/SOAP/REST client keystore, where `-clientstorePath` points to the SSL client keystore. 
 
 ## Truststore
 
 ### Create a truststore
 
-The EbMS truststore contains the SSL certificate chains for all trusted parties and the EbMS signing and encryption certificate chains of the certificates defined in the CPAs.
+The EbMS truststore contains the SSL certificate chains for all trusted parties and the EbMS signing and encryption certificate chains of the certificates defined in the CPAs. The Web/SOAP/REST truststore only contains SSL certificate chain if mTLS is configured.
+
 
 Put all the certificates of the certificate chain in separate files. The example below has a chain that contains 2 certificates:
 
@@ -83,6 +92,11 @@ keytool -importkeystore -srckeystore truststore.jks -srcstoretype JKS -destkeyst
 
 This results in the PKCS12 keystore file `truststore.p12`.
 
-### Configure the truststore
+### Configure the EbMS truststore
 
 See [here]({{ site.baseurl }}/ebms-core/properties.html#truststore) to configure the EbMS truststore, where `truststore.path` points to the SSL truststore.
+
+### Configure the Web/SOAP/REST SSL truststore
+
+See [here]({{ site.baseurl }}/ebms-admin/command.html#start-with-https-and-client-authentication) to configure the Web/SOAP/REST client keystore, where `-clientTruststorePath` points to the SSL truststore. 
+
