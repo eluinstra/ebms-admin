@@ -55,10 +55,6 @@ See [here]({{ site.baseurl }}/ebms-core/properties.html#ssl-client-keystore) to 
 
 See [here]({{ site.baseurl }}/ebms-admin/command.html#start-with-https) to configure the Web/SOAP/REST server keystore, where `-keystorePath` points to the SSL server keystore. 
 
-### Configure the Web/SOAP/REST SSL client keystore
-
-See [here]({{ site.baseurl }}/ebms-admin/command.html#start-with-https-and-client-authentication) to configure the Web/SOAP/REST client keystore, where `-clientstorePath` points to the SSL client keystore. 
-
 ## Truststore
 
 ### Create a truststore
