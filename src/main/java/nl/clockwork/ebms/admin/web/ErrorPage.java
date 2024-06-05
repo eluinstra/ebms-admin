@@ -70,9 +70,10 @@ public class ErrorPage extends BasePage
 		add(new WebMarkupContainer("error").add(new HomePageLink("homePageLink")).setVisible(ErrorType.ERROR.equals(errorType)));
 		add(new WebMarkupContainer("pageExpired").add(new HomePageLink("homePageLink")).setVisible(ErrorType.PAGE_EXPIRED.equals(errorType)));
 		add(new WebMarkupContainer("unauthorizedAction").add(new HomePageLink("homePageLink")).setVisible(ErrorType.UNAUTHORIZED_ACTION.equals(errorType)));
+		val stackTrace = getStackTrace(exception);
+		log.error("", stackTrace);
 		val showStackTrace = RuntimeConfigurationType.DEVELOPMENT.equals(getApplication().getConfigurationType());
-		val stackTrace = showStackTrace ? getStackTrace(exception) : null;
-		add(new Label("stackTrace", stackTrace).setVisible(showStackTrace));
+		add(new Label("stackTrace", showStackTrace ? stackTrace : null).setVisible(showStackTrace));
 	}
 
 	@Override
