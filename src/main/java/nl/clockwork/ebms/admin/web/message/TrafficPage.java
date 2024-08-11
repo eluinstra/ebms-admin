@@ -72,9 +72,9 @@ public class TrafficPage extends BasePage
 			item.add(createFilterConversationIdLink("filterConversationId", item.getModel()));
 			item.add(InstantLabel.of("timestamp", new Model<>(o.getTimestamp()), Constants.DATETIME_FORMAT));
 			item.add(new Label("cpaId", o.getCpaId()));
-			item.add(new Label("fromPartyId", o.getFromPartyId()));
+			// item.add(new Label("fromPartyId", o.getFromPartyId()));
 			item.add(new Label("fromRole", o.getFromRole()));
-			item.add(new Label("toPartyId", o.getToPartyId()));
+			// item.add(new Label("toPartyId", o.getToPartyId()));
 			item.add(new Label("toRole", o.getToRole()));
 			item.add(new Label("service", o.getService()));
 			item.add(new Label("action", o.getAction()));
