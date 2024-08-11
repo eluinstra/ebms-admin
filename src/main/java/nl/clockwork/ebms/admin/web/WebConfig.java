@@ -34,6 +34,8 @@ import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -94,8 +96,8 @@ public class WebConfig
 		return proxyFactory.create();
 	}
 
-	@Bean
-	public void something()
+	@EventListener(ContextRefreshedEvent.class)
+	public void init()
 	{
 		val httpConduitConfigurer = new HTTPConduitConfigurer()
 		{
