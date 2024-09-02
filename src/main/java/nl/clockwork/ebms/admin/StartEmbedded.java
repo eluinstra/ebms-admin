@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 import java.util.EnumSet;
 import java.util.Properties;
 import javax.servlet.DispatcherType;
@@ -43,7 +44,6 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
-import org.hsqldb.server.ServerAcl.AclFormatException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -52,8 +52,8 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 public class StartEmbedded extends Start
 {
 	private static final String DELIVERY_TASK_HANDLER_START_PROPERTY = "deliveryTaskHandler.start";
-	private static final String HSQLDB_OPTION = "hsqldb";
-	private static final String HSQLDB_DIR_OPTION = "hsqldbDir";
+	private static final String H2DB_OPTION = "h2";
+	private static final String H2DB_DIR_OPTION = "h2Dir";
 	private static final String DISABLE_EBMS_SERVER_OPTION = "disableEbMSServer";
 	private static final String DISABLE_EBMS_CLIENT_OPTION = "disableEbMSClient";
 
@@ -90,7 +90,7 @@ public class StartEmbedded extends Start
 	private static final String TRUE = "true";
 	private static final String FALSE = "false";
 	private static final String DEFAULT_EBMS_PORT = "8888";
-	private static final String DEFAULT_HSQLDB_DIR = "hsqldb";
+	private static final String DEFAULT_H2DB_DIR = "./h2";
 	private static final String EBMS_CONNECTOR_NAME = "ebms";
 
 	public static void main(String[] args) throws Exception
@@ -114,7 +114,7 @@ public class StartEmbedded extends Start
 		server.setHandler(handlerCollection);
 		server.addBean(new CustomErrorHandler());
 		val properties = getProperties();
-		startHSQLDB(cmd, properties);
+		startH2DB(cmd, properties);
 		if (cmd.hasOption(JMX_OPTION))
 			initJMX(cmd, server);
 		if (cmd.hasOption(SOAP_OPTION) || cmd.hasOption(HEALTH_OPTION) || !cmd.hasOption(HEADLESS_OPTION) || !cmd.hasOption(DISABLE_EBMS_SERVER_OPTION))
@@ -168,8 +168,8 @@ public class StartEmbedded extends Start
 	protected Options createOptions()
 	{
 		val result = super.createOptions();
-		result.addOption(HSQLDB_OPTION, false, "start hsqldb server");
-		result.addOption(HSQLDB_DIR_OPTION, true, "set hsqldb location [default: " + DEFAULT_HSQLDB_DIR + "]");
+		result.addOption(H2DB_OPTION, false, "start h2 server");
+		result.addOption(H2DB_DIR_OPTION, true, "set h2 location [default: " + DEFAULT_H2DB_DIR + "]");
 		result.addOption(DISABLE_EBMS_SERVER_OPTION, false, "disable ebms server");
 		result.addOption(DISABLE_EBMS_CLIENT_OPTION, false, "disable ebms client");
 		return result;
@@ -180,44 +180,36 @@ public class StartEmbedded extends Start
 		return EmbeddedAppConfig.PROPERTY_SOURCE.getProperties();
 	}
 
-	private void startHSQLDB(CommandLine cmd, Properties properties) throws IOException, AclFormatException, URISyntaxException, ParseException
+	private void startH2DB(CommandLine cmd, Properties properties) throws IOException, URISyntaxException, ParseException, SQLException
 	{
 		val jdbcURL = getHsqlDbJdbcUrl(cmd, properties);
 		if (jdbcURL != null)
 		{
 			setProperty(EBMS_JDBC_UPDATE_PROPERTY, TRUE);
-			println("Starting HSQLDB Server...");
-			startHSQLDBServer(cmd, jdbcURL);
+			println("Starting H2DB Server...");
+			startH2DBServer(cmd, jdbcURL);
 		}
 	}
 
 	private JdbcURL getHsqlDbJdbcUrl(CommandLine cmd, Properties properties) throws IOException
 	{
 		JdbcURL result = null;
-		if (properties.getProperty(EBMS_JDBC_DRIVER_CLASS_NAME_PROPERTY).startsWith("org.hsqldb.jdbc") && cmd.hasOption(HSQLDB_OPTION))
+		if (properties.getProperty(EBMS_JDBC_DRIVER_CLASS_NAME_PROPERTY).startsWith("org.h2") && cmd.hasOption(H2DB_OPTION))
 		{
 			result = nl.clockwork.ebms.admin.web.configuration.Utils.parseJdbcURL(properties.getProperty(EBMS_JDBC_URL_PROPERTY), new JdbcURL());
 			val allowedHosts = "localhost|127.0.0.1";
 			if (!result.getHost().matches("^(" + allowedHosts + ")$"))
 			{
-				println("Cannot start HSQLDB Server on " + result.getHost() + ". Use " + allowedHosts + " instead.");
+				println("Cannot start H2DB Server on " + result.getHost() + ". Use " + allowedHosts + " instead.");
 				exit(1);
 			}
 		}
 		return result;
 	}
 
-	public org.hsqldb.server.Server startHSQLDBServer(CommandLine cmd, JdbcURL jdbcURL) throws IOException, AclFormatException, URISyntaxException, ParseException
+	public org.h2.tools.Server startH2DBServer(CommandLine cmd, JdbcURL jdbcURL) throws IOException, URISyntaxException, ParseException, SQLException
 	{
-		val server = new org.hsqldb.server.Server();
-		server.setDatabasePath(0, String.format("file:%s/%s", cmd.getOptionValue("hsqldbDir", "hsqldb"), jdbcURL.getDatabase()));
-		server.setDatabaseName(0, jdbcURL.getDatabase());
-		if (jdbcURL.getPort() != null)
-		{
-			server.setPort(jdbcURL.getPort());
-		}
-		server.setSilent(true);
-		server.setNoSystemExit(true);
+		val server = org.h2.tools.Server.createTcpServer("-baseDir", cmd.getOptionValue(H2DB_DIR_OPTION, DEFAULT_H2DB_DIR), "-ifNotExists", "-tcp", "-tcpPort", jdbcURL.getPort().toString());
 		server.start();
 		return server;
 	}

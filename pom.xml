@@ -230,6 +230,7 @@
       <groupId>org.hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
       <version>2.7.3</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.ignite</groupId>
@@ -390,7 +391,6 @@
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <version>2.3.232</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.ibm.db2</groupId>
