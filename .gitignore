@@ -15,6 +15,7 @@ target
 *.log
 activemq-data
 data
+h2
 hsqldb
 ignite
 logs
