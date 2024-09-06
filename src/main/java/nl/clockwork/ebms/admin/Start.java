@@ -15,6 +15,7 @@
  */
 package nl.clockwork.ebms.admin;
 
+import jakarta.servlet.DispatcherType;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -29,9 +30,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import javax.management.remote.JMXServiceURL;
-
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
+import nl.clockwork.ebms.admin.web.ExtensionProvider;
+import nl.clockwork.ebms.security.KeyStoreType;
+import nl.clockwork.ebms.server.servlet.HealthServlet;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -53,6 +59,7 @@ import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.ConnectionLimit;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -66,15 +73,6 @@ import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-
-import jakarta.servlet.DispatcherType;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.val;
-import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.admin.web.ExtensionProvider;
-import nl.clockwork.ebms.security.KeyStoreType;
-import nl.clockwork.ebms.server.servlet.HealthServlet;
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @RequiredArgsConstructor
@@ -354,6 +352,7 @@ public class Start implements SystemInterface
 	{
 		val httpConfig = new HttpConfiguration();
 		httpConfig.setSendServerVersion(false);
+		httpConfig.addCustomizer(new SecureRequestCustomizer(false));
 		val result = new ServerConnector(server, sslContextFactory, new HttpConnectionFactory(httpConfig));
 		result.setHost(cmd.getOptionValue(HOST_OPTION, DEFAULT_HOST));
 		result.setPort(Integer.parseInt(cmd.getOptionValue(PORT_OPTION, DEFAULT_SSL_PORT)));

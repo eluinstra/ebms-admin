@@ -40,6 +40,7 @@ import org.apache.cxf.common.logging.LogUtils;
 import org.eclipse.jetty.server.ConnectionLimit;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -99,8 +100,8 @@ public class StartEmbedded extends Start
 		app.startService(args);
 	}
 
-	private void startService(String[] args) throws ParseException, IOException, URISyntaxException, Exception, MalformedURLException,
-			NoSuchAlgorithmException, InterruptedException
+	private void startService(String[] args)
+			throws ParseException, IOException, URISyntaxException, Exception, MalformedURLException, NoSuchAlgorithmException, InterruptedException
 	{
 		val options = createOptions();
 		val cmd = new DefaultParser().parse(options, args);
@@ -207,7 +208,8 @@ public class StartEmbedded extends Start
 
 	public org.h2.tools.Server startH2DBServer(CommandLine cmd, JdbcURL jdbcURL) throws IOException, URISyntaxException, ParseException, SQLException
 	{
-		val server = org.h2.tools.Server.createTcpServer("-baseDir", cmd.getOptionValue(H2DB_DIR_OPTION, DEFAULT_H2DB_DIR), "-ifNotExists", "-tcp", "-tcpPort", jdbcURL.getPort().toString());
+		val server = org.h2.tools.Server
+				.createTcpServer("-baseDir", cmd.getOptionValue(H2DB_DIR_OPTION, DEFAULT_H2DB_DIR), "-ifNotExists", "-tcp", "-tcpPort", jdbcURL.getPort().toString());
 		server.start();
 		return server;
 	}
@@ -293,6 +295,7 @@ public class StartEmbedded extends Start
 	{
 		val httpConfig = new HttpConfiguration();
 		httpConfig.setSendServerVersion(false);
+		httpConfig.addCustomizer(new SecureRequestCustomizer(false));
 		val result = new ServerConnector(server, sslContextFactory, new HttpConnectionFactory(httpConfig));
 		result.setHost(StringUtils.isEmpty(properties.getProperty(EBMS_HOST_PROPERTY)) ? DEFAULT_HOST : properties.getProperty(EBMS_HOST_PROPERTY));
 		result.setPort(
