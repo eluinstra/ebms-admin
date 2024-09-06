@@ -19,7 +19,6 @@ import jakarta.servlet.DispatcherType;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
-import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
@@ -82,6 +81,7 @@ public class Start implements SystemInterface
 	private static final String HOST_OPTION = "host";
 	private static final String PORT_OPTION = "port";
 	private static final String PATH_OPTION = "path";
+	private static final String DISABLE_HOSTNAME_VERIFICATION_OPTION = "disableHostnameVerification";
 	protected static final String SOAP_OPTION = "soap";
 	protected static final String HEADLESS_OPTION = "headless";
 	protected static final String HEALTH_OPTION = "health";
@@ -311,7 +311,6 @@ public class Start implements SystemInterface
 		addKeyStore(cmd, result, ebMSKeyStore);
 		if (clientAuthentication)
 			addTrustStore(cmd, result);
-		result.setExcludeCipherSuites();
 		return result;
 	}
 
@@ -352,7 +351,7 @@ public class Start implements SystemInterface
 	{
 		val httpConfig = new HttpConfiguration();
 		httpConfig.setSendServerVersion(false);
-		httpConfig.addCustomizer(new SecureRequestCustomizer(false));
+		httpConfig.addCustomizer(new SecureRequestCustomizer(!cmd.hasOption(DISABLE_HOSTNAME_VERIFICATION_OPTION)));
 		val result = new ServerConnector(server, sslContextFactory, new HttpConnectionFactory(httpConfig));
 		result.setHost(cmd.getOptionValue(HOST_OPTION, DEFAULT_HOST));
 		result.setPort(Integer.parseInt(cmd.getOptionValue(PORT_OPTION, DEFAULT_SSL_PORT)));
@@ -520,7 +519,7 @@ public class Start implements SystemInterface
 		return result;
 	}
 
-	protected Resource getResource(String path) throws MalformedURLException, IOException
+	protected Resource getResource(String path) throws IOException
 	{
 		val result = Resource.newResource(path);
 		return result.exists() ? result : Resource.newClassPathResource(path);

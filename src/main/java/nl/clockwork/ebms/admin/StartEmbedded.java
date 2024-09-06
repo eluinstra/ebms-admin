@@ -17,7 +17,6 @@ package nl.clockwork.ebms.admin;
 
 import jakarta.servlet.DispatcherType;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
@@ -65,6 +64,7 @@ public class StartEmbedded extends Start
 	private static final String EBMS_USER_QUERIES_PER_SECOND_PROPERTY = "ebms.userQueriesPerSecond";
 	private static final String EBMS_QUERIES_PER_SECOND_PROPERTY = "ebms.queriesPerSecond";
 	private static final String EBMS_SSL_PROPERTY = "ebms.ssl";
+	private static final String EBMS_VERIFY_HOSTNAMES_PROPERTY = "ebms.verifyHostnames";
 	private static final String HTTPS_PROTOCOLS_PROPERTY = "https.protocols";
 	private static final String HTTPS_CIPHER_SUITES_PROPERTY = "https.cipherSuites";
 	private static final String HTTPS_REQUIRE_CLIENT_AUTHENTICATION_PROPERTY = "https.requireClientAuthentication";
@@ -100,8 +100,7 @@ public class StartEmbedded extends Start
 		app.startService(args);
 	}
 
-	private void startService(String[] args)
-			throws ParseException, IOException, URISyntaxException, Exception, MalformedURLException, NoSuchAlgorithmException, InterruptedException
+	private void startService(String[] args) throws Exception
 	{
 		val options = createOptions();
 		val cmd = new DefaultParser().parse(options, args);
@@ -190,7 +189,7 @@ public class StartEmbedded extends Start
 		}
 	}
 
-	private JdbcURL getH2JdbcUrl(CommandLine cmd, Properties properties) throws IOException, URISyntaxException, ParseException
+	private JdbcURL getH2JdbcUrl(CommandLine cmd, Properties properties) throws IOException
 	{
 		JdbcURL result = null;
 		if (properties.getProperty(EBMS_JDBC_DRIVER_CLASS_NAME_PROPERTY).startsWith("org.h2") && cmd.hasOption(H2DB_OPTION))
@@ -257,12 +256,10 @@ public class StartEmbedded extends Start
 		addEbMSKeyStore(properties, result, ebMSKeyStore);
 		if (TRUE.equals(properties.getProperty(HTTPS_REQUIRE_CLIENT_AUTHENTICATION_PROPERTY)))
 			addEbMSTrustStore(properties, result);
-		result.setExcludeCipherSuites();
 		return result;
 	}
 
 	private void addEbMSKeyStore(Properties properties, SslContextFactory.Server sslContextFactory, EbMSKeyStore ebMSKeyStore)
-			throws GeneralSecurityException, IOException
 	{
 		if (!StringUtils.isEmpty(properties.getProperty(HTTPS_PROTOCOLS_PROPERTY)))
 			sslContextFactory.setIncludeProtocols(StringUtils.stripAll(StringUtils.split(properties.getProperty(HTTPS_PROTOCOLS_PROPERTY), ',')));
@@ -274,7 +271,7 @@ public class StartEmbedded extends Start
 			sslContextFactory.setCertAlias(ebMSKeyStore.getDefaultAlias());
 	}
 
-	private void addEbMSTrustStore(Properties properties, SslContextFactory.Server sslContextFactory) throws MalformedURLException, IOException
+	private void addEbMSTrustStore(Properties properties, SslContextFactory.Server sslContextFactory) throws IOException
 	{
 		val trustStore = getResource(properties.getProperty(TRUSTSTORE_PATH_PROPERTY));
 		if (trustStore != null && trustStore.exists())
@@ -295,7 +292,7 @@ public class StartEmbedded extends Start
 	{
 		val httpConfig = new HttpConfiguration();
 		httpConfig.setSendServerVersion(false);
-		httpConfig.addCustomizer(new SecureRequestCustomizer(false));
+		httpConfig.addCustomizer(new SecureRequestCustomizer(TRUE.equals(properties.getProperty(EBMS_VERIFY_HOSTNAMES_PROPERTY))));
 		val result = new ServerConnector(server, sslContextFactory, new HttpConnectionFactory(httpConfig));
 		result.setHost(StringUtils.isEmpty(properties.getProperty(EBMS_HOST_PROPERTY)) ? DEFAULT_HOST : properties.getProperty(EBMS_HOST_PROPERTY));
 		result.setPort(
