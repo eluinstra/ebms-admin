@@ -34,6 +34,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
+import nl.clockwork.ebms.PluginProvider;
 import nl.clockwork.ebms.admin.web.ExtensionProvider;
 import nl.clockwork.ebms.security.KeyStoreType;
 import nl.clockwork.ebms.server.servlet.HealthServlet;
@@ -159,6 +160,7 @@ public class Start implements SystemInterface
 		try (val context = new AnnotationConfigWebApplicationContext())
 		{
 			context.scan("nl.clockwork.ebms");
+			getPluginConfigClasses().forEach(context::register);
 			getConfigClasses().forEach(context::register);
 			context.refresh();
 			val contextLoaderListener = new ContextLoaderListener(context);
@@ -244,6 +246,15 @@ public class Start implements SystemInterface
 				.stream()
 				.filter(p -> p.getSpringConfigurationClass() != null)
 				.map(ExtensionProvider::getSpringConfigurationClass)
+				.collect(Collectors.toList());
+	}
+
+	protected List<Class<?>> getPluginConfigClasses()
+	{
+		return PluginProvider.get()
+				.stream()
+				.filter(p -> p.getSpringConfigurationClass() != null)
+				.map(PluginProvider::getSpringConfigurationClass)
 				.collect(Collectors.toList());
 	}
 

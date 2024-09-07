@@ -54,23 +54,22 @@ import org.springframework.core.io.Resource;
 
 @Configuration
 @Import({AdminDAOConfig.class, CertificateMappingServiceConfig.class, CacheConfig.class, CommonConfig.class, CPAManagerConfig.class, CPAServiceConfig.class,
-		DAOConfig.class, DataSourceConfig.class, DeliveryManagerConfig.class, DeliveryTaskManagerConfig.class, DeliveryTaskHandlerConfig.class, EbMSClientConfig.class,
-		EbMSMessageServiceConfig.class, EbMSProcessorConfig.class, EbMSServerConfig.class, EmbeddedWebConfig.class, EncryptionConfig.class, JMSConfig.class,
-		KafkaConfig.class, KeyStoreConfig.class, nl.clockwork.ebms.security.azure.KeyStoreConfig.class, MessageEventListenerConfig.class, QueryDSLConfig.class,
-		SchedulerConfig.class, SigningConfig.class, TransactionManagerConfig.class, URLMappingServiceConfig.class, ValidationConfig.class})
+		DAOConfig.class, DataSourceConfig.class, DeliveryManagerConfig.class, DeliveryTaskManagerConfig.class, DeliveryTaskHandlerConfig.class,
+		EbMSClientConfig.class, EbMSMessageServiceConfig.class, EbMSProcessorConfig.class, EbMSServerConfig.class, EmbeddedWebConfig.class, EncryptionConfig.class,
+		JMSConfig.class, KafkaConfig.class, KeyStoreConfig.class, nl.clockwork.ebms.security.azure.KeyStoreConfig.class, MessageEventListenerConfig.class,
+		QueryDSLConfig.class, SchedulerConfig.class, SigningConfig.class, TransactionManagerConfig.class, URLMappingServiceConfig.class, ValidationConfig.class})
 @PropertySource(
 		value = {"classpath:nl/clockwork/ebms/default.properties", "classpath:nl/clockwork/ebms/admin/default.properties",
-				"classpath:nl/clockwork/ebms/cache/ignite/default.properties", "file:${ebms.configDir}ebms-admin.embedded.advanced.properties",
-				"file:${ebms.configDir}ebms-admin.embedded.properties"},
+				"file:${ebms.configDir}ebms-admin.embedded.advanced.properties", "file:${ebms.configDir}ebms-admin.embedded.properties"},
 		ignoreResourceNotFound = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EmbeddedAppConfig
 {
 	public static final PropertySourcesPlaceholderConfigurer PROPERTY_SOURCE = propertySourcesPlaceholderConfigurer();
 
-	public EmbeddedAppConfig()
+	EmbeddedAppConfig()
 	{
-		//do nothing
+		// do nothing
 	}
 
 	private static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer()
@@ -78,8 +77,8 @@ public class EmbeddedAppConfig
 		val result = new PropertySourcesPlaceholderConfigurer();
 		val configDir = System.getProperty("ebms.configDir");
 		val resources = new Resource[]{new ClassPathResource("nl/clockwork/ebms/default.properties"),
-				new ClassPathResource("nl/clockwork/ebms/admin/default.properties"), new ClassPathResource("nl/clockwork/ebms/cache/ignite/default.properties"),
-				new FileSystemResource(configDir + "ebms-admin.embedded.advanced.properties"), new FileSystemResource(configDir + "ebms-admin.embedded.properties")};
+				new ClassPathResource("nl/clockwork/ebms/admin/default.properties"), new FileSystemResource(configDir + "ebms-admin.embedded.advanced.properties"),
+				new FileSystemResource(configDir + "ebms-admin.embedded.properties")};
 		result.setLocations(resources);
 		result.setIgnoreResourceNotFound(true);
 		return result;

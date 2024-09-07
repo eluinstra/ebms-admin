@@ -120,6 +120,7 @@ public class StartEmbedded extends Start
 			try (val context = new AnnotationConfigWebApplicationContext())
 			{
 				context.scan("nl.clockwork.ebms");
+				getPluginConfigClasses().forEach(context::register);
 				getConfigClasses().forEach(c -> context.register(c));
 				val contextLoaderListener = new ContextLoaderListener(context);
 				if (cmd.hasOption(SOAP_OPTION) || !cmd.hasOption(HEADLESS_OPTION))
@@ -144,6 +145,7 @@ public class StartEmbedded extends Start
 				}
 				catch (Exception e)
 				{
+					e.printStackTrace();
 					server.stop();
 					exit(1);
 				}
@@ -154,6 +156,7 @@ public class StartEmbedded extends Start
 			try (val context = new AnnotationConfigApplicationContext())
 			{
 				context.register(EmbeddedAppConfig.class);
+				getPluginConfigClasses().forEach(context::register);
 				getConfigClasses().forEach(c -> context.register(c));
 				println("Starting Server...");
 				context.refresh();
