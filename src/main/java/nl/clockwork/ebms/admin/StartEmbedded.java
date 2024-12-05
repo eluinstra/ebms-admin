@@ -244,18 +244,11 @@ public class StartEmbedded extends Start
 	private SslContextFactory.Server createEbMSSslContextFactory(Properties properties) throws GeneralSecurityException, IOException
 	{
 		val result = new SslContextFactory.Server();
-		EbMSKeyStore ebMSKeyStore = "AZURE".equals(properties.getProperty(KEYSTORES_TYPE_PROPERTY, ""))
-				? EbMSKeyStore.of(
-						properties.getProperty(AZURE_VAULTURI_PROPERTY),
-						properties.getProperty(AZURE_VAULTTENNANT_ID_PROPERTY),
-						properties.getProperty(AZURE_VAULTCLIENT_ID_PROPERTY),
-						properties.getProperty(AZURE_VAULTCLIENT_SECRET_PROPERTY),
-						properties.getProperty(KEYSTORE_DEFAULT_ALIAS_PROPERTY))
-				: EbMSKeyStore.of(
-						KeyStoreType.valueOf(properties.getProperty(KEYSTORE_TYPE_PROPERTY)),
-						properties.getProperty(KEYSTORE_PATH_PROPERTY),
-						properties.getProperty(KEYSTORE_PASSWORD_PROPERTY),
-						properties.getProperty(KEYSTORE_DEFAULT_ALIAS_PROPERTY));
+		EbMSKeyStore ebMSKeyStore = EbMSKeyStore.of(
+				KeyStoreType.valueOf(properties.getProperty(KEYSTORE_TYPE_PROPERTY)),
+				properties.getProperty(KEYSTORE_PATH_PROPERTY),
+				properties.getProperty(KEYSTORE_PASSWORD_PROPERTY),
+				properties.getProperty(KEYSTORE_DEFAULT_ALIAS_PROPERTY));
 		addEbMSKeyStore(properties, result, ebMSKeyStore);
 		if (TRUE.equals(properties.getProperty(HTTPS_REQUIRE_CLIENT_AUTHENTICATION_PROPERTY)))
 			addEbMSTrustStore(properties, result);
