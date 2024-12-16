@@ -49,6 +49,10 @@ import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextIoFactory;
+import org.eclipse.jetty.ee10.servlet.ErrorPageErrorHandler;
+import org.eclipse.jetty.ee10.servlet.FilterHolder;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.ServletHolder;
 import org.eclipse.jetty.jmx.ConnectorServer;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.security.ConstraintMapping;
@@ -63,10 +67,6 @@ import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
-import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.security.Constraint;
@@ -406,7 +406,7 @@ public class Start implements SystemInterface
 	protected ServletContextHandler createWebContextHandler(CommandLine cmd, EventListener contextLoaderListener) throws Exception
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		result.setVirtualHosts(new String[]{"@" + WEB_CONNECTOR_NAME});
+		result.setVirtualHosts(List.of("@" + WEB_CONNECTOR_NAME));
 		result.setInitParameter("configuration", "deployment");
 		result.setContextPath(getPath(cmd));
 		if (cmd.hasOption(AUDIT_LOGGING_OPTION))
@@ -523,7 +523,7 @@ public class Start implements SystemInterface
 	protected ServletContextHandler createHealthContextHandler(CommandLine cmd, ContextLoaderListener contextLoaderListener) throws Exception
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		result.setVirtualHosts(new String[]{"@" + HEALTH_CONNECTOR_NAME});
+		result.setVirtualHosts(List.of("@" + HEALTH_CONNECTOR_NAME));
 		result.setInitParameter("configuration", "deployment");
 		result.setContextPath(DEFAULT_PATH);
 		result.addServlet(HealthServlet.class, HEALTH_URL + "/*");
@@ -567,7 +567,7 @@ public class Start implements SystemInterface
 	{
 		val result = new ConstraintSecurityHandler();
 		val constraintMappings = Collections.singletonList(createConstraintMapping(createAuthenticationConstraint()));
-		result.setConstraintMappings(constraintMappings);
+		result.setConstraintMappings(constraintMappings); //https://stackoverflow.com/questions/77055419/why-does-a-classnotfoundexception-f%C3%BCr-handlerwrapper-occur-when-migrating-to-spr
 		result.setAuthenticator(new BasicAuthenticator());
 		result.setLoginService(new HashLoginService(REALM, REALM_FILE));
 		return result;

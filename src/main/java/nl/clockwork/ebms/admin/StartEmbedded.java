@@ -15,38 +15,41 @@
  */
 package nl.clockwork.ebms.admin;
 
-import jakarta.servlet.DispatcherType;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Properties;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
-import lombok.val;
-import nl.clockwork.ebms.admin.web.configuration.JdbcURL;
-import nl.clockwork.ebms.security.KeyStoreType;
-import nl.clockwork.ebms.server.servlet.EbMSServlet;
-import nl.clockwork.ebms.util.LoggingUtils;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.common.logging.LogUtils;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
 import org.eclipse.jetty.server.ConnectionLimit;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+
+import jakarta.servlet.DispatcherType;
+import lombok.AccessLevel;
+import lombok.val;
+import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.admin.web.configuration.JdbcURL;
+import nl.clockwork.ebms.security.KeyStoreType;
+import nl.clockwork.ebms.server.servlet.EbMSServlet;
+import nl.clockwork.ebms.util.LoggingUtils;
 
 @FieldDefaults(level = AccessLevel.PROTECTED)
 public class StartEmbedded extends Start
@@ -309,7 +312,7 @@ public class StartEmbedded extends Start
 			throws IOException, NoSuchAlgorithmException
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		result.setVirtualHosts(new String[]{"@" + EBMS_CONNECTOR_NAME});
+		result.setVirtualHosts(List.of("@" + EBMS_CONNECTOR_NAME));
 		result.setContextPath("/");
 		if (LoggingUtils.Status.ENABLED.name().equals(properties.getProperty(LOGGING_MDC_PROPERTY))
 				&& LoggingUtils.Status.ENABLED.name().equals(properties.getProperty(LOGGING_MDC_AUDIT_PROPERTY)))
