@@ -1,8 +1,17 @@
 ---
-sort: 3
+parent: EbMS Admin
+nav_order: 3
 ---
 
 # Installation and Configuration
+{: .no_toc }
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+---
 
 ## Prerequisites
 

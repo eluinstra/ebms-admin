@@ -1,5 +1,6 @@
 ---
-sort: 10
+parent: EbMS Admin
+nav_order: 11
 ---
 
 # Release Notes

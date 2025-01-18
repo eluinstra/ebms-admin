@@ -1,8 +1,17 @@
 ---
-sort: 6
+parent: EbMS Admin
+nav_order: 6
 ---
 
 # Examples
+{: .no_toc }
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+---
 
 [Below](#example) you'll find and simple example of how to configure 2 EbMS Admin Consoles with embedded EbMS adapter to communicate with each other.
 You can also find this and other examples configured in [Docker](#docker), [Kubernetes](#kubernetes) and [Ansible](#ansible).

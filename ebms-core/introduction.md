@@ -1,8 +1,17 @@
 ---
-sort: 1
+parent: EbMS Core
+nav_order: 1
 ---
 
 # Introduction
+{: .no_toc }
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+---
 
 ebms-core is a Java implementation of the [EbMS 2.0 specification](http://www.ebxml.org/specs/ebMS2.pdf).
 

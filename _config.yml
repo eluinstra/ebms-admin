@@ -2,8 +2,8 @@ title: EbMS Adapter
 lang: en
 description: EbMS adapter for Java
 
-# theme: jekyll-rtd-theme
-remote_theme: rundocs/jekyll-rtd-theme@v1.1.7
+theme: just-the-docs
+remote_theme: just-the-docs/just-the-docs@v0.10.0
 
 repository: eluinstra/ebms-admin
 

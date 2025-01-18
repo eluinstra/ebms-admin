@@ -1,5 +1,6 @@
 ---
-sort: 8
+parent: EbMS Core
+nav_order: 8
 ---
 
 # Roadmap

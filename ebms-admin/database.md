@@ -1,10 +1,18 @@
 ---
-sort: 7
+parent: EbMS Admin
+nav_order: 7
 ---
 
 # Database support
+{: .no_toc }
 
 If you want to use a database other then H2 or HSQLDB, you have to provide the JDBC driver yourself.
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
 
 For more on database support see [here]({{ site.baseurl }}{% link ebms-core/database.md %}).
 

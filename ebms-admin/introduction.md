@@ -1,5 +1,6 @@
 ---
-sort: 1
+parent: EbMS Admin
+nav_order: 1
 ---
 
 # Introduction

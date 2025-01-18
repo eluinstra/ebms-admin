@@ -1,5 +1,6 @@
 ---
-sort: 6
+parent: EbMS Core
+nav_order: 6
 ---
 
 # EbMS API

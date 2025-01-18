@@ -1,8 +1,17 @@
 ---
-sort: 4
+parent: EbMS Core
+nav_order: 4
 ---
 
 # Default Properties
+{: .no_toc }
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+---
 
 Below the contents of ebms-core's [default.properties](https://github.com/eluinstra/ebms-core/blob/ebms-core-{{ site.ebms.branch.version }}/src/main/resources/nl/clockwork/ebms/default.properties) file. These are the default settings for ebms-core.
 

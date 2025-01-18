@@ -1,8 +1,17 @@
 ---
-sort: 2
+parent: EbMS Core
+nav_order: 2
 ---
 
 # Overview
+{: .no_toc }
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+---
 
 You can use ebms-core by [integrating]({{ site.baseurl }}{% link ebms-core/development.md %}) it into your own Java application, or you can use it as a standalone SOAP Service through [ebms-admin]({{ site.baseurl }}{% link ebms-admin/introduction.md %}).
 

@@ -1,5 +1,6 @@
 ---
-sort: 5
+parent: EbMS Core
+nav_order: 5
 ---
 
 # Database support

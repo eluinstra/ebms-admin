@@ -1,5 +1,6 @@
 ---
-sort: 2
+title: EbMS Core
+nav_order: 2
 ---
 
 # EbMS Core

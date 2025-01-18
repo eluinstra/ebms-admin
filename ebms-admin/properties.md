@@ -1,8 +1,17 @@
 ---
-sort: 5
+parent: EbMS Admin
+nav_order: 5
 ---
 
 # Properties
+{: .no_toc }
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+---
 
 Below the [default properties](#default-properties) of ebms-admin. For the default properties of ebms-core see [here]({{ site.baseurl }}{% link ebms-core/properties.md %}).
 

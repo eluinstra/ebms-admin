@@ -1,10 +1,19 @@
 ---
-sort: 4
+parent: EbMS Admin
+nav_order: 4
 ---
 
 # Command Line Options
+{: .no_toc }
 
-### Show help
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+---
+
+## Show help
 
 ```sh
 java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -h
@@ -66,19 +75,19 @@ usage: StartEmbedded [-applicationInsights] [-auditLogging]
  -userQueriesPerSecond <arg>       set requests per user per secondlimit [default: <none>]
 ```
 
-### Start with the embedded HSQLDB server
+## Start with the embedded HSQLDB server
 
 ```sh
 java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -hsqldb
 ```
 
-### Start using a PostgreSQL JDBC driver
+## Start using a PostgreSQL JDBC driver
 
 ```sh
 java -cp postgresql-42.2.14.jar:ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded
 ```
 
-### Start on port 8000
+## Start on port 8000
 
 Start Web/SOAP interface on port `8000` (instead of `8080`)
 
@@ -86,25 +95,25 @@ Start Web/SOAP interface on port `8000` (instead of `8080`)
 java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -port 8000
 ```
 
-### Start using IPv4 only sockets
+## Start using IPv4 only sockets
 
 ```sh
 java -Djava.net.preferIPv4Stack=true -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded
 ```
 
-### Start with SOAP interface
+## Start with SOAP interface
 
 ```sh
 java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap
 ```
 
-### Start with SOAP interface and without a Web interface
+## Start with SOAP interface and without a Web interface
 
 ```sh
 java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap -headless
 ```
 
-### Start with config directory conf/
+## Start with config directory conf/
 {: #configDir}
 
 By default the config directory is the directory from which you start the ebms-admin. You can change the config directory by setting `configDir`
@@ -113,19 +122,19 @@ By default the config directory is the directory from which you start the ebms-a
 java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -configDir conf/
 ```
 
-### Start with a custom log4j2 file log4j2.xml
+## Start with a custom log4j2 file log4j2.xml
 
 ```sh
 java -Dlog4j.configurationFile=log4j2.xml -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded
 ```
 
-### Start without using the default Java truststore
+## Start without using the default Java truststore
 
 ```sh
 java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded
 ```
 
-### Start with HTTPS
+## Start with HTTPS
 
 Start with HTTPS Web/SOAP interface using keystore `keystore.p12`
 
@@ -134,7 +143,7 @@ java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar
 -ssl -keyStoreType PKCS12 -keyStorePath keystore.p12 -keyStorePassword password
 ```
 
-### Start with HTTPS and client authentication
+## Start with HTTPS and client authentication
 
 Start with HTTPS Web/SOAP interface using keystore `keystore.p12`  
 and require SSL client authentication using truststore `truststore.p12` (which holds the client's certificate chain)
@@ -145,7 +154,7 @@ java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar
 -clientAuthentication -trustStoreType PKCS12 -trustStorePath truststore.p12 -trustStorePassword password
 ```
 
-### Start with HTTPS, client authentication and client certifiate authentication
+## Start with HTTPS, client authentication and client certifiate authentication
 
 Start with HTTPS Web/SOAP interface using keystore `keystore.p12`  
 and require SSL client authentication using truststore `truststore.p12` (which holds the client's certificate chain)  
@@ -158,31 +167,31 @@ java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar
 -authentication -clientTrustStoreType PKCS12 -clientTrustStorePath clientTruststore.p12 -clientTrustStorePassword password
 ```
 
-### Start in EbMS Server mode
+## Start in EbMS Server mode
 
 ```sh
 java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -headless -disableEbMSClient
 ```
 
-### Start in EbMS Client mode
+## Start in EbMS Client mode
 
 ```sh
 java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -headless -disableEbMSServer
 ```
 
-### Start in SOAP API mode
+## Start in SOAP API mode
 
 ```sh
 java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap -headless -disableEbMSServer -disableEbMSClient
 ```
 
-### Start in Web Interface mode
+## Start in Web Interface mode
 
 ```sh
 java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -disableEbMSServer -disableEbMSClient
 ```
 
-### Start Health service on port 8089
+## Start Health service on port 8089
 
 Start Health service on port 8089 (instead of default port 8008)
 
@@ -190,7 +199,7 @@ Start Health service on port 8089 (instead of default port 8008)
 java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -health -healthPort 8089
 ```
 
-### Start using basic authentication
+## Start using basic authentication
 
 Start using basic authentication on Web/SOAP interface
 
@@ -198,14 +207,14 @@ Start using basic authentication on Web/SOAP interface
 java -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -authentication
 ```
 
-### Start hsqldb and ebms-admin as 2 separate applications
+## Start hsqldb and ebms-admin as 2 separate applications
 
 ```sh
 java -cp ebms-admin-{{ site.ebms.core.version }}.jar org.hsqldb.server.Server --database.0 file:hsqldb/ebms --dbname.0 ebms -port 9001
 java -Djavax.net.ssl.trustStore= -cp ebms-admin-{{ site.ebms.core.version }}.jar nl.clockwork.ebms.admin.StartEmbedded -soap
 ```
 
-### start ebms-admin serving admin and soap interface over ssl using Microsoft Azure Key Vault certificate
+## start ebms-admin serving admin and soap interface over ssl using Microsoft Azure Key Vault certificate
 
 ```note
 with the current azure-security-keyvault-jca implementation (version 1.0.0-beta.5) only the certificate and not the full chain is returned.
@@ -223,7 +232,7 @@ java -Dazure.keyvault.uri=https://key.vault.azure.net -Djavax.net.ssl.trustStore
 -keyvaultClientId https://digipoort -keyvaultClientSecret _17c.3xulKW~2crwjVTFRT8n-5LKo44uF5
 ```
 
-### start ebms-admin serving admin shipping logging and metrics to Microsoft Azure Application Insights
+## start ebms-admin serving admin shipping logging and metrics to Microsoft Azure Application Insights
 
 By adding the -applicationInsights parameter the shipping of logging and metrics is enabled. Additional configuration needs to be done in Microsoft Azure.
 

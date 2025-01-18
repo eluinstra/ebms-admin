@@ -1,5 +1,6 @@
 ---
-sort: 7
+parent: EbMS Core
+nav_order: 7
 ---
 
 # Release Notes

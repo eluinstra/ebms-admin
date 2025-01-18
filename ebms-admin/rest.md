@@ -1,5 +1,6 @@
 ---
-sort: 9
+parent: EbMS Admin
+nav_order: 9
 ---
 
 # REST Interface

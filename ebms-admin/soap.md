@@ -1,5 +1,6 @@
 ---
-sort: 8
+parent: EbMS Admin
+nav_order: 8
 ---
 
 # SOAP Interface

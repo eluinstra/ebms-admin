@@ -1,10 +1,19 @@
 ---
-sort: 11
+parent: EbMS Admin
+nav_order: 10
 ---
 
 # SSL Configuration
+{: .no_toc }
 
 To configure SSL for the EbMS interface you have to create and configure a [keystore](#keystore) and a [truststore](#truststore). You can and should also configure SSL for the Web/SOAP/REST interface.
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+---
 
 ## Keystore
 
