@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="Docusaurus">
+    <title>EbMS Adapter</title>
+    <script defer src="/runtime~main.js"></script><script defer src="/main.js"></script><link href="/styles.css" rel="stylesheet">
+  </head>
+  <body>
+    <script>
+(function() {
+    var defaultMode = 'light';
+    var respectPrefersColorScheme = false;
+
+    function setDataThemeAttribute(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+
+    function getQueryStringTheme() {
+      try {
+        return new URLSearchParams(window.location.search).get('docusaurus-theme')
+      } catch (e) {
+      }
+    }
+
+    function getStoredTheme() {
+      try {
+        return window['localStorage'].getItem('theme');
+      } catch (err) {
+      }
+    }
+
+    var initialTheme = getQueryStringTheme() || getStoredTheme();
+    if (initialTheme !== null) {
+      setDataThemeAttribute(initialTheme);
+    } else {
+      if (
+        respectPrefersColorScheme &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches
+      ) {
+        setDataThemeAttribute('dark');
+      } else if (
+        respectPrefersColorScheme &&
+        window.matchMedia('(prefers-color-scheme: light)').matches
+      ) {
+        setDataThemeAttribute('light');
+      } else {
+        setDataThemeAttribute(defaultMode === 'dark' ? 'dark' : 'light');
+      }
+    }
+  })();
+
+(function() {
+  try {
+    const entries = new URLSearchParams(window.location.search).entries();
+    for (var [searchKey, value] of entries) {
+      if (searchKey.startsWith('docusaurus-data-')) {
+        var key = searchKey.replace('docusaurus-data-',"data-")
+        document.documentElement.setAttribute(key, value);
+      }
+    }
+  } catch(e) {}
+})();
+
+
+            </script>
+    <div id="__docusaurus"></div>
+    
+    
+  </body>
+</html>

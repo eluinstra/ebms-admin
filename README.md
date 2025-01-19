@@ -1,5 +1,41 @@
-EbMS adapter for Java. Supports [EbMS 2.0 specification]({{ site.baseurl }}{% link ebms-core/introduction.md %}). Was initially developed to support the Digipoort EbMS specification, as defined by Logius for the Dutch government.
+# Website
 
-See [here]({{ site.baseurl }}{% link ebms-admin/introduction.md %}) for more information
+This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
 
-Please consider a donation to help maintaining this project [here](https://paypal.me/EdwinLuinstra) or [here](https://www.patreon.com/eluinstra).
+### Installation
+
+```
+$ yarn
+```
+
+### Local Development
+
+```
+$ yarn start
+```
+
+This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
+
+### Build
+
+```
+$ yarn build
+```
+
+This command generates static content into the `build` directory and can be served using any static contents hosting service.
+
+### Deployment
+
+Using SSH:
+
+```
+$ USE_SSH=true yarn deploy
+```
+
+Not using SSH:
+
+```
+$ GIT_USER=<Your GitHub username> yarn deploy
+```
+
+If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
