@@ -6,7 +6,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const globalVariables = {
   'ebms.core.version': '2.19.3',
-  'ebms.branch.version': ''
+  'ebms.branch.version': '2.19.x'
 }
 const config: Config = {
   title: 'EbMS Adapter',
@@ -18,11 +18,13 @@ const config: Config = {
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/ebms-admin/',
+  deploymentBranch: 'gh-pages',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'eluinstra', // Usually your GitHub org/user name.
   projectName: 'ebms-admin', // Usually your repo name.
+  trailingSlash: false,
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -44,7 +46,7 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+            'https://github.com/eluinstra/ebms-admin/tree/documentation',
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -78,7 +80,7 @@ const config: Config = {
           label: 'Documentation',
         },
         {
-          href: 'https://github.com/eluinstra/ebms-admin/-/tree/documentation/',
+          href: 'https://github.com/eluinstra/ebms-admin/tree/documentation',
           label: 'GitHub',
           position: 'right',
         },
@@ -130,14 +132,9 @@ const config: Config = {
       darkTheme: prismThemes.dracula,
     },
   } satisfies Preset.ThemeConfig,
-  // plugins: [
-  //   [
-  //     require.resolve("@cmfcmf/docusaurus-search-local"),
-  //     {
-  //       language: "nl",
-  //     },
-  //   ],
-  // ],
+  plugins: [[require.resolve("docusaurus-lunr-search"), {
+    enableHighlight: true
+  }]],
 };
 
 export default config;

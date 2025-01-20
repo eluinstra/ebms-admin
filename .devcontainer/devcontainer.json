@@ -18,6 +18,7 @@
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "npm install",
   "postStartCommand": "npm run start -- --host 0.0.0.0 --poll 1000",
+  // "postStartCommand": "npm run build && npm run serve",
   // Configure tool-specific properties.
   "customizations": {
     // Configure properties specific to VS Code.
