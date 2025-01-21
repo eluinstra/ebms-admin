@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="526px" preserveAspectRatio="none" style="width:788px;height:526px;background:#00000000;" version="1.1" viewBox="0 0 788 526" width="788px" zoomAndPan="magnify"><defs><filter height="300%" id="f10lzqpo2yt3vc" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[4541fb81c80c07473fe4b07432ef0971]
+entity app--><rect fill="#FFFFFF" filter="url(#f10lzqpo2yt3vc)" height="36.2969" style="stroke:#000000;stroke-width:1.5;" width="95" x="345" y="7"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="75" x="355" y="29.9951">Application</text><!--MD5=[4fc6c3b5a1fba55664248d096da24559]
+entity lb1--><rect fill="#FFFFFF" filter="url(#f10lzqpo2yt3vc)" height="36.2969" style="stroke:#000000;stroke-width:1.0;stroke-dasharray:1.0,3.0;" width="117" x="334" y="120"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="97" x="344" y="142.9951">Load Balancer</text><!--MD5=[c36dc000b71fcb702ca3fc08dad936e1]
+entity ebms1--><rect fill="#FFFFFF" filter="url(#f10lzqpo2yt3vc)" height="36.2969" style="stroke:#000000;stroke-width:1.5;" width="126" x="190.5" y="237.5"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="106" x="200.5" y="260.4951">EbMS Adapter1</text><!--MD5=[319b23b0c074ca389e1a0491f7477ff8]
+entity ebms2--><rect fill="#FFFFFF" filter="url(#f10lzqpo2yt3vc)" height="36.2969" style="stroke:#000000;stroke-width:1.5;" width="126" x="470.5" y="237.5"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="106" x="480.5" y="260.4951">EbMS Adapter2</text><!--MD5=[7468467f3b6b392f1d176d828c753b77]
+entity db--><path d="M351.5,243 C351.5,233 393.5,233 393.5,233 C393.5,233 435.5,233 435.5,243 L435.5,268.2969 C435.5,278.2969 393.5,278.2969 393.5,278.2969 C393.5,278.2969 351.5,278.2969 351.5,268.2969 L351.5,243 " fill="#FFFFFF" filter="url(#f10lzqpo2yt3vc)" style="stroke:#000000;stroke-width:1.5;"/><path d="M351.5,243 C351.5,253 393.5,253 393.5,253 C393.5,253 435.5,253 435.5,243 " fill="none" style="stroke:#000000;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="64" x="361.5" y="269.9951">EbMS DB</text><!--MD5=[775c34017581a5522a6f6586a118dcb1]
+entity lb2--><rect fill="#FFFFFF" filter="url(#f10lzqpo2yt3vc)" height="36.2969" style="stroke:#000000;stroke-width:1.5;" width="117" x="334" y="355"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="97" x="344" y="377.9951">Load Balancer</text><!--MD5=[3a4d72efb1b53e1acbdd1189cccbc328]
+entity cloud--><path d="M367.5949,477.0025 C369.9559,470.9034 375.6645,469.7045 379.7344,475.2158 C383.3758,467.321 387.616,466.3052 393.5803,473.0133 C397.8929,467.9926 403.6148,468.577 406.0918,475.0172 C410.6555,469.6672 415.9581,471.3916 418.5613,477.2067 C426.2778,479.4029 429.4459,486.3771 422.3015,492.2646 C428.2663,497.5768 428.0835,504.0086 420.105,507.2813 C417.5481,515.4294 412.4278,516.1932 406.2131,511.1266 C404.4015,518.1802 399.2965,518.2739 394.6711,513.9915 C389.5942,519.1223 382.6217,518.9871 380.3737,510.9255 C375.5728,516.9992 369.9492,513.7969 367.9313,508.0067 C359.4312,505.4799 358.7998,499.3327 364.0049,493.1772 C357.3642,487.2922 359.9472,479.7161 367.5949,477.0025 " fill="#FFFFFF" filter="url(#f10lzqpo2yt3vc)" style="stroke:#000000;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="38" x="373.5" y="495.9951">cloud</text><!--MD5=[2138b6dbb06b155506e384947d97876f]
+entity file1--><polygon fill="#FFFFFF" filter="url(#f10lzqpo2yt3vc)" points="16,237.5,16,273.7969,155,273.7969,155,247.5,145,237.5,16,237.5" style="stroke:#000000;stroke-width:1.5;"/><path d="M145,237.5 L145,247.5 L155,247.5 " fill="#FFFFFF" style="stroke:#000000;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="119" x="26" y="260.4951">ebms.serverId=1</text><!--MD5=[f0995f22e4683d439f802f70f6fc16d3]
+entity file2--><polygon fill="#FFFFFF" filter="url(#f10lzqpo2yt3vc)" points="632,237.5,632,273.7969,771,273.7969,771,247.5,761,237.5,632,237.5" style="stroke:#000000;stroke-width:1.5;"/><path d="M761,237.5 L761,247.5 L771,247.5 " fill="#FFFFFF" style="stroke:#000000;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="119" x="642" y="260.4951">ebms.serverId=2</text><!--MD5=[f4a08fc9927a5ba240909f9d92394920]
+link app to lb1--><path d="M392.5,48.47 C392.5,67.74 392.5,95.34 392.5,114.59 " fill="none" id="app-lb1" style="stroke:#000000;stroke-width:1.0;"/><polygon fill="#000000" points="392.5,119.78,396.5,110.78,392.5,114.78,388.5,110.78,392.5,119.78" style="stroke:#000000;stroke-width:1.0;"/><polygon fill="#000000" points="392.5,43.34,388.5,52.34,392.5,48.34,396.5,52.34,392.5,43.34" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="91" x="393.5" y="86.0669">SOAP/HTTP(S)</text><!--MD5=[fb33e0bb94415bf712f268aaf4da36b9]
+link lb1 to ebms1--><path d="M367.84,159.49 C342.51,180.54 303.31,213.11 278.03,234.12 " fill="none" id="lb1-ebms1" style="stroke:#000000;stroke-width:1.0;"/><polygon fill="#000000" points="274.09,237.39,283.5657,234.7047,277.9323,234.1905,278.4465,228.557,274.09,237.39" style="stroke:#000000;stroke-width:1.0;"/><polygon fill="#000000" points="371.99,156.04,362.5084,158.7045,368.1407,159.2311,367.6141,164.8633,371.99,156.04" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="91" x="336.5" y="199.0669">SOAP/HTTP(S)</text><!--MD5=[cba2abcb32e9ae9fe75772e484973e81]
+link lb1 to ebms2--><path d="M417.18,159.21 C442.85,180.25 482.84,213 508.6,234.1 " fill="none" id="lb1-ebms2" style="stroke:#000000;stroke-width:1.0;"/><polygon fill="#000000" points="512.61,237.39,508.1986,228.5843,508.7479,234.2145,503.1177,234.7638,512.61,237.39" style="stroke:#000000;stroke-width:1.0;"/><polygon fill="#000000" points="413.31,156.04,417.7214,164.8457,417.1721,159.2155,422.8023,158.6662,413.31,156.04" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="91" x="468.5" y="199.0669">SOAP/HTTP(S)</text><!--MD5=[369021aa0da69fdedc36110eecbed4dd]
+link ebms1 to db--><path d="M316.66,255.5 C326.55,255.5 336.43,255.5 346.31,255.5 " fill="none" id="ebms1-to-db" style="stroke:#000000;stroke-width:1.0;"/><polygon fill="#000000" points="351.48,255.5,342.48,251.5,346.48,255.5,342.48,259.5,351.48,255.5" style="stroke:#000000;stroke-width:1.0;"/><!--MD5=[42835ddcff6a2b96d0151ee0ef82095a]
+reverse link db to ebms2--><path d="M440.77,255.5 C450.65,255.5 460.53,255.5 470.41,255.5 " fill="none" id="db-backto-ebms2" style="stroke:#000000;stroke-width:1.0;"/><polygon fill="#000000" points="435.61,255.5,444.61,259.5,440.61,255.5,444.61,251.5,435.61,255.5" style="stroke:#000000;stroke-width:1.0;"/><!--MD5=[90352590762a739ccd4009bc01a4cdcd]
+link ebms1 to lb2--><path d="M278.16,276.99 C303.49,298.04 342.69,330.61 367.97,351.62 " fill="none" id="ebms1-lb2" style="stroke:#000000;stroke-width:1.0;"/><polygon fill="#000000" points="371.91,354.89,367.5535,346.057,368.0677,351.6905,362.4343,352.2047,371.91,354.89" style="stroke:#000000;stroke-width:1.0;"/><polygon fill="#000000" points="274.01,273.54,278.3859,282.3633,277.8593,276.7311,283.4916,276.2045,274.01,273.54" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="91" x="336.5" y="321.0669">EbMS/HTTP(S)</text><!--MD5=[bed72539deea00b627166db09738b71d]
+link ebms2 to lb2--><path d="M508.82,276.71 C483.15,297.75 443.16,330.5 417.4,351.6 " fill="none" id="ebms2-lb2" style="stroke:#000000;stroke-width:1.0;"/><polygon fill="#000000" points="413.39,354.89,422.8823,352.2638,417.2521,351.7145,417.8014,346.0843,413.39,354.89" style="stroke:#000000;stroke-width:1.0;"/><polygon fill="#000000" points="512.69,273.54,503.1977,276.1662,508.8279,276.7155,508.2786,282.3457,512.69,273.54" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="91" x="468.5" y="321.0669">EbMS/HTTP(S)</text><!--MD5=[8249fc03988aff204f65e05fb0352f04]
+link lb2 to cloud--><path d="M392.5,396.37 C392.5,415.21 392.5,442.23 392.5,462.4 " fill="none" id="lb2-cloud" style="stroke:#000000;stroke-width:1.0;"/><polygon fill="#000000" points="392.5,467.64,396.5,458.64,392.5,462.64,388.5,458.64,392.5,467.64" style="stroke:#000000;stroke-width:1.0;"/><polygon fill="#000000" points="392.5,391.12,388.5,400.12,392.5,396.12,396.5,400.12,392.5,391.12" style="stroke:#000000;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="81" x="393.5" y="434.0669">EbMS/HTTPS</text><!--MD5=[6dc8ac51e2da93133453e5ff5214393b]
+reverse link file1 to ebms1--><path d="M160.31,255.5 C170.36,255.5 180.4,255.5 190.44,255.5 " fill="none" id="file1-backto-ebms1" style="stroke:#000000;stroke-width:1.0;"/><polygon fill="#000000" points="155.06,255.5,164.06,259.5,160.06,255.5,164.06,251.5,155.06,255.5" style="stroke:#000000;stroke-width:1.0;"/><!--MD5=[598b1be99f240f5df78dd0757ac00bc1]
+link ebms2 to file2--><path d="M596.83,255.5 C606.81,255.5 616.79,255.5 626.77,255.5 " fill="none" id="ebms2-to-file2" style="stroke:#000000;stroke-width:1.0;"/><polygon fill="#000000" points="631.99,255.5,622.99,251.5,626.99,255.5,622.99,259.5,631.99,255.5" style="stroke:#000000;stroke-width:1.0;"/><!--MD5=[3f9cb666d05676e71be2200c54c6a5f3]
+@startuml
+skinparam BackgroundColor transparent
+skinparam componentStyle rectangle
+skinparam compnentBackgroundColor #White
+skinparam ArrowColor #Black
+
+[Application] as app #white
+[Load Balancer] as lb1 #white;line.dotted
+[EbMS Adapter1] as ebms1 #white
+[EbMS Adapter2] as ebms2 #white
+database "EbMS DB" as db #white
+[Load Balancer] as lb2 #white
+cloud cloud as cloud #white
+file "ebms.serverId=1" as file1 #white
+file "ebms.serverId=2" as file2 #white
+
+app <- -> lb1 : SOAP/HTTP(S)
+lb1 <- -> ebms1 : SOAP/HTTP(S)
+lb1 <- -> ebms2 : SOAP/HTTP(S)
+ebms1 -ri-> db
+ebms2 -le-> db
+ebms1 <- -> lb2 : EbMS/HTTP(S)
+ebms2 <- -> lb2 : EbMS/HTTP(S)
+lb2 <- -> cloud : EbMS/HTTPS
+ebms1 -le-> file1
+ebms2 -ri-> file2
+
+@enduml
+
+PlantUML version 1.2021.00(Sun Jan 10 11:25:05 CET 2021)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>
