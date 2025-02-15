@@ -25,7 +25,7 @@ sidebar_position: 7
 - upgrade to Java 11
 - updated dependecies
 - removed storing duplicate messages
-- cleanup database (complying to SQL 2008 specifications)
+- cleanup database (complying to ANSI SQL 2008 specifications)
 - removed MySQL support
 - removed Bitronix
 - removed Apache HttpClient

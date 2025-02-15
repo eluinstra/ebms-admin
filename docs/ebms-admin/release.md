@@ -1,5 +1,5 @@
 ---
-sidebar_position: 12
+sidebar_position: 13
 ---
 
 # Release Notes
@@ -44,7 +44,7 @@ sidebar_position: 12
 - upgrade to Java 11
 - updated dependecies
 - removed storing duplicate messages
-- cleanup database (complying to SQL 2008 specifications)
+- cleanup database (complying to ANSI SQL 2008 specifications)
 - removed MySQL support
 - removed Bitronix
 - removed Apache HttpClient

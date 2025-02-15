@@ -8,6 +8,10 @@ If you want to use a database other then H2 or HSQLDB, you have to provide the J
 
 For more on database support see [here](/ebms-core/database.md).
 
+:::danger
+We strongly advise to **not** use a MSSQL Database with the EbMS Adapter if you expect a moderate to high message load, because MSSQL cannot handle that because of Page Locking.
+:::
+
 ## Initialize Flyway
 
 You can use Flyway to migrate your database. To initialize Flyway for the first time on an existing database run [DBMigrate](#dbmigrate).
@@ -88,7 +92,7 @@ usage: DBClean [-cmd <arg>] [-configDir <arg>] [-cpaId <arg>] [-dateFrom <arg>] 
 Cleanup all EbMS messages (and related objects) with persistence date before 30 days ago
 
 ```sh
-java -cp ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.DBClean -cmd messages
+java -cp postgresql-42.2.16.jar:ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.DBClean -cmd messages
 ```
 
 #### Cleanup CPA from PostgreSQL database
@@ -96,5 +100,5 @@ java -cp ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.DBClean -cmd
 Cleanup CPA with cpaId `1` (and all related EbMS messages and other objects)
 
 ```sh
-java -cp ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.DBClean -cmd cpa -cpaId=1
+java -cp postgresql-42.2.16.jar:ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.DBClean -cmd cpa -cpaId=1
 ```

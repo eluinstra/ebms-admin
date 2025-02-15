@@ -8,8 +8,8 @@ The EbMS Adapter supports the following databases
 
 - [Database support](#database-support)
   - [Database Scripts](#database-scripts)
-  - [JDBC Settings](#jdbc-settings)
-    - [JDBC Common](#jdbc-common)
+  - [Database Configuration](#database-configuration)
+    - [Common Properties](#common-properties)
     - [DB2](#db2)
     - [H2](#h2)
     - [HSQLDB](#hsqldb)
@@ -31,11 +31,11 @@ The database master scripts can be found [here](https://github.com/eluinstra/ebm
 The database update scripts can be found [here](https://github.com/eluinstra/ebms-core/tree/ebms-core-@ebms.branch.version@/src/main/resources/nl/clockwork/ebms/db/migration)  
 ebms-core also supports automatic database migration through [Flyway](#flyway)
 
-## JDBC Settings
+## Database Configuration
 
 You can find the JDBC settings for the supported databases as well as links to the JDBC drivers below.
 
-### JDBC Common
+### Common Properties
 
 ```properties
 ebms.jdbc.username=<username>
@@ -112,6 +112,10 @@ Download the right flyway-mysql driver [here](https://mvnrepository.com/artifact
 Check the pom.xml of ebms-admin for the right version of the flyway-mysql library
 
 ### MS SQL Server
+
+:::danger
+We strongly advise to **not** use a MSSQL Database with the EbMS Adapter if you expect a moderate to high message load, because MSSQL cannot handle that because of Page Locking.
+:::
 
 ```properties
 # JDBC driver
