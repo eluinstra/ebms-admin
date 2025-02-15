@@ -6,14 +6,24 @@ sidebar_position: 5
 
 The EbMS Adapter supports the following databases
 
-- [DB2](#db2)
-- [H2](#h2)
-- [HSQLDB](#hsqldb)
-- [MariaDB](#mariadb)
-- [MS SQL Server](#ms-sql-server)
-- [MySQL](#mysql)
-- [Oracle](#oracle)
-- [PostgreSQL](#postgresql)
+- [Database support](#database-support)
+  - [Database Scripts](#database-scripts)
+  - [JDBC Settings](#jdbc-settings)
+    - [JDBC Common](#jdbc-common)
+    - [DB2](#db2)
+    - [H2](#h2)
+    - [HSQLDB](#hsqldb)
+    - [MariaDB](#mariadb)
+    - [MS SQL Server](#ms-sql-server)
+      - [XA Driver](#xa-driver)
+      - [Quartz](#quartz)
+    - [MySQL](#mysql)
+      - [XA Driver](#xa-driver-1)
+    - [Oracle](#oracle)
+      - [XA Driver](#xa-driver-2)
+    - [PostgreSQL](#postgresql)
+      - [XA Driver](#xa-driver-3)
+  - [Flyway](#flyway)
 
 ## Database Scripts
 
@@ -137,9 +147,9 @@ deliveryTaskHandler.quartz.jdbc.selectWithLockSQL=SELECT * FROM {0}LOCKS UPDLOCK
 
 ### MySQL
 
-```note
+:::danger
 MySQL support is removed in version 2.19.0
-```
+:::
 
 ```properties
 # JDBC driver

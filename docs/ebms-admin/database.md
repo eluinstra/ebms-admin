@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 8
 ---
 
 # Database support
@@ -39,9 +39,9 @@ Valid ebmsVersions:
 
 See [here](/ebms-core/database.md) for database settings.  
 
-```note
+:::caution
 If you run Flyway for the first time on an existing database, then you have to use the argument `-ebmsVersion` with your current EbMS database version to [initialize the database](#initialize).
-```
+:::
 
 ### Examples
 

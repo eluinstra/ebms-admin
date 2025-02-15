@@ -28,7 +28,7 @@ See [here](/ebms-core/overview.md) for a functional overview of the EbMS adapter
 
 - start ebms-admin on default port `8080` with the SOAP interface enabled and using JDBC driver `<jdbc-driver>.jar`
 
-```
+```sh
 java -cp <jdbc-driver>.jar:ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.StartEmbedded -soap
 ```
 

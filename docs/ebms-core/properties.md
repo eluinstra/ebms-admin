@@ -81,9 +81,9 @@ deliveryTaskHandler.task.executionInterval=0
 
 It is possible to retry sending best-effort messages after a technical error (like a connection error). `ebmsMessage.nrAutoRetries` sets the maximum number of retries. `ebmsMessage.autoRetryInterval` sets the retry interval in minutes.
 
-```note
+:::note
 This is not according to the EbMS Specifications, but will not violate them either.
-```
+:::
 
 ```properties
 deliveryTaskManager.nrAutoRetries=0
@@ -173,13 +173,13 @@ http.errors.server.unrecoverable=501,505,510
 
  JMS can be used by the [DeliveryTaskHandler](#deliverytaskhandler), the [DeliveryManager](#deliverymanager) and the [EventListener](#eventlistener). By default the `jms.brokerURL=vm://localhost` setting starts a persistent ActiveMQ broker that stores its data in the folder `activemq-data` and is reachable through `vm://localhost`. To use a diffent (external) ActiveMQ broker configure `jms.brokerURL`. You can also start an internal ActiveMQ broker by setting `jms.broker.start=true` and set the path to the broker's configuration file in `jms.broker.config`. You can find the default ActiveMQ configuration file [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-@ebms.branch.version@/src/main/resources/nl/clockwork/ebms/activemq.xml). If you are using this configuration file, the broker's data is stored in the folder `data`.
 
-```note
+:::info
 When [`deliveryTaskHandler.type`](#deliverytaskhandler) is set to `JMS` configure the ActiveMQ broker with `schedulerSupport="true"`
-```
+:::
 
-```note
+:::info
 When [`eventListener.type`](#eventlistener) is set to `SIMPLE_JMS`, `JMS`, or `JMS_TEXT` or [`deliveryTaskHandler.type`](#deliverytaskhandler) is set to `JMS` or `QUARTZ_JMS` use (the default) presistent delivery
-```
+:::
 
 ```properties
 jms.brokerURL=vm://localhost
@@ -195,9 +195,9 @@ jms.pool.maxPoolSize=32
 
 Large EbMS attachments will be cached in temporary files if they exceed the `ebmsMessage.attachment.memoryTreshold` which by default is `128Kb`. The temporary files are written to `ebmsMessage.attachment.outputDirectory` if set, otherwise to the default temp directory. To enable file encryption set `ebmsMessage.attachment.cipherTransformation` to a stream or 8-bit block cipher transformation (like RC4, AES/CTR/NoPadding, etc).
 
-```note
+:::caution
 Enabling file encryption will result in an increased processing time.
-```
+:::
 
 ```properties
 ebmsMessage.attachment.memoryTreshold=131072
@@ -221,15 +221,15 @@ signature.keystore.keyPassword=${signature.keystore.password}
 
 The EbMS HTTP client has the option to use SSL client certificate from the matching CPA when sending a message. You can **override** a certificate defined in a CPA by creating a [Certificate Mapping](api#certificatemappingservice). This option can be enabled by setting property `https.useClientCertificate` to true.  
 
-```note
+:::caution
 This option works **ONLY** as long as the other (receiving) party will trust the configured SSL client certificate.
-```
+:::
 
 The EbMS adapter supports SSL client certificate validation. This means that the SSL clientCertificate of the incoming request will be validated against the matching CPA. This option can be enabled by setting property `https.clientCertificateAuthentication` to true.
 
-```note
+:::caution
 This option **ONLY** works as long as the other (sending) party uses the SSL client certificates defined in the CPA and the client certificates are trusted in the [truststore](properties#truststore).
-```
+:::
 
 ```properties
 https.protocols=

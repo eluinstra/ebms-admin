@@ -1,5 +1,5 @@
 ---
-sidebar_position: 11
+sidebar_position: 6
 ---
 
 # SSL Configuration

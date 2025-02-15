@@ -1,12 +1,12 @@
 ---
-sidebar_position: 10
+sidebar_position: 12
 ---
 
 # Release Notes
 
-```note
+:::info
 @ebms.core.version@ and ebms-admin-2.18.10 are the latest versions.
-```
+:::
 
 ### [ebms-admin-2.19.3.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.19.3/ebms-admin-2.19.3.jar)
 

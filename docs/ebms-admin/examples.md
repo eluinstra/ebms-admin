@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 9
 ---
 
 # Examples
@@ -38,7 +38,7 @@ In this example you will configure 2 ebms adapters that will communicate with ea
 - create directory `overheid`
 - copy ebms-admin-@ebms.core.version@.jar to `overheid`
 - start ebms-admin on port `8000` with the SOAP Interface using a HSQLDB server
-```
+```sh
 java -cp ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.StartEmbedded -port 8000 -soap -hsqldb
 ```
 - open web browser at [http://localhost:8000](http://localhost:8000)
@@ -54,7 +54,7 @@ java -cp ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.StartEmbedde
 - create directory `digipoort`
 - copy ebms-admin-@ebms.core.version@.jar to `digipoort`
 - start ebms-admin on default port `8080` with the SOAP Interface using a HSQLDB server
-```
+```sh
 java -cp ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.StartEmbedded -soap -hsqldb
 ```
 - open web browser at [http://localhost:8080](http://localhost:8080)

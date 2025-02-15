@@ -206,10 +206,10 @@ java -Djavax.net.ssl.trustStore= -cp ebms-admin-@ebms.core.version@.jar nl.clock
 
 ## start ebms-admin serving admin and soap interface over ssl using Microsoft Azure Key Vault certificate
 
-```note
+:::caution
 with the current azure-security-keyvault-jca implementation (version 1.0.0-beta.5) only the certificate and not the full chain is returned.
 this can cause problems with for instance the Microsoft Azure API Gateway which does not want to connect to a server which does not provide the full chain.
-```
+:::
 
 (since [v2.17.7](release#ebms-admin-2177jar))
 note, the system property azure.keyvault.uri is required as some requests are made to the keystore before it is initialized in code.
