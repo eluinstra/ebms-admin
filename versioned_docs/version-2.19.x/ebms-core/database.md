@@ -4,22 +4,26 @@ sidebar_position: 5
 
 # Database support
 
-The EbMS Adapter supports the following databases:
+The EbMS Adapter supports the following databases
 
-[DB2](#db2)
-
-[H2](#h2) for test purposes
-
-[HSQLDB](#hsqldb) for test purposes
-
-[MariaDB](#mariadb)
-
-[MS SQL Server](#ms-sql-server) (not recommended)
-
-[Oracle](#oracle)
-
-[PostgreSQL](#postgresql)
-
+- [Database support](#database-support)
+  - [Database Scripts](#database-scripts)
+  - [Database Configuration](#database-configuration)
+    - [Common Properties](#common-properties)
+    - [DB2](#db2)
+    - [H2](#h2)
+    - [HSQLDB](#hsqldb)
+    - [MariaDB](#mariadb)
+    - [MS SQL Server](#ms-sql-server)
+      - [XA Driver](#xa-driver)
+      - [Quartz](#quartz)
+    - [MySQL](#mysql)
+      - [XA Driver](#xa-driver-1)
+    - [Oracle](#oracle)
+      - [XA Driver](#xa-driver-2)
+    - [PostgreSQL](#postgresql)
+      - [XA Driver](#xa-driver-3)
+  - [Flyway](#flyway)
 
 ## Database Scripts
 
@@ -27,15 +31,6 @@ The database master scripts can be found [here](https://github.com/eluinstra/ebm
 The database update scripts can be found [here](https://github.com/eluinstra/ebms-core/tree/ebms-core-@ebms.branch.version@/src/main/resources/nl/clockwork/ebms/db/migration)  
 ebms-core also supports automatic database migration through [Flyway](#flyway)
 
-## Flyway
-
-Database migration through Flyway is enabled through the following [EbMS property](properties#database)
-
-```properties
-ebms.jdbc.update=true
-```
-
-If you already have an existing database and want to use Flyway, then you first have to [initialize Flyway](/ebms-admin/database.md#initialize-flyway). Otherwise you can just enable the property.
 ## Database Configuration
 
 You can find the JDBC settings for the supported databases as well as links to the JDBC drivers below.
@@ -49,6 +44,8 @@ ebms.jdbc.password=<password>
 
 ### DB2
 
+since v2.14.0
+
 ```properties
 # JDBC driver
 ebms.jdbc.driverClassName=com.ibm.db2.jcc.DB2Driver
@@ -57,9 +54,13 @@ ebms.jdbc.driverClassName=com.ibm.db2.jcc.DB2XADataSource
 ebms.jdbc.url=jdbc:db2://<host>:<port>/<dbname>
 ```
 
+Tested with DB2 11.5.4.0
+
 Download drivers [here](https://www.ibm.com/support/pages/db2-jdbc-driver-versions-and-downloads)
 
 ### H2
+
+since [v2.17.2](release#ebms-core-2172jar)
 
 ```properties
 # JDBC and XA driver
@@ -73,6 +74,8 @@ ebms.jdbc.url=jdbc:h2:<path>
 # or server
 ebms.jdbc.url=jdbc:h2:tcp://<host>:<port>/<path>
 ```
+
+Tested with H2 1.4.200
 
 ### HSQLDB
 
@@ -89,6 +92,8 @@ ebms.jdbc.url=jdbc:hsqldb:file:<path>
 ebms.jdbc.url=jdbc:hsqldb:hsql://<host>:<port>/<dbname>
 ```
 
+Tested with HSQLDB 2.5.1
+
 ### MariaDB
 
 ```properties
@@ -98,6 +103,8 @@ ebms.jdbc.driverClassName=org.mariadb.jdbc.Driver
 ebms.jdbc.driverClassName=org.mariadb.jdbc.MySQLDataSource
 ebms.jdbc.url=jdbc:mariadb://<host>:<port>/<dbname>
 ```
+
+Tested with MariaDB 10.3.22
 
 Download drivers [here](https://downloads.mariadb.org/connector-java/)
 
@@ -117,6 +124,8 @@ ebms.jdbc.driverClassName=com.microsoft.sqlserver.jdbc.SQLServerDriver
 ebms.jdbc.driverClassName=com.microsoft.sqlserver.jdbc.SQLServerXADataSource
 ebms.jdbc.url=jdbc:sqlserver://<host>:<port>;[instanceName=<instanceName>;]databaseName=<dbname>;
 ```
+
+Tested with MS SQL Server 2019
 
 Download drivers [here](https://docs.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server)
 
@@ -140,6 +149,32 @@ When [`deliveryTaskHandler.type`](properties#deliverytaskhandler) is set to `QUA
 deliveryTaskHandler.quartz.jdbc.selectWithLockSQL=SELECT * FROM {0}LOCKS UPDLOCK WHERE LOCK_NAME = ?
 ```
 
+### MySQL
+
+:::danger
+MySQL support is removed in version 2.19.0
+:::
+
+```properties
+# JDBC driver
+ebms.jdbc.driverClassName=com.mysql.cj.jdbc.Driver
+# or XA driver
+ebms.jdbc.driverClassName=com.mysql.cj.jdbc.MysqlXADataSource
+ebms.jdbc.url=jdbc:mysql://<host>:<port>/<dbname>
+```
+
+Tested with MySQL 8.0.21
+
+Download drivers [here](https://dev.mysql.com/downloads/connector/j/)
+
+#### XA Driver
+
+When using the XA driver add line the following line to `my.ini` or `my.cnf`
+
+```properties
+default-time-zone='+02:00'
+```
+
 ### Oracle
 
 ```properties
@@ -149,6 +184,8 @@ ebms.jdbc.driverClassName=oracle.jdbc.OracleDriver
 ebms.jdbc.driverClassName=oracle.jdbc.xa.client.OracleXADataSource
 ebms.jdbc.url=jdbc:oracle:thin:@<host>:<port>:<dbname>
 ```
+
+Tested with Oracle XE 18c
 
 Download drivers [here](https://www.oracle.com/database/technologies/appdev/jdbc-downloads.html)
 
@@ -172,6 +209,8 @@ ebms.jdbc.driverClassName=org.postgresql.xa.PGXADataSource
 ebms.jdbc.url=jdbc:postgresql://<host>:<port>/<dbname>
 ```
 
+Tested with PostgreSQL 12.4
+
 Download drivers [here](https://jdbc.postgresql.org/download.html)
 
 #### XA Driver
@@ -183,3 +222,14 @@ org.postgresql.util.PSQLException: ERROR: prepared transactions are disabled Hin
 ```
 
 then enable the `max_prepared_transactions` attribute in `postgresql.conf`
+
+
+## Flyway
+
+Database migration through Flyway is enabled through the following [EbMS property](properties#database) (since [v2.17.2](release#ebms-core-2172jar))
+
+```properties
+ebms.jdbc.update=true
+```
+
+If you already have an existing database and want to use Flyway, then you first have to [initialize Flyway](/ebms-admin/database.md#initialize-flyway). Otherwise you can just enable the property.

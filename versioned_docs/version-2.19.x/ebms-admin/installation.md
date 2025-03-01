@@ -6,7 +6,7 @@ sidebar_position: 3
 
 ## Prerequisites
 
-- download and install Java 17 (or later)
+- download and install Java 11 (or later)
 - provide a [supported database](/ebms-core/database.md) and download the appropriate JDBC driver
 - download [ebms-admin-@ebms.core.version@.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-@ebms.core.version@/ebms-admin-@ebms.core.version@.jar)
 

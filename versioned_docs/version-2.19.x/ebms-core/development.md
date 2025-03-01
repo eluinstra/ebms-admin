@@ -8,7 +8,7 @@ If you want to use ebms-core in your own application you have to add the [JAR](#
 
 ## Java
 
-ebms-core is compiled and tested with OpenJDK 17
+ebms-core is compiled and tested with OpenJDK 11
 
 ## Maven
 

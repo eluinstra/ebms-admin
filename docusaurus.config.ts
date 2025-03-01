@@ -5,8 +5,14 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const globalVariables = {
-  'ebms.core.version': '2.19.3',
-  'ebms.branch.version': '2.19.x'
+  'current': {
+    'ebms.core.version': '2.20.2',
+    'ebms.branch.version': '2.20.x'
+  },
+  '2.19.x': {
+    'ebms.core.version': '2.19.4',
+    'ebms.branch.version': '2.19.x'
+  }
 }
 const config: Config = {
   title: 'EbMS Adapter',
@@ -42,6 +48,14 @@ const config: Config = {
       'classic',
       {
         docs: {
+          includeCurrentVersion: false,
+          // lastVersion: 'current',
+          // versions: {
+          //   current: {
+          //     label: '2.20.x',
+          //     path: '2.20.x',
+          //   },
+          // },    
           sidebarPath: './sidebars.ts',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
@@ -56,9 +70,21 @@ const config: Config = {
   ],
   markdown: {
     preprocessor: ({filePath, fileContent}) => {
+      var key = '';
+      var found = false;
+      for (key in globalVariables) {
+        let folderName = (key == 'current' ? 'current' : `version-${key}`);
+        if (filePath.includes(`/${folderName}/`)) {
+          found = true;
+          break;
+        }
+      }
+      if (key == '' || !found) {
+        key = 'current';
+      }
       let content = fileContent;
-      for (const variable in globalVariables) {
-        content = content.replaceAll('@'+variable+'@', globalVariables[variable]);
+      for (const variable in globalVariables[key]) {
+        content = content.replaceAll('@'+variable+'@', globalVariables[key][variable]);
       }
       return content
     },
@@ -73,6 +99,9 @@ const config: Config = {
         src: 'img/logo.svg',
       },
       items: [
+        {
+          type: 'docsVersionDropdown',
+        },
         {
           type: 'docSidebar',
           sidebarId: 'tutorialSidebar',

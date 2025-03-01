@@ -3,7 +3,7 @@
 FROM node:lts AS base
 ## Disable colour output from yarn to make logs easier to read.
 ENV FORCE_COLOR=0
-RUN apt update && apt install -y default-jre libfreetype6 fontconfig graphviz
+RUN apt update && apt install -y default-jre graphviz
 ## Enable corepack.
 RUN corepack enable
 ## Set the working directory to `/opt/docusaurus`.

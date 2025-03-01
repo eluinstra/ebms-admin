@@ -18,7 +18,7 @@ You can use Flyway to migrate your database. To initialize Flyway for the first 
 
 ## DBMigrate
 
-With DBMigrate you can migrate your database using Flyway. ebms-core also supports [automatic update through Flyway](/ebms-core/database.md#flyway).
+With DBMigrate you can migrate your database using Flyway (since [v2.17.0](/ebms-core/release.md#ebms-core-2170jar)). ebms-core also supports [automatic update through Flyway](/ebms-core/database.md#flyway).
 
 ```sh
 java -cp ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.DBMigrate -h
@@ -40,7 +40,6 @@ Valid ebmsVersions:
 2.16
 2.17
 2.18
-2.19
 ```
 
 See [here](/ebms-core/database.md) for database settings.  
@@ -56,25 +55,25 @@ If you run Flyway for the first time on an existing database, then you have to u
 Migrate a PostgreSQL database `ebms` on `localhost:5432` with user credentials `username`/`password`
 
 ```sh
-java -cp postgresql-42.7.3.jar:ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.DBMigrate \
+java -cp postgresql-42.2.16.jar:ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.DBMigrate \
 -jdbcUrl jdbc:postgresql://localhost:5432/ebms \
 -username=username -password=password
 ```
 
 #### Initialize existing PostgreSQL database
 
-Initialize and migrate an existing PostgreSQL database `ebms` on `localhost:5432` that is on EbMS database v2.19.x
+Initialize and migrate an existing PostgreSQL database `ebms` on `localhost:5432` that is on EbMS database v2.18.x
 
 ```sh
-java -cp postgresql-42.7.3.jar:ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.DBMigrate \
--ebmsVersion 2.19 \
+java -cp postgresql-42.2.16.jar:ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.DBMigrate \
+-ebmsVersion 2.18 \
 -jdbcUrl jdbc:postgresql://localhost:5432/ebms \
 -username username -password password
 ```
 
 ## DBClean
 
-With DBClean you can cleanup your database. You have to configure the [database properties](properties#database) before using DBClean. You can find message storage properties [here](/ebms-core/properties.md#ebms-message-storage).
+With DBClean you can cleanup your database (since [v2.17.0](/ebms-core/release.md#ebms-core-2170jar)). You have to configure the [database properties](properties#database) before using DBClean. You can find message storage properties [here](/ebms-core/properties.md#ebms-message-storage).
 
 ```sh
 java -cp ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.DBClean -h

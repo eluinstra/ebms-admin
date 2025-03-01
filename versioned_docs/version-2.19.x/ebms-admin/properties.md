@@ -80,7 +80,7 @@ keystore.defaultAlias=
 
 `https.protocols` and `https.cipherSuites` override [these](/ebms-core/properties.md#ssl) default ebms-core properties. If `https.requireClientAuthentication=true` then the [EbMS Server](#ebms-server) endpoint requires SSL client authentication.
 
-When SSL offloading is used and the EbMS adapter does not handle incoming SSL itself (see [reverse proxy example](deployment#behind-a-reverse-proxy)) and the EbMS adapter is using [SSL client certificate validation](/ebms-core/properties.md#ssl), then the SSL client certificate can be forwarded as a Base64 DER-encoded HTTP header to the EbMS adapter. The header name can be set in `https.clientCertificateHeader`.
+When SSL offloading is used and the EbMS adapter does not handle incoming SSL itself (see [reverse proxy example](deployment#behind-a-reverse-proxy)) and the EbMS adapter is using [SSL client certificate validation](/ebms-core/properties.md#ssl), then the SSL client certificate can be forwarded as a Base64 DER-encoded HTTP header to the EbMS adapter. The header name can be set in `https.clientCertificateHeader` (since [v2.16.7](/ebms-core/release.md#ebms-core-2167jar)).
 
 ```properties
 https.protocols=TLSv1.2

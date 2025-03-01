@@ -14,11 +14,13 @@ usage: StartEmbedded [-applicationInsights] [-auditLogging]
        [-clientTrustStorePath <arg>] [-clientTrustStoreType <arg>]
        [-configDir <arg>] [-connectionLimit <arg>] [-disableEbMSClient]
        [-disableEbMSServer] [-h] [-headless] [-health] [-healthPort <arg>]
-       [-host <arg>] [-h2] [-h2Dir <arg>] [-jmx] [-jmxAccessFile
+       [-host <arg>] [-hsqldb] [-hsqldbDir <arg>] [-jmx] [-jmxAccessFile
        <arg>] [-jmxPasswordFile <arg>] [-jmxPort <arg>] [-keyStorePassword
        <arg>] [-keyStorePath <arg>] [-keyStoresType <arg>] [-keyStoreType
-       <arg>] [-path <arg>] [-port <arg>] [-protocols <arg>] [-queriesPerSecond
-       <arg>] [-soap] [-ssl] [-trustStorePassword <arg>] [-trustStorePath <arg>]
+       <arg>] [-keyvaultClientId <arg>] [-keyvaultClientSecret <arg>]
+       [-keyvaultTennantId <arg>] [-keyvaultUri <arg>] [-path <arg>]
+       [-port <arg>] [-protocols <arg>] [-queriesPerSecond <arg>] [-soap]
+       [-ssl] [-trustStorePassword <arg>] [-trustStorePath <arg>]
        [-trustStoreType <arg>] [-userQueriesPerSecond <arg>]
  -applicationInsights              enable applicationInsights
  -auditLogging                     enable audit logging
@@ -38,8 +40,8 @@ usage: StartEmbedded [-applicationInsights] [-auditLogging]
  -health                           start health service
  -healthPort <arg>                 set health service port [default: 8008]
  -host <arg>                       set host [default: 0.0.0.0]
- -h2                               start h2 database server
- -h2Dir <arg>                      set h2 database location [default: h2]
+ -hsqldb                           start hsqldb server
+ -hsqldbDir <arg>                  set hsqldb location [default: hsqldb]
  -jmx                              start jmx server
  -jmxAccessFile <arg>              set jmx access file [default: <none>]
  -jmxPasswordFile <arg>            set jmx password file [default: <none>]
@@ -48,6 +50,10 @@ usage: StartEmbedded [-applicationInsights] [-auditLogging]
  -keyStorePath <arg>               set keystore path [default: nl/clockwork/ebms/keystore.p12]
  -keyStoresType <arg>              set keystores type [default: <none>]
  -keyStoreType <arg>               set keystore type [default: PKCS12]
+ -keyvaultClientId <arg>           set keyvault client id [default: <none>]
+ -keyvaultClientSecret <arg>       set keyvault client secret [default: <none>]
+ -keyvaultTennantId <arg>          set keystore tennant identity [default: <none>]
+ -keyvaultUri <arg>                set keystore uri [default: <none>]
  -path <arg>                       set path [default: /]
  -port <arg>                       set port [default: <8080|8443>]
  -protocols <arg>                  set ssl protocols [default: <none>]
@@ -60,16 +66,16 @@ usage: StartEmbedded [-applicationInsights] [-auditLogging]
  -userQueriesPerSecond <arg>       set requests per user per secondlimit [default: <none>]
 ```
 
-## Start with the embedded H2 Database server
+## Start with the embedded HSQLDB server
 
 ```sh
-java -cp ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.StartEmbedded -h2
+java -cp ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.StartEmbedded -hsqldb
 ```
 
 ## Start using a PostgreSQL JDBC driver
 
 ```sh
-java -cp postgresql-42.7.3.jar:ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.StartEmbedded
+java -cp postgresql-42.2.14.jar:ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.StartEmbedded
 ```
 
 ## Start on port 8000
@@ -189,4 +195,37 @@ Start using basic authentication on Web/SOAP interface
 
 ```sh
 java -cp ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.StartEmbedded -authentication
+```
+
+## Start hsqldb and ebms-admin as 2 separate applications
+
+```sh
+java -cp ebms-admin-@ebms.core.version@.jar org.hsqldb.server.Server --database.0 file:hsqldb/ebms --dbname.0 ebms -port 9001
+java -Djavax.net.ssl.trustStore= -cp ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.StartEmbedded -soap
+```
+
+## start ebms-admin serving admin and soap interface over ssl using Microsoft Azure Key Vault certificate
+
+:::caution
+with the current azure-security-keyvault-jca implementation (version 1.0.0-beta.5) only the certificate and not the full chain is returned.
+this can cause problems with for instance the Microsoft Azure API Gateway which does not want to connect to a server which does not provide the full chain.
+:::
+
+(since [v2.17.7](release#ebms-admin-2177jar))
+note, the system property azure.keyvault.uri is required as some requests are made to the keystore before it is initialized in code.
+The sample values for azure are fictive and can not be used to actually run the adapter.
+
+```sh
+java -Dazure.keyvault.uri=https://key.vault.azure.net -Djavax.net.ssl.trustStore= -cp ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.StartEmbedded \
+-ssl -soap -trustStoreType PKCS12 -trustStorePath truststore.p12 -trustStorePassword password \
+-keyStoresType AZURE -keyvaultUri https://key.vault.azure.net -keyvaultTennantId f487d075-71f0-486a-beab-7e8d3f873be5 \
+-keyvaultClientId https://digipoort -keyvaultClientSecret _17c.3xulKW~2crwjVTFRT8n-5LKo44uF5
+```
+
+## start ebms-admin serving admin shipping logging and metrics to Microsoft Azure Application Insights
+
+By adding the -applicationInsights parameter the shipping of logging and metrics is enabled. Additional configuration needs to be done in Microsoft Azure.
+
+```sh
+java -Dazure.keyvault.uri=https://key.vault.azure.net -Djavax.net.ssl.trustStore= -cp ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.StartEmbedded -soap -applicationInsights
 ```

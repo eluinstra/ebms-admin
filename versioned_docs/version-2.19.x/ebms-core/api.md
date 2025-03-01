@@ -11,7 +11,7 @@ The EbMS API consists of the following services
 - [CertificateMappingService](#certificatemappingservice)
 - [EbMSMessageService](#ebmsmessageservice)
 
-These services are implemented as a SOAP and a REST interface.
+These services are implemented as a SOAP interface and since EbMS 2.18.3 also as a REST interface.
 
 ## CPAService
 

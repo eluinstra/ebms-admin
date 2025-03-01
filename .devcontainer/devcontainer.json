@@ -17,8 +17,7 @@
   "forwardPorts": [80,3000],
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "npm install",
-  "postStartCommand": "npm run start -- --host 0.0.0.0 --poll 1000",
-  // "postStartCommand": "npm run build && npm run serve",
+  // "postStartCommand": "npm run start -- --host 0.0.0.0 --poll 1000",
   // Configure tool-specific properties.
   "customizations": {
     // Configure properties specific to VS Code.
@@ -33,8 +32,7 @@
         "mhutchie.git-graph",
         "jebbs.plantuml",
         "tomoyukim.vscode-mermaid-editor",
-        "yzhang.markdown-all-in-one",
-        "shd101wyy.markdown-preview-enhanced"
+        "yzhang.markdown-all-in-one"
       ]
     }
   },
