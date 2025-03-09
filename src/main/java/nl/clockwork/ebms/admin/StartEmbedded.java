@@ -70,7 +70,6 @@ public class StartEmbedded extends Start
 	private static final String HTTPS_REQUIRE_CLIENT_AUTHENTICATION_PROPERTY = "https.requireClientAuthentication";
 	private static final String HTTPS_CLIENT_CERTIFICATE_HEADER_PROPERTY = "https.clientCertificateHeader";
 	private static final String HTTPS_CLIENT_CERTIFICATE_AUTHENTICATION_PROPERTY = "https.clientCertificateAuthentication";
-	private static final String KEYSTORES_TYPE_PROPERTY = "keystores.type";
 	private static final String KEYSTORE_TYPE_PROPERTY = "keystore.type";
 	private static final String KEYSTORE_PATH_PROPERTY = "keystore.path";
 	private static final String KEYSTORE_PASSWORD_PROPERTY = "keystore.password";
@@ -83,10 +82,6 @@ public class StartEmbedded extends Start
 	private static final String EBMS_JDBC_URL_PROPERTY = "ebms.jdbc.url";
 	private static final String LOGGING_MDC_PROPERTY = "logging.mdc";
 	private static final String LOGGING_MDC_AUDIT_PROPERTY = "logging.mdc.audit";
-	private static final String AZURE_VAULTURI_PROPERTY = "azure.keyvault.uri";
-	private static final String AZURE_VAULTTENNANT_ID_PROPERTY = "azure.keyvault.tennantid";
-	private static final String AZURE_VAULTCLIENT_ID_PROPERTY = "azure.keyvault.clientid";
-	private static final String AZURE_VAULTCLIENT_SECRET_PROPERTY = "azure.keyvault.client.secret";
 	private static final String TRUE = "true";
 	private static final String FALSE = "false";
 	private static final String DEFAULT_EBMS_PORT = "8888";
@@ -244,18 +239,11 @@ public class StartEmbedded extends Start
 	private SslContextFactory.Server createEbMSSslContextFactory(Properties properties) throws GeneralSecurityException, IOException
 	{
 		val result = new SslContextFactory.Server();
-		EbMSKeyStore ebMSKeyStore = "AZURE".equals(properties.getProperty(KEYSTORES_TYPE_PROPERTY, ""))
-				? EbMSKeyStore.of(
-						properties.getProperty(AZURE_VAULTURI_PROPERTY),
-						properties.getProperty(AZURE_VAULTTENNANT_ID_PROPERTY),
-						properties.getProperty(AZURE_VAULTCLIENT_ID_PROPERTY),
-						properties.getProperty(AZURE_VAULTCLIENT_SECRET_PROPERTY),
-						properties.getProperty(KEYSTORE_DEFAULT_ALIAS_PROPERTY))
-				: EbMSKeyStore.of(
-						KeyStoreType.valueOf(properties.getProperty(KEYSTORE_TYPE_PROPERTY)),
-						properties.getProperty(KEYSTORE_PATH_PROPERTY),
-						properties.getProperty(KEYSTORE_PASSWORD_PROPERTY),
-						properties.getProperty(KEYSTORE_DEFAULT_ALIAS_PROPERTY));
+		val ebMSKeyStore = EbMSKeyStore.of(
+				KeyStoreType.valueOf(properties.getProperty(KEYSTORE_TYPE_PROPERTY)),
+				properties.getProperty(KEYSTORE_PATH_PROPERTY),
+				properties.getProperty(KEYSTORE_PASSWORD_PROPERTY),
+				properties.getProperty(KEYSTORE_DEFAULT_ALIAS_PROPERTY));
 		addEbMSKeyStore(properties, result, ebMSKeyStore);
 		if (TRUE.equals(properties.getProperty(HTTPS_REQUIRE_CLIENT_AUTHENTICATION_PROPERTY)))
 			addEbMSTrustStore(properties, result);

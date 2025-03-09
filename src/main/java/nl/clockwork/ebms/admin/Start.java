@@ -129,12 +129,6 @@ public class Start implements SystemInterface
 	private static final String NONE = "<none>";
 	private static final String REALM = "Realm";
 	private static final String REALM_FILE = "realm.properties";
-	private static final String AZURE_INSIGHTS_OPTION = "applicationInsights";
-	private static final String AZURE_VAULTURI_OPTION = "keyvaultUri";
-	private static final String AZURE_VAULTTENANT_ID_OPTION = "keyvaultTennantId";
-	private static final String AZURE_VAULTCLIENT_ID_OPTION = "keyvaultClientId";
-	private static final String AZURE_VAULTCLIENT_SECRET_OPTION = "keyvaultClientSecret";
-	private static final String KEYSTORE_TYPE_AZURE = "AZURE";
 
 	Server server = new Server();
 	ContextHandlerCollection handlerCollection = new ContextHandlerCollection();
@@ -204,7 +198,6 @@ public class Start implements SystemInterface
 		result.addOption(QUERIES_PER_SECOND_OPTION, true, "set max requests per second [default: " + NONE + "]");
 		result.addOption(USER_QUERIES_PER_SECOND_OPTION, true, "set max requests per user per second [default: " + NONE + "]");
 		result.addOption(AUDIT_LOGGING_OPTION, false, "enable audit logging");
-		result.addOption(AZURE_INSIGHTS_OPTION, false, "enable applicationInsights");
 		result.addOption(SSL_OPTION, false, "enable SSL");
 		result.addOption(PROTOCOLS_OPTION, true, "set SSL Protocols [default: " + NONE + "]");
 		result.addOption(CIPHER_SUITES_OPTION, true, "set SSL CipherSuites [default: " + NONE + "]");
@@ -212,10 +205,6 @@ public class Start implements SystemInterface
 		result.addOption(KEY_STORE_TYPE_OPTION, true, "set keystore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
 		result.addOption(KEY_STORE_PATH_OPTION, true, "set keystore path [default: " + DEFAULT_KEYSTORE_FILE + "]");
 		result.addOption(KEY_STORE_PASSWORD_OPTION, true, "set keystore password [default: " + DEFAULT_KEYSTORE_PASSWORD + "]");
-		result.addOption(AZURE_VAULTURI_OPTION, true, "set keystore uri [default: <none>]");
-		result.addOption(AZURE_VAULTTENANT_ID_OPTION, true, "set keystore tenant identity [default: <none>]");
-		result.addOption(AZURE_VAULTCLIENT_ID_OPTION, true, "set keyvault client id [default: <none>]");
-		result.addOption(AZURE_VAULTCLIENT_SECRET_OPTION, true, "set keyvault client secret [default: <none>]");
 		result.addOption(CLIENT_AUTHENTICATION_OPTION, false, "enable SSL client authentication");
 		result.addOption(CLIENT_CERTIFICATE_HEADER_OPTION, true, "set client certificate header [default: " + NONE + "]");
 		result.addOption(TRUST_STORE_TYPE_OPTION, true, "set truststore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
@@ -309,16 +298,10 @@ public class Start implements SystemInterface
 	private SslContextFactory.Server createSslContextFactory(CommandLine cmd, boolean clientAuthentication) throws GeneralSecurityException, IOException
 	{
 		val result = new SslContextFactory.Server();
-		EbMSKeyStore ebMSKeyStore = KEYSTORE_TYPE_AZURE.equals(cmd.getOptionValue(KEY_STORES_TYPE_OPTION, ""))
-				? EbMSKeyStore.of(
-						cmd.getOptionValue(AZURE_VAULTURI_OPTION),
-						cmd.getOptionValue(AZURE_VAULTTENANT_ID_OPTION),
-						cmd.getOptionValue(AZURE_VAULTCLIENT_ID_OPTION),
-						cmd.getOptionValue(AZURE_VAULTCLIENT_SECRET_OPTION))
-				: EbMSKeyStore.of(
-						KeyStoreType.valueOf(cmd.getOptionValue(KEY_STORE_TYPE_OPTION, DEFAULT_KEYSTORE_TYPE)),
-						cmd.getOptionValue(KEY_STORE_PATH_OPTION, DEFAULT_KEYSTORE_FILE),
-						cmd.getOptionValue(KEY_STORE_PASSWORD_OPTION, DEFAULT_KEYSTORE_PASSWORD));
+		val ebMSKeyStore = EbMSKeyStore.of(
+				KeyStoreType.valueOf(cmd.getOptionValue(KEY_STORE_TYPE_OPTION, DEFAULT_KEYSTORE_TYPE)),
+				cmd.getOptionValue(KEY_STORE_PATH_OPTION, DEFAULT_KEYSTORE_FILE),
+				cmd.getOptionValue(KEY_STORE_PASSWORD_OPTION, DEFAULT_KEYSTORE_PASSWORD));
 		addKeyStore(cmd, result, ebMSKeyStore);
 		if (clientAuthentication)
 			addTrustStore(cmd, result);
