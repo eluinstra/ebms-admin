@@ -31,7 +31,6 @@ import org.apache.wicket.util.io.IClusterable;
 public class DeliveryTask implements IClusterable
 {
 	private static final long serialVersionUID = 1L;
-	@NonNull
 	Instant timeToLive;
 	@NonNull
 	Instant timestamp;
