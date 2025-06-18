@@ -118,10 +118,9 @@ public class WicketApplication extends WebApplication
 	{
 		val result = new MenuItem(id, "advanced");
 		new MenuLinkItem(result, "1", "traffic", nl.clockwork.ebms.admin.web.message.TrafficPage.class);
-		new MenuLinkItem(result, "2", "trafficChart", nl.clockwork.ebms.admin.web.message.TrafficChartPage.class);
-		new MenuDivider(result, "3");
-		new MenuLinkItem(result, "4", "cpas", nl.clockwork.ebms.admin.web.cpa.CPAsPage.class);
-		new MenuLinkItem(result, "5", "messages", nl.clockwork.ebms.admin.web.message.MessagesPage.class);
+		new MenuDivider(result, "2");
+		new MenuLinkItem(result, "3", "cpas", nl.clockwork.ebms.admin.web.cpa.CPAsPage.class);
+		new MenuLinkItem(result, "4", "messages", nl.clockwork.ebms.admin.web.message.MessagesPage.class);
 		return result;
 	}
 

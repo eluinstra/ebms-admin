@@ -346,11 +346,6 @@
       <version>3.4.1</version>
     </dependency>
     <dependency>
-      <groupId>de.adesso.wicked-charts</groupId>
-      <artifactId>wicked-charts-wicket8</artifactId>
-      <version>3.2.1</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-core</artifactId>
       <version>8.16.0</version>

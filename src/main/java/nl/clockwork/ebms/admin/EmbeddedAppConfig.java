@@ -70,7 +70,7 @@ public class EmbeddedAppConfig
 
 	public EmbeddedAppConfig()
 	{
-		//do nothing
+		// do nothing
 	}
 
 	private static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer()

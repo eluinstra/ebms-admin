@@ -209,7 +209,8 @@ public class StartEmbedded extends Start
 
 	public org.h2.tools.Server startH2DBServer(CommandLine cmd, JdbcURL jdbcURL) throws IOException, URISyntaxException, ParseException, SQLException
 	{
-		val server = org.h2.tools.Server.createTcpServer("-baseDir", cmd.getOptionValue(H2DB_DIR_OPTION, DEFAULT_H2DB_DIR), "-ifNotExists", "-tcp", "-tcpPort", jdbcURL.getPort().toString());
+		val server = org.h2.tools.Server
+				.createTcpServer("-baseDir", cmd.getOptionValue(H2DB_DIR_OPTION, DEFAULT_H2DB_DIR), "-ifNotExists", "-tcp", "-tcpPort", jdbcURL.getPort().toString());
 		server.start();
 		return server;
 	}
