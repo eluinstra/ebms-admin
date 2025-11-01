@@ -39,7 +39,7 @@ In this example you will configure 2 ebms adapters that will communicate with ea
 - copy ebms-admin-@ebms.core.version@.jar to `overheid`
 - start ebms-admin on port `8000` with the SOAP Interface using a HSQLDB server
 ```sh
-java -cp ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.StartEmbedded -port 8000 -soap -hsqldb
+java -cp ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.StartEmbedded -port 8000 -soap -h2
 ```
 - open web browser at [http://localhost:8000](http://localhost:8000)
 - configure properties at the [EbMSAdmin Properties Page](https://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage)
@@ -55,7 +55,7 @@ java -cp ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.StartEmbedde
 - copy ebms-admin-@ebms.core.version@.jar to `digipoort`
 - start ebms-admin on default port `8080` with the SOAP Interface using a HSQLDB server
 ```sh
-java -cp ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.StartEmbedded -soap -hsqldb
+java -cp ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.StartEmbedded -soap -h2
 ```
 - open web browser at [http://localhost:8080](http://localhost:8080)
 - configure properties at the [EbMSAdmin Properties Page](http://localhost:8080/wicket/bookmarkable/nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage) [Optional]
