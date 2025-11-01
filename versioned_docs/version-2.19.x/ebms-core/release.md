@@ -4,6 +4,16 @@ sidebar_position: 7
 
 # Release Notes
 
+### [ebms-core-2.19.5.jar](https://github.com/eluinstra/ebms-core/releases/download/v2.19.5/ebms-core-2.19.5.jar)
+
+:::danger
+This is the last 2.19.x release. Version 2.19.x will no longer be maintained.
+:::
+
+- fixed database pool properties
+- fixed: org.quartz.SchedulerConfigException: Non-ManagedTX DataSource name not set!
+- updated dependencies
+
 ### [ebms-core-2.19.4.jar](https://github.com/eluinstra/ebms-core/releases/download/v2.19.4/ebms-core-2.19.4.jar)
 
 - fixed https.verifyHostname property

@@ -4,6 +4,12 @@ sidebar_position: 13
 
 # Release Notes
 
+### [ebms-admin-2.20.3.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.20.3/ebms-admin-2.20.3.jar)
+
+- fixed database pool properties
+- fixed: org.quartz.SchedulerConfigException: Non-ManagedTX DataSource name not set!
+- updated dependencies
+
 ### [ebms-admin-2.20.2.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.20.2/ebms-admin-2.20.2.jar)
 
 - removed Azure keyvault support

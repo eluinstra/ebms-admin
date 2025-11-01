@@ -4,13 +4,13 @@ sidebar_position: 8
 
 # Roadmap
 
-### release 2.19.x
-
-- upgrade to Java 11
-
 ### release 2.20.x
 
-- upgrade to Java 17
+- add Kafka support
+
+### release 2.21.x
+
+- upgrade to Java 21 or 25
 
 ### improvements
 

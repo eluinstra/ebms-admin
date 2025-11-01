@@ -6,11 +6,11 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const globalVariables = {
   'current': {
-    'ebms.core.version': '2.20.2',
+    'ebms.core.version': '2.20.3',
     'ebms.branch.version': '2.20.x'
   },
   '2.19.x': {
-    'ebms.core.version': '2.19.4',
+    'ebms.core.version': '2.19.5',
     'ebms.branch.version': '2.19.x'
   }
 }
@@ -117,44 +117,8 @@ const config: Config = {
     },
     footer: {
       style: 'dark',
-      links: [
-        {
-          title: 'Docs',
-          items: [
-            {
-              label: 'Documentation',
-              to: '/docs/intro',
-            },
-          ],
-        },
-        {
-          title: 'Community',
-          items: [
-            {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-            },
-            {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
-            },
-            {
-              label: 'X',
-              href: 'https://x.com/docusaurus',
-            },
-          ],
-        },
-        {
-          title: 'More',
-          items: [
-            {
-              label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
-            },
-          ],
-        },
-      ],
-      copyright: `Copyright © ${new Date().getFullYear()} EbMS Adapter, Inc. Built with Docusaurus.`,
+      links: [],
+      copyright: `Copyright © ${new Date().getFullYear()} EbMS Adapter`,
     },
     prism: {
       theme: prismThemes.github,

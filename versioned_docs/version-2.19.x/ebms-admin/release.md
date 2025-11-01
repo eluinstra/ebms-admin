@@ -4,6 +4,16 @@ sidebar_position: 13
 
 # Release Notes
 
+### [ebms-admin-2.19.5.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.19.5/ebms-admin-2.19.5.jar)
+
+:::danger
+This is the last 2.19.x release. Version 2.19.x will no longer be maintained.
+:::
+
+- fixed database pool properties
+- fixed: org.quartz.SchedulerConfigException: Non-ManagedTX DataSource name not set!
+- updated dependencies
+
 ### [ebms-admin-2.19.4.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.19.4/ebms-admin-2.19.4.jar)
 
 - fixed logging issue (again :-))

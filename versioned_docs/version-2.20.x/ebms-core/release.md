@@ -4,6 +4,12 @@ sidebar_position: 7
 
 # Release Notes
 
+### [ebms-core-2.20.3.jar](https://github.com/eluinstra/ebms-core/releases/download/v2.20.3/ebms-core-2.20.3.jar)
+
+- fixed database pool properties
+- fixed: org.quartz.SchedulerConfigException: Non-ManagedTX DataSource name not set!
+- updated dependencies
+
 ### [ebms-core-2.20.2.jar](https://github.com/eluinstra/ebms-core/releases/download/v2.20.2/ebms-core-2.20.2.jar)
 
 - removed Azure keyvault support
