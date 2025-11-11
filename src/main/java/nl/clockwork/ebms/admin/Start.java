@@ -91,6 +91,7 @@ public class Start implements SystemInterface
 	private static final String QUERIES_PER_SECOND_OPTION = "queriesPerSecond";
 	private static final String USER_QUERIES_PER_SECOND_OPTION = "userQueriesPerSecond";
 	private static final String AUDIT_LOGGING_OPTION = "auditLogging";
+	private static final String MDC_HEADER_NAMES_OPTION = "mdcHeaderNames";
 	private static final String SSL_OPTION = "ssl";
 	private static final String PROTOCOLS_OPTION = "protocols";
 	private static final String CIPHER_SUITES_OPTION = "cipherSuites";
@@ -198,10 +199,11 @@ public class Start implements SystemInterface
 		result.addOption(QUERIES_PER_SECOND_OPTION, true, "set max requests per second [default: " + NONE + "]");
 		result.addOption(USER_QUERIES_PER_SECOND_OPTION, true, "set max requests per user per second [default: " + NONE + "]");
 		result.addOption(AUDIT_LOGGING_OPTION, false, "enable audit logging");
+		result.addOption(MDC_HEADER_NAMES_OPTION, true, "set logging MDC header names [default: " + NONE + "]");
 		result.addOption(SSL_OPTION, false, "enable SSL");
 		result.addOption(PROTOCOLS_OPTION, true, "set SSL Protocols [default: " + NONE + "]");
 		result.addOption(CIPHER_SUITES_OPTION, true, "set SSL CipherSuites [default: " + NONE + "]");
-		result.addOption(KEY_STORES_TYPE_OPTION, true, "set keystores type [default: <none>]");
+		result.addOption(KEY_STORES_TYPE_OPTION, true, "set keystores type [default: " + NONE + "]");
 		result.addOption(KEY_STORE_TYPE_OPTION, true, "set keystore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
 		result.addOption(KEY_STORE_PATH_OPTION, true, "set keystore path [default: " + DEFAULT_KEYSTORE_FILE + "]");
 		result.addOption(KEY_STORE_PASSWORD_OPTION, true, "set keystore password [default: " + DEFAULT_KEYSTORE_PASSWORD + "]");
@@ -392,6 +394,11 @@ public class Start implements SystemInterface
 		result.setVirtualHosts(new String[]{"@" + WEB_CONNECTOR_NAME});
 		result.setInitParameter("configuration", "deployment");
 		result.setContextPath(getPath(cmd));
+		if (cmd.hasOption(MDC_HEADER_NAMES_OPTION))
+			result.addFilter(
+					createMDCServletFilterHolder(cmd.getOptionValue(MDC_HEADER_NAMES_OPTION)),
+					"/*",
+					EnumSet.allOf(DispatcherType.class));
 		if (cmd.hasOption(AUDIT_LOGGING_OPTION))
 			result.addFilter(createRemoteAddressMDCFilterHolder(), "/*", EnumSet.allOf(DispatcherType.class));
 		if (!StringUtils.isEmpty(cmd.getOptionValue(QUERIES_PER_SECOND_OPTION)))
@@ -432,6 +439,13 @@ public class Start implements SystemInterface
 		}
 		result.setErrorHandler(createErrorHandler());
 		result.addEventListener(contextLoaderListener);
+		return result;
+	}
+
+	protected FilterHolder createMDCServletFilterHolder(String headerNames)
+	{
+		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.MDCServletFilter.class);
+		result.setInitParameter("headerNames", headerNames);
 		return result;
 	}
 

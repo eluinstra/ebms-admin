@@ -82,6 +82,7 @@ public class StartEmbedded extends Start
 	private static final String EBMS_JDBC_URL_PROPERTY = "ebms.jdbc.url";
 	private static final String LOGGING_MDC_PROPERTY = "logging.mdc";
 	private static final String LOGGING_MDC_AUDIT_PROPERTY = "logging.mdc.audit";
+	private static final String LOGGING_MDC_HEADER_NAMES_PROPERTY = "logging.mdc.headerNames";
 	private static final String TRUE = "true";
 	private static final String FALSE = "false";
 	private static final String DEFAULT_EBMS_PORT = "8888";
@@ -299,6 +300,11 @@ public class StartEmbedded extends Start
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		result.setVirtualHosts(new String[]{"@" + EBMS_CONNECTOR_NAME});
 		result.setContextPath("/");
+		if (StringUtils.isNotEmpty(properties.getProperty(LOGGING_MDC_HEADER_NAMES_PROPERTY)))
+			result.addFilter(
+					createMDCServletFilterHolder(properties.getProperty(LOGGING_MDC_HEADER_NAMES_PROPERTY)),
+					"/*",
+					EnumSet.allOf(DispatcherType.class));
 		if (LoggingUtils.Status.ENABLED.name().equals(properties.getProperty(LOGGING_MDC_PROPERTY))
 				&& LoggingUtils.Status.ENABLED.name().equals(properties.getProperty(LOGGING_MDC_AUDIT_PROPERTY)))
 			result.addFilter(createRemoteAddressMDCFilterHolder(), "/*", EnumSet.allOf(DispatcherType.class));
