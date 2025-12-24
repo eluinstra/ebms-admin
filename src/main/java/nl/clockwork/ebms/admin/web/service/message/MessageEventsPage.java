@@ -29,7 +29,7 @@ import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.admin.web.WicketApplication;
 import nl.clockwork.ebms.event.MessageEventType;
-import nl.clockwork.ebms.service.EbMSMessageService;
+import nl.clockwork.ebms.service.EbMSController;
 import nl.clockwork.ebms.service.model.MessageEvent;
 import nl.clockwork.ebms.service.model.MessageFilter;
 import org.apache.wicket.AttributeModifier;
@@ -90,7 +90,7 @@ public class MessageEventsPage extends BasePage
 
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name = "ebMSMessageService")
-	EbMSMessageService ebMSMessageService;
+	EbMSController ebMSMessageService;
 	@NonNull
 	final Integer maxItemsPerPage;
 

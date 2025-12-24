@@ -31,16 +31,16 @@ import javax.xml.namespace.QName;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
-import nl.clockwork.ebms.cpa.CPARestService;
-import nl.clockwork.ebms.cpa.CPAService;
-import nl.clockwork.ebms.cpa.certificate.CertificateMappingRestService;
-import nl.clockwork.ebms.cpa.certificate.CertificateMappingService;
-import nl.clockwork.ebms.cpa.url.URLMappingRestService;
-import nl.clockwork.ebms.cpa.url.URLMappingService;
+import nl.clockwork.ebms.cpa.CPAController;
+import nl.clockwork.ebms.cpa.CPARestController;
+import nl.clockwork.ebms.cpa.certificate.CertificateMappingController;
+import nl.clockwork.ebms.cpa.certificate.CertificateMappingRestController;
+import nl.clockwork.ebms.cpa.url.URLMappingController;
+import nl.clockwork.ebms.cpa.url.URLMappingRestController;
 import nl.clockwork.ebms.event.MessageEventListenerConfig.EventListenerType;
-import nl.clockwork.ebms.service.EbMSMessageRestService;
-import nl.clockwork.ebms.service.EbMSMessageService;
-import nl.clockwork.ebms.service.EbMSMessageServiceMTOM;
+import nl.clockwork.ebms.service.EbMSController;
+import nl.clockwork.ebms.service.EbMSControllerMTOM;
+import nl.clockwork.ebms.service.EbMSRestController;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.Bus;
 import org.apache.cxf.binding.BindingFactoryManager;
@@ -75,19 +75,19 @@ public class EmbeddedWebConfig
 	}
 
 	@Bean
-	public Endpoint cpaServiceEndpoint(CPAService cpaService)
+	public Endpoint cpaServiceEndpoint(CPAController cpaService)
 	{
 		return publishEndpoint(cpaService, "/cpa", "http://www.ordina.nl/cpa/2.18", "CPAService", "CPAPort");
 	}
 
 	@Bean
-	public Endpoint urlMappingServiceEndpoint(URLMappingService urlMappingService)
+	public Endpoint urlMappingServiceEndpoint(URLMappingController urlMappingService)
 	{
 		return publishEndpoint(urlMappingService, "/urlMapping", "http://www.ordina.nl/cpa/urlMapping/2.18", "URLMappingService", "URLMappingPort");
 	}
 
 	@Bean
-	public Endpoint certificateMappingServiceEndpoint(CertificateMappingService certificateMappingService)
+	public Endpoint certificateMappingServiceEndpoint(CertificateMappingController certificateMappingService)
 	{
 		return publishEndpoint(
 				certificateMappingService,
@@ -98,13 +98,13 @@ public class EmbeddedWebConfig
 	}
 
 	@Bean
-	public Endpoint ebMSMessageServiceEndpoint(EbMSMessageService ebMSMessageService)
+	public Endpoint ebMSMessageServiceEndpoint(EbMSController ebMSMessageService)
 	{
 		return publishEndpoint(ebMSMessageService, "/ebms", "http://www.ordina.nl/ebms/2.18", "EbMSMessageService", "EbMSMessagePort");
 	}
 
 	@Bean
-	public Endpoint ebMSMessageServiceMTOMEndpoint(EbMSMessageServiceMTOM ebMSMessageServiceMTOM)
+	public Endpoint ebMSMessageServiceMTOMEndpoint(EbMSControllerMTOM ebMSMessageServiceMTOM)
 	{
 		val result = new EndpointImpl(cxf(), ebMSMessageServiceMTOM);
 		result.setAddress("/ebmsMTOM");
@@ -147,27 +147,27 @@ public class EmbeddedWebConfig
 	}
 
 	@Bean
-	public Server createCPARestServer(CPARestService cpaRestService)
+	public Server createCPARestServer(CPARestController cpaRestService)
 	{
-		return createRestServer(CPARestService.class, cpaRestService, "/cpas");
+		return createRestServer(CPARestController.class, cpaRestService, "/cpas");
 	}
 
 	@Bean
-	public Server createURLMappingCPARestServer(URLMappingRestService urlMappingRestService)
+	public Server createURLMappingCPARestServer(URLMappingRestController urlMappingRestService)
 	{
-		return createRestServer(URLMappingRestService.class, urlMappingRestService, "/urlMappings");
+		return createRestServer(URLMappingRestController.class, urlMappingRestService, "/urlMappings");
 	}
 
 	@Bean
-	public Server createCertificateMappingRestServer(CertificateMappingRestService certificateMappingRestService)
+	public Server createCertificateMappingRestServer(CertificateMappingRestController certificateMappingRestService)
 	{
-		return createRestServer(CertificateMappingRestService.class, certificateMappingRestService, "/certificateMappings");
+		return createRestServer(CertificateMappingRestController.class, certificateMappingRestService, "/certificateMappings");
 	}
 
 	@Bean
-	public Server createEbMSRestServer(EbMSMessageRestService ebMSMessageRestService)
+	public Server createEbMSRestServer(EbMSRestController ebMSMessageRestService)
 	{
-		return createRestServer(EbMSMessageRestService.class, ebMSMessageRestService, "/ebms");
+		return createRestServer(EbMSRestController.class, ebMSMessageRestService, "/ebms");
 	}
 
 	public Server createRestServer(Class<?> resourceClass, Object resourceObject, String path)

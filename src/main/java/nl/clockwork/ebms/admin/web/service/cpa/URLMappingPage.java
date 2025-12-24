@@ -26,7 +26,7 @@ import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.cpa.url.URLMapping;
-import nl.clockwork.ebms.cpa.url.URLMappingService;
+import nl.clockwork.ebms.cpa.url.URLMappingController;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -41,7 +41,7 @@ public class URLMappingPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name = "urlMappingService")
-	URLMappingService urlMappingService;
+	URLMappingController urlMappingService;
 
 	public URLMappingPage()
 	{

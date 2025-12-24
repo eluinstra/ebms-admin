@@ -40,9 +40,9 @@ import nl.clockwork.ebms.admin.web.Consumer;
 import nl.clockwork.ebms.admin.web.DropDownChoice;
 import nl.clockwork.ebms.admin.web.Function;
 import nl.clockwork.ebms.admin.web.Link;
-import nl.clockwork.ebms.cpa.CPAService;
+import nl.clockwork.ebms.cpa.CPAController;
 import nl.clockwork.ebms.jaxb.JAXBParser;
-import nl.clockwork.ebms.service.EbMSMessageService;
+import nl.clockwork.ebms.service.EbMSController;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.head.IHeaderResponse;
@@ -64,9 +64,9 @@ public class MessageFilterPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name = "cpaService")
-	CPAService cpaService;
+	CPAController cpaService;
 	@SpringBean(name = "ebMSMessageService")
-	EbMSMessageService ebMSMessageService;
+	EbMSController ebMSMessageService;
 	@NonNull
 	final Function<IModel<MessageFilterFormData>, BasePage> getPage;
 	BootstrapDateTimePicker from;

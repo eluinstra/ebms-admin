@@ -37,9 +37,9 @@ import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.Consumer;
 import nl.clockwork.ebms.admin.web.DropDownChoice;
 import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.cpa.CPAService;
+import nl.clockwork.ebms.cpa.CPAController;
 import nl.clockwork.ebms.jaxb.JAXBParser;
-import nl.clockwork.ebms.service.EbMSMessageService;
+import nl.clockwork.ebms.service.EbMSController;
 import nl.clockwork.ebms.service.model.DataSource;
 import nl.clockwork.ebms.service.model.MessageRequest;
 import nl.clockwork.ebms.service.model.MessageRequestProperties;
@@ -64,9 +64,9 @@ public class SendMessagePage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name = "cpaService")
-	private CPAService cpaService;
+	private CPAController cpaService;
 	@SpringBean(name = "ebMSMessageService")
-	private EbMSMessageService ebMSMessageService;
+	private EbMSController ebMSMessageService;
 
 	public SendMessagePage()
 	{

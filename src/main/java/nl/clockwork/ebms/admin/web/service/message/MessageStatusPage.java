@@ -28,8 +28,8 @@ import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.TextField;
-import nl.clockwork.ebms.cpa.CPAService;
-import nl.clockwork.ebms.service.EbMSMessageService;
+import nl.clockwork.ebms.cpa.CPAController;
+import nl.clockwork.ebms.service.EbMSController;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
@@ -46,9 +46,9 @@ public class MessageStatusPage extends BasePage
 	@SpringBean(name = "ebMSAdminDAO")
 	EbMSDAO ebMSDAO;
 	@SpringBean(name = "cpaService")
-	CPAService cpaService;
+	CPAController cpaService;
 	@SpringBean(name = "ebMSMessageService")
-	EbMSMessageService ebMSMessageService;
+	EbMSController ebMSMessageService;
 
 	public MessageStatusPage()
 	{

@@ -27,7 +27,7 @@ import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.cpa.url.URLMapping;
-import nl.clockwork.ebms.cpa.url.URLMappingService;
+import nl.clockwork.ebms.cpa.url.URLMappingController;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -104,7 +104,7 @@ public class URLMappingsPage extends BasePage
 
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name = "urlMappingService")
-	URLMappingService urlMappingService;
+	URLMappingController urlMappingService;
 
 	public URLMappingsPage()
 	{

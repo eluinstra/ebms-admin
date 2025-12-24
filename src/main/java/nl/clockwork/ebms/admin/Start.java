@@ -395,10 +395,7 @@ public class Start implements SystemInterface
 		result.setInitParameter("configuration", "deployment");
 		result.setContextPath(getPath(cmd));
 		if (cmd.hasOption(MDC_HEADER_NAMES_OPTION))
-			result.addFilter(
-					createMDCServletFilterHolder(cmd.getOptionValue(MDC_HEADER_NAMES_OPTION)),
-					"/*",
-					EnumSet.allOf(DispatcherType.class));
+			result.addFilter(createMDCServletFilterHolder(cmd.getOptionValue(MDC_HEADER_NAMES_OPTION)), "/*", EnumSet.allOf(DispatcherType.class));
 		if (cmd.hasOption(AUDIT_LOGGING_OPTION))
 			result.addFilter(createRemoteAddressMDCFilterHolder(), "/*", EnumSet.allOf(DispatcherType.class));
 		if (!StringUtils.isEmpty(cmd.getOptionValue(QUERIES_PER_SECOND_OPTION)))

@@ -28,7 +28,7 @@ import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.InstantLabel;
 import nl.clockwork.ebms.admin.web.Link;
 import nl.clockwork.ebms.admin.web.PageLink;
-import nl.clockwork.ebms.service.EbMSMessageService;
+import nl.clockwork.ebms.service.EbMSController;
 import nl.clockwork.ebms.service.model.DataSource;
 import nl.clockwork.ebms.service.model.Message;
 import org.apache.commons.lang3.StringUtils;
@@ -83,7 +83,7 @@ public class MessagePage extends BasePage implements IGenericComponent<Message, 
 
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name = "ebMSMessageService")
-	EbMSMessageService ebMSMessageService;
+	EbMSController ebMSMessageService;
 
 	public MessagePage(IModel<Message> model, WebPage responsePage, MessageProcessor messageProcessor)
 	{

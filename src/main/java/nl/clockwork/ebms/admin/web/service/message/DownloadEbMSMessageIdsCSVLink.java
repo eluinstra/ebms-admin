@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.message.CachedOutputResourceStream;
-import nl.clockwork.ebms.service.EbMSMessageService;
+import nl.clockwork.ebms.service.EbMSController;
 import nl.clockwork.ebms.service.model.MessageFilter;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -42,10 +42,10 @@ public class DownloadEbMSMessageIdsCSVLink extends Link<Void>
 {
 	private static final long serialVersionUID = 1L;
 	@NonNull
-	private EbMSMessageService ebMSMessageService;
+	private EbMSController ebMSMessageService;
 	private IModel<MessageFilter> filter;
 
-	public DownloadEbMSMessageIdsCSVLink(String id, @NonNull EbMSMessageService ebMSMessageService, @NonNull IModel<MessageFilter> filter)
+	public DownloadEbMSMessageIdsCSVLink(String id, @NonNull EbMSController ebMSMessageService, @NonNull IModel<MessageFilter> filter)
 	{
 		super(id);
 		this.ebMSMessageService = ebMSMessageService;

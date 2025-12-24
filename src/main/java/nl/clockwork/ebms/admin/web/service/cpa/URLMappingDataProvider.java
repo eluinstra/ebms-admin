@@ -23,7 +23,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.val;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.cpa.url.URLMapping;
-import nl.clockwork.ebms.cpa.url.URLMappingService;
+import nl.clockwork.ebms.cpa.url.URLMappingController;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -33,7 +33,7 @@ import org.apache.wicket.model.Model;
 public class URLMappingDataProvider implements IDataProvider<URLMapping>
 {
 	private static final long serialVersionUID = 1L;
-	URLMappingService urlMappingService;
+	URLMappingController urlMappingService;
 
 	@Override
 	public Iterator<? extends URLMapping> iterator(long first, long count)

@@ -301,10 +301,7 @@ public class StartEmbedded extends Start
 		result.setVirtualHosts(new String[]{"@" + EBMS_CONNECTOR_NAME});
 		result.setContextPath("/");
 		if (StringUtils.isNotEmpty(properties.getProperty(LOGGING_MDC_HEADER_NAMES_PROPERTY)))
-			result.addFilter(
-					createMDCServletFilterHolder(properties.getProperty(LOGGING_MDC_HEADER_NAMES_PROPERTY)),
-					"/*",
-					EnumSet.allOf(DispatcherType.class));
+			result.addFilter(createMDCServletFilterHolder(properties.getProperty(LOGGING_MDC_HEADER_NAMES_PROPERTY)), "/*", EnumSet.allOf(DispatcherType.class));
 		if (LoggingUtils.Status.ENABLED.name().equals(properties.getProperty(LOGGING_MDC_PROPERTY))
 				&& LoggingUtils.Status.ENABLED.name().equals(properties.getProperty(LOGGING_MDC_AUDIT_PROPERTY)))
 			result.addFilter(createRemoteAddressMDCFilterHolder(), "/*", EnumSet.allOf(DispatcherType.class));

@@ -19,7 +19,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
-import nl.clockwork.ebms.cpa.CPAService;
+import nl.clockwork.ebms.cpa.CPAController;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
@@ -30,10 +30,10 @@ import org.apache.wicket.util.resource.IResourceStream;
 public class DownloadCPALink extends Link<String>
 {
 	private static final long serialVersionUID = 1L;
-	CPAService cpaService;
+	CPAController cpaService;
 
 	@Builder
-	public DownloadCPALink(String id, CPAService cpaService, IModel<String> cpaId)
+	public DownloadCPALink(String id, CPAController cpaService, IModel<String> cpaId)
 	{
 		super(id, cpaId);
 		this.cpaService = cpaService;

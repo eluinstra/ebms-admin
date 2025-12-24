@@ -34,9 +34,9 @@ import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.DropDownChoice;
 import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.cpa.CPAService;
+import nl.clockwork.ebms.cpa.CPAController;
 import nl.clockwork.ebms.cpa.certificate.CertificateMapping;
-import nl.clockwork.ebms.cpa.certificate.CertificateMappingService;
+import nl.clockwork.ebms.cpa.certificate.CertificateMappingController;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
@@ -53,9 +53,9 @@ public class CertificateMappingPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name = "cpaService")
-	CPAService cpaService;
+	CPAController cpaService;
 	@SpringBean(name = "certificateMappingService")
-	CertificateMappingService certificateMappingService;
+	CertificateMappingController certificateMappingService;
 
 	public CertificateMappingPage()
 	{

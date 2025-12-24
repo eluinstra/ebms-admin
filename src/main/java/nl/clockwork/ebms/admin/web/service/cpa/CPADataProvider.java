@@ -23,7 +23,7 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
 import nl.clockwork.ebms.admin.Utils;
-import nl.clockwork.ebms.cpa.CPAService;
+import nl.clockwork.ebms.cpa.CPAController;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -33,7 +33,7 @@ import org.apache.wicket.model.Model;
 public class CPADataProvider implements IDataProvider<String>
 {
 	private static final long serialVersionUID = 1L;
-	CPAService cpaService;
+	CPAController cpaService;
 
 	@Override
 	public Iterator<? extends String> iterator(long first, long count)

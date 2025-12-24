@@ -27,7 +27,7 @@ import lombok.val;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.message.CachedOutputResourceStream;
 import nl.clockwork.ebms.event.MessageEventType;
-import nl.clockwork.ebms.service.EbMSMessageService;
+import nl.clockwork.ebms.service.EbMSController;
 import nl.clockwork.ebms.service.model.MessageEvent;
 import nl.clockwork.ebms.service.model.MessageFilter;
 import org.apache.commons.csv.CSVFormat;
@@ -45,7 +45,7 @@ public class DownloadEbMSMessageEventsCSVLink extends Link<Void>
 {
 	private static final long serialVersionUID = 1L;
 	@NonNull
-	EbMSMessageService ebMSMessageService;
+	EbMSController ebMSMessageService;
 	@NonNull
 	IModel<MessageFilter> filter;
 	@NonNull
@@ -54,7 +54,7 @@ public class DownloadEbMSMessageEventsCSVLink extends Link<Void>
 	@Builder
 	public DownloadEbMSMessageEventsCSVLink(
 			String id,
-			@NonNull EbMSMessageService ebMSMessageService,
+			@NonNull EbMSController ebMSMessageService,
 			@NonNull IModel<MessageFilter> filter,
 			@NonNull MessageEventType...eventTypes)
 	{

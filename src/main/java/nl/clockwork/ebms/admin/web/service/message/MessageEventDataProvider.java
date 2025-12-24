@@ -24,7 +24,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.val;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.event.MessageEventType;
-import nl.clockwork.ebms.service.EbMSMessageService;
+import nl.clockwork.ebms.service.EbMSController;
 import nl.clockwork.ebms.service.model.MessageEvent;
 import nl.clockwork.ebms.service.model.MessageFilter;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
@@ -37,7 +37,7 @@ public class MessageEventDataProvider implements IDataProvider<MessageEvent>
 {
 	private static final long serialVersionUID = 1L;
 	@NonNull
-	private EbMSMessageService ebMSMessageService;
+	private EbMSController ebMSMessageService;
 	@NonNull
 	private MessageFilter filter;
 	@NonNull
