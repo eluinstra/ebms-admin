@@ -198,7 +198,12 @@
     <dependency>
       <groupId>nl.clockwork.ebms</groupId>
       <artifactId>ebms-core</artifactId>
-      <version>2.20.5-SNAPSHOT</version>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>nl.clockwork.ebms.plugin.db</groupId>
+      <artifactId>ebms-postgres-db-plugin</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.flywaydb</groupId>
@@ -243,7 +248,7 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-jmx</artifactId>
-      <version>11.0.25</version>
+      <version>11.0.26</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
@@ -259,7 +264,7 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
-      <version>11.0.25</version>
+      <version>11.0.26</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -341,42 +346,6 @@
       <groupId>org.apache.xbean</groupId>
       <artifactId>xbean-spring</artifactId>
       <version>4.27</version>
-    </dependency>
-    <dependency>
-      <groupId>org.hsqldb</groupId>
-      <artifactId>hsqldb</artifactId>
-      <version>2.7.4</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.ibm.db2</groupId>
-      <artifactId>jcc</artifactId>
-      <version>12.1.0.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mariadb.jdbc</groupId>
-      <artifactId>mariadb-java-client</artifactId>
-      <version>3.5.3</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.microsoft.sqlserver</groupId>
-      <artifactId>mssql-jdbc</artifactId>
-      <version>12.10.0.jre11</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.oracle.database.jdbc</groupId>
-      <artifactId>ojdbc11</artifactId>
-      <version>23.8.0.25.04</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>42.7.7</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.querydsl</groupId>
@@ -560,16 +529,23 @@
                 <resource>license.txt</resource>
                 <resource>LICENSE.txt</resource>
                 <resource>NOTICE.txt</resource>
+                <resource>NOTICE</resource>
               </resources>
             </transformer>
             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
               <mainClass>nl.clockwork.ebms.admin.Main</mainClass>
             </transformer>
             <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+              <resource>META-INF/spring/aot.factories</resource>
+            </transformer>
+            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
               <resource>META-INF/spring.handlers</resource>
             </transformer>
             <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
               <resource>META-INF/spring.schemas</resource>
+            </transformer>
+            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+              <resource>META-INF/spring.tooling</resource>
             </transformer>
             <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
               <resource>META-INF/cxf/bus-extensions.txt</resource>
@@ -600,7 +576,7 @@
                 <exclude>META-INF/*.DSA</exclude>
                 <exclude>META-INF/*.RSA</exclude>
                 <exclude>META-INF/LICENSE</exclude>
-                <exclude>module-info.class</exclude>
+                <exclude>**/module-info.class</exclude>
               </excludes>
             </filter>
           </filters>
