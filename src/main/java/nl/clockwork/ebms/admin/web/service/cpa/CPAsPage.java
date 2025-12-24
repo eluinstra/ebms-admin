@@ -27,7 +27,8 @@ import nl.clockwork.ebms.admin.web.Link;
 import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.PageClassLink;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
-import nl.clockwork.ebms.cpa.CPAController;
+import nl.clockwork.ebms.api.cpa.CPAController;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;

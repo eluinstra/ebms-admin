@@ -22,8 +22,9 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
 import nl.clockwork.ebms.admin.Utils;
-import nl.clockwork.ebms.cpa.certificate.CertificateMapping;
-import nl.clockwork.ebms.cpa.certificate.CertificateMappingController;
+import nl.clockwork.ebms.api.cpa.certificate.CertificateMapping;
+import nl.clockwork.ebms.api.cpa.certificate.CertificateMappingController;
+
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;

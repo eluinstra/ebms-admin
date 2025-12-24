@@ -37,12 +37,13 @@ import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.Consumer;
 import nl.clockwork.ebms.admin.web.DropDownChoice;
 import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.cpa.CPAController;
+import nl.clockwork.ebms.api.cpa.CPAController;
+import nl.clockwork.ebms.api.ebms.EbMSController;
+import nl.clockwork.ebms.api.ebms.service.model.DataSource;
+import nl.clockwork.ebms.api.ebms.service.model.MessageRequest;
+import nl.clockwork.ebms.api.ebms.service.model.MessageRequestProperties;
 import nl.clockwork.ebms.jaxb.JAXBParser;
-import nl.clockwork.ebms.service.EbMSController;
-import nl.clockwork.ebms.service.model.DataSource;
-import nl.clockwork.ebms.service.model.MessageRequest;
-import nl.clockwork.ebms.service.model.MessageRequestProperties;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;

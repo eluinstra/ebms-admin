@@ -39,11 +39,12 @@ import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.admin.web.Supplier;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.admin.web.WicketApplication;
-import nl.clockwork.ebms.cpa.CPAController;
+import nl.clockwork.ebms.api.cpa.CPAController;
+import nl.clockwork.ebms.api.ebms.EbMSController;
+import nl.clockwork.ebms.api.ebms.service.model.MessageRequest;
+import nl.clockwork.ebms.api.ebms.service.model.MessageRequestProperties;
 import nl.clockwork.ebms.jaxb.JAXBParser;
-import nl.clockwork.ebms.service.EbMSController;
-import nl.clockwork.ebms.service.model.MessageRequest;
-import nl.clockwork.ebms.service.model.MessageRequestProperties;
+
 import org.apache.commons.collections4.ListUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.CheckBox;

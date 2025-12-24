@@ -28,9 +28,10 @@ import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.InstantLabel;
 import nl.clockwork.ebms.admin.web.Link;
 import nl.clockwork.ebms.admin.web.PageLink;
-import nl.clockwork.ebms.service.EbMSController;
-import nl.clockwork.ebms.service.model.DataSource;
-import nl.clockwork.ebms.service.model.Message;
+import nl.clockwork.ebms.api.ebms.EbMSController;
+import nl.clockwork.ebms.api.ebms.service.model.DataSource;
+import nl.clockwork.ebms.api.ebms.service.model.Message;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.IGenericComponent;

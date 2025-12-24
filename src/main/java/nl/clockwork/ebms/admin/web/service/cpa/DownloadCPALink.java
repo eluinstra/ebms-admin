@@ -18,8 +18,9 @@ package nl.clockwork.ebms.admin.web.service.cpa;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.experimental.FieldDefaults;
+import nl.clockwork.ebms.api.cpa.CPAController;
 import lombok.val;
-import nl.clockwork.ebms.cpa.CPAController;
+
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;

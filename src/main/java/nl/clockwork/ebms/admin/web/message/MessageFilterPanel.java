@@ -40,9 +40,10 @@ import nl.clockwork.ebms.admin.web.Consumer;
 import nl.clockwork.ebms.admin.web.DropDownChoice;
 import nl.clockwork.ebms.admin.web.Function;
 import nl.clockwork.ebms.admin.web.Link;
-import nl.clockwork.ebms.cpa.CPAController;
+import nl.clockwork.ebms.api.cpa.CPAController;
+import nl.clockwork.ebms.api.ebms.EbMSController;
 import nl.clockwork.ebms.jaxb.JAXBParser;
-import nl.clockwork.ebms.service.EbMSController;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.head.IHeaderResponse;
