@@ -36,6 +36,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Types;
 import javax.sql.DataSource;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
 import nl.clockwork.ebms.querydsl.CachedOutputStreamType;
@@ -45,15 +46,14 @@ import nl.clockwork.ebms.querydsl.DocumentType;
 import nl.clockwork.ebms.querydsl.EbMSMessageEventTypeType;
 import nl.clockwork.ebms.querydsl.EbMSMessageStatusType;
 import nl.clockwork.ebms.querydsl.X509CertificateType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class QueryDSLConfig
 {
-	@Autowired
 	DataSource dataSource;
 
 	@Bean
@@ -105,9 +105,11 @@ public class QueryDSLConfig
 
 	public String getDriverClassName(DataSource dataSource)
 	{
-		if (dataSource instanceof HikariDataSource)
-			return ((HikariDataSource)dataSource).getDriverClassName();
+		if (dataSource instanceof HikariDataSource hikariDataSource)
+			return hikariDataSource.getDriverClassName();
+		else if (dataSource instanceof AtomikosDataSourceBean atomikosDataSourceBean)
+			return atomikosDataSourceBean.getXaDataSourceClassName();
 		else
-			return ((AtomikosDataSourceBean)dataSource).getXaDataSourceClassName();
+			throw new IllegalStateException("DataSource of type " + dataSource.getClass().getName() + " not recognized!");
 	}
 }

@@ -17,6 +17,7 @@ package nl.clockwork.ebms.admin.web.configuration;
 
 import java.beans.PropertyVetoException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -85,7 +86,7 @@ public class Utils
 			val protocol = scanner.findInLine("(://|@|:@//)");
 			if (protocol != null)
 			{
-				val urlString = scanner.findInLine("[^/:]+(:\\d+){0,1}");
+				val urlString = scanner.findInLine("[^/:]+(:\d+){0,1}");
 				scanner.findInLine("(/|:|;databaseName=)");
 				val database = scanner.findInLine("[^;]*");
 				if (urlString != null)
@@ -105,32 +106,32 @@ public class Utils
 		val url = new URL(uri + "/cpa?wsdl");
 		// val url = new URL(uri + "/message?wsdl");
 		val connection = url.openConnection();
-		if (connection instanceof HttpURLConnection)
+		if (connection instanceof HttpURLConnection httpURLConnection)
 		{
 			connection.setDoOutput(true);
-			((HttpURLConnection)connection).setRequestMethod("GET");
+			httpURLConnection.setRequestMethod("GET");
 			connection.connect();
-			if (((HttpURLConnection)connection).getResponseCode() != 200)
-				throw new RuntimeException("Status code " + ((HttpURLConnection)connection).getResponseCode());
+			if (httpURLConnection.getResponseCode() != 200)
+				throw new RuntimeException("Status code " + httpURLConnection.getResponseCode());
 		}
 		else
 			throw new IllegalArgumentException("Unknown protocol: " + uri);
 	}
 
-	public static Resource getResource(String path) throws MalformedURLException, IOException
+	public static Resource getResource(String path) throws IOException
 	{
 		val result = new FileSystemResource(path);
 		return result.exists() ? result : new ClassPathResource(path);
 	}
 
 	public static void testTrustStore(KeyStoreType type, String path, String password)
-			throws MalformedURLException, IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException
+			throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException
 	{
 		testKeyStore(type, path, password, null, false);
 	}
 
 	public static void testKeyStore(KeyStoreType type, String path, String password, String defaultAlias, boolean validateKeyPassword)
-			throws MalformedURLException, IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException
+			throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException
 	{
 		val resource = getResource(path);
 		val keyStore = KeyStore.getInstance(type.name());
@@ -165,11 +166,11 @@ public class Utils
 	}
 
 	public static void testJdbcConnection(String driverClassName, String jdbcUrl, String username, String password)
-			throws PropertyVetoException, SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException
+			throws PropertyVetoException, SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
 	{
 		val loader = Utils.class.getClassLoader();
 		val driverClass = loader.loadClass(driverClassName);
-		val driver = (Driver)driverClass.newInstance();
+		val driver = (Driver)driverClass.getDeclaredConstructor().newInstance();
 		if (!driver.acceptsURL(jdbcUrl))
 			throw new IllegalArgumentException("Jdbc Url '" + jdbcUrl + "' not valid!");
 		val info = new Properties();

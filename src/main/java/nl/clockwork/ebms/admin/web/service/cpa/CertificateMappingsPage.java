@@ -69,7 +69,7 @@ public class CertificateMappingsPage extends BasePage
 
 		private String createLabel(@NonNull X509Certificate certificate)
 		{
-			return certificate.getSubjectDN().getName() + " (" + certificate.getSerialNumber().toString() + ")";
+			return certificate.getSubjectX500Principal().getName() + " (" + certificate.getSerialNumber().toString() + ")";
 		}
 
 		private Button createEditButton(String id, final IModel<CertificateMapping> model)

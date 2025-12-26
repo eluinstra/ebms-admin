@@ -75,8 +75,8 @@ public class LocalDateTimeTextField extends TextField<LocalDateTime> implements 
 		if (locale != null)
 		{
 			val format = DateFormat.getDateInstance(DateFormat.SHORT, locale);
-			if (format instanceof SimpleDateFormat)
-				return ((SimpleDateFormat)format).toPattern();
+			if (format instanceof SimpleDateFormat simpleDateFormat)
+				return simpleDateFormat.toPattern();
 		}
 		return DEFAULT_PATTERN;
 	}
