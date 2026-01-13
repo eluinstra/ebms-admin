@@ -11,7 +11,6 @@ You can also find this and other examples configured in [Docker](#docker), [Kube
 
 For Docker examples see
 - [https://github.com/eluinstra/ebms-docker](https://github.com/eluinstra/ebms-docker)
-- [https://gitlab.com/peterzandbergen/ebms-admin-docker](https://gitlab.com/peterzandbergen/ebms-admin-docker)
 
 ## Kubernetes
 
@@ -29,9 +28,9 @@ In this example you will configure 2 ebms adapters that will communicate with ea
 
 ### Prerequisites
 
-- download and install Java 8 (or later)
+- download and install Java 17 (or later)
 - download [ebms-admin-@ebms.core.version@.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-@ebms.core.version@/ebms-admin-@ebms.core.version@.jar)
-- download [cpaStubEBF.rm.https.signed.xml](https://raw.githubusercontent.com/eluinstra/ebms-admin/ebms-admin-2.17.3/resources/CPAs/cpaStubEBF.rm.https.signed.xml)
+- download [cpaStubEBF.rm.https.signed.xml](https://raw.githubusercontent.com/eluinstra/ebms-admin/ebms-admin-@ebms.core.version@/resources/CPAs/cpaStubEBF.rm.https.signed.xml)
 
 ### Create and configure party Overheid
 
@@ -43,7 +42,7 @@ java -cp ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.StartEmbedde
 ```
 - open web browser at [http://localhost:8000](http://localhost:8000)
 - configure properties at the [EbMSAdmin Properties Page](https://localhost:8000/wicket/bookmarkable/nl.clockwork.ebms.admin.web.configuration.EbMSAdminPropertiesPage)
-	- set port `8088`
+	- set port `8000`
 	- set database port `9000`
 	- save
 	- restart ebms-admin
