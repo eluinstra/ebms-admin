@@ -17,8 +17,7 @@ package nl.clockwork.ebms.admin.web.service.message;
 
 import lombok.val;
 import nl.clockwork.ebms.admin.web.Utils;
-import nl.clockwork.ebms.api.ebms.service.model.DataSource;
-
+import nl.clockwork.ebms.api.ebms.model.DataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;

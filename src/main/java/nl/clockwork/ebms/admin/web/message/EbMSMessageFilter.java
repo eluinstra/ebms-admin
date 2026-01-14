@@ -27,8 +27,8 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.EbMSMessageStatus;
-import nl.clockwork.ebms.api.ebms.service.model.MessageFilter;
-import nl.clockwork.ebms.api.ebms.service.model.Party;
+import nl.clockwork.ebms.api.ebms.model.MessageFilter;
+import nl.clockwork.ebms.api.ebms.model.Party;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)

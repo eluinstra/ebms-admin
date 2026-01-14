@@ -30,7 +30,6 @@ import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.api.cpa.certificate.CertificateMapping;
 import nl.clockwork.ebms.api.cpa.certificate.CertificateMappingController;
-
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;

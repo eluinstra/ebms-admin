@@ -26,8 +26,7 @@ import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.Consumer;
 import nl.clockwork.ebms.admin.web.Utils;
-import nl.clockwork.ebms.api.ebms.service.model.DataSource;
-
+import nl.clockwork.ebms.api.ebms.model.DataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;

@@ -39,8 +39,8 @@ public class QDeliveryLog extends com.querydsl.sql.RelationalPathBase<QDeliveryL
 
 	public final StringPath messageId = createString("messageId");
 
-	public final EnumPath<nl.clockwork.ebms.delivery.task.DeliveryTaskStatus> status =
-			createEnum("status", nl.clockwork.ebms.delivery.task.DeliveryTaskStatus.class);
+	public final EnumPath<nl.clockwork.ebms.client.delivery.task.DeliveryTaskStatus> status =
+			createEnum("status", nl.clockwork.ebms.client.delivery.task.DeliveryTaskStatus.class);
 
 	public final DateTimePath<java.time.Instant> timeStamp = createDateTime("timeStamp", java.time.Instant.class);
 

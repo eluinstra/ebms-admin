@@ -27,10 +27,9 @@ import lombok.val;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.message.CachedOutputResourceStream;
 import nl.clockwork.ebms.api.ebms.EbMSController;
-import nl.clockwork.ebms.api.ebms.service.model.MessageEvent;
-import nl.clockwork.ebms.api.ebms.service.model.MessageFilter;
+import nl.clockwork.ebms.api.ebms.model.MessageEvent;
+import nl.clockwork.ebms.api.ebms.model.MessageFilter;
 import nl.clockwork.ebms.event.MessageEventType;
-
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.cxf.io.CachedOutputStream;

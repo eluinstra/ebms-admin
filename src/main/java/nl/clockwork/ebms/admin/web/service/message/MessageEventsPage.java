@@ -29,10 +29,9 @@ import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.admin.web.WicketApplication;
 import nl.clockwork.ebms.api.ebms.EbMSController;
-import nl.clockwork.ebms.api.ebms.service.model.MessageEvent;
-import nl.clockwork.ebms.api.ebms.service.model.MessageFilter;
+import nl.clockwork.ebms.api.ebms.model.MessageEvent;
+import nl.clockwork.ebms.api.ebms.model.MessageFilter;
 import nl.clockwork.ebms.event.MessageEventType;
-
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.WebPage;

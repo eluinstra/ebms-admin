@@ -86,7 +86,7 @@ public class Utils
 			val protocol = scanner.findInLine("(://|@|:@//)");
 			if (protocol != null)
 			{
-				val urlString = scanner.findInLine("[^/:]+(:\d+){0,1}");
+				val urlString = scanner.findInLine("[^/:]+(:\\d+){0,1}");
 				scanner.findInLine("(/|:|;databaseName=)");
 				val database = scanner.findInLine("[^;]*");
 				if (urlString != null)
@@ -166,7 +166,8 @@ public class Utils
 	}
 
 	public static void testJdbcConnection(String driverClassName, String jdbcUrl, String username, String password)
-			throws PropertyVetoException, SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
+			throws PropertyVetoException, SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, NoSuchMethodException, SecurityException
 	{
 		val loader = Utils.class.getClassLoader();
 		val driverClass = loader.loadClass(driverClassName);

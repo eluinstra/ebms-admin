@@ -24,7 +24,6 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
-import nl.clockwork.ebms.datasource.DataSourceConfig.Location;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -97,7 +96,7 @@ public class DBMigrate
 		val username = cmd.getOptionValue("username");
 		val password = cmd.getOptionValue("password");
 		val isStrict = "true".equals(cmd.getOptionValue("strict"));
-		val location = parseLocation(jdbcUrl, isStrict);
+		val location = isStrict ? "classpath:db/migration/strict/" : "classpath:db/migration/default/";
 		val baselineVersion = parseBaselineVersion(cmd.getOptionValue("ebmsVersion"));
 		var config = Flyway.configure().dataSource(jdbcUrl, username, password).locations(location).ignoreMigrationPatterns("*:missing").outOfOrder(true);
 		if (StringUtils.isNotEmpty(baselineVersion))
@@ -105,11 +104,6 @@ public class DBMigrate
 		System.out.println("Migration starting...");
 		config.load().migrate();
 		System.out.println("Migration finished");
-	}
-
-	private static String parseLocation(String jdbcUrl, boolean isStrict) throws ParseException
-	{
-		return Location.getLocation(jdbcUrl, isStrict).orElseThrow(() -> new ParseException("No location found for jdbcUrl " + jdbcUrl));
 	}
 
 	private static String parseBaselineVersion(String ebmsVersion) throws ParseException

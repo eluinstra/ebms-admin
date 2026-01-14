@@ -38,7 +38,7 @@ import nl.clockwork.ebms.admin.web.StringModel;
 import nl.clockwork.ebms.admin.web.TextArea;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
-import nl.clockwork.ebms.delivery.task.DeliveryTaskStatus;
+import nl.clockwork.ebms.client.delivery.task.DeliveryTaskStatus;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.IGenericComponent;

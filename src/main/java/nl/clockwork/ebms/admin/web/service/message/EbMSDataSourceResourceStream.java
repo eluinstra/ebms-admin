@@ -21,8 +21,7 @@ import java.io.InputStream;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.api.ebms.service.model.DataSource;
-
+import nl.clockwork.ebms.api.ebms.model.DataSource;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.ResourceStreamNotFoundException;

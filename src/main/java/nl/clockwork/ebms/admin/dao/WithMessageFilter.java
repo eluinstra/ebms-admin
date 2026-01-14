@@ -18,7 +18,7 @@ package nl.clockwork.ebms.admin.dao;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.StringPath;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
-import nl.clockwork.ebms.api.ebms.service.model.Party;
+import nl.clockwork.ebms.api.ebms.model.Party;
 import nl.clockwork.ebms.querydsl.model.QEbmsMessage;
 
 public interface WithMessageFilter

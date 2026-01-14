@@ -27,16 +27,15 @@ import nl.clockwork.ebms.api.cpa.certificate.CertificateMappingControllerConfig;
 import nl.clockwork.ebms.api.cpa.url.URLMappingControllerConfig;
 import nl.clockwork.ebms.api.ebms.EbMSControllerConfig;
 import nl.clockwork.ebms.cache.CacheConfig;
+import nl.clockwork.ebms.client.delivery.DeliveryManagerConfig;
+import nl.clockwork.ebms.client.delivery.client.EbMSClientConfig;
+import nl.clockwork.ebms.client.delivery.task.DeliveryTaskHandlerConfig;
+import nl.clockwork.ebms.client.delivery.task.DeliveryTaskManagerConfig;
 import nl.clockwork.ebms.dao.DAOConfig;
 import nl.clockwork.ebms.datasource.DataSourceConfig;
-import nl.clockwork.ebms.delivery.DeliveryManagerConfig;
-import nl.clockwork.ebms.delivery.client.EbMSClientConfig;
-import nl.clockwork.ebms.delivery.task.DeliveryTaskHandlerConfig;
-import nl.clockwork.ebms.delivery.task.DeliveryTaskManagerConfig;
 import nl.clockwork.ebms.encryption.EncryptionConfig;
 import nl.clockwork.ebms.event.MessageEventListenerConfig;
 import nl.clockwork.ebms.jms.JMSConfig;
-import nl.clockwork.ebms.kafka.KafkaConfig;
 import nl.clockwork.ebms.processor.EbMSProcessorConfig;
 import nl.clockwork.ebms.querydsl.model.QueryDSLConfig;
 import nl.clockwork.ebms.scheduler.SchedulerConfig;
@@ -56,8 +55,8 @@ import org.springframework.core.io.Resource;
 @Import({AdminDAOConfig.class, CertificateMappingControllerConfig.class, CacheConfig.class, CommonConfig.class, CPAManagerConfig.class,
 		CPAControllerConfig.class, DAOConfig.class, DataSourceConfig.class, DeliveryManagerConfig.class, DeliveryTaskManagerConfig.class,
 		DeliveryTaskHandlerConfig.class, EbMSClientConfig.class, EbMSControllerConfig.class, EbMSProcessorConfig.class, EbMSServerConfig.class,
-		EmbeddedWebConfig.class, EncryptionConfig.class, JMSConfig.class, KafkaConfig.class, KeyStoreConfig.class, MessageEventListenerConfig.class,
-		QueryDSLConfig.class, SchedulerConfig.class, SigningConfig.class, TransactionManagerConfig.class, URLMappingControllerConfig.class, ValidationConfig.class})
+		EmbeddedWebConfig.class, EncryptionConfig.class, JMSConfig.class, KeyStoreConfig.class, MessageEventListenerConfig.class, QueryDSLConfig.class,
+		SchedulerConfig.class, SigningConfig.class, TransactionManagerConfig.class, URLMappingControllerConfig.class, ValidationConfig.class})
 @PropertySource(
 		value = {"classpath:nl/clockwork/ebms/default.properties", "classpath:nl/clockwork/ebms/admin/default.properties",
 				"file:${ebms.configDir}ebms-admin.embedded.advanced.properties", "file:${ebms.configDir}ebms-admin.embedded.properties"},

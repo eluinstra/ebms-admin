@@ -37,7 +37,6 @@ import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.api.cpa.CPAController;
 import nl.clockwork.ebms.api.cpa.certificate.CertificateMapping;
 import nl.clockwork.ebms.api.cpa.certificate.CertificateMappingController;
-
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;

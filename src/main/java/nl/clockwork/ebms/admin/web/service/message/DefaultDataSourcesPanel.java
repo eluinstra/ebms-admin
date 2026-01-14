@@ -24,8 +24,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.val;
 import nl.clockwork.ebms.admin.web.AjaxButton;
 import nl.clockwork.ebms.admin.web.Consumer;
-import nl.clockwork.ebms.api.ebms.service.model.DataSource;
-
+import nl.clockwork.ebms.api.ebms.model.DataSource;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalDialog;
 import org.apache.wicket.markup.html.basic.Label;

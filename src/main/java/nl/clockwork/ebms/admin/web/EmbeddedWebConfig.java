@@ -41,7 +41,6 @@ import nl.clockwork.ebms.api.ebms.EbMSController;
 import nl.clockwork.ebms.api.ebms.EbMSControllerMTOM;
 import nl.clockwork.ebms.api.ebms.EbMSRestController;
 import nl.clockwork.ebms.event.MessageEventListenerConfig.EventListenerType;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.Bus;
 import org.apache.cxf.binding.BindingFactoryManager;

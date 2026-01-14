@@ -30,7 +30,6 @@ import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.api.cpa.CPAController;
 import nl.clockwork.ebms.api.ebms.EbMSController;
-
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
