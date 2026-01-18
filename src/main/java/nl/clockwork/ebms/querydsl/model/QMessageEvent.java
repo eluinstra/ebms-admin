@@ -35,7 +35,7 @@ public class QMessageEvent extends com.querydsl.sql.RelationalPathBase<QMessageE
 
 	public static final QMessageEvent ebmsMessageEvent = new QMessageEvent("message_event");
 
-	public final EnumPath<nl.clockwork.ebms.event.MessageEventType> eventType = createEnum("eventType", nl.clockwork.ebms.event.MessageEventType.class);
+	public final EnumPath<nl.clockwork.ebms.common.event.MessageEventType> eventType = createEnum("eventType", nl.clockwork.ebms.common.event.MessageEventType.class);
 
 	public final StringPath messageId = createString("messageId");
 
