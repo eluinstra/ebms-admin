@@ -43,15 +43,15 @@ ebms.pool.minPoolSize=16
 ebms.pool.maxPoolSize=32
 ```
 
-### DeliveryManager
+### MessageServiceHandler
 
-The DeliveryManager is used to handle EbMS [Ping](api#pingcpaid-frompartyid-topartyid) and [getMessageStatus](api#getmessagestatusmessageid) calls. Set `deliveryManager.type` to `JMS` when you are [scaling](/ebms-admin/deployment.md#scaling) the EbMS Adapter, otherwise leave it set to `DEFAULT`. When `deliveryManager.type=JMS` configure [JMS](#jms).
+The MessageServiceHandler is used to handle EbMS [Ping](api#pingcpaid-frompartyid-topartyid) and [getMessageStatus](api#getmessagestatusmessageid) calls. Set `messageServiceHandler.type` to `JMS` when you are [scaling](/ebms-admin/deployment.md#scaling) the EbMS Adapter, otherwise leave it set to `DEFAULT`. When `messageServiceHandler.type=JMS` configure [JMS](#jms).
 
 ```properties
-# DeliveryManagerType: DEFAULT (DAO) | JMS
-deliveryManager.type=DEFAULT
-deliveryManager.minThreads=2
-deliveryManager.maxThreads=8
+# MessageServiceHandlerType: DEFAULT (DAO) | JMS
+messageServiceHandler.type=DEFAULT
+messageServiceHandler.minThreads=2
+messageServiceHandler.maxThreads=8
 messageQueue.maxEntries=64
 messageQueue.timeout=30000
 ```
@@ -171,7 +171,7 @@ http.errors.server.unrecoverable=501,505,510
 
 ### JMS
 
- JMS can be used by the [DeliveryTaskHandler](#deliverytaskhandler), the [DeliveryManager](#deliverymanager) and the [EventListener](#eventlistener). By default the `jms.brokerURL=vm://localhost` setting starts a persistent ActiveMQ broker that stores its data in the folder `activemq-data` and is reachable through `vm://localhost`. To use a diffent (external) ActiveMQ broker configure `jms.brokerURL`. You can also start an internal ActiveMQ broker by setting `jms.broker.start=true` and set the path to the broker's configuration file in `jms.broker.config`. You can find the default ActiveMQ configuration file [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-@ebms.branch.version@/src/main/resources/nl/clockwork/ebms/activemq.xml). If you are using this configuration file, the broker's data is stored in the folder `data`.
+ JMS can be used by the [DeliveryTaskHandler](#deliverytaskhandler), the [MessageServiceHandler](#deliverymanager) and the [EventListener](#eventlistener). By default the `jms.brokerURL=vm://localhost` setting starts a persistent ActiveMQ broker that stores its data in the folder `activemq-data` and is reachable through `vm://localhost`. To use a diffent (external) ActiveMQ broker configure `jms.brokerURL`. You can also start an internal ActiveMQ broker by setting `jms.broker.start=true` and set the path to the broker's configuration file in `jms.broker.config`. You can find the default ActiveMQ configuration file [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-@ebms.branch.version@/src/main/resources/nl/clockwork/ebms/activemq.xml). If you are using this configuration file, the broker's data is stored in the folder `data`.
 
 :::info
 When [`deliveryTaskHandler.type`](#deliverytaskhandler) is set to `JMS` configure the ActiveMQ broker with `schedulerSupport="true"`

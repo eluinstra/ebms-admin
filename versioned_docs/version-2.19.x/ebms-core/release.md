@@ -236,7 +236,7 @@ This is the last 2.19.x release. Version 2.19.x will no longer be maintained.
 		- `encryption.keystore.keyPassword=${encryption.keystore.password}`
 		- `cache.type=DEFAULT` (allowed values: `DEFAULT` (SPRING) \| `EHCACHE` \| `IGNITE`)
 		- `eventProcessor.type=DEFAULT` (allowed values: `NONE` \| `DEFAULT` (DAO) \| `JMS`)
-		- `deliveryManager.type=DEFAULT` (allowed types: `DEFAULT` (DAO) \| `JMS`)
+		- `messageServiceHandler.type=DEFAULT` (allowed types: `DEFAULT` (DAO) \| `JMS`)
 		- `eventListener.type=DEFAULT` (allowed values: `DEFAULT` (LOGGING) \| `DAO` \| `SIMPLE_JMS` \| `JMS` \| `JMS_TEXT`)
 		- `transactionManager.type=DEFAULT` (allowed values: `DEFAULT` \| `ATOMIKOS`)
 	* see `src/main/resources/nl/clockwork/ebms/default.properties` for all available properties
