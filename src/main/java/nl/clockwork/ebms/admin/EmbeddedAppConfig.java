@@ -26,7 +26,7 @@ import nl.clockwork.ebms.api.cpa.certificate.CertificateMappingControllerConfig;
 import nl.clockwork.ebms.api.cpa.url.URLMappingControllerConfig;
 import nl.clockwork.ebms.api.ebms.EbMSControllerConfig;
 import nl.clockwork.ebms.cache.CacheConfig;
-import nl.clockwork.ebms.client.delivery.DeliveryManagerConfig;
+import nl.clockwork.ebms.client.delivery.MessageServiceHandlerConfig;
 import nl.clockwork.ebms.client.delivery.client.EbMSClientConfig;
 import nl.clockwork.ebms.client.delivery.task.DeliveryTaskHandlerConfig;
 import nl.clockwork.ebms.client.delivery.task.DeliveryTaskManagerConfig;
@@ -55,7 +55,7 @@ import org.springframework.core.io.Resource;
 
 @Configuration
 @Import({AdminDAOConfig.class, CertificateMappingConfig.class, CertificateMappingControllerConfig.class, CacheConfig.class, CommonConfig.class, CPAConfig.class,
-		CPAControllerConfig.class, DAOConfig.class, DataSourceConfig.class, DeliveryManagerConfig.class, DeliveryTaskManagerConfig.class,
+		CPAControllerConfig.class, DAOConfig.class, DataSourceConfig.class, MessageServiceHandlerConfig.class, DeliveryTaskManagerConfig.class,
 		DeliveryTaskHandlerConfig.class, EbMSClientConfig.class, EbMSControllerConfig.class, EbMSProcessorConfig.class, EbMSServerConfig.class,
 		EmbeddedWebConfig.class, EncryptionConfig.class, JMSConfig.class, KeyStoreConfig.class, MessageEventListenerConfig.class, QueryDSLConfig.class,
 		SchedulerConfig.class, SigningConfig.class, TransactionManagerConfig.class, URLMappingConfig.class, URLMappingControllerConfig.class, ValidationConfig.class})
