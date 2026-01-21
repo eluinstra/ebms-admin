@@ -43,8 +43,8 @@ import org.apache.wicket.util.io.IClusterable;
 public class CPAUploadPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name = "cpaService")
-	CPAController cpaService;
+	@SpringBean(name = "cpaController")
+	CPAController cpaController;
 
 	public CPAUploadPage()
 	{
@@ -93,7 +93,7 @@ public class CPAUploadPage extends BasePage
 						FileUpload file = files.get(0);
 						// String contentType = file.getContentType();
 						// FIXME char encoding
-						cpaService.validateCPA(new String(file.getBytes()));
+						cpaController.validateCPA(new String(file.getBytes()));
 					}
 					info(getString("cpa.valid"));
 				}
@@ -118,7 +118,7 @@ public class CPAUploadPage extends BasePage
 						val file = files.get(0);
 						// val contentType = file.getContentType();
 						// FIXME char encoding
-						cpaService.insertCPA(new String(file.getBytes()), getModelObject().isOverwrite());
+						cpaController.insertCPA(new String(file.getBytes()), getModelObject().isOverwrite());
 					}
 					setResponsePage(new CPAsPage());
 				}

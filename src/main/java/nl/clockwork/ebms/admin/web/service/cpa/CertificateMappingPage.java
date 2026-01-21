@@ -37,7 +37,6 @@ import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.api.cpa.CPAController;
 import nl.clockwork.ebms.api.cpa.certificate.CertificateMappingController;
 import nl.clockwork.ebms.common.cpa.certificate.CertificateMapping;
-
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
@@ -53,8 +52,8 @@ import org.apache.wicket.util.io.IClusterable;
 public class CertificateMappingPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name = "cpaService")
-	CPAController cpaService;
+	@SpringBean(name = "cpaController")
+	CPAController cpaController;
 	@SpringBean(name = "certificateMappingService")
 	CertificateMappingController certificateMappingService;
 
@@ -93,7 +92,7 @@ public class CertificateMappingPage extends BasePage
 			add(
 					new BootstrapFormComponentFeedbackBorder(
 							"cpaIdFeedback",
-							new DropDownChoice<String>("cpaId", Model.ofList(Utils.toList(cpaService.getCPAIds()))).setLabel(new ResourceModel("lbl.cpaId"))));
+							new DropDownChoice<String>("cpaId", Model.ofList(Utils.toList(cpaController.getCPAIds()))).setLabel(new ResourceModel("lbl.cpaId"))));
 			add(createSetButton("set"));
 			add(new ResetButton("reset", new ResourceModel("cmd.reset"), CertificateMappingPage.class));
 		}

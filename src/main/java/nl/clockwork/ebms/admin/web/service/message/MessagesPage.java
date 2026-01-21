@@ -74,10 +74,7 @@ public class MessagesPage extends BasePage
 			Action onClick = () ->
 			{
 				setResponsePage(
-						new MessagePage(
-								Model.of(ebMSMessageService.getMessage(messageId, null)),
-								MessagesPage.this,
-								messageId_ -> ebMSMessageService.processMessage(messageId_)));
+						new MessagePage(Model.of(ebMSController.getMessage(messageId, null)), MessagesPage.this, messageId_ -> ebMSController.processMessage(messageId_)));
 			};
 			val link = new Link<Void>(id, onClick);
 			link.add(components);
@@ -86,8 +83,8 @@ public class MessagesPage extends BasePage
 	}
 
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name = "ebMSMessageService")
-	EbMSController ebMSMessageService;
+	@SpringBean(name = "ebMSController")
+	EbMSController ebMSController;
 	@NonNull
 	final Integer maxItemsPerPage;
 
@@ -106,13 +103,13 @@ public class MessagesPage extends BasePage
 		this.maxItemsPerPage = WicketApplication.get().getMaxItemsPerPage();
 		val container = new WebMarkupContainer("container");
 		add(container);
-		val messages = new MessageDataView("messages", MessageDataProvider.of(ebMSMessageService, filter.getObject()));
+		val messages = new MessageDataView("messages", MessageDataProvider.of(ebMSController, filter.getObject()));
 		container.add(messages);
 		val navigator = new BootstrapPagingNavigator("navigator", messages);
 		add(navigator);
 		add(new MaxItemsPerPageChoice("maxItemsPerPage", new PropertyModel<>(this, "maxItemsPerPage"), navigator, container));
 		add(new PageLink("back", responsePage).setVisible(responsePage != null));
-		add(new DownloadEbMSMessageIdsCSVLink("download", ebMSMessageService, filter));
+		add(new DownloadEbMSMessageIdsCSVLink("download", ebMSController, filter));
 	}
 
 	@Override

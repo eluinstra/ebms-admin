@@ -42,13 +42,13 @@ public class DownloadEbMSMessageIdsCSVLink extends Link<Void>
 {
 	private static final long serialVersionUID = 1L;
 	@NonNull
-	private EbMSController ebMSMessageService;
+	private EbMSController ebMSController;
 	private IModel<MessageFilter> filter;
 
-	public DownloadEbMSMessageIdsCSVLink(String id, @NonNull EbMSController ebMSMessageService, @NonNull IModel<MessageFilter> filter)
+	public DownloadEbMSMessageIdsCSVLink(String id, @NonNull EbMSController ebMSController, @NonNull IModel<MessageFilter> filter)
 	{
 		super(id);
-		this.ebMSMessageService = ebMSMessageService;
+		this.ebMSController = ebMSController;
 		this.filter = filter;
 	}
 
@@ -57,7 +57,7 @@ public class DownloadEbMSMessageIdsCSVLink extends Link<Void>
 	{
 		try (val output = new CachedOutputStream(); val printer = new CSVPrinter(new OutputStreamWriter(output), CSVFormat.DEFAULT))
 		{
-			val messageIds = Utils.toList(ebMSMessageService.getUnprocessedMessageIds(filter.getObject(), null));
+			val messageIds = Utils.toList(ebMSController.getUnprocessedMessageIds(filter.getObject(), null));
 			if (messageIds != null)
 				printMessagesToCSV(printer, messageIds);
 			val resourceStream = CachedOutputResourceStream.of(output, "text/csv");

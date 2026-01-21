@@ -32,7 +32,6 @@ import nl.clockwork.ebms.api.ebms.EbMSController;
 import nl.clockwork.ebms.api.ebms.model.MessageEvent;
 import nl.clockwork.ebms.api.ebms.model.MessageFilter;
 import nl.clockwork.ebms.common.event.MessageEventType;
-
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.WebPage;
@@ -79,9 +78,9 @@ public class MessageEventsPage extends BasePage
 			{
 				setResponsePage(
 						new MessagePage(
-								Model.of(ebMSMessageService.getMessage(model.getObject().getMessageId(), null)),
+								Model.of(ebMSController.getMessage(model.getObject().getMessageId(), null)),
 								MessageEventsPage.this,
-								messageId -> ebMSMessageService.processMessageEvent(messageId)));
+								messageId -> ebMSController.processMessageEvent(messageId)));
 			};
 			val link = new Link<Void>(id, onClick);
 			link.add(components);
@@ -90,8 +89,8 @@ public class MessageEventsPage extends BasePage
 	}
 
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name = "ebMSMessageService")
-	EbMSController ebMSMessageService;
+	@SpringBean(name = "ebMSController")
+	EbMSController ebMSController;
 	@NonNull
 	final Integer maxItemsPerPage;
 
@@ -110,13 +109,13 @@ public class MessageEventsPage extends BasePage
 		this.maxItemsPerPage = WicketApplication.get().getMaxItemsPerPage();
 		val container = new WebMarkupContainer("container");
 		add(container);
-		val messageEvents = new MessageEventDataView("messageEvents", MessageEventDataProvider.of(ebMSMessageService, filter.getObject(), eventTypes));
+		val messageEvents = new MessageEventDataView("messageEvents", MessageEventDataProvider.of(ebMSController, filter.getObject(), eventTypes));
 		container.add(messageEvents);
 		val navigator = new BootstrapPagingNavigator("navigator", messageEvents);
 		add(navigator);
 		add(new MaxItemsPerPageChoice("maxItemsPerPage", new PropertyModel<>(this, "maxItemsPerPage"), navigator, container));
 		add(new PageLink("back", responsePage).setVisible(responsePage != null));
-		add(new DownloadEbMSMessageEventsCSVLink("download", ebMSMessageService, filter, MessageEventType.values()));
+		add(new DownloadEbMSMessageEventsCSVLink("download", ebMSController, filter, MessageEventType.values()));
 	}
 
 	@Override

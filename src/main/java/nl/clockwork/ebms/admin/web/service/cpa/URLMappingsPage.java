@@ -28,7 +28,6 @@ import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.api.cpa.url.URLMappingController;
 import nl.clockwork.ebms.common.cpa.url.URLMapping;
-
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;

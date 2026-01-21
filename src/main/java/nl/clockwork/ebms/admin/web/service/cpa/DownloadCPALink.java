@@ -30,20 +30,20 @@ import org.apache.wicket.util.resource.IResourceStream;
 public class DownloadCPALink extends Link<String>
 {
 	private static final long serialVersionUID = 1L;
-	CPAController cpaService;
+	CPAController cpaController;
 
 	@Builder
-	public DownloadCPALink(String id, CPAController cpaService, IModel<String> cpaId)
+	public DownloadCPALink(String id, CPAController cpaController, IModel<String> cpaId)
 	{
 		super(id, cpaId);
-		this.cpaService = cpaService;
+		this.cpaController = cpaController;
 	}
 
 	@Override
 	public void onClick()
 	{
 		val o = getModelObject();
-		val cpa = cpaService.getCPA(o);
+		val cpa = cpaController.getCPA(o);
 		val resourceStream = StringResourceStream.of(cpa, "text/xml");
 		getRequestCycle().scheduleRequestHandlerAfterCurrent(createRequestHandler(o, resourceStream));
 	}

@@ -75,9 +75,9 @@ public class EmbeddedWebConfig
 	}
 
 	@Bean
-	public Endpoint cpaServiceEndpoint(CPAController cpaService)
+	public Endpoint cpaServiceEndpoint(CPAController cpaController)
 	{
-		return publishEndpoint(cpaService, "/cpa", "http://www.ordina.nl/cpa/2.18", "CPAService", "CPAPort");
+		return publishEndpoint(cpaController, "/cpa", "http://www.ordina.nl/cpa/2.18", "CPAService", "CPAPort");
 	}
 
 	@Bean
@@ -98,9 +98,9 @@ public class EmbeddedWebConfig
 	}
 
 	@Bean
-	public Endpoint ebMSMessageServiceEndpoint(EbMSController ebMSMessageService)
+	public Endpoint ebMSMessageServiceEndpoint(EbMSController ebMSController)
 	{
-		return publishEndpoint(ebMSMessageService, "/ebms", "http://www.ordina.nl/ebms/2.18", "EbMSMessageService", "EbMSMessagePort");
+		return publishEndpoint(ebMSController, "/ebms", "http://www.ordina.nl/ebms/2.18", "EbMSMessageService", "EbMSMessagePort");
 	}
 
 	@Bean

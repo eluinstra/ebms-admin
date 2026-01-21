@@ -82,8 +82,8 @@ public class MessagePage extends BasePage implements IGenericComponent<Message, 
 	}
 
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name = "ebMSMessageService")
-	EbMSController ebMSMessageService;
+	@SpringBean(name = "ebMSController")
+	EbMSController ebMSController;
 
 	public MessagePage(IModel<Message> model, WebPage responsePage, MessageProcessor messageProcessor)
 	{
@@ -115,7 +115,7 @@ public class MessagePage extends BasePage implements IGenericComponent<Message, 
 	private Link<Void> createViewRefToMessageIdLink(String id, final MessageProcessor messageProcessor)
 	{
 		Action onClick = () -> setResponsePage(
-				new MessagePage(Model.of(ebMSMessageService.getMessage(getModelObject().getProperties().getRefToMessageId(), null)), this, messageProcessor));
+				new MessagePage(Model.of(ebMSController.getMessage(getModelObject().getProperties().getRefToMessageId(), null)), this, messageProcessor));
 		val result = new Link<Void>(id, onClick);
 		result.add(new Label("properties.refToMessageId"));
 		return result;

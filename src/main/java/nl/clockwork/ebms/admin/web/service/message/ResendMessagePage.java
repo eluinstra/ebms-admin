@@ -46,10 +46,10 @@ public class ResendMessagePage extends BasePage
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name = "ebMSAdminDAO")
 	public EbMSDAO ebMSDAO;
-	@SpringBean(name = "cpaService")
-	private CPAController cpaService;
-	@SpringBean(name = "ebMSMessageService")
-	private EbMSController ebMSMessageService;
+	@SpringBean(name = "cpaController")
+	private CPAController cpaController;
+	@SpringBean(name = "ebMSController")
+	private EbMSController ebMSController;
 
 	public ResendMessagePage()
 	{
@@ -92,7 +92,7 @@ public class ResendMessagePage extends BasePage
 				try
 				{
 					val o = getModelObject();
-					val messageId = ebMSMessageService.resendMessage(o.getMessageId());
+					val messageId = ebMSController.resendMessage(o.getMessageId());
 					info(new StringResourceModel("resendMessage.ok", Model.of(messageId)).getString());
 				}
 				catch (Exception e)

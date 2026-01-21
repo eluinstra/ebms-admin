@@ -62,10 +62,10 @@ import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProt
 public class SendMessagePageX extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name = "cpaService")
-	CPAController cpaService;
-	@SpringBean(name = "ebMSMessageService")
-	EbMSController ebMSMessageService;
+	@SpringBean(name = "cpaController")
+	CPAController cpaController;
+	@SpringBean(name = "ebMSController")
+	EbMSController ebMSController;
 
 	public SendMessagePageX()
 	{
@@ -111,7 +111,7 @@ public class SendMessagePageX extends BasePage
 
 		private DropDownChoice<String> createCPAIdChoice(String id)
 		{
-			val result = new DropDownChoice<String>(id, Model.ofList(Utils.toList(cpaService.getCPAIds())));
+			val result = new DropDownChoice<String>(id, Model.ofList(Utils.toList(cpaController.getCPAIds())));
 			result.setLabel(new ResourceModel("lbl.cpaId"));
 			result.setRequired(true);
 			Consumer<AjaxRequestTarget> onUpdate = t ->
@@ -119,7 +119,7 @@ public class SendMessagePageX extends BasePage
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
 					o.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
 					o.resetFromRoles();
 					o.resetToPartyIds();
@@ -150,7 +150,7 @@ public class SendMessagePageX extends BasePage
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
 					o.resetFromRoles(CPAUtils.getRoleNames(cpa, o.getFromPartyId()));
 					o.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa, o.getFromPartyId()));
 					o.resetToRoles(CPAUtils.getOtherRoleNamesByPartyId(cpa, o.getFromPartyId()));
@@ -183,7 +183,7 @@ public class SendMessagePageX extends BasePage
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
 					o.resetServices(
 							ListUtils.intersection(
 									CPAUtils.getServiceNamesCanSend(cpa, o.getFromPartyId(), o.getFromRole()),
@@ -213,7 +213,7 @@ public class SendMessagePageX extends BasePage
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
 					o.resetToRoles(CPAUtils.getRoleNames(cpa, o.getToPartyId()));
 					o.resetServices(
 							ListUtils.intersection(
@@ -244,7 +244,7 @@ public class SendMessagePageX extends BasePage
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
 					o.resetServices(
 							ListUtils.intersection(
 									CPAUtils.getServiceNamesCanSend(cpa, o.getFromPartyId(), o.getFromRole()),
@@ -275,7 +275,7 @@ public class SendMessagePageX extends BasePage
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
 					o.resetActions(
 							ListUtils.intersection(
 									CPAUtils.getFromActionNamesCanSend(cpa, o.getFromPartyId(), o.getFromRole(), o.getService()),
@@ -356,7 +356,7 @@ public class SendMessagePageX extends BasePage
 				{
 					val o = getModelObject();
 					val message = new MessageRequest(o, dataSources.getDataSources());
-					val messageId = ebMSMessageService.sendMessage(message);
+					val messageId = ebMSController.sendMessage(message);
 					info(new StringResourceModel("sendMessage.ok", Model.of(messageId)).getString());
 				}
 				catch (Exception e)
