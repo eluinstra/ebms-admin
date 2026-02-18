@@ -91,6 +91,7 @@ public class Start implements SystemInterface
 	private static final String QUERIES_PER_SECOND_OPTION = "queriesPerSecond";
 	private static final String USER_QUERIES_PER_SECOND_OPTION = "userQueriesPerSecond";
 	private static final String AUDIT_LOGGING_OPTION = "auditLogging";
+	private static final String ECHO_HEADER_NAMES_OPTION = "echoHeaderNames";
 	private static final String MDC_HEADER_NAMES_OPTION = "mdcHeaderNames";
 	private static final String SSL_OPTION = "ssl";
 	private static final String PROTOCOLS_OPTION = "protocols";
@@ -199,6 +200,7 @@ public class Start implements SystemInterface
 		result.addOption(QUERIES_PER_SECOND_OPTION, true, "set max requests per second [default: " + NONE + "]");
 		result.addOption(USER_QUERIES_PER_SECOND_OPTION, true, "set max requests per user per second [default: " + NONE + "]");
 		result.addOption(AUDIT_LOGGING_OPTION, false, "enable audit logging");
+		result.addOption(ECHO_HEADER_NAMES_OPTION, true, "set echo header names [default: " + NONE + "]");
 		result.addOption(MDC_HEADER_NAMES_OPTION, true, "set logging MDC header names [default: " + NONE + "]");
 		result.addOption(SSL_OPTION, false, "enable SSL");
 		result.addOption(PROTOCOLS_OPTION, true, "set SSL Protocols [default: " + NONE + "]");
@@ -394,6 +396,8 @@ public class Start implements SystemInterface
 		result.setVirtualHosts(new String[]{"@" + WEB_CONNECTOR_NAME});
 		result.setInitParameter("configuration", "deployment");
 		result.setContextPath(getPath(cmd));
+		if (cmd.hasOption(ECHO_HEADER_NAMES_OPTION))
+			result.addFilter(createEchoServletFilterHolder(cmd.getOptionValue(ECHO_HEADER_NAMES_OPTION)), "/*", EnumSet.allOf(DispatcherType.class));
 		if (cmd.hasOption(MDC_HEADER_NAMES_OPTION))
 			result.addFilter(createMDCServletFilterHolder(cmd.getOptionValue(MDC_HEADER_NAMES_OPTION)), "/*", EnumSet.allOf(DispatcherType.class));
 		if (cmd.hasOption(AUDIT_LOGGING_OPTION))
@@ -436,6 +440,13 @@ public class Start implements SystemInterface
 		}
 		result.setErrorHandler(createErrorHandler());
 		result.addEventListener(contextLoaderListener);
+		return result;
+	}
+
+	protected FilterHolder createEchoServletFilterHolder(String headerNames)
+	{
+		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.EchoServletFilter.class);
+		result.setInitParameter("headerNames", headerNames);
 		return result;
 	}
 

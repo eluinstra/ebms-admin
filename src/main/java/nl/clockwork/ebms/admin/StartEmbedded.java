@@ -58,6 +58,7 @@ public class StartEmbedded extends Start
 	private static final String EBMS_QUERIES_PER_SECOND_PROPERTY = "ebms.queriesPerSecond";
 	private static final String EBMS_SSL_PROPERTY = "ebms.ssl";
 	private static final String EBMS_VERIFY_HOSTNAMES_PROPERTY = "ebms.verifyHostnames";
+	private static final String EBMS_ECHO_HEADER_NAMES_PROPERTY = "ebms.echoHeaderNames";
 	private static final String HTTPS_PROTOCOLS_PROPERTY = "https.protocols";
 	private static final String HTTPS_CIPHER_SUITES_PROPERTY = "https.cipherSuites";
 	private static final String HTTPS_REQUIRE_CLIENT_AUTHENTICATION_PROPERTY = "https.requireClientAuthentication";
@@ -252,6 +253,8 @@ public class StartEmbedded extends Start
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		result.setVirtualHosts(new String[]{"@" + EBMS_CONNECTOR_NAME});
 		result.setContextPath("/");
+		if (StringUtils.isNotEmpty(properties.getProperty(EBMS_ECHO_HEADER_NAMES_PROPERTY)))
+			result.addFilter(createEchoServletFilterHolder(properties.getProperty(EBMS_ECHO_HEADER_NAMES_PROPERTY)), "/*", EnumSet.allOf(DispatcherType.class));
 		if (StringUtils.isNotEmpty(properties.getProperty(LOGGING_MDC_HEADER_NAMES_PROPERTY)))
 			result.addFilter(createMDCServletFilterHolder(properties.getProperty(LOGGING_MDC_HEADER_NAMES_PROPERTY)), "/*", EnumSet.allOf(DispatcherType.class));
 		if (LoggingUtils.Status.ENABLED.name().equals(properties.getProperty(LOGGING_MDC_PROPERTY))
