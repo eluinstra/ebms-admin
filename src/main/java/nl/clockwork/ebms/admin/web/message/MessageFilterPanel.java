@@ -63,10 +63,10 @@ import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProt
 public class MessageFilterPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name = "cpaService")
-	CPAController cpaService;
-	@SpringBean(name = "ebMSMessageService")
-	EbMSController ebMSMessageService;
+	@SpringBean(name = "cpaController")
+	CPAController cpaController;
+	@SpringBean(name = "ebMSController")
+	EbMSController ebMSController;
 	@NonNull
 	final Function<IModel<MessageFilterFormData>, BasePage> getPage;
 	BootstrapDateTimePicker from;
@@ -149,14 +149,14 @@ public class MessageFilterPanel extends Panel
 
 		private DropDownChoice<String> createCPAIdChoice(String id)
 		{
-			val result = new DropDownChoice<String>(id, Model.ofList(Utils.toList(cpaService.getCPAIds())));
+			val result = new DropDownChoice<String>(id, Model.ofList(Utils.toList(cpaController.getCPAIds())));
 			result.setLabel(new ResourceModel("lbl.cpaId"));
 			Consumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
 					o.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
 					o.resetFromRoles();
 					o.resetToPartyIds(CPAUtils.getPartyIds(cpa));
@@ -190,7 +190,7 @@ public class MessageFilterPanel extends Panel
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
 					o.resetFromRoles(CPAUtils.getRoleNames(cpa, o.getFromParty().getPartyId()));
 					o.resetServices();
 					o.resetActions();
@@ -221,7 +221,7 @@ public class MessageFilterPanel extends Panel
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
 					o.resetServices(CPAUtils.getServiceNames(cpa, o.getFromParty().getRole()));
 					o.resetActions();
 					t.add(getFeedbackComponent());
@@ -251,7 +251,7 @@ public class MessageFilterPanel extends Panel
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
 					o.resetToRoles(CPAUtils.getRoleNames(cpa, o.getToParty().getPartyId()));
 					o.resetServices();
 					o.resetActions();
@@ -282,7 +282,7 @@ public class MessageFilterPanel extends Panel
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
 					o.resetServices(CPAUtils.getServiceNames(cpa, o.getToParty().getRole()));
 					o.resetActions();
 					t.add(getFeedbackComponent());
@@ -308,7 +308,7 @@ public class MessageFilterPanel extends Panel
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
 					o.resetActions(
 							o.getFromParty() == null
 									? CPAUtils.getToActionNames(cpa, o.getToParty().getRole(), o.getService())

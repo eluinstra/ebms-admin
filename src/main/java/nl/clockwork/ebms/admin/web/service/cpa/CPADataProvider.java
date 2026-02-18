@@ -33,12 +33,12 @@ import org.apache.wicket.model.Model;
 public class CPADataProvider implements IDataProvider<String>
 {
 	private static final long serialVersionUID = 1L;
-	CPAController cpaService;
+	CPAController cpaController;
 
 	@Override
 	public Iterator<? extends String> iterator(long first, long count)
 	{
-		val cpaIds = Utils.toList(cpaService.getCPAIds());
+		val cpaIds = Utils.toList(cpaController.getCPAIds());
 		return cpaIds == null ? new ArrayList<String>().iterator() : cpaIds.iterator();
 	}
 
@@ -51,7 +51,7 @@ public class CPADataProvider implements IDataProvider<String>
 	@Override
 	public long size()
 	{
-		List<String> cpaIds = Utils.toList(cpaService.getCPAIds());
+		List<String> cpaIds = Utils.toList(cpaController.getCPAIds());
 		return cpaIds == null ? 0 : cpaIds.size();
 	}
 

@@ -3,7 +3,6 @@
 .project
 .settings
 log4j2.xml
-*.properties
 target
 
 .vscode

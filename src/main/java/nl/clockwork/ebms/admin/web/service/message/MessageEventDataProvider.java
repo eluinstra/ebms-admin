@@ -27,7 +27,6 @@ import nl.clockwork.ebms.api.ebms.EbMSController;
 import nl.clockwork.ebms.api.ebms.model.MessageEvent;
 import nl.clockwork.ebms.api.ebms.model.MessageFilter;
 import nl.clockwork.ebms.common.event.MessageEventType;
-
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -38,7 +37,7 @@ public class MessageEventDataProvider implements IDataProvider<MessageEvent>
 {
 	private static final long serialVersionUID = 1L;
 	@NonNull
-	private EbMSController ebMSMessageService;
+	private EbMSController ebMSController;
 	@NonNull
 	private MessageFilter filter;
 	@NonNull
@@ -47,7 +46,7 @@ public class MessageEventDataProvider implements IDataProvider<MessageEvent>
 	@Override
 	public Iterator<? extends MessageEvent> iterator(long first, long count)
 	{
-		val messageEvents = Utils.toList(ebMSMessageService.getUnprocessedMessageEvents(filter, eventTypes, (int)(first + count)));
+		val messageEvents = Utils.toList(ebMSController.getUnprocessedMessageEvents(filter, eventTypes, (int)(first + count)));
 		return messageEvents == null ? new ArrayList<MessageEvent>().iterator() : messageEvents.listIterator((int)first);
 	}
 
@@ -60,7 +59,7 @@ public class MessageEventDataProvider implements IDataProvider<MessageEvent>
 	@Override
 	public long size()
 	{
-		val messageEvents = Utils.toList(ebMSMessageService.getUnprocessedMessageEvents(filter, eventTypes, null));
+		val messageEvents = Utils.toList(ebMSController.getUnprocessedMessageEvents(filter, eventTypes, null));
 		return messageEvents == null ? 0 : messageEvents.size();
 	}
 

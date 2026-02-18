@@ -45,10 +45,10 @@ public class MessageStatusPage extends BasePage
 	private static final long serialVersionUID = 1L;
 	@SpringBean(name = "ebMSAdminDAO")
 	EbMSDAO ebMSDAO;
-	@SpringBean(name = "cpaService")
-	CPAController cpaService;
-	@SpringBean(name = "ebMSMessageService")
-	EbMSController ebMSMessageService;
+	@SpringBean(name = "cpaController")
+	CPAController cpaController;
+	@SpringBean(name = "ebMSController")
+	EbMSController ebMSController;
 
 	public MessageStatusPage()
 	{
@@ -90,7 +90,7 @@ public class MessageStatusPage extends BasePage
 				try
 				{
 					val o = getModelObject();
-					val messageStatus = ebMSMessageService.getMessageStatus(o.getMessageId());
+					val messageStatus = ebMSController.getMessageStatus(o.getMessageId());
 					info(new StringResourceModel("getMessageStatus.ok", Model.of(messageStatus.getStatus())).getString());
 				}
 				catch (Exception e)

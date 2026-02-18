@@ -53,10 +53,10 @@ import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProt
 public class PingPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name = "cpaService")
-	CPAController cpaService;
-	@SpringBean(name = "ebMSMessageService")
-	EbMSController ebMSMessageService;
+	@SpringBean(name = "cpaController")
+	CPAController cpaController;
+	@SpringBean(name = "ebMSController")
+	EbMSController ebMSController;
 
 	public PingPage()
 	{
@@ -88,7 +88,7 @@ public class PingPage extends BasePage
 
 		private DropDownChoice<String> createCPAIdChoice(String id)
 		{
-			val result = new DropDownChoice<>(id, Model.ofList(Utils.toList(cpaService.getCPAIds())));
+			val result = new DropDownChoice<>(id, Model.ofList(Utils.toList(cpaController.getCPAIds())));
 			result.setLabel(new ResourceModel("lbl.cpaId"));
 			result.setRequired(true);
 			Consumer<AjaxRequestTarget> onUpdate = t ->
@@ -96,7 +96,7 @@ public class PingPage extends BasePage
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
 					o.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
 					o.resetToPartyIds();
 				}
@@ -122,7 +122,7 @@ public class PingPage extends BasePage
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaService.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
 					o.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa, o.getFromPartyId()));
 				}
 				catch (JAXBException e)
@@ -158,7 +158,7 @@ public class PingPage extends BasePage
 				try
 				{
 					val o = getModelObject();
-					ebMSMessageService.ping(o.getCpaId(), o.getFromPartyId(), o.getToPartyId());
+					ebMSController.ping(o.getCpaId(), o.getFromPartyId(), o.getToPartyId());
 					info(PingPage.this.getString("ping.ok"));
 				}
 				catch (Exception e)

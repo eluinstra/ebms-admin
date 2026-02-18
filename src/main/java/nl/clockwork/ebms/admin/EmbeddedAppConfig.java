@@ -58,7 +58,8 @@ import org.springframework.core.io.Resource;
 		CPAControllerConfig.class, DAOConfig.class, DataSourceConfig.class, MessageServiceHandlerConfig.class, DeliveryTaskManagerConfig.class,
 		DeliveryTaskHandlerConfig.class, EbMSClientConfig.class, EbMSControllerConfig.class, EbMSProcessorConfig.class, EbMSServerConfig.class,
 		EmbeddedWebConfig.class, EncryptionConfig.class, JMSConfig.class, KeyStoreConfig.class, MessageEventListenerConfig.class, QueryDSLConfig.class,
-		SchedulerConfig.class, SigningConfig.class, TransactionManagerConfig.class, URLMappingConfig.class, URLMappingControllerConfig.class, ValidationConfig.class})
+		SchedulerConfig.class, SigningConfig.class, TransactionManagerConfig.class, URLMappingConfig.class, URLMappingControllerConfig.class,
+		ValidationConfig.class})
 @PropertySource(
 		value = {"classpath:nl/clockwork/ebms/default.properties", "classpath:nl/clockwork/ebms/admin/default.properties",
 				"file:${ebms.configDir}ebms-admin.embedded.advanced.properties", "file:${ebms.configDir}ebms-admin.embedded.properties"},

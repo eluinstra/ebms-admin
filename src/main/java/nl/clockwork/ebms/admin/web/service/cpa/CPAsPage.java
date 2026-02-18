@@ -58,14 +58,14 @@ public class CPAsPage extends BasePage
 		{
 			val o = item.getModelObject();
 			item.add(createViewLink("view", o));
-			item.add(new DownloadCPALink("downloadCPA", cpaService, item.getModel()));
+			item.add(new DownloadCPALink("downloadCPA", cpaController, item.getModel()));
 			item.add(createDeleteButton("delete", item.getModel()));
 			item.add(AttributeModifier.replace("class", OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 
 		private Link<Void> createViewLink(String id, final String cpaId)
 		{
-			val result = Link.<Void>builder().id(id).onClick(() -> setResponsePage(new CPAPage(Model.of(cpaService.getCPA(cpaId)), CPAsPage.this))).build();
+			val result = Link.<Void>builder().id(id).onClick(() -> setResponsePage(new CPAPage(Model.of(cpaController.getCPA(cpaId)), CPAsPage.this))).build();
 			result.add(new Label("cpaId", cpaId));
 			return result;
 		}
@@ -76,7 +76,7 @@ public class CPAsPage extends BasePage
 			{
 				try
 				{
-					cpaService.deleteCPA(cpaId.getObject());
+					cpaController.deleteCPA(cpaId.getObject());
 					setResponsePage(new CPAsPage());
 				}
 				catch (Exception e)
@@ -93,8 +93,8 @@ public class CPAsPage extends BasePage
 	}
 
 	private static final long serialVersionUID = 1L;
-	@SpringBean(name = "cpaService")
-	CPAController cpaService;
+	@SpringBean(name = "cpaController")
+	CPAController cpaController;
 
 	public CPAsPage()
 	{
@@ -111,7 +111,7 @@ public class CPAsPage extends BasePage
 			super(id);
 			val container = new WebMarkupContainer("container");
 			add(container);
-			container.add(new CPAIdsDataView("cpaIds", CPADataProvider.of(cpaService)));
+			container.add(new CPAIdsDataView("cpaIds", CPADataProvider.of(cpaController)));
 			add(new PageClassLink("new", CPAUploadPage.class));
 		}
 	}

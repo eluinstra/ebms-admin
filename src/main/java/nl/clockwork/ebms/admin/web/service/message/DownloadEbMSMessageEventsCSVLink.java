@@ -30,7 +30,6 @@ import nl.clockwork.ebms.api.ebms.EbMSController;
 import nl.clockwork.ebms.api.ebms.model.MessageEvent;
 import nl.clockwork.ebms.api.ebms.model.MessageFilter;
 import nl.clockwork.ebms.common.event.MessageEventType;
-
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.cxf.io.CachedOutputStream;
@@ -46,7 +45,7 @@ public class DownloadEbMSMessageEventsCSVLink extends Link<Void>
 {
 	private static final long serialVersionUID = 1L;
 	@NonNull
-	EbMSController ebMSMessageService;
+	EbMSController ebMSController;
 	@NonNull
 	IModel<MessageFilter> filter;
 	@NonNull
@@ -55,12 +54,12 @@ public class DownloadEbMSMessageEventsCSVLink extends Link<Void>
 	@Builder
 	public DownloadEbMSMessageEventsCSVLink(
 			String id,
-			@NonNull EbMSController ebMSMessageService,
+			@NonNull EbMSController ebMSController,
 			@NonNull IModel<MessageFilter> filter,
 			@NonNull MessageEventType...eventTypes)
 	{
 		super(id);
-		this.ebMSMessageService = ebMSMessageService;
+		this.ebMSController = ebMSController;
 		this.filter = filter;
 		this.eventTypes = eventTypes;
 	}
@@ -70,7 +69,7 @@ public class DownloadEbMSMessageEventsCSVLink extends Link<Void>
 	{
 		try (val output = new CachedOutputStream(); val printer = new CSVPrinter(new OutputStreamWriter(output), CSVFormat.DEFAULT))
 		{
-			val messageEvents = Utils.toList(ebMSMessageService.getUnprocessedMessageEvents(filter.getObject(), eventTypes, null));
+			val messageEvents = Utils.toList(ebMSController.getUnprocessedMessageEvents(filter.getObject(), eventTypes, null));
 			if (messageEvents != null)
 				printMessagesToCSV(printer, messageEvents);
 			val resourceStream = CachedOutputResourceStream.of(output, "text/csv");

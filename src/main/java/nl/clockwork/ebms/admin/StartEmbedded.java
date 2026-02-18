@@ -17,23 +17,18 @@ package nl.clockwork.ebms.admin;
 
 import jakarta.servlet.DispatcherType;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
 import java.util.EnumSet;
 import java.util.Properties;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
-import nl.clockwork.ebms.admin.web.configuration.JdbcURL;
 import nl.clockwork.ebms.security.KeyStoreType;
 import nl.clockwork.ebms.server.servlet.EbMSServlet;
 import nl.clockwork.ebms.util.LoggingUtils;
-import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.common.logging.LogUtils;
 import org.eclipse.jetty.server.ConnectionLimit;
@@ -52,8 +47,6 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 public class StartEmbedded extends Start
 {
 	private static final String DELIVERY_TASK_HANDLER_START_PROPERTY = "deliveryTaskHandler.start";
-	private static final String H2DB_OPTION = "h2";
-	private static final String H2DB_DIR_OPTION = "h2Dir";
 	private static final String DISABLE_EBMS_SERVER_OPTION = "disableEbMSServer";
 	private static final String DISABLE_EBMS_CLIENT_OPTION = "disableEbMSClient";
 
@@ -77,16 +70,12 @@ public class StartEmbedded extends Start
 	private static final String TRUSTSTORE_TYPE_PROPERTY = "truststore.type";
 	private static final String TRUSTSTORE_PATH_PROPERTY = "truststore.path";
 	private static final String TRUSTSTORE_PASSWORD_PROPERTY = "truststore.password";
-	private static final String EBMS_JDBC_DRIVER_CLASS_NAME_PROPERTY = "ebms.jdbc.driverClassName";
-	private static final String EBMS_JDBC_UPDATE_PROPERTY = "ebms.jdbc.update";
-	private static final String EBMS_JDBC_URL_PROPERTY = "ebms.jdbc.url";
 	private static final String LOGGING_MDC_PROPERTY = "logging.mdc";
 	private static final String LOGGING_MDC_AUDIT_PROPERTY = "logging.mdc.audit";
 	private static final String LOGGING_MDC_HEADER_NAMES_PROPERTY = "logging.mdc.headerNames";
 	private static final String TRUE = "true";
 	private static final String FALSE = "false";
 	private static final String DEFAULT_EBMS_PORT = "8888";
-	private static final String DEFAULT_H2DB_DIR = "./h2";
 	private static final String EBMS_CONNECTOR_NAME = "ebms";
 
 	public static void main(String[] args) throws Exception
@@ -109,7 +98,6 @@ public class StartEmbedded extends Start
 		server.setHandler(handlerCollection);
 		server.addBean(new CustomErrorHandler());
 		val properties = getProperties();
-		startH2DB(cmd, properties);
 		if (cmd.hasOption(JMX_OPTION))
 			initJMX(cmd, server);
 		if (cmd.hasOption(SOAP_OPTION) || cmd.hasOption(HEALTH_OPTION) || !cmd.hasOption(HEADLESS_OPTION) || !cmd.hasOption(DISABLE_EBMS_SERVER_OPTION))
@@ -162,11 +150,10 @@ public class StartEmbedded extends Start
 			}
 	}
 
+	@Override
 	protected Options createOptions()
 	{
 		val result = super.createOptions();
-		result.addOption(H2DB_OPTION, false, "start h2 server");
-		result.addOption(H2DB_DIR_OPTION, true, "set h2 location [default: " + DEFAULT_H2DB_DIR + "]");
 		result.addOption(DISABLE_EBMS_SERVER_OPTION, false, "disable ebms server");
 		result.addOption(DISABLE_EBMS_CLIENT_OPTION, false, "disable ebms client");
 		return result;
@@ -175,41 +162,6 @@ public class StartEmbedded extends Start
 	private Properties getProperties() throws IOException
 	{
 		return EmbeddedAppConfig.PROPERTY_SOURCE.getProperties();
-	}
-
-	private void startH2DB(CommandLine cmd, Properties properties) throws IOException, URISyntaxException, ParseException, SQLException
-	{
-		val jdbcURL = getH2JdbcUrl(cmd, properties);
-		if (jdbcURL != null)
-		{
-			setProperty(EBMS_JDBC_UPDATE_PROPERTY, TRUE);
-			println("Starting H2DB Server...");
-			startH2DBServer(cmd, jdbcURL);
-		}
-	}
-
-	private JdbcURL getH2JdbcUrl(CommandLine cmd, Properties properties) throws IOException
-	{
-		JdbcURL result = null;
-		if (properties.getProperty(EBMS_JDBC_DRIVER_CLASS_NAME_PROPERTY).startsWith("org.h2") && cmd.hasOption(H2DB_OPTION))
-		{
-			result = nl.clockwork.ebms.admin.web.configuration.Utils.parseJdbcURL(properties.getProperty(EBMS_JDBC_URL_PROPERTY), new JdbcURL());
-			val allowedHosts = "localhost|127.0.0.1";
-			if (!result.getHost().matches("^(" + allowedHosts + ")$"))
-			{
-				println("Cannot start H2DB Server on " + result.getHost() + ". Use " + allowedHosts + " instead.");
-				exit(1);
-			}
-		}
-		return result;
-	}
-
-	public org.h2.tools.Server startH2DBServer(CommandLine cmd, JdbcURL jdbcURL) throws IOException, URISyntaxException, ParseException, SQLException
-	{
-		val server = org.h2.tools.Server
-				.createTcpServer("-baseDir", cmd.getOptionValue(H2DB_DIR_OPTION, DEFAULT_H2DB_DIR), "-ifNotExists", "-tcp", "-tcpPort", jdbcURL.getPort().toString());
-		server.start();
-		return server;
 	}
 
 	private void initEbMSServer(Properties properties, Server server) throws GeneralSecurityException, IOException
