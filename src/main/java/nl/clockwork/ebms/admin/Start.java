@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
@@ -49,10 +50,16 @@ import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextIoFactory;
+import org.eclipse.jetty.ee10.servlet.ErrorPageErrorHandler;
+import org.eclipse.jetty.ee10.servlet.FilterHolder;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.ServletHolder;
+import org.eclipse.jetty.ee10.servlet.security.ConstraintMapping;
+import org.eclipse.jetty.ee10.servlet.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.jmx.ConnectorServer;
 import org.eclipse.jetty.jmx.MBeanContainer;
-import org.eclipse.jetty.security.ConstraintMapping;
-import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.security.Constraint;
+import org.eclipse.jetty.security.Constraint.Authorization;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
@@ -63,13 +70,9 @@ import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
-import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.resource.Resource;
-import org.eclipse.jetty.util.security.Constraint;
+import org.eclipse.jetty.util.resource.ResourceFactory;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -371,7 +374,6 @@ public class Start implements SystemInterface
 		println("Starting JMX Server...");
 		val mBeanContainer = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
 		server.addBean(mBeanContainer);
-		server.addBean(Log.getLog());
 		val jmxURL = new JMXServiceURL("rmi", null, Integer.parseInt(cmd.getOptionValue(JMX_PORT_OPTION, DEFAULT_JMS_PORT)), "/jndi/rmi:///jmxrmi");
 		val sslContextFactory = cmd.hasOption("ssl") ? createSslContextFactory(cmd, false) : null;
 		val jmxServer = new ConnectorServer(jmxURL, createEnv(cmd), "org.eclipse.jetty.jmx:name=rmiconnectorserver", sslContextFactory);
@@ -393,7 +395,7 @@ public class Start implements SystemInterface
 	protected ServletContextHandler createWebContextHandler(CommandLine cmd, EventListener contextLoaderListener) throws Exception
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		result.setVirtualHosts(new String[]{"@" + WEB_CONNECTOR_NAME});
+		result.addVirtualHosts(new String[]{"@" + WEB_CONNECTOR_NAME});
 		result.setInitParameter("configuration", "deployment");
 		result.setContextPath(getPath(cmd));
 		if (cmd.hasOption(ECHO_HEADER_NAMES_OPTION))
@@ -528,7 +530,7 @@ public class Start implements SystemInterface
 	protected ServletContextHandler createHealthContextHandler(CommandLine cmd, ContextLoaderListener contextLoaderListener) throws Exception
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		result.setVirtualHosts(new String[]{"@" + HEALTH_CONNECTOR_NAME});
+		result.addVirtualHosts(new String[]{"@" + HEALTH_CONNECTOR_NAME});
 		result.setInitParameter("configuration", "deployment");
 		result.setContextPath(DEFAULT_PATH);
 		result.addServlet(HealthServlet.class, HEALTH_URL + "/*");
@@ -537,8 +539,9 @@ public class Start implements SystemInterface
 
 	protected Resource getResource(String path) throws IOException
 	{
-		val result = Resource.newResource(path);
-		return result.exists() ? result : Resource.newClassPathResource(path);
+		val rh = new ResourceHandler();
+		val result = ResourceFactory.of(rh).newResource(path);
+		return result.exists() ? result : ResourceFactory.of(rh).newClassLoaderResource(path);
 	}
 
 	protected void createRealmFile(File file) throws IOException, NoSuchAlgorithmException
@@ -571,27 +574,29 @@ public class Start implements SystemInterface
 	protected SecurityHandler getSecurityHandler()
 	{
 		val result = new ConstraintSecurityHandler();
-		val constraintMappings = Collections.singletonList(createConstraintMapping(createAuthenticationConstraint()));
-		result.setConstraintMappings(constraintMappings);
+		val constraint = createSecurityConstraint();
+		val mapping = createSecurityConstraintMapping(constraint);
+		result.setConstraintMappings(Collections.singletonList(mapping));
 		result.setAuthenticator(new BasicAuthenticator());
-		result.setLoginService(new HashLoginService(REALM, REALM_FILE));
+		result.setLoginService(new HashLoginService(REALM, createResource(REALM_FILE)));
 		return result;
 	}
 
-	private ConstraintMapping createConstraintMapping(Constraint constraint)
+	private Resource createResource(String realmFile)
 	{
-		val mapping = new ConstraintMapping();
-		mapping.setPathSpec("/*");
-		mapping.setConstraint(constraint);
-		return mapping;
+		return ResourceFactory.of(new ResourceHandler()).newResource(Path.of(realmFile));
 	}
 
-	private Constraint createAuthenticationConstraint()
+	private Constraint createSecurityConstraint()
 	{
-		val constraint = new Constraint();
-		constraint.setName("auth");
-		constraint.setAuthenticate(true);
-		constraint.setRoles(new String[]{"user", "admin"});
-		return constraint;
+		return new Constraint.Builder().name("auth").roles("user", "admin").authorization(Authorization.FORBIDDEN).build();
+	}
+
+	private ConstraintMapping createSecurityConstraintMapping(final Constraint constraint)
+	{
+		val result = new ConstraintMapping();
+		result.setPathSpec("/*");
+		result.setConstraint(constraint);
+		return result;
 	}
 }
