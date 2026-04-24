@@ -20,7 +20,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>nl.clockwork.ebms.admin</groupId>
   <artifactId>ebms-admin</artifactId>
-  <version>2.20.5</version>
+  <version>2.20.5-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>EbMS Admin</name>
   <description/>
@@ -85,22 +85,22 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-annotations</artifactId>
-        <version>2.18.4</version>
+        <version>2.21</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-core</artifactId>
-        <version>2.18.4</version>
+        <version>2.21.2</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
-        <version>2.18.4</version>
+        <version>2.21.2</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.datatype</groupId>
         <artifactId>jackson-datatype-jsr310</artifactId>
-        <version>2.18.4</version>
+        <version>2.21.2</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
@@ -118,22 +118,22 @@
     <dependency>
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-broker</artifactId>
-      <version>6.1.8</version>
+      <version>6.2.4</version>
     </dependency>
     <dependency>
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-client</artifactId>
-      <version>6.1.8</version>
+      <version>6.2.4</version>
     </dependency>
     <dependency>
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-kahadb-store</artifactId>
-      <version>6.1.8</version>
+      <version>6.2.4</version>
     </dependency>
     <dependency>
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-spring</artifactId>
-      <version>6.1.8</version>
+      <version>6.2.4</version>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>
@@ -153,42 +153,42 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-pool2</artifactId>
-      <version>2.12.1</version>
+      <version>2.13.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-features-logging</artifactId>
-      <version>4.0.10</version>
+      <version>4.2.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-      <version>4.0.10</version>
+      <version>4.2.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxws</artifactId>
-      <version>4.0.10</version>
+      <version>4.2.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-rs-security-cors</artifactId>
-      <version>4.0.10</version>
+      <version>4.2.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-rs-service-description-openapi-v3</artifactId>
-      <version>4.0.10</version>
+      <version>4.2.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-transports-http</artifactId>
-      <version>4.0.10</version>
+      <version>4.2.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-transports-http-jetty</artifactId>
-      <version>4.0.10</version>
+      <version>4.2.0</version>
     </dependency>
     <dependency>
       <groupId>com.lmax</groupId>
@@ -203,27 +203,27 @@
     <dependency>
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-core</artifactId>
-      <version>11.8.2</version>
+      <version>12.4.0</version>
     </dependency>
     <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
-      <version>6.3.0</version>
+      <version>7.0.2</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jdk8</artifactId>
-      <version>2.18.4</version>
+      <version>2.21.2</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jsr310</artifactId>
-      <version>2.18.4</version>
+      <version>2.21.2</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.jakarta.rs</groupId>
       <artifactId>jackson-jakarta-rs-json-provider</artifactId>
-      <version>2.18.4</version>
+      <version>2.21.2</version>
     </dependency>
     <dependency>
       <groupId>jakarta.xml.ws</groupId>
@@ -236,25 +236,25 @@
       <version>1.3</version>
     </dependency>
     <dependency>
+      <groupId>org.eclipse.jetty.ee10</groupId>
+      <artifactId>jetty-ee10-webapp</artifactId>
+      <version>12.1.6</version>
+    </dependency>
+    <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-jmx</artifactId>
-      <version>11.0.26</version>
+      <version>12.1.6</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
-      <version>11.0.26</version>
+      <version>12.1.6</version>
       <exclusions>
         <exclusion>
           <groupId>org.eclipse.jetty.orbit</groupId>
           <artifactId>javax.mail.glassfish</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-webapp</artifactId>
-      <version>11.0.26</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -285,22 +285,22 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context-support</artifactId>
-      <version>6.2.11</version>
+      <version>6.2.18</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
-      <version>6.2.11</version>
+      <version>6.2.18</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jms</artifactId>
-      <version>6.2.11</version>
+      <version>6.2.18</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
-      <version>6.2.11</version>
+      <version>6.2.18</version>
     </dependency>
     <dependency>
       <groupId>org.webjars</groupId>
@@ -315,27 +315,27 @@
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-core</artifactId>
-      <version>10.7.0</version>
+      <version>10.8.0</version>
     </dependency>
     <dependency>
       <groupId>org.wicketstuff</groupId>
       <artifactId>wicket-datetime</artifactId>
-      <version>10.6.0</version>
+      <version>10.8.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-extensions</artifactId>
-      <version>10.7.0</version>
+      <version>10.8.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-spring</artifactId>
-      <version>10.7.0</version>
+      <version>10.8.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.xbean</groupId>
       <artifactId>xbean-spring</artifactId>
-      <version>4.27</version>
+      <version>4.30</version>
     </dependency>
     <dependency>
       <groupId>nl.clockwork.ebms.plugin.db</groupId>
@@ -352,13 +352,13 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <version>5.12.2</version>
+      <version>6.0.3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
-      <version>5.12.2</version>
+      <version>6.0.3</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -431,7 +431,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.13</version>
+        <version>0.8.14</version>
         <executions>
           <execution>
             <goals>
@@ -479,7 +479,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.14.1</version>
+        <version>3.15.0</version>
         <configuration>
           <source>${jdk.version}</source>
           <target>${jdk.version}</target>
@@ -512,7 +512,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.6.1</version>
+        <version>3.6.2</version>
         <configuration>
           <createDependencyReducedPom>false</createDependencyReducedPom>
           <transformers>
@@ -596,7 +596,7 @@
       <plugin>
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
-        <version>2.44.5</version>
+        <version>3.4.0</version>
         <configuration>
           <formats>
             <format>
@@ -677,7 +677,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>versions-maven-plugin</artifactId>
-        <version>2.18.0</version>
+        <version>2.21.0</version>
         <configuration>
           <excludes>
             <exclude>com.lmax</exclude>
@@ -720,7 +720,7 @@
       <plugin>
         <groupId>org.owasp</groupId>
         <artifactId>dependency-check-maven</artifactId>
-        <version>12.1.3</version>
+        <version>12.2.1</version>
         <reportSets>
           <reportSet>
             <reports>
@@ -732,7 +732,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>jdepend-maven-plugin</artifactId>
-        <version>2.1</version>
+        <version>2.2.0</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -789,12 +789,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>3.5.4</version>
+        <version>3.5.5</version>
       </plugin>
       <plugin>
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-maven-plugin</artifactId>
-        <version>4.9.3.0</version>
+        <version>4.9.8.3</version>
         <configuration>
           <spotbugsXmlOutputDirectory>${basedir}/target</spotbugsXmlOutputDirectory>
           <xmlOutput>true</xmlOutput>
