@@ -250,7 +250,7 @@ public class StartEmbedded extends Start
 	protected ServletContextHandler createEbMSContextHandler(Properties properties, ContextLoaderListener contextLoaderListener)
 			throws IOException, NoSuchAlgorithmException
 	{
-		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
+		val result = new ServletContextHandler();
 		result.addVirtualHosts(new String[]{"@" + EBMS_CONNECTOR_NAME});
 		result.setContextPath("/");
 		if (StringUtils.isNotEmpty(properties.getProperty(EBMS_ECHO_HEADER_NAMES_PROPERTY)))
