@@ -25,7 +25,6 @@ import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.EventListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -161,12 +160,11 @@ public class Start implements SystemInterface
 			context.scan("nl.clockwork.ebms");
 			getPluginConfigClasses().forEach(context::register);
 			getConfigClasses().forEach(context::register);
-			context.refresh();
 			val contextLoaderListener = new ContextLoaderListener(context);
 			if (cmd.hasOption(SOAP_OPTION) || !cmd.hasOption(HEADLESS_OPTION))
 			{
 				initWebServer(cmd, server);
-				handlerCollection.addHandler(createWebContextHandler(cmd, (EventListener)contextLoaderListener));
+				handlerCollection.addHandler(createWebContextHandler(cmd, contextLoaderListener));
 			}
 			if (cmd.hasOption(HEALTH_OPTION))
 			{
@@ -392,7 +390,7 @@ public class Start implements SystemInterface
 		return result;
 	}
 
-	protected ServletContextHandler createWebContextHandler(CommandLine cmd, EventListener contextLoaderListener) throws Exception
+	protected ServletContextHandler createWebContextHandler(CommandLine cmd, ContextLoaderListener contextLoaderListener) throws Exception
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		result.addVirtualHosts(new String[]{"@" + WEB_CONNECTOR_NAME});
@@ -409,37 +407,11 @@ public class Start implements SystemInterface
 		if (!StringUtils.isEmpty(cmd.getOptionValue(USER_QUERIES_PER_SECOND_OPTION)))
 			result.addFilter(createUserRateLimiterFilterHolder(cmd.getOptionValue(USER_QUERIES_PER_SECOND_OPTION)), "/*", EnumSet.allOf(DispatcherType.class));
 		if (cmd.hasOption(AUTHENTICATION_OPTION))
-		{
-			if (!cmd.hasOption(CLIENT_AUTHENTICATION_OPTION))
-			{
-				println("Configuring Web Server basic authentication:");
-				val file = new File(REALM_FILE);
-				if (file.exists())
-					println("Using file " + file.getAbsoluteFile());
-				else
-					createRealmFile(file);
-				result.setSecurityHandler(getSecurityHandler());
-			}
-			else if (cmd.hasOption(SSL_OPTION) && cmd.hasOption(CLIENT_AUTHENTICATION_OPTION))
-			{
-				result.addFilter(
-						createClientCertificateManagerFilterHolder(cmd.getOptionValue(CLIENT_CERTIFICATE_HEADER_OPTION)),
-						"/*",
-						EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
-				result.addFilter(createClientCertificateAuthenticationFilterHolder(cmd), "/*", EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
-			}
-		}
+			addAuthenticationHandler(cmd, result);
 		if (cmd.hasOption(SOAP_OPTION))
 			result.addServlet(CXFServlet.class, SOAP_URL + "/*");
 		if (!cmd.hasOption(HEADLESS_OPTION))
-		{
-			val servletHolder = new ServletHolder(nl.clockwork.ebms.admin.web.ResourceServlet.class);
-			result.addServlet(servletHolder, "/css/*");
-			result.addServlet(servletHolder, "/fonts/*");
-			result.addServlet(servletHolder, "/images/*");
-			result.addServlet(servletHolder, "/js/*");
-			result.addFilter(createWicketFilterHolder(), "/*", EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
-		}
+			addWicketServletHolder(result);
 		result.setErrorHandler(createErrorHandler());
 		result.addEventListener(contextLoaderListener);
 		return result;
@@ -476,6 +448,38 @@ public class Start implements SystemInterface
 		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.RateLimiterFilter.class);
 		result.setInitParameter(USER_QUERIES_PER_SECOND_OPTION, queriesPerSecond);
 		return result;
+	}
+
+	private void addAuthenticationHandler(CommandLine cmd, final ServletContextHandler result) throws IOException, NoSuchAlgorithmException
+	{
+		if (!cmd.hasOption(CLIENT_AUTHENTICATION_OPTION))
+		{
+			println("Configuring Web Server basic authentication:");
+			val file = new File(REALM_FILE);
+			if (file.exists())
+				println("Using file " + file.getAbsoluteFile());
+			else
+				createRealmFile(file);
+			result.setSecurityHandler(getSecurityHandler());
+		}
+		else if (cmd.hasOption(SSL_OPTION) && cmd.hasOption(CLIENT_AUTHENTICATION_OPTION))
+		{
+			result.addFilter(
+					createClientCertificateManagerFilterHolder(cmd.getOptionValue(CLIENT_CERTIFICATE_HEADER_OPTION)),
+					"/*",
+					EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
+			result.addFilter(createClientCertificateAuthenticationFilterHolder(cmd), "/*", EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
+		}
+	}
+
+	private void addWicketServletHolder(final ServletContextHandler result)
+	{
+		val servletHolder = new ServletHolder(nl.clockwork.ebms.admin.web.ResourceServlet.class);
+		result.addServlet(servletHolder, "/css/*");
+		result.addServlet(servletHolder, "/fonts/*");
+		result.addServlet(servletHolder, "/images/*");
+		result.addServlet(servletHolder, "/js/*");
+		result.addFilter(createWicketFilterHolder(), "/*", EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
 	}
 
 	protected FilterHolder createClientCertificateManagerFilterHolder(String clientCertificateHeader)
