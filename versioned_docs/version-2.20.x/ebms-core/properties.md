@@ -2,18 +2,24 @@
 sidebar_position: 4
 ---
 
-# Default Properties
+# Properties
+
+Below the [default properties](#default-properties) of ebms-core.
+
+
+## Default Properties
 
 Below the contents of ebms-core's [default.properties](https://github.com/eluinstra/ebms-core/blob/ebms-core-@ebms.branch.version@/src/main/resources/nl/clockwork/ebms/default.properties) file. These are the default settings for ebms-core.
 
+## Override Properties
+
 ### Cache
 
-Set `cache.type` to `EHCACHE` when you are [scaling](/ebms-admin/deployment.md#scaling) the EbMS Adapter, otherwise leave it set to `DEFAULT`. You can also disable caching by setting `cache.type` to `NONE`, but this is not adviced. The scaling configuration for `EHCACHE` you have to configure yourself. You can find the default configuration file for `EHCACHE` [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-@ebms.branch.version@/src/main/resources/nl/clockwork/ebms/ehcache.xml).
+The default cache type is `DEFAULT` which is a simple in-memory cache. When you are [scaling](/ebms-admin/deployment.md#scaling) the EbMS Adapter, you should set the cache type to `EHCACHE` or `HAZELCAST`. You cannot disable caching anymore. When you are [scaling](/ebms-admin/deployment.md#scaling) the EbMS Adapter, you should configure the [Ehcache](cache.md#ehcache) or the [Hazelcast](cache.md#hazelcast) plugin.
 
 ```properties
-# CacheType: NONE | DEFAULT (SPRING) | EHCACHE
+# CacheType: DEFAULT
 cache.type=DEFAULT
-cache.configLocation=
 ```
 
 ### Database
@@ -43,15 +49,15 @@ ebms.pool.minPoolSize=16
 ebms.pool.maxPoolSize=32
 ```
 
-### MessageServiceHandler
+### DeliveryManager
 
-The MessageServiceHandler is used to handle EbMS [Ping](api#pingcpaid-frompartyid-topartyid) and [getMessageStatus](api#getmessagestatusmessageid) calls. Set `messageServiceHandler.type` to `JMS` when you are [scaling](/ebms-admin/deployment.md#scaling) the EbMS Adapter, otherwise leave it set to `DEFAULT`. When `messageServiceHandler.type=JMS` configure [JMS](#jms).
+The DeliveryManager is used to handle EbMS [Ping](api#pingcpaid-frompartyid-topartyid) and [getMessageStatus](api#getmessagestatusmessageid) calls. Set `deliveryManager.type` to `JMS` when you are [scaling](/ebms-admin/deployment.md#scaling) the EbMS Adapter, otherwise leave it set to `DEFAULT`. When `deliveryManager.type=JMS` configure [JMS](#jms).
 
 ```properties
-# MessageServiceHandlerType: DEFAULT (DAO) | JMS
-messageServiceHandler.type=DEFAULT
-messageServiceHandler.minThreads=2
-messageServiceHandler.maxThreads=8
+# DeliveryManagerType: DEFAULT (DAO) | JMS
+deliveryManager.type=DEFAULT
+deliveryManager.minThreads=2
+deliveryManager.maxThreads=8
 messageQueue.maxEntries=64
 messageQueue.timeout=30000
 ```
@@ -152,9 +158,12 @@ http.proxy.password=
 
 ### HTTPClient
 
+`http.uuid.headerName` is used to specify the name of the header in which a generated UUID is added to the outgoing EbMS HTTP request. This can be used for logging, debugging and tracing purposes.
+
 ```properties
 http.connectTimeout=30000
 http.readTimeout=30000
+http.uuid.headerName=
 ```
 
 ### HTTP Errors
@@ -273,18 +282,4 @@ Holds all trusted SSL, Signature and Encryption certificates.
 truststore.type=PKCS12
 truststore.path=nl/clockwork/ebms/truststore.p12
 truststore.password=password
-```
-
-### Apache Kafka
-
-The Apache Kafka implementation is currently integrated as provided by Cap Gemini.
-It allows for the delivery task to be triggered on a Kafka topic.. The topic name is currently fixed `DELIVERY_TASK`
-
-```properties
-# DeliveryTaskHandlerType = DEFAULT(=DAO) | JMS | QUARTZ | QUARTZ_JMS | QUARTZ_KAFKA
-deliveryTaskHandler.type=QUARTZ_KAFKA
-
-# server url 
-kafka.serverUrl=localhost:9092
-
 ```

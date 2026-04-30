@@ -6,6 +6,10 @@ sidebar_position: 5
 
 Below the [default properties](#default-properties) of ebms-admin. For the default properties of ebms-core see [here](/ebms-core/properties.md).
 
+## Default Properties
+
+Below the contents of ebms-admin's [default.properties](https://github.com/eluinstrablob/ebms-admin-@ebms.branch.version@/src/main/resources/nl/clockwork/ebms/admin/default.properties) file. These are the default settings for ebms-admin.
+
 ## Override Properties
 
 To override the default properties create the file `ebms-admin.embedded.properties` in the [configDir](command#start-with-config-directory-conf) and add the properties to that file.
@@ -34,10 +38,6 @@ This is especially useful when configuring containers
 - [EbMS Encryption keystore](/ebms-core/properties.md#encryption-keystore)
 - [EbMS Message Storage](/ebms-core/properties.md#ebms-message-storage)
 - [EbMS EventListener](/ebms-core/properties.md#eventlistener)
-
-## Default Properties
-
-Below the contents of ebms-admin's [default.properties](https://github.com/eluinstrablob/ebms-admin-@ebms.branch.version@/src/main/resources/nl/clockwork/ebms/admin/default.properties) file. These are the default settings for ebms-admin.
 
 ### Database
 

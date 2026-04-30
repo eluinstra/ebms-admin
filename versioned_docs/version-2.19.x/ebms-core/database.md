@@ -6,24 +6,19 @@ sidebar_position: 5
 
 The EbMS Adapter supports the following databases
 
-- [Database support](#database-support)
-  - [Database Scripts](#database-scripts)
-  - [Database Configuration](#database-configuration)
-    - [Common Properties](#common-properties)
-    - [DB2](#db2)
-    - [H2](#h2)
-    - [HSQLDB](#hsqldb)
-    - [MariaDB](#mariadb)
-    - [MS SQL Server](#ms-sql-server)
-      - [XA Driver](#xa-driver)
-      - [Quartz](#quartz)
-    - [MySQL](#mysql)
-      - [XA Driver](#xa-driver-1)
-    - [Oracle](#oracle)
-      - [XA Driver](#xa-driver-2)
-    - [PostgreSQL](#postgresql)
-      - [XA Driver](#xa-driver-3)
-  - [Flyway](#flyway)
+- [DB2](#db2)
+- [H2](#h2)
+- [HSQLDB](#hsqldb)
+- [MariaDB](#mariadb)
+- [MS SQL Server](#ms-sql-server)
+  - [XA Driver](#xa-driver)
+  - [Quartz](#quartz)
+- [MySQL](#mysql)
+  - [XA Driver](#xa-driver-1)
+- [Oracle](#oracle)
+  - [XA Driver](#xa-driver-2)
+- [PostgreSQL](#postgresql)
+  - [XA Driver](#xa-driver-3)
 
 ## Database Scripts
 

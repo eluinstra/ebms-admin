@@ -4,27 +4,29 @@ sidebar_position: 4
 
 # Command Line Options
 
+The command line options for `StartEmbedded` are used to configure the SOAP, REST and Web interfaces of the embedded server.
+
 ## Show help
 
 ```sh
 java -cp ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.StartEmbedded -h
-usage: StartEmbedded [-applicationInsights] [-auditLogging]
-       [-authentication] [-cipherSuites <arg>] [-clientAuthentication]
-       [-clientCertificateHeader <arg>] [-clientTrustStorePassword <arg>]
-       [-clientTrustStorePath <arg>] [-clientTrustStoreType <arg>]
-       [-configDir <arg>] [-connectionLimit <arg>] [-disableEbMSClient]
-       [-disableEbMSServer] [-h] [-headless] [-health] [-healthPort <arg>]
-       [-host <arg>] [-h2] [-h2Dir <arg>] [-jmx] [-jmxAccessFile
-       <arg>] [-jmxPasswordFile <arg>] [-jmxPort <arg>] [-keyStorePassword
-       <arg>] [-keyStorePath <arg>] [-keyStoresType <arg>] [-keyStoreType
-       <arg>] [-path <arg>] [-port <arg>] [-protocols <arg>] [-queriesPerSecond
-       <arg>] [-soap] [-ssl] [-trustStorePassword <arg>] [-trustStorePath <arg>]
-       [-trustStoreType <arg>] [-userQueriesPerSecond <arg>]
- -applicationInsights              enable applicationInsights
+usage: StartEmbedded [-auditLogging] [-authentication] [-cipherSuites
+       <arg>] [-clientAuthentication] [-clientCertificateHeader <arg>]
+       [-clientTrustStorePassword <arg>] [-clientTrustStorePath <arg>]
+       [-clientTrustStoreType <arg>] [-configDir <arg>] [-connectionLimit
+       <arg>] [-disableEbMSClient] [-disableEbMSServer] [-echoHeaderNames
+       <arg>] [-h] [-headless] [-health] [-healthPort <arg>] [-host <arg>]
+       [-jmx] [-jmxAccessFile <arg>] [-jmxPasswordFile <arg>] [-jmxPort
+       <arg>] [-keyStorePassword <arg>] [-keyStorePath <arg>]
+       [-keyStoresType <arg>] [-keyStoreType <arg>] [-mdcHeaderNames
+       <arg>] [-path <arg>] [-port <arg>] [-protocols <arg>]
+       [-queriesPerSecond <arg>] [-soap] [-ssl] [-trustStorePassword
+       <arg>] [-trustStorePath <arg>] [-trustStoreType <arg>]
+       [-userQueriesPerSecond <arg>]
  -auditLogging                     enable audit logging
- -authentication                   use basic | client certificate authentication
- -cipherSuites <arg>               set ssl cipherSuites [default: <none>]
- -clientAuthentication             require ssl client authentication
+ -authentication                   enable basic | client certificate authentication
+ -cipherSuites <arg>               set SSL CipherSuites [default: <none>]
+ -clientAuthentication             enable SSL client authentication
  -clientCertificateHeader <arg>    set client certificate header [default: <none>]
  -clientTrustStorePassword <arg>   set client truststore password [default: <none>]
  -clientTrustStorePath <arg>       set client truststore path [default: <none>]
@@ -33,31 +35,31 @@ usage: StartEmbedded [-applicationInsights] [-auditLogging]
  -connectionLimit <arg>            set connection limit [default: <none>]
  -disableEbMSClient                disable ebms client
  -disableEbMSServer                disable ebms server
+ -echoHeaderNames <arg>            set echo header names [default: <none>]
  -h                                print this message
  -headless                         start without web interface
  -health                           start health service
  -healthPort <arg>                 set health service port [default: 8008]
  -host <arg>                       set host [default: 0.0.0.0]
- -h2                               start h2 database server
- -h2Dir <arg>                      set h2 database location [default: h2]
- -jmx                              start jmx server
- -jmxAccessFile <arg>              set jmx access file [default: <none>]
- -jmxPasswordFile <arg>            set jmx password file [default: <none>]
- -jmxPort <arg>                    set jmx port [default: 1999]
+ -jmx                              start JMX server
+ -jmxAccessFile <arg>              set JMX access file [default: <none>]
+ -jmxPasswordFile <arg>            set JMX password file [default: <none>]
+ -jmxPort <arg>                    set JMX port [default: 1999]
  -keyStorePassword <arg>           set keystore password [default: password]
  -keyStorePath <arg>               set keystore path [default: nl/clockwork/ebms/keystore.p12]
  -keyStoresType <arg>              set keystores type [default: <none>]
  -keyStoreType <arg>               set keystore type [default: PKCS12]
+ -mdcHeaderNames <arg>             set logging MDC header names [default: <none>]
  -path <arg>                       set path [default: /]
  -port <arg>                       set port [default: <8080|8443>]
- -protocols <arg>                  set ssl protocols [default: <none>]
- -queriesPerSecond <arg>           set requests per second limit [default: <none>]
- -soap                             start soap service
- -ssl                              use ssl
+ -protocols <arg>                  set SSL Protocols [default: <none>]
+ -queriesPerSecond <arg>           set max requests per second [default: <none>]
+ -soap                             start SOAP service
+ -ssl                              enable SSL
  -trustStorePassword <arg>         set truststore password [default: <none>]
  -trustStorePath <arg>             set truststore path [default: <none>]
  -trustStoreType <arg>             set truststore type [default: PKCS12]
- -userQueriesPerSecond <arg>       set requests per user per secondlimit [default: <none>]
+ -userQueriesPerSecond <arg>       set max requests per user per second [default: <none>]
 ```
 
 ## Start with the embedded H2 Database server
@@ -110,6 +112,14 @@ java -cp ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.StartEmbedde
 
 ```sh
 java -Dlog4j.configurationFile=log4j2.xml -cp ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.StartEmbedded
+```
+
+## Start with echo and MDC header names configuration
+
+`echoHeaderNames` is used to specify which headers should be echoed back in the response (for logging or debugging/tracing purposes). `mdcHeaderNames` is used to specify which headers should be added to the logging MDC (for logging purposes)
+
+```sh
+java -cp ebms-admin-@ebms.core.version@.jar nl.clockwork.ebms.admin.StartEmbedded -echoHeaderNames <header1,header2,...> -mdcHeaderNames <header1,header2,...>
 ```
 
 ## Start without using the default Java truststore

@@ -4,7 +4,7 @@ sidebar_position: 5
 
 # Properties
 
-Below the [default properties](#default-properties) of ebms-admin. For the default properties of ebms-core see [here](/ebms-core/properties.md).
+Below the [default properties](#default-properties) of ebms-admin. For the default properties of ebms-core see [here](/ebms-core/properties.md). These properties are used to configure the EbMS engine and interface of the EbMS server.
 
 ## Override Properties
 
@@ -22,18 +22,17 @@ This is especially useful when configuring containers
 
 ## Basic Properties
 
-- [Database](#database)
-- [EbMS Server](#ebms-server)
-- [SSL](#ssl)
-- [SSL Server keystore](#ssl-server-keystore)
-- [SSL Client Keystore](/ebms-core/properties.md#ssl-client-keystore)
-- [Truststore](/ebms-core/properties.md#truststore)
-- [Forward Proxy](/ebms-core/properties.md#forward-proxy)
-- [Overflow attachments to disk](/ebms-core/properties.md#overflow-attachments-to-disk)
-- [EbMS Signature keystore](/ebms-core/properties.md#signature-keystore)
-- [EbMS Encryption keystore](/ebms-core/properties.md#encryption-keystore)
-- [EbMS Message Storage](/ebms-core/properties.md#ebms-message-storage)
-- [EbMS EventListener](/ebms-core/properties.md#eventlistener)
+- [Properties](#properties)
+  - [Override Properties](#override-properties)
+  - [Basic Properties](#basic-properties)
+  - [Default Properties](#default-properties)
+    - [Database](#database)
+    - [EbMS Server](#ebms-server)
+    - [EbMS Client](#ebms-client)
+    - [SSL Server keystore](#ssl-server-keystore)
+    - [SSL](#ssl)
+    - [Logging](#logging)
+    - [User Interface](#user-interface)
 
 ## Default Properties
 
@@ -59,9 +58,18 @@ ebms.host=0.0.0.0
 ebms.port=8888
 ebms.path=/ebms
 ebms.ssl=true
+ebms.echoHeaderNames=
 ebms.connectionLimit=
 ebms.queriesPerSecond=
 ebms.userQueriesPerSecond=
+```
+
+### EbMS Client
+
+Properties for the EbMS Client used to connect to another EbMS adapter.
+
+```properties
+ebms.verifyHostnames=true
 ```
 
 ### SSL Server keystore
@@ -87,6 +95,15 @@ https.protocols=TLSv1.2
 https.cipherSuites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 https.requireClientAuthentication=false
 https.clientCertificateHeader=
+```
+
+### Logging
+
+`logging.mdc.audit` can be set to `ENABLED` to enable adding audit information to the logging MDC. `logging.mdc.headerNames` is used to specify which headers should be added to the logging MDC (for logging purposes).
+
+```properties
+logging.mdc.audit=DISABLED
+logging.mdc.headerNames=
 ```
 
 ### User Interface

@@ -28,7 +28,7 @@ Shutdown your current EbMS Admin application.
 
 ### Reconfigure Caching
 
-If you configured Ignite caching, you have to switch to EhCache. See [here](properties.md#cache) for the configuration.
+If you configured Ignite caching, you have to switch to EhCache. See [here](/ebms-core/properties.md#cache) for the configuration.
 We had to remove Ignite, because it was not upgraded to the newer version Spring that we upgraded to.
 
 ### Azure support

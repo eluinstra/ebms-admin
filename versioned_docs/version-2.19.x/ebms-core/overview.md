@@ -27,7 +27,7 @@ You can track sent and received messages if you configure the [EventListener](pr
 
 ### Scaling
 
-To support [scaling with serverId](/ebms-admin/deployment.md#scaling-with-serverid) and [advanced scaling](/ebms-admin/deployment.md#scaling) the different components have to use the same [database](database). Also the internal [cache](properties#cache) has to be synchronized between the components. Furthermore you have to configure the [MessageServiceHandler](properties#deliverymanager). When using [advanced scaling](/ebms-admin/deployment.md#scaling) you also have to configure the [DeliveryTaskHandler](properties#deliverytaskhandler).
+To support [scaling with serverId](/ebms-admin/deployment.md#scaling-with-serverid) and [advanced scaling](/ebms-admin/deployment.md#scaling) the different components have to use the same [database](database). Also the internal [cache](properties#cache) has to be synchronized between the components. Furthermore you have to configure the [MessageServiceHandler](properties#messageservicehandler). When using [advanced scaling](/ebms-admin/deployment.md#scaling) you also have to configure the [DeliveryTaskHandler](properties#deliverytaskhandler).
 
 
 ## Data Model

@@ -6,7 +6,7 @@ sidebar_position: 8
 
 ### release 2.20.x
 
-- add Kafka support
+- add Kafka support again
 
 ### release 2.21.x
 
