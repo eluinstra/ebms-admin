@@ -568,16 +568,12 @@ public class Start implements SystemInterface
 	{
 		while (true)
 		{
-			val pwBuilder = prompter.newBuilder();
-			pwBuilder.createInputPrompt().name("password").message("enter password").mask('*').validator(input -> input.length() >= 8).addPrompt();
-			val pwResults = prompter.prompt(Collections.emptyList(), pwBuilder.build());
-			val result = toMD5(((InputResult)pwResults.get("password")).getInput());
-
-			val pw2Builder = prompter.newBuilder();
-			pw2Builder.createInputPrompt().name("password2").message("re-enter password").mask('*').addPrompt();
-			val pw2Results = prompter.prompt(Collections.emptyList(), pw2Builder.build());
-			val password = toMD5(((InputResult)pw2Results.get("password2")).getInput());
-
+			val builder = prompter.newBuilder();
+			builder.createInputPrompt().name("password").message("enter password").mask('*').validator(input -> input.length() >= 8).filter(this::toMD5).addPrompt();
+			builder.createInputPrompt().name("password2").message("re-enter password").mask('*').filter(this::toMD5).addPrompt();
+			val results = prompter.prompt(Collections.emptyList(), builder.build());
+			val result = ((InputResult)results.get("password")).getInput();
+			val password = ((InputResult)results.get("password2")).getInput();
 			if (result.equals(password))
 				return result;
 			else
