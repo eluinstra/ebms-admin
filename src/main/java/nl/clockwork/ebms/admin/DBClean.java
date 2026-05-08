@@ -21,6 +21,7 @@ import com.querydsl.sql.SQLQueryFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -29,6 +30,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.ToLongFunction;
@@ -51,8 +53,11 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.beryx.textio.TextIO;
-import org.beryx.textio.TextIoFactory;
+import org.jline.prompt.ConfirmResult;
+import org.jline.prompt.Prompter;
+import org.jline.prompt.PrompterFactory;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -66,7 +71,8 @@ public class DBClean implements SystemInterface
 
 	private static final String LOG4J_CONFIGURATION_FILE = "log4j.configurationFile";
 	private static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT_YMD);
-	TextIO textIO = TextIoFactory.getTextIO();
+	Terminal terminal = createTerminal();
+	Prompter prompter = PrompterFactory.create(terminal);
 
 	public static void main(String[] args) throws Exception
 	{
@@ -179,9 +185,14 @@ public class DBClean implements SystemInterface
 		{
 			if (queryFactory.select(cpaTable.cpaId).from(cpaTable).where(cpaTable.cpaId.eq(cpaId)).fetchCount() > 0)
 			{
-				val ok = textIO.newBooleanInputReader()
-						.withDefaultValue(false)
-						.read("WARNING: This command will delete all messages and data related to cpa " + cpaId + ". Are you sure?");
+				val confirmBuilder = prompter.newBuilder();
+				confirmBuilder.createConfirmPrompt()
+						.name("confirm")
+						.message("WARNING: This command will delete all messages and data related to cpa " + cpaId + ". Are you sure?")
+						.defaultValue(false)
+						.addPrompt();
+				val confirmResults = prompter.prompt(Collections.emptyList(), confirmBuilder.build());
+				val ok = ((ConfirmResult)confirmResults.get("confirm")).isConfirmed();
 				if (ok)
 					cleanCPA(cpaId);
 			}
@@ -400,5 +411,17 @@ public class DBClean implements SystemInterface
 			log.info(s);
 		else
 			System.out.println(s);
+	}
+
+	private static Terminal createTerminal()
+	{
+		try
+		{
+			return TerminalBuilder.builder().system(true).build();
+		}
+		catch (IOException e)
+		{
+			throw new UncheckedIOException(e);
+		}
 	}
 }

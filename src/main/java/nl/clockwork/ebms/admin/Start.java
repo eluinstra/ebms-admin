@@ -18,6 +18,7 @@ package nl.clockwork.ebms.admin;
 import jakarta.servlet.DispatcherType;
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.lang.management.ManagementFactory;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
@@ -47,8 +48,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.transport.servlet.CXFServlet;
-import org.beryx.textio.TextIO;
-import org.beryx.textio.TextIoFactory;
 import org.eclipse.jetty.ee10.servlet.ErrorPageErrorHandler;
 import org.eclipse.jetty.ee10.servlet.FilterHolder;
 import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
@@ -73,6 +72,11 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.resource.ResourceFactory;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.jline.prompt.InputResult;
+import org.jline.prompt.Prompter;
+import org.jline.prompt.PrompterFactory;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
@@ -136,7 +140,8 @@ public class Start implements SystemInterface
 
 	Server server = new Server();
 	ContextHandlerCollection handlerCollection = new ContextHandlerCollection();
-	TextIO textIO = TextIoFactory.getTextIO();
+	Terminal terminal = createTerminal();
+	Prompter prompter = PrompterFactory.create(terminal);
 
 	public static void main(String[] args) throws Exception
 	{
@@ -550,7 +555,10 @@ public class Start implements SystemInterface
 
 	protected void createRealmFile(File file) throws IOException, NoSuchAlgorithmException
 	{
-		val username = textIO.newStringInputReader().withDefaultValue("admin").read("enter username");
+		val builder = prompter.newBuilder();
+		builder.createInputPrompt().name("username").message("enter username").defaultValue("admin").addPrompt();
+		val results = prompter.prompt(Collections.emptyList(), builder.build());
+		val username = ((InputResult)results.get("username")).getInput();
 		val password = readPassword();
 		println("Writing to file: " + file.getAbsoluteFile());
 		FileUtils.writeStringToFile(file, username + ": " + password + ",user", Charset.defaultCharset(), false);
@@ -558,11 +566,18 @@ public class Start implements SystemInterface
 
 	private String readPassword() throws IOException, NoSuchAlgorithmException
 	{
-		val reader = textIO.newStringInputReader().withMinLength(8).withInputMasking(true);
 		while (true)
 		{
-			val result = toMD5(reader.read("enter password"));
-			val password = toMD5(reader.read("re-enter password"));
+			val pwBuilder = prompter.newBuilder();
+			pwBuilder.createInputPrompt().name("password").message("enter password").mask('*').validator(input -> input.length() >= 8).addPrompt();
+			val pwResults = prompter.prompt(Collections.emptyList(), pwBuilder.build());
+			val result = toMD5(((InputResult)pwResults.get("password")).getInput());
+
+			val pw2Builder = prompter.newBuilder();
+			pw2Builder.createInputPrompt().name("password2").message("re-enter password").mask('*').addPrompt();
+			val pw2Results = prompter.prompt(Collections.emptyList(), pw2Builder.build());
+			val password = toMD5(((InputResult)pw2Results.get("password2")).getInput());
+
 			if (result.equals(password))
 				return result;
 			else
@@ -573,6 +588,18 @@ public class Start implements SystemInterface
 	private String toMD5(String s)
 	{
 		return "MD5:" + DigestUtils.md5Hex(s);
+	}
+
+	private static Terminal createTerminal()
+	{
+		try
+		{
+			return TerminalBuilder.builder().system(true).build();
+		}
+		catch (IOException e)
+		{
+			throw new UncheckedIOException(e);
+		}
 	}
 
 	protected SecurityHandler getSecurityHandler()
