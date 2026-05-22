@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Properties;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -251,7 +252,7 @@ public class StartEmbedded extends Start
 			throws IOException, NoSuchAlgorithmException
 	{
 		val result = new ServletContextHandler();
-		result.addVirtualHosts(new String[]{"@" + EBMS_CONNECTOR_NAME});
+		result.setVirtualHosts(List.of("@" + EBMS_CONNECTOR_NAME));
 		result.setContextPath("/");
 		if (StringUtils.isNotEmpty(properties.getProperty(EBMS_ECHO_HEADER_NAMES_PROPERTY)))
 			result.addFilter(createEchoServletFilterHolder(properties.getProperty(EBMS_ECHO_HEADER_NAMES_PROPERTY)), "/*", EnumSet.allOf(DispatcherType.class));

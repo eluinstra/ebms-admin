@@ -62,12 +62,12 @@ import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.ConnectionLimit;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.resource.ResourceFactory;
@@ -139,7 +139,7 @@ public class Start implements SystemInterface
 	private static final String REALM_FILE = "realm.properties";
 
 	Server server = new Server();
-	ContextHandlerCollection handlerCollection = new ContextHandlerCollection();
+	Handler.Sequence handlerCollection = new Handler.Sequence();
 	Terminal terminal = createTerminal();
 	Prompter prompter = PrompterFactory.create(terminal);
 
@@ -398,7 +398,7 @@ public class Start implements SystemInterface
 	protected ServletContextHandler createWebContextHandler(CommandLine cmd, ContextLoaderListener contextLoaderListener) throws Exception
 	{
 		val result = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		result.addVirtualHosts(new String[]{"@" + WEB_CONNECTOR_NAME});
+		result.setVirtualHosts(List.of("@" + WEB_CONNECTOR_NAME));
 		result.setInitParameter("configuration", "deployment");
 		result.setContextPath(getPath(cmd));
 		if (cmd.hasOption(ECHO_HEADER_NAMES_OPTION))
@@ -539,7 +539,7 @@ public class Start implements SystemInterface
 	protected ServletContextHandler createHealthContextHandler(CommandLine cmd, ContextLoaderListener contextLoaderListener) throws Exception
 	{
 		val result = new ServletContextHandler();
-		result.addVirtualHosts(new String[]{"@" + HEALTH_CONNECTOR_NAME});
+		result.setVirtualHosts(List.of("@" + HEALTH_CONNECTOR_NAME));
 		result.setInitParameter("configuration", "deployment");
 		result.setContextPath(DEFAULT_PATH);
 		result.addServlet(HealthServlet.class, HEALTH_URL + "/*");
