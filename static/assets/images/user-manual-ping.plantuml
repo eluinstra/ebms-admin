@@ -1,0 +1,18 @@
+@startuml
+skinparam BackgroundColor transparent
+skinparam ArrowColor #Black
+skinparam ActorBackgroundColor #White
+skinparam ParticipantBackgroundColor #White
+skinparam NoteBackgroundColor #White
+skinparam SequenceLifeLineBorderColor #Black
+
+actor Application as app
+participant "EbMS Adapter\n(EbMSMessageService)" as ebms
+participant "Remote\nEbMS Adapter" as remote
+
+app -> ebms : ping(cpaId, fromPartyId, toPartyId)
+ebms -> remote : EbMS Ping
+remote --> ebms : EbMS Pong
+ebms --> app : ok
+
+@enduml

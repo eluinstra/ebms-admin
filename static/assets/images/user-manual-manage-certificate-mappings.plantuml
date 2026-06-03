@@ -1,0 +1,21 @@
+@startuml
+skinparam BackgroundColor transparent
+skinparam ArrowColor #Black
+skinparam ActorBackgroundColor #White
+skinparam ParticipantBackgroundColor #White
+skinparam NoteBackgroundColor #White
+skinparam SequenceLifeLineBorderColor #Black
+
+actor Application as app
+participant "EbMS Adapter\n(CertificateMappingService)" as ebms
+
+app -> ebms : setCertificateMapping(certificateMapping)
+ebms --> app : ok
+
+app -> ebms : getCertificateMappings()
+ebms --> app : List<certificateMapping>
+
+app -> ebms : deleteCertificateMapping(source)
+ebms --> app : ok
+
+@enduml

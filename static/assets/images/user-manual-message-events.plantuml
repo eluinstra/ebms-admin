@@ -1,0 +1,25 @@
+@startuml
+skinparam BackgroundColor transparent
+skinparam ArrowColor #Black
+skinparam ActorBackgroundColor #White
+skinparam ParticipantBackgroundColor #White
+skinparam NoteBackgroundColor #White
+skinparam SequenceLifeLineBorderColor #Black
+
+actor Application as app
+participant "EbMS Adapter\n(EbMSMessageService)" as ebms
+
+note over ebms : requires eventListener.type = DAO
+
+loop poll
+  app -> ebms : getUnprocessedMessageEvents(filter, eventTypes, maxNr)
+  ebms --> app : List<event>\n(RECEIVED | DELIVERED |\nFAILED | EXPIRED)
+end
+
+app -> ebms : getMessage(messageId, process)
+ebms --> app : message
+
+app -> ebms : processMessageEvent(messageId)
+ebms --> app : ok
+
+@enduml
