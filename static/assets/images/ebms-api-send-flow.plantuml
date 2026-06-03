@@ -1,0 +1,55 @@
+@startuml ebms-api-send-flow
+skinparam BackgroundColor transparent
+skinparam ArrowColor #Black
+skinparam SequenceLifeLineBorderColor #Black
+skinparam SequenceArrowColor #Black
+skinparam ParticipantBackgroundColor #White
+skinparam ParticipantBorderColor #Black
+skinparam ActorBackgroundColor #White
+skinparam ActorBorderColor #Black
+skinparam DatabaseBackgroundColor #White
+skinparam DatabaseBorderColor #Black
+skinparam NoteBackgroundColor #White
+skinparam NoteBorderColor #Black
+skinparam SequenceGroupBackgroundColor #White
+skinparam SequenceGroupBorderColor #Black
+skinparam DefaultFontName sans-serif
+
+title EbMS API — outbound send flow
+
+actor Client
+participant "EbMSMessageService" as Svc
+participant "DeliveryManager\n+ DeliveryTaskHandler" as DM
+participant "Remote MSH" as Remote
+database "Message store" as Store
+
+== Send ==
+Client -> Svc : sendMessage(MessageRequest)
+Svc -> Store : persist message (status = SENDING)
+Svc --> Client : messageId
+
+== Asynchronous delivery ==
+DM -> Store : pick up pending message
+DM -> Remote : EbMS message (signed / encrypted)
+alt acknowledged
+  Remote --> DM : Acknowledgment
+  DM -> Store : status = DELIVERED\nappend MessageEvent(DELIVERED)
+else transient failure
+  Remote --> DM : error / timeout
+  DM -> DM : schedule retry per CPA
+  note right of DM : after final attempt\nstatus = FAILED or EXPIRED\nappend matching MessageEvent
+end
+
+== Client polls events ==
+Client -> Svc : getUnprocessedMessageEvents(filter, types, maxNr)
+Svc -> Store : query unprocessed events
+Svc --> Client : List<MessageEvent>
+Client -> Svc : processMessageEvent(messageId)
+Svc -> Store : mark event processed
+
+note over Client, Svc
+  Polling requires eventListener.type = DAO.
+  With JMS, events are pushed to a queue
+  instead of being polled.
+end note
+@enduml

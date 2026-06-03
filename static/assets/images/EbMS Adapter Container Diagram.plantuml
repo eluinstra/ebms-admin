@@ -6,8 +6,8 @@ Person(user, "User")
 System_Ext(application, "Application", "Processes Messages")
 System_Boundary(ebmsAdapter, "EbMS Adapter") {
   Container(admin, "EbMS Admin Application", "Java, Spring, Wicket")
-  ContainerDb(database, "EbMS Database", "DB2, HSQLDB, MariaDB, MSSQL, MySQL, Oracle or Postgres", "Holds CPAs, EbMS Messages and EbMS Events")
-  Container(cache, "Cache", "EhCache or Ignite", "Holds CPAs")
+  ContainerDb(database, "EbMS Database", "DB2, H2, HSQLDB, MariaDB, MSSQL, Oracle or Postgres", "Holds CPAs, UrlMappings, CertificateMappings, EbMS Messages, DeliveryTasks and Message Events")
+  Container(cache, "Cache Plugin", "EhCache or Hazelcast", "Holds CPAs, UrlMappings and CertificateMappings")
   ' ContainerQueue(queue, "Queue", "ActiveMQ", "Holds Events")
 }
 System_Ext(ebmsAdapterA, "EbMS Adapter", "Processes EbMS Messages")

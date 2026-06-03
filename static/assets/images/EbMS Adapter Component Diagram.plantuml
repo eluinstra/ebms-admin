@@ -7,13 +7,13 @@ System_Ext(application, "Application", "Processes Messages")
 System_Boundary(ebmsAdmin, "EbMS Admin Application") {
   Component(soapServlet, "CXFServlet", "Java Servlet")
   Component(wicketServlet, "WicketServlet", "Java Servlet")
-  Component(eventExecutor, "EventExecutor", "Runnable")
+  Component(eventExecutor, "DeliveryTaskExecutor", "Runnable")
   Component(ebMSHttpHandler, "EbMSHttpHandler", "Spring Bean")
   Boundary(business, " ") {
     Component(wicketPage, "WicketPage", "Java Class")
     Component(ebMSService, "EbMSService", "Spring Bean")
     Component(ebmsMessageProcessor, "EbMSMessageProcessor", "Spring Bean")
-    Component(eventHandler, "EventHandler", "Spring Bean")
+    Component(eventHandler, "DeliveryTaskHandler", "Spring Bean")
     Component(cpaManager, "CPAManager", "Spring Bean")
     ' Component(eventManager, "EventManager", "Spring Bean")
     ' UrlManager
@@ -25,8 +25,8 @@ System_Boundary(ebmsAdmin, "EbMS Admin Application") {
   Component(dao, "DAOImpl", "Spring Bean")
   ' Component(messageEventListener, "MessageEventListener", "Spring Bean")
 }
-ContainerDb(database, "EbMS Database", "DB2, H2, HSQLDB, MariaDB, MSSQL, MySQL, Oracle or Postgres", "Holds CPAs, EbMSMessages and Events")
-Container(cache, "Cache", "EhCache or Ignite", "Holds CPAs")
+ContainerDb(database, "EbMS Database", "DB2, H2, HSQLDB, MariaDB, MSSQL, Oracle or Postgres", "Holds CPAs, UrlMappings, CertificateMappings, EbMS Messages, DeliveryTasks and Message Events")
+Container(cache, "Cache Plugin", "EhCache or Hazelcast", "Holds CPAs, UrlMappings and CertificateMappings")
 ' ContainerQueue(queue, "Queue", "ActiveMQ", "Holds Events")
 System_Ext(ebmsAdapterA, "EbMS Adapter", "Processes EbMS Messages")
 
