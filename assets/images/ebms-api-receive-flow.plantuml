@@ -1,0 +1,50 @@
+@startuml ebms-api-receive-flow
+skinparam BackgroundColor transparent
+skinparam ArrowColor #Black
+skinparam SequenceLifeLineBorderColor #Black
+skinparam SequenceArrowColor #Black
+skinparam ParticipantBackgroundColor #White
+skinparam ParticipantBorderColor #Black
+skinparam ActorBackgroundColor #White
+skinparam ActorBorderColor #Black
+skinparam DatabaseBackgroundColor #White
+skinparam DatabaseBorderColor #Black
+skinparam NoteBackgroundColor #White
+skinparam NoteBorderColor #Black
+skinparam SequenceGroupBackgroundColor #White
+skinparam SequenceGroupBorderColor #Black
+skinparam DefaultFontName sans-serif
+
+title EbMS API — inbound receive flow
+
+participant "Remote MSH" as Remote
+participant "EbMS MSH\n(/service endpoint)" as MSH
+database "Message store" as Store
+participant "EbMSMessageService" as Svc
+actor Client
+
+== Receive ==
+Remote -> MSH : EbMS message
+MSH -> MSH : validate signature / decrypt
+MSH -> Store : persist message (status = RECEIVED)\nappend MessageEvent(RECEIVED)
+MSH --> Remote : Acknowledgment
+
+== Client polls and consumes ==
+Client -> Svc : getUnprocessedMessageIds(filter, maxNr)
+Svc -> Store : query messages with status = RECEIVED
+Svc --> Client : List<messageId>
+
+loop for each messageId
+  Client -> Svc : getMessage(messageId, process=false)
+  Svc -> Store : fetch payload + metadata
+  Svc --> Client : Message
+  Client -> Client : handle payload
+  Client -> Svc : processMessage(messageId)
+  Svc -> Store : status = PROCESSED
+end
+
+note over Client, Svc
+  getMessage(messageId, process=true) combines
+  fetch + processMessage in a single call.
+end note
+@enduml
