@@ -1,0 +1,27 @@
+@startuml
+skinparam BackgroundColor transparent
+skinparam ArrowColor #Black
+skinparam ActorBackgroundColor #White
+skinparam ParticipantBackgroundColor #White
+skinparam NoteBackgroundColor #White
+skinparam SequenceLifeLineBorderColor #Black
+
+actor Application as app
+participant "EbMS Adapter\n(EbMSMessageService)" as ebms
+participant "Remote\nEbMS Adapter" as remote
+
+app -> ebms : sendMessage(message)
+ebms --> app : messageId
+ebms -> remote : EbMS message
+remote --> ebms : Acknowledgment / Error
+
+app -> ebms : getMessageStatus(messageId)
+ebms --> app : status
+
+alt status == FAILED
+  app -> ebms : resendMessage(messageId)
+  ebms --> app : new messageId
+  ebms -> remote : EbMS message
+end
+
+@enduml

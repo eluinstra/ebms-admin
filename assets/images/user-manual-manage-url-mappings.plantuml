@@ -1,0 +1,21 @@
+@startuml
+skinparam BackgroundColor transparent
+skinparam ArrowColor #Black
+skinparam ActorBackgroundColor #White
+skinparam ParticipantBackgroundColor #White
+skinparam NoteBackgroundColor #White
+skinparam SequenceLifeLineBorderColor #Black
+
+actor Application as app
+participant "EbMS Adapter\n(URLMappingService)" as ebms
+
+app -> ebms : setURLMapping(urlMapping)
+ebms --> app : ok
+
+app -> ebms : getURLMappings()
+ebms --> app : List<urlMapping>
+
+app -> ebms : deleteURLMapping(source)
+ebms --> app : ok
+
+@enduml
