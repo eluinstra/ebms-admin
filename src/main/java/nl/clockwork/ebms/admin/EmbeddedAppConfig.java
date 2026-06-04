@@ -27,7 +27,7 @@ import nl.clockwork.ebms.api.cpa.url.URLMappingControllerConfig;
 import nl.clockwork.ebms.api.ebms.EbMSControllerConfig;
 import nl.clockwork.ebms.common.cache.CacheConfig;
 import nl.clockwork.ebms.client.delivery.DeliveryManagerConfig;
-import nl.clockwork.ebms.client.delivery.client.EbMSClientConfig;
+import nl.clockwork.ebms.client.delivery.http.EbMSClientConfig;
 import nl.clockwork.ebms.client.delivery.task.DeliveryTaskHandlerConfig;
 import nl.clockwork.ebms.client.delivery.task.DeliveryTaskManagerConfig;
 import nl.clockwork.ebms.common.cpa.CPAConfig;
