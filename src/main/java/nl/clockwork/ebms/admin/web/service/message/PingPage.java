@@ -37,7 +37,7 @@ import nl.clockwork.ebms.admin.web.DropDownChoice;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.api.cpa.CPAController;
 import nl.clockwork.ebms.api.ebms.EbMSController;
-import nl.clockwork.ebms.jaxb.JAXBParser;
+import nl.clockwork.ebms.common.jaxb.JAXBParser;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.CompoundPropertyModel;

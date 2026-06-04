@@ -42,7 +42,7 @@ import nl.clockwork.ebms.admin.web.Function;
 import nl.clockwork.ebms.admin.web.Link;
 import nl.clockwork.ebms.api.cpa.CPAController;
 import nl.clockwork.ebms.api.ebms.EbMSController;
-import nl.clockwork.ebms.jaxb.JAXBParser;
+import nl.clockwork.ebms.common.jaxb.JAXBParser;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.head.IHeaderResponse;

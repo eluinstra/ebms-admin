@@ -22,7 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import nl.clockwork.ebms.util.DOMUtils;
+import nl.clockwork.ebms.common.util.DOMUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 

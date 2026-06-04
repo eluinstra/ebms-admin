@@ -37,7 +37,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.val;
 import nl.clockwork.ebms.PluginProvider;
 import nl.clockwork.ebms.admin.web.ExtensionProvider;
-import nl.clockwork.ebms.security.KeyStoreType;
+import nl.clockwork.ebms.common.security.KeyStoreType;
 import nl.clockwork.ebms.server.servlet.HealthServlet;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;

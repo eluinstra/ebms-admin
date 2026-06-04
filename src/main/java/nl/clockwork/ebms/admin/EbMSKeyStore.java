@@ -32,8 +32,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.security.KeyStoreType;
-import nl.clockwork.ebms.security.KeyStoreUtils;
+import nl.clockwork.ebms.common.security.KeyStoreType;
+import nl.clockwork.ebms.common.security.KeyStoreUtils;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
