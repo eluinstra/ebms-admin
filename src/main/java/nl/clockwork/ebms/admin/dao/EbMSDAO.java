@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipOutputStream;
-import nl.clockwork.ebms.EbMSMessageStatus;
+import nl.clockwork.ebms.common.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.model.CPA;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSMessage;

@@ -18,7 +18,7 @@ package nl.clockwork.ebms.querydsl.model;
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.API.Match;
-import static nl.clockwork.ebms.Predicates.contains;
+import static nl.clockwork.ebms.common.Predicates.contains;
 
 import com.atomikos.jdbc.AtomikosDataSourceBean;
 import com.querydsl.sql.DB2Templates;
