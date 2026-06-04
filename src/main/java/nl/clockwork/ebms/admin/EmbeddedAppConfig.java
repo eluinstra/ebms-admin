@@ -18,7 +18,7 @@ package nl.clockwork.ebms.admin;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
-import nl.clockwork.ebms.CommonConfig;
+import nl.clockwork.ebms.common.message.CommonConfig;
 import nl.clockwork.ebms.admin.dao.AdminDAOConfig;
 import nl.clockwork.ebms.admin.web.EmbeddedWebConfig;
 import nl.clockwork.ebms.api.cpa.CPAControllerConfig;
