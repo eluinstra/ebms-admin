@@ -19,12 +19,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipOutputStream;
-import nl.clockwork.ebms.common.EbMSMessageStatus;
 import nl.clockwork.ebms.admin.model.CPA;
 import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.message.EbMSMessageFilter;
 import nl.clockwork.ebms.admin.web.message.TimeUnit;
+import nl.clockwork.ebms.common.EbMSMessageStatus;
 import org.apache.commons.csv.CSVPrinter;
 
 public interface EbMSDAO
