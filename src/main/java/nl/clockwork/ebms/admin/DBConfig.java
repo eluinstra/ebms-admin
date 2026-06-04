@@ -17,7 +17,7 @@ package nl.clockwork.ebms.admin;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.dao.DAOConfig;
+import nl.clockwork.ebms.common.dao.DAOConfig;
 import nl.clockwork.ebms.common.datasource.DataSourceConfig;
 import nl.clockwork.ebms.common.jms.JMSConfig;
 import nl.clockwork.ebms.querydsl.model.QueryDSLConfig;
