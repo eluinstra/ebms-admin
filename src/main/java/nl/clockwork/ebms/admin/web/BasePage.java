@@ -27,7 +27,7 @@ public abstract class BasePage extends WebPage
 {
 	private static final long serialVersionUID = 1L;
 
-	public BasePage()
+	protected BasePage()
 	{
 		this(new PageParameters());
 	}

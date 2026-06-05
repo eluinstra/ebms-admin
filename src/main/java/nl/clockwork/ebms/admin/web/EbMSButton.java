@@ -15,32 +15,29 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.experimental.FieldDefaults;
+import org.apache.wicket.model.IModel;
 
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class WebMarkupContainer extends org.apache.wicket.markup.html.WebMarkupContainer
+public class EbMSButton extends org.apache.wicket.markup.html.form.Button
 {
 	private static final long serialVersionUID = 1L;
-	Supplier<Boolean> isVisible;
+	Action onSubmit;
 
-	public WebMarkupContainer(String id)
+	public EbMSButton(String id)
 	{
-		this(id, null);
+		this(id, null, null);
 	}
 
 	@Builder
-	public WebMarkupContainer(String id, Supplier<Boolean> isVisible)
+	public EbMSButton(String id, IModel<String> model, Action onSubmit)
 	{
-		super(id);
-		this.isVisible = isVisible == null ? () -> super.isVisible() : isVisible;
-		setOutputMarkupId(true);
+		super(id, model);
+		this.onSubmit = onSubmit == null ? super::onSubmit : onSubmit;
 	}
 
 	@Override
-	public boolean isVisible()
+	public void onSubmit()
 	{
-		return isVisible.get();
+		onSubmit.run();
 	}
 }

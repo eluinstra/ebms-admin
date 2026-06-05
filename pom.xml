@@ -315,22 +315,22 @@
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-core</artifactId>
-      <version>10.8.0</version>
+      <version>10.9.1</version>
     </dependency>
     <dependency>
       <groupId>org.wicketstuff</groupId>
       <artifactId>wicket-datetime</artifactId>
-      <version>10.8.0</version>
+      <version>10.9.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-extensions</artifactId>
-      <version>10.8.0</version>
+      <version>10.9.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-spring</artifactId>
-      <version>10.8.0</version>
+      <version>10.9.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.xbean</groupId>
@@ -624,17 +624,6 @@
                 </config>
               </prettier>
             </format>
-            <!-- <format>
-              <includes>
-                <include>src/*/resources/**/*.xml</include>
-              </includes>
-              <eclipseWtp>
-                <type>XML</type>
-                <files>
-                  <file>${project.basedir}/.spotless.xml.prefs</file>
-                </files>
-              </eclipseWtp>
-            </format> -->
           </formats>
           <java>
             <eclipse>

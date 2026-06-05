@@ -15,6 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web.service.cpa;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -26,7 +27,7 @@ import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.Button;
+import nl.clockwork.ebms.admin.web.EbMSButton;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.api.cpa.CPAController;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -81,7 +82,7 @@ public class CPAUploadPage extends BasePage
 			return result;
 		}
 
-		private Button createValidateButton(String id)
+		private EbMSButton createValidateButton(String id)
 		{
 			Action onSubmit = () ->
 			{
@@ -92,21 +93,20 @@ public class CPAUploadPage extends BasePage
 					{
 						FileUpload file = files.get(0);
 						// String contentType = file.getContentType();
-						// FIXME char encoding
-						cpaController.validateCPA(new String(file.getBytes()));
+						cpaController.validateCPA(new String(file.getBytes(), StandardCharsets.UTF_8));
 					}
 					info(getString("cpa.valid"));
 				}
-				catch (Exception e)
+				catch (RuntimeException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			return new Button(id, new ResourceModel("cmd.validate"), onSubmit);
+			return new EbMSButton(id, new ResourceModel("cmd.validate"), onSubmit);
 		}
 
-		private Button createUploadButton(String id)
+		private EbMSButton createUploadButton(String id)
 		{
 			Action onSubmit = () ->
 			{
@@ -117,18 +117,17 @@ public class CPAUploadPage extends BasePage
 					{
 						val file = files.get(0);
 						// val contentType = file.getContentType();
-						// FIXME char encoding
-						cpaController.insertCPA(new String(file.getBytes()), getModelObject().isOverwrite());
+						cpaController.insertCPA(new String(file.getBytes(), StandardCharsets.UTF_8), getModelObject().isOverwrite());
 					}
 					setResponsePage(new CPAsPage());
 				}
-				catch (Exception e)
+				catch (RuntimeException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			val result = new Button(id, new ResourceModel("cmd.upload"), onSubmit);
+			val result = new EbMSButton(id, new ResourceModel("cmd.upload"), onSubmit);
 			setDefaultButton(result);
 			return result;
 		}
@@ -140,7 +139,7 @@ public class CPAUploadPage extends BasePage
 	public class EditUploadFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		List<FileUpload> cpaFile;
+		transient List<FileUpload> cpaFile;
 		boolean overwrite;
 	}
 }

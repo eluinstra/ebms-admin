@@ -25,9 +25,9 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
-import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
-import nl.clockwork.ebms.admin.web.Supplier;
-import nl.clockwork.ebms.admin.web.WebMarkupContainer;
+import nl.clockwork.ebms.admin.web.EbMSAjaxFormComponentUpdatingBehavior;
+import nl.clockwork.ebms.admin.web.EbMSWebMarkupContainer;
+import nl.clockwork.ebms.admin.web.SerializableSupplier;
 import nl.clockwork.ebms.admin.web.configuration.JavaKeyStorePropertiesFormPanel.JavaKeyStorePropertiesFormData;
 import nl.clockwork.ebms.admin.web.configuration.JavaTrustStorePropertiesFormPanel.JavaTrustStorePropertiesFormData;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -45,10 +45,14 @@ import org.apache.wicket.util.io.IClusterable;
 public class SslPropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
-	Supplier<Boolean> isVisible;
+	SerializableSupplier<Boolean> isVisible;
 
 	@Builder
-	public SslPropertiesFormPanel(String id, final IModel<SslPropertiesFormData> model, boolean enableSslOverridePropeties, Supplier<Boolean> isVisible)
+	public SslPropertiesFormPanel(
+			String id,
+			final IModel<SslPropertiesFormData> model,
+			boolean enableSslOverridePropeties,
+			SerializableSupplier<Boolean> isVisible)
 	{
 		super(id, model);
 		this.isVisible = isVisible == null ? () -> super.isVisible() : isVisible;
@@ -79,39 +83,40 @@ public class SslPropertiesFormPanel extends Panel
 			add(new CheckBox("verifyHostnames").setLabel(new ResourceModel("lbl.verifyHostnames")));
 		}
 
-		private WebMarkupContainer createOverrideDefaultProtocolsContainer(String id, boolean enableSslOverridePropeties)
+		private EbMSWebMarkupContainer createOverrideDefaultProtocolsContainer(String id, boolean enableSslOverridePropeties)
 		{
-			val result = new WebMarkupContainer(id);
+			val result = new EbMSWebMarkupContainer(id);
 			result.setVisible(enableSslOverridePropeties);
 			val checkBox = new CheckBox("overrideDefaultProtocols");
 			checkBox.setLabel(new ResourceModel("lbl.overrideDefaultProtocols"));
-			checkBox.add(AjaxFormComponentUpdatingBehavior.builder().event("change").onUpdate(t -> t.add(this)).build());
+			checkBox.add(EbMSAjaxFormComponentUpdatingBehavior.builder().event("change").onUpdate(t -> t.add(this)).build());
 			result.add(checkBox);
 			return result;
 		}
 
-		private WebMarkupContainer createEnabledProtocolsContainer(String id, final boolean enableSslOverridePropeties)
+		private EbMSWebMarkupContainer createEnabledProtocolsContainer(String id, final boolean enableSslOverridePropeties)
 		{
-			val result = WebMarkupContainer.builder().id(id).isVisible(() -> enableSslOverridePropeties && getModelObject().isOverrideDefaultProtocols()).build();
+			val result = EbMSWebMarkupContainer.builder().id(id).isVisible(() -> enableSslOverridePropeties && getModelObject().isOverrideDefaultProtocols()).build();
 			result.add(
 					new ListMultipleChoice<String>("enabledProtocols", getModelObject().getSupportedProtocols()).setLabel(new ResourceModel("lbl.enabledProtocols")));
 			return result;
 		}
 
-		private WebMarkupContainer createOverrideDefaultCipherSuitesContainer(String id, boolean enableSslOverridePropeties)
+		private EbMSWebMarkupContainer createOverrideDefaultCipherSuitesContainer(String id, boolean enableSslOverridePropeties)
 		{
-			val result = new WebMarkupContainer(id);
+			val result = new EbMSWebMarkupContainer(id);
 			result.setVisible(enableSslOverridePropeties);
 			val checkBox = new CheckBox("overrideDefaultCipherSuites");
 			checkBox.setLabel(new ResourceModel("lbl.overrideDefaultCipherSuites"));
-			checkBox.add(AjaxFormComponentUpdatingBehavior.builder().event("change").onUpdate(t -> t.add(this)).build());
+			checkBox.add(EbMSAjaxFormComponentUpdatingBehavior.builder().event("change").onUpdate(t -> t.add(this)).build());
 			result.add(checkBox);
 			return result;
 		}
 
-		private WebMarkupContainer createEnabledCipherSuitesContainer(String id, final boolean enableSslOverridePropeties)
+		private EbMSWebMarkupContainer createEnabledCipherSuitesContainer(String id, final boolean enableSslOverridePropeties)
 		{
-			val result = WebMarkupContainer.builder().id(id).isVisible(() -> enableSslOverridePropeties && getModelObject().isOverrideDefaultCipherSuites()).build();
+			val result =
+					EbMSWebMarkupContainer.builder().id(id).isVisible(() -> enableSslOverridePropeties && getModelObject().isOverrideDefaultCipherSuites()).build();
 			result.add(
 					new ListMultipleChoice<String>("enabledCipherSuites", getModelObject().getSupportedCipherSuites())
 							.setLabel(new ResourceModel("lbl.enabledCipherSuites")));
@@ -122,7 +127,7 @@ public class SslPropertiesFormPanel extends Panel
 		{
 			val result = new CheckBox(id);
 			result.setLabel(new ResourceModel("lbl.requireClientAuthentication"));
-			result.add(AjaxFormComponentUpdatingBehavior.builder().event("change").onUpdate(t -> t.add(this)).build());
+			result.add(EbMSAjaxFormComponentUpdatingBehavior.builder().event("change").onUpdate(t -> t.add(this)).build());
 			return result;
 		}
 	}

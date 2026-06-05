@@ -27,17 +27,17 @@ import lombok.val;
 import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.Action;
-import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.Button;
-import nl.clockwork.ebms.admin.web.Consumer;
 import nl.clockwork.ebms.admin.web.DropDownChoice;
+import nl.clockwork.ebms.admin.web.EbMSAjaxFormComponentUpdatingBehavior;
+import nl.clockwork.ebms.admin.web.EbMSButton;
+import nl.clockwork.ebms.admin.web.EbMSWebMarkupContainer;
 import nl.clockwork.ebms.admin.web.MessageProvider;
 import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.admin.web.Supplier;
-import nl.clockwork.ebms.admin.web.WebMarkupContainer;
+import nl.clockwork.ebms.admin.web.SerializableConsumer;
+import nl.clockwork.ebms.admin.web.SerializableSupplier;
 import nl.clockwork.ebms.admin.web.WicketApplication;
 import nl.clockwork.ebms.api.cpa.CPAController;
 import nl.clockwork.ebms.api.ebms.EbMSController;
@@ -102,7 +102,8 @@ public class SendMessagePageX extends BasePage
 			val rawInputContainer = createRawInputContainer();
 			add(rawInputContainer);
 			rawInputContainer.add(createRawInputCheckBox("rawInput"));
-			add(dataSources = new EmptyDataSourcesPanel("dataSources"));
+			dataSources = new EmptyDataSourcesPanel("dataSources");
+			add(dataSources);
 			val send = createSendButton("send");
 			setDefaultButton(send);
 			add(send);
@@ -111,10 +112,10 @@ public class SendMessagePageX extends BasePage
 
 		private DropDownChoice<String> createCPAIdChoice(String id)
 		{
-			val result = new DropDownChoice<String>(id, Model.ofList(Utils.toList(cpaController.getCPAIds())));
+			val result = new DropDownChoice<>(id, Model.ofList(Utils.toList(cpaController.getCPAIds())));
 			result.setLabel(new ResourceModel("lbl.cpaId"));
 			result.setRequired(true);
-			Consumer<AjaxRequestTarget> onUpdate = t ->
+			SerializableConsumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
@@ -126,7 +127,7 @@ public class SendMessagePageX extends BasePage
 					o.resetToRoles();
 					o.resetServices();
 					o.resetActions();
-					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
+					replaceDataSourcesPanel(new EmptyDataSourcesPanel(dataSources.getId()));
 				}
 				catch (JAXBException e)
 				{
@@ -136,16 +137,16 @@ public class SendMessagePageX extends BasePage
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
+			result.add(new EbMSAjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createFromPartyIdChoice(String id)
 		{
-			val result = new DropDownChoice<String>(id, new PropertyModel<List<String>>(getModel(), "fromPartyIds"));
+			DropDownChoice<String> result = new DropDownChoice<>(id, new PropertyModel<>(getModel(), "fromPartyIds"));
 			result.setLabel(new ResourceModel("lbl.fromPartyId"));
 			result.setRequired(false).setOutputMarkupId(true);
-			Consumer<AjaxRequestTarget> onUpdate = t ->
+			SerializableConsumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
@@ -159,7 +160,7 @@ public class SendMessagePageX extends BasePage
 									CPAUtils.getServiceNamesCanSend(cpa, o.getFromPartyId(), o.getFromRole()),
 									CPAUtils.getServiceNamesCanReceive(cpa, o.getToPartyId(), o.getToRole())));
 					o.resetActions();
-					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
+					replaceDataSourcesPanel(new EmptyDataSourcesPanel(dataSources.getId()));
 				}
 				catch (JAXBException e)
 				{
@@ -169,16 +170,16 @@ public class SendMessagePageX extends BasePage
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
+			result.add(new EbMSAjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createFromRoleChoice(String id)
 		{
-			val result = new DropDownChoice<String>(id, new PropertyModel<List<String>>(getModel(), "fromRoles"));
+			DropDownChoice<String> result = new DropDownChoice<>(id, new PropertyModel<>(getModel(), "fromRoles"));
 			result.setLabel(new ResourceModel("lbl.fromRole"));
 			result.setRequired(true).setOutputMarkupId(true);
-			Consumer<AjaxRequestTarget> onUpdate = t ->
+			SerializableConsumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
@@ -189,7 +190,7 @@ public class SendMessagePageX extends BasePage
 									CPAUtils.getServiceNamesCanSend(cpa, o.getFromPartyId(), o.getFromRole()),
 									CPAUtils.getServiceNamesCanReceive(cpa, o.getToPartyId(), o.getToRole())));
 					o.resetActions();
-					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
+					replaceDataSourcesPanel(new EmptyDataSourcesPanel(dataSources.getId()));
 				}
 				catch (JAXBException e)
 				{
@@ -199,16 +200,16 @@ public class SendMessagePageX extends BasePage
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
+			result.add(new EbMSAjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createToPartyIdChoice(String id)
 		{
-			val result = new DropDownChoice<String>(id, new PropertyModel<List<String>>(getModel(), "toPartyIds"));
+			DropDownChoice<String> result = new DropDownChoice<>(id, new PropertyModel<>(getModel(), "toPartyIds"));
 			result.setLabel(new ResourceModel("lbl.toPartyId"));
 			result.setRequired(true).setOutputMarkupId(true);
-			Consumer<AjaxRequestTarget> onUpdate = t ->
+			SerializableConsumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
@@ -220,7 +221,7 @@ public class SendMessagePageX extends BasePage
 									CPAUtils.getServiceNamesCanSend(cpa, o.getFromPartyId(), o.getFromRole()),
 									CPAUtils.getServiceNamesCanReceive(cpa, o.getToPartyId(), o.getToRole())));
 					o.resetActions();
-					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
+					replaceDataSourcesPanel(new EmptyDataSourcesPanel(dataSources.getId()));
 				}
 				catch (JAXBException e)
 				{
@@ -230,16 +231,16 @@ public class SendMessagePageX extends BasePage
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
+			result.add(new EbMSAjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createToRoleChoice(String id)
 		{
-			val result = new DropDownChoice<String>(id, new PropertyModel<List<String>>(getModel(), "toRoles"));
+			DropDownChoice<String> result = new DropDownChoice<>(id, new PropertyModel<>(getModel(), "toRoles"));
 			result.setLabel(new ResourceModel("lbl.toRole"));
 			result.setRequired(true).setOutputMarkupId(true);
-			Consumer<AjaxRequestTarget> onUpdate = t ->
+			SerializableConsumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
@@ -250,7 +251,7 @@ public class SendMessagePageX extends BasePage
 									CPAUtils.getServiceNamesCanSend(cpa, o.getFromPartyId(), o.getFromRole()),
 									CPAUtils.getServiceNamesCanReceive(cpa, o.getToPartyId(), o.getToRole())));
 					o.resetActions();
-					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
+					replaceDataSourcesPanel(new EmptyDataSourcesPanel(dataSources.getId()));
 				}
 				catch (JAXBException e)
 				{
@@ -260,17 +261,17 @@ public class SendMessagePageX extends BasePage
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
+			result.add(new EbMSAjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createServiceChoice(String id)
 		{
-			val result = new DropDownChoice<String>(id, new PropertyModel<List<String>>(getModel(), "services"));
+			DropDownChoice<String> result = new DropDownChoice<>(id, new PropertyModel<>(getModel(), "services"));
 			result.setLabel(new ResourceModel("lbl.service"));
 			result.setRequired(true);
 			result.setOutputMarkupId(true);
-			Consumer<AjaxRequestTarget> onUpdate = t ->
+			SerializableConsumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
@@ -280,7 +281,7 @@ public class SendMessagePageX extends BasePage
 							ListUtils.intersection(
 									CPAUtils.getFromActionNamesCanSend(cpa, o.getFromPartyId(), o.getFromRole(), o.getService()),
 									CPAUtils.getFromActionNamesCanReceive(cpa, o.getToPartyId(), o.getToRole(), o.getService())));
-					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
+					replaceDataSourcesPanel(new EmptyDataSourcesPanel(dataSources.getId()));
 				}
 				catch (JAXBException e)
 				{
@@ -290,65 +291,69 @@ public class SendMessagePageX extends BasePage
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
+			result.add(new EbMSAjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createActionChoice(String id)
 		{
-			val actions = new DropDownChoice<String>(id, new PropertyModel<List<String>>(getModel(), "actions"));
+			DropDownChoice<String> actions = new DropDownChoice<>(id, new PropertyModel<>(getModel(), "actions"));
 			actions.setLabel(new ResourceModel("lbl.action"));
 			actions.setRequired(true);
 			actions.setOutputMarkupId(true);
-			Consumer<AjaxRequestTarget> onUpdate = t ->
+			SerializableConsumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				val o = getModelObject();
 				if (WicketApplication.get().getMessageEditPanels().containsKey(MessageProvider.createId(o.getService(), o.getAction())))
-					dataSources.replaceWith(
-							dataSources =
-									WicketApplication.get().getMessageEditPanels().get(MessageProvider.createId(o.getService(), o.getAction())).getPanel(dataSources.getId()));
+					replaceDataSourcesPanel(
+							WicketApplication.get().getMessageEditPanels().get(MessageProvider.createId(o.getService(), o.getAction())).getPanel(dataSources.getId()));
 				else
-					dataSources.replaceWith(dataSources = new DefaultDataSourcesPanel(dataSources.getId()));
+					replaceDataSourcesPanel(new DefaultDataSourcesPanel(dataSources.getId()));
 				o.setRawInput(false);
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
-			actions.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
+			actions.add(new EbMSAjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return actions;
 		}
 
-		private WebMarkupContainer createRawInputContainer()
+		private EbMSWebMarkupContainer createRawInputContainer()
 		{
-			Supplier<Boolean> isVisible = () ->
+			SerializableSupplier<Boolean> isVisible = () ->
 			{
 				val o = getModelObject();
 				return o.getAction() != null && (WicketApplication.get().getMessageEditPanels().containsKey(MessageProvider.createId(o.getService(), o.getAction())))
 						|| (dataSources != null && !(dataSources instanceof EmptyDataSourcesPanel || dataSources instanceof DefaultDataSourcesPanel));
 			};
-			return new WebMarkupContainer("rawInputContainer", isVisible);
+			return new EbMSWebMarkupContainer("rawInputContainer", isVisible);
 		}
 
 		private CheckBox createRawInputCheckBox(String id)
 		{
 			val result = new CheckBox(id);
 			result.setLabel(new ResourceModel("lbl.rawInput"));
-			Consumer<AjaxRequestTarget> onUpdate = t ->
+			SerializableConsumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				val o = getModelObject();
 				if (o.isRawInput())
-					dataSources.replaceWith(dataSources = new DefaultDataSourcesPanel(dataSources.getId()));
+					replaceDataSourcesPanel(new DefaultDataSourcesPanel(dataSources.getId()));
 				else
-					dataSources.replaceWith(
-							dataSources =
-									WicketApplication.get().getMessageEditPanels().get(MessageProvider.createId(o.getService(), o.getAction())).getPanel(dataSources.getId()));
+					replaceDataSourcesPanel(
+							WicketApplication.get().getMessageEditPanels().get(MessageProvider.createId(o.getService(), o.getAction())).getPanel(dataSources.getId()));
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
+			result.add(new EbMSAjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
-		private Button createSendButton(String id)
+		private void replaceDataSourcesPanel(DataSourcesPanel newPanel)
+		{
+			dataSources.replaceWith(newPanel);
+			dataSources = newPanel;
+		}
+
+		private EbMSButton createSendButton(String id)
 		{
 			Action onSubmit = () ->
 			{
@@ -359,28 +364,29 @@ public class SendMessagePageX extends BasePage
 					val messageId = ebMSController.sendMessage(message);
 					info(new StringResourceModel("sendMessage.ok", Model.of(messageId)).getString());
 				}
-				catch (Exception e)
+				catch (RuntimeException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			return new Button(id, new ResourceModel("cmd.send"), onSubmit);
+			return new EbMSButton(id, new ResourceModel("cmd.send"), onSubmit);
 		}
 	}
 
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@EqualsAndHashCode(callSuper = true)
+	@SuppressWarnings("java:S2160")
 	public class EbMSMessagePropertiesData extends MessageRequestProperties
 	{
 		private static final long serialVersionUID = 1L;
-		final List<String> fromPartyIds = new ArrayList<>();
-		final List<String> fromRoles = new ArrayList<>();
-		final List<String> toPartyIds = new ArrayList<>();
-		final List<String> toRoles = new ArrayList<>();
-		final List<String> services = new ArrayList<>();
-		final List<String> actions = new ArrayList<>();
+		private final List<String> fromPartyIds = new ArrayList<>();
+		private final List<String> fromRoles = new ArrayList<>();
+		private final List<String> toPartyIds = new ArrayList<>();
+		private final List<String> toRoles = new ArrayList<>();
+		private final List<String> services = new ArrayList<>();
+		private final List<String> actions = new ArrayList<>();
 		boolean rawInput;
 
 		public void resetFromPartyIds()

@@ -52,8 +52,13 @@ public class Utils
 		String rowClass;
 		String cellClass;
 
-		public static Function2<EbMSMessageStatus, Function<Status, String>, String> getCssClass =
-				(status, getClass) -> Arrays.stream(Status.values()).filter(s -> s.statuses.contains(status)).map(s -> getClass.apply(s)).findFirst().orElse(null);
+		private static final Function2<EbMSMessageStatus, SerializableFunction<Status, String>, String> GET_CSS_CLASS =
+				(status, getClass) -> Arrays.stream(Status.values()).filter(s -> s.statuses.contains(status)).map(getClass::apply).findFirst().orElse(null);
+
+		public static String getCssClass(EbMSMessageStatus status, SerializableFunction<Status, String> getClass)
+		{
+			return GET_CSS_CLASS.apply(status, getClass);
+		}
 	}
 
 	public static String getResourceString(Class<?> clazz, String propertyName)
@@ -76,17 +81,22 @@ public class Utils
 
 	public static String getFileExtension(String contentType)
 	{
-		return StringUtils.isNotEmpty(contentType) ? "." + (contentType.contains("text") ? "txt" : contentType.split("/")[1]) : "";
+		if (StringUtils.isEmpty(contentType))
+			return "";
+		if (contentType.contains("text"))
+			return ".txt";
+		val parts = contentType.split("/");
+		return parts.length > 1 ? "." + parts[1] : "";
 	}
 
 	public static String getTableCellCssClass(EbMSMessageStatus ebMSMessageStatus)
 	{
-		return Status.getCssClass.apply(ebMSMessageStatus, Status::getCellClass);
+		return Status.getCssClass(ebMSMessageStatus, Status::getCellClass);
 	}
 
 	public static String getTableRowCssClass(EbMSMessageStatus ebMSMessageStatus)
 	{
-		return Status.getCssClass.apply(ebMSMessageStatus, Status::getRowClass);
+		return Status.getCssClass(ebMSMessageStatus, Status::getRowClass);
 	}
 
 	public static String getErrorList(String content)

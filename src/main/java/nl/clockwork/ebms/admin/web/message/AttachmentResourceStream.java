@@ -62,5 +62,6 @@ public class AttachmentResourceStream extends AbstractResourceStream
 	@Override
 	public void close() throws IOException
 	{
+		// InputStream lifecycle is managed by the caller of getInputStream.
 	}
 }

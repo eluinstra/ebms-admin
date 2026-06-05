@@ -15,7 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -33,14 +33,14 @@ import org.apache.wicket.model.Model;
 public class MessageDataProvider implements IDataProvider<String>
 {
 	private static final long serialVersionUID = 1L;
-	EbMSController ebMSController;
+	transient EbMSController ebMSController;
 	MessageFilter filter;
 
 	@Override
 	public Iterator<? extends String> iterator(long first, long count)
 	{
 		val messageIds = Utils.toList(ebMSController.getUnprocessedMessageIds(filter, (int)(first + count)));
-		return messageIds == null ? new ArrayList<String>().iterator() : messageIds.listIterator((int)first);
+		return messageIds == null ? Collections.emptyIterator() : messageIds.listIterator((int)first);
 	}
 
 	@Override
@@ -59,5 +59,6 @@ public class MessageDataProvider implements IDataProvider<String>
 	@Override
 	public void detach()
 	{
+		// No detachable state is stored in this provider.
 	}
 }

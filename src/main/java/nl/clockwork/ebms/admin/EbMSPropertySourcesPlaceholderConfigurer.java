@@ -16,9 +16,7 @@
 package nl.clockwork.ebms.admin;
 
 import java.io.IOException;
-import java.util.AbstractMap;
 import java.util.Properties;
-import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
@@ -27,12 +25,12 @@ import org.springframework.core.io.Resource;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
-public class PropertySourcesPlaceholderConfigurer extends org.springframework.context.support.PropertySourcesPlaceholderConfigurer
+public class EbMSPropertySourcesPlaceholderConfigurer extends org.springframework.context.support.PropertySourcesPlaceholderConfigurer
 {
 	Resource overridePropertiesFile;
 
 	@Override
-	public void setLocations(Resource...locations)
+	public void setLocations(@org.springframework.lang.NonNull Resource...locations)
 	{
 		overridePropertiesFile = locations[locations.length - 1];
 		super.setLocations(locations);
@@ -47,22 +45,21 @@ public class PropertySourcesPlaceholderConfigurer extends org.springframework.co
 	{
 		val properties = mergeProperties();
 		val result = new Properties();
-		result.putAll(
-				properties.entrySet()
-						.stream()
-						.map(
-								e -> System.getProperty((String)e.getKey()) == null
-										? e
-										: new AbstractMap.SimpleEntry<String, String>((String)e.getKey(), System.getProperty((String)e.getKey())))
-						.map(
-								e -> System.getenv((String)e.getKey()) == null
-										? e
-										: new AbstractMap.SimpleEntry<String, String>((String)e.getKey(), System.getenv((String)e.getKey())))
-						.map(
-								e -> System.getenv(((String)e.getKey()).replaceAll("\\.", "_")) == null
-										? e
-										: new AbstractMap.SimpleEntry<String, String>((String)e.getKey(), System.getenv(((String)e.getKey()).replaceAll("\\.", "_"))))
-						.collect(Collectors.toMap(e -> (String)e.getKey(), e -> (String)e.getValue())));
+		for (val key : properties.stringPropertyNames())
+		{
+			val systemProperty = System.getProperty(key);
+			val envProperty = System.getenv(key);
+			val envPropertyUnderscore = System.getenv(key.replace('.', '_'));
+			val value = properties.getProperty(key);
+			if (envPropertyUnderscore != null)
+				result.setProperty(key, envPropertyUnderscore);
+			else if (envProperty != null)
+				result.setProperty(key, envProperty);
+			else if (systemProperty != null)
+				result.setProperty(key, systemProperty);
+			else
+				result.setProperty(key, value);
+		}
 		return result;
 	}
 }

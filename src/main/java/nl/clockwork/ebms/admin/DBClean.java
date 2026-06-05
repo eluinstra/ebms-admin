@@ -49,8 +49,8 @@ import nl.clockwork.ebms.querydsl.model.QEbmsMessage;
 import nl.clockwork.ebms.querydsl.model.QMessageEvent;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.help.HelpFormatter;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jline.prompt.ConfirmResult;
@@ -68,6 +68,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Slf4j
 public class DBClean implements SystemInterface
 {
+	private static final String CPA_ID_OPTION = "cpaId";
+	private static final String DATE_FROM_OPTION = "dateFrom";
+	private static final String RETENTION_DAYS_OPTION = "retentionDays";
+	private static final String MESSAGE_COMMAND = "messages";
+	private static final String ATTACHMENTS = "attachments";
 
 	private static final String LOG4J_CONFIGURATION_FILE = "log4j.configurationFile";
 	private static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT_YMD);
@@ -101,12 +106,12 @@ public class DBClean implements SystemInterface
 		val result = new Options();
 		result.addOption("h", false, "print this message");
 		result.addOption("cmd", true, "objects to clean [values: cpa|messages]");
-		result.addOption("cpaId", true, "the cpaId of the CPA to delete");
+		result.addOption(CPA_ID_OPTION, true, "the cpaId of the CPA to delete");
 		result.addOption(
-				"dateFrom",
+				DATE_FROM_OPTION,
 				true,
 				"the date from which objects will be deleted [format: YYYYMMDD][default: " + dateFormatter.format(LocalDate.now().minusDays(30)) + "]");
-		result.addOption("retentionDays", true, "the number of days that will be retained during deletion, overrules occurrence of dateFrom option");
+		result.addOption(RETENTION_DAYS_OPTION, true, "the number of days that will be retained during deletion, overrules occurrence of dateFrom option");
 		result.addOption("includeNoPersistDuration", false, "whether or not messages from CPAs without PersistDuration set will be deleted");
 		result.addOption("configDir", true, "set config directory (default=current dir)");
 		return result;
@@ -114,8 +119,14 @@ public class DBClean implements SystemInterface
 
 	private static void printUsage(Options options)
 	{
-		val formatter = new HelpFormatter();
-		formatter.printHelp("DBClean", options, true);
+		try
+		{
+			HelpFormatter.builder().get().printHelp("DBClean", null, options, null, true);
+		}
+		catch (IOException e)
+		{
+			throw new UncheckedIOException(e);
+		}
 	}
 
 	private static void init(CommandLine cmd)
@@ -158,7 +169,7 @@ public class DBClean implements SystemInterface
 				validateCleanCPA(cmd);
 				executeCleanCPA(cmd);
 				break;
-			case ("messages"):
+			case (MESSAGE_COMMAND):
 				println("Running Message deletion script...");
 				executeCleanMessages(cmd);
 				break;
@@ -169,9 +180,9 @@ public class DBClean implements SystemInterface
 
 	private boolean validateCleanCPA(CommandLine cmd)
 	{
-		if (!cmd.hasOption("cpaId"))
+		if (!cmd.hasOption(CPA_ID_OPTION))
 		{
-			printWarn("Option cpaId missing");
+			printWarn("Option " + CPA_ID_OPTION + " missing");
 			return false;
 		}
 		return true;
@@ -179,7 +190,7 @@ public class DBClean implements SystemInterface
 
 	private void executeCleanCPA(CommandLine cmd) throws IOException
 	{
-		val cpaId = cmd.getOptionValue("cpaId");
+		val cpaId = cmd.getOptionValue(CPA_ID_OPTION);
 		val status = transactionManager.getTransaction(null);
 		try
 		{
@@ -201,7 +212,7 @@ public class DBClean implements SystemInterface
 
 			transactionManager.commit(status);
 		}
-		catch (Exception e)
+		catch (RuntimeException e)
 		{
 			printErr(e);
 			transactionManager.rollback(status);
@@ -211,9 +222,9 @@ public class DBClean implements SystemInterface
 	private void executeCleanMessages(CommandLine cmd)
 	{
 		val includeNoPersistDuration = cmd.hasOption("includeNoPersistDuration");
-		val dateFrom = Objects.nonNull(cmd.getOptionValue("retentionDays"))
-				? createDateFromRetentionDays(cmd.getOptionValue("retentionDays"))
-				: createDateFrom(cmd.getOptionValue("dateFrom"));
+		val dateFrom = Objects.nonNull(cmd.getOptionValue(RETENTION_DAYS_OPTION))
+				? createDateFromRetentionDays(cmd.getOptionValue(RETENTION_DAYS_OPTION))
+				: createDateFrom(cmd.getOptionValue(DATE_FROM_OPTION));
 		if (dateFrom != null)
 		{
 			println("using fromDate " + dateFrom);
@@ -227,7 +238,7 @@ public class DBClean implements SystemInterface
 				cleanMessages(dateFrom, includeNoPersistDuration);
 				transactionManager.commit(status);
 			}
-			catch (Exception e)
+			catch (RuntimeException e)
 			{
 				printErr(e);
 				transactionManager.rollback(status);
@@ -235,7 +246,7 @@ public class DBClean implements SystemInterface
 		}
 		else
 		{
-			printWarn("Unable to parse date " + cmd.getOptionValue("dateFrom"));
+			printWarn("Unable to parse date " + cmd.getOptionValue(DATE_FROM_OPTION));
 		}
 	}
 
@@ -266,7 +277,8 @@ public class DBClean implements SystemInterface
 
 	private boolean alternativeAttachmentImplementation()
 	{
-		try (val connection = namedParameterJdbcTemplate.getJdbcTemplate().getDataSource().getConnection())
+		val dataSource = java.util.Objects.requireNonNull(namedParameterJdbcTemplate.getJdbcTemplate().getDataSource());
+		try (val connection = dataSource.getConnection())
 		{
 			val vendor = connection.getMetaData().getDatabaseProductName();
 			return vendor.equalsIgnoreCase("microsoft sql server") || vendor.equalsIgnoreCase("mariadb") || vendor.equalsIgnoreCase("h2");
@@ -287,20 +299,20 @@ public class DBClean implements SystemInterface
 		if (alternativeAttachmentImplementation())
 		{
 			val parameterSource = new MapSqlParameterSource();
-			parameterSource.addValue("cpaId", cpaId);
+			parameterSource.addValue(CPA_ID_OPTION, cpaId);
 			val idsInteger = namedParameterJdbcTemplate.getJdbcTemplate().queryForList("select id from ebms_message where cpa_id = ?", Integer.class, cpaId);
 			ToLongFunction<List<String>> query = idList ->
 			{
 				val parameters = new MapSqlParameterSource("idsInteger", idsInteger);
 				return (long)namedParameterJdbcTemplate.update("delete from ebms_attachment where ebms_message_id in (:idsInteger)", parameters);
 			};
-			defensiveDelete(ids, "attachments", query);
+			defensiveDelete(ids, ATTACHMENTS, query);
 		}
 		else
 		{
-			defensiveDelete(ids, "attachments", idList -> queryFactory.delete(attachmentTable).where(attachmentTable.messageId.in(idList)).execute());
+			defensiveDelete(ids, ATTACHMENTS, idList -> queryFactory.delete(attachmentTable).where(attachmentTable.messageId.in(idList)).execute());
 		}
-		defensiveDelete(ids, "messages", idList -> queryFactory.delete(messageTable).where(messageTable.cpaId.eq(cpaId)).execute());
+		defensiveDelete(ids, MESSAGE_COMMAND, idList -> queryFactory.delete(messageTable).where(messageTable.cpaId.eq(cpaId)).execute());
 		println("delete cpa " + cpaId + " in ebms-admin to delete it from the cache!!!");
 	}
 
@@ -347,16 +359,13 @@ public class DBClean implements SystemInterface
 					val parameterListEmbsMessageIds = new MapSqlParameterSource("embsMessageIds", ebmsMessageIds);
 					return namedParameterJdbcTemplate.update("delete from ebms_attachment where ebms_message_id in (:embsMessageIds)", parameterListEmbsMessageIds);
 				};
-				defensiveDelete(idsBucket, "attachments", query);
+				defensiveDelete(idsBucket, ATTACHMENTS, query);
 			}
 			else
 			{
-				defensiveDelete(
-						idsBucket,
-						"attachments",
-						idList -> queryFactory.delete(attachmentTable).where(attachmentTable.messageId.in((List<String>)idList)).execute());
+				defensiveDelete(idsBucket, ATTACHMENTS, idList -> queryFactory.delete(attachmentTable).where(attachmentTable.messageId.in(idList)).execute());
 			}
-			defensiveDelete(idsBucket, "messages", idList -> queryFactory.delete(messageTable).where(messageTable.messageId.in(idList)).execute());
+			defensiveDelete(idsBucket, MESSAGE_COMMAND, idList -> queryFactory.delete(messageTable).where(messageTable.messageId.in(idList)).execute());
 		}
 	}
 

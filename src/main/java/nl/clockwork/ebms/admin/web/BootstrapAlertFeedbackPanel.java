@@ -75,7 +75,7 @@ public class BootstrapAlertFeedbackPanel extends FeedbackPanel
 	protected Component newMessageDisplayComponent(final String id, final FeedbackMessage message)
 	{
 		val container = new WebMarkupContainer(id);
-		container.add(new Button("close"));
+		container.add(new EbMSButton("close"));
 		val serializable = message.getMessage();
 		val label = new Label("content", serializable == null ? "" : serializable.toString());
 		label.setEscapeModelStrings(getEscapeModelStrings());

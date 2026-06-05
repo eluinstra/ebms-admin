@@ -15,7 +15,13 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
+import java.io.IOException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.Arrays;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
@@ -26,8 +32,8 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.Button;
-import nl.clockwork.ebms.admin.web.Supplier;
+import nl.clockwork.ebms.admin.web.EbMSButton;
+import nl.clockwork.ebms.admin.web.SerializableSupplier;
 import nl.clockwork.ebms.common.security.KeyStoreType;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -48,7 +54,7 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 	private static final long serialVersionUID = 1L;
 	boolean required;
 	boolean showDefaultAlias;
-	Supplier<Boolean> isVisible;
+	SerializableSupplier<Boolean> isVisible;
 
 	public JavaKeyStorePropertiesFormPanel(String id, IModel<JavaKeyStorePropertiesFormData> model)
 	{
@@ -61,12 +67,12 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 			IModel<JavaKeyStorePropertiesFormData> model,
 			boolean required,
 			boolean showDefaultAlias,
-			Supplier<Boolean> isVisible)
+			SerializableSupplier<Boolean> isVisible)
 	{
 		super(id, model);
 		this.required = required;
 		this.showDefaultAlias = showDefaultAlias;
-		this.isVisible = isVisible == null ? () -> super.isVisible() : isVisible;
+		this.isVisible = isVisible == null ? super::isVisible : isVisible;
 		add(new JavaKeyStorePropertiesForm("form", model));
 	}
 
@@ -99,23 +105,23 @@ public class JavaKeyStorePropertiesFormPanel extends Panel
 			add(createTestButton("test"));
 		}
 
-		private Button createTestButton(String id)
+		private EbMSButton createTestButton(String id)
 		{
 			Action action = () ->
 			{
 				try
 				{
 					val o = getModelObject();
-					Utils.testKeyStore(o.getType(), o.getUri(), o.getPassword(), o.getDefaultAlias(), showDefaultAlias);
+					Utils.testKeyStore(o.getType(), Objects.requireNonNull(o.getUri()), Objects.requireNonNull(o.getPassword()), o.getDefaultAlias(), showDefaultAlias);
 					info(getString("test.ok"));
 				}
-				catch (Exception e)
+				catch (IOException | KeyStoreException | NoSuchAlgorithmException | CertificateException | UnrecoverableKeyException | RuntimeException e)
 				{
 					log.error("", e);
 					error(new StringResourceModel("test.nok", this, Model.of(e)).getString());
 				}
 			};
-			return new Button(id, new ResourceModel("cmd.test"), action);
+			return new EbMSButton(id, new ResourceModel("cmd.test"), action);
 		}
 	}
 

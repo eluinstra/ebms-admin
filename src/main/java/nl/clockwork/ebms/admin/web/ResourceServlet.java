@@ -35,21 +35,17 @@ public class ResourceServlet extends GenericServlet
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public void init() throws ServletException
-	{
-		super.init();
-	}
-
-	@Override
 	public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException
 	{
-		val input = this.getClass().getResourceAsStream(((HttpServletRequest)request).getServletPath() + ((HttpServletRequest)request).getPathInfo());
+		val httpRequest = (HttpServletRequest)request;
+		val httpResponse = (HttpServletResponse)response;
+		val input = this.getClass().getResourceAsStream(httpRequest.getServletPath() + httpRequest.getPathInfo());
 		if (input == null)
-			((HttpServletResponse)response).setStatus(204);
+			httpResponse.setStatus(204);
 		else
 		{
-			((HttpServletResponse)response).setStatus(200);
-			((HttpServletResponse)response).setContentType(getContentType(((HttpServletRequest)request).getPathInfo()));
+			httpResponse.setStatus(200);
+			httpResponse.setContentType(getContentType(httpRequest.getPathInfo()));
 			IOUtils.copy(input, response.getOutputStream());
 		}
 	}

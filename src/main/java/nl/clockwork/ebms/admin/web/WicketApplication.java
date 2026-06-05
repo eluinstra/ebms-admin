@@ -20,14 +20,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
+import nl.clockwork.ebms.admin.EbMSPropertySourcesPlaceholderConfigurer;
 import nl.clockwork.ebms.admin.EmbeddedAppConfig;
-import nl.clockwork.ebms.admin.PropertySourcesPlaceholderConfigurer;
 import nl.clockwork.ebms.admin.web.menu.MenuDivider;
 import nl.clockwork.ebms.admin.web.menu.MenuItem;
 import nl.clockwork.ebms.admin.web.menu.MenuLinkItem;
@@ -58,7 +57,7 @@ public class WicketApplication extends WebApplication
 	List<MenuItem> menuItems = new ArrayList<>();
 	Map<String, MessageProvider.MessageViewPanel> messageViewPanels = new HashMap<>();
 	Map<String, MessageProvider.MessageEditPanel> messageEditPanels = new HashMap<>();
-	PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = EmbeddedAppConfig.PROPERTY_SOURCE;
+	EbMSPropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = EmbeddedAppConfig.PROPERTY_SOURCE;
 
 	public WicketApplication(@NonNull Integer maxItemsPerPage, @NonNull EventListenerType eventListenerType)
 	{
@@ -71,7 +70,7 @@ public class WicketApplication extends WebApplication
 		menuItems.add(createConfigurationMenuItem("4"));
 
 		val extensionProviders = ExtensionProvider.get();
-		if (extensionProviders.size() > 0)
+		if (!extensionProviders.isEmpty())
 			menuItems.add(createExtensionsMenuItem("5", extensionProviders));
 
 		val messageProviders = MessageProvider.get();
@@ -135,7 +134,7 @@ public class WicketApplication extends WebApplication
 	{
 		val result = new MenuItem(id, "extensions");
 		val i = new AtomicInteger(1);
-		extensionProviders.stream().map(p -> p.createSubMenu(result, i.getAndIncrement(), p.getName())).collect(Collectors.toList());
+		extensionProviders.forEach(p -> p.createSubMenu(result, i.getAndIncrement(), p.getName()));
 		return result;
 	}
 

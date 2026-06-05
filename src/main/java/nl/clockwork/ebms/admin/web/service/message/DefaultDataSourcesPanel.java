@@ -22,8 +22,8 @@ import lombok.NonNull;
 import lombok.Value;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
-import nl.clockwork.ebms.admin.web.AjaxButton;
-import nl.clockwork.ebms.admin.web.Consumer;
+import nl.clockwork.ebms.admin.web.EbMSAjaxButton;
+import nl.clockwork.ebms.admin.web.SerializableConsumer;
 import nl.clockwork.ebms.api.ebms.model.DataSource;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalDialog;
@@ -57,12 +57,12 @@ public class DefaultDataSourcesPanel extends DataSourcesPanel
 			item.setModel(new CompoundPropertyModel<>(item.getModel()));
 			item.add(new Label("name"));
 			item.add(new Label("contentType"));
-			Consumer<AjaxRequestTarget> onSubmit = t ->
+			SerializableConsumer<AjaxRequestTarget> onSubmit = t ->
 			{
 				dataSourcesForm.getModelObject().getDataSources().remove(item.getModelObject());
 				t.add(dataSourcesForm);
 			};
-			item.add(AjaxButton.builder().id("remove").model(new ResourceModel("cmd.remove")).form(dataSourcesForm).onSubmit(onSubmit).build());
+			item.add(EbMSAjaxButton.builder().id("remove").model(new ResourceModel("cmd.remove")).form(dataSourcesForm).onSubmit(onSubmit).build());
 		}
 	}
 
@@ -87,9 +87,9 @@ public class DefaultDataSourcesPanel extends DataSourcesPanel
 			add(createAddButton("add", dataSourceModalWindow));
 		}
 
-		private AjaxButton createAddButton(String id, final ModalDialog dataSourceModalWindow)
+		private EbMSAjaxButton createAddButton(String id, final ModalDialog dataSourceModalWindow)
 		{
-			return AjaxButton.builder().id(id).onSubmit(t -> dataSourceModalWindow.open(t)).build();
+			return EbMSAjaxButton.builder().id(id).onSubmit(t -> dataSourceModalWindow.open(t)).build();
 		}
 	}
 
@@ -103,7 +103,7 @@ public class DefaultDataSourcesPanel extends DataSourcesPanel
 	public static class DataSourcesModel implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		List<DataSource> dataSources = new ArrayList<DataSource>();
+		List<DataSource> dataSources = new ArrayList<>();
 	}
 
 }

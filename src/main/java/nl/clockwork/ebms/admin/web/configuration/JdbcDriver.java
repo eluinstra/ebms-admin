@@ -33,7 +33,7 @@ public enum JdbcDriver
 	MARIADB("org.mariadb.jdbc.Driver", "jdbc:mariadb://%s/%s"),
 	MSSQL("com.microsoft.sqlserver.jdbc.SQLServerDriver", "jdbc:sqlserver://%s;databaseName=%s;"),
 	ORACLE("oracle.jdbc.OracleDriver", "jdbc:oracle:thin:@//%s/%s"),
-	ORACLE_("oracle.jdbc.OracleDriver", "jdbc:oracle:thin:@%s:%s"),
+	ORACLE_HOST_PORT("oracle.jdbc.OracleDriver", "jdbc:oracle:thin:@%s:%s"),
 	POSTGRESQL("org.postgresql.Driver", "jdbc:postgresql://%s/%s");
 
 	String driverClassName;

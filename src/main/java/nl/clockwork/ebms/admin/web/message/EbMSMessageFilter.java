@@ -34,6 +34,7 @@ import nl.clockwork.ebms.common.EbMSMessageStatus;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@SuppressWarnings("java:S2160")
 public class EbMSMessageFilter extends MessageFilter
 {
 	private static final long serialVersionUID = 1L;

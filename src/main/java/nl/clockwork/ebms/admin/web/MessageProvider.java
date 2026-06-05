@@ -72,19 +72,20 @@ public abstract class MessageProvider
 		}
 	}
 
-	public static abstract class MessageViewPanel extends MessagePanel
+	public abstract static class MessageViewPanel extends MessagePanel
 	{
-		public MessageViewPanel(String service, String action)
+		protected MessageViewPanel(String service, String action)
 		{
 			super(service, action);
 		}
 
+		@SuppressWarnings("java:S112")
 		public abstract Panel getPanel(String id, List<EbMSAttachment> attachments) throws Exception;
 	}
 
-	public static abstract class MessageEditPanel extends MessagePanel
+	public abstract static class MessageEditPanel extends MessagePanel
 	{
-		public MessageEditPanel(String service, String action)
+		protected MessageEditPanel(String service, String action)
 		{
 			super(service, action);
 		}

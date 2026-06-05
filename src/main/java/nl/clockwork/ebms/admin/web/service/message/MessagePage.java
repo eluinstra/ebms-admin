@@ -130,7 +130,7 @@ public class MessagePage extends BasePage implements IGenericComponent<Message, 
 				messageProcessor.processMessage(getModelObject().getProperties().getMessageId());
 				setResponsePage(responsePage);
 			}
-			catch (Exception e)
+			catch (RuntimeException e)
 			{
 				log.error("", e);
 				error(e.getMessage());

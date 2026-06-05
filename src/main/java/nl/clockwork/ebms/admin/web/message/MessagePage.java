@@ -28,14 +28,14 @@ import nl.clockwork.ebms.admin.model.EbMSAttachment;
 import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.AjaxLink;
 import nl.clockwork.ebms.admin.web.BasePage;
-import nl.clockwork.ebms.admin.web.Consumer;
+import nl.clockwork.ebms.admin.web.EbMSWebMarkupContainer;
 import nl.clockwork.ebms.admin.web.InstantLabel;
 import nl.clockwork.ebms.admin.web.Link;
 import nl.clockwork.ebms.admin.web.PageLink;
+import nl.clockwork.ebms.admin.web.SerializableConsumer;
 import nl.clockwork.ebms.admin.web.StringModel;
 import nl.clockwork.ebms.admin.web.TextArea;
 import nl.clockwork.ebms.admin.web.Utils;
-import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.client.delivery.task.DeliveryTaskStatus;
 import nl.clockwork.ebms.common.EbMSAction;
 import nl.clockwork.ebms.common.EbMSMessageStatus;
@@ -124,7 +124,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		add(createActionField("action"));
 		add(createViewMessageErrorLink("viewMessageError"));
 		add(InstantLabel.of("statusTime", Constants.DATETIME_FORMAT));
-		add(new AttachmentsPanel("attachments", new LoadableDetachableEbMSAttachmentModel()).setVisible(getModelObject().getAttachments().size() > 0));
+		add(new AttachmentsPanel("attachments", new LoadableDetachableEbMSAttachmentModel()).setVisible(!getModelObject().getAttachments().isEmpty()));
 		add(createDeliveryTaskContainer("deliveryTask"));
 		add(createDeliveryLogContainer("deliveryLog"));
 		add(new PageLink("back", responsePage));
@@ -161,7 +161,6 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 			// setCookieName("sendError");
 			// setCloseButtonCallback(new nl.clockwork.ebms.admin.web.CloseButtonCallback());
 		}
-
 		// @Override
 		// public IModel<String> getTitle()
 		// {
@@ -202,15 +201,16 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 								EbMSMessageStatus.DELIVERED,
 								EbMSMessageStatus.FAILED,
 								EbMSMessageStatus.DELIVERY_FAILED)
-						.contains(getModelObject().getStatus()) ? ebMSDAO.existsResponseMessage(getModelObject().getMessageId()) : false);
+						.contains(getModelObject().getStatus())
+						&& ebMSDAO.existsResponseMessage(getModelObject().getMessageId()));
 		result.add(AttributeModifier.replace("class", Model.of(Utils.getTableCellCssClass(getModelObject().getStatus()))));
 		result.add(new Label("status"));
 		return result;
 	}
 
-	private WebMarkupContainer createDeliveryTaskContainer(String id)
+	private EbMSWebMarkupContainer createDeliveryTaskContainer(String id)
 	{
-		val result = new WebMarkupContainer(id);
+		val result = new EbMSWebMarkupContainer(id);
 		result.setVisible(getModelObject().getDeliveryTask() != null);
 		if (getModelObject().getDeliveryTask() != null)
 		{
@@ -221,10 +221,10 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 		return result;
 	}
 
-	private WebMarkupContainer createDeliveryLogContainer(String id)
+	private EbMSWebMarkupContainer createDeliveryLogContainer(String id)
 	{
-		val result = new WebMarkupContainer(id);
-		result.setVisible(getModelObject().getDeliveryLogs().size() > 0);
+		val result = new EbMSWebMarkupContainer(id);
+		result.setVisible(!getModelObject().getDeliveryLogs().isEmpty());
 		result.add(new DeliveryLogPropertyListView("deliveryLogs", new LoadableDetachableDeliveryLogModel()));
 		return result;
 	}
@@ -239,7 +239,7 @@ public class MessagePage extends BasePage implements IGenericComponent<EbMSMessa
 
 	private AjaxLink<String> createToggleComponentLink(String id, final Component content)
 	{
-		Consumer<AjaxRequestTarget> onClick = t ->
+		SerializableConsumer<AjaxRequestTarget> onClick = t ->
 		{
 			showContent = !showContent;
 			t.add(this);

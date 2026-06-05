@@ -29,6 +29,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -224,7 +225,8 @@ public class EbMSDAOImpl implements EbMSDAO, WithMessageFilter
 				.where(getMessageFilter(messageTable, filter, new BooleanBuilder()))
 				.orderBy(messageTable.timeStamp.desc())
 				.getSQL();
-		jdbcTemplate.query(query.getSQL(), (rs, rowNum) ->
+		val sql = Objects.requireNonNull(query.getSQL());
+		jdbcTemplate.query(sql, (rs, rowNum) ->
 		{
 			try
 			{
@@ -254,7 +256,8 @@ public class EbMSDAOImpl implements EbMSDAO, WithMessageFilter
 	public void writeMessageToZip(String messageId, final ZipOutputStream zip)
 	{
 		val query = queryFactory.select(messageTable.content).from(messageTable).where(messageTable.messageId.eq(messageId)).getSQL();
-		jdbcTemplate.query(query.getSQL(), (rs, rowNum) ->
+		val sql = Objects.requireNonNull(query.getSQL());
+		jdbcTemplate.query(sql, (rs, rowNum) ->
 		{
 			try
 			{
@@ -278,7 +281,8 @@ public class EbMSDAOImpl implements EbMSDAO, WithMessageFilter
 				.from(attachmentTable)
 				.where(attachmentTable.messageId.eq(messageId))
 				.getSQL();
-		jdbcTemplate.query(query.getSQL(), (rs, rowNum) ->
+		val sql = Objects.requireNonNull(query.getSQL());
+		jdbcTemplate.query(sql, (rs, rowNum) ->
 		{
 			try
 			{

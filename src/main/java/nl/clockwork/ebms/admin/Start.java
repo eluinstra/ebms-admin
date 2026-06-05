@@ -24,12 +24,12 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import javax.management.remote.JMXServiceURL;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -41,8 +41,8 @@ import nl.clockwork.ebms.common.security.KeyStoreType;
 import nl.clockwork.ebms.server.servlet.HealthServlet;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.help.HelpFormatter;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -82,6 +82,7 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @RequiredArgsConstructor
+@SuppressWarnings("removal")
 public class Start implements SystemInterface
 {
 	protected static final String HELP_OPTION = "h";
@@ -150,17 +151,21 @@ public class Start implements SystemInterface
 		app.startService(args);
 	}
 
+	@SuppressWarnings("java:S2221")
 	private void startService(String[] args) throws Exception
 	{
 		val options = createOptions();
 		val cmd = new DefaultParser().parse(options, args);
 		if (cmd.hasOption(HELP_OPTION))
+		{
 			printUsage(options);
+			return;
+		}
 		init(cmd);
 		server.setHandler(handlerCollection);
 		if (cmd.hasOption(JMX_OPTION))
 			initJMX(cmd, server);
-		try (val context = new AnnotationConfigWebApplicationContext())
+		try (AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext())
 		{
 			context.scan("nl.clockwork.ebms");
 			getPluginConfigClasses().forEach(context::register);
@@ -174,7 +179,7 @@ public class Start implements SystemInterface
 			if (cmd.hasOption(HEALTH_OPTION))
 			{
 				initHealthServer(cmd, server);
-				handlerCollection.addHandler(createHealthContextHandler(cmd, contextLoaderListener));
+				handlerCollection.addHandler(createHealthContextHandler());
 			}
 			println("Starting Server...");
 			try
@@ -234,27 +239,27 @@ public class Start implements SystemInterface
 
 	protected void printUsage(Options options)
 	{
-		val formatter = new HelpFormatter();
-		formatter.printHelp(getClass().getSimpleName(), options, true);
+		try
+		{
+			HelpFormatter.builder().get().printHelp(getClass().getSimpleName(), null, options, null, true);
+		}
+		catch (IOException e)
+		{
+			throw new UncheckedIOException(e);
+		}
 		exit(0);
 	}
 
 	protected List<Class<?>> getConfigClasses()
 	{
-		return ExtensionProvider.get()
-				.stream()
-				.filter(p -> p.getSpringConfigurationClass() != null)
-				.map(ExtensionProvider::getSpringConfigurationClass)
-				.collect(Collectors.toList());
+		return new ArrayList<>(
+				ExtensionProvider.get().stream().filter(p -> p.getSpringConfigurationClass() != null).map(p -> (Class<?>)p.getSpringConfigurationClass()).toList());
 	}
 
 	protected List<Class<?>> getPluginConfigClasses()
 	{
-		return PluginProvider.get()
-				.stream()
-				.filter(p -> p.getSpringConfigurationClass() != null)
-				.map(PluginProvider::getSpringConfigurationClass)
-				.collect(Collectors.toList());
+		return new ArrayList<>(
+				PluginProvider.get().stream().filter(p -> p.getSpringConfigurationClass() != null).map(p -> (Class<?>)p.getSpringConfigurationClass()).toList());
 	}
 
 	protected void init(CommandLine cmd)
@@ -271,7 +276,12 @@ public class Start implements SystemInterface
 				: createHttpConnector(cmd);
 		server.addConnector(connector);
 		if (cmd.hasOption(CONNECTION_LIMIT_OPTION))
-			server.addBean(new ConnectionLimit(Integer.parseInt(cmd.getOptionValue(CONNECTION_LIMIT_OPTION)), connector));
+			addConnectionLimit(server, connector, Integer.parseInt(cmd.getOptionValue(CONNECTION_LIMIT_OPTION)));
+	}
+
+	protected void addConnectionLimit(Server targetServer, ServerConnector connector, int connectionLimit)
+	{
+		targetServer.addBean(new ConnectionLimit(connectionLimit, connector));
 	}
 
 	private ServerConnector createHttpConnector(CommandLine cmd)
@@ -378,7 +388,7 @@ public class Start implements SystemInterface
 		val mBeanContainer = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
 		server.addBean(mBeanContainer);
 		val jmxURL = new JMXServiceURL("rmi", null, Integer.parseInt(cmd.getOptionValue(JMX_PORT_OPTION, DEFAULT_JMS_PORT)), "/jndi/rmi:///jmxrmi");
-		val sslContextFactory = cmd.hasOption("ssl") ? createSslContextFactory(cmd, false) : null;
+		val sslContextFactory = cmd.hasOption(SSL_OPTION) ? createSslContextFactory(cmd, false) : null;
 		val jmxServer = new ConnectorServer(jmxURL, createEnv(cmd), "org.eclipse.jetty.jmx:name=rmiconnectorserver", sslContextFactory);
 		server.addBean(jmxServer);
 		println("JMX Server configured on " + jmxURL);
@@ -389,8 +399,8 @@ public class Start implements SystemInterface
 		val result = new HashMap<String, Object>();
 		if (cmd.hasOption(JMX_ACCESS_FILE_OPTION) && cmd.hasOption(JMX_PASSWORD_FILE_OPTION))
 		{
-			result.put("jmx.remote.x.access.file", cmd.hasOption(JMX_ACCESS_FILE_OPTION));
-			result.put("jmx.remote.x.password.file", cmd.hasOption(JMX_PASSWORD_FILE_OPTION));
+			result.put("jmx.remote.x.access.file", cmd.getOptionValue(JMX_ACCESS_FILE_OPTION));
+			result.put("jmx.remote.x.password.file", cmd.getOptionValue(JMX_PASSWORD_FILE_OPTION));
 		}
 		return result;
 	}
@@ -455,7 +465,7 @@ public class Start implements SystemInterface
 		return result;
 	}
 
-	private void addAuthenticationHandler(CommandLine cmd, final ServletContextHandler result) throws IOException, NoSuchAlgorithmException
+	private void addAuthenticationHandler(CommandLine cmd, ServletContextHandler result) throws IOException, NoSuchAlgorithmException
 	{
 		if (!cmd.hasOption(CLIENT_AUTHENTICATION_OPTION))
 		{
@@ -467,7 +477,7 @@ public class Start implements SystemInterface
 				createRealmFile(file);
 			result.setSecurityHandler(getSecurityHandler());
 		}
-		else if (cmd.hasOption(SSL_OPTION) && cmd.hasOption(CLIENT_AUTHENTICATION_OPTION))
+		else if (cmd.hasOption(SSL_OPTION))
 		{
 			result.addFilter(
 					createClientCertificateManagerFilterHolder(cmd.getOptionValue(CLIENT_CERTIFICATE_HEADER_OPTION)),
@@ -477,7 +487,7 @@ public class Start implements SystemInterface
 		}
 	}
 
-	private void addWicketServletHolder(final ServletContextHandler result)
+	private void addWicketServletHolder(ServletContextHandler result)
 	{
 		val servletHolder = new ServletHolder(nl.clockwork.ebms.admin.web.ResourceServlet.class);
 		result.addServlet(servletHolder, "/css/*");
@@ -530,13 +540,11 @@ public class Start implements SystemInterface
 	private ErrorPageErrorHandler createErrorHandler()
 	{
 		val result = new ErrorPageErrorHandler();
-		val errorPages = new HashMap<String, String>();
-		errorPages.put("404", "/404");
-		result.setErrorPages(errorPages);
+		result.setErrorPages(Map.of("404", "/404"));
 		return result;
 	}
 
-	protected ServletContextHandler createHealthContextHandler(CommandLine cmd, ContextLoaderListener contextLoaderListener) throws Exception
+	protected ServletContextHandler createHealthContextHandler() throws Exception
 	{
 		val result = new ServletContextHandler();
 		result.setVirtualHosts(List.of("@" + HEALTH_CONNECTOR_NAME));
@@ -548,9 +556,12 @@ public class Start implements SystemInterface
 
 	protected Resource getResource(String path) throws IOException
 	{
-		val rh = new ResourceHandler();
-		val result = ResourceFactory.of(rh).newResource(path);
-		return result.exists() ? result : ResourceFactory.of(rh).newClassLoaderResource(path);
+		val resourceFactory = ResourceFactory.root();
+		val result = resourceFactory.newResource(path);
+		if (result.exists())
+			return result;
+		val url = Start.class.getClassLoader().getResource(path);
+		return url == null ? result : resourceFactory.newResource(url);
 	}
 
 	protected void createRealmFile(File file) throws IOException, NoSuchAlgorithmException
@@ -569,10 +580,16 @@ public class Start implements SystemInterface
 		while (true)
 		{
 			val builder = prompter.newBuilder();
-			builder.createInputPrompt().name("password").message("enter password").mask('*').validator(input -> input.length() >= 8).filter(this::toMD5).addPrompt();
+			builder.createInputPrompt()
+					.name(DEFAULT_KEYSTORE_PASSWORD)
+					.message("enter password")
+					.mask('*')
+					.validator(input -> input.length() >= DEFAULT_KEYSTORE_PASSWORD.length())
+					.filter(this::toMD5)
+					.addPrompt();
 			builder.createInputPrompt().name("password2").message("re-enter password").mask('*').filter(this::toMD5).addPrompt();
 			val results = prompter.prompt(Collections.emptyList(), builder.build());
-			val result = ((InputResult)results.get("password")).getInput();
+			val result = ((InputResult)results.get(DEFAULT_KEYSTORE_PASSWORD)).getInput();
 			val password = ((InputResult)results.get("password2")).getInput();
 			if (result.equals(password))
 				return result;

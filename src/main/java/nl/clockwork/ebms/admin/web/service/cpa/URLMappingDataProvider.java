@@ -15,7 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web.service.cpa;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -33,13 +33,13 @@ import org.apache.wicket.model.Model;
 public class URLMappingDataProvider implements IDataProvider<URLMapping>
 {
 	private static final long serialVersionUID = 1L;
-	URLMappingController urlMappingService;
+	transient URLMappingController urlMappingService;
 
 	@Override
 	public Iterator<? extends URLMapping> iterator(long first, long count)
 	{
 		val urlMappings = Utils.toList(urlMappingService.getURLMappings());
-		return urlMappings == null ? new ArrayList<URLMapping>().iterator() : urlMappings.iterator();
+		return urlMappings == null ? Collections.emptyIterator() : urlMappings.iterator();
 	}
 
 	@Override
@@ -58,5 +58,6 @@ public class URLMappingDataProvider implements IDataProvider<URLMapping>
 	@Override
 	public void detach()
 	{
+		// No detachable state is stored in this provider.
 	}
 }

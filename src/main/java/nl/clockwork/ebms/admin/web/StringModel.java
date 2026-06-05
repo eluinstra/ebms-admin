@@ -25,7 +25,7 @@ import org.apache.wicket.model.Model;
 public class StringModel extends Model<String>
 {
 	private static final long serialVersionUID = 1L;
-	Supplier<String> getObject;
+	SerializableSupplier<String> getObject;
 
 	@Override
 	public String getObject()

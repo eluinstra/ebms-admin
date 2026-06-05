@@ -18,14 +18,13 @@ package nl.clockwork.ebms.admin.web;
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.ServiceLoader.Provider;
-import java.util.stream.Collectors;
 import nl.clockwork.ebms.admin.web.menu.MenuItem;
 
 public abstract class ExtensionProvider
 {
 	public static List<ExtensionProvider> get()
 	{
-		return ServiceLoader.load(ExtensionProvider.class).stream().map(Provider::get).collect(Collectors.toList());
+		return ServiceLoader.load(ExtensionProvider.class).stream().map(Provider::get).toList();
 	}
 
 	public abstract Class<?> getSpringConfigurationClass();

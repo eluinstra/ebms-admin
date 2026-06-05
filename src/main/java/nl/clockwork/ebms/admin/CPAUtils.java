@@ -16,7 +16,6 @@
 package nl.clockwork.ebms.admin;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -35,7 +34,7 @@ public class CPAUtils
 
 	public static List<String> getPartyIds(CollaborationProtocolAgreement cpa)
 	{
-		return cpa.getPartyInfo().stream().map(p -> toString(p.getPartyId().get(0))).collect(Collectors.toList());
+		return cpa.getPartyInfo().stream().map(p -> toString(p.getPartyId().get(0))).toList();
 	}
 
 	public static List<String> getPartyIdsByRoleName(CollaborationProtocolAgreement cpa, String roleName)
@@ -48,16 +47,12 @@ public class CPAUtils
 								.filter(r -> roleName == null || roleName.equals(r.getRole().getName()))
 								.map(r -> toString(p.getPartyId().get(0))))
 				.distinct()
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	public static List<String> getOtherPartyIds(CollaborationProtocolAgreement cpa, String partyId)
 	{
-		return cpa.getPartyInfo()
-				.stream()
-				.filter(p -> !partyId.equals(toString(p.getPartyId().get(0))))
-				.map(p -> toString(p.getPartyId().get(0)))
-				.collect(Collectors.toList());
+		return cpa.getPartyInfo().stream().filter(p -> !partyId.equals(toString(p.getPartyId().get(0)))).map(p -> toString(p.getPartyId().get(0))).toList();
 	}
 
 	public static List<String> getOtherRoleNamesByPartyId(CollaborationProtocolAgreement cpa, String partyId)
@@ -67,12 +62,12 @@ public class CPAUtils
 				.filter(p -> !partyId.equals(toString(p.getPartyId().get(0))))
 				.flatMap(p -> p.getCollaborationRole().stream().map(r -> r.getRole().getName()))
 				.distinct()
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	public static List<String> getRoleNames(CollaborationProtocolAgreement cpa)
 	{
-		return cpa.getPartyInfo().stream().flatMap(p -> p.getCollaborationRole().stream().map(r -> r.getRole().getName())).distinct().collect(Collectors.toList());
+		return cpa.getPartyInfo().stream().flatMap(p -> p.getCollaborationRole().stream().map(r -> r.getRole().getName())).distinct().toList();
 	}
 
 	public static List<String> getRoleNames(CollaborationProtocolAgreement cpa, String partyId)
@@ -82,7 +77,7 @@ public class CPAUtils
 				.filter(p -> partyId == null || partyId.equals(toString(p.getPartyId().get(0))))
 				.flatMap(p -> p.getCollaborationRole().stream().map(r -> r.getRole().getName()))
 				.distinct()
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	public static List<String> getOtherRoleNames(CollaborationProtocolAgreement cpa, String partyId, String roleName)
@@ -93,7 +88,7 @@ public class CPAUtils
 				.flatMap(
 						p -> p.getCollaborationRole().stream().filter(r -> roleName == null || !roleName.equals(r.getRole().getName())).map(r -> r.getRole().getName()))
 				.distinct()
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	public static List<String> getServiceNames(CollaborationProtocolAgreement cpa, String roleName)
@@ -106,7 +101,7 @@ public class CPAUtils
 								.stream()
 								.filter(r -> r.getRole().getName().equals(roleName))
 								.map(r -> getServiceName(r.getServiceBinding().getService())))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	public static List<String> getServiceNamesCanSend(CollaborationProtocolAgreement cpa, String partyId, String roleName)
@@ -115,12 +110,13 @@ public class CPAUtils
 		// getServiceName(r.getServiceBinding().getService()).collect(Collectors.toList());
 		return cpa.getPartyInfo()
 				.stream()
+				.filter(p -> partyId == null || partyId.equals(toString(p.getPartyId().get(0))))
 				.flatMap(
 						p -> p.getCollaborationRole()
 								.stream()
-								.filter(r -> r.getRole().getName().equals(roleName) && r.getServiceBinding().getCanSend().size() > 0)
+								.filter(r -> r.getRole().getName().equals(roleName) && !r.getServiceBinding().getCanSend().isEmpty())
 								.map(r -> getServiceName(r.getServiceBinding().getService())))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	public static List<String> getServiceNamesCanReceive(CollaborationProtocolAgreement cpa, String partyId, String roleName)
@@ -133,9 +129,9 @@ public class CPAUtils
 				.flatMap(
 						p -> p.getCollaborationRole()
 								.stream()
-								.filter(r -> r.getRole().getName().equals(roleName) && r.getServiceBinding().getCanReceive().size() > 0)
+								.filter(r -> r.getRole().getName().equals(roleName) && !r.getServiceBinding().getCanReceive().isEmpty())
 								.map(r -> getServiceName(r.getServiceBinding().getService())))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	public static List<String> getFromActionNamesCanSend(CollaborationProtocolAgreement cpa, String partyId, String roleName, String serviceName)
@@ -150,7 +146,7 @@ public class CPAUtils
 								.stream()
 								.filter(r -> r.getRole().getName().equals(roleName) && getServiceName(r.getServiceBinding().getService()).equals(serviceName))
 								.flatMap(r -> r.getServiceBinding().getCanSend().stream().map(cs -> cs.getThisPartyActionBinding().getAction())))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	public static List<String> getFromActionNamesCanReceive(CollaborationProtocolAgreement cpa, String partyId, String roleName, String serviceName)
@@ -165,7 +161,7 @@ public class CPAUtils
 								.stream()
 								.filter(r -> r.getRole().getName().equals(roleName) && getServiceName(r.getServiceBinding().getService()).equals(serviceName))
 								.flatMap(r -> r.getServiceBinding().getCanReceive().stream().map(cr -> cr.getThisPartyActionBinding().getAction())))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	public static List<String> getFromActionNames(CollaborationProtocolAgreement cpa, String roleName, String serviceName)
@@ -180,7 +176,7 @@ public class CPAUtils
 								.filter(r -> r.getRole().getName().equals(roleName))
 								.filter(r -> getServiceName(r.getServiceBinding().getService()).equals(serviceName))
 								.flatMap(r -> r.getServiceBinding().getCanSend().stream().map(cs -> cs.getThisPartyActionBinding().getAction())))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	public static List<String> getToActionNames(CollaborationProtocolAgreement cpa, String roleName, String serviceName)
@@ -195,7 +191,7 @@ public class CPAUtils
 								.filter(r -> r.getRole().getName().equals(roleName))
 								.filter(r -> getServiceName(r.getServiceBinding().getService()).equals(serviceName))
 								.flatMap(r -> r.getServiceBinding().getCanReceive().stream().map(cr -> cr.getThisPartyActionBinding().getAction())))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private static String getServiceName(ServiceType service)

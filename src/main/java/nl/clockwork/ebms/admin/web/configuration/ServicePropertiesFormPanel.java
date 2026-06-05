@@ -15,6 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
+import java.io.IOException;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.Button;
+import nl.clockwork.ebms.admin.web.EbMSButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -57,7 +58,7 @@ public class ServicePropertiesFormPanel extends Panel
 			add(createTestButton("test"));
 		}
 
-		private Button createTestButton(String id)
+		private EbMSButton createTestButton(String id)
 		{
 			Action action = () ->
 			{
@@ -67,13 +68,13 @@ public class ServicePropertiesFormPanel extends Panel
 					Utils.testEbMSUrl(o.getUrl());
 					info(getString("test.ok"));
 				}
-				catch (Exception e)
+				catch (IOException | RuntimeException e)
 				{
 					log.error("", e);
 					error(new StringResourceModel("test.nok", this, Model.of(e)).getString());
 				}
 			};
-			return new Button(id, new ResourceModel("cmd.test"), action);
+			return new EbMSButton(id, new ResourceModel("cmd.test"), action);
 		}
 	}
 

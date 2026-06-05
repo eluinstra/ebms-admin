@@ -30,15 +30,15 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.Utils;
-import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapDateTimePicker;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.admin.web.Button;
-import nl.clockwork.ebms.admin.web.Consumer;
 import nl.clockwork.ebms.admin.web.DropDownChoice;
-import nl.clockwork.ebms.admin.web.Function;
+import nl.clockwork.ebms.admin.web.EbMSAjaxFormComponentUpdatingBehavior;
+import nl.clockwork.ebms.admin.web.EbMSButton;
 import nl.clockwork.ebms.admin.web.Link;
+import nl.clockwork.ebms.admin.web.SerializableConsumer;
+import nl.clockwork.ebms.admin.web.SerializableFunction;
 import nl.clockwork.ebms.api.cpa.CPAController;
 import nl.clockwork.ebms.api.ebms.EbMSController;
 import nl.clockwork.ebms.common.EbMSMessageStatus;
@@ -68,12 +68,12 @@ public class MessageFilterPanel extends Panel
 	@SpringBean(name = "ebMSController")
 	EbMSController ebMSController;
 	@NonNull
-	final Function<IModel<MessageFilterFormData>, BasePage> getPage;
+	final SerializableFunction<IModel<MessageFilterFormData>, BasePage> getPage;
 	BootstrapDateTimePicker from;
 	BootstrapDateTimePicker to;
 
 	@Builder
-	public MessageFilterPanel(String id, IModel<MessageFilterFormData> model, @NonNull Function<IModel<MessageFilterFormData>, BasePage> getPage)
+	public MessageFilterPanel(String id, IModel<MessageFilterFormData> model, @NonNull SerializableFunction<IModel<MessageFilterFormData>, BasePage> getPage)
 	{
 		super(id, model);
 		this.getPage = getPage;
@@ -84,7 +84,7 @@ public class MessageFilterPanel extends Panel
 
 	private Link<Void> createClearLink(String id)
 	{
-		return new Link<Void>(id, () -> setResponsePage(getPage().getClass()));
+		return new Link<>(id, () -> setResponsePage(getPage().getClass()));
 	}
 
 	@Override
@@ -151,7 +151,7 @@ public class MessageFilterPanel extends Panel
 		{
 			val result = new DropDownChoice<String>(id, Model.ofList(Utils.toList(cpaController.getCPAIds())));
 			result.setLabel(new ResourceModel("lbl.cpaId"));
-			Consumer<AjaxRequestTarget> onUpdate = t ->
+			SerializableConsumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
@@ -172,7 +172,7 @@ public class MessageFilterPanel extends Panel
 					error(e.getMessage());
 				}
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
+			result.add(new EbMSAjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
@@ -180,12 +180,12 @@ public class MessageFilterPanel extends Panel
 		{
 			val result = DropDownChoice.<String>builder()
 					.id(id)
-					.choices(new PropertyModel<List<String>>(getModel(), "fromPartyIds"))
+					.choices(new PropertyModel<>(getModel(), "fromPartyIds"))
 					.isEnabled(() -> getModelObject().getToParty() == null)
 					.build();
 			result.setLabel(new ResourceModel("lbl.fromPartyId"));
 			result.setOutputMarkupId(true);
-			Consumer<AjaxRequestTarget> onUpdate = t ->
+			SerializableConsumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
@@ -203,7 +203,7 @@ public class MessageFilterPanel extends Panel
 					error(e.getMessage());
 				}
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
+			result.add(new EbMSAjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
@@ -211,12 +211,12 @@ public class MessageFilterPanel extends Panel
 		{
 			val result = DropDownChoice.<String>builder()
 					.id(id)
-					.choices(new PropertyModel<List<String>>(getModel(), "fromRoles"))
+					.choices(new PropertyModel<>(getModel(), "fromRoles"))
 					.isEnabled(() -> getModelObject().getToParty() == null)
 					.build();
 			result.setLabel(new ResourceModel("lbl.fromRole"));
 			result.setOutputMarkupId(true);
-			Consumer<AjaxRequestTarget> onUpdate = t ->
+			SerializableConsumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
@@ -233,7 +233,7 @@ public class MessageFilterPanel extends Panel
 					error(e.getMessage());
 				}
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
+			result.add(new EbMSAjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
@@ -241,12 +241,12 @@ public class MessageFilterPanel extends Panel
 		{
 			val result = DropDownChoice.<String>builder()
 					.id(id)
-					.choices(new PropertyModel<List<String>>(getModel(), "toPartyIds"))
+					.choices(new PropertyModel<>(getModel(), "toPartyIds"))
 					.isEnabled(() -> getModelObject().getFromParty() == null)
 					.build();
 			result.setLabel(new ResourceModel("lbl.toPartyId"));
 			result.setOutputMarkupId(true);
-			Consumer<AjaxRequestTarget> onUpdate = t ->
+			SerializableConsumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
@@ -264,7 +264,7 @@ public class MessageFilterPanel extends Panel
 					error(e.getMessage());
 				}
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
+			result.add(new EbMSAjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
@@ -272,12 +272,12 @@ public class MessageFilterPanel extends Panel
 		{
 			val result = DropDownChoice.<String>builder()
 					.id(id)
-					.choices(new PropertyModel<List<String>>(getModel(), "toRoles"))
+					.choices(new PropertyModel<>(getModel(), "toRoles"))
 					.isEnabled(() -> getModelObject().getFromParty() == null)
 					.build();
 			result.setLabel(new ResourceModel("lbl.toRole"));
 			result.setOutputMarkupId(true);
-			Consumer<AjaxRequestTarget> onUpdate = t ->
+			SerializableConsumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
@@ -294,16 +294,16 @@ public class MessageFilterPanel extends Panel
 					error(e.getMessage());
 				}
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
+			result.add(new EbMSAjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createServiceChoice(String id)
 		{
-			val result = new DropDownChoice<>(id, new PropertyModel<List<String>>(getModel(), "services"));
+			DropDownChoice<String> result = new DropDownChoice<>(id, new PropertyModel<>(getModel(), "services"));
 			result.setLabel(new ResourceModel("lbl.service"));
 			result.setOutputMarkupId(true);
-			Consumer<AjaxRequestTarget> onUpdate = t ->
+			SerializableConsumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
@@ -322,13 +322,13 @@ public class MessageFilterPanel extends Panel
 					error(e.getMessage());
 				}
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
+			result.add(new EbMSAjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createActionChoice(String id)
 		{
-			val result = new DropDownChoice<String>(id, new PropertyModel<List<String>>(getModel(), "actions"));
+			DropDownChoice<String> result = new DropDownChoice<>(id, new PropertyModel<>(getModel(), "actions"));
 			result.setLabel(new ResourceModel("lbl.action"));
 			result.setOutputMarkupId(true);
 			return result;
@@ -346,27 +346,29 @@ public class MessageFilterPanel extends Panel
 			return result;
 		}
 
-		private Button createSearchButton(String id)
+		private EbMSButton createSearchButton(String id)
 		{
-			return Button.builder()
+			return EbMSButton.builder()
 					.id(id)
 					.model(new ResourceModel("cmd.search"))
 					.onSubmit(() -> setResponsePage(MessageFilterPanel.this.getPage(getModel())))
 					.build();
 		}
 
-		private Button createResetButton(String id)
+		private EbMSButton createResetButton(String id)
 		{
-			return Button.builder().id(id).model(new ResourceModel("cmd.reset")).onSubmit(() -> setResponsePage(getPage().getClass())).build();
+			return EbMSButton.builder().id(id).model(new ResourceModel("cmd.reset")).onSubmit(() -> setResponsePage(getPage().getClass())).build();
 		}
 
 	}
 
+	@SuppressWarnings("java:S3398")
 	private Component getFeedbackComponent()
 	{
 		return this.get("feedback");
 	}
 
+	@SuppressWarnings("java:S3398")
 	private Component getForm()
 	{
 		return this.get("form");
@@ -381,15 +383,16 @@ public class MessageFilterPanel extends Panel
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
 	@EqualsAndHashCode(callSuper = true)
+	@SuppressWarnings("java:S2160")
 	public static class MessageFilterFormData extends EbMSMessageFilter
 	{
 		private static final long serialVersionUID = 1L;
-		final List<String> fromPartyIds = new ArrayList<>();
-		final List<String> fromRoles = new ArrayList<>();
-		final List<String> toPartyIds = new ArrayList<>();
-		final List<String> toRoles = new ArrayList<>();
-		final List<String> services = new ArrayList<>();
-		final List<String> actions = new ArrayList<>();
+		final transient List<String> fromPartyIds = new ArrayList<>();
+		final transient List<String> fromRoles = new ArrayList<>();
+		final transient List<String> toPartyIds = new ArrayList<>();
+		final transient List<String> toRoles = new ArrayList<>();
+		final transient List<String> services = new ArrayList<>();
+		final transient List<String> actions = new ArrayList<>();
 
 		public void resetFromPartyIds()
 		{

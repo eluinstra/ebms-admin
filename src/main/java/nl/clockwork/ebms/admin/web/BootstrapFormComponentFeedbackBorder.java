@@ -26,6 +26,7 @@ import org.apache.wicket.markup.html.form.FormComponent;
 public class BootstrapFormComponentFeedbackBorder extends Border implements IFeedback
 {
 	private static final long serialVersionUID = 1L;
+	private static final String CLASS_ATTRIBUTE = "class";
 
 	public BootstrapFormComponentFeedbackBorder(String id, FormComponent<?>...formComponents)
 	{
@@ -34,16 +35,10 @@ public class BootstrapFormComponentFeedbackBorder extends Border implements IFee
 	}
 
 	@Override
-	protected void onBeforeRender()
-	{
-		super.onBeforeRender();
-	}
-
-	@Override
 	protected void onComponentTag(ComponentTag tag)
 	{
-		if (new FeedbackCollector(getPage()).collect(getMessagesFilter()).size() > 0)
-			tag.put("class", (tag.getAttribute("class") == null ? "" : tag.getAttribute("class") + " ") + "has-error");
+		if (!new FeedbackCollector(getPage()).collect(getMessagesFilter()).isEmpty())
+			tag.put(CLASS_ATTRIBUTE, (tag.getAttribute(CLASS_ATTRIBUTE) == null ? "" : tag.getAttribute(CLASS_ATTRIBUTE) + " ") + "has-error");
 		super.onComponentTag(tag);
 	}
 

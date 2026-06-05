@@ -15,6 +15,9 @@
  */
 package nl.clockwork.ebms.admin.web.configuration;
 
+import java.beans.PropertyVetoException;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import lombok.AccessLevel;
@@ -28,9 +31,9 @@ import lombok.val;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.Button;
-import nl.clockwork.ebms.admin.web.Consumer;
-import nl.clockwork.ebms.admin.web.OnChangeAjaxBehavior;
+import nl.clockwork.ebms.admin.web.EbMSButton;
+import nl.clockwork.ebms.admin.web.EbMSOnChangeAjaxBehavior;
+import nl.clockwork.ebms.admin.web.SerializableConsumer;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.feedback.ContainerFeedbackMessageFilter;
@@ -86,17 +89,17 @@ public class JdbcPropertiesFormPanel extends Panel
 		private DropDownChoice<JdbcDriver> createDriverChoice(String id)
 		{
 			val o = getModelObject();
-			val result = new DropDownChoice<JdbcDriver>(id, new PropertyModel<List<JdbcDriver>>(o, "drivers"));
+			DropDownChoice<JdbcDriver> result = new DropDownChoice<>(id, new PropertyModel<>(o, "drivers"));
 			result.setLabel(new ResourceModel("lbl.driver"));
 			result.setRequired(true);
-			Consumer<AjaxRequestTarget> action = t ->
+			SerializableConsumer<AjaxRequestTarget> action = t ->
 			{
 				if (!o.getDriver().getDriverClassName().equals(JdbcDriver.HSQLDB.getDriverClassName()) && !classExists(o.getDriver().getDriverClassName()))
 					error(getString("driver.jdbc.missing", getModel()));
 				t.add(JdbcPropertiesFormPanel.this.get("feedback"));
 				t.add(getURLComponent());
 			};
-			result.add(OnChangeAjaxBehavior.builder().onUpdate(action).build());
+			result.add(EbMSOnChangeAjaxBehavior.builder().onUpdate(action).build());
 			return result;
 		}
 
@@ -118,7 +121,7 @@ public class JdbcPropertiesFormPanel extends Panel
 			TextField<String> result = new TextField<>(id);
 			result.setLabel(new ResourceModel("lbl.host"));
 			result.setRequired(true);
-			result.add(OnChangeAjaxBehavior.builder().onUpdate(t -> t.add(getURLComponent())).build());
+			result.add(EbMSOnChangeAjaxBehavior.builder().onUpdate(t -> t.add(getURLComponent())).build());
 			return result;
 		}
 
@@ -126,7 +129,7 @@ public class JdbcPropertiesFormPanel extends Panel
 		{
 			TextField<Integer> result = new TextField<>(id);
 			result.setLabel(new ResourceModel("lbl.port"));
-			result.add(OnChangeAjaxBehavior.builder().onUpdate(t -> t.add(getURLComponent())).build());
+			result.add(EbMSOnChangeAjaxBehavior.builder().onUpdate(t -> t.add(getURLComponent())).build());
 			return result;
 		}
 
@@ -135,11 +138,11 @@ public class JdbcPropertiesFormPanel extends Panel
 			val result = new TextField<String>(id);
 			result.setLabel(new ResourceModel("lbl.database"));
 			result.setRequired(true);
-			result.add(OnChangeAjaxBehavior.builder().onUpdate(t -> t.add(getURLComponent())).build());
+			result.add(EbMSOnChangeAjaxBehavior.builder().onUpdate(t -> t.add(getURLComponent())).build());
 			return result;
 		}
 
-		private Button createTestButton(String id)
+		private EbMSButton createTestButton(String id)
 		{
 			Action onSubmit = () ->
 			{
@@ -149,13 +152,14 @@ public class JdbcPropertiesFormPanel extends Panel
 					Utils.testJdbcConnection(o.getDriver().getDriverClassName(), o.getUrl(), o.getUsername(), o.getPassword());
 					info(getString("test.ok"));
 				}
-				catch (Exception e)
+				catch (PropertyVetoException | SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException
+						| NoSuchMethodException | RuntimeException e)
 				{
 					log.error("", e);
 					error(new StringResourceModel("test.nok", this, Model.of(e)).getString());
 				}
 			};
-			return new Button(id, new ResourceModel("cmd.test"), onSubmit);
+			return new EbMSButton(id, new ResourceModel("cmd.test"), onSubmit);
 		}
 
 		private Component getURLComponent()
@@ -168,6 +172,7 @@ public class JdbcPropertiesFormPanel extends Panel
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@NoArgsConstructor
 	@EqualsAndHashCode(callSuper = true)
+	@SuppressWarnings("java:S2160")
 	public static class JdbcPropertiesFormData extends JdbcURL implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;

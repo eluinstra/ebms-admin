@@ -23,7 +23,7 @@ import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.Button;
+import nl.clockwork.ebms.admin.web.EbMSButton;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.api.cpa.url.URLMappingController;
 import nl.clockwork.ebms.common.cpa.url.URLMapping;
@@ -79,7 +79,7 @@ public class URLMappingPage extends BasePage
 			add(new ResetButton("reset", new ResourceModel("cmd.reset"), URLMappingPage.class));
 		}
 
-		private Button createSetButton(String id)
+		private EbMSButton createSetButton(String id)
 		{
 			Action onSubmit = () ->
 			{
@@ -89,13 +89,13 @@ public class URLMappingPage extends BasePage
 					urlMappingService.setURLMapping(o);
 					setResponsePage(URLMappingsPage.class);
 				}
-				catch (Exception e)
+				catch (RuntimeException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			val result = new Button(id, new ResourceModel("cmd.upload"), onSubmit);
+			val result = new EbMSButton(id, new ResourceModel("cmd.upload"), onSubmit);
 			setDefaultButton(result);
 			return result;
 		}

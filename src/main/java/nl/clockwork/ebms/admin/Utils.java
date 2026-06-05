@@ -38,7 +38,7 @@ public class Utils
 			val properties = Utils.readProperties(Utils.class.getResourceAsStream(propertiesFile));
 			return properties.getProperty("artifactId") + "-" + properties.getProperty("version");
 		}
-		catch (Exception e)
+		catch (IOException | RuntimeException e)
 		{
 			return "unknown";
 		}
@@ -74,7 +74,9 @@ public class Utils
 
 	private static String hidePassword(String key, String property)
 	{
-		return key.matches("(?i).*(password|pwd).*") ? property.replaceAll(".", "*") : property;
+		if (property == null)
+			return null;
+		return key.matches("(?i).*(password|pwd).*") ? "*".repeat(property.length()) : property;
 	}
 
 	public static <T> List<T> toList(List<T> list)

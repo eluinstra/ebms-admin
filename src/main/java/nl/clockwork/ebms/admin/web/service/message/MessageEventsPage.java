@@ -22,11 +22,11 @@ import lombok.val;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
+import nl.clockwork.ebms.admin.web.EbMSWebMarkupContainer;
 import nl.clockwork.ebms.admin.web.Link;
 import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
 import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.PageLink;
-import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.admin.web.WicketApplication;
 import nl.clockwork.ebms.api.ebms.EbMSController;
 import nl.clockwork.ebms.api.ebms.model.MessageEvent;
@@ -74,14 +74,11 @@ public class MessageEventsPage extends BasePage
 
 		private Link<Void> createViewLink(String id, final IModel<MessageEvent> model, Component...components)
 		{
-			Action onClick = () ->
-			{
-				setResponsePage(
-						new MessagePage(
-								Model.of(ebMSController.getMessage(model.getObject().getMessageId(), null)),
-								MessageEventsPage.this,
-								messageId -> ebMSController.processMessageEvent(messageId)));
-			};
+			Action onClick = () -> setResponsePage(
+					new MessagePage(
+							Model.of(ebMSController.getMessage(model.getObject().getMessageId(), null)),
+							MessageEventsPage.this,
+							messageId -> ebMSController.processMessageEvent(messageId)));
 			val link = new Link<Void>(id, onClick);
 			link.add(components);
 			return link;
@@ -107,7 +104,7 @@ public class MessageEventsPage extends BasePage
 	public MessageEventsPage(IModel<MessageFilter> filter, MessageEventType[] eventTypes, final WebPage responsePage)
 	{
 		this.maxItemsPerPage = WicketApplication.get().getMaxItemsPerPage();
-		val container = new WebMarkupContainer("container");
+		val container = new EbMSWebMarkupContainer("container");
 		add(container);
 		val messageEvents = new MessageEventDataView("messageEvents", MessageEventDataProvider.of(ebMSController, filter.getObject(), eventTypes));
 		container.add(messageEvents);

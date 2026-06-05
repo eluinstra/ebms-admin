@@ -15,23 +15,9 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.experimental.FieldDefaults;
-import org.apache.wicket.ajax.AjaxRequestTarget;
+import java.io.Serializable;
 
-@Builder
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@AllArgsConstructor(staticName = "of")
-public class OnChangeAjaxBehavior extends org.apache.wicket.ajax.form.OnChangeAjaxBehavior
+public interface SerializableConsumer<T> extends java.util.function.Consumer<T>, Serializable
 {
-	private static final long serialVersionUID = 1L;
-	Consumer<AjaxRequestTarget> onUpdate;
 
-	@Override
-	protected void onUpdate(AjaxRequestTarget target)
-	{
-		onUpdate.accept(target);
-	}
 }

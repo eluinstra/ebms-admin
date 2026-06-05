@@ -29,7 +29,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 public class AdminDAOConfig
 {
 	@Bean("ebMSAdminDAO")
-	public EbMSDAO ebMSDAO(DataSource dataSource, SQLQueryFactory queryFactory)
+	public EbMSDAO ebMSDAO(@org.springframework.lang.NonNull DataSource dataSource, SQLQueryFactory queryFactory)
 	{
 		val jdbcTemplate = new JdbcTemplate(dataSource);
 		return new EbMSDAOImpl(jdbcTemplate, queryFactory);

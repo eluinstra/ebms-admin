@@ -15,7 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web.service.cpa;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -33,13 +33,13 @@ import org.apache.wicket.model.Model;
 public class CertificateMappingDataProvider implements IDataProvider<CertificateMapping>
 {
 	private static final long serialVersionUID = 1L;
-	CertificateMappingController certificateMappingService;
+	transient CertificateMappingController certificateMappingService;
 
 	@Override
 	public Iterator<? extends CertificateMapping> iterator(long first, long count)
 	{
 		val certificateMappings = Utils.toList(certificateMappingService.getCertificateMappings());
-		return certificateMappings == null ? new ArrayList<CertificateMapping>().iterator() : certificateMappings.iterator();
+		return certificateMappings == null ? Collections.emptyIterator() : certificateMappings.iterator();
 	}
 
 	@Override
@@ -58,5 +58,6 @@ public class CertificateMappingDataProvider implements IDataProvider<Certificate
 	@Override
 	public void detach()
 	{
+		// No detachable state is stored in this provider.
 	}
 }

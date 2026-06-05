@@ -28,15 +28,15 @@ import lombok.val;
 import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.Action;
-import nl.clockwork.ebms.admin.web.AjaxButton;
-import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.Button;
-import nl.clockwork.ebms.admin.web.Consumer;
 import nl.clockwork.ebms.admin.web.DropDownChoice;
+import nl.clockwork.ebms.admin.web.EbMSAjaxButton;
+import nl.clockwork.ebms.admin.web.EbMSAjaxFormComponentUpdatingBehavior;
+import nl.clockwork.ebms.admin.web.EbMSButton;
 import nl.clockwork.ebms.admin.web.ResetButton;
+import nl.clockwork.ebms.admin.web.SerializableConsumer;
 import nl.clockwork.ebms.api.cpa.CPAController;
 import nl.clockwork.ebms.api.ebms.EbMSController;
 import nl.clockwork.ebms.api.ebms.model.DataSource;
@@ -108,7 +108,7 @@ public class SendMessagePage extends BasePage
 			val result = new DropDownChoice<String>(id, Model.ofList(Utils.toList(cpaController.getCPAIds())));
 			result.setLabel(new ResourceModel("lbl.cpaId"));
 			result.setRequired(true);
-			Consumer<AjaxRequestTarget> onUpdate = t ->
+			SerializableConsumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
@@ -128,16 +128,16 @@ public class SendMessagePage extends BasePage
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
+			result.add(new EbMSAjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createFromPartyIdChoice(String id)
 		{
-			val result = new DropDownChoice<>(id, new PropertyModel<List<String>>(getModel(), "fromPartyIds"));
+			DropDownChoice<String> result = new DropDownChoice<>(id, new PropertyModel<>(getModel(), "fromPartyIds"));
 			result.setLabel(new ResourceModel("lbl.fromPartyId"));
 			result.setRequired(false).setOutputMarkupId(true);
-			Consumer<AjaxRequestTarget> onUpdate = t ->
+			SerializableConsumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
@@ -156,16 +156,16 @@ public class SendMessagePage extends BasePage
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
+			result.add(new EbMSAjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createFromRoleChoice(String id)
 		{
-			val result = new DropDownChoice<>(id, new PropertyModel<List<String>>(getModel(), "fromRoles"));
+			DropDownChoice<String> result = new DropDownChoice<>(id, new PropertyModel<>(getModel(), "fromRoles"));
 			result.setLabel(new ResourceModel("lbl.fromRole"));
 			result.setRequired(true).setOutputMarkupId(true);
-			Consumer<AjaxRequestTarget> onUpdate = t ->
+			SerializableConsumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
@@ -185,17 +185,17 @@ public class SendMessagePage extends BasePage
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
+			result.add(new EbMSAjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createServiceChoice(String id)
 		{
-			val result = new DropDownChoice<>(id, new PropertyModel<List<String>>(getModel(), "services"));
+			DropDownChoice<String> result = new DropDownChoice<>(id, new PropertyModel<>(getModel(), "services"));
 			result.setLabel(new ResourceModel("lbl.service"));
 			result.setRequired(true);
 			result.setOutputMarkupId(true);
-			Consumer<AjaxRequestTarget> onUpdate = t ->
+			SerializableConsumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
@@ -212,20 +212,20 @@ public class SendMessagePage extends BasePage
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
+			result.add(new EbMSAjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createActionChoice(String id)
 		{
-			val result = new DropDownChoice<String>(id, new PropertyModel<List<String>>(getModel(), "actions"));
+			DropDownChoice<String> result = new DropDownChoice<>(id, new PropertyModel<>(getModel(), "actions"));
 			result.setLabel(new ResourceModel("lbl.action"));
 			result.setRequired(true);
 			result.setOutputMarkupId(true);
 			return result;
 		}
 
-		private Button createSendButton(String id)
+		private EbMSButton createSendButton(String id)
 		{
 			Action onSubmit = () ->
 			{
@@ -236,27 +236,28 @@ public class SendMessagePage extends BasePage
 					val messageId = ebMSController.sendMessage(message);
 					info(new StringResourceModel("sendMessage.ok", Model.of(messageId)).getString());
 				}
-				catch (Exception e)
+				catch (RuntimeException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			return new Button(id, new ResourceModel("cmd.send"), onSubmit);
+			return new EbMSButton(id, new ResourceModel("cmd.send"), onSubmit);
 		}
 	}
 
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@EqualsAndHashCode(callSuper = true)
+	@SuppressWarnings("java:S2160")
 	public class EbMSMessagePropertiesData extends MessageRequestProperties
 	{
 		private static final long serialVersionUID = 1L;
-		final List<String> fromPartyIds = new ArrayList<>();
-		final List<String> fromRoles = new ArrayList<>();
-		final List<String> services = new ArrayList<>();
-		final List<String> actions = new ArrayList<>();
-		final List<DataSource> dataSources = new ArrayList<>();
+		private final List<String> fromPartyIds = new ArrayList<>();
+		private final List<String> fromRoles = new ArrayList<>();
+		private final List<String> services = new ArrayList<>();
+		private final List<String> actions = new ArrayList<>();
+		private final List<DataSource> dataSources = new ArrayList<>();
 
 		public void resetFromPartyIds()
 		{
@@ -332,12 +333,12 @@ public class SendMessagePage extends BasePage
 			item.setModel(new CompoundPropertyModel<>(item.getModel()));
 			item.add(new Label("name"));
 			item.add(new Label("contentType"));
-			Consumer<AjaxRequestTarget> onSubmit = t ->
+			SerializableConsumer<AjaxRequestTarget> onSubmit = t ->
 			{
 				dataSourcesForm.getModelObject().remove(item.getModelObject());
 				t.add(dataSourcesForm);
 			};
-			item.add(AjaxButton.builder().id("remove").model(new ResourceModel("cmd.remove")).form(dataSourcesForm).onSubmit(onSubmit).build());
+			item.add(EbMSAjaxButton.builder().id("remove").model(new ResourceModel("cmd.remove")).form(dataSourcesForm).onSubmit(onSubmit).build());
 		}
 	}
 
@@ -348,12 +349,12 @@ public class SendMessagePage extends BasePage
 		public DataSourcesForm(String id, IModel<List<DataSource>> model)
 		{
 			super(id, model);
-			val dataSources_ = new EbMSDataSourceListView("dataSources", model.getObject(), this);
-			dataSources_.setOutputMarkupId(true);
-			add(dataSources_);
+			val dataSourcesList = new EbMSDataSourceListView("dataSources", model.getObject(), this);
+			dataSourcesList.setOutputMarkupId(true);
+			add(dataSourcesList);
 			val dataSourceModalWindow = new DataSourceModalWindow("dataSourceModelWindow", model.getObject(), this);
 			add(dataSourceModalWindow);
-			val add = AjaxButton.builder().id("add").onSubmit(t -> dataSourceModalWindow.open(t)).build();
+			val add = EbMSAjaxButton.builder().id("add").onSubmit(t -> dataSourceModalWindow.open(t)).build();
 			add(add);
 		}
 	}

@@ -24,8 +24,8 @@ import org.apache.wicket.util.convert.IConverter;
 public class TextField<T> extends org.apache.wicket.markup.html.form.TextField<T>
 {
 	private static final long serialVersionUID = 1L;
-	Supplier<Boolean> isVisible;
-	Function<Class<?>, IConverter<?>> getConverter;
+	SerializableSupplier<Boolean> isVisible;
+	SerializableFunction<Class<?>, IConverter<?>> getConverter;
 
 	public TextField(String id)
 	{
@@ -33,7 +33,7 @@ public class TextField<T> extends org.apache.wicket.markup.html.form.TextField<T
 	}
 
 	@Builder
-	public TextField(String id, Supplier<Boolean> isVisible, Function<Class<?>, IConverter<?>> getConverter)
+	public TextField(String id, SerializableSupplier<Boolean> isVisible, SerializableFunction<Class<?>, IConverter<?>> getConverter)
 	{
 		super(id);
 		this.isVisible = isVisible == null ? () -> super.isVisible() : isVisible;
