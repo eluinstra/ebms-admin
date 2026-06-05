@@ -15,7 +15,6 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
 import lombok.AccessLevel;
@@ -32,7 +31,7 @@ public class AboutPage extends BasePage
 {
 	private static final long serialVersionUID = 1L;
 
-	public AboutPage(final PageParameters parameters) throws FileNotFoundException, IOException
+	public AboutPage(final PageParameters parameters) throws IOException
 	{
 		super(parameters);
 		add(

@@ -17,7 +17,7 @@ package nl.clockwork.ebms.admin.web;
 
 import java.io.Serializable;
 
-public interface Supplier<T> extends java.util.function.Supplier<T>, Serializable
+public interface SerializableFunction<T, R> extends java.util.function.Function<T, R>, Serializable
 {
 
 }

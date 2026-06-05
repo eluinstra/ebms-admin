@@ -52,11 +52,11 @@ public class XMLGregorianCalendarTextField extends TextField<XMLGregorianCalenda
 			}
 			catch (ParseException e)
 			{
-				throw new RuntimeException(e);
+				throw new IllegalArgumentException("Invalid date value: " + value, e);
 			}
 			catch (DatatypeConfigurationException e)
 			{
-				throw new RuntimeException(e);
+				throw new IllegalStateException("DatatypeFactory configuration error", e);
 			}
 		}
 
@@ -77,16 +77,16 @@ public class XMLGregorianCalendarTextField extends TextField<XMLGregorianCalenda
 	private static final long serialVersionUID = 1L;
 	@NonNull
 	String datePattern;
-	Supplier<IModel<String>> getLabel;
-	Supplier<Boolean> isRequired;
+	SerializableSupplier<IModel<String>> getLabel;
+	SerializableSupplier<Boolean> isRequired;
 
 	@Builder
 	public XMLGregorianCalendarTextField(
 			String id,
 			IModel<XMLGregorianCalendar> model,
 			@NonNull String datePattern,
-			Supplier<IModel<String>> getLabel,
-			Supplier<Boolean> isRequired)
+			SerializableSupplier<IModel<String>> getLabel,
+			SerializableSupplier<Boolean> isRequired)
 	{
 		super(id, model);
 		this.datePattern = datePattern;

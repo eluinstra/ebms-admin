@@ -15,7 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web.service.cpa;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import lombok.AccessLevel;
@@ -33,13 +33,13 @@ import org.apache.wicket.model.Model;
 public class CPADataProvider implements IDataProvider<String>
 {
 	private static final long serialVersionUID = 1L;
-	CPAController cpaController;
+	transient CPAController cpaController;
 
 	@Override
 	public Iterator<? extends String> iterator(long first, long count)
 	{
 		val cpaIds = Utils.toList(cpaController.getCPAIds());
-		return cpaIds == null ? new ArrayList<String>().iterator() : cpaIds.iterator();
+		return cpaIds == null ? Collections.emptyIterator() : cpaIds.iterator();
 	}
 
 	@Override
@@ -58,5 +58,6 @@ public class CPADataProvider implements IDataProvider<String>
 	@Override
 	public void detach()
 	{
+		// No detachable state is stored in this provider.
 	}
 }

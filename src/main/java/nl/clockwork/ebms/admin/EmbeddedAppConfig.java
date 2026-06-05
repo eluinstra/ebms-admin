@@ -67,16 +67,16 @@ import org.springframework.core.io.Resource;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EmbeddedAppConfig
 {
-	public static final PropertySourcesPlaceholderConfigurer PROPERTY_SOURCE = propertySourcesPlaceholderConfigurer();
+	public static final EbmsPropertySourcesPlaceholderConfigurer PROPERTY_SOURCE = propertySourcesPlaceholderConfigurer();
 
 	EmbeddedAppConfig()
 	{
 		// do nothing
 	}
 
-	private static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer()
+	private static EbmsPropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer()
 	{
-		val result = new PropertySourcesPlaceholderConfigurer();
+		val result = new EbmsPropertySourcesPlaceholderConfigurer();
 		val configDir = System.getProperty("ebms.configDir");
 		val resources = new Resource[]{new ClassPathResource("nl/clockwork/ebms/default.properties"),
 				new ClassPathResource("nl/clockwork/ebms/admin/default.properties"), new FileSystemResource(configDir + "ebms-admin.embedded.advanced.properties"),

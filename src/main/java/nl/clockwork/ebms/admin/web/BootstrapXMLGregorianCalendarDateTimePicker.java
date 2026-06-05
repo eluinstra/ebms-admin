@@ -87,10 +87,10 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 		super(id, model);
 		this.format = format;
 		this.hourFormat = format.contains("H") ? HourFormat.H24 : HourFormat.H12;
-		this.formatJS = format.replaceAll("H", "h");
+		this.formatJS = format.replace("H", "h");
 		setType(XMLGregorianCalendar.class);
 
-		val dateTimePicker = new WebMarkupContainer("dateTimePicker");
+		val dateTimePicker = new EbmsWebMarkupContainer("dateTimePicker");
 		dateTimePicker.setMarkupId(getDateTimePickerId());
 		dateTimePicker.setOutputMarkupId(true);
 		add(dateTimePicker);
@@ -141,9 +141,9 @@ public class BootstrapXMLGregorianCalendarDateTimePicker extends FormComponentPa
 		val options = new ArrayList<String>();
 		if (formatJS != null)
 			options.add("format: '" + formatJS + "'");
-		if (!Type.DATE_TIME.equals(type) & !Type.DATE.equals(type))
+		if (!Type.DATE_TIME.equals(type) && !Type.DATE.equals(type))
 			options.add("pickDate: false");
-		if (!Type.DATE_TIME.equals(type) & !Type.TIME.equals(type))
+		if (!Type.DATE_TIME.equals(type) && !Type.TIME.equals(type))
 			options.add("pickTime: false");
 		if (HourFormat.H12.equals(hourFormat))
 			options.add("pick12HourFormat: true");

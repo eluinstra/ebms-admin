@@ -44,17 +44,18 @@ public class LocalDateTimeConverter implements IConverter<LocalDateTime>
 			return null;
 		try
 		{
-			val date = LocalDate.from(DateTimeFormatter.ofPattern(datePattern).parse(value));
+			val effectiveLocale = locale != null ? locale : Locale.getDefault();
+			val date = LocalDate.from(DateTimeFormatter.ofPattern(datePattern).withLocale(effectiveLocale).parse(value));
 			val time = LocalTime.MIDNIGHT;
 			return LocalDateTime.of(date, time);
 		}
 		catch (RuntimeException e)
 		{
-			throw newConversionException(e, locale);
+			throw newConversionException(e);
 		}
 	}
 
-	private ConversionException newConversionException(RuntimeException cause, Locale locale)
+	private ConversionException newConversionException(RuntimeException cause)
 	{
 		return new ConversionException(cause).setVariable("format", datePattern);
 	}
@@ -62,6 +63,7 @@ public class LocalDateTimeConverter implements IConverter<LocalDateTime>
 	@Override
 	public String convertToString(LocalDateTime value, Locale locale)
 	{
-		return DateTimeFormatter.ofPattern(datePattern).format(value);
+		val effectiveLocale = locale != null ? locale : Locale.getDefault();
+		return DateTimeFormatter.ofPattern(datePattern).withLocale(effectiveLocale).format(value);
 	}
 }

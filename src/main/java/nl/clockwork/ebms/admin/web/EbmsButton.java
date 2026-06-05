@@ -15,23 +15,29 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.experimental.FieldDefaults;
-import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.model.IModel;
 
-@Builder
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@AllArgsConstructor(staticName = "of")
-public class OnChangeAjaxBehavior extends org.apache.wicket.ajax.form.OnChangeAjaxBehavior
+public class EbmsButton extends org.apache.wicket.markup.html.form.Button
 {
 	private static final long serialVersionUID = 1L;
-	Consumer<AjaxRequestTarget> onUpdate;
+	Action onSubmit;
+
+	public EbmsButton(String id)
+	{
+		this(id, null, null);
+	}
+
+	@Builder
+	public EbmsButton(String id, IModel<String> model, Action onSubmit)
+	{
+		super(id, model);
+		this.onSubmit = onSubmit == null ? super::onSubmit : onSubmit;
+	}
 
 	@Override
-	protected void onUpdate(AjaxRequestTarget target)
+	public void onSubmit()
 	{
-		onUpdate.accept(target);
+		onSubmit.run();
 	}
 }

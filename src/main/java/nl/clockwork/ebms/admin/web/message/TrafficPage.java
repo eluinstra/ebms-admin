@@ -25,12 +25,12 @@ import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
+import nl.clockwork.ebms.admin.web.EbmsWebMarkupContainer;
 import nl.clockwork.ebms.admin.web.InstantLabel;
 import nl.clockwork.ebms.admin.web.Link;
 import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
 import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.Utils;
-import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.admin.web.WicketApplication;
 import nl.clockwork.ebms.admin.web.message.MessageFilterPanel.MessageFilterFormData;
 import org.apache.commons.lang3.SerializationUtils;
@@ -94,9 +94,9 @@ public class TrafficPage extends BasePage
 		{
 			Action onClick = () ->
 			{
-				val filter = SerializationUtils.clone(TrafficPage.this.filter.getObject());
-				filter.setConversationId(model.getObject().getConversationId());
-				setResponsePage(new TrafficPage(Model.of(filter), TrafficPage.this));
+				val updatedFilter = SerializationUtils.clone(TrafficPage.this.filter.getObject());
+				updatedFilter.setConversationId(model.getObject().getConversationId());
+				setResponsePage(new TrafficPage(Model.of(updatedFilter), TrafficPage.this));
 			};
 			val result = new Link<Void>(id, onClick);
 			result.add(new Label("conversationId", model.getObject().getConversationId()));
@@ -129,7 +129,7 @@ public class TrafficPage extends BasePage
 		this.filter = filter;
 		filter.getObject().setServiceMessage(false);
 		add(createMessageFilterPanel("messageFilter", filter));
-		val container = new WebMarkupContainer("container");
+		val container = new EbmsWebMarkupContainer("container");
 		add(container);
 		val messages = new EbMSMessageDataView("messages", MessageDataProvider.of(ebMSDAO, filter.getObject()));
 		container.add(messages);

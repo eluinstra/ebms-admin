@@ -53,6 +53,7 @@ public class MessageDataProvider implements IDataProvider<EbMSMessage>
 	@Override
 	public void detach()
 	{
+		// No detachable state; DAO and filter are externally managed.
 	}
 
 }

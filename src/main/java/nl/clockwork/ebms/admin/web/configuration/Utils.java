@@ -20,7 +20,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -28,6 +29,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.sql.Driver;
 import java.sql.SQLException;
+import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Scanner;
 import javax.net.ssl.SSLContext;
@@ -54,8 +56,9 @@ public class Utils
 			sslContext.init(null, null, null);
 			sslEngine = sslContext.createSSLEngine();
 		}
-		catch (Exception e)
+		catch (NoSuchAlgorithmException | KeyManagementException | RuntimeException e)
 		{
+			// Keep startup resilient even if TLS engine initialization is unavailable.
 		}
 	}
 
@@ -91,7 +94,7 @@ public class Utils
 				val database = scanner.findInLine("[^;]*");
 				if (urlString != null)
 				{
-					val url = new URL("http://" + urlString);
+					val url = URI.create("http://" + urlString).toURL();
 					model.setHost(url.getHost());
 					model.setPort(url.getPort() == -1 ? null : url.getPort());
 					model.setDatabase(database);
@@ -103,8 +106,8 @@ public class Utils
 
 	public static void testEbMSUrl(String uri) throws IOException
 	{
-		val url = new URL(uri + "/cpa?wsdl");
 		// val url = new URL(uri + "/message?wsdl");
+		val url = URI.create(uri + "/cpa?wsdl").toURL();
 		val connection = url.openConnection();
 		if (connection instanceof HttpURLConnection httpURLConnection)
 		{
@@ -112,57 +115,66 @@ public class Utils
 			httpURLConnection.setRequestMethod("GET");
 			connection.connect();
 			if (httpURLConnection.getResponseCode() != 200)
-				throw new RuntimeException("Status code " + httpURLConnection.getResponseCode());
+				throw new IOException("Unexpected HTTP status code " + httpURLConnection.getResponseCode() + " for " + url);
 		}
 		else
 			throw new IllegalArgumentException("Unknown protocol: " + uri);
 	}
 
-	public static Resource getResource(String path) throws IOException
+	public static Resource getResource(@org.springframework.lang.NonNull String path) throws IOException
 	{
 		val result = new FileSystemResource(path);
 		return result.exists() ? result : new ClassPathResource(path);
 	}
 
-	public static void testTrustStore(KeyStoreType type, String path, String password)
+	public static void testTrustStore(KeyStoreType type, @org.springframework.lang.NonNull String path, String password)
 			throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException
 	{
 		testKeyStore(type, path, password, null, false);
 	}
 
-	public static void testKeyStore(KeyStoreType type, String path, String password, String defaultAlias, boolean validateKeyPassword)
-			throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException
+	public static
+			void
+			testKeyStore(KeyStoreType type, @org.springframework.lang.NonNull String path, String password, String defaultAlias, boolean validateKeyPassword)
+					throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException
 	{
+		val keyPassword = password.toCharArray();
 		val resource = getResource(path);
 		val keyStore = KeyStore.getInstance(type.name());
-		keyStore.load(resource.getInputStream(), password.toCharArray());
+		keyStore.load(resource.getInputStream(), keyPassword);
 		val aliases = keyStore.aliases();
 		if (!aliases.hasMoreElements())
 			throw new IllegalStateException("No keys found in keystore " + path);
 		if (StringUtils.isEmpty(defaultAlias))
 		{
-			val alias = aliases.nextElement();
-			if (validateKeyPassword)
-				keyStore.getKey(alias, password.toCharArray());
+			validateAliasPassword(keyStore, aliases.nextElement(), validateKeyPassword, keyPassword);
+			return;
 		}
-		else
+		validateDefaultAlias(path, defaultAlias, keyStore, aliases, validateKeyPassword, keyPassword);
+	}
+
+	private static
+			void
+			validateDefaultAlias(String path, String defaultAlias, KeyStore keyStore, Enumeration<String> aliases, boolean validateKeyPassword, char[] keyPassword)
+					throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException
+	{
+		while (aliases.hasMoreElements())
 		{
-			while (true)
+			val alias = aliases.nextElement();
+			if (alias.equals(defaultAlias))
 			{
-				if (aliases.hasMoreElements())
-				{
-					val alias = aliases.nextElement();
-					if (alias.equals(defaultAlias))
-					{
-						if (validateKeyPassword)
-							keyStore.getKey(alias, password.toCharArray());
-						break;
-					}
-				}
-				else
-					throw new IllegalArgumentException("Alias " + defaultAlias + " not found in keystore " + path);
+				validateAliasPassword(keyStore, alias, validateKeyPassword, keyPassword);
+				return;
 			}
 		}
+		throw new IllegalArgumentException("Alias " + defaultAlias + " not found in keystore " + path);
+	}
+
+	private static void validateAliasPassword(KeyStore keyStore, String alias, boolean validateKeyPassword, char[] keyPassword)
+			throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException
+	{
+		if (validateKeyPassword)
+			keyStore.getKey(alias, keyPassword);
 	}
 
 	public static void testJdbcConnection(String driverClassName, String jdbcUrl, String username, String password)
@@ -180,6 +192,8 @@ public class Utils
 			info.setProperty("password", password);
 		try (val connection = driver.connect(jdbcUrl, info))
 		{
+			if (connection == null)
+				throw new SQLException("Could not establish JDBC connection for URL: " + jdbcUrl);
 		}
 	}
 

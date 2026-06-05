@@ -28,16 +28,16 @@ public class AjaxLink<T> extends org.apache.wicket.ajax.markup.html.AjaxLink<T>
 {
 	private static final long serialVersionUID = 1L;
 	@NonNull
-	Consumer<AjaxRequestTarget> onClick;
+	SerializableConsumer<AjaxRequestTarget> onClick;
 
-	public AjaxLink(String id, @NonNull Consumer<AjaxRequestTarget> onClick)
+	public AjaxLink(String id, @NonNull SerializableConsumer<AjaxRequestTarget> onClick)
 	{
 		super(id);
 		this.onClick = onClick;
 	}
 
 	@Builder
-	public AjaxLink(String id, IModel<T> model, @NonNull Consumer<AjaxRequestTarget> onClick)
+	public AjaxLink(String id, IModel<T> model, @NonNull SerializableConsumer<AjaxRequestTarget> onClick)
 	{
 		super(id, model);
 		this.onClick = onClick;

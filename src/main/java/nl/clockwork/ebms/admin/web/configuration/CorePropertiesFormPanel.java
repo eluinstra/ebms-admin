@@ -23,10 +23,10 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
-import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.Supplier;
-import nl.clockwork.ebms.admin.web.WebMarkupContainer;
+import nl.clockwork.ebms.admin.web.EbmsAjaxFormComponentUpdatingBehavior;
+import nl.clockwork.ebms.admin.web.EbmsWebMarkupContainer;
+import nl.clockwork.ebms.admin.web.SerializableSupplier;
 import nl.clockwork.ebms.common.event.MessageEventListenerConfig.EventListenerType;
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -70,21 +70,21 @@ public class CorePropertiesFormPanel extends Panel
 			add(createJmsContainer("jmsContainer", enableConsoleProperties));
 		}
 
-		private WebMarkupContainer createContainer(String id, boolean enableConsoleProperties, Component...components)
+		private EbmsWebMarkupContainer createContainer(String id, boolean enableConsoleProperties, Component...components)
 		{
-			val result = new WebMarkupContainer(id);
+			val result = new EbmsWebMarkupContainer(id);
 			result.setVisible(!enableConsoleProperties);
 			result.add(components);
 			return result;
 		}
 
-		private WebMarkupContainer createJmsContainer(String id, final boolean enableConsoleProperties)
+		private EbmsWebMarkupContainer createJmsContainer(String id, final boolean enableConsoleProperties)
 		{
-			Supplier<Boolean> isVisible = () -> !enableConsoleProperties
+			SerializableSupplier<Boolean> isVisible = () -> !enableConsoleProperties
 					&& (EventListenerType.SIMPLE_JMS.equals(getModelObject().eventListener)
 							|| EventListenerType.JMS.equals(getModelObject().eventListener)
 							|| EventListenerType.JMS_TEXT.equals(getModelObject().eventListener));
-			val result = WebMarkupContainer.builder().id(id).isVisible(isVisible).build();
+			val result = EbmsWebMarkupContainer.builder().id(id).isVisible(isVisible).build();
 			result.add(
 					new BootstrapFormComponentFeedbackBorder(
 							"jmsBrokerUrlFeedback",
@@ -92,15 +92,15 @@ public class CorePropertiesFormPanel extends Panel
 			result.add(new CheckBox("jmsVirtualTopics").setLabel(new ResourceModel("lbl.jmsVirtualTopics")));
 			val checkBox = new CheckBox("startEmbeddedBroker");
 			checkBox.setLabel(new ResourceModel("lbl.startEmbeddedBroker"));
-			checkBox.add(AjaxFormComponentUpdatingBehavior.builder().event("change").onUpdate(t -> t.add(this)).build());
+			checkBox.add(EbmsAjaxFormComponentUpdatingBehavior.builder().event("change").onUpdate(t -> t.add(this)).build());
 			result.add(checkBox);
 			result.add(createActiveMQConfigFileContainer("activeMQConfigFileContainer", enableConsoleProperties));
 			return result;
 		}
 
-		private WebMarkupContainer createActiveMQConfigFileContainer(String id, final boolean enableConsoleProperties)
+		private EbmsWebMarkupContainer createActiveMQConfigFileContainer(String id, final boolean enableConsoleProperties)
 		{
-			val result = WebMarkupContainer.builder().id(id).isVisible(() -> !enableConsoleProperties && getModelObject().startEmbeddedBroker).build();
+			val result = EbmsWebMarkupContainer.builder().id(id).isVisible(() -> !enableConsoleProperties && getModelObject().startEmbeddedBroker).build();
 			result.add(
 					new BootstrapFormComponentFeedbackBorder(
 							"activeMQConfigFileFeedback",
@@ -114,7 +114,7 @@ public class CorePropertiesFormPanel extends Panel
 			val result = new DropDownChoice<EventListenerType>(id, new PropertyModel<>(getModel(), "eventListeners"));
 			result.setLabel(new ResourceModel("lbl.eventListener"));
 			result.setRequired(true);
-			result.add(AjaxFormComponentUpdatingBehavior.builder().event("change").onUpdate(t -> t.add(this)).build());
+			result.add(EbmsAjaxFormComponentUpdatingBehavior.builder().event("change").onUpdate(t -> t.add(this)).build());
 			return result;
 		}
 	}

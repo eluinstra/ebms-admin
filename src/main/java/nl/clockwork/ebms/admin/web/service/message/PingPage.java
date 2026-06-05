@@ -27,14 +27,14 @@ import lombok.val;
 import nl.clockwork.ebms.admin.CPAUtils;
 import nl.clockwork.ebms.admin.Utils;
 import nl.clockwork.ebms.admin.web.Action;
-import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.Button;
-import nl.clockwork.ebms.admin.web.Consumer;
 import nl.clockwork.ebms.admin.web.DropDownChoice;
+import nl.clockwork.ebms.admin.web.EbmsAjaxFormComponentUpdatingBehavior;
+import nl.clockwork.ebms.admin.web.EbmsButton;
 import nl.clockwork.ebms.admin.web.ResetButton;
+import nl.clockwork.ebms.admin.web.SerializableConsumer;
 import nl.clockwork.ebms.api.cpa.CPAController;
 import nl.clockwork.ebms.api.ebms.EbMSController;
 import nl.clockwork.ebms.common.jaxb.JAXBParser;
@@ -91,7 +91,7 @@ public class PingPage extends BasePage
 			val result = new DropDownChoice<>(id, Model.ofList(Utils.toList(cpaController.getCPAIds())));
 			result.setLabel(new ResourceModel("lbl.cpaId"));
 			result.setRequired(true);
-			Consumer<AjaxRequestTarget> onUpdate = t ->
+			SerializableConsumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
@@ -108,16 +108,16 @@ public class PingPage extends BasePage
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
+			result.add(new EbmsAjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createFromPartyIdChoice(String id)
 		{
-			DropDownChoice<String> result = new DropDownChoice<>(id, new PropertyModel<List<String>>(getModel(), "fromPartyIds"));
+			DropDownChoice<String> result = new DropDownChoice<>(id, new PropertyModel<>(getModel(), "fromPartyIds"));
 			result.setLabel(new ResourceModel("lbl.fromPartyId"));
 			result.setRequired(true).setOutputMarkupId(true);
-			Consumer<AjaxRequestTarget> onUpdate = t ->
+			SerializableConsumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				try
 				{
@@ -133,25 +133,25 @@ public class PingPage extends BasePage
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
+			result.add(new EbmsAjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
 		private DropDownChoice<String> createToPartyIdChoice(String id)
 		{
-			val result = new DropDownChoice<>(id, new PropertyModel<List<String>>(getModel(), "toPartyIds"));
+			DropDownChoice<String> result = new DropDownChoice<>(id, new PropertyModel<>(getModel(), "toPartyIds"));
 			result.setLabel(new ResourceModel("lbl.toPartyId"));
 			result.setRequired(true).setOutputMarkupId(true);
-			Consumer<AjaxRequestTarget> onUpdate = t ->
+			SerializableConsumer<AjaxRequestTarget> onUpdate = t ->
 			{
 				t.add(getPage().get("feedback"));
 				t.add(getPage().get("form"));
 			};
-			result.add(new AjaxFormComponentUpdatingBehavior("change", onUpdate));
+			result.add(new EbmsAjaxFormComponentUpdatingBehavior("change", onUpdate));
 			return result;
 		}
 
-		private Button createPingButton(String id)
+		private EbmsButton createPingButton(String id)
 		{
 			Action onSubmit = () ->
 			{
@@ -161,13 +161,13 @@ public class PingPage extends BasePage
 					ebMSController.ping(o.getCpaId(), o.getFromPartyId(), o.getToPartyId());
 					info(PingPage.this.getString("ping.ok"));
 				}
-				catch (Exception e)
+				catch (RuntimeException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			return new Button(id, new ResourceModel("cmd.ping"), onSubmit);
+			return new EbmsButton(id, new ResourceModel("cmd.ping"), onSubmit);
 		}
 	}
 
@@ -178,9 +178,9 @@ public class PingPage extends BasePage
 	{
 		private static final long serialVersionUID = 1L;
 		String cpaId;
-		final List<String> fromPartyIds = new ArrayList<>();
+		private final List<String> fromPartyIds = new ArrayList<>();
 		String fromPartyId;
-		final List<String> toPartyIds = new ArrayList<>();
+		private final List<String> toPartyIds = new ArrayList<>();
 		String toPartyId;
 
 		public void resetFromPartyIds()

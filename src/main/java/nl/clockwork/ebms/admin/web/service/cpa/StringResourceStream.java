@@ -54,5 +54,6 @@ public class StringResourceStream extends AbstractResourceStream
 	@Override
 	public void close() throws IOException
 	{
+		// No resources to close; stream is backed by an in-memory String.
 	}
 }

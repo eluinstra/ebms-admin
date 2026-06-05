@@ -15,7 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -37,7 +37,7 @@ public class MessageEventDataProvider implements IDataProvider<MessageEvent>
 {
 	private static final long serialVersionUID = 1L;
 	@NonNull
-	private EbMSController ebMSController;
+	private transient EbMSController ebMSController;
 	@NonNull
 	private MessageFilter filter;
 	@NonNull
@@ -47,7 +47,7 @@ public class MessageEventDataProvider implements IDataProvider<MessageEvent>
 	public Iterator<? extends MessageEvent> iterator(long first, long count)
 	{
 		val messageEvents = Utils.toList(ebMSController.getUnprocessedMessageEvents(filter, eventTypes, (int)(first + count)));
-		return messageEvents == null ? new ArrayList<MessageEvent>().iterator() : messageEvents.listIterator((int)first);
+		return messageEvents == null ? Collections.emptyIterator() : messageEvents.listIterator((int)first);
 	}
 
 	@Override
@@ -66,5 +66,6 @@ public class MessageEventDataProvider implements IDataProvider<MessageEvent>
 	@Override
 	public void detach()
 	{
+		// No detachable state is stored in this provider.
 	}
 }

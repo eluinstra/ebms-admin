@@ -23,9 +23,9 @@ import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
 import nl.clockwork.ebms.admin.Utils;
-import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.OnChangeAjaxBehavior;
+import nl.clockwork.ebms.admin.web.EbmsAjaxFormComponentUpdatingBehavior;
+import nl.clockwork.ebms.admin.web.EbmsOnChangeAjaxBehavior;
 import nl.clockwork.ebms.admin.web.TextField;
 import nl.clockwork.ebms.admin.web.configuration.ProxyPropertiesFormPanel.ProxyPropertiesFormData;
 import nl.clockwork.ebms.admin.web.configuration.SslPropertiesFormPanel.SslPropertiesFormData;
@@ -64,7 +64,7 @@ public class HttpPropertiesFormPanel extends Panel
 			add(new TextField<String>("url").setLabel(new ResourceModel("lbl.url")).setOutputMarkupId(true).setEnabled(false));
 			add(new CheckBox("chunkedStreamingMode").setLabel(new ResourceModel("lbl.chunkedStreamingMode")));
 			add(new CheckBox("base64Writer").setLabel(new ResourceModel("lbl.base64Writer")));
-			add(CreateSslCheckBox("ssl"));
+			add(createSslCheckBox("ssl"));
 			add(createSslPropertiesPanel("sslProperties", enableSslOverridePropeties));
 			add(createProxyCheckBox("proxy"));
 			add(createProxyPropertiesPanel("proxyProperties"));
@@ -74,7 +74,7 @@ public class HttpPropertiesFormPanel extends Panel
 		{
 			val result = new TextField<String>(id);
 			result.setLabel(new ResourceModel("lbl.host"));
-			result.add(OnChangeAjaxBehavior.builder().onUpdate(t -> t.add(get("url"))).build());
+			result.add(EbmsOnChangeAjaxBehavior.builder().onUpdate(t -> t.add(get("url"))).build());
 			result.setRequired(true);
 			return result;
 		}
@@ -83,7 +83,7 @@ public class HttpPropertiesFormPanel extends Panel
 		{
 			val result = new TextField<Integer>(id);
 			result.setLabel(new ResourceModel("lbl.port"));
-			result.add(OnChangeAjaxBehavior.builder().onUpdate(t -> t.add(get("url"))).build());
+			result.add(EbmsOnChangeAjaxBehavior.builder().onUpdate(t -> t.add(get("url"))).build());
 			return result;
 		}
 
@@ -92,45 +92,43 @@ public class HttpPropertiesFormPanel extends Panel
 			val result = TextField.<String>builder().id(id).getConverter(t -> new PathConverter()).build();
 			result.setLabel(new ResourceModel("lbl.path"));
 			result.setRequired(true);
-			result.add(OnChangeAjaxBehavior.builder().onUpdate(t -> t.add(get("url"))).build());
+			result.add(EbmsOnChangeAjaxBehavior.builder().onUpdate(t -> t.add(get("url"))).build());
 			return result;
 		}
 
-		private CheckBox CreateSslCheckBox(String id)
+		private CheckBox createSslCheckBox(String id)
 		{
 			val result = new CheckBox(id);
 			result.setLabel(new ResourceModel("lbl.ssl"));
-			result.add(AjaxFormComponentUpdatingBehavior.builder().event("change").onUpdate(t -> t.add(this)).build());
+			result.add(EbmsAjaxFormComponentUpdatingBehavior.builder().event("change").onUpdate(t -> t.add(this)).build());
 			return result;
 		}
 
 		private SslPropertiesFormPanel createSslPropertiesPanel(String id, boolean enableSslOverridePropeties)
 		{
-			val result = SslPropertiesFormPanel.builder()
+			return SslPropertiesFormPanel.builder()
 					.id(id)
 					.model(new PropertyModel<>(getModel(), "sslProperties"))
 					.enableSslOverridePropeties(enableSslOverridePropeties)
 					.isVisible(() -> getModelObject().isSsl())
 					.build();
-			return result;
 		}
 
 		private CheckBox createProxyCheckBox(String id)
 		{
 			val result = new CheckBox(id);
 			result.setLabel(new ResourceModel("lbl.proxy"));
-			result.add(AjaxFormComponentUpdatingBehavior.builder().event("change").onUpdate(t -> t.add(this)).build());
+			result.add(EbmsAjaxFormComponentUpdatingBehavior.builder().event("change").onUpdate(t -> t.add(this)).build());
 			return result;
 		}
 
 		private ProxyPropertiesFormPanel createProxyPropertiesPanel(String id)
 		{
-			val result = ProxyPropertiesFormPanel.builder()
+			return ProxyPropertiesFormPanel.builder()
 					.id(id)
 					.model(new PropertyModel<>(getModel(), "proxyProperties"))
 					.isVisible(() -> getModelObject().isProxy())
 					.build();
-			return result;
 		}
 	}
 

@@ -24,7 +24,7 @@ import org.apache.wicket.model.IModel;
 public class TextArea<T> extends org.apache.wicket.markup.html.form.TextArea<T>
 {
 	private static final long serialVersionUID = 1L;
-	Supplier<Boolean> isVisible;
+	SerializableSupplier<Boolean> isVisible;
 
 	public TextArea(String id, IModel<T> model)
 	{
@@ -32,7 +32,7 @@ public class TextArea<T> extends org.apache.wicket.markup.html.form.TextArea<T>
 	}
 
 	@Builder
-	public TextArea(String id, IModel<T> model, Supplier<Boolean> isVisible)
+	public TextArea(String id, IModel<T> model, SerializableSupplier<Boolean> isVisible)
 	{
 		super(id, model);
 		this.isVisible = isVisible == null ? () -> super.isVisible() : isVisible;

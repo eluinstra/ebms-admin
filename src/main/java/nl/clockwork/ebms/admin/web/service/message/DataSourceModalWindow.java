@@ -21,10 +21,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
-import nl.clockwork.ebms.admin.web.AjaxButton;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.Consumer;
+import nl.clockwork.ebms.admin.web.EbmsAjaxButton;
+import nl.clockwork.ebms.admin.web.SerializableConsumer;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.api.ebms.model.DataSource;
 import org.apache.commons.lang3.StringUtils;
@@ -101,9 +101,9 @@ public class DataSourceModalWindow extends ModalDialog
 				return result;
 			}
 
-			private AjaxButton createAddButton(String id)
+			private EbmsAjaxButton createAddButton(String id)
 			{
-				Consumer<AjaxRequestTarget> onSubmit = t ->
+				SerializableConsumer<AjaxRequestTarget> onSubmit = t ->
 				{
 					val o = getModelObject();
 					o.getFile()
@@ -120,20 +120,19 @@ public class DataSourceModalWindow extends ModalDialog
 						getWindow().close(t);
 					}
 				};
-				Consumer<AjaxRequestTarget> onError = t ->
+				SerializableConsumer<AjaxRequestTarget> onError = t ->
 				{
 					if (t != null)
 					{
 						t.add(this);
 					}
 				};
-				val result = AjaxButton.builder().id(id).model(new ResourceModel("cmd.add")).onSubmit(onSubmit).onError(onError).build();
-				return result;
+				return EbmsAjaxButton.builder().id(id).model(new ResourceModel("cmd.add")).onSubmit(onSubmit).onError(onError).build();
 			}
 
-			private AjaxButton createCancelButton(String id)
+			private EbmsAjaxButton createCancelButton(String id)
 			{
-				val cancel = AjaxButton.builder().id(id).model(new ResourceModel("cmd.cancel")).onSubmit(t -> getWindow().close(t)).build();
+				val cancel = EbmsAjaxButton.builder().id(id).model(new ResourceModel("cmd.cancel")).onSubmit(t -> getWindow().close(t)).build();
 				cancel.setDefaultFormProcessing(false);
 				return cancel;
 			}
@@ -143,6 +142,7 @@ public class DataSourceModalWindow extends ModalDialog
 	@Data
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	@EqualsAndHashCode(callSuper = true)
+	@SuppressWarnings("java:S2160")
 	public static class DataSourceModel extends DataSource
 	{
 		private static final long serialVersionUID = 1L;

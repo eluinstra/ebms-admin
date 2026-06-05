@@ -47,10 +47,10 @@ public class MenuPanel extends Panel
 		{
 			val o = item.getModelObject();
 			Match(o).of(
-					Case($(instanceOf(MenuLinkItem.class)), i -> item.add(new MenuLinkItemPanel("menuItem", Model.of((MenuLinkItem)o))/* .setRenderBodyOnly(true) */)),
+					Case($(instanceOf(MenuLinkItem.class)), i -> item.add(new MenuLinkItemPanel("menuItem", Model.of((MenuLinkItem)o)))),
 					Case($(instanceOf(MenuDivider.class)), i -> item.add(new MenuDividerPanel("menuItem"))),
-					Case($(), i -> item.add(new MenuItemPanel("menuItem", item.getModel(), level)/* .setRenderBodyOnly(true) */)));
 			// item.setRenderBodyOnly(true);
+					Case($(), i -> item.add(new MenuItemPanel("menuItem", item.getModel(), level))));
 		}
 	}
 

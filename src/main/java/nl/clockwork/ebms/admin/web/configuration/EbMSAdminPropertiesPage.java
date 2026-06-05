@@ -27,7 +27,7 @@ import lombok.val;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapPanelBorder;
-import nl.clockwork.ebms.admin.web.Button;
+import nl.clockwork.ebms.admin.web.EbmsButton;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.admin.web.WicketApplication;
 import nl.clockwork.ebms.admin.web.configuration.ConsolePropertiesFormPanel.ConsolePropertiesFormData;
@@ -145,9 +145,9 @@ public class EbMSAdminPropertiesPage extends BasePage
 			add(new ResetButton("reset", new ResourceModel("cmd.reset"), EbMSAdminPropertiesPage.class));
 		}
 
-		private Button createValidateButton(String id)
+		private EbmsButton createValidateButton(String id)
 		{
-			return Button.builder().id(id).onSubmit(() -> info(EbMSAdminPropertiesPage.this.getString("validate.ok"))).build();
+			return EbmsButton.builder().id(id).onSubmit(() -> info(EbMSAdminPropertiesPage.this.getString("validate.ok"))).build();
 		}
 	}
 

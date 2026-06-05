@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.Supplier;
+import nl.clockwork.ebms.admin.web.SerializableSupplier;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
@@ -36,10 +36,10 @@ import org.apache.wicket.util.io.IClusterable;
 public class ProxyPropertiesFormPanel extends Panel
 {
 	private static final long serialVersionUID = 1L;
-	Supplier<Boolean> isVisible;
+	SerializableSupplier<Boolean> isVisible;
 
 	@Builder
-	public ProxyPropertiesFormPanel(String id, final IModel<ProxyPropertiesFormData> model, Supplier<Boolean> isVisible)
+	public ProxyPropertiesFormPanel(String id, final IModel<ProxyPropertiesFormData> model, SerializableSupplier<Boolean> isVisible)
 	{
 		super(id, model);
 		this.isVisible = isVisible == null ? () -> super.isVisible() : isVisible;

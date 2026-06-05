@@ -33,7 +33,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.common.logging.LogUtils;
 import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
-import org.eclipse.jetty.server.ConnectionLimit;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
@@ -84,10 +83,11 @@ public class StartEmbedded extends Start
 	{
 		LogUtils.setLoggerClass(org.apache.cxf.common.logging.Slf4jLogger.class);
 		val app = new StartEmbedded();
-		app.startService(args);
+		app.startEmbeddedService(args);
 	}
 
-	private void startService(String[] args) throws Exception
+	@SuppressWarnings("java:S2221")
+	private void startEmbeddedService(String[] args) throws Exception
 	{
 		val options = createOptions();
 		val cmd = new DefaultParser().parse(options, args);
@@ -103,11 +103,11 @@ public class StartEmbedded extends Start
 		if (cmd.hasOption(JMX_OPTION))
 			initJMX(cmd, server);
 		if (cmd.hasOption(SOAP_OPTION) || cmd.hasOption(HEALTH_OPTION) || !cmd.hasOption(HEADLESS_OPTION) || !cmd.hasOption(DISABLE_EBMS_SERVER_OPTION))
-			try (val context = new AnnotationConfigWebApplicationContext())
+			try (AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext())
 			{
 				context.scan("nl.clockwork.ebms");
 				getPluginConfigClasses().forEach(context::register);
-				getConfigClasses().forEach(c -> context.register(c));
+				getConfigClasses().forEach(context::register);
 				val contextLoaderListener = new ContextLoaderListener(context);
 				if (cmd.hasOption(SOAP_OPTION) || !cmd.hasOption(HEADLESS_OPTION))
 				{
@@ -117,7 +117,7 @@ public class StartEmbedded extends Start
 				if (cmd.hasOption(HEALTH_OPTION))
 				{
 					initHealthServer(cmd, server);
-					handlerCollection.addHandler(createHealthContextHandler(cmd, contextLoaderListener));
+					handlerCollection.addHandler(createHealthContextHandler());
 				}
 				if (!cmd.hasOption(DISABLE_EBMS_SERVER_OPTION))
 				{
@@ -139,11 +139,11 @@ public class StartEmbedded extends Start
 				server.join();
 			}
 		else
-			try (val context = new AnnotationConfigApplicationContext())
+			try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext())
 			{
 				context.register(EmbeddedAppConfig.class);
 				getPluginConfigClasses().forEach(context::register);
-				getConfigClasses().forEach(c -> context.register(c));
+				getConfigClasses().forEach(context::register);
 				println("Starting Server...");
 				context.refresh();
 				context.start();
@@ -175,7 +175,7 @@ public class StartEmbedded extends Start
 		server.addConnector(connector);
 		val connectionLimit = properties.getProperty(EBMS_CONNECTION_LIMIT_PROPERTY);
 		if (StringUtils.isNotEmpty(connectionLimit))
-			server.addBean(new ConnectionLimit(Integer.parseInt(connectionLimit), connector));
+			addConnectionLimit(server, connector, Integer.parseInt(connectionLimit));
 	}
 
 	private ServerConnector createEbMSHttpConnector(Properties properties)

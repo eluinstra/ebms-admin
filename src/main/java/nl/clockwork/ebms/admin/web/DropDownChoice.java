@@ -22,10 +22,10 @@ import org.apache.wicket.model.IModel;
 public class DropDownChoice<T> extends org.apache.wicket.markup.html.form.DropDownChoice<T>
 {
 	private static final long serialVersionUID = 1L;
-	Supplier<Boolean> isVisible;
-	Supplier<Boolean> isEnabled;
-	Supplier<Boolean> isRequired;
-	Supplier<Boolean> localizeDisplayValues;
+	SerializableSupplier<Boolean> isVisible;
+	SerializableSupplier<Boolean> isEnabled;
+	SerializableSupplier<Boolean> isRequired;
+	SerializableSupplier<Boolean> localizeDisplayValues;
 
 	public DropDownChoice(String id, IModel<? extends List<? extends T>> choices)
 	{
@@ -37,10 +37,10 @@ public class DropDownChoice<T> extends org.apache.wicket.markup.html.form.DropDo
 			String id,
 			IModel<T> model,
 			IModel<? extends List<? extends T>> choices,
-			Supplier<Boolean> isVisible,
-			Supplier<Boolean> isEnabled,
-			Supplier<Boolean> isRequired,
-			Supplier<Boolean> localizeDisplayValues)
+			SerializableSupplier<Boolean> isVisible,
+			SerializableSupplier<Boolean> isEnabled,
+			SerializableSupplier<Boolean> isRequired,
+			SerializableSupplier<Boolean> localizeDisplayValues)
 	{
 		super(id, model, choices);
 		this.isVisible = isVisible == null ? () -> super.isVisible() : isVisible;

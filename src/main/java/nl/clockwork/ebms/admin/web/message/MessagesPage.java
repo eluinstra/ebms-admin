@@ -25,13 +25,13 @@ import nl.clockwork.ebms.admin.model.EbMSMessage;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
+import nl.clockwork.ebms.admin.web.EbmsWebMarkupContainer;
 import nl.clockwork.ebms.admin.web.InstantLabel;
 import nl.clockwork.ebms.admin.web.Link;
 import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
 import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.PageLink;
 import nl.clockwork.ebms.admin.web.Utils;
-import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.admin.web.WicketApplication;
 import nl.clockwork.ebms.admin.web.message.MessageFilterPanel.MessageFilterFormData;
 import org.apache.commons.lang3.SerializationUtils;
@@ -87,11 +87,8 @@ public class MessagesPage extends BasePage
 
 		private Link<Void> createViewLink(String id, final IModel<EbMSMessage> model)
 		{
-			val result = Link.<Void>builder()
-					.id(id)
 					// .onClick(() -> setResponsePage(new MessagePage(ebMSDAO.getMessage(message.getMessageId()),MessagesPage.this)))
-					.onClick(() -> setResponsePage(new MessagePage(model, MessagesPage.this)))
-					.build();
+			val result = Link.<Void>builder().id(id).onClick(() -> setResponsePage(new MessagePage(model, MessagesPage.this))).build();
 			result.add(new Label("messageId", model.getObject().getMessageId()));
 			return result;
 		}
@@ -100,9 +97,9 @@ public class MessagesPage extends BasePage
 		{
 			Action onClick = () ->
 			{
-				MessageFilterFormData filter = (MessageFilterFormData)SerializationUtils.clone(MessagesPage.this.filter.getObject());
-				filter.setConversationId(model.getObject().getConversationId());
-				setResponsePage(new MessagesPage(Model.of(filter), MessagesPage.this));
+				MessageFilterFormData updatedFilter = (MessageFilterFormData)SerializationUtils.clone(MessagesPage.this.filter.getObject());
+				updatedFilter.setConversationId(model.getObject().getConversationId());
+				setResponsePage(new MessagesPage(Model.of(updatedFilter), MessagesPage.this));
 			};
 			val result = new Link<Void>(id, onClick);
 			result.add(new Label("conversationId", model.getObject().getConversationId()));
@@ -146,7 +143,7 @@ public class MessagesPage extends BasePage
 		this.maxItemsPerPage = WicketApplication.get().getMaxItemsPerPage();
 		this.filter = filter;
 		add(createMessageFilterPanel("messageFilter", filter));
-		WebMarkupContainer container = new WebMarkupContainer("container");
+		EbmsWebMarkupContainer container = new EbmsWebMarkupContainer("container");
 		add(container);
 		val messages = new EbMSMessageDataView("messages", MessageDataProvider.of(ebMSDAO, filter.getObject()));
 		container.add(messages);

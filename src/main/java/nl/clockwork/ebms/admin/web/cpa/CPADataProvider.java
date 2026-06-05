@@ -52,5 +52,6 @@ public class CPADataProvider implements IDataProvider<CPA>
 	@Override
 	public void detach()
 	{
+		// No detachable state; DAO interactions are request scoped.
 	}
 }

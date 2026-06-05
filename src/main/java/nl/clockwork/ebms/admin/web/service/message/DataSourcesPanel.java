@@ -15,19 +15,14 @@
  */
 package nl.clockwork.ebms.admin.web.service.message;
 
-import java.util.List;
-import nl.clockwork.ebms.api.ebms.model.DataSource;
 import org.apache.wicket.markup.html.panel.Panel;
 
 public abstract class DataSourcesPanel extends Panel implements DataSources
 {
 	private static final long serialVersionUID = 1L;
 
-	public DataSourcesPanel(String id)
+	protected DataSourcesPanel(String id)
 	{
 		super(id);
 	}
-
-	@Override
-	public abstract List<DataSource> getDataSources();
 }

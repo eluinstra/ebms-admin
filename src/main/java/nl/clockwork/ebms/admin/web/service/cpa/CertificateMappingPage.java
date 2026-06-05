@@ -31,8 +31,8 @@ import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.DropDownChoice;
+import nl.clockwork.ebms.admin.web.EbmsButton;
 import nl.clockwork.ebms.admin.web.ResetButton;
 import nl.clockwork.ebms.api.cpa.CPAController;
 import nl.clockwork.ebms.api.cpa.certificate.CertificateMappingController;
@@ -97,7 +97,7 @@ public class CertificateMappingPage extends BasePage
 			add(new ResetButton("reset", new ResourceModel("cmd.reset"), CertificateMappingPage.class));
 		}
 
-		private Button createSetButton(String id)
+		private EbmsButton createSetButton(String id)
 		{
 			Action onSubmit = () ->
 			{
@@ -107,13 +107,13 @@ public class CertificateMappingPage extends BasePage
 					certificateMappingService.setCertificateMapping(createCertificateMapping(o));
 					setResponsePage(CertificateMappingsPage.class);
 				}
-				catch (Exception e)
+				catch (CertificateException | IOException | RuntimeException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			val result = new Button(id, new ResourceModel("cmd.upload"), onSubmit);
+			val result = new EbmsButton(id, new ResourceModel("cmd.upload"), onSubmit);
 			setDefaultButton(result);
 			return result;
 		}
@@ -123,6 +123,8 @@ public class CertificateMappingPage extends BasePage
 			X509Certificate source = getX509Certificate(o.source);
 			X509Certificate destination = getX509Certificate(o.destination);
 			String cpaId = o.cpaId;
+			if (source == null || destination == null)
+				throw new IllegalArgumentException("Source and destination certificates are required");
 			return new CertificateMapping(source, destination, cpaId);
 		}
 
@@ -140,8 +142,8 @@ public class CertificateMappingPage extends BasePage
 	public static class CertificateMappingFormData implements IClusterable
 	{
 		private static final long serialVersionUID = 1L;
-		List<FileUpload> source;
-		List<FileUpload> destination;
+		transient List<FileUpload> source;
+		transient List<FileUpload> destination;
 		String cpaId;
 	}
 

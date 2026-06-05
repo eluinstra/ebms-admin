@@ -54,5 +54,6 @@ public class EbMSDataSourceResourceStream extends AbstractResourceStream
 	@Override
 	public void close() throws IOException
 	{
+		// No resources to close; data source content is already materialized in memory.
 	}
 }

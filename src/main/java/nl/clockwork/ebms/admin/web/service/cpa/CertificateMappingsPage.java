@@ -24,10 +24,10 @@ import lombok.val;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.admin.web.Button;
+import nl.clockwork.ebms.admin.web.EbmsButton;
+import nl.clockwork.ebms.admin.web.EbmsWebMarkupContainer;
 import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.PageLink;
-import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.api.cpa.certificate.CertificateMappingController;
 import nl.clockwork.ebms.common.cpa.certificate.CertificateMapping;
 import org.apache.wicket.AttributeModifier;
@@ -36,7 +36,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -61,7 +60,7 @@ public class CertificateMappingsPage extends BasePage
 			item.add(new Label("source", createLabel(o.getSource())));
 			item.add(new Label("destination", createLabel(o.getDestination())));
 			item.add(new Label("cpaId", o.getCpaId()));
-			item.add(createEditButton("editCertificate", item.getModel()));
+			item.add(createEditButton("editCertificate"));
 			item.add(createDeleteButton("delete", o));
 			item.add(AttributeModifier.replace("class", OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
@@ -71,7 +70,7 @@ public class CertificateMappingsPage extends BasePage
 			return certificate.getSubjectX500Principal().getName() + " (" + certificate.getSerialNumber().toString() + ")";
 		}
 
-		private Button createEditButton(String id, final IModel<CertificateMapping> model)
+		private EbmsButton createEditButton(String id)
 		{
 			Action onSubmit = () ->
 			{
@@ -79,16 +78,16 @@ public class CertificateMappingsPage extends BasePage
 				{
 					setResponsePage(new CertificateMappingPage());
 				}
-				catch (Exception e)
+				catch (RuntimeException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			return new Button(id, new ResourceModel("cmd.edit"), onSubmit);
+			return new EbmsButton(id, new ResourceModel("cmd.edit"), onSubmit);
 		}
 
-		private Button createDeleteButton(String id, final CertificateMapping certificateMapping)
+		private EbmsButton createDeleteButton(String id, final CertificateMapping certificateMapping)
 		{
 			Action onSubmit = () ->
 			{
@@ -97,13 +96,13 @@ public class CertificateMappingsPage extends BasePage
 					certificateMappingService.deleteCertificateMapping(certificateMapping.getSource(), certificateMapping.getCpaId());
 					setResponsePage(new CertificateMappingsPage());
 				}
-				catch (Exception e)
+				catch (RuntimeException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			val result = new Button(id, new ResourceModel("cmd.delete"), onSubmit);
+			val result = new EbmsButton(id, new ResourceModel("cmd.delete"), onSubmit);
 			result.add(AttributeModifier.replace("onclick", "return confirm('" + getLocalizer().getString("confirm", this) + "');"));
 			return result;
 		}
@@ -127,7 +126,7 @@ public class CertificateMappingsPage extends BasePage
 		public EditCertificateMappingsForm(String id)
 		{
 			super(id);
-			val container = new WebMarkupContainer("container");
+			val container = new EbmsWebMarkupContainer("container");
 			add(container);
 			container.add(new CertificateMappingsDataView("certificateMappings", CertificateMappingDataProvider.of(certificateMappingService)));
 			add(new PageLink("new", new CertificateMappingPage()));

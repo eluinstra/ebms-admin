@@ -22,11 +22,11 @@ import lombok.val;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapPagingNavigator;
+import nl.clockwork.ebms.admin.web.EbmsWebMarkupContainer;
 import nl.clockwork.ebms.admin.web.Link;
 import nl.clockwork.ebms.admin.web.MaxItemsPerPageChoice;
 import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.PageLink;
-import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.admin.web.WicketApplication;
 import nl.clockwork.ebms.api.ebms.EbMSController;
 import nl.clockwork.ebms.api.ebms.model.MessageFilter;
@@ -71,11 +71,8 @@ public class MessagesPage extends BasePage
 
 		private Link<Void> createViewLink(String id, final String messageId, Component...components)
 		{
-			Action onClick = () ->
-			{
-				setResponsePage(
-						new MessagePage(Model.of(ebMSController.getMessage(messageId, null)), MessagesPage.this, messageId_ -> ebMSController.processMessage(messageId_)));
-			};
+			Action onClick = () -> setResponsePage(
+					new MessagePage(Model.of(ebMSController.getMessage(messageId, null)), MessagesPage.this, value -> ebMSController.processMessage(value)));
 			val link = new Link<Void>(id, onClick);
 			link.add(components);
 			return link;
@@ -101,7 +98,7 @@ public class MessagesPage extends BasePage
 	public MessagesPage(IModel<MessageFilter> filter, final WebPage responsePage)
 	{
 		this.maxItemsPerPage = WicketApplication.get().getMaxItemsPerPage();
-		val container = new WebMarkupContainer("container");
+		val container = new EbmsWebMarkupContainer("container");
 		add(container);
 		val messages = new MessageDataView("messages", MessageDataProvider.of(ebMSController, filter.getObject()));
 		container.add(messages);

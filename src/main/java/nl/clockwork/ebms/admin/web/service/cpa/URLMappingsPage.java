@@ -22,10 +22,10 @@ import lombok.val;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.admin.web.Button;
+import nl.clockwork.ebms.admin.web.EbmsButton;
+import nl.clockwork.ebms.admin.web.EbmsWebMarkupContainer;
 import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.PageLink;
-import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.api.cpa.url.URLMappingController;
 import nl.clockwork.ebms.common.cpa.url.URLMapping;
 import org.apache.wicket.AttributeModifier;
@@ -63,7 +63,7 @@ public class URLMappingsPage extends BasePage
 			item.add(AttributeModifier.replace("class", OddOrEvenIndexStringModel.of(item.getIndex())));
 		}
 
-		private Button createEditButton(String id, final IModel<URLMapping> model)
+		private EbmsButton createEditButton(String id, final IModel<URLMapping> model)
 		{
 			Action onSubmit = () ->
 			{
@@ -71,16 +71,16 @@ public class URLMappingsPage extends BasePage
 				{
 					setResponsePage(new URLMappingPage(model));
 				}
-				catch (Exception e)
+				catch (RuntimeException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			return new Button(id, new ResourceModel("cmd.edit"), onSubmit);
+			return new EbmsButton(id, new ResourceModel("cmd.edit"), onSubmit);
 		}
 
-		private Button createDeleteButton(String id, final IModel<URLMapping> model)
+		private EbmsButton createDeleteButton(String id, final IModel<URLMapping> model)
 		{
 			Action onSubmit = () ->
 			{
@@ -89,13 +89,13 @@ public class URLMappingsPage extends BasePage
 					urlMappingService.deleteURLMapping(model.getObject().getSource());
 					setResponsePage(new URLMappingsPage());
 				}
-				catch (Exception e)
+				catch (RuntimeException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			val result = new Button(id, new ResourceModel("cmd.delete"), onSubmit);
+			val result = new EbmsButton(id, new ResourceModel("cmd.delete"), onSubmit);
 			result.add(AttributeModifier.replace("onclick", "return confirm('" + getLocalizer().getString("confirm", this) + "');"));
 			return result;
 		}
@@ -119,7 +119,7 @@ public class URLMappingsPage extends BasePage
 		public EditURLMappingsForm(String id)
 		{
 			super(id);
-			val container = new WebMarkupContainer("container");
+			val container = new EbmsWebMarkupContainer("container");
 			add(container);
 			container.add(new URLMappingsDataView("urlMappings", URLMappingDataProvider.of(urlMappingService)));
 			add(new PageLink("new", new URLMappingPage()));

@@ -22,11 +22,11 @@ import lombok.val;
 import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
-import nl.clockwork.ebms.admin.web.Button;
+import nl.clockwork.ebms.admin.web.EbmsButton;
+import nl.clockwork.ebms.admin.web.EbmsWebMarkupContainer;
 import nl.clockwork.ebms.admin.web.Link;
 import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.PageClassLink;
-import nl.clockwork.ebms.admin.web.WebMarkupContainer;
 import nl.clockwork.ebms.api.cpa.CPAController;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
@@ -70,7 +70,7 @@ public class CPAsPage extends BasePage
 			return result;
 		}
 
-		private Button createDeleteButton(String id, final IModel<String> cpaId)
+		private EbmsButton createDeleteButton(String id, final IModel<String> cpaId)
 		{
 			Action onSubmit = () ->
 			{
@@ -79,13 +79,13 @@ public class CPAsPage extends BasePage
 					cpaController.deleteCPA(cpaId.getObject());
 					setResponsePage(new CPAsPage());
 				}
-				catch (Exception e)
+				catch (RuntimeException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			val result = new Button(id, new ResourceModel("cmd.delete"), onSubmit);
+			val result = new EbmsButton(id, new ResourceModel("cmd.delete"), onSubmit);
 			result.add(AttributeModifier.replace("onclick", "return confirm('" + getLocalizer().getString("confirm", this) + "');"));
 			return result;
 		}
@@ -109,7 +109,7 @@ public class CPAsPage extends BasePage
 		public EditCPAsForm(String id)
 		{
 			super(id);
-			val container = new WebMarkupContainer("container");
+			val container = new EbmsWebMarkupContainer("container");
 			add(container);
 			container.add(new CPAIdsDataView("cpaIds", CPADataProvider.of(cpaController)));
 			add(new PageClassLink("new", CPAUploadPage.class));

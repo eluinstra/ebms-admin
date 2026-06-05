@@ -16,7 +16,7 @@
 package nl.clockwork.ebms.admin;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import javax.sql.DataSource;
@@ -27,8 +27,8 @@ import lombok.experimental.FieldDefaults;
 import lombok.val;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.help.HelpFormatter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -67,8 +67,14 @@ public class DBExecute
 
 	private static void printUsage(Options options)
 	{
-		val formatter = new HelpFormatter();
-		formatter.printHelp("DBExecute", options, true);
+		try
+		{
+			HelpFormatter.builder().get().printHelp("DBExecute", null, options, null, true);
+		}
+		catch (IOException e)
+		{
+			throw new UncheckedIOException(e);
+		}
 		System.exit(0);
 	}
 
@@ -76,19 +82,19 @@ public class DBExecute
 	{
 		val dataSource = context.getBean(DataSource.class);
 		val jdbcTemplate = new JdbcTemplate(dataSource);
-		val dbClean = new DBExecute(jdbcTemplate);
-		return dbClean;
+		return new DBExecute(jdbcTemplate);
 	}
 
 	@NonNull
 	JdbcTemplate jdbcTemplate;
 
-	private boolean execute(CommandLine cmd) throws URISyntaxException, DataAccessException, IOException
+	private boolean execute(CommandLine cmd) throws DataAccessException, IOException
 	{
 		if (!cmd.hasOption("file"))
 			return false;
 		val file = Paths.get(cmd.getOptionValue("file")).toFile();
-		jdbcTemplate.execute(FileUtils.readFileToString(file, Charset.defaultCharset()));
+		val sql = java.util.Objects.requireNonNull(FileUtils.readFileToString(file, Charset.defaultCharset()));
+		jdbcTemplate.execute(sql);
 		return true;
 	}
 }

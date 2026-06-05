@@ -17,30 +17,27 @@ package nl.clockwork.ebms.admin.web;
 
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class WebMarkupContainer extends org.apache.wicket.markup.html.WebMarkupContainer
+public class EbmsAjaxFormComponentUpdatingBehavior extends org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior
 {
 	private static final long serialVersionUID = 1L;
-	Supplier<Boolean> isVisible;
-
-	public WebMarkupContainer(String id)
-	{
-		this(id, null);
-	}
+	@NonNull
+	SerializableConsumer<AjaxRequestTarget> onUpdate;
 
 	@Builder
-	public WebMarkupContainer(String id, Supplier<Boolean> isVisible)
+	public EbmsAjaxFormComponentUpdatingBehavior(String event, @NonNull SerializableConsumer<AjaxRequestTarget> onUpdate)
 	{
-		super(id);
-		this.isVisible = isVisible == null ? () -> super.isVisible() : isVisible;
-		setOutputMarkupId(true);
+		super(event);
+		this.onUpdate = onUpdate;
 	}
 
 	@Override
-	public boolean isVisible()
+	protected void onUpdate(AjaxRequestTarget target)
 	{
-		return isVisible.get();
+		onUpdate.accept(target);
 	}
 }

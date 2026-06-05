@@ -26,7 +26,7 @@ import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BasePage;
 import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
-import nl.clockwork.ebms.admin.web.Button;
+import nl.clockwork.ebms.admin.web.EbmsButton;
 import nl.clockwork.ebms.admin.web.TextField;
 import nl.clockwork.ebms.api.cpa.CPAController;
 import nl.clockwork.ebms.api.ebms.EbMSController;
@@ -83,7 +83,7 @@ public class MessageStatusPage extends BasePage
 			return result;
 		}
 
-		private Button createCheckButton(String id)
+		private EbmsButton createCheckButton(String id)
 		{
 			Action onSubmit = () ->
 			{
@@ -93,13 +93,13 @@ public class MessageStatusPage extends BasePage
 					val messageStatus = ebMSController.getMessageStatus(o.getMessageId());
 					info(new StringResourceModel("getMessageStatus.ok", Model.of(messageStatus.getStatus())).getString());
 				}
-				catch (Exception e)
+				catch (RuntimeException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
 				}
 			};
-			return new Button(id, new ResourceModel("cmd.check"), onSubmit);
+			return new EbmsButton(id, new ResourceModel("cmd.check"), onSubmit);
 		}
 	}
 

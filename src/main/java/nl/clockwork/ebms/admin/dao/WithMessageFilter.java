@@ -25,29 +25,39 @@ public interface WithMessageFilter
 {
 	default BooleanBuilder applyFilter(QEbmsMessage table, EbMSMessageFilter messageContext, BooleanBuilder builder)
 	{
-		if (messageContext != null)
-		{
-			if (messageContext.getCpaId() != null)
-				builder.and(table.cpaId.eq(messageContext.getCpaId()));
-			applyPathFilter(table.fromPartyId, table.fromRole, messageContext.getFromParty(), builder);
-			applyPathFilter(table.toPartyId, table.toRole, messageContext.getToParty(), builder);
-			if (messageContext.getService() != null)
-				builder.and(table.service.eq(messageContext.getService()));
-			if (messageContext.getAction() != null)
-				builder.and(table.action.eq(messageContext.getAction()));
-			if (messageContext.getConversationId() != null)
-				builder.and(table.conversationId.eq(messageContext.getConversationId()));
-			if (messageContext.getMessageId() != null)
-				builder.and(table.messageId.eq(messageContext.getMessageId()));
-			if (messageContext.getRefToMessageId() != null)
-				builder.and(table.refToMessageId.eq(messageContext.getRefToMessageId()));
-			if (messageContext.getStatuses() != null && !messageContext.getStatuses().isEmpty())
-				builder.and(table.status.in(messageContext.getStatuses()));
-		}
+		if (messageContext == null)
+			return builder;
+		addIfNotNull(messageContext.getCpaId(), builder::and, table.cpaId::eq);
+		applyPathFilter(table.fromPartyId, table.fromRole, messageContext.getFromParty(), builder);
+		applyPathFilter(table.toPartyId, table.toRole, messageContext.getToParty(), builder);
+		addIfNotNull(messageContext.getService(), builder::and, table.service::eq);
+		addIfNotNull(messageContext.getAction(), builder::and, table.action::eq);
+		addIfNotNull(messageContext.getConversationId(), builder::and, table.conversationId::eq);
+		addIfNotNull(messageContext.getMessageId(), builder::and, table.messageId::eq);
+		addIfNotNull(messageContext.getRefToMessageId(), builder::and, table.refToMessageId::eq);
+		addIfNotEmpty(messageContext.getStatuses(), builder::and, table.status::in);
 		return builder;
 	}
 
-	private void applyPathFilter(StringPath partyId, StringPath role, Party party, BooleanBuilder builder)
+	default <T> void addIfNotNull(
+			T value,
+			java.util.function.Consumer<com.querydsl.core.types.Predicate> consumer,
+			java.util.function.Function<T, com.querydsl.core.types.Predicate> predicateFactory)
+	{
+		if (value != null)
+			consumer.accept(predicateFactory.apply(value));
+	}
+
+	default <T extends java.util.Collection<?>> void addIfNotEmpty(
+			T value,
+			java.util.function.Consumer<com.querydsl.core.types.Predicate> consumer,
+			java.util.function.Function<T, com.querydsl.core.types.Predicate> predicateFactory)
+	{
+		if (value != null && !value.isEmpty())
+			consumer.accept(predicateFactory.apply(value));
+	}
+
+	default void applyPathFilter(StringPath partyId, StringPath role, Party party, BooleanBuilder builder)
 	{
 		if (party != null)
 		{

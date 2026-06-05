@@ -24,6 +24,6 @@ public class CustomErrorHandler extends ErrorHandler
 {
 	protected void writeErrorPage(HttpServletRequest request, Writer writer, int code, String message, boolean showStacks) throws IOException
 	{
-
+		// Intentionally empty to suppress default Jetty HTML error pages.
 	}
 }

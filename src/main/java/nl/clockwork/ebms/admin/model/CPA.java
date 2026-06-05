@@ -36,11 +36,21 @@ public class CPA implements IClusterable
 	@NonNull
 	String cpaId;
 	@NonNull
-	String cpa;
+	String cpaXml;
 
 	public CPA(String cpaId, CollaborationProtocolAgreement cpa) throws JAXBException
 	{
 		this.cpaId = cpaId;
-		this.cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpa);
+		this.cpaXml = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpa);
+	}
+
+	public String getCpa()
+	{
+		return cpaXml;
+	}
+
+	public void setCpa(String cpa)
+	{
+		this.cpaXml = cpa;
 	}
 }

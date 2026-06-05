@@ -42,10 +42,15 @@ public enum TimeUnit
 	YEAR("Months", Period.ofMonths(1), Period.ofYears(1), DateTimeFormatter.ofPattern(Constants.DATE_YEAR_FORMAT), DateTimeFormatter.ofPattern("MM"));
 
 	String units;
-	TemporalAmount timeUnit;
+	TemporalAmount unitStep;
 	TemporalAmount period;
 	DateTimeFormatter dateFormatter;
 	DateTimeFormatter timeUnitDateFormat;
+
+	public TemporalAmount getTimeUnit()
+	{
+		return unitStep;
+	}
 
 	public LocalDateTime getFrom()
 	{

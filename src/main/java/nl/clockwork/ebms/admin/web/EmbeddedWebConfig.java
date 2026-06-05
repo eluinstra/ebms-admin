@@ -15,6 +15,7 @@
  */
 package nl.clockwork.ebms.admin.web;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -26,7 +27,6 @@ import jakarta.xml.ws.soap.SOAPBinding;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -172,7 +172,7 @@ public class EmbeddedWebConfig
 
 	public Server createRestServer(Class<?> resourceClass, Object resourceObject, String path)
 	{
-		var sf = new JAXRSServerFactoryBean();
+		val sf = new JAXRSServerFactoryBean();
 		sf.setBus(cxf());
 		sf.setAddress("/rest/v19" + path);
 		sf.setProviders(Arrays.asList(createCrossOriginResourceSharingFilter(), createJacksonJsonProvider()));
@@ -186,7 +186,7 @@ public class EmbeddedWebConfig
 	private CrossOriginResourceSharingFilter createCrossOriginResourceSharingFilter()
 	{
 		val result = new CrossOriginResourceSharingFilter();
-		result.setAllowOrigins(allowOrigins.stream().filter(StringUtils::isNotEmpty).collect(Collectors.toList()));
+		result.setAllowOrigins(allowOrigins.stream().filter(StringUtils::isNotEmpty).toList());
 		return result;
 	}
 
@@ -203,7 +203,7 @@ public class EmbeddedWebConfig
 		result.registerModule(new Jdk8Module());
 		result.registerModule(new JavaTimeModule());
 		result.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-		result.setSerializationInclusion(Include.NON_NULL);
+		result.setDefaultPropertyInclusion(JsonInclude.Value.construct(Include.NON_NULL, Include.NON_NULL));
 		return result;
 	}
 

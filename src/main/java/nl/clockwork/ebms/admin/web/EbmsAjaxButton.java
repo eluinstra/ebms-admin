@@ -15,29 +15,44 @@
  */
 package nl.clockwork.ebms.admin.web;
 
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NonNull;
-import lombok.experimental.FieldDefaults;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.model.IModel;
 
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class AjaxFormComponentUpdatingBehavior extends org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior
+public class EbmsAjaxButton extends org.apache.wicket.ajax.markup.html.form.AjaxButton
 {
 	private static final long serialVersionUID = 1L;
 	@NonNull
-	Consumer<AjaxRequestTarget> onUpdate;
+	SerializableConsumer<AjaxRequestTarget> onSubmit;
+	SerializableConsumer<AjaxRequestTarget> onError;
 
 	@Builder
-	public AjaxFormComponentUpdatingBehavior(String event, @NonNull Consumer<AjaxRequestTarget> onUpdate)
+	public EbmsAjaxButton(
+			String id,
+			IModel<String> model,
+			Form<?> form,
+			@NonNull SerializableConsumer<AjaxRequestTarget> onSubmit,
+			SerializableConsumer<AjaxRequestTarget> onError)
 	{
-		super(event);
-		this.onUpdate = onUpdate;
+		super(id, model, form);
+		this.onSubmit = onSubmit;
+		this.onError = onError == null ? t ->
+		{
+		} : onError;
 	}
 
 	@Override
-	protected void onUpdate(AjaxRequestTarget target)
+	protected void onSubmit(AjaxRequestTarget target)
 	{
-		onUpdate.accept(target);
+		onSubmit.accept(target);
+	}
+
+	@Override
+	protected void onError(AjaxRequestTarget target)
+	{
+		super.onError(target);
+		onError.accept(target);
 	}
 }

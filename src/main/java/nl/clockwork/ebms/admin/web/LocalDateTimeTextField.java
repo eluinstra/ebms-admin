@@ -38,15 +38,15 @@ public class LocalDateTimeTextField extends TextField<LocalDateTime> implements 
 	String datePattern;
 	@NonNull
 	IConverter<LocalDateTime> converter;
-	Supplier<Boolean> isRequired;
+	SerializableSupplier<Boolean> isRequired;
 
 	@Builder
-	public LocalDateTimeTextField(final String id, final IModel<LocalDateTime> model, final String datePattern, Supplier<Boolean> isRequired)
+	public LocalDateTimeTextField(final String id, final IModel<LocalDateTime> model, final String datePattern, SerializableSupplier<Boolean> isRequired)
 	{
 		super(id, model, LocalDateTime.class);
 		this.datePattern = datePattern == null ? defaultDatePattern() : datePattern;
-		this.isRequired = isRequired == null ? () -> super.isRequired() : isRequired;
-		converter = new LocalDateTimeConverter(datePattern);
+		this.isRequired = isRequired == null ? super::isRequired : isRequired;
+		converter = new LocalDateTimeConverter(this.datePattern);
 	}
 
 	@Override
@@ -76,7 +76,9 @@ public class LocalDateTimeTextField extends TextField<LocalDateTime> implements 
 		{
 			val format = DateFormat.getDateInstance(DateFormat.SHORT, locale);
 			if (format instanceof SimpleDateFormat simpleDateFormat)
+			{
 				return simpleDateFormat.toPattern();
+			}
 		}
 		return DEFAULT_PATTERN;
 	}
