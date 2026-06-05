@@ -203,7 +203,6 @@ public class MessagePageX extends BasePage implements IGenericComponent<EbMSMess
 
 	private Component[] createActionField(String id)
 	{
-		// TODO improve: do not generate messageErrorModalWindow and link if message is not of type MessageError
 		val messageErrorModalWindow = new ErrorMessageModalWindow(ModalDialog.CONTENT_ID, "messageError", Utils.getErrorList(getModelObject().getContent()));
 		val link = AjaxLink.<Void>builder().id("showMessageErrorWindow").onClick(t -> messageErrorModalWindow.open(t)).build();
 		link.setEnabled(EbMSAction.EBMS_SERVICE_URI.equals(getModelObject().getService()) && "MessageError".equals(getModelObject().getAction()));

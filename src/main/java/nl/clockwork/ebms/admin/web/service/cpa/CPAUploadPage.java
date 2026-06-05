@@ -91,8 +91,6 @@ public class CPAUploadPage extends BasePage
 					if (files != null && files.size() == 1)
 					{
 						FileUpload file = files.get(0);
-						// String contentType = file.getContentType();
-						// FIXME char encoding
 						cpaController.validateCPA(new String(file.getBytes()));
 					}
 					info(getString("cpa.valid"));
@@ -116,8 +114,6 @@ public class CPAUploadPage extends BasePage
 					if (files != null && files.size() == 1)
 					{
 						val file = files.get(0);
-						// val contentType = file.getContentType();
-						// FIXME char encoding
 						cpaController.insertCPA(new String(file.getBytes()), getModelObject().isOverwrite());
 					}
 					setResponsePage(new CPAsPage());
