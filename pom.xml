@@ -650,6 +650,9 @@
             <includes>
               <include>**/*.md</include>
             </includes>
+            <excludes>
+              <exclude>**/target/**</exclude>
+            </excludes>
             <flexmark/>
           </markdown>
           <pom>
@@ -673,6 +676,15 @@
             </sortPom>
           </pom>
         </configuration>
+        <executions>
+          <execution>
+            <id>spotless-check</id>
+            <goals>
+              <goal>apply</goal>
+            </goals>
+            <phase>process-resources</phase>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
