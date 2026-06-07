@@ -424,11 +424,11 @@
         </plugin>
         <plugin>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>3.4.0</version>
+          <version>3.5.0</version>
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.5.4</version>
+          <version>3.5.5</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -436,7 +436,7 @@
       <plugin>
         <groupId>org.owasp</groupId>
         <artifactId>dependency-check-maven</artifactId>
-        <version>12.2.1</version>
+        <version>12.2.2</version>
         <configuration>
           <suppressionFiles>
             <suppressionFile>${basedir}/dependency-check-suppressions.xml</suppressionFile>
@@ -446,7 +446,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.14</version>
+        <version>0.8.15</version>
         <executions>
           <execution>
             <goals>
@@ -505,7 +505,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.6.2</version>
+        <version>3.6.3</version>
         <executions>
           <execution>
             <id>enforce-versions</id>
@@ -625,7 +625,7 @@
       <plugin>
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
-        <version>3.4.0</version>
+        <version>3.6.0</version>
         <configuration>
           <formats>
             <format>
@@ -750,7 +750,7 @@
       <plugin>
         <groupId>org.owasp</groupId>
         <artifactId>dependency-check-maven</artifactId>
-        <version>12.2.1</version>
+        <version>12.2.2</version>
         <configuration>
           <suppressionFiles>
             <suppressionFile>${basedir}/dependency-check-suppressions.xml</suppressionFile>
@@ -850,7 +850,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>taglist-maven-plugin</artifactId>
-        <version>3.2.1</version>
+        <version>3.2.2</version>
         <configuration>
           <tags>
             <tag>TODO</tag>
