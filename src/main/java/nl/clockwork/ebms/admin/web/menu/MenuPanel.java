@@ -49,7 +49,7 @@ public class MenuPanel extends Panel
 			Match(o).of(
 					Case($(instanceOf(MenuLinkItem.class)), i -> item.add(new MenuLinkItemPanel("menuItem", Model.of((MenuLinkItem)o)))),
 					Case($(instanceOf(MenuDivider.class)), i -> item.add(new MenuDividerPanel("menuItem"))),
-			// item.setRenderBodyOnly(true);
+					// item.setRenderBodyOnly(true);
 					Case($(), i -> item.add(new MenuItemPanel("menuItem", item.getModel(), level))));
 		}
 	}

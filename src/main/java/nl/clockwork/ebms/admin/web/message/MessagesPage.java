@@ -87,7 +87,7 @@ public class MessagesPage extends BasePage
 
 		private Link<Void> createViewLink(String id, final IModel<EbMSMessage> model)
 		{
-					// .onClick(() -> setResponsePage(new MessagePage(ebMSDAO.getMessage(message.getMessageId()),MessagesPage.this)))
+			// .onClick(() -> setResponsePage(new MessagePage(ebMSDAO.getMessage(message.getMessageId()),MessagesPage.this)))
 			val result = Link.<Void>builder().id(id).onClick(() -> setResponsePage(new MessagePage(model, MessagesPage.this))).build();
 			result.add(new Label("messageId", model.getObject().getMessageId()));
 			return result;
