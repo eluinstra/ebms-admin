@@ -21,8 +21,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import javax.xml.parsers.ParserConfigurationException;
 import nl.clockwork.ebms.common.jaxb.JAXBParser;
 import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement;
+import org.xml.sax.SAXException;
 
 public class CollaborationProtocolAgreementType extends AbstractType<CollaborationProtocolAgreement>
 {
@@ -47,9 +49,9 @@ public class CollaborationProtocolAgreementType extends AbstractType<Collaborati
 	{
 		try
 		{
-			return JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(rs.getString(startIndex));
+			return JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(rs.getString(startIndex));
 		}
-		catch (JAXBException e)
+		catch (JAXBException | SAXException | ParserConfigurationException e)
 		{
 			throw new SQLException(e);
 		}

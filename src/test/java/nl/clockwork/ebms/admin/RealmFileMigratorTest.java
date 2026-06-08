@@ -29,13 +29,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.mindrot.jbcrypt.BCrypt;
 
-public class RealmFileMigratorTest
+class RealmFileMigratorTest
 {
 	@TempDir
 	Path tempDir;
 
 	@Test
-	public void shouldAddUserWithBcryptPassword() throws Exception
+	void shouldAddUserWithBcryptPassword() throws Exception
 	{
 		val realmFile = createRealmFile("admin:$2a$10$4WxSkIW6vSzFbA4Q9x0Q2.u5qbV6elqoc8rKTHMnh6CQ2CsAwM4j.,user");
 		val result = execute("--file", realmFile.toString(), "--add-user", "--username", "alice", "--password", "secret123", "--role", "admin");
@@ -50,7 +50,7 @@ public class RealmFileMigratorTest
 	}
 
 	@Test
-	public void shouldFailAddingExistingUser() throws Exception
+	void shouldFailAddingExistingUser() throws Exception
 	{
 		val realmFile = createRealmFile("alice:plain,user");
 		val result = execute("--file", realmFile.toString(), "--add-user", "--username", "alice", "--password", "secret123");
@@ -60,7 +60,7 @@ public class RealmFileMigratorTest
 	}
 
 	@Test
-	public void shouldFailAddingUserWithInvalidUsernameCharacters() throws Exception
+	void shouldFailAddingUserWithInvalidUsernameCharacters() throws Exception
 	{
 		val realmFile = createRealmFile("admin:plain,user");
 		val result = execute("--file", realmFile.toString(), "--add-user", "--username", "alice,admin", "--password", "secret123");
@@ -70,7 +70,7 @@ public class RealmFileMigratorTest
 	}
 
 	@Test
-	public void shouldUpdateUserPasswordAndKeepRoleByDefault() throws Exception
+	void shouldUpdateUserPasswordAndKeepRoleByDefault() throws Exception
 	{
 		val realmFile = createRealmFile("alice:old,user");
 		val result = execute("--file", realmFile.toString(), "--update-user", "--username", "alice", "--password", "newsecret1");
@@ -83,7 +83,7 @@ public class RealmFileMigratorTest
 	}
 
 	@Test
-	public void shouldFailUpdatingMissingUser() throws Exception
+	void shouldFailUpdatingMissingUser() throws Exception
 	{
 		val realmFile = createRealmFile("admin:secret,user");
 		val result = execute("--file", realmFile.toString(), "--update-user", "--username", "ghost", "--password", "secret123");
@@ -93,7 +93,7 @@ public class RealmFileMigratorTest
 	}
 
 	@Test
-	public void shouldFailAddingUserWithShortPassword() throws Exception
+	void shouldFailAddingUserWithShortPassword() throws Exception
 	{
 		val realmFile = createRealmFile("admin:plain,user");
 		val result = execute("--file", realmFile.toString(), "--add-user", "--username", "alice", "--password", "short");
@@ -103,7 +103,7 @@ public class RealmFileMigratorTest
 	}
 
 	@Test
-	public void shouldAllowAddingUserWithPasswordAtMinimumLength() throws Exception
+	void shouldAllowAddingUserWithPasswordAtMinimumLength() throws Exception
 	{
 		val realmFile = createRealmFile("admin:plain,user");
 		val result = execute("--file", realmFile.toString(), "--add-user", "--username", "alice", "--password", "abcde123");
@@ -114,7 +114,7 @@ public class RealmFileMigratorTest
 	}
 
 	@Test
-	public void shouldFailAddingUserWithPasswordThatIsTooLong() throws Exception
+	void shouldFailAddingUserWithPasswordThatIsTooLong() throws Exception
 	{
 		val realmFile = createRealmFile("admin:plain,user");
 		val result = execute("--file", realmFile.toString(), "--add-user", "--username", "alice", "--password", "a1".repeat(65));
@@ -124,7 +124,7 @@ public class RealmFileMigratorTest
 	}
 
 	@Test
-	public void shouldAllowAddingUserWithPasswordAtMaximumLength() throws Exception
+	void shouldAllowAddingUserWithPasswordAtMaximumLength() throws Exception
 	{
 		val realmFile = createRealmFile("admin:plain,user");
 		val maxPassword = "a1".repeat(64);
@@ -136,7 +136,7 @@ public class RealmFileMigratorTest
 	}
 
 	@Test
-	public void shouldFailUpdatingUserWithInvalidRoleCharacters() throws Exception
+	void shouldFailUpdatingUserWithInvalidRoleCharacters() throws Exception
 	{
 		val realmFile = createRealmFile("alice:old,user");
 		val result = execute("--file", realmFile.toString(), "--update-user", "--username", "alice", "--password", "newsecret1", "--role", "admin,ops");
@@ -146,7 +146,7 @@ public class RealmFileMigratorTest
 	}
 
 	@Test
-	public void shouldFailAddingUserWithoutDigitInPassword() throws Exception
+	void shouldFailAddingUserWithoutDigitInPassword() throws Exception
 	{
 		val realmFile = createRealmFile("admin:plain,user");
 		val result = execute("--file", realmFile.toString(), "--add-user", "--username", "alice", "--password", "password");
@@ -156,7 +156,7 @@ public class RealmFileMigratorTest
 	}
 
 	@Test
-	public void shouldFailAddingUserWithNonAlphanumericPassword() throws Exception
+	void shouldFailAddingUserWithNonAlphanumericPassword() throws Exception
 	{
 		val realmFile = createRealmFile("admin:plain,user");
 		val result = execute("--file", realmFile.toString(), "--add-user", "--username", "alice", "--password", "secret-123");
@@ -166,7 +166,7 @@ public class RealmFileMigratorTest
 	}
 
 	@Test
-	public void shouldRemoveUser() throws Exception
+	void shouldRemoveUser() throws Exception
 	{
 		val realmFile = createRealmFile("admin:secret,user", "alice:secret,user");
 		val result = execute("--file", realmFile.toString(), "--remove-user", "--username", "alice");
@@ -178,7 +178,7 @@ public class RealmFileMigratorTest
 	}
 
 	@Test
-	public void shouldFailRemovingMissingUser() throws Exception
+	void shouldFailRemovingMissingUser() throws Exception
 	{
 		val realmFile = createRealmFile("admin:secret,user");
 		val result = execute("--file", realmFile.toString(), "--remove-user", "--username", "ghost");
@@ -188,7 +188,7 @@ public class RealmFileMigratorTest
 	}
 
 	@Test
-	public void shouldKeepLegacyHashesDuringMigrateAndReturnWarningExitCode() throws Exception
+	void shouldKeepLegacyHashesDuringMigrateAndReturnWarningExitCode() throws Exception
 	{
 		val realmFile = createRealmFile("legacy:MD5:abc,user", "plain:secret,user");
 		val result = execute("--file", realmFile.toString());
@@ -205,7 +205,7 @@ public class RealmFileMigratorTest
 		val out = new ByteArrayOutputStream();
 		val err = new ByteArrayOutputStream();
 		val exitCode = RealmFileMigrator.execute(args, new PrintStream(out), new PrintStream(err));
-		return new TestResult(exitCode, out.toString(StandardCharsets.UTF_8), err.toString(StandardCharsets.UTF_8));
+		return new TestResult(exitCode, err.toString(StandardCharsets.UTF_8));
 	}
 
 	private Path createRealmFile(String...lines) throws Exception
@@ -225,13 +225,11 @@ public class RealmFileMigratorTest
 	private static class TestResult
 	{
 		int exitCode;
-		String out;
 		String err;
 
-		TestResult(int exitCode, String out, String err)
+		TestResult(int exitCode, String err)
 		{
 			this.exitCode = exitCode;
-			this.out = out;
 			this.err = err;
 		}
 	}
