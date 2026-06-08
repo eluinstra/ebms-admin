@@ -28,7 +28,7 @@ import nl.clockwork.ebms.admin.web.Action;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.Button;
 import nl.clockwork.ebms.admin.web.Supplier;
-import nl.clockwork.ebms.security.KeyStoreType;
+import nl.clockwork.ebms.common.security.KeyStoreType;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;

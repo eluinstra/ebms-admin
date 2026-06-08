@@ -27,7 +27,7 @@ import nl.clockwork.ebms.admin.web.AjaxFormComponentUpdatingBehavior;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.Supplier;
 import nl.clockwork.ebms.admin.web.WebMarkupContainer;
-import nl.clockwork.ebms.event.MessageEventListenerConfig.EventListenerType;
+import nl.clockwork.ebms.common.event.MessageEventListenerConfig.EventListenerType;
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;

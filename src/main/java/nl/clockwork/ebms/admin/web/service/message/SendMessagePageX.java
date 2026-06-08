@@ -43,7 +43,7 @@ import nl.clockwork.ebms.api.cpa.CPAController;
 import nl.clockwork.ebms.api.ebms.EbMSController;
 import nl.clockwork.ebms.api.ebms.model.MessageRequest;
 import nl.clockwork.ebms.api.ebms.model.MessageRequestProperties;
-import nl.clockwork.ebms.jaxb.JAXBParser;
+import nl.clockwork.ebms.common.jaxb.JAXBParser;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.CheckBox;

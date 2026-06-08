@@ -35,7 +35,7 @@ import javax.net.ssl.SSLEngine;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.val;
-import nl.clockwork.ebms.security.KeyStoreType;
+import nl.clockwork.ebms.common.security.KeyStoreType;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;

@@ -31,7 +31,7 @@ import nl.clockwork.ebms.admin.PropertySourcesPlaceholderConfigurer;
 import nl.clockwork.ebms.admin.web.menu.MenuDivider;
 import nl.clockwork.ebms.admin.web.menu.MenuItem;
 import nl.clockwork.ebms.admin.web.menu.MenuLinkItem;
-import nl.clockwork.ebms.event.MessageEventListenerConfig.EventListenerType;
+import nl.clockwork.ebms.common.event.MessageEventListenerConfig.EventListenerType;
 import org.apache.wicket.core.request.handler.PageProvider;
 import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
 import org.apache.wicket.markup.html.WebPage;

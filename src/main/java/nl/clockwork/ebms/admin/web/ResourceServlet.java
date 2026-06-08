@@ -18,7 +18,7 @@ package nl.clockwork.ebms.admin.web;
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.API.Match;
-import static nl.clockwork.ebms.Predicates.endsWith;
+import static nl.clockwork.ebms.common.Predicates.endsWith;
 
 import jakarta.servlet.GenericServlet;
 import jakarta.servlet.ServletException;

@@ -29,7 +29,7 @@ import nl.clockwork.ebms.admin.web.message.CachedOutputResourceStream;
 import nl.clockwork.ebms.api.ebms.model.DataSource;
 import nl.clockwork.ebms.api.ebms.model.Message;
 import nl.clockwork.ebms.api.ebms.model.MessageProperties;
-import nl.clockwork.ebms.jaxb.JAXBParser;
+import nl.clockwork.ebms.common.jaxb.JAXBParser;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.io.CachedOutputStream;
 import org.apache.wicket.markup.html.link.Link;

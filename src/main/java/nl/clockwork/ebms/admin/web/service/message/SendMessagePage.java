@@ -42,7 +42,7 @@ import nl.clockwork.ebms.api.ebms.EbMSController;
 import nl.clockwork.ebms.api.ebms.model.DataSource;
 import nl.clockwork.ebms.api.ebms.model.MessageRequest;
 import nl.clockwork.ebms.api.ebms.model.MessageRequestProperties;
-import nl.clockwork.ebms.jaxb.JAXBParser;
+import nl.clockwork.ebms.common.jaxb.JAXBParser;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
