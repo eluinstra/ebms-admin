@@ -19,6 +19,7 @@ import jakarta.xml.bind.JAXBException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.xml.parsers.ParserConfigurationException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
@@ -57,6 +58,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement;
+import org.xml.sax.SAXException;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -156,7 +158,7 @@ public class MessageFilterPanel extends Panel
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaController.getCPA(o.getCpaId()));
 					o.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
 					o.resetFromRoles();
 					o.resetToPartyIds(CPAUtils.getPartyIds(cpa));
@@ -166,7 +168,7 @@ public class MessageFilterPanel extends Panel
 					t.add(getFeedbackComponent());
 					t.add(getForm());
 				}
-				catch (JAXBException e)
+				catch (JAXBException | SAXException | ParserConfigurationException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
@@ -190,14 +192,14 @@ public class MessageFilterPanel extends Panel
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaController.getCPA(o.getCpaId()));
 					o.resetFromRoles(CPAUtils.getRoleNames(cpa, o.getFromParty().getPartyId()));
 					o.resetServices();
 					o.resetActions();
 					t.add(getFeedbackComponent());
 					t.add(getForm());
 				}
-				catch (JAXBException e)
+				catch (JAXBException | SAXException | ParserConfigurationException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
@@ -221,13 +223,13 @@ public class MessageFilterPanel extends Panel
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaController.getCPA(o.getCpaId()));
 					o.resetServices(CPAUtils.getServiceNames(cpa, o.getFromParty().getRole()));
 					o.resetActions();
 					t.add(getFeedbackComponent());
 					t.add(getForm());
 				}
-				catch (JAXBException e)
+				catch (JAXBException | SAXException | ParserConfigurationException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
@@ -251,14 +253,14 @@ public class MessageFilterPanel extends Panel
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaController.getCPA(o.getCpaId()));
 					o.resetToRoles(CPAUtils.getRoleNames(cpa, o.getToParty().getPartyId()));
 					o.resetServices();
 					o.resetActions();
 					t.add(getFeedbackComponent());
 					t.add(getForm());
 				}
-				catch (JAXBException e)
+				catch (JAXBException | SAXException | ParserConfigurationException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
@@ -282,13 +284,13 @@ public class MessageFilterPanel extends Panel
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaController.getCPA(o.getCpaId()));
 					o.resetServices(CPAUtils.getServiceNames(cpa, o.getToParty().getRole()));
 					o.resetActions();
 					t.add(getFeedbackComponent());
 					t.add(getForm());
 				}
-				catch (JAXBException e)
+				catch (JAXBException | SAXException | ParserConfigurationException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
@@ -308,7 +310,7 @@ public class MessageFilterPanel extends Panel
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaController.getCPA(o.getCpaId()));
 					o.resetActions(
 							o.getFromParty() == null
 									? CPAUtils.getToActionNames(cpa, o.getToParty().getRole(), o.getService())
@@ -316,7 +318,7 @@ public class MessageFilterPanel extends Panel
 					t.add(getFeedbackComponent());
 					t.add(getForm());
 				}
-				catch (JAXBException e)
+				catch (JAXBException | SAXException | ParserConfigurationException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
@@ -357,7 +359,7 @@ public class MessageFilterPanel extends Panel
 
 		private EbMSButton createResetButton(String id)
 		{
-			return EbMSButton.builder().id(id).model(new ResourceModel("cmd.reset")).onSubmit(() -> setResponsePage(getPage().getClass())).build();
+			return EbMSButton.builder().id(id).model(new ResourceModel("cmd.reset")).onSubmit(() -> setResponsePage(super.getPage().getClass())).build();
 		}
 
 	}

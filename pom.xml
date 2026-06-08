@@ -462,20 +462,24 @@
         <version>5.0.0</version>
         <configuration>
           <strictCheck>true</strictCheck>
-          <header>${project.basedir}/resources/license/header.txt</header>
           <failIfMissing>true</failIfMissing>
           <aggregate>true</aggregate>
-          <includes>
-            <include>pom.xml</include>
-            <include>src/main/java/**/*.java</include>
-            <include>src/main/resources/**/*</include>
-          </includes>
-          <excludes>
-            <exclude>src/main/resources/log4j.*</exclude>
-            <exclude>src/main/resources/**/*.css</exclude>
-            <exclude>src/main/resources/**/*.html</exclude>
-            <exclude>src/main/resources/**/*.wsdl</exclude>
-          </excludes>
+          <licenseSets>
+            <licenseSet>
+              <header>${project.basedir}/resources/license/header.txt</header>
+              <includes>
+                <include>pom.xml</include>
+                <include>src/main/java/**/*.java</include>
+                <include>src/main/resources/**/*</include>
+              </includes>
+              <excludes>
+                <exclude>src/main/resources/log4j.*</exclude>
+                <exclude>src/main/resources/**/*.css</exclude>
+                <exclude>src/main/resources/**/*.html</exclude>
+                <exclude>src/main/resources/**/*.wsdl</exclude>
+              </excludes>
+            </licenseSet>
+          </licenseSets>
         </configuration>
         <executions>
           <execution>
