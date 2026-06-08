@@ -43,7 +43,6 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.help.HelpFormatter;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.common.logging.LogUtils;
@@ -77,6 +76,7 @@ import org.jline.prompt.Prompter;
 import org.jline.prompt.PrompterFactory;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
@@ -129,7 +129,8 @@ public class Start implements SystemInterface
 	private static final String DEFAULT_JMS_PORT = "1999";
 	private static final String DEFAULT_KEYSTORE_TYPE = KeyStoreType.PKCS12.name();
 	private static final String DEFAULT_KEYSTORE_FILE = "nl/clockwork/ebms/keystore.p12";
-	private static final String DEFAULT_KEYSTORE_PASSWORD = "password";
+	private static final int MIN_PASSWORD_LENGTH = 12;
+	private static final String PASSWORD_PROMPT = "password";
 	private static final String DEFAULT_CONFIG_DIR = "";
 	private static final String WEB_CONNECTOR_NAME = "web";
 	private static final String HEALTH_CONNECTOR_NAME = "health";
@@ -219,7 +220,7 @@ public class Start implements SystemInterface
 		result.addOption(KEY_STORES_TYPE_OPTION, true, "set keystores type [default: " + NONE + "]");
 		result.addOption(KEY_STORE_TYPE_OPTION, true, "set keystore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
 		result.addOption(KEY_STORE_PATH_OPTION, true, "set keystore path [default: " + DEFAULT_KEYSTORE_FILE + "]");
-		result.addOption(KEY_STORE_PASSWORD_OPTION, true, "set keystore password [default: " + DEFAULT_KEYSTORE_PASSWORD + "]");
+		result.addOption(KEY_STORE_PASSWORD_OPTION, true, "set keystore password [required]");
 		result.addOption(CLIENT_AUTHENTICATION_OPTION, false, "enable SSL client authentication");
 		result.addOption(CLIENT_CERTIFICATE_HEADER_OPTION, true, "set client certificate header [default: " + NONE + "]");
 		result.addOption(TRUST_STORE_TYPE_OPTION, true, "set truststore type [default: " + DEFAULT_KEYSTORE_TYPE + "]");
@@ -317,11 +318,14 @@ public class Start implements SystemInterface
 
 	private SslContextFactory.Server createSslContextFactory(CommandLine cmd, boolean clientAuthentication) throws GeneralSecurityException, IOException
 	{
+		val keyStorePassword = cmd.getOptionValue(KEY_STORE_PASSWORD_OPTION);
+		if (StringUtils.isBlank(keyStorePassword) || "password".equals(keyStorePassword))
+			throw new IllegalArgumentException("A non-default keystore password must be provided using --" + KEY_STORE_PASSWORD_OPTION);
 		val result = new SslContextFactory.Server();
 		val ebMSKeyStore = EbMSKeyStore.of(
 				KeyStoreType.valueOf(cmd.getOptionValue(KEY_STORE_TYPE_OPTION, DEFAULT_KEYSTORE_TYPE)),
 				cmd.getOptionValue(KEY_STORE_PATH_OPTION, DEFAULT_KEYSTORE_FILE),
-				cmd.getOptionValue(KEY_STORE_PASSWORD_OPTION, DEFAULT_KEYSTORE_PASSWORD));
+				keyStorePassword);
 		addKeyStore(cmd, result, ebMSKeyStore);
 		if (clientAuthentication)
 			addTrustStore(cmd, result);
@@ -564,7 +568,7 @@ public class Start implements SystemInterface
 		return url == null ? result : resourceFactory.newResource(url);
 	}
 
-	protected void createRealmFile(File file) throws IOException, NoSuchAlgorithmException
+	protected void createRealmFile(File file) throws IOException
 	{
 		val builder = prompter.newBuilder();
 		builder.createInputPrompt().name("username").message("enter username").defaultValue("admin").addPrompt();
@@ -575,21 +579,21 @@ public class Start implements SystemInterface
 		FileUtils.writeStringToFile(file, username + ": " + password + ",user", Charset.defaultCharset(), false);
 	}
 
-	private String readPassword() throws IOException, NoSuchAlgorithmException
+	private String readPassword() throws IOException
 	{
 		while (true)
 		{
 			val builder = prompter.newBuilder();
 			builder.createInputPrompt()
-					.name(DEFAULT_KEYSTORE_PASSWORD)
+					.name(PASSWORD_PROMPT)
 					.message("enter password")
 					.mask('*')
-					.validator(input -> input.length() >= DEFAULT_KEYSTORE_PASSWORD.length())
-					.filter(this::toMD5)
+					.validator(input -> input.length() >= MIN_PASSWORD_LENGTH)
+					.filter(this::toBCrypt)
 					.addPrompt();
-			builder.createInputPrompt().name("password2").message("re-enter password").mask('*').filter(this::toMD5).addPrompt();
+			builder.createInputPrompt().name("password2").message("re-enter password").mask('*').filter(this::toBCrypt).addPrompt();
 			val results = prompter.prompt(Collections.emptyList(), builder.build());
-			val result = ((InputResult)results.get(DEFAULT_KEYSTORE_PASSWORD)).getInput();
+			val result = ((InputResult)results.get(PASSWORD_PROMPT)).getInput();
 			val password = ((InputResult)results.get("password2")).getInput();
 			if (result.equals(password))
 				return result;
@@ -598,9 +602,9 @@ public class Start implements SystemInterface
 		}
 	}
 
-	private String toMD5(String s)
+	private String toBCrypt(String s)
 	{
-		return "MD5:" + DigestUtils.md5Hex(s);
+		return BCrypt.hashpw(s, BCrypt.gensalt());
 	}
 
 	private static Terminal createTerminal()

@@ -19,8 +19,10 @@ import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -106,12 +108,23 @@ public class Utils
 
 	public static void testEbMSUrl(String uri) throws IOException
 	{
+		val baseUri = URI.create(uri);
+		val scheme = baseUri.getScheme();
+		if (scheme == null || (!"http".equalsIgnoreCase(scheme) && !"https".equalsIgnoreCase(scheme)))
+			throw new IllegalArgumentException("Only http and https URLs are allowed");
+		if (StringUtils.isBlank(baseUri.getHost()))
+			throw new IllegalArgumentException("A valid host is required");
+		if (isPrivateOrLocalHost(baseUri.getHost()))
+			throw new IllegalArgumentException("Private and local network hosts are not allowed");
 		// val url = new URL(uri + "/message?wsdl");
 		val url = URI.create(uri + "/cpa?wsdl").toURL();
 		val connection = url.openConnection();
 		if (connection instanceof HttpURLConnection httpURLConnection)
 		{
 			connection.setDoOutput(true);
+			httpURLConnection.setInstanceFollowRedirects(false);
+			httpURLConnection.setConnectTimeout(3000);
+			httpURLConnection.setReadTimeout(3000);
 			httpURLConnection.setRequestMethod("GET");
 			connection.connect();
 			if (httpURLConnection.getResponseCode() != 200)
@@ -119,6 +132,27 @@ public class Utils
 		}
 		else
 			throw new IllegalArgumentException("Unknown protocol: " + uri);
+	}
+
+	private static boolean isPrivateOrLocalHost(String host)
+	{
+		try
+		{
+			for (val address : InetAddress.getAllByName(host))
+			{
+				if (address.isAnyLocalAddress()
+						|| address.isLoopbackAddress()
+						|| address.isLinkLocalAddress()
+						|| address.isSiteLocalAddress()
+						|| address.isMulticastAddress())
+					return true;
+			}
+			return false;
+		}
+		catch (UnknownHostException e)
+		{
+			return true;
+		}
 	}
 
 	public static Resource getResource(@org.springframework.lang.NonNull String path) throws IOException
