@@ -51,10 +51,10 @@ ebms.pool.maxPoolSize=32
 
 ### DeliveryManager
 
-The DeliveryManager is used to handle EbMS [Ping](api#pingcpaid-frompartyid-topartyid) and [getMessageStatus](api#getmessagestatusmessageid) calls. Set `deliveryManager.type` to `JMS` when you are [scaling](/ebms-admin/deployment.md#scaling) the EbMS Adapter, otherwise leave it set to `DEFAULT`. When `deliveryManager.type=JMS` configure [JMS](#jms).
+The DeliveryManager is used to handle EbMS [Ping](api#pingcpaid-frompartyid-topartyid) and [getMessageStatus](api#getmessagestatusmessageid) calls. Set `deliveryManager.type` to `JMS` when you are [scaling](/ebms-admin/deployment.md#scaling) the EbMS Adapter, otherwise leave it set to `DEFAULT`. When `deliveryManager.type=JMS` add the [JMS Messaging Plugin](#jms-messaging-plugin) to the classpath and configure [JMS](#jms).
 
 ```properties
-# DeliveryManagerType: DEFAULT (DAO) | JMS
+# DeliveryManagerType: DEFAULT (DAO) | JMS (requires the JMS messaging plugin)
 deliveryManager.type=DEFAULT
 deliveryManager.minThreads=2
 deliveryManager.maxThreads=8
@@ -64,10 +64,10 @@ messageQueue.timeout=30000
 
 ### DeliveryTaskHandler
 
-The DeliveryTaskHandler is used to [send EbMS Messages](api#sendmessagemessage) asynchronously. Only the `DEFAULT` (DAO) type is supported. The DAO executor is gated by [Raft leader election](#raft) so a single elected leader processes delivery tasks at any given moment, allowing horizontal scaling without external coordinators such as JMS or Quartz.
+The DeliveryTaskHandler is used to [send EbMS Messages](api#sendmessagemessage) asynchronously. By default the `DEFAULT` (DAO) executor is used; it is gated by [Raft leader election](#raft) so a single elected leader processes delivery tasks at any given moment, allowing horizontal scaling without external coordinators. The `JMS` variant is also available when the [JMS Messaging Plugin](#jms-messaging-plugin) is on the classpath.
 
 ```properties
-# DeliveryTaskHandlerType: DEFAULT (DAO, Raft-leader-gated)
+# DeliveryTaskHandlerType: DEFAULT (DAO, Raft-leader-gated) | JMS (requires the JMS messaging plugin)
 deliveryTaskHandler.start=true
 deliveryTaskHandler.type=DEFAULT
 deliveryTaskHandler.minThreads=16
@@ -141,14 +141,12 @@ When receiving a message a `RECEIVE` event is generated. After a message is sent
 - `JMS` which stores all message properties to JMS
 - `JMS_TEXT` which stores all message properties to JMS as a text message
 
-When `DAO` is selected, you can get the events by calling [getUnProcessedEvents](api#getunprocessedmessageeventsmessagefilter-eventtypes-maxnr). When one of the JMS listeners is selected, you can get the events by listening to a `QUEUE` or `TOPIC` depending on the `destinationType`. You then also have to configure [JMS](#jms). Events can be filtered by providing a comma separated list of events to be filtered out in `eventListener.filter`.
+When `DAO` is selected, you can get the events by calling [getUnProcessedEvents](api#getunprocessedmessageeventsmessagefilter-eventtypes-maxnr). When one of the JMS listeners is selected, you can get the events by listening to a `QUEUE` or `TOPIC` depending on the `destinationType` — these listeners require the [JMS Messaging Plugin](#jms-messaging-plugin) on the classpath and you then also have to configure [JMS](#jms). Events can be filtered by providing a comma separated list of events to be filtered out in `eventListener.filter`.
 
 ```properties
-# EventListenerType: DEFAULT (LOGGING) | DAO | SIMPLE_JMS | JMS | JMS_TEXT
+# EventListenerType: DEFAULT (LOGGING) | DAO | SIMPLE_JMS | JMS | JMS_TEXT (SIMPLE_JMS, JMS and JMS_TEXT require the JMS messaging plugin)
 eventListener.type=DEFAULT
 eventListener.filter=
-# DestinationType: QUEUE | TOPIC
-eventListener.jms.destinationType=QUEUE
 ```
 
 ### Forward Proxy
@@ -183,22 +181,35 @@ http.errors.client.recoverable=408,429
 http.errors.server.unrecoverable=501,505,510
 ```
 
-### JMS
+### JMS Messaging Plugin
 
- JMS can be used by the [DeliveryManager](#deliverymanager) and the [EventListener](#eventlistener). By default the `jms.brokerURL=vm://localhost` setting starts a persistent ActiveMQ broker that stores its data in the folder `activemq-data` and is reachable through `vm://localhost`. To use a diffent (external) ActiveMQ broker configure `jms.brokerURL`. You can also start an internal ActiveMQ broker by setting `jms.broker.start=true` and set the path to the broker's configuration file in `jms.broker.config`. You can find the default ActiveMQ configuration file [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-@ebms.branch.version@/src/main/resources/nl/clockwork/ebms/activemq.xml). If you are using this configuration file, the broker's data is stored in the folder `data`.
+JMS support (broker, `ConnectionFactory`, `JMS` delivery manager, `JMS` delivery-task dispatcher, JMS message-event listeners) ships as a separate Maven artifact `nl.clockwork.ebms.plugin.messaging:ebms-jms-messaging-plugin`. Add the plugin jar to the classpath — it is auto-discovered through `META-INF/services/nl.clockwork.ebms.PluginProvider` — when you need any `*.type=JMS` (or `SIMPLE_JMS`/`JMS_TEXT`) configuration. The webapp distribution already bundles it.
+
+The plugin contributes the properties below. By default the `jms.brokerURL=vm://localhost` setting starts a persistent ActiveMQ broker that stores its data in the folder `activemq-data` and is reachable through `vm://localhost`. To use a different (external) ActiveMQ broker configure `jms.brokerURL`. You can also start an internal ActiveMQ broker by setting `jms.broker.start=true` and set the path to the broker's configuration file in `jms.broker.config`. The default ActiveMQ configuration ships at `nl/clockwork/ebms/plugin/messaging/jms/activemq.xml` in the plugin jar; if you are using this configuration file, the broker's data is stored in the folder `data`.
 
 :::info
-When [`eventListener.type`](#eventlistener) is set to `SIMPLE_JMS`, `JMS`, or `JMS_TEXT` use (the default) presistent delivery
+When [`eventListener.type`](#eventlistener) is set to `SIMPLE_JMS`, `JMS`, or `JMS_TEXT` use (the default) persistent delivery.
 :::
 
 ```properties
+# Broker / ConnectionFactory
 jms.brokerURL=vm://localhost
 jms.broker.start=false
-jms.broker.config=classpath:nl/clockwork/ebms/activemq.xml
+jms.broker.config=classpath:nl/clockwork/ebms/plugin/messaging/jms/activemq.xml
 jms.broker.username=
 jms.broker.password=
 jms.pool.minPoolSize=32
 jms.pool.maxPoolSize=32
+
+# DeliveryTaskHandler JMS variant
+deliveryTaskHandler.jms.destinationName=DELIVERY_TASK
+deliveryTaskHandler.jms.receiveTimeout=3000
+deliveryTaskHandler.jms.concurrentConsumers=1
+deliveryTaskHandler.jms.maxConcurrentConsumers=8
+
+# EventListener JMS variants
+# DestinationType: QUEUE | TOPIC
+eventListener.jms.destinationType=QUEUE
 ```
 
 ### Overflow attachments to disk
