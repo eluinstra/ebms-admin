@@ -51,10 +51,10 @@ ebms.pool.maxPoolSize=32
 
 ### DeliveryManager
 
-The DeliveryManager is used to handle EbMS [Ping](api#pingcpaid-frompartyid-topartyid) and [getMessageStatus](api#getmessagestatusmessageid) calls. Set `deliveryManager.type` to `JMS` when you are [scaling](/ebms-admin/deployment.md#scaling) the EbMS Adapter, otherwise leave it set to `DEFAULT`. When `deliveryManager.type=JMS` add the [JMS Messaging Plugin](#jms-messaging-plugin) to the classpath and configure [JMS](#jms).
+The DeliveryManager is used to handle EbMS [Ping](api#pingcpaid-frompartyid-topartyid) and [getMessageStatus](api#getmessagestatusmessageid) calls. Set `deliveryManager.type` to `JMS` or `KAFKA` when you are [scaling](/ebms-admin/deployment.md#scaling) the EbMS Adapter, otherwise leave it set to `DEFAULT`. When `deliveryManager.type=JMS` add the [JMS Messaging Plugin](#jms-messaging-plugin) to the classpath and configure [JMS](#jms). When `deliveryManager.type=KAFKA` add the [Kafka Messaging Plugin](#kafka-messaging-plugin) to the classpath and configure [Kafka](#kafka-messaging-plugin).
 
 ```properties
-# DeliveryManagerType: DEFAULT (DAO) | JMS (requires the JMS messaging plugin)
+# DeliveryManagerType: DEFAULT (DAO) | JMS (requires the JMS messaging plugin) | KAFKA (requires the Kafka messaging plugin)
 deliveryManager.type=DEFAULT
 deliveryManager.minThreads=2
 deliveryManager.maxThreads=8
@@ -64,10 +64,10 @@ messageQueue.timeout=30000
 
 ### DeliveryTaskHandler
 
-The DeliveryTaskHandler is used to [send EbMS Messages](api#sendmessagemessage) asynchronously. By default the `DEFAULT` (DAO) executor is used; it is gated by [Raft leader election](#raft) so a single elected leader processes delivery tasks at any given moment, allowing horizontal scaling without external coordinators. The `JMS` variant is also available when the [JMS Messaging Plugin](#jms-messaging-plugin) is on the classpath.
+The DeliveryTaskHandler is used to [send EbMS Messages](api#sendmessagemessage) asynchronously. By default the `DEFAULT` (DAO) executor is used; it is gated by [Raft leader election](#raft) so a single elected leader processes delivery tasks at any given moment, allowing horizontal scaling without external coordinators. The `JMS` variant is also available when the [JMS Messaging Plugin](#jms-messaging-plugin) is on the classpath; the `KAFKA` variant is available when the [Kafka Messaging Plugin](#kafka-messaging-plugin) is on the classpath.
 
 ```properties
-# DeliveryTaskHandlerType: DEFAULT (DAO, Raft-leader-gated) | JMS (requires the JMS messaging plugin)
+# DeliveryTaskHandlerType: DEFAULT (DAO, Raft-leader-gated) | JMS (requires the JMS messaging plugin) | KAFKA (requires the Kafka messaging plugin)
 deliveryTaskHandler.start=true
 deliveryTaskHandler.type=DEFAULT
 deliveryTaskHandler.minThreads=16
@@ -141,10 +141,10 @@ When receiving a message a `RECEIVE` event is generated. After a message is sent
 - `JMS` which stores all message properties to JMS
 - `JMS_TEXT` which stores all message properties to JMS as a text message
 
-When `DAO` is selected, you can get the events by calling [getUnProcessedEvents](api#getunprocessedmessageeventsmessagefilter-eventtypes-maxnr). When one of the JMS listeners is selected, you can get the events by listening to a `QUEUE` or `TOPIC` depending on the `destinationType` — these listeners require the [JMS Messaging Plugin](#jms-messaging-plugin) on the classpath and you then also have to configure [JMS](#jms). Events can be filtered by providing a comma separated list of events to be filtered out in `eventListener.filter`.
+When `DAO` is selected, you can get the events by calling [getUnProcessedEvents](api#getunprocessedmessageeventsmessagefilter-eventtypes-maxnr). When one of the JMS listeners is selected, you can get the events by listening to a `QUEUE` or `TOPIC` depending on the `destinationType` — these listeners require the [JMS Messaging Plugin](#jms-messaging-plugin) on the classpath and you then also have to configure [JMS](#jms). When one of the Kafka listeners (`SIMPLE_KAFKA`, `KAFKA`, `KAFKA_TEXT`) is selected, the events are published to per-event-type Kafka topics — these listeners require the [Kafka Messaging Plugin](#kafka-messaging-plugin) on the classpath. Events can be filtered by providing a comma separated list of events to be filtered out in `eventListener.filter`.
 
 ```properties
-# EventListenerType: DEFAULT (LOGGING) | DAO | SIMPLE_JMS | JMS | JMS_TEXT (SIMPLE_JMS, JMS and JMS_TEXT require the JMS messaging plugin)
+# EventListenerType: DEFAULT (LOGGING) | DAO | SIMPLE_JMS | JMS | JMS_TEXT | SIMPLE_KAFKA | KAFKA | KAFKA_TEXT (SIMPLE_JMS/JMS/JMS_TEXT require the JMS messaging plugin; SIMPLE_KAFKA/KAFKA/KAFKA_TEXT require the Kafka messaging plugin)
 eventListener.type=DEFAULT
 eventListener.filter=
 ```
@@ -210,6 +210,39 @@ deliveryTaskHandler.jms.maxConcurrentConsumers=8
 # EventListener JMS variants
 # DestinationType: QUEUE | TOPIC
 eventListener.jms.destinationType=QUEUE
+```
+
+### Kafka Messaging Plugin
+
+Apache Kafka support (producer/consumer factories, `KAFKA` delivery manager, `KAFKA` delivery-task dispatcher, Kafka message-event listeners) ships as a separate Maven artifact `nl.clockwork.ebms.plugin.messaging:ebms-kafka-messaging-plugin`. Add the plugin jar to the classpath — it is auto-discovered through `META-INF/services/nl.clockwork.ebms.PluginProvider` — when you need any `*.type=KAFKA` (or `SIMPLE_KAFKA`/`KAFKA_TEXT`) configuration.
+
+The plugin uses JDK serialization for record values with a security-hardened class allow-list (`nl.clockwork.ebms.*`, `java.*`, `javax.*`, `org.oasis_open.*`, and arrays thereof); untrusted classes on the wire are rejected. The shared reply topic (`kafka.topic.messageReplies`) is consumed by every plugin instance with its own unique consumer group; replies are correlated to outstanding requests by `refToMessageId` and replies for other instances are ignored. When `kafka.admin.autoCreate=true` (the default), the plugin creates the delivery-task, reply, and per-event-type topics on startup; set it to `false` if you manage topic provisioning externally.
+
+```properties
+# Kafka client
+kafka.bootstrapServers=localhost:9092
+kafka.clientId=ebms
+kafka.consumer.groupIdPrefix=ebms
+kafka.consumer.autoOffsetReset=earliest
+kafka.producer.acks=all
+kafka.producer.enableIdempotence=true
+
+# Topic auto-create (set false to manage topics externally)
+kafka.admin.autoCreate=true
+kafka.admin.numPartitions=1
+kafka.admin.replicationFactor=1
+
+# Topic names
+kafka.topic.deliveryTask=ebms-delivery-task
+kafka.topic.messageReplies=ebms-message-replies
+kafka.topic.eventPrefix=ebms-event-
+
+# DeliveryTaskHandler Kafka variant
+deliveryTaskHandler.kafka.concurrency=1
+deliveryTaskHandler.kafka.pollTimeout=3000
+
+# DeliveryManager Kafka variant
+deliveryManager.kafka.replyTimeout=180000
 ```
 
 ### Overflow attachments to disk
