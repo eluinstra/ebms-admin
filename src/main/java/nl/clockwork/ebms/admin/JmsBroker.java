@@ -24,7 +24,7 @@ public class JmsBroker
 	public static void main(String[] args) throws Exception
 	{
 		// System.setProperty("activemq.base",System.getProperty("user.dir"));
-		val result = new BrokerFactoryBean(new ClassPathResource("nl/clockwork/ebms/activemq.xml"));
+		val result = new BrokerFactoryBean(new ClassPathResource("nl/clockwork/ebms/plugin/messaging/jms/activemq.xml"));
 		result.setStart(true);
 		result.afterPropertiesSet();
 		System.out.println("Broker started");
