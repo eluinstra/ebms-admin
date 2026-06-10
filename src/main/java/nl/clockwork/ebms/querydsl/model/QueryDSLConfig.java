@@ -20,7 +20,6 @@ import static io.vavr.API.Case;
 import static io.vavr.API.Match;
 import static nl.clockwork.ebms.common.Predicates.contains;
 
-import com.atomikos.jdbc.AtomikosDataSourceBean;
 import com.querydsl.sql.DB2Templates;
 import com.querydsl.sql.H2Templates;
 import com.querydsl.sql.HSQLDBTemplates;
@@ -107,8 +106,6 @@ public class QueryDSLConfig
 	{
 		if (dataSource instanceof HikariDataSource hikariDataSource)
 			return hikariDataSource.getDriverClassName();
-		else if (dataSource instanceof AtomikosDataSourceBean atomikosDataSourceBean)
-			return atomikosDataSourceBean.getXaDataSourceClassName();
 		else
 			throw new IllegalStateException("DataSource of type " + dataSource.getClass().getName() + " not recognized!");
 	}
