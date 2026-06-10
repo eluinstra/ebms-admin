@@ -30,7 +30,7 @@ public class EbMSPropertySourcesPlaceholderConfigurer extends org.springframewor
 	Resource overridePropertiesFile;
 
 	@Override
-	public void setLocations(@org.springframework.lang.NonNull Resource...locations)
+	public void setLocations(@org.jspecify.annotations.NonNull Resource...locations)
 	{
 		overridePropertiesFile = locations[locations.length - 1];
 		super.setLocations(locations);

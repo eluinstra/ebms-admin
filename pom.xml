@@ -349,9 +349,27 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>nl.clockwork.ebms.plugin.messaging</groupId>
+      <artifactId>ebms-kafka-messaging-plugin</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-clients</artifactId>
+      <version>4.0.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>com.querydsl</groupId>
       <artifactId>querydsl-sql-codegen</artifactId>
       <version>5.1.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.kafka</groupId>
+      <artifactId>spring-kafka</artifactId>
+      <version>4.0.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

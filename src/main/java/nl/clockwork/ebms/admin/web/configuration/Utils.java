@@ -155,13 +155,13 @@ public class Utils
 		}
 	}
 
-	public static Resource getResource(@org.springframework.lang.NonNull String path) throws IOException
+	public static Resource getResource(@org.jspecify.annotations.NonNull String path) throws IOException
 	{
 		val result = new FileSystemResource(path);
 		return result.exists() ? result : new ClassPathResource(path);
 	}
 
-	public static void testTrustStore(KeyStoreType type, @org.springframework.lang.NonNull String path, String password)
+	public static void testTrustStore(KeyStoreType type, @org.jspecify.annotations.NonNull String path, String password)
 			throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException
 	{
 		testKeyStore(type, path, password, null, false);
@@ -169,7 +169,7 @@ public class Utils
 
 	public static
 			void
-			testKeyStore(KeyStoreType type, @org.springframework.lang.NonNull String path, String password, String defaultAlias, boolean validateKeyPassword)
+			testKeyStore(KeyStoreType type, @org.jspecify.annotations.NonNull String path, String password, String defaultAlias, boolean validateKeyPassword)
 					throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException
 	{
 		val keyPassword = password.toCharArray();
