@@ -36,9 +36,10 @@ ebms.jdbc.update=true
 ```
 
 If you already have an existing database and want to use Flyway, then you first have to [initialize Flyway](/ebms-admin/database.md#initialize-flyway). Otherwise you can just enable the property.
+
 ## Database Configuration
 
-You can find the JDBC settings for the supported databases as well as links to the JDBC drivers below.
+You can find the JDBC properties for the supported databases as well as links to the EbMS database plugins, JDBC drivers and Flyway database drivers below. You should add the properties to the [EbMS override properties](properties#override-properties) and add either add the EbMS database plugin or the JDBC driver and Flyway database driver to the classpath of ebms-admin when you start it. For example if you want to use PostgreSQL then either add [`ebms-postgres-db-plugin-2.20.6.jar`](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.20.6/ebms-postgres-db-plugin-2.20.6.jar) to the classpath or add `postgresql-42.7.3.jar` and `flyway-postgresql-12.0.4.jar` to the classpath when you start ebms-admin.
 
 ### Common Properties
 
@@ -57,7 +58,7 @@ ebms.jdbc.driverClassName=com.ibm.db2.jcc.DB2XADataSource
 ebms.jdbc.url=jdbc:db2://<host>:<port>/<dbname>
 ```
 
-Download drivers [here](https://www.ibm.com/support/pages/db2-jdbc-driver-versions-and-downloads)
+Download the EbMS DB2 plugin [here](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.20.6/ebms-db2-db-plugin-2.20.6.jar) or download the JDBC drivers [here](https://www.ibm.com/support/pages/db2-jdbc-driver-versions-and-downloads) and the Flyway DB2 driver [here](https://repo1.maven.org/maven2/org/flywaydb/flyway-database-db2/12.4.0/flyway-database-db2-12.4.0.jar) and add them to the classpath next to each other when you start ebms-admin.
 
 ### H2
 
@@ -74,6 +75,8 @@ ebms.jdbc.url=jdbc:h2:<path>
 ebms.jdbc.url=jdbc:h2:tcp://<host>:<port>/<path>
 ```
 
+Download the EbMS H2 plugin [here](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.20.6/ebms-h2-db-plugin-2.20.6.jar) or download the JDBC drivers [here](https://www.h2database.com/html/download.html) and add it to the classpath next to each other when you start ebms-admin.
+
 ### HSQLDB
 
 ```properties
@@ -89,6 +92,8 @@ ebms.jdbc.url=jdbc:hsqldb:file:<path>
 ebms.jdbc.url=jdbc:hsqldb:hsql://<host>:<port>/<dbname>
 ```
 
+Download the EbMS HSQLDB plugin [here](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.20.6/ebms-hsqldb-db-plugin-2.20.6.jar) or download the JDBC drivers [here](http://hsqldb.org/) and the Flyway HSQLDB driver [here](https://repo1.maven.org/maven2/org/flywaydb/flyway-database-hsqldb/12.4.0/flyway-database-hsqldb-12.4.0.jar) and add them to the classpath next to each other when you start ebms-admin.
+
 ### MariaDB
 
 ```properties
@@ -99,10 +104,7 @@ ebms.jdbc.driverClassName=org.mariadb.jdbc.MySQLDataSource
 ebms.jdbc.url=jdbc:mariadb://<host>:<port>/<dbname>
 ```
 
-Download drivers [here](https://downloads.mariadb.org/connector-java/)
-
-Download the right flyway-mysql driver [here](https://mvnrepository.com/artifact/org.flywaydb/flyway-mysql) and add it to the classpath next to the database driver
-Check the pom.xml of ebms-admin for the right version of the flyway-mysql library
+Download the EbMS MariaDB plugin [here](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.20.6/ebms-mariadb-db-plugin-2.20.6.jar) or download the JDBC drivers [here](https://downloads.mariadb.org/connector-java/) and the Flyway MariaDB driver [here](https://repo1.maven.org/maven2/org/flywaydb/flyway-mysql/12.4.0/flyway-mysql-12.4.0.jar) and add them to the classpath next to each other when you start ebms-admin.
 
 ### MS SQL Server
 
@@ -118,10 +120,7 @@ ebms.jdbc.driverClassName=com.microsoft.sqlserver.jdbc.SQLServerXADataSource
 ebms.jdbc.url=jdbc:sqlserver://<host>:<port>;[instanceName=<instanceName>;]databaseName=<dbname>;
 ```
 
-Download drivers [here](https://docs.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server)
-
-Download the right flyway-sqlserver driver [here](https://mvnrepository.com/artifact/org.flywaydb/flyway-sqlserver) and add it to the classpath next to the database driver
-Check the pom.xml of ebms-admin for the right version of the flyway-sqlserver library
+Download the EbMS MS SQL Server plugin [here](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.20.6/ebms-mssql-db-plugin-2.20.6.jar) or download the JDBC drivers [here](https://docs.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server) and the Flyway MS SQL Server driver [here](https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/12.4.0/flyway-sqlserver-12.4.0.jar) and add them to the classpath next to each other when you start ebms-admin.
 
 #### XA Driver
 
@@ -130,14 +129,6 @@ When using the XA driver execute the following script
 ```sql
 EXEC sp_sqljdbc_xa_install
 EXEC sp_addrolemember [SqlJDBCXAUser], '<username>'
-```
-
-#### Quartz
-
-When [`deliveryTaskHandler.type`](properties#deliverytaskhandler) is set to `QUARTZ`or `QUARTZ_JMS` then set
-
-```properties
-deliveryTaskHandler.quartz.jdbc.selectWithLockSQL=SELECT * FROM {0}LOCKS UPDLOCK WHERE LOCK_NAME = ?
 ```
 
 ### Oracle
@@ -150,7 +141,7 @@ ebms.jdbc.driverClassName=oracle.jdbc.xa.client.OracleXADataSource
 ebms.jdbc.url=jdbc:oracle:thin:@<host>:<port>:<dbname>
 ```
 
-Download drivers [here](https://www.oracle.com/database/technologies/appdev/jdbc-downloads.html)
+Download the EbMS Oracle plugin [here](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.20.6/ebms-oracle-db-plugin-2.20.6.jar) or download the JDBC drivers [here](https://www.oracle.com/database/technologies/appdev/jdbc-downloads.html) and the Flyway Oracle driver [here](https://repo1.maven.org/maven2/org/flywaydb/flyway-database-oracle/12.4.0/flyway-database-oracle-12.4.0.jar) and add them to the classpath next to each other when you start ebms-admin.
 
 #### XA Driver
 
@@ -172,7 +163,7 @@ ebms.jdbc.driverClassName=org.postgresql.xa.PGXADataSource
 ebms.jdbc.url=jdbc:postgresql://<host>:<port>/<dbname>
 ```
 
-Download drivers [here](https://jdbc.postgresql.org/download.html)
+Download the EbMS PostgreSQL plugin [here](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.20.6/ebms-postgresql-db-plugin-2.20.6.jar) or download the JDBC drivers [here](https://jdbc.postgresql.org/download.html) and the Flyway PostgreSQL driver [here](https://repo1.maven.org/maven2/org/flywaydb/flyway-database-oracle/12.4.0/flyway-database-oracle-12.4.0.jar) and add them to the classpath next to each other when you start ebms-admin.
 
 #### XA Driver
 

@@ -2,18 +2,24 @@
 sidebar_position: 4
 ---
 
-# Default Properties
+# Properties
+
+Below the [default properties](#default-properties) of ebms-core.
+
+
+## Default Properties
 
 Below the contents of ebms-core's [default.properties](https://github.com/eluinstra/ebms-core/blob/ebms-core-@ebms.branch.version@/src/main/resources/nl/clockwork/ebms/default.properties) file. These are the default settings for ebms-core.
 
+## Override Properties
+
 ### Cache
 
-Set `cache.type` to `EHCACHE` when you are [scaling](/ebms-admin/deployment.md#scaling) the EbMS Adapter, otherwise leave it set to `DEFAULT`. You can also disable caching by setting `cache.type` to `NONE`, but this is not adviced. The scaling configuration for `EHCACHE` you have to configure yourself. You can find the default configuration file for `EHCACHE` [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-@ebms.branch.version@/src/main/resources/nl/clockwork/ebms/ehcache.xml).
+The default cache type is `DEFAULT` which is a simple in-memory cache. When you are [scaling](/ebms-admin/deployment.md#scaling) the EbMS Adapter, you should set the cache type to `EHCACHE` or `HAZELCAST`. You cannot disable caching anymore. When you are [scaling](/ebms-admin/deployment.md#scaling) the EbMS Adapter, you should configure the [Ehcache](cache.md#ehcache) or the [Hazelcast](cache.md#hazelcast) plugin.
 
 ```properties
-# CacheType: NONE | DEFAULT (SPRING) | EHCACHE
+# CacheType: DEFAULT
 cache.type=DEFAULT
-cache.configLocation=
 ```
 
 ### Database
@@ -43,38 +49,43 @@ ebms.pool.minPoolSize=16
 ebms.pool.maxPoolSize=32
 ```
 
-### MessageServiceHandler
+### DeliveryManager
 
-The MessageServiceHandler is used to handle EbMS [Ping](api#pingcpaid-frompartyid-topartyid) and [getMessageStatus](api#getmessagestatusmessageid) calls. Set `messageServiceHandler.type` to `JMS` when you are [scaling](/ebms-admin/deployment.md#scaling) the EbMS Adapter, otherwise leave it set to `DEFAULT`. When `messageServiceHandler.type=JMS` configure [JMS](#jms).
+The DeliveryManager is used to handle EbMS [Ping](api#pingcpaid-frompartyid-topartyid) and [getMessageStatus](api#getmessagestatusmessageid) calls. Set `deliveryManager.type` to `JMS` when you are [scaling](/ebms-admin/deployment.md#scaling) the EbMS Adapter, otherwise leave it set to `DEFAULT`. When `deliveryManager.type=JMS` configure [JMS](#jms).
 
 ```properties
-# MessageServiceHandlerType: DEFAULT (DAO) | JMS
-messageServiceHandler.type=DEFAULT
-messageServiceHandler.minThreads=2
-messageServiceHandler.maxThreads=8
+# DeliveryManagerType: DEFAULT (DAO) | JMS
+deliveryManager.type=DEFAULT
+deliveryManager.minThreads=2
+deliveryManager.maxThreads=8
 messageQueue.maxEntries=64
 messageQueue.timeout=30000
 ```
 
 ### DeliveryTaskHandler
 
-The DeliveryTaskHandler is used to [send EbMS Messages](api#sendmessagemessage) asynchronously. Set `deliveryTaskHandler.type` to `JMS`, `QUARTZ` or `QUARTZ_JMS` when you are using [advanced scaling](/ebms-admin/deployment.md#advanced-scaling), otherwise leave it set to `DEFAULT` or set it to `QUARTZ`. When `deliveryTaskHandler.type` is set to `JMS` or `QUARTZ_JMS` configure [JMS](#jms) and the [TransactionManager](#transactionmanager).
+The DeliveryTaskHandler is used to [send EbMS Messages](api#sendmessagemessage) asynchronously. Only the `DEFAULT` (DAO) type is supported. The DAO executor is gated by [Raft leader election](#raft) so a single elected leader processes delivery tasks at any given moment, allowing horizontal scaling without external coordinators such as JMS or Quartz.
 
 ```properties
-# DeliveryTaskHandlerType: DEFAULT (DAO) | JMS | QUARTZ | QUARTZ_JMS
+# DeliveryTaskHandlerType: DEFAULT (DAO, Raft-leader-gated)
 deliveryTaskHandler.start=true
 deliveryTaskHandler.type=DEFAULT
 deliveryTaskHandler.minThreads=16
 deliveryTaskHandler.maxThreads=16
 deliveryTaskHandler.default.maxTasks=100
 deliveryTaskHandler.default.executionInterval=1000
-deliveryTaskHandler.jms.destinationName=
-deliveryTaskHandler.jms.receiveTimeout=3000
-deliveryTaskHandler.quartz.driverDelegateClass=
-deliveryTaskHandler.quartz.isClustered=false
-deliveryTaskHandler.quartz.jdbc.driverClassName=
-deliveryTaskHandler.quartz.jdbc.selectWithLockSQL=
+deliveryTaskHandler.default.leaderCheckIntervalMillis=1000
+deliveryTaskHandler.default.taskAwaitTimeoutMillis=60000
 deliveryTaskHandler.task.executionInterval=0
+```
+
+### Raft
+
+Delivery-task execution is coordinated through [jgroups-raft](https://github.com/belaban/jgroups-raft). Each node joins the cluster identified by `raft.clusterName` using the JGroups stack defined in `raft.configLocation` (the bundled `ebms-raft.xml` uses TCP+TCPPING). The default stack runs a single-node cluster that self-elects as leader, so stand-alone deployments work out of the box; override the JGroups system properties (e.g. `jgroups.raft.id`, `jgroups.raft.members`, `jgroups.tcpping.initial_hosts`) to scale to multiple nodes.
+
+```properties
+raft.configLocation=ebms-raft.xml
+raft.clusterName=ebms-cluster
 ```
 
 ### DeliveryTaskManager
@@ -152,9 +163,12 @@ http.proxy.password=
 
 ### HTTPClient
 
+`http.uuid.headerName` is used to specify the name of the header in which a generated UUID is added to the outgoing EbMS HTTP request. This can be used for logging, debugging and tracing purposes.
+
 ```properties
 http.connectTimeout=30000
 http.readTimeout=30000
+http.uuid.headerName=
 ```
 
 ### HTTP Errors
@@ -171,14 +185,10 @@ http.errors.server.unrecoverable=501,505,510
 
 ### JMS
 
- JMS can be used by the [DeliveryTaskHandler](#deliverytaskhandler), the [MessageServiceHandler](#deliverymanager) and the [EventListener](#eventlistener). By default the `jms.brokerURL=vm://localhost` setting starts a persistent ActiveMQ broker that stores its data in the folder `activemq-data` and is reachable through `vm://localhost`. To use a diffent (external) ActiveMQ broker configure `jms.brokerURL`. You can also start an internal ActiveMQ broker by setting `jms.broker.start=true` and set the path to the broker's configuration file in `jms.broker.config`. You can find the default ActiveMQ configuration file [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-@ebms.branch.version@/src/main/resources/nl/clockwork/ebms/activemq.xml). If you are using this configuration file, the broker's data is stored in the folder `data`.
+ JMS can be used by the [DeliveryManager](#deliverymanager) and the [EventListener](#eventlistener). By default the `jms.brokerURL=vm://localhost` setting starts a persistent ActiveMQ broker that stores its data in the folder `activemq-data` and is reachable through `vm://localhost`. To use a diffent (external) ActiveMQ broker configure `jms.brokerURL`. You can also start an internal ActiveMQ broker by setting `jms.broker.start=true` and set the path to the broker's configuration file in `jms.broker.config`. You can find the default ActiveMQ configuration file [here](https://github.com/eluinstra/ebms-core/blob/ebms-core-@ebms.branch.version@/src/main/resources/nl/clockwork/ebms/activemq.xml). If you are using this configuration file, the broker's data is stored in the folder `data`.
 
 :::info
-When [`deliveryTaskHandler.type`](#deliverytaskhandler) is set to `JMS` configure the ActiveMQ broker with `schedulerSupport="true"`
-:::
-
-:::info
-When [`eventListener.type`](#eventlistener) is set to `SIMPLE_JMS`, `JMS`, or `JMS_TEXT` or [`deliveryTaskHandler.type`](#deliverytaskhandler) is set to `JMS` or `QUARTZ_JMS` use (the default) presistent delivery
+When [`eventListener.type`](#eventlistener) is set to `SIMPLE_JMS`, `JMS`, or `JMS_TEXT` use (the default) presistent delivery
 :::
 
 ```properties
@@ -254,14 +264,11 @@ client.keystore.defaultAlias=
 
 ### TransactionManager
 
-When [`deliveryTaskHandler.type`](#deliverytaskhandler) is set to `DEFAULT` or `QUARTZ` then set `transactionManager.type=DEFAULT`. When [`deliveryTaskHandler.type`](#deliverytaskhandler) is set to `JMS` or `QUARTZ_JMS` then set `transactionManager.type=ATOMIKOS` and select an XA driver for your [database](database).
+The EbMS adapter uses a single non-XA `DataSourceTransactionManager`. Configure the JDBC isolation level when required by your database.
 
 ```properties
-# TransactionManagerType: DEFAULT | ATOMIKOS
-transactionManager.type=DEFAULT
 # IsolationLevel: <EMPTY> | TRANSACTION_NONE | TRANSACTION_READ_UNCOMMITTED | TRANSACTION_READ_COMMITTED | TRANSACTION_REPEATABLE_READ | TRANSACTION_SERIALIZABLE | TRANSACTION_SQL_SERVER_SNAPSHOT_ISOLATION_LEVEL
 transactionManager.isolationLevel=
-transactionManager.transactionTimeout=300
 ```
 
 ### Truststore
@@ -273,18 +280,4 @@ Holds all trusted SSL, Signature and Encryption certificates.
 truststore.type=PKCS12
 truststore.path=nl/clockwork/ebms/truststore.p12
 truststore.password=password
-```
-
-### Apache Kafka
-
-The Apache Kafka implementation is currently integrated as provided by Cap Gemini.
-It allows for the delivery task to be triggered on a Kafka topic.. The topic name is currently fixed `DELIVERY_TASK`
-
-```properties
-# DeliveryTaskHandlerType = DEFAULT(=DAO) | JMS | QUARTZ | QUARTZ_JMS | QUARTZ_KAFKA
-deliveryTaskHandler.type=QUARTZ_KAFKA
-
-# server url 
-kafka.serverUrl=localhost:9092
-
 ```
