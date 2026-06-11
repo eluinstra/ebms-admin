@@ -20,7 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import lombok.val;
-import nl.clockwork.ebms.common.EbMSMessageStatus;
+import nl.clockwork.ebms.common.protocol.EbMSMessageStatus;
 
 public class EbMSMessageStatusType extends AbstractType<EbMSMessageStatus>
 {
