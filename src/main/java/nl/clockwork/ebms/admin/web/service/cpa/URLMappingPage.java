@@ -25,7 +25,7 @@ import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.EbMSButton;
 import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.api.cpa.url.URLMappingController;
+import nl.clockwork.ebms.api.url.soap.URLMappingController;
 import nl.clockwork.ebms.common.cpa.url.URLMapping;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;

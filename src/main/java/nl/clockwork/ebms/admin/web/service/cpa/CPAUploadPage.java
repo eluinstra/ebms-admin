@@ -29,7 +29,7 @@ import nl.clockwork.ebms.admin.web.BootstrapFeedbackPanel;
 import nl.clockwork.ebms.admin.web.BootstrapFormComponentFeedbackBorder;
 import nl.clockwork.ebms.admin.web.EbMSButton;
 import nl.clockwork.ebms.admin.web.ResetButton;
-import nl.clockwork.ebms.api.cpa.CPAController;
+import nl.clockwork.ebms.api.cpa.soap.CPAController;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.upload.FileUpload;

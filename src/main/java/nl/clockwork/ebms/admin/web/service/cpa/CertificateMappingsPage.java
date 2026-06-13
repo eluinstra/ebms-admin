@@ -28,7 +28,7 @@ import nl.clockwork.ebms.admin.web.EbMSButton;
 import nl.clockwork.ebms.admin.web.EbMSWebMarkupContainer;
 import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.PageLink;
-import nl.clockwork.ebms.api.cpa.certificate.CertificateMappingController;
+import nl.clockwork.ebms.api.certificate.soap.CertificateMappingController;
 import nl.clockwork.ebms.common.cpa.certificate.CertificateMapping;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;

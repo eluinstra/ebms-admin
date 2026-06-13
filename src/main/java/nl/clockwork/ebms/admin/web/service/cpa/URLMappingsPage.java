@@ -26,7 +26,7 @@ import nl.clockwork.ebms.admin.web.EbMSButton;
 import nl.clockwork.ebms.admin.web.EbMSWebMarkupContainer;
 import nl.clockwork.ebms.admin.web.OddOrEvenIndexStringModel;
 import nl.clockwork.ebms.admin.web.PageLink;
-import nl.clockwork.ebms.api.cpa.url.URLMappingController;
+import nl.clockwork.ebms.api.url.soap.URLMappingController;
 import nl.clockwork.ebms.common.cpa.url.URLMapping;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
