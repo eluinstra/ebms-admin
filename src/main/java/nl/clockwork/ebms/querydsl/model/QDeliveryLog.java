@@ -23,6 +23,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.sql.ColumnMetadata;
 import jakarta.annotation.Generated;
 import java.sql.Types;
+import nl.clockwork.ebms.client.api.DeliveryTaskStatus;
 
 /**
  * QDeliveryLog is a Querydsl query type for QDeliveryLog
@@ -39,8 +40,7 @@ public class QDeliveryLog extends com.querydsl.sql.RelationalPathBase<QDeliveryL
 
 	public final StringPath messageId = createString("messageId");
 
-	public final EnumPath<nl.clockwork.ebms.client.delivery.task.DeliveryTaskStatus> status =
-			createEnum("status", nl.clockwork.ebms.client.delivery.task.DeliveryTaskStatus.class);
+	public final EnumPath<DeliveryTaskStatus> status = createEnum("status", DeliveryTaskStatus.class);
 
 	public final DateTimePath<java.time.Instant> timeStamp = createDateTime("timeStamp", java.time.Instant.class);
 

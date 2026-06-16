@@ -39,7 +39,7 @@ import nl.clockwork.ebms.admin.web.StringModel;
 import nl.clockwork.ebms.admin.web.TextArea;
 import nl.clockwork.ebms.admin.web.Utils;
 import nl.clockwork.ebms.admin.web.WicketApplication;
-import nl.clockwork.ebms.client.delivery.task.DeliveryTaskStatus;
+import nl.clockwork.ebms.client.api.DeliveryTaskStatus;
 import nl.clockwork.ebms.common.protocol.EbMSAction;
 import nl.clockwork.ebms.common.protocol.EbMSMessageStatus;
 import org.apache.wicket.AttributeModifier;
