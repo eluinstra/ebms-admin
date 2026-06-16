@@ -459,7 +459,17 @@
           <suppressionFiles>
             <suppressionFile>${basedir}/dependency-check-suppressions.xml</suppressionFile>
           </suppressionFiles>
+          <failBuildOnCVSS>7</failBuildOnCVSS>
+          <nvdApiKey>${nvd.apikey}</nvdApiKey>
+          <autoUpdate>false</autoUpdate>
         </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>
