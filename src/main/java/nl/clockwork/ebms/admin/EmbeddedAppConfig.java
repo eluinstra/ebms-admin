@@ -41,8 +41,8 @@ import nl.clockwork.ebms.common.security.KeyStoreConfig;
 import nl.clockwork.ebms.common.security.SigningConfig;
 import nl.clockwork.ebms.common.transaction.TransactionManagerConfig;
 import nl.clockwork.ebms.querydsl.model.QueryDSLConfig;
-import nl.clockwork.ebms.server.EbMSServerConfig;
-import nl.clockwork.ebms.server.processor.EbMSProcessorConfig;
+import nl.clockwork.ebms.server.config.EbMSMessageProcessorConfig;
+import nl.clockwork.ebms.server.config.EbMSServerConfig;
 import nl.clockwork.ebms.server.validation.ValidationConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -54,7 +54,7 @@ import org.springframework.core.io.Resource;
 @Configuration
 @Import({AdminDAOConfig.class, CertificateMappingConfig.class, CertificateMappingControllerConfig.class, CacheConfig.class, CommonConfig.class, CPAConfig.class,
 		CPAControllerConfig.class, DAOConfig.class, DataSourceConfig.class, DeliveryManagerConfig.class, DeliveryTaskManagerConfig.class,
-		DeliveryTaskHandlerConfig.class, EbMSClientConfig.class, EbMSControllerConfig.class, EbMSProcessorConfig.class, EbMSServerConfig.class,
+		DeliveryTaskHandlerConfig.class, EbMSClientConfig.class, EbMSControllerConfig.class, EbMSMessageProcessorConfig.class, EbMSServerConfig.class,
 		EmbeddedWebConfig.class, EncryptionConfig.class, KeyStoreConfig.class, MessageEventListenerConfig.class, QueryDSLConfig.class, SigningConfig.class,
 		TransactionManagerConfig.class, URLMappingConfig.class, URLMappingControllerConfig.class, ValidationConfig.class})
 @PropertySource(
