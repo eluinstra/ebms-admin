@@ -53,9 +53,10 @@ import org.springframework.core.io.Resource;
 @Configuration
 @Import({AdminDAOConfig.class, CertificateMappingConfig.class, CertificateMappingControllerConfig.class, CacheConfig.class, CommonConfig.class, CPAConfig.class,
 		CPAControllerConfig.class, DAOConfig.class, DataSourceConfig.class, DeliveryManagerConfig.class, DeliveryTaskManagerConfig.class,
-		DeliveryTaskHandlerConfig.class, EbMSClientConfig.class, EbMSControllerConfig.class, nl.clockwork.ebms.server.config.EbMSMessageProcessorConfig.class, EbMSServerConfig.class,
-		nl.clockwork.ebms.server.processing.message.EbMSMessageProcessorConfig.class, EmbeddedWebConfig.class, EncryptionConfig.class, KeyStoreConfig.class, MessageEventListenerConfig.class, QueryDSLConfig.class, SigningConfig.class,
-		TransactionManagerConfig.class, URLMappingConfig.class, URLMappingControllerConfig.class, ValidationConfig.class})
+		DeliveryTaskHandlerConfig.class, EbMSClientConfig.class, EbMSControllerConfig.class, nl.clockwork.ebms.server.config.EbMSMessageProcessorConfig.class,
+		EbMSServerConfig.class, nl.clockwork.ebms.server.processing.message.EbMSMessageProcessorConfig.class, EmbeddedWebConfig.class, EncryptionConfig.class,
+		KeyStoreConfig.class, MessageEventListenerConfig.class, QueryDSLConfig.class, SigningConfig.class, TransactionManagerConfig.class, URLMappingConfig.class,
+		URLMappingControllerConfig.class, ValidationConfig.class})
 @PropertySource(
 		value = {"classpath:nl/clockwork/ebms/default.properties", "classpath:nl/clockwork/ebms/admin/default.properties",
 				"file:${ebms.configDir}ebms-admin.embedded.advanced.properties", "file:${ebms.configDir}ebms-admin.embedded.properties"},
