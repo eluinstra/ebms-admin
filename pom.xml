@@ -462,6 +462,7 @@
           <failBuildOnCVSS>7</failBuildOnCVSS>
           <nvdApiKey>${nvd.apikey}</nvdApiKey>
           <autoUpdate>false</autoUpdate>
+          <assembliesAnalyzed>false</assembliesAnalyzed>
         </configuration>
         <executions>
           <execution>
