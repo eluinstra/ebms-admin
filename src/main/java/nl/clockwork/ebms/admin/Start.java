@@ -38,7 +38,7 @@ import lombok.val;
 import nl.clockwork.ebms.PluginProvider;
 import nl.clockwork.ebms.admin.web.ExtensionProvider;
 import nl.clockwork.ebms.common.security.KeyStoreType;
-import nl.clockwork.ebms.server.servlet.filters.HealthServlet;
+import nl.clockwork.ebms.server.endpoint.servlet.filters.HealthServlet;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
@@ -438,33 +438,33 @@ public class Start implements SystemInterface
 
 	protected FilterHolder createEchoServletFilterHolder(String headerNames)
 	{
-		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.filters.EchoServletFilter.class);
+		val result = new FilterHolder(nl.clockwork.ebms.server.endpoint.servlet.filters.EchoServletFilter.class);
 		result.setInitParameter("headerNames", headerNames);
 		return result;
 	}
 
 	protected FilterHolder createMDCServletFilterHolder(String headerNames)
 	{
-		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.filters.MDCServletFilter.class);
+		val result = new FilterHolder(nl.clockwork.ebms.server.endpoint.servlet.filters.MDCServletFilter.class);
 		result.setInitParameter("headerNames", headerNames);
 		return result;
 	}
 
 	protected FilterHolder createRemoteAddressMDCFilterHolder()
 	{
-		return new FilterHolder(nl.clockwork.ebms.server.servlet.filters.RemoteAddressMDCFilter.class);
+		return new FilterHolder(nl.clockwork.ebms.server.endpoint.servlet.filters.RemoteAddressMDCFilter.class);
 	}
 
 	protected FilterHolder createRateLimiterFilterHolder(String queriesPerSecond)
 	{
-		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.filters.RateLimiterFilter.class);
+		val result = new FilterHolder(nl.clockwork.ebms.server.endpoint.servlet.filters.RateLimiterFilter.class);
 		result.setInitParameter(QUERIES_PER_SECOND_OPTION, queriesPerSecond);
 		return result;
 	}
 
 	protected FilterHolder createUserRateLimiterFilterHolder(String queriesPerSecond)
 	{
-		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.filters.RateLimiterFilter.class);
+		val result = new FilterHolder(nl.clockwork.ebms.server.endpoint.servlet.filters.RateLimiterFilter.class);
 		result.setInitParameter(USER_QUERIES_PER_SECOND_OPTION, queriesPerSecond);
 		return result;
 	}
@@ -503,7 +503,7 @@ public class Start implements SystemInterface
 
 	protected FilterHolder createClientCertificateManagerFilterHolder(String clientCertificateHeader)
 	{
-		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.filters.ClientCertificateManagerFilter.class);
+		val result = new FilterHolder(nl.clockwork.ebms.server.endpoint.servlet.filters.ClientCertificateManagerFilter.class);
 		result.setInitParameter("x509CertificateHeader", clientCertificateHeader);
 		return result;
 	}
@@ -511,7 +511,7 @@ public class Start implements SystemInterface
 	private FilterHolder createClientCertificateAuthenticationFilterHolder(CommandLine cmd) throws IOException
 	{
 		println("Configuring Web Server client certificate authentication:");
-		val result = new FilterHolder(nl.clockwork.ebms.server.servlet.filters.ClientCertificateAuthenticationFilter.class);
+		val result = new FilterHolder(nl.clockwork.ebms.server.endpoint.servlet.filters.ClientCertificateAuthenticationFilter.class);
 		val clientTrustStoreType = cmd.getOptionValue(CLIENT_TRUST_STORE_TYPE_OPTION, DEFAULT_KEYSTORE_TYPE);
 		val clientTrustStorePath = cmd.getOptionValue(CLIENT_TRUST_STORE_PATH_OPTION);
 		val clientTrustStorePassword = cmd.getOptionValue(CLIENT_TRUST_STORE_PASSWORD_OPTION);
