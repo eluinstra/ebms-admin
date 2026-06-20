@@ -15,15 +15,17 @@
  */
 package nl.clockwork.ebms.querydsl.model;
 
-import static com.querydsl.core.types.PathMetadataFactory.*;
+import static com.querydsl.core.types.PathMetadataFactory.forVariable;
 
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.PathMetadata;
-import com.querydsl.core.types.dsl.*;
+import com.querydsl.core.types.dsl.DateTimePath;
+import com.querydsl.core.types.dsl.EnumPath;
+import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.sql.ColumnMetadata;
 import jakarta.annotation.Generated;
 import java.sql.Types;
-import nl.clockwork.ebms.client.api.DeliveryTaskStatus;
+import nl.clockwork.ebms.client.client.DeliveryTaskStatus;
 
 /**
  * QDeliveryLog is a Querydsl query type for QDeliveryLog

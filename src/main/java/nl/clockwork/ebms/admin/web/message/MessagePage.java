@@ -36,7 +36,7 @@ import nl.clockwork.ebms.admin.web.SerializableConsumer;
 import nl.clockwork.ebms.admin.web.StringModel;
 import nl.clockwork.ebms.admin.web.TextArea;
 import nl.clockwork.ebms.admin.web.Utils;
-import nl.clockwork.ebms.client.api.DeliveryTaskStatus;
+import nl.clockwork.ebms.client.client.DeliveryTaskStatus;
 import nl.clockwork.ebms.common.protocol.EbMSAction;
 import nl.clockwork.ebms.common.protocol.EbMSMessageStatus;
 import org.apache.wicket.AttributeModifier;

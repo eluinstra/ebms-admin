@@ -22,8 +22,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
-import nl.clockwork.ebms.client.api.DeliveryTaskStatus;
-
+import nl.clockwork.ebms.client.client.DeliveryTaskStatus;
 import org.apache.wicket.util.io.IClusterable;
 
 @Data

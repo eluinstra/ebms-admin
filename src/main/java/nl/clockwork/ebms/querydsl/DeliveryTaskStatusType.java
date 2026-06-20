@@ -20,7 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import lombok.val;
-import nl.clockwork.ebms.client.api.DeliveryTaskStatus;
+import nl.clockwork.ebms.client.client.DeliveryTaskStatus;
 
 public class DeliveryTaskStatusType extends AbstractType<DeliveryTaskStatus>
 {
