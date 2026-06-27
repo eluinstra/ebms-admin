@@ -172,7 +172,7 @@ ebms.jdbc.driverClassName=org.postgresql.xa.PGXADataSource
 ebms.jdbc.url=jdbc:postgresql://<host>:<port>/<dbname>
 ```
 
-Download drivers [here](https://jdbc.postgresql.org/download.html)
+Download drivers [here](https://jdbc.postgresql.org/download/) 
 
 #### XA Driver
 
