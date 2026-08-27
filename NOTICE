@@ -1,5 +1,18 @@
 EbMS Admin Console
-Copyright 2013 Clockwork
+Copyright 2013 - 2026 Clockwork
 
 This product includes software developed at The Apache Software Foundation
 (http://www.apache.org/) under Apache License, Version 2.0
+
+The admin console is distributed as a single executable jar that bundles
+the ebms-core library, the ebms-h2-db-plugin and their third-party
+dependencies. The generated THIRD-PARTY.txt file in the jar lists the
+components and the license under which each component is distributed.
+
+In particular, the following non-Apache-licensed components are bundled:
+
+- The H2 database engine (com.h2database:h2), licensed under the Mozilla
+  Public License, version 2.0 (MPL-2.0).
+- The Jakarta API artifacts (jakarta.*), dual licensed under the EPL 2.0
+  and GPL 2.0 with the Classpath Exception; only the API classes are
+  bundled.
