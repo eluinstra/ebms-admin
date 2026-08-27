@@ -6,7 +6,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const globalVariables = {
   'current': {
-    'ebms.core.version': '2.20.3',
+    'ebms.core.version': '2.20.8',
     'ebms.branch.version': '2.20.x'
   },
   '2.19.x': {
