@@ -18,6 +18,11 @@ services:
       ebms_verifyHostnames: "false"
       https_verifyHostnames: "false"
       ebms_jdbc_update: "true"
+      # The pinned image predates the TLS 1.3 default, so allow both TLS 1.2
+      # and TLS 1.3 (with the TLS 1.3 suites) here to match the freshly built
+      # adapter and let the smoke test negotiate TLS 1.3.
+      https_protocols: "TLSv1.2,TLSv1.3"
+      https_cipherSuites: "TLS_AES_256_GCM_SHA384,TLS_AES_128_GCM_SHA256,TLS_CHACHA20_POLY1305_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
     command: "./start.sh -h2 -soap -health"
     expose:
       - 8080
