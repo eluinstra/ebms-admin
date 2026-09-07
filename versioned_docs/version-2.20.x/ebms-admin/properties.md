@@ -78,13 +78,13 @@ keystore.defaultAlias=
 
 ### SSL
 
-`https.protocols` and `https.cipherSuites` override [these](/ebms-core/properties.md#ssl) default ebms-core properties. If `https.requireClientAuthentication=true` then the [EbMS Server](#ebms-server) endpoint requires SSL client authentication.
+`https.protocols` and `https.cipherSuites` override [these](/ebms-core/properties.md#ssl) default ebms-core properties. The default allows both TLS 1.2 and TLS 1.3, including the recommended TLS 1.3 cipher suites; see [TLS protocols and cipher suites](/ebms-core/properties.md#tls-protocols-and-cipher-suites) for details, including how to force TLS 1.3 only. If `https.requireClientAuthentication=true` then the [EbMS Server](#ebms-server) endpoint requires SSL client authentication.
 
 When SSL offloading is used and the EbMS adapter does not handle incoming SSL itself (see [reverse proxy example](deployment#behind-a-reverse-proxy)) and the EbMS adapter is using [SSL client certificate validation](/ebms-core/properties.md#ssl), then the SSL client certificate can be forwarded as a Base64 DER-encoded HTTP header to the EbMS adapter. The header name can be set in `https.clientCertificateHeader`.
 
 ```properties
-https.protocols=TLSv1.2
-https.cipherSuites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+https.protocols=TLSv1.2,TLSv1.3
+https.cipherSuites=TLS_AES_256_GCM_SHA384,TLS_AES_128_GCM_SHA256,TLS_CHACHA20_POLY1305_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 https.requireClientAuthentication=false
 https.clientCertificateHeader=
 ```

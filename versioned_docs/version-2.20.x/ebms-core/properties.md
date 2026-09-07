@@ -239,6 +239,21 @@ https.clientCertificateAuthentication=false
 https.useClientCertificate=false
 ```
 
+#### TLS protocols and cipher suites
+
+By default no protocols or cipher suites are enforced, so the JVM defaults apply (Java 17 supports TLS 1.2 and TLS 1.3).
+
+To explicitly allow both TLS 1.2 and TLS 1.3 (including the recommended TLS 1.3 cipher suites), override these properties:
+
+```properties
+https.protocols=TLSv1.2,TLSv1.3
+https.cipherSuites=TLS_AES_256_GCM_SHA384,TLS_AES_128_GCM_SHA256,TLS_CHACHA20_POLY1305_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+```
+
+:::caution
+To force TLS 1.3 only, override `https.protocols=TLSv1.3` and set `https.cipherSuites` to TLS 1.3 cipher suites only (`TLS_AES_256_GCM_SHA384`, `TLS_AES_128_GCM_SHA256` and/or `TLS_CHACHA20_POLY1305_SHA256`). All communication partners (servers and clients) must then support TLS 1.3 as well, otherwise handshakes will fail.
+:::
+
 ### SSL Client keystore
 
 Holds the SSL client keys (and related certificates) used by the EbMS HTTP client.
