@@ -113,22 +113,22 @@
     <dependency>
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-broker</artifactId>
-      <version>6.3.1</version>
+      <version>6.3.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-client</artifactId>
-      <version>6.3.1</version>
+      <version>6.3.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-kahadb-store</artifactId>
-      <version>6.3.1</version>
+      <version>6.3.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-spring</artifactId>
-      <version>6.3.1</version>
+      <version>6.3.2</version>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>
@@ -227,17 +227,17 @@
     <dependency>
       <groupId>org.eclipse.jetty.ee10</groupId>
       <artifactId>jetty-ee10-webapp</artifactId>
-      <version>12.1.12</version>
+      <version>12.1.13</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-jmx</artifactId>
-      <version>12.1.12</version>
+      <version>12.1.13</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
-      <version>12.1.12</version>
+      <version>12.1.13</version>
       <exclusions>
         <exclusion>
           <groupId>org.eclipse.jetty.orbit</groupId>
@@ -248,7 +248,7 @@
     <dependency>
       <groupId>org.jline</groupId>
       <artifactId>jline-prompt</artifactId>
-      <version>4.3.1</version>
+      <version>4.4.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -263,7 +263,7 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.46</version>
+      <version>1.18.48</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -304,7 +304,7 @@
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-core</artifactId>
-      <version>10.10.0</version>
+      <version>10.11.0</version>
     </dependency>
     <dependency>
       <groupId>org.wicketstuff</groupId>
@@ -314,12 +314,12 @@
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-extensions</artifactId>
-      <version>10.10.0</version>
+      <version>10.11.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-spring</artifactId>
-      <version>10.10.0</version>
+      <version>10.11.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.xbean</groupId>
