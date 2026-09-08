@@ -16,6 +16,7 @@
 package nl.clockwork.ebms.admin.web.service.message;
 
 import jakarta.xml.bind.JAXBException;
+import javax.xml.parsers.ParserConfigurationException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -56,6 +57,7 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.oasis_open.committees.ebxml_cppa.schema.cpp_cpa_2_0.CollaborationProtocolAgreement;
+import org.xml.sax.SAXException;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -119,7 +121,7 @@ public class SendMessagePageX extends BasePage
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaController.getCPA(o.getCpaId()));
 					o.resetFromPartyIds(CPAUtils.getPartyIds(cpa));
 					o.resetFromRoles();
 					o.resetToPartyIds();
@@ -128,7 +130,7 @@ public class SendMessagePageX extends BasePage
 					o.resetActions();
 					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 				}
-				catch (JAXBException e)
+				catch (JAXBException | SAXException | ParserConfigurationException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
@@ -150,7 +152,7 @@ public class SendMessagePageX extends BasePage
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaController.getCPA(o.getCpaId()));
 					o.resetFromRoles(CPAUtils.getRoleNames(cpa, o.getFromPartyId()));
 					o.resetToPartyIds(CPAUtils.getOtherPartyIds(cpa, o.getFromPartyId()));
 					o.resetToRoles(CPAUtils.getOtherRoleNamesByPartyId(cpa, o.getFromPartyId()));
@@ -161,7 +163,7 @@ public class SendMessagePageX extends BasePage
 					o.resetActions();
 					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 				}
-				catch (JAXBException e)
+				catch (JAXBException | SAXException | ParserConfigurationException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
@@ -183,7 +185,7 @@ public class SendMessagePageX extends BasePage
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaController.getCPA(o.getCpaId()));
 					o.resetServices(
 							ListUtils.intersection(
 									CPAUtils.getServiceNamesCanSend(cpa, o.getFromPartyId(), o.getFromRole()),
@@ -191,7 +193,7 @@ public class SendMessagePageX extends BasePage
 					o.resetActions();
 					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 				}
-				catch (JAXBException e)
+				catch (JAXBException | SAXException | ParserConfigurationException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
@@ -213,7 +215,7 @@ public class SendMessagePageX extends BasePage
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaController.getCPA(o.getCpaId()));
 					o.resetToRoles(CPAUtils.getRoleNames(cpa, o.getToPartyId()));
 					o.resetServices(
 							ListUtils.intersection(
@@ -222,7 +224,7 @@ public class SendMessagePageX extends BasePage
 					o.resetActions();
 					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 				}
-				catch (JAXBException e)
+				catch (JAXBException | SAXException | ParserConfigurationException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
@@ -244,7 +246,7 @@ public class SendMessagePageX extends BasePage
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaController.getCPA(o.getCpaId()));
 					o.resetServices(
 							ListUtils.intersection(
 									CPAUtils.getServiceNamesCanSend(cpa, o.getFromPartyId(), o.getFromRole()),
@@ -252,7 +254,7 @@ public class SendMessagePageX extends BasePage
 					o.resetActions();
 					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 				}
-				catch (JAXBException e)
+				catch (JAXBException | SAXException | ParserConfigurationException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
@@ -275,14 +277,14 @@ public class SendMessagePageX extends BasePage
 				try
 				{
 					val o = getModelObject();
-					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handleUnsafe(cpaController.getCPA(o.getCpaId()));
+					val cpa = JAXBParser.getInstance(CollaborationProtocolAgreement.class).handle(cpaController.getCPA(o.getCpaId()));
 					o.resetActions(
 							ListUtils.intersection(
 									CPAUtils.getFromActionNamesCanSend(cpa, o.getFromPartyId(), o.getFromRole(), o.getService()),
 									CPAUtils.getFromActionNamesCanReceive(cpa, o.getToPartyId(), o.getToRole(), o.getService())));
 					dataSources.replaceWith(dataSources = new EmptyDataSourcesPanel(dataSources.getId()));
 				}
-				catch (JAXBException e)
+				catch (JAXBException | SAXException | ParserConfigurationException e)
 				{
 					log.error("", e);
 					error(e.getMessage());
