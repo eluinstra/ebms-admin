@@ -39,6 +39,7 @@ import nl.clockwork.ebms.PluginProvider;
 import nl.clockwork.ebms.admin.web.ExtensionProvider;
 import nl.clockwork.ebms.common.security.KeyStoreType;
 import nl.clockwork.ebms.server.endpoint.servlet.filters.HealthServlet;
+import nl.clockwork.ebms.server.endpoint.servlet.filters.LoopbackUtils;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
@@ -289,6 +290,9 @@ public class Start implements SystemInterface
 	{
 		val httpConfig = new HttpConfiguration();
 		httpConfig.setSendServerVersion(false);
+		// F7: Jetty 12's HttpConfiguration only caps request headers (not the body); cap those here.
+		// The request body cap for every endpoint is enforced by MaxRequestBodySizeFilter.
+		httpConfig.setRequestHeaderSize(64 * 1024);
 		val result = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
 		result.setHost(cmd.getOptionValue(HOST_OPTION, DEFAULT_HOST));
 		result.setPort(Integer.parseInt(cmd.getOptionValue(PORT_OPTION, DEFAULT_PORT)));
@@ -369,6 +373,7 @@ public class Start implements SystemInterface
 	{
 		val httpConfig = new HttpConfiguration();
 		httpConfig.setSendServerVersion(false);
+		httpConfig.setRequestHeaderSize(64 * 1024);
 		httpConfig.addCustomizer(new SecureRequestCustomizer(!cmd.hasOption(DISABLE_HOSTNAME_VERIFICATION_OPTION)));
 		val result = new ServerConnector(server, sslContextFactory, new HttpConnectionFactory(httpConfig));
 		result.setHost(cmd.getOptionValue(HOST_OPTION, DEFAULT_HOST));
@@ -425,7 +430,23 @@ public class Start implements SystemInterface
 			result.addFilter(createRateLimiterFilterHolder(cmd.getOptionValue(QUERIES_PER_SECOND_OPTION)), "/*", EnumSet.allOf(DispatcherType.class));
 		if (!StringUtils.isEmpty(cmd.getOptionValue(USER_QUERIES_PER_SECOND_OPTION)))
 			result.addFilter(createUserRateLimiterFilterHolder(cmd.getOptionValue(USER_QUERIES_PER_SECOND_OPTION)), "/*", EnumSet.allOf(DispatcherType.class));
-		if (cmd.hasOption(AUTHENTICATION_OPTION))
+		// F7: hard connector-level request body cap applied to every endpoint (REST + SOAP).
+		result.addFilter(createMaxRequestBodySizeFilterHolder(getMaxRequestBytes()), "/*", EnumSet.allOf(DispatcherType.class));
+		// F1: an unauthenticated REST/SOAP management API must not be exposed on a non-loopback
+		// address. If it is not authenticated, refuse to bind unless the host is loopback (dev/CI)
+		// or the operator explicitly opts out with -allowUnauthenticated. This fails safe: an
+		// externally reachable API always requires authentication.
+		val authenticationEnabled = cmd.hasOption(AUTHENTICATION_OPTION);
+		if (!authenticationEnabled
+				&& !LoopbackUtils.isLoopback(cmd.getOptionValue(HOST_OPTION, DEFAULT_HOST))
+				&& !getBooleanProperty("api.allowUnauthenticated", false))
+		{
+			printWarn("Web Server not available: host is not loopback and authentication is disabled.");
+			printWarn(
+					"Refusing to start the management API without authentication. Use -authentication, bind to loopback (-host localhost), or explicitly pass -allowUnauthenticated.");
+			exit(1);
+		}
+		if (authenticationEnabled)
 			addAuthenticationHandler(cmd, result);
 		if (cmd.hasOption(SOAP_OPTION))
 			result.addServlet(CXFServlet.class, SOAP_URL + "/*");
@@ -464,9 +485,22 @@ public class Start implements SystemInterface
 
 	protected FilterHolder createUserRateLimiterFilterHolder(String queriesPerSecond)
 	{
-		val result = new FilterHolder(nl.clockwork.ebms.server.endpoint.servlet.filters.RateLimiterFilter.class);
-		result.setInitParameter(USER_QUERIES_PER_SECOND_OPTION, queriesPerSecond);
+		val result = new FilterHolder(nl.clockwork.ebms.server.endpoint.servlet.filters.UserRateLimiterFilter.class);
+		result.setInitParameter("queriesPerSecond", queriesPerSecond);
 		return result;
+	}
+
+	protected FilterHolder createMaxRequestBodySizeFilterHolder(long maxRequestBytes)
+	{
+		val result = new FilterHolder(nl.clockwork.ebms.server.endpoint.servlet.filters.MaxRequestBodySizeFilter.class);
+		result.setInitParameter("maxRequestBytes", Long.toString(maxRequestBytes));
+		return result;
+	}
+
+	private long getMaxRequestBytes()
+	{
+		// F7: connector-level request body cap, defaults to the EbMS message limit (8 MiB).
+		return getLongProperty("api.server.maxRequestBytes", getLongProperty("ebms.request.maxBytes", 8 * 1024 * 1024L));
 	}
 
 	private void addAuthenticationHandler(CommandLine cmd, ServletContextHandler result) throws IOException, NoSuchAlgorithmException
@@ -484,11 +518,29 @@ public class Start implements SystemInterface
 		else if (cmd.hasOption(SSL_OPTION))
 		{
 			result.addFilter(
-					createClientCertificateManagerFilterHolder(cmd.getOptionValue(CLIENT_CERTIFICATE_HEADER_OPTION)),
+					createClientCertificateManagerFilterHolder(
+							cmd.getOptionValue(CLIENT_CERTIFICATE_HEADER_OPTION),
+							cmd.getOptionValue(TRUST_STORE_TYPE_OPTION, DEFAULT_KEYSTORE_TYPE),
+							cmd.getOptionValue(TRUST_STORE_PATH_OPTION),
+							cmd.getOptionValue(TRUST_STORE_PASSWORD_OPTION)),
 					"/*",
 					EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
 			result.addFilter(createClientCertificateAuthenticationFilterHolder(cmd), "/*", EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
 		}
+	}
+
+	protected
+			FilterHolder
+			createClientCertificateManagerFilterHolder(String clientCertificateHeader, String trustStoreType, String trustStorePath, String trustStorePassword)
+	{
+		val result = new FilterHolder(nl.clockwork.ebms.server.endpoint.servlet.filters.ClientCertificateManagerFilter.class);
+		result.setInitParameter("x509CertificateHeader", clientCertificateHeader);
+		// F2: pass the truststore so a reverse-proxy (header) certificate is validated against it
+		// before being trusted as the peer's identity.
+		result.setInitParameter("trustStoreType", trustStoreType);
+		result.setInitParameter("trustStorePath", trustStorePath);
+		result.setInitParameter("trustStorePassword", trustStorePassword);
+		return result;
 	}
 
 	private void addWicketServletHolder(ServletContextHandler result)
@@ -499,13 +551,6 @@ public class Start implements SystemInterface
 		result.addServlet(servletHolder, "/images/*");
 		result.addServlet(servletHolder, "/js/*");
 		result.addFilter(createWicketFilterHolder(), "/*", EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
-	}
-
-	protected FilterHolder createClientCertificateManagerFilterHolder(String clientCertificateHeader)
-	{
-		val result = new FilterHolder(nl.clockwork.ebms.server.endpoint.servlet.filters.ClientCertificateManagerFilter.class);
-		result.setInitParameter("x509CertificateHeader", clientCertificateHeader);
-		return result;
 	}
 
 	private FilterHolder createClientCertificateAuthenticationFilterHolder(CommandLine cmd) throws IOException

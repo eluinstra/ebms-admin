@@ -15,11 +15,25 @@
  */
 package nl.clockwork.ebms.admin;
 
+import lombok.val;
+
 public interface SystemInterface
 {
 	default void setProperty(String key, String value)
 	{
 		System.setProperty(key, value);
+	}
+
+	default boolean getBooleanProperty(String key, boolean defaultValue)
+	{
+		val value = System.getProperty(key);
+		return value != null ? Boolean.parseBoolean(value) : defaultValue;
+	}
+
+	default long getLongProperty(String key, long defaultValue)
+	{
+		val value = System.getProperty(key);
+		return value != null ? Long.parseLong(value) : defaultValue;
 	}
 
 	default void println(String s)
