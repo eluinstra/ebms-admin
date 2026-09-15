@@ -16,9 +16,9 @@
 package nl.clockwork.ebms.admin.web.service.message;
 
 import jakarta.xml.bind.JAXBException;
-import javax.xml.parsers.ParserConfigurationException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.parsers.ParserConfigurationException;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
