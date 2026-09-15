@@ -103,10 +103,13 @@ ebms.serverId=
 If `deleteContentOnProcessed=true` then the attachments of a received message are deleted right after it has been processed and the attachments of a sent message are deleted right after it has been acknowledged (failed or expired).  
 If `ebmsMessage.storeDuplicateContent=false` then the attachments of a duplicate message are not stored. If `ebmsMessage.storeDuplicate=false` then the whole duplicate message is not stored.
 
+`ebmsMessage.maxMessageSize` limits the size, in bytes, of an EbMS message received on the [EbMS Server](/ebms-admin/properties.md#ebms-server) endpoint. When a message exceeds the limit it is rejected. The limit is enforced on the bytes actually read from the connection, so it applies even when the request has no `Content-Length` header or uses chunked transfer encoding. This protects the EbMS adapter against denial-of-service caused by oversized messages. Set `ebmsMessage.maxMessageSize=0` to disable the limit.
+
 ```properties
 ebmsMessage.deleteContentOnProcessed=false
 ebmsMessage.storeDuplicate=true
 ebmsMessage.storeDuplicateContent=true
+ebmsMessage.maxMessageSize=104857600
 ```
 
 ### Encryption keystore

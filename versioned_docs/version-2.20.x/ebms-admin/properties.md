@@ -64,6 +64,8 @@ ebms.queriesPerSecond=
 ebms.userQueriesPerSecond=
 ```
 
+`ebms.queriesPerSecond` limits the total number of requests per second accepted by the endpoint. `ebms.userQueriesPerSecond` additionally limits the number of requests per second for each individual client. A client is identified by the subject of its SSL client certificate when one is presented, and by its remote address otherwise, so clients without a client certificate no longer all share a single rate-limit bucket. The number of tracked per-client limiters is bounded, so an attacker cannot exhaust memory by presenting many different client identifiers.
+
 ### SSL Server keystore
 
 Holds the SSL key (and related certificates) for the [EbMS Server](#ebms-server) endpoint.
