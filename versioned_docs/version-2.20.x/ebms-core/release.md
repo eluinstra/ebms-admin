@@ -4,6 +4,25 @@ sidebar_position: 7
 
 # Release Notes
 
+### [ebms-core-2.20.10.jar](https://github.com/eluinstra/ebms-core/releases/download/v2.20.10/ebms-core-2.20.10.jar)
+
+- hardened XML (JAXB/XSD) parsing against billion-laughs & XXE
+- hardened the EbMS protocol endpoint against DoS and information disclosure (per-client rate limiting, stronger basic authentication); no longer leak exception details in ebmsErrorReason
+- fixed: cipher suites were silently ignored when the protocols list was left empty
+- updated dependencies
+
+>> Note: The server now caps the size of received messages via the new default setting `ebmsMessage.maxMessageSize=104857600` (100 MiB). Messages larger than this limit are rejected. This may break existing flows that exchange messages over 100 MiB — raise the limit to the maximum you expect, or set `ebmsMessage.maxMessageSize=0` to disable the limit.
+
+### [ebms-core-2.20.9.jar](https://github.com/eluinstra/ebms-core/releases/download/v2.20.9/ebms-core-2.20.9.jar)
+
+- fixed delivery: prevent duplicate retries on 2xx responses and unrecoverable errors
+- updated dependencies
+
+### [ebms-core-2.20.8.jar](https://github.com/eluinstra/ebms-core/releases/download/v2.20.8/ebms-core-2.20.8.jar)
+
+- fixed MSSQL migration scripts
+- improved database plugin tests
+
 ### [ebms-core-2.20.7.jar](https://github.com/eluinstra/ebms-core/releases/download/v2.20.7/ebms-core-2.20.7.jar)
 
 - updated dependencies

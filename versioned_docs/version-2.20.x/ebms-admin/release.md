@@ -4,6 +4,26 @@ sidebar_position: 13
 
 # Release Notes
 
+### [ebms-admin-2.20.10.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.20.10/ebms-admin-2.20.10.jar)
+
+- hardened XML (JAXB) parsing of the web UI against billion-laughs & XXE
+- TLS 1.2 + 1.3 by default, with recommended TLS 1.3 cipher suites
+- updated dependencies
+
+### [ebms-admin-2.20.9.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.20.9/ebms-admin-2.20.9.jar)
+
+- updated license info
+
+### [ebms-admin-2.20.8.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.20.8/ebms-admin-2.20.8.jar)
+
+- re-release aligned to ebms-core 2.20.8
+
+### [ebms-admin-2.20.7.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.20.7/ebms-admin-2.20.7.jar)
+
+- improved the embedded Jetty implementation
+- replaced text-io by jline
+- updated dependencies
+
 ### [ebms-admin-2.20.6.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-2.20.6/ebms-admin-2.20.6.jar)
 
 - updated dependencies
