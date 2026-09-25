@@ -20,7 +20,7 @@ Azure keyvault and insights are not supported anymore
 
 ### Upgrade Java
 
-Install the latest JRE or JDK 17.
+Install the latest JRE or JDK 21.
 
 ### Shutdown EbMS Admin 2.19.x
 

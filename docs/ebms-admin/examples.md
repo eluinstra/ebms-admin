@@ -28,7 +28,7 @@ In this example you will configure 2 ebms adapters that will communicate with ea
 
 ### Prerequisites
 
-- download and install Java 17 (or later)
+- download and install Java 21 (or later)
 - download [ebms-admin-@ebms.core.version@.jar](https://github.com/eluinstra/ebms-admin/releases/download/ebms-admin-@ebms.core.version@/ebms-admin-@ebms.core.version@.jar)
 - download [cpaStubEBF.rm.https.signed.xml](https://raw.githubusercontent.com/eluinstra/ebms-admin/ebms-admin-@ebms.core.version@/resources/CPAs/cpaStubEBF.rm.https.signed.xml)
 
