@@ -616,7 +616,7 @@ public class Start implements SystemInterface
 
 	private Constraint createSecurityConstraint()
 	{
-		return new Constraint.Builder().name("auth").roles("user", "admin").authorization(Authorization.FORBIDDEN).build();
+		return new Constraint.Builder().name("auth").roles("user", "admin").authorization(Authorization.SPECIFIC_ROLE).build();
 	}
 
 	private ConstraintMapping createSecurityConstraintMapping(final Constraint constraint)
