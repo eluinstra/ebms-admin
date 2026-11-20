@@ -74,7 +74,7 @@
     <checkstyle.config.location>${basedir}/resources/reporting/checkstyle.xml</checkstyle.config.location>
     <checkstyle.header.file>${basedir}/resources/reporting/license.txt</checkstyle.header.file>
     <dependency.locations.enabled>false</dependency.locations.enabled>
-    <flyway.version>13.12.0</flyway.version>
+    <flyway.version>13.13.0</flyway.version>
     <jdk.version>17</jdk.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <release.repo.url>http://sourceforge.net</release.repo.url>
@@ -82,6 +82,13 @@
   </properties>
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>com.fasterxml.jackson</groupId>
+        <artifactId>jackson-bom</artifactId>
+        <version>2.23.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
         <artifactId>commons-codec</artifactId>
@@ -143,7 +150,7 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>3.21.0</version>
+      <version>3.22.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -207,17 +214,17 @@
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jdk8</artifactId>
-      <version>2.22.4</version>
+      <version>2.23.0</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jsr310</artifactId>
-      <version>2.22.4</version>
+      <version>2.23.0</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.jakarta.rs</groupId>
       <artifactId>jackson-jakarta-rs-json-provider</artifactId>
-      <version>2.22.4</version>
+      <version>2.23.0</version>
     </dependency>
     <dependency>
       <groupId>jakarta.xml.ws</groupId>
@@ -227,17 +234,17 @@
     <dependency>
       <groupId>org.eclipse.jetty.ee10</groupId>
       <artifactId>jetty-ee10-webapp</artifactId>
-      <version>12.1.14</version>
+      <version>12.1.15</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-jmx</artifactId>
-      <version>12.1.14</version>
+      <version>12.1.15</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
-      <version>12.1.14</version>
+      <version>12.1.15</version>
       <exclusions>
         <exclusion>
           <groupId>org.eclipse.jetty.orbit</groupId>
@@ -248,7 +255,7 @@
     <dependency>
       <groupId>org.jline</groupId>
       <artifactId>jline-prompt</artifactId>
-      <version>4.4.8</version>
+      <version>4.7.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -279,27 +286,27 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context-support</artifactId>
-      <version>7.0.10</version>
+      <version>7.0.11</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
-      <version>7.0.10</version>
+      <version>7.0.11</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jms</artifactId>
-      <version>7.0.10</version>
+      <version>7.0.11</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
-      <version>7.0.10</version>
+      <version>7.0.11</version>
     </dependency>
     <dependency>
       <groupId>org.webjars</groupId>
       <artifactId>swagger-ui</artifactId>
-      <version>5.34.1</version>
+      <version>5.35.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
@@ -411,7 +418,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.5.5</version>
+          <version>3.6.1</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -419,7 +426,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.14</version>
+        <version>0.8.16</version>
         <executions>
           <execution>
             <goals>
@@ -438,7 +445,7 @@
       <plugin>
         <groupId>com.mycila</groupId>
         <artifactId>license-maven-plugin</artifactId>
-        <version>5.0.0</version>
+        <version>5.1.2</version>
         <configuration>
           <strictCheck>true</strictCheck>
           <header>${project.basedir}/resources/license/header.txt</header>
@@ -468,7 +475,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>license-maven-plugin</artifactId>
-        <version>2.0.0</version>
+        <version>2.9.0</version>
         <configuration>
           <licenseName>apache_20</licenseName>
           <outputDirectory>${project.build.outputDirectory}</outputDirectory>
@@ -500,7 +507,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.6.3</version>
+        <version>3.7.0</version>
         <executions>
           <execution>
             <id>enforce-versions</id>
@@ -613,7 +620,7 @@
       <plugin>
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
-        <version>3.5.1</version>
+        <version>3.11.0</version>
         <configuration>
           <formats>
             <format>
@@ -694,7 +701,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>versions-maven-plugin</artifactId>
-        <version>2.21.0</version>
+        <version>2.25.2</version>
         <configuration>
           <excludes>
             <exclude>com.lmax</exclude>
@@ -737,7 +744,7 @@
       <plugin>
         <groupId>org.owasp</groupId>
         <artifactId>dependency-check-maven</artifactId>
-        <version>12.2.1</version>
+        <version>13.0.0</version>
         <reportSets>
           <reportSet>
             <reports>
@@ -749,7 +756,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>jdepend-maven-plugin</artifactId>
-        <version>2.2.0</version>
+        <version>2.2.1</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -801,17 +808,17 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>3.21.0</version>
+        <version>3.22.0</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>3.5.5</version>
+        <version>3.6.1</version>
       </plugin>
       <plugin>
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-maven-plugin</artifactId>
-        <version>4.9.8.3</version>
+        <version>4.10.5.0</version>
         <configuration>
           <spotbugsXmlOutputDirectory>${basedir}/target</spotbugsXmlOutputDirectory>
           <xmlOutput>true</xmlOutput>
@@ -832,7 +839,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>taglist-maven-plugin</artifactId>
-        <version>3.2.1</version>
+        <version>3.3.0</version>
         <configuration>
           <tags>
             <tag>TODO</tag>
